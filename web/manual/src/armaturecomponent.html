@@ -1,0 +1,54 @@
+<!-- PAGE_TITLE: ArmatureComponent -->
+<h1>
+	ArmatureComponent
+</h1>
+
+<p>
+	An ArmatureComponent plays <a href="armature.html#animations">animations</a> and generates pose (deformation) matrices for 3D models.
+</p>
+
+<h3>
+	Usage
+</h3>
+
+
+<p>
+	Use <code>PoolProxy<ArmatureComponent>::New()</code> to allocate a new ArmatureComponent.
+</p>
+
+<p>
+	Then use the <code>SetModel(UID("_model_name_here"))</code> to set the model that the ArmatureComponent will play animations for. Then call the <code>Init()</code> method to start the component. It will load the model in the background.
+</p>
+
+<p>
+	Finally call the <code>GetPosePtr()</code> method to get a pointer that you have to put into you <a href="rendercomponent.html">RenderComponent's</a> <code>SetPose()</code> method. This will link the components together.
+</p>
+
+<p>
+	You can use <code>PlayAnimation()</code> method to play animations or <code>SetBoneKeyframe()</code> method to generate animations procedurally.
+</p>
+
+<p>
+	When the ArmatureComponent is not needed anymore, call the <code>Uninit()</code> method to remove it from the pose list.
+</p>
+
+<p>
+	Use <code>PoolProxy<ArmatureComponent>::Delete()</code> to deallocate the unneeded ArmatureComponent.
+</p>
+
+<div class="note-box">
+	<h4>
+		Note
+	</h4>
+	<p>
+		Sometimes not good:
+		<ul>
+			<li>
+				If you call the <code>StartAnimation()</code> before the model is loaded, the animation will not play.
+			</li>
+			<li>
+				If you <code>Uninit()</code> your ArmatureComponent before your RenderComponent, call the <code>SetPose()</code> on your RenderComponent with <code>nullptr</code> argument.
+			</li>
+		</ul>
+	</p>
+</div>

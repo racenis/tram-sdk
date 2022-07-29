@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<title>Tramway Drifting and Dungeon Exploration Simulator 2022 Software Development Kit</title>
+<style>
+	/* sorry, don't remember how to do this in vanilla HTML */
+	p { margin-top: 5px; margin-bottom: 5px; }
+	h3, h4 { margin-top: 5px; margin-bottom: 0; }
+</style>
+</head>
+<body background="sky2.jpg">
+<center><img src="logo.gif"/><br/><img src="devkit.gif"/></center>
+<table width="600" align="center">
+<tr>
+<td>
+<center><h1>About</h1></center>
+<p>Tramway Drifting and Dungeon Exploration Simulator 2022 Software Development Kit is the engine behind the upcoming computer game <a target="_blank" href="tramway.html">Tramway Drifting and Dungeon Exploartion Simulator 2022</a> where you drift tramways and explore dungeons.</p>
+<p>If you'd like to know something more specific, then you can <a target="_blank" href="manual/index.html">take a look at the manual of the SDK</a>. There's also some  <a target="_blank" href="tramway.html#screenshots">screenshots showcasing the capabilities of the SDK</a>.</p>
+<center><h1>News</h1></center>
+<h3>Version 0.0.0 released</h3>
+<p>This version consists of just the engine code, with all of the Tramway Drifting and Dungeon Explortation Simulator 2022 code taken out of it.</p>
+<p><i>00. August 2022.</i></p>
+<hr/>
+<center><h1>Features</h1></center>
+<ul>
+<li>Photo-realistic graphics.
+<ul>
+<li>Textured 3D models.</li>
+<li>Gouraud shading.</li>
+<li>24-bit color.</li>
+<!--<li>Fog.</li>-->
+<li>Night and day conditions.</li>
+<li>Screen resolutions from 320x200 to 800x600.</li>
+</ul>
+All of that together provides very realistic appearance.
+</li>
+<li>Data oriented design.
+<ul><li>Engine core data is laid out in memory in the most efficient way possible as to increase the data processing speed. The core library also provides templates so that you can have efficient data too.</li></ul>
+</li>
+<li>Hyperrealistic physics simulation provided by the Bullet Physics library.</li>
+<li>LIGMAScript scripting language integration.</li>
+<li>Open-world style level streaming, including assets.</li>
+<li>Runs on virtually any computer from the last 15 years.</li>
+<li>Very fast C++20 code performance.</li>
+<li>Windows 2009 and Linux support.</li>
+</ul>
+<center><h1>Roadmap</h1></center>
+<ul>
+<li>Actually finish the LIGMAScript interpreter and put it into the engine.</li>
+<li>Rewrite the old GUI from retainable into immediate.</li>
+<li>Add some fancy real-time graphical effects.
+<ul>
+<li>Particles</li>
+<li>Lens flares</li>
+<li>Shiny materials</li>
+</ul>
+</li>
+<li>Make a level editor.</li>
+<li>Fix the level streaming.</li>
+<li>Add vulkan rendering.
+<ul>
+<li>I don't have a computer that supports vulkan, so it's probably going to take some time.</li>
+</ul>
+</li>
+
+<li>Deferred rendering.</li>
+
+<li>Try backporting to Windows XP.</li>
+<li>Try backporting to 32-bit processors.</li>
+<li>Try to switch the fast forward-rendered mode to OpenGL 3.0 or earlier.</li>
+<li>Networking.</li>
+</ul>
+<center><h1>How to get</h1></center>
+<p>You can download it off of the <a target="_blank" href="http://github.com">github.com</a>. You can just download the whole repository. Acually, that's exatcly what you should do.</p>
+<p>After that you'll need to get the <a target="_blank" href="https://github.com/bulletphysics/bullet3/releases">bullet physics library</a> and compile it, then get the glfw library and compile it too, then generate <a href="https://glad.dav1d.de/">OpenGL 4.0 headers</a>, also get the <a href="https://github.com/nothings/stb/blob/master/stb_image.h">stb image</a> and <a href="https://github.com/g-truc/glm">glm</a> libraries. Put them all in the <code>libraries/</code> folder that you get from the repository. That's it for dependencies. (All this could probably be automated, but I don't have time for that).</p>
+<p>Then just use CMake to make the thing. You're supposed to provide your own <code>main.cpp</code> file with the <code>main()</code> function in it, but the engine comes with a basic sample project with some crates.</p>
+<hr/>
+</td>
+</tr>
+</table>
+<center>Tramway Drifting and Dungeon Exploration Simulator 2022</center>
+</body>
+</html>

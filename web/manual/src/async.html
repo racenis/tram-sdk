@@ -1,0 +1,36 @@
+<!-- PAGE_TITLE: Async -->
+<h1>
+	Asynchronous stuff system
+</h1>
+
+<p>
+	Asynchonous stuff system handles asynchonous and multithreaded stuff for the engine. Right now it's only being used for resource streaming, but in the future it could also have a job system.
+</p>
+
+<p>
+	In the source code it is found under the <code>Core::Async</code> namespace. Definitions are in the <code>async.h</code> file.
+</p>
+
+<p>
+	It's sort of unfinished.
+</p>
+
+<h3>
+	<a id="resource">Resources</a>
+</h3>
+
+<p>
+	When an <a href="entitycomponent.html">EntityComponent</a> requests a <a href="resource.html">Resource</a> via a <a href="resource.html#resource-proxy">ResourceProxy</a> or via the RequestResource() function, and the resource is not loaded, the resource will be added to the resource loader queue.
+</p>
+
+<p>
+	The resource loader thread then takes the resource and calls it's <code>LoadFromDisk()</code> method. This usually takes a very long times, which is why this is done asynchonously. After the method returns, if the resource has changed to the <code>READY</code> state, it is added to the queue for resources that are done loading, otherwise it's added to the 2nd resource loader queue.
+</p>
+
+<p>
+	2nd resource loader queue processing is done on the rendering thread. It's used to upload the resources to the video memory, which, due to OpenGL limitations, must be done on the same thread that rendering is done. This usually doesn't take nearly as much time as loading from the disk. During the processing the resource's <code>LoadFromMemory()</code> method is called, which does the upload. Afterwards the resource is added to the finished resource queue.
+</p>
+
+<p>
+	When the resource reaches the ready resource queue, the <a href="entitycomponent.html">EntityComponent</a> which requested the resource to be loaded is notified of the fact that a requested resource has been loaded. Then the resource is removed from the queue.
+</p>

@@ -1,0 +1,5 @@
+<!-- PAGE_TITLE: page1 title -->
+<h1>Getting started</h1>
+<p>The source code is available in a software repository at <a target="_blank" href="http://github.com">github.com</a>. After downloading the source code, you will need a few libraries before compiling it.</p>
+<p>You will need to get the <a target="_blank" href="https://github.com/bulletphysics/bullet3/releases">bullet physics library</a> and compile it, then get the glfw library and compile it too, then generate <a href="https://glad.dav1d.de/">OpenGL 4.0 headers</a>, also get the <a href="https://github.com/nothings/stb/blob/master/stb_image.h">stb image</a> and <a href="https://github.com/g-truc/glm">glm</a> libraries. Put them all in the <code>libraries/</code> folder that you get from the repository. That's it for the dependencies.</p>
+<p>Then just use CMake. You're supposed to provide your own <code>main.cpp</code> file with the <code>main()</code> function in it, but the engine comes with a basic <code>main()</code> function that has all of the important things in it.</p>

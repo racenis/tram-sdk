@@ -1,0 +1,33 @@
+<!-- PAGE_TITLE: RenderComponent -->
+<h1>
+	RenderComponent
+</h1>
+
+<p>
+	A RenderComponent renders a single 3D model somewhere in the world.
+</p>
+
+<h3>
+	Usage
+</h3>
+
+<p>
+	Use PoolProxy<RenderComponent>::New() to allocate a new RenderComponent.
+</p>
+
+<p>
+	Then use the SetModel(UID("_model_name_here")) to set the model that the RenderComponent will render. Call the UpdateLocation and UpdateRotation methods to set the initial location and rotation of the model.
+</p>
+
+<p>
+	Finally call the Init() method to start the component. It will load the model in the background and it will start rendering whet that's finished.
+</p>
+
+<p>
+	When the model is not needed anymore, call the Uninit() method to remove it from the rendering list.
+</p>
+
+<p>
+	Use PoolProxy<RenderComponent>::Delete() to deallocate the unneeded RenderComponent.
+</p>
+

@@ -1,0 +1,31 @@
+<!-- PAGE_TITLE: Core -->
+<h1>
+	Core
+</h1>
+
+<p>
+	The core of the engine is the basic framework that's needed for all of the other systems to cooperate, such as the event system, as well as the entity and entity component, world cell, resource systems.
+</p>
+<p>
+	It consists of the basic type definitions for an entity, an entity component, a world cell, a resource, events, messages, as well as templates for data storage types.
+</p>
+<p>
+	The code for the core of the engine can be found in the core.h header file. There's also some functions and methods implemented in the core.cpp file.
+</p>
+
+<h3>
+	<a id="resource-proxy">UID</a>
+</h3>
+
+<p>
+	To save space the engine stores all of the strings (model, material, entity names, etc.) as a one very large string. It also ensures that every substring is stored only once.
+</p>
+
+<p>
+	You can use the <code>Core::UID()</code> function to store a string. The function will return a <code>name_t</code> (which is an alias for an unsigned 64-bit long integer). It also guarantees that identical strings will all return the same <code>name_t</code>. This significantly reduces time when comparing strings.
+</p>
+
+<p>
+	To get the original string back, you can use the <code>Core::ReverseUID()</code> with the <code>name_t</code> returned by the <code>Core::UID()</code> function as the parameter. 
+</p>
+

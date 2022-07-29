@@ -1,0 +1,154 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+//
+// ASYNC.CPP -- implementation of async.h
+
+#include <core.h>
+#include <async.h>
+
+#include <thread>
+
+namespace Core::Async {
+    std::thread resource_loader_thread;
+    bool loaders_should_stop = false;
+
+    struct ResourceRequest {
+        EntityComponent* requester;
+        uint64_t requester_id;
+        Resource* requested_res;
+    };
+
+    Queue<ResourceRequest> resourceRequestQueue("resource request queue", 500);
+    Queue<ResourceRequest> resourceRequestQueue2ndStage("resource request queue 2nd stage", 500);
+    Queue<ResourceRequest> finishedResourceRequestQueue("finished resource request queue", 500);
+
+    void RequestResource(EntityComponent* requester, Resource* requested_resource) {
+        resourceRequestQueue.Lock();
+
+        ResourceRequest* req = resourceRequestQueue.AddNew();
+
+        req->requester = requester;
+        req->requester_id = requester->GetID();
+        req->requested_res = requested_resource;
+
+        resourceRequestQueue.Unlock();
+    }
+
+    void ResourceLoader() {
+        while (!loaders_should_stop){
+
+            resourceRequestQueue.Lock();
+            ResourceRequest* req = resourceRequestQueue.GetFirstPtr();
+            resourceRequestQueue.Unlock();
+
+            while (req){
+                if(req->requested_res->GetStatus() == Resource::UNLOADED){
+                    req->requested_res->LoadFromDisk();
+                }
+
+                if(req->requested_res->GetStatus() == Resource::READY){
+                    finishedResourceRequestQueue.Lock();
+                    ResourceRequest* f_req = finishedResourceRequestQueue.AddNew();
+                    f_req->requester = req->requester;          // TODO: change this to memcpy()
+                    f_req->requester_id = req->requester_id;
+                    f_req->requested_res = req->requested_res;
+                    finishedResourceRequestQueue.Unlock();
+                } else {
+                    resourceRequestQueue2ndStage.Lock();
+                    ResourceRequest* n_req = resourceRequestQueue2ndStage.AddNew();
+                    n_req->requester = req->requester;
+                    n_req->requester_id = req->requester_id;
+                    n_req->requested_res = req->requested_res;
+                    resourceRequestQueue2ndStage.Unlock();
+                }
+
+                resourceRequestQueue.Lock();
+                resourceRequestQueue.Remove();
+                req = resourceRequestQueue.GetFirstPtr();
+                resourceRequestQueue.Unlock();
+            }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+        }
+    }
+
+    void ResourceLoader2ndStage(){
+        resourceRequestQueue2ndStage.Lock();
+        ResourceRequest* req = resourceRequestQueue2ndStage.GetFirstPtr();
+        resourceRequestQueue2ndStage.Unlock();
+
+        while (req){
+            if(req->requested_res->GetStatus() == Resource::LOADED || req->requested_res->GetStatus() == Resource::LOAD_FAIL){
+                req->requested_res->LoadFromMemory();
+            }
+
+            finishedResourceRequestQueue.Lock();
+            ResourceRequest* f_req = finishedResourceRequestQueue.AddNew();
+            f_req->requester = req->requester;
+            f_req->requester_id = req->requester_id;
+            f_req->requested_res = req->requested_res;
+            finishedResourceRequestQueue.Unlock();
+
+            resourceRequestQueue2ndStage.Lock();
+            resourceRequestQueue2ndStage.Remove();
+            req = resourceRequestQueue2ndStage.GetFirstPtr();
+            resourceRequestQueue2ndStage.Unlock();
+        }
+
+    }
+
+    void ForceLoadResource(Resource* res){
+        if(res->GetStatus() == Resource::UNLOADED){
+            res->LoadFromDisk();
+        }
+
+        if(res->GetStatus() == Resource::READY || res->GetStatus() == Resource::LOAD_FAIL){
+            finishedResourceRequestQueue.Lock();
+            ResourceRequest* f_req = finishedResourceRequestQueue.AddNew();
+            f_req->requester = nullptr;
+            f_req->requester_id = 0;
+            f_req->requested_res = res;
+            finishedResourceRequestQueue.Unlock();
+        } else {
+            resourceRequestQueue2ndStage.Lock();
+            ResourceRequest* n_req = resourceRequestQueue2ndStage.AddNew();
+            n_req->requester = nullptr;
+            n_req->requester_id = 0;
+            n_req->requested_res = res;
+            resourceRequestQueue2ndStage.Unlock();
+        }
+    }
+
+    void FinishResource(){
+        finishedResourceRequestQueue.Lock();
+        ResourceRequest* req = finishedResourceRequestQueue.GetFirstPtr();
+        finishedResourceRequestQueue.Unlock();
+
+        while (req){
+            if (req->requester){
+                req->requester->ResourceReady();
+            }
+
+            finishedResourceRequestQueue.Lock();
+            finishedResourceRequestQueue.Remove();
+            req = finishedResourceRequestQueue.GetFirstPtr();
+            finishedResourceRequestQueue.Unlock();
+        }
+
+    }
+
+    void Init(){
+        loaders_should_stop = false;
+
+        resource_loader_thread = std::thread(ResourceLoader);
+    }
+
+    void Yeet(){
+        loaders_should_stop = true;
+
+        resource_loader_thread.join();
+    }
+
+
+}
