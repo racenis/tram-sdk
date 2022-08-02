@@ -25,6 +25,12 @@ namespace Core::Render {
         glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 scale = glm::vec3(1.0f);
     };
+    
+    struct PoseListObject{
+        glm::mat4 pose[30];
+    };
+
+    extern Pool<PoseListObject> poseList;
 
     class Animation : public Resource {
     protected:

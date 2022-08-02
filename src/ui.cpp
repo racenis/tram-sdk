@@ -93,9 +93,9 @@ namespace Core::UI {
 
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
             glViewport(0, 0, width, height);
-            SCREEN_WIDTH = width;
-            SCREEN_HEIGHT = height;
-            matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+            //SCREEN_WIDTH = width;
+            //SCREEN_HEIGHT = height;
+            Render::ScreenSize(width, height);
         });
 
         glfwSetKeyCallback(WINDOW, KeyCallback);
@@ -123,7 +123,6 @@ namespace Core::UI {
 
     void Update(){
 
-        modelMatrices.time = FRAME_TIME;
         FRAME_TIME = glfwGetTime();
 
         if(glfwGetKey(WINDOW, GLFW_KEY_F1) == GLFW_PRESS) glfwSetWindowShouldClose(WINDOW, true);
@@ -180,9 +179,7 @@ namespace Core::UI {
         }
 
         CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
-        matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), CAMERA_POSITION) * glm::toMat4(CAMERA_ROTATION));
 
-        if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, CAMERA_ROTATION * glm::vec3(0.0f, 0.0f, -20.0f));
 
         cur_x = cursorx / SCREEN_WIDTH * 640.0f;
         cur_y = cursory / SCREEN_HEIGHT * 480.0f;
@@ -423,8 +420,8 @@ namespace Core::UI {
     }
 
     void SetDebugText(const char* text, const glm::vec3& location, const glm::vec3& color){
-        glm::vec3 screen_pos = glm::project(location, Render::matrices.view, Render::matrices.projection, glm::vec4 (0.0f, 0.0f, 640.0f, 480.0f));
-        Core::UI::SetText(text, screen_pos.x-100.0f, 480.0f + 25.0f - screen_pos.y, 0.7f, 200.0f, 1, 1, 1, color);
+        //glm::vec3 screen_pos = glm::project(location, Render::matrices.view, Render::matrices.projection, glm::vec4 (0.0f, 0.0f, 640.0f, 480.0f));
+        //Core::UI::SetText(text, screen_pos.x-100.0f, 480.0f + 25.0f - screen_pos.y, 0.7f, 200.0f, 1, 1, 1, color);
     }
 
 }

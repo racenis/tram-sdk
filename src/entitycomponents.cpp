@@ -11,7 +11,6 @@
 namespace Core {
     template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("render component pool", 250, false);
     template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("light component pool", 250, false);
-    template <> Pool<ArmatureComponent> PoolProxy<ArmatureComponent>::pool("armature component pool", 50, false);
 
     template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("player component pool", 5, false);
     template <> Pool<ControllerComponent> PoolProxy<ControllerComponent>::pool("controller component pool", 25, false);
@@ -25,16 +24,7 @@ namespace Core {
     }
 
 
-    void Render::UpdateArmatures(){
-        ArmatureComponent* armobj = PoolProxy<ArmatureComponent>::GetPool().GetFirst();
-        ArmatureComponent* armlast = PoolProxy<ArmatureComponent>::GetPool().GetLast();
-        for(;armobj < armlast; armobj++){
-            if(*((uint64_t*)armobj) == 0)
-                continue;
-            else
-                armobj->Update();
-        }
-    }
+
 
 
 

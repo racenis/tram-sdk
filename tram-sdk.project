@@ -3,11 +3,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/render_opengl.cpp" ExcludeProjConfig="Debug;"/>
     <VirtualDirectory Name="render">
+      <File Name="src/render/armaturecomponent.cpp"/>
       <File Name="src/render/render_misc.cpp"/>
+      <File Name="src/render/armature.cpp"/>
       <File Name="src/render/model.cpp"/>
       <File Name="src/render/material.cpp"/>
-      <File Name="src/render/glyphs.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
       <File Name="src/entities/tram.cpp"/>

@@ -10,19 +10,23 @@
 
 #include <armature.h>
 
+
 namespace Core::Render {
     class Model;
 
     extern glm::vec3 CAMERA_POSITION;
     extern glm::quat CAMERA_ROTATION;
+    
+    extern glm::vec3 SUN_DIRECTION;
+    extern glm::vec3 SUN_COLOR;
+    extern glm::vec3 AMBIENT_COLOR;
 
     const glm::vec3 CAMERA_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
     const glm::vec3 CAMERA_SIDE = glm::vec3(1.0f, 0.0f, 0.0f);
+    
 
     extern float CAMERA_PITCH;
     extern float CAMERA_YAW;
-    const float CAMERA_SENSITIVITY = 0.1f;
-    const float CAMERA_SPEED = 0.1f;
 
     extern float SCREEN_WIDTH;
     extern float SCREEN_HEIGHT;
@@ -40,27 +44,10 @@ namespace Core::Render {
         FLAG_INTERIOR_LIGHTING = 64
     };
 
-    struct ShaderUniformMatrices {
-        glm::mat4 projection;       /// Projection matrix.
-        glm::mat4 view;             /// View matrix.
-    };
 
-    struct ShaderUniformModelMatrices{
-        glm::mat4 model;        /// Model -> world space matrix. Rotates and translates vertices from how they are defined in the model to where they will appear in the world.
-        glm::uvec4 modelLights; /// Indices for lights in the light list. The shader will use these 4 indices to determine with which lights the model should be lit up.
-        glm::vec4 sunDirection; /// Normalized vector. Sunlight direction.
-        glm::vec4 sunColor;     /// Sunlight color.
-        glm::vec4 ambientColor; /// Shadow color.
-        float time;
-        float sunWeight;
-    };
 
-    /// Contains pose matrices for shader.
-    struct PoseListObject{
-        glm::mat4 pose[30];
-    };
-
-    /// Contains the minimal information that is needed to draw a Model on screen.
+    
+    // TODO: move into opengl-specific code
     struct RenderListObject {
         uint32_t flags = 0;
 
@@ -97,7 +84,7 @@ namespace Core::Render {
         }
     };
 
-    /// Defines a light.
+    // TODO: move into opengl-specific code
     struct LightListObject {
         glm::vec3 location = {0.0f, 0.0f, 0.0f};    /// Location of the light in the world.
         float padding;
@@ -197,6 +184,7 @@ namespace Core::Render {
 
     struct ModelData{};
 
+    // TODO: figure out what to do with the models
     class Model : public Resource {
     public:
     enum VertexFormat {
@@ -261,6 +249,7 @@ namespace Core::Render {
     class VertexShader;
     class FragmentShader;
     
+    // TODO: definetly move into opengl-specific code
     class ShaderProgram {
     public:
         VertexShader* vertexShader;
@@ -286,7 +275,9 @@ namespace Core::Render {
         static std::vector<ShaderProgram> shaderPrograms;
     };
 
+    // TODO: move into opengl-specific code
     const uint32_t MAX_MATERIALS_PER_MODEL = 15;
+    
     const glm::vec3 COLOR_WHITE(1.0f, 1.0f, 1.0f);
     const glm::vec3 COLOR_RED(1.0f, 0.0f, 0.0f);
     const glm::vec3 COLOR_GREEN(0.0f, 1.0f, 0.0f);
@@ -311,6 +302,9 @@ namespace Core::Render {
     void Init();
     void Render();
     void CompileShaders();
+    void ScreenSize(float width, float height);
+    
+    // TODO: move into opengl-specific code
     uint32_t FindShader(Model::VertexFormat format, Material::Type type);
 
     void SetSun(float timeOfDay);
@@ -319,16 +313,12 @@ namespace Core::Render {
     void AddLineMarker(const glm::vec3& location, const glm::vec3& color);
     void SetGlyph(float x, float y, float tex_x, float tex_y, float width, float height, float scale_x, float scale_y, float thickness, uint32_t texture, const glm::vec3& color);
 
-    extern std::vector<LineVertex> colorlines;
-    extern std::vector<TextVertex> textvertices;
+    //extern std::vector<LineVertex> colorlines;
+    //extern std::vector<TextVertex> textvertices;
 
-    extern Pool<PoseListObject> poseList;
-    extern Pool<RenderListObject> renderList;
+    
+    //extern Pool<RenderListObject> renderList;
 
-    //extern Queue<Render::Command> rendercommands;
-
-    extern ShaderUniformMatrices matrices;             // from where the view, projection matrices get copied
-    extern ShaderUniformModelMatrices modelMatrices;   // from where the model matrix and light indexes get copied
 }
 
 #endif // RENDER_H

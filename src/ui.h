@@ -77,6 +77,9 @@ namespace Core::UI {
     extern bool ismouse_left;
 
     extern float cur_x, cur_y;
+    
+    const float CAMERA_SENSITIVITY = 0.1f;
+    const float CAMERA_SPEED = 0.1f;
 
     void Init();
     void Uninit();
@@ -199,7 +202,8 @@ namespace Core::UI {
             text (text),
             pos (position) {}
         void Draw() {
-            screen_pos = glm::project(pos, Render::matrices.view, Render::matrices.projection, glm::vec4 (0.0f, 0.0f, 640.0f, 480.0f));
+            // TODO: implement this as a function in render_opengl.cpp
+            //screen_pos = glm::project(pos, Render::matrices.view, Render::matrices.projection, glm::vec4 (0.0f, 0.0f, 640.0f, 480.0f));
             Render::SetGlyph(screen_pos.x, 480.0f - screen_pos.y, 134, 0, 24, 24, 1, 1, 1, 4, Render::COLOR_WHITE);
             SetText(text, screen_pos.x-100.0f, 480.0f + 25.0f - screen_pos.y, 1.0f, 200.0f, 0, 1, 1, Render::COLOR_WHITE);
         }
