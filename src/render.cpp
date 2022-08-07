@@ -29,6 +29,7 @@ namespace Core::Render {
     Material FONT_REGULAR;
     Material FONT_TITLE;
     Material FONT_SYMBOLS;
+    Material GLYPH_GUI;
 
     bool DRAW_PHYSICS_DEBUG = false;
     bool DRAW_PATH_DEBUG = false;
@@ -45,10 +46,12 @@ namespace Core::Render {
         FONT_REGULAR = Material(UID("jost"), Material::TEXTURE_MSDF);  // futura knock-off
         FONT_TITLE = Material(UID("inter"), Material::TEXTURE_MSDF);    // helvetica
         FONT_SYMBOLS = Material(UID("symbols"), Material::TEXTURE_MSDF);  // ornamentation and other non-text glyphs
+        GLYPH_GUI = Material(UID("glyph_symbols"), Material::TEXTURE_GLYPH);  // ornamentation and other non-text glyphs
 
         FONT_REGULAR.Load();
         FONT_TITLE.Load();
         FONT_SYMBOLS.Load();
+        GLYPH_GUI.Load();
     }
 
     void Render(){
@@ -132,6 +135,49 @@ namespace Core::Render {
         textvertices.push_back(bright);
         textvertices.push_back(tright);
         textvertices.push_back(tleft);
+    }
+    
+    void SetGlyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex){
+        GlyphVertex tleft;   // top left
+        GlyphVertex tright;  // top right
+        GlyphVertex bleft;   // bottom left
+        GlyphVertex bright;  // bottom right
+
+        tleft.co.x = x;
+        tleft.co.y = y;
+        tleft.texco.x = tex_x;
+        tleft.texco.y = tex_y;
+        
+        tright.co.x = x + w;
+        tright.co.y = y;
+        tright.texco.x = tex_x + tex_w;
+        tright.texco.y = tex_y;
+        
+        bleft.co.x = x;
+        bleft.co.y = y + h;
+        bleft.texco.x = tex_x;
+        bleft.texco.y = tex_y + tex_h;
+        
+        bright.co.x = x + w;
+        bright.co.y = y + h;
+        bright.texco.x = tex_x + tex_w;
+        bright.texco.y = tex_y + tex_h;
+        
+        tleft.color = color;
+        tleft.texture = tex;
+        tright.color = color;
+        tright.texture = tex;
+        bleft.color = color;
+        bleft.texture = tex;
+        bright.color = color;
+        bright.texture = tex;
+
+        glyphvertices.push_back(bleft);
+        glyphvertices.push_back(bright);
+        glyphvertices.push_back(tleft);
+        glyphvertices.push_back(bright);
+        glyphvertices.push_back(tright);
+        glyphvertices.push_back(tleft);
     }
 
 }

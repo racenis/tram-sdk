@@ -94,7 +94,7 @@ void Material::LoadFromDisk(){
     } else if(type == TEXTURE_ALPHA){
         strcpy(path, "data/textures/");
         channels = 4;
-    } else if(type == TEXTURE_MSDF){
+    } else if(type == TEXTURE_MSDF || type == TEXTURE_GLYPH){
         strcpy(path, "data/textures/ui/");
         channels = 4;
     } else {
@@ -149,7 +149,7 @@ void Material::LoadFromMemory(){
 
     assert(textureData);
 
-    if(type == TEXTURE_ALPHA || type == TEXTURE_MSDF){
+    if(type == TEXTURE_ALPHA || type == TEXTURE_MSDF || type == TEXTURE_GLYPH){
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
     } else {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);

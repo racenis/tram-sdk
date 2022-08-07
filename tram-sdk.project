@@ -3,6 +3,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/gui.h"/>
+    <File Name="src/gui.cpp"/>
     <File Name="src/render_opengl.cpp" ExcludeProjConfig="Debug;"/>
     <VirtualDirectory Name="render">
       <File Name="src/render/armaturecomponent.cpp"/>

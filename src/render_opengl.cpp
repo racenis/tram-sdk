@@ -13,6 +13,7 @@ namespace Core::Render {
 
     std::vector<LineVertex> colorlines;
     std::vector<TextVertex> textvertices;
+    std::vector<GlyphVertex> glyphvertices;
     
     // TODO: move into opengl-specific code
     struct ShaderUniformMatrices {
@@ -29,6 +30,8 @@ namespace Core::Render {
         glm::vec4 ambientColor; /// Shadow color.
         float time;
         float sunWeight;
+        float screenWidth;
+        float screenHeight;
     };
     
     ShaderUniformMatrices matrices;
@@ -170,7 +173,7 @@ namespace Core::Render {
             {3, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, color)},
             {2, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, scale)},
             {1, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, thickness)},
-            {1, GL_UNSIGNED_INT, sizeof(TextVertex), (void*)offsetof(StaticModelVertex, texture)}
+            {1, GL_UNSIGNED_INT, sizeof(TextVertex), (void*)offsetof(TextVertex, texture)}
         }, std::vector<Material*>{
             &FONT_REGULAR,
             &FONT_TITLE,
@@ -178,6 +181,15 @@ namespace Core::Render {
             &FONT_TITLE, // <--- also a placeholder
             &FONT_SYMBOLS
         }, GL_TRIANGLES, textvertices.size(), textvertices.size() * sizeof(TextVertex), &textvertices[0]);
+        
+    auto glyphBuffer = VertexBuffer(std::vector<VertexBuffer::VertexFormat>{
+        {2, GL_FLOAT, sizeof(GlyphVertex), nullptr},
+        {2, GL_FLOAT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, texco)},
+        {3, GL_FLOAT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, color)},
+        {1, GL_UNSIGNED_INT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, texture)}
+    }, std::vector<Material*>{
+        &GLYPH_GUI
+    }, GL_TRIANGLES, glyphvertices.size(), glyphvertices.size() * sizeof(GlyphVertex), &glyphvertices[0]);
         
         
     void ScreenSize(float width, float height) {
@@ -209,6 +221,7 @@ namespace Core::Render {
 
         lineBuffer.Init();
         textBuffer.Init();
+        glyphBuffer.Init();
         
         lightUniform.Init();
         matricesUniform.Init();
@@ -232,6 +245,8 @@ namespace Core::Render {
         modelMatrices.sunDirection = glm::vec4(SUN_DIRECTION, 1.0f);
         modelMatrices.sunColor = glm::vec4(SUN_COLOR, 1.0f);
         modelMatrices.ambientColor = glm::vec4(AMBIENT_COLOR, 1.0f);
+        modelMatrices.screenWidth = SCREEN_WIDTH;
+        modelMatrices.screenHeight = SCREEN_HEIGHT;
         
         matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), CAMERA_POSITION) * glm::toMat4(CAMERA_ROTATION));
 
@@ -355,6 +370,11 @@ namespace Core::Render {
         textBuffer.UpdateData(textvertices.size(), textvertices.size() * sizeof(TextVertex), &textvertices[0]);
         textBuffer.Upload();
         textBuffer.Draw();
+        
+        glUseProgram(ShaderProgram::Find(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH)->compiled_shader);
+        glyphBuffer.UpdateData(glyphvertices.size(), glyphvertices.size() * sizeof(GlyphVertex), &glyphvertices[0]);
+        glyphBuffer.Upload();
+        glyphBuffer.Draw();
 
         // back to drawing everything in its supposed place
         glEnable(GL_DEPTH_TEST);
@@ -364,6 +384,7 @@ namespace Core::Render {
         // clear the buffers for the next frame
         colorlines.clear();
         textvertices.clear();
+        glyphvertices.clear();
 
         Stats::Stop(Stats::FRAME_NO_SWAP);
     }

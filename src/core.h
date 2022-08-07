@@ -25,6 +25,8 @@
 
 namespace Core {
 
+    // TODO: make all of the templates run constructors/destructors
+    // TODO: make template nethod names same as in std containers
     template <typename T>
     class Pool{
     protected:
@@ -195,6 +197,7 @@ namespace Core {
     template <typename T>
     class Stack{
     protected:
+        // TODO: figure out what is going on in here???
         std::string stackName;  //name of queue for log messages etc.
         uint64_t stackLength;   //how many elements are in queue right now
         uint64_t stackSize;     //how many elements can be added to queue
@@ -208,11 +211,11 @@ namespace Core {
             stackSize = initialSize;
             stackLength = 0;
 
-            char* newmemory = ::operator new(initialSize * sizeof(T));
-            first = static_cast<T*>(newmemory);
+            char* newmemory = (char*)::operator new(initialSize * sizeof(T));
+            first = (T*)newmemory;
             last = first;
             firstend = first;
-            lastend = static_cast<T*>(newmemory + (initialSize * sizeof(T)));
+            lastend = (T*)newmemory + (initialSize * sizeof(T));
         };
         T* AddNew(){
             if(stackLength == stackSize){
@@ -240,6 +243,11 @@ namespace Core {
                 return last - 1;
         };
         uint64_t GetLength(){return stackLength;};
+        void Reset(){
+            stackLength = 0;
+            last = first;
+        }
+        T& top() { return *GetLastPtr(); }
     };
 
     template <typename T>

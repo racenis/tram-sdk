@@ -7,6 +7,8 @@
 #include <ui.h>
 #include <physics.h>
 
+#include <gui.h>
+
 //#include <filesystem>
 
 using namespace Core;
@@ -106,6 +108,26 @@ int main() {
         
         SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
         SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
+        
+        GUI::Begin();
+        GUI::FrameBorder();
+        
+        GUI::Frame(Core::GUI::FRAME_CENTER, 480.0f, 360.0);
+        GUI::FrameBorder();
+        
+        GUI::Frame(Core::GUI::FRAME_TOP, 100.0f);
+        GUI::FrameBorder();
+        
+        //GUI::EndFrame();
+        
+        GUI::Frame(Core::GUI::FRAME_RIGHT, 100.0f);
+        GUI::FrameBorder();
+        
+        GUI::EndFrame();
+        
+        //SetGlyph(0.0f, 0.0f, 256.0f, 256.0f, 0.0f, 0.0f, 256.0f, 256.0f, COLOR_PINK, 0);
+        GUI::Glyph(0.0f, 0.0f, 256.0f, 256.0f, 0.0f, 0.0f, 256.0f, 256.0f, COLOR_PINK, 0);
+
 
 
         // this loads the models and textures into video memory

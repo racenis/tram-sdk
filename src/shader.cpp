@@ -210,6 +210,8 @@ namespace Core::Render {
         auto line_fragment =                 new FragmentShader("shaders/line.frag", Material::FLAT_COLOR);
         auto text_vertex =                   new VertexShader("shaders/text.vert", Model::TEXT_VERTEX);
         auto text_fragment =                 new FragmentShader("shaders/text.frag", Material::TEXTURE_MSDF);
+        auto glyph_vertex =                  new VertexShader("shaders/glyph.vert", Model::GLYPH_VERTEX);
+        auto glyph_fragment =                new FragmentShader("shaders/glyph.frag", Material::TEXTURE_GLYPH);
         
         ShaderProgram::Add(ShaderProgram(normal_static_vertex, normal_static_fragment));
         ShaderProgram::Add(ShaderProgram(normal_static_vertex, normal_static_fragment_alpha));
@@ -217,6 +219,7 @@ namespace Core::Render {
         ShaderProgram::Add(ShaderProgram(normal_static_vertex, normal_water_fragment));
         ShaderProgram::Add(ShaderProgram(line_vertex, line_fragment));
         ShaderProgram::Add(ShaderProgram(text_vertex, text_fragment));
+        ShaderProgram::Add(ShaderProgram(glyph_vertex, glyph_fragment));
         
         ShaderProgram::CompileAll();
 
