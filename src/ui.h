@@ -64,6 +64,10 @@ namespace Core::UI {
     struct FontCharInfo {
         float left, bottom, right, top, drop;
     };
+    
+    struct GlyphCharInfo {
+        float x, y, w, h, drop;
+    };
 
     extern InputState INPUT_STATE;
 
@@ -72,9 +76,12 @@ namespace Core::UI {
 
     extern std::unordered_map<int, KeyAction> KeyActionBindings;
 
-    extern FontCharInfo fontinfo[2][256];
+    extern FontCharInfo fontinfo[4][256];
+    extern GlyphCharInfo glyphinfo[4][256];
 
     extern bool ismouse_left;
+    extern bool isnotmouse_left;
+    extern bool wasmouse_left;
 
     extern float cur_x, cur_y;
     
@@ -91,6 +98,7 @@ namespace Core::UI {
     void SetMainMenu(GUIScreen* screen);
 
     void LoadFontInfo(const char* filename, size_t fontIndex);
+    void LoadGlyphInfo(const char* filename, size_t fontIndex);
 
 
 

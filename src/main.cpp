@@ -125,8 +125,45 @@ int main() {
         
         GUI::EndFrame();
         
-        //SetGlyph(0.0f, 0.0f, 256.0f, 256.0f, 0.0f, 0.0f, 256.0f, 256.0f, COLOR_PINK, 0);
-        GUI::Glyph(0.0f, 0.0f, 256.0f, 256.0f, 0.0f, 0.0f, 256.0f, 256.0f, COLOR_PINK, 0);
+        //GUI::Glyph(-20.0f, 0.0f, 256.0f, 256.0f, 0.0f, 0.0f, COLOR_PINK, 0);
+        //GUI::Glyph(20.0f, 20.0f, 256.0f, 256.0f, 0.0f, 0.0f, COLOR_PINK, 0);
+        //GUI::Glyph(270.0f, 20.0f, 20.0f, 20.0f, 0.0f, 0.0f, COLOR_PINK, 0);
+        
+        //GUI::Glyph(GUI::BUTTON_CROSS, 0.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_MINIMIZE+ GUI::PRESSED, 20.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_QUESTION+ GUI::PRESSED, 40.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_CHECHBOX + GUI::PRESSED, 60.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_RADIO + GUI::PRESSED, 80.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_MINIMIZE + GUI::SELECTED, 100.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_LEFT, 120.0f, 0.0f);
+        //GUI::Glyph(GUI::BUTTON_RIGHT + GUI::DISABLED, 140.0f, 0.0f);
+        
+        if(GUI::SmallButton(GUI::BUTTON_QUESTION)) std::cout << "yipppee!!" << std::endl;
+
+        static bool chee = false;
+        
+        GUI::CheckBox(chee);
+        
+        static uint32_t benis = 0;
+        
+        GUI::RadioButton(benis, 0);
+        GUI::RadioButton(benis, 1);
+        GUI::RadioButton(benis, 2);
+        GUI::RadioButton(benis, 3);
+        
+        GUI::FrameBreakLine();
+        
+        GUI::CheckBox(chee);
+        
+        GUI::Text("big chungus YES IT IS the big CHUNGUS qqq ", 1);
+        GUI::FrameBreakLine();
+        char tito[] = {(char)253, (char)251, (char)243, (char)226, (char)214, (char)254, '\0'};
+        GUI::Text("nyaaa", 1);
+        //GUI::Glyph(0, 0, 256, 256, 0, 0, Render::COLOR_WHITE, 1);
+        
+        GUI::End();
+        
+        //if (isnotmouse_left) std::cout << "x: " << cur_x << " y: " << cur_y << std::endl;
 
 
 

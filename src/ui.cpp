@@ -28,10 +28,12 @@ namespace Core::UI {
     GUIScreen* hud_screen = nullptr;
 
     // TODO: fix this
-    FontCharInfo fontinfo[2][256] = {0.0f};
+    FontCharInfo fontinfo[4][256] = {0.0f};
+    GlyphCharInfo glyphinfo[4][256] = {0.0f};
     FontCharInfo* fontinfo_f = (FontCharInfo*)fontinfo;
 
     bool ismouse_left = false;
+    bool isnotmouse_left = false;
     bool wasmouse_left = false;
 
     float cur_x, cur_y;
@@ -57,7 +59,7 @@ namespace Core::UI {
         {GLFW_KEY_F5, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
         {GLFW_KEY_F4, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ DRAW_PHYSICS_DEBUG = !DRAW_PHYSICS_DEBUG; }}},
         {GLFW_KEY_F9, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_FLYING : STATE_DEFAULT; }}},
-        {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE == STATE_DEFAULT ? SetGUIScreen(menu_screen) : SetGUIScreen(hud_screen); }}}
+        {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_MENU_OPEN : STATE_DEFAULT; }}}
     };
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -115,6 +117,8 @@ namespace Core::UI {
         
         LoadFontInfo("data/jost.info", 0);
         LoadFontInfo("data/inter.info", 1);
+        LoadGlyphInfo("data/glyph.info", 0);
+        LoadGlyphInfo("data/glyph_text.info", 1);
     }
 
     void Uninit(){
@@ -140,9 +144,10 @@ namespace Core::UI {
                 CAMERA_POSITION += CAMERA_ROTATION * CAMERA_SIDE * CAMERA_SPEED;
         }
 
-
-        ismouse_left = !wasmouse_left && glfwGetMouseButton(WINDOW, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-        wasmouse_left = glfwGetMouseButton(WINDOW, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        bool mouse_status_left =  glfwGetMouseButton(WINDOW, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        ismouse_left = !wasmouse_left && mouse_status_left;
+        isnotmouse_left = wasmouse_left && !mouse_status_left;
+        wasmouse_left = mouse_status_left;
 
         //if (ismouse_left) std::cout << sizeof(FontCharInfo) << " " << sizeof(float[5]) << std::endl;
 
@@ -181,11 +186,18 @@ namespace Core::UI {
         CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
 
 
-        cur_x = cursorx / SCREEN_WIDTH * 640.0f;
-        cur_y = cursory / SCREEN_HEIGHT * 480.0f;
+        cur_x = cursorx;
+        cur_y = cursory;
 
 
-        if (current_screen) current_screen->Update();
+        //if (current_screen) current_screen->Update();
+        static InputState input_state_last = STATE_DEFAULT;
+        if (input_state_last != STATE_MENU_OPEN && INPUT_STATE == STATE_MENU_OPEN) {
+            SetCursor(CURSOR_DEFAULT);
+        } else if (input_state_last != STATE_DEFAULT && INPUT_STATE == STATE_DEFAULT) {
+            SetCursor(CURSOR_NONE);
+        }
+        input_state_last = INPUT_STATE;
 
     }
 
@@ -256,19 +268,34 @@ namespace Core::UI {
             file >> top;
             file >> drop;
 
-            fontinfo_f[(fontIndex * 256) + index].left = left;
-            fontinfo_f[(fontIndex * 256) + index].bottom = 256.0f - top;
-            fontinfo_f[(fontIndex * 256) + index].right = right - left;
-            fontinfo_f[(fontIndex * 256) + index].top = top - bottom;
-            fontinfo_f[(fontIndex * 256) + index].drop = drop;
+            fontinfo[fontIndex][index].left = left;
+            fontinfo[fontIndex][index].bottom = 256.0f - top;
+            fontinfo[fontIndex][index].right = right - left;
+            fontinfo[fontIndex][index].top = top - bottom;
+            fontinfo[fontIndex][index].drop = drop;
+        }
+        file.close();
+    }
+    
+    void LoadGlyphInfo(const char* filename, size_t fontIndex){
+        std::ifstream file;
+        file.open(filename);
+        while(file){
+            // TODO: change the indices in the code to enums or something
+            uint32_t index;
+            float x, y, w, h, drop;
+            file >> index;
+            file >> x;
+            file >> y;
+            file >> w;
+            file >> h;
+            file >> drop;
 
-            /*
-            fontinfo[fontIndex][index][0] = left;
-            fontinfo[fontIndex][index][1] = 256.0f - top;
-            fontinfo[fontIndex][index][2] = right - left;
-            fontinfo[fontIndex][index][3] = top - bottom;
-            fontinfo[fontIndex][index][4] = drop;
-            */
+            glyphinfo[fontIndex][index].x = x;
+            glyphinfo[fontIndex][index].y = y;
+            glyphinfo[fontIndex][index].w = w;
+            glyphinfo[fontIndex][index].h = h;
+            glyphinfo[fontIndex][index].drop = drop;
         }
         file.close();
     }

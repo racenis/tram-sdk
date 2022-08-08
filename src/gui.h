@@ -23,17 +23,38 @@ namespace Core::GUI {
         FRAME_BOTTOM_LEFT,
     };
     
+    enum symbol:uint32_t {
+        SELECTED = 1,
+        PRESSED = 2,
+        DISABLED = 3,
+        BUTTON_CROSS = 0,
+        BUTTON_QUESTION = 4,
+        BUTTON_MINIMIZE = 8,
+        BUTTON_MAXIMIZE = 12,
+        BUTTON_UP = 16,
+        BUTTON_DOWN = 20,
+        BUTTON_LEFT = 24,
+        BUTTON_RIGHT = 28,
+        BUTTON_RADIO = 32,
+        BUTTON_CHECHBOX = 36
+    };
+    
     void Begin();
     void End();
     
     void Frame(orientation frame_orient, float offset);
     void Frame(orientation frame_orient, float width, float height);
+    void FrameBreakLine();
     void EndFrame();  // pops a frame
     void ScrollBar(); // scrollbar for the frame
-    void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex);     // new glyph using the top of the stack
+    void Glyph(const uint32_t& symbol, const float& x, const float& y);
+    void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex);     // new glyph using the top of the stack
     void FrameBorder();
+    bool SmallButton(const symbol& glyph);
+    void CheckBox(bool& check);
+    void RadioButton(uint32_t& val, const uint32_t& this_val);
     
-    void Text(char* text, font_t font, float scale);
+    void Text(char const* text, font_t font);
     
 }
 
