@@ -96,6 +96,7 @@ namespace Core::UI {
     void SetGUIScreen(GUIScreen* screen);
     void SetHUDMenu(GUIScreen* screen);
     void SetMainMenu(GUIScreen* screen);
+    void SetTextInput(char* text, uint32_t len);
 
     void LoadFontInfo(const char* filename, size_t fontIndex);
     void LoadGlyphInfo(const char* filename, size_t fontIndex);

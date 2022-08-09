@@ -9,6 +9,7 @@
 #include <ui.h>
 
 #include <fstream>
+#include <cstring>
 
 #include <glad.h>
 #include <glfw3.h>
@@ -41,11 +42,17 @@ namespace Core::UI {
     double cursorx = 0.0f, cursory = 0.0f;
     float cursorchangex = 0.0f, cursorchangey = 0.0f;
     double cursorx_last = 0.0f, cursory_last = 0.0f;
+    
+    char* input_text = nullptr;
+    uint32_t input_text_len = 0;
 
     // these accumulate the codes from the keypress callback events 
     uint16_t keys_down = 0;
     uint16_t keys_up = 0;
     uint16_t keys_pressed = 0;
+
+    void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void CharacterBackspaceCallback();
 
     std::unordered_map<int, KeyAction> KeyActionBindings = {
         {GLFW_KEY_W, KeyAction {.type = KeyAction::KEYBOARD_KEY, .action = KEY_FORWARD}},
@@ -59,10 +66,9 @@ namespace Core::UI {
         {GLFW_KEY_F5, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
         {GLFW_KEY_F4, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ DRAW_PHYSICS_DEBUG = !DRAW_PHYSICS_DEBUG; }}},
         {GLFW_KEY_F9, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_FLYING : STATE_DEFAULT; }}},
-        {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_MENU_OPEN : STATE_DEFAULT; }}}
+        {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_MENU_OPEN : STATE_DEFAULT; }}},
+        {GLFW_KEY_BACKSPACE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ CharacterBackspaceCallback(); }}}
     };
-
-    void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     void Init(){
         // start up glfw
@@ -215,6 +221,31 @@ namespace Core::UI {
         //if (action == GLFW_REPEAT) std::cout << "REPEATED!" << std::endl;
 
         //std::cout << "Key-press: " << KeyActionBindings[key].action << std::endl;
+    }
+    
+    void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
+        auto len = strlen(input_text);
+        if (len < input_text_len-1) {
+            input_text[len] = codepoint;
+            input_text[len+1] = '\0';
+        }
+    }
+    
+    void CharacterBackspaceCallback() {
+        if (!input_text) return;
+        auto len = strlen(input_text);
+        if (len > 0) {
+            input_text[len-1] = '\0';
+        }
+    }
+    
+    void SetTextInput(char* text, uint32_t len) {
+        input_text = text;
+        input_text_len = len;
+        
+        text ?
+        glfwSetCharCallback(WINDOW, CharacterCallback):
+        glfwSetCharCallback(WINDOW, nullptr);
     }
 
     void EndFrame(){

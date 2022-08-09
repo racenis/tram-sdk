@@ -11,10 +11,14 @@ namespace Core::GUI {
     };
     
     const float LINE_HEIGHT = 24.0f;
+    const float SPACE_WIDTH = 2.0f;
     
     UI::CursorType cursor;
     
     Stack<FrameObject> FrameStack ("GUI Frame stack", 100);
+    
+    char* current_text = nullptr;
+    uint32_t current_text_len = 0;
     
     void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex) {
         auto& t = FrameStack.top();
@@ -61,10 +65,19 @@ namespace Core::GUI {
     
     
     void End() {
-        // if any of the components has changed the cursor, then tell UI to display the change
+        // if cursor changed, tell UI to display new cursor
         static UI::CursorType cursor_last = cursor;
         if (cursor != cursor_last) UI::SetCursor(cursor);
         cursor_last = cursor;
+        
+        // if input text ptr changed, tell UI
+        static char* last_text = current_text;
+        if (last_text != current_text) {
+            UI::SetTextInput(current_text, current_text_len);
+        } else if (current_text && UI::ismouse_left) { 
+            current_text = nullptr;
+            UI::SetTextInput(current_text, current_text_len);
+        } last_text = current_text;
     }
     
     void Frame(orientation frame_orient, float offset) {
@@ -192,20 +205,127 @@ namespace Core::GUI {
         FrameStack.top().cursor_x += f.w;
     }
     
+    // sets a string until null-terminator
     void GlyphText(char const* text, font_t font, float x, float y, float space) {
         for (char const* t = text; *t != '\0'; t++) {
             if (*t == ' ') { x += space; continue; }
-            auto& f = UI::glyphinfo[font][*t];
-            Glyph(x, y-f.drop, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, font);
+            auto& f = UI::glyphinfo[font][(size_t)*t];
+            Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, font);
             x += f.w;
         }
+    }
+    
+    // sets a string until an end pointer
+    void GlyphText(char const* text, char const* end, font_t font, float x, float y, float space) {
+        for (char const* t = text; t != end; t++) {
+            if (*t == ' ') { x += space; continue; }
+            auto& f = UI::glyphinfo[font][(size_t)*t];
+            Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, font);
+            x += f.w;
+        }
+    }
+    
+    // measures a string until newline
+    void GlyphMetrics(char const* text, font_t font, float& w, uint32_t& sp, char const*& nl) {
+        char const* it = text; w = 0.0f; sp = 0;
+        for (; *it != '\n' && *it != '\0'; it++) {
+            if (*it == ' ') sp++;
+            w += UI::glyphinfo[font][(size_t)*it].w;
+        } nl = it;
     }
     
     void Text(char const* text, font_t font) {
         float x = FrameStack.top().cursor_x;
         float y = FrameStack.top().cursor_y;
+        float a = FrameStack.top().width - x;
         
-        GlyphText(text, font, x, y, 3.0f);
+        //GlyphText(text, font, x, y, 3.0f);
+        float w; uint32_t sp; char const* end;
+        GlyphMetrics(text, font, w, sp, end);
+        GlyphText(text, end, font, x, y, (a-w)/sp);
     }
+    
+    bool Button(char const* text) {
+        auto& l = UI::glyphinfo[0][BUTTON_TEXT + LEFT];
+        auto& m = UI::glyphinfo[0][BUTTON_TEXT + MIDDLE];
+        auto& r = UI::glyphinfo[0][BUTTON_TEXT + RIGHT];
+        float x = FrameStack.top().cursor_x;
+        float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.h) / SPACE_WIDTH);
+        bool isclick = false;
+        
+        float text_w; uint32_t text_sp; char const* text_end;
+        GlyphMetrics(text, 1, text_w, text_sp, text_end);
+        text_w += text_sp * SPACE_WIDTH;
+        uint32_t segs = (text_w - l.w) / m.w;
+        float total_w = l.w + r.w + (m.w * segs);
+        
+        uint32_t mode = 0;
+        if (IsCursored(x, y, total_w, l.h)) {
+            cursor = UI::CURSOR_CLICK;
+            
+            if (UI::wasmouse_left){
+                mode = PRESSED;
+            } else {
+                mode = SELECTED;
+            }
+            
+            isclick = UI::isnotmouse_left;
+        }
+        
+        Glyph(BUTTON_TEXT + LEFT + mode, x, y);
+        Glyph(BUTTON_TEXT + RIGHT + mode, x + total_w - r.w, y);
+        for (uint32_t i = 0; i < segs; i++)
+            Glyph(BUTTON_TEXT + MIDDLE + mode, x + l.w + (m.w * i) , y);
+            
+        GlyphText(text, text_end, 1, std::round(x + ((total_w - text_w) / SPACE_WIDTH)) , y-1.0f, 2.0f);
+        
+        //std::cout << "total_w: " << total_w << " text_w: " << text_w << " x: " << x << " bongo: " << ((total_w - text_w) / 2.0f) << std::endl;
+        
+        FrameStack.top().cursor_x += total_w;
+        return isclick;
+    }
+    
+    void TextBox(char* text, uint32_t max_len) {
+        auto& l = UI::glyphinfo[0][BUTTON_TEXTBOX + LEFT];
+        auto& m = UI::glyphinfo[0][BUTTON_TEXTBOX + MIDDLE];
+        auto& r = UI::glyphinfo[0][BUTTON_TEXTBOX + RIGHT];
+        float x = FrameStack.top().cursor_x;
+        float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.h) / SPACE_WIDTH);
+        //bool isclick = false;
+        
+        float text_w; uint32_t text_sp; char const* text_end;
+        GlyphMetrics(text, 1, text_w, text_sp, text_end);
+        text_w += text_sp * SPACE_WIDTH;
+        //uint32_t segs = (text_w - l.w) / m.w;
+        uint32_t segs = max_len / 3;
+        float total_w = l.w + r.w + (m.w * segs);
+        
+        //uint32_t mode = 0;
+        if (IsCursored(x, y, total_w, l.h)) {
+            cursor = UI::CURSOR_CLICK;
+            
+            if (UI::ismouse_left){
+                current_text = text;
+                current_text_len = max_len;
+            }
+            
+            //isclick = UI::isnotmouse_left;
+        }
+        
+        Glyph(BUTTON_TEXTBOX + LEFT, x, y);
+        Glyph(BUTTON_TEXTBOX + RIGHT, x + total_w - r.w, y);
+        for (uint32_t i = 0; i < segs; i++)
+            Glyph(BUTTON_TEXTBOX + MIDDLE, x + l.w + (m.w * i) , y);
+            
+        GlyphText(text, text_end, 1, x+5.0f , y-1.0f, SPACE_WIDTH);
+        
+        FrameStack.top().cursor_x += total_w;
+    }
+    
+    void DropdownBox(char** texts, uint32_t len) {
+        
+        
+    }
+    
     
 }

@@ -27,6 +27,9 @@ namespace Core::GUI {
         SELECTED = 1,
         PRESSED = 2,
         DISABLED = 3,
+        LEFT = 0,
+        MIDDLE = 4,
+        RIGHT = 8,
         BUTTON_CROSS = 0,
         BUTTON_QUESTION = 4,
         BUTTON_MINIMIZE = 8,
@@ -36,7 +39,9 @@ namespace Core::GUI {
         BUTTON_LEFT = 24,
         BUTTON_RIGHT = 28,
         BUTTON_RADIO = 32,
-        BUTTON_CHECHBOX = 36
+        BUTTON_CHECHBOX = 36,
+        BUTTON_TEXT = 40,
+        BUTTON_TEXTBOX = 52,
     };
     
     void Begin();
@@ -53,8 +58,12 @@ namespace Core::GUI {
     bool SmallButton(const symbol& glyph);
     void CheckBox(bool& check);
     void RadioButton(uint32_t& val, const uint32_t& this_val);
+    bool Button(char const* text);
     
     void Text(char const* text, font_t font);
+    
+    void TextBox(char* text, uint32_t max_len);
+    void DropdownBox(char** texts, uint32_t len);
     
 }
 

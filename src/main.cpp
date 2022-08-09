@@ -151,14 +151,18 @@ int main() {
         GUI::RadioButton(benis, 2);
         GUI::RadioButton(benis, 3);
         
+        GUI::Text("big chungus YES IT IS the big CHUNGUS qqq ", 1);
+        
         GUI::FrameBreakLine();
         
         GUI::CheckBox(chee);
         
-        GUI::Text("big chungus YES IT IS the big CHUNGUS qqq ", 1);
-        GUI::FrameBreakLine();
-        char tito[] = {(char)253, (char)251, (char)243, (char)226, (char)214, (char)254, '\0'};
         GUI::Text("nyaaa", 1);
+        
+        GUI::Button("FUCK ASS IN MY");
+        GUI::Text("nyaaa", 1);
+        static char tboxt[20] = "benor!";
+        GUI::TextBox(tboxt, sizeof(tboxt));
         //GUI::Glyph(0, 0, 256, 256, 0, 0, Render::COLOR_WHITE, 1);
         
         GUI::End();
