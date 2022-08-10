@@ -31,6 +31,8 @@ namespace Core::Render {
     Material FONT_SYMBOLS;
     Material GLYPH_GUI;
     Material GLYPH_TEXT;
+    Material GLYPH_TEXT_BOLD;
+    Material GLYPH_HEADERS;
 
     bool DRAW_PHYSICS_DEBUG = false;
     bool DRAW_PATH_DEBUG = false;
@@ -49,12 +51,16 @@ namespace Core::Render {
         FONT_SYMBOLS = Material(UID("symbols"), Material::TEXTURE_MSDF);  // ornamentation and other non-text glyphs
         GLYPH_GUI = Material(UID("glyph_symbols"), Material::TEXTURE_GLYPH);  // ornamentation and other non-text glyphs
         GLYPH_TEXT = Material(UID("glyph_text"), Material::TEXTURE_GLYPH);  // ornamentation and other non-text glyphs
+        GLYPH_TEXT_BOLD = Material(UID("glyph_text_bold"), Material::TEXTURE_GLYPH);  // ornamentation and other non-text glyphs
+        GLYPH_HEADERS = Material(UID("glyph_headers"), Material::TEXTURE_GLYPH);  // ornamentation and other non-text glyphs
 
         FONT_REGULAR.Load();
         FONT_TITLE.Load();
         FONT_SYMBOLS.Load();
         GLYPH_GUI.Load();
         GLYPH_TEXT.Load();
+        GLYPH_TEXT_BOLD.Load();
+        GLYPH_HEADERS.Load();
     }
 
     void Render(){

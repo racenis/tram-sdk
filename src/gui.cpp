@@ -291,11 +291,11 @@ namespace Core::GUI {
     }
     
     // sets a string until null-terminator
-    void GlyphText(char const* text, font_t font, float x, float y, float space) {
+    void GlyphText(char const* text, font_t font, float x, float y, float space, const glm::vec3& color ) {
         for (char const* t = text; *t != '\0'; t++) {
             if (*t == ' ') { x += space; continue; }
             auto& f = UI::glyphinfo[font][(size_t)*t];
-            Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, font);
+            Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.w, f.h, f.x, f.y, color, font);
             x += f.w;
         }
     }
@@ -353,7 +353,7 @@ namespace Core::GUI {
         bool isclick = false;
         
         float text_w; uint32_t text_sp; char const* text_end;
-        GlyphMetrics(text, 1, text_w, text_sp, text_end);
+        GlyphMetrics(text, 2, text_w, text_sp, text_end);
         text_w += text_sp * SPACE_WIDTH;
         uint32_t segs = (text_w - l.w) / m.w;
         float total_w = l.w + r.w + (m.w * segs);
@@ -376,7 +376,7 @@ namespace Core::GUI {
         for (uint32_t i = 0; i < segs; i++)
             Glyph(BUTTON_TEXT + MIDDLE + mode, x + l.w + (m.w * i) , y);
             
-        GlyphText(text, text_end, 1, std::round(x + ((total_w - text_w) / SPACE_WIDTH)) , y-1.0f, 2.0f);
+        GlyphText(text, text_end, 2, std::round(x + ((total_w - text_w) / SPACE_WIDTH)) , y-1.0f, 2.0f/*, glm::vec3(0.667f, 0.667f, 0.667f)*/);
         
         //std::cout << "total_w: " << total_w << " text_w: " << text_w << " x: " << x << " bongo: " << ((total_w - text_w) / 2.0f) << std::endl;
         

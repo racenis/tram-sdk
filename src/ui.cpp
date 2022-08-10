@@ -128,6 +128,7 @@ namespace Core::UI {
         LoadFontInfo("data/inter.info", 1);
         LoadGlyphInfo("data/glyph.info", 0);
         LoadGlyphInfo("data/glyph_text.info", 1);
+        LoadGlyphInfo("data/glyph_text_bold.info", 2);
     }
 
     void Uninit(){

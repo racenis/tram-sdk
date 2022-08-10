@@ -26,15 +26,15 @@ Instruction manual and other documentations [can be found here](https://racenis.
 		- fix up old dynamic models
 	- replace the bone space matrix calculation
 	- re-export mongus and his animations and test them
- - new immediate mode gui system
-	- add non-msdf gui material
-	- add frame stack
-	- add a clipping glyph setter
-	- add scrolling frames
-	- add texts
-	- add buttons
-	- add dropdown selections
-	- add text boxes
+ - ~~new immediate mode gui system~~
+	- ~~add non-msdf gui material~~
+	- ~~add frame stack~~
+	- ~~add a clipping glyph setter~~
+	- ~~add scrolling frames~~
+	- ~~add texts~~
+	- ~~add buttons~~
+	- ~~add dropdown selections~~
+	- ~~add text boxes~~
  - optimize the model material bucketing system
  - make the player controller more responsive
  - add a proper third person camera
@@ -64,3 +64,4 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- particles
 	- sprites
  - webgl support
+ - test custom container templates

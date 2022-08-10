@@ -189,7 +189,9 @@ namespace Core::Render {
         {1, GL_UNSIGNED_INT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, texture)}
     }, std::vector<Material*>{
         &GLYPH_GUI,
-        &GLYPH_TEXT
+        &GLYPH_TEXT,
+        &GLYPH_TEXT_BOLD,
+        &GLYPH_HEADERS
     }, GL_TRIANGLES, glyphvertices.size(), glyphvertices.size() * sizeof(GlyphVertex), &glyphvertices[0]);
         
         

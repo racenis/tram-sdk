@@ -304,6 +304,8 @@ namespace Core::Render {
     extern Material FONT_SYMBOLS;  // ornamentation and other non-text glyphs
     extern Material GLYPH_GUI;
     extern Material GLYPH_TEXT;
+    extern Material GLYPH_TEXT_BOLD;
+    extern Material GLYPH_HEADERS;
 
     extern bool DRAW_PHYSICS_DEBUG;
     extern bool DRAW_PATH_DEBUG;

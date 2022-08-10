@@ -112,12 +112,19 @@ int main() {
         GUI::Begin();
         GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);
         GUI::Frame(Core::GUI::FRAME_TOP, 128.0f);
-        GUI::FillFrame(0.0f, 0.0f, 255.0f, 255.0f, Render::COLOR_WHITE, 0);
+        GUI::FillFrame(0.0f, 0.0f, 256.0f, 64.0f, Render::COLOR_WHITE, 3);
         
         static bool helptext = false;
         if(GUI::SmallButton(GUI::BUTTON_QUESTION)) helptext = !helptext;
         if(helptext) GUI::Text("Amogus!", 1);
         
+        GUI::Frame(Core::GUI::FRAME_BOTTOM, 20.0f);
+        
+        static float pad = 650.0f; pad -= 2.0f;
+        if (pad < -170.0f) pad = 650.0f;
+        GUI::GlyphText("MAMMU KAD BUUS EEST", 2, pad, 0.0f, 2.0f, Render::COLOR_RED);
+        
+        GUI::EndFrame();
         GUI::EndFrame();
         GUI::Frame(Core::GUI::FRAME_BOTTOM, 480.0f - 128.0f);
         GUI::Frame(Core::GUI::FRAME_LEFT, 150.0f);
@@ -169,7 +176,14 @@ int main() {
             GUI::Text(disptext, 1, (GUI::orientation)benis, Render::COLOR_CYAN);
         }
         
+        static bool give_text = false;
         GUI::FrameBreakLine();
+        GUI::CheckBox(give_text); GUI::Text("dot tekstu dibenaa", 1); GUI::FrameBreakLine();
+        
+        if(give_text) {
+            for (int i = 0; i < 20; i++) GUI::FrameBreakLine();
+            GUI::Text("es esmu teksts dibenaa", 2); GUI::FrameBreakLine();
+        }
         
         GUI::EndFrame();
         GUI::End();
