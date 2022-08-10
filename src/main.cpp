@@ -106,69 +106,73 @@ int main() {
         // this makes the mongus model bob up and down
         monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
         
-        SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
-        SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
+        //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
+        //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         
         GUI::Begin();
-        GUI::FrameBorder();
+        GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);
+        GUI::Frame(Core::GUI::FRAME_TOP, 128.0f);
+        GUI::FillFrame(0.0f, 0.0f, 255.0f, 255.0f, Render::COLOR_WHITE, 0);
         
-        GUI::Frame(Core::GUI::FRAME_CENTER, 480.0f, 360.0);
-        GUI::FrameBorder();
-        
-        GUI::Frame(Core::GUI::FRAME_TOP, 100.0f);
-        GUI::FrameBorder();
-        
-        //GUI::EndFrame();
-        
-        GUI::Frame(Core::GUI::FRAME_RIGHT, 100.0f);
-        GUI::FrameBorder();
+        static bool helptext = false;
+        if(GUI::SmallButton(GUI::BUTTON_QUESTION)) helptext = !helptext;
+        if(helptext) GUI::Text("Amogus!", 1);
         
         GUI::EndFrame();
+        GUI::Frame(Core::GUI::FRAME_BOTTOM, 480.0f - 128.0f);
+        GUI::Frame(Core::GUI::FRAME_LEFT, 150.0f);
+        GUI::FillFrame(104.0f, 108.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
+    
+        GUI::EndFrame();
+        GUI::Frame(Core::GUI::FRAME_RIGHT, 640.0f - 150.0f);
+        GUI::FillFrame(104.0f, 88.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
         
-        //GUI::Glyph(-20.0f, 0.0f, 256.0f, 256.0f, 0.0f, 0.0f, COLOR_PINK, 0);
-        //GUI::Glyph(20.0f, 20.0f, 256.0f, 256.0f, 0.0f, 0.0f, COLOR_PINK, 0);
-        //GUI::Glyph(270.0f, 20.0f, 20.0f, 20.0f, 0.0f, 0.0f, COLOR_PINK, 0);
-        
-        //GUI::Glyph(GUI::BUTTON_CROSS, 0.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_MINIMIZE+ GUI::PRESSED, 20.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_QUESTION+ GUI::PRESSED, 40.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_CHECHBOX + GUI::PRESSED, 60.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_RADIO + GUI::PRESSED, 80.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_MINIMIZE + GUI::SELECTED, 100.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_LEFT, 120.0f, 0.0f);
-        //GUI::Glyph(GUI::BUTTON_RIGHT + GUI::DISABLED, 140.0f, 0.0f);
-        
-        if(GUI::SmallButton(GUI::BUTTON_QUESTION)) std::cout << "yipppee!!" << std::endl;
+        GUI::FrameBorder();
+        static float scrll = 0.0f, heigh = 0.0f;
+        GUI::ScrollBar(scrll, heigh);
 
-        static bool chee = false;
         
-        GUI::CheckBox(chee);
+        
+        static char text_box[25] = "benor!";
+        static uint32_t text_colo = 0;
+        static uint32_t text_publ = 0;
+        static char text_disp[25] = "benor!";
+        static char text_caps[25] = "BENOR!";
+        static bool do_caps = false;
+        if(GUI::Button("PUBIBEET")){
+            text_publ = text_colo;
+            for(int i = 0; text_box[i-1] != '\0' || i == 0; i++){
+                text_disp[i] = text_box[i];
+                text_caps[i] = toupper(text_box[i]);
+            }
+        }
+        GUI::TextBox(text_box, sizeof(text_box));
+        char const* tixs[] = { "BALTS", "ROZAA", "rieksti!"};
+        GUI::DropdownBox(tixs, 3, text_colo); GUI::FrameBreakLine();
+        
+        GUI::CheckBox(do_caps); GUI::Text("lielie burti", 1); GUI::FrameBreakLine();
         
         static uint32_t benis = 0;
         
-        GUI::RadioButton(benis, 0);
-        GUI::RadioButton(benis, 1);
-        GUI::RadioButton(benis, 2);
-        GUI::RadioButton(benis, 3);
+        GUI::RadioButton(benis, 0);GUI::Text("kreisi", 1);GUI::FrameBreakLine();
+        GUI::RadioButton(benis, 1);GUI::Text("centrs", 1);GUI::FrameBreakLine();
+        GUI::RadioButton(benis, 2);GUI::Text("labi", 1);;;GUI::FrameBreakLine();
+        GUI::RadioButton(benis, 3);GUI::Text("slikti", 1);GUI::FrameBreakLine();
         
-        GUI::Text("big chungus YES IT IS the big CHUNGUS qqq ", 1);
+        
+        char* disptext = do_caps ? text_caps : text_disp;
+        if (text_publ == 0) {
+            GUI::Text(disptext, 1, (GUI::orientation)benis, Render::COLOR_WHITE);
+        } else if (text_publ == 1) {
+            GUI::Text(disptext, 1, (GUI::orientation)benis, Render::COLOR_PINK);
+        } else {
+            GUI::Text(disptext, 1, (GUI::orientation)benis, Render::COLOR_CYAN);
+        }
         
         GUI::FrameBreakLine();
         
-        GUI::CheckBox(chee);
-        
-        GUI::Text("nyaaa", 1);
-        
-        GUI::Button("FUCK ASS IN MY");
-        GUI::Text("nyaaa", 1);
-        static char tboxt[20] = "benor!";
-        GUI::TextBox(tboxt, sizeof(tboxt));
-        //GUI::Glyph(0, 0, 256, 256, 0, 0, Render::COLOR_WHITE, 1);
-        
+        GUI::EndFrame();
         GUI::End();
-        
-        //if (isnotmouse_left) std::cout << "x: " << cur_x << " y: " << cur_y << std::endl;
-
 
 
         // this loads the models and textures into video memory

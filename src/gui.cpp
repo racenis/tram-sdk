@@ -8,6 +8,8 @@ namespace Core::GUI {
         float height;
         float cursor_x;
         float cursor_y;
+        float cursor_s;
+        float* scroll_h = nullptr;
     };
     
     const float LINE_HEIGHT = 24.0f;
@@ -19,6 +21,7 @@ namespace Core::GUI {
     
     char* current_text = nullptr;
     uint32_t current_text_len = 0;
+    char const** current_dropdown = nullptr;
     
     void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex) {
         auto& t = FrameStack.top();
@@ -51,6 +54,11 @@ namespace Core::GUI {
         Render::SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, w, h, color, tex);
     }
     
+    void GlyphNoclip(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
+        auto& t = FrameStack.top();
+        Render::SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, tex_w, tex_h, color, tex);
+    }
+    
     void Glyph(const uint32_t& symbol, const float& x, const float& y) {
         auto& f = UI::glyphinfo[0][symbol];
         Glyph(x, y, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, 0);
@@ -78,6 +86,11 @@ namespace Core::GUI {
             current_text = nullptr;
             UI::SetTextInput(current_text, current_text_len);
         } last_text = current_text;
+        
+        // reset dropdowns on click
+        static char const** last_dropdown = nullptr;
+        if (UI::ismouse_left && last_dropdown == current_dropdown) current_dropdown = nullptr;
+        last_dropdown = current_dropdown;
     }
     
     void Frame(orientation frame_orient, float offset) {
@@ -112,6 +125,82 @@ namespace Core::GUI {
         *FrameStack.AddNew() = FrameObject {((size_x - width) / 2.0f) + pos_x, ((size_y - height) / 2.0f) + pos_y, width, height, 0.0f, 0.0f};
     }
     
+    void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
+        auto& f = FrameStack.top();
+        GlyphNoclip(0.0f, 0.0f, f.width, f.height, tex_x, tex_y, tex_w, tex_h, color, tex);
+    }
+    
+    inline bool IsCursored (float x, float y, float w, float h) {
+        float n_x = FrameStack.top().offset_x + x;
+        float n_y = FrameStack.top().offset_y + y;
+        return UI::cur_x > n_x && UI::cur_y > n_y && UI::cur_x < n_x + w && UI::cur_y < n_y + h;
+    }
+    
+    void ScrollBar(float& scroll, float& height) {
+        auto& tb = UI::glyphinfo[0][BUTTON_UP];
+        auto& bb = UI::glyphinfo[0][BUTTON_DOWN];
+        auto& tr = UI::glyphinfo[0][SCROLL_TRACK];
+        auto& st = UI::glyphinfo[0][SCROLL_BAR];
+        auto& sb = UI::glyphinfo[0][SCROLL_BAR+1];
+        auto& sm = UI::glyphinfo[0][SCROLL_BAR+2];
+        auto& f = FrameStack.top();
+        float x = f.width - tb.w;
+        float y = 0.0f;
+        float h = f.height;
+        f.scroll_h = &height;
+        f.cursor_y -= scroll;
+        f.cursor_s = f.cursor_y;
+        
+        GlyphNoclip(x, y+tb.h, tb.w, h-tb.h-bb.h, tr.x, tr.y, tr.w, tr.h, Render::COLOR_WHITE, 0);
+        if (height > f.height) {
+            if (IsCursored(x, y, tb.w, tb.h)) {
+                cursor = UI::CURSOR_CLICK;
+                if (UI::wasmouse_left) {
+                    Glyph(BUTTON_UP + PRESSED, x, y);
+                } else {
+                    Glyph(BUTTON_UP + SELECTED, x, y);
+                }
+                if (UI::isnotmouse_left) scroll -= 8.0f;
+            } else {
+                Glyph(BUTTON_UP, x, y);
+            }
+            
+            if (IsCursored(x, y+h-bb.h, bb.w, bb.h)) {
+                cursor = UI::CURSOR_CLICK;
+                if (UI::wasmouse_left) {
+                    Glyph(BUTTON_DOWN + PRESSED, x, y+h-bb.h);
+                } else {
+                    Glyph(BUTTON_DOWN + SELECTED, x, y+h-bb.h);
+                }
+                if (UI::isnotmouse_left) scroll += 8.0f;
+            } else {
+                Glyph(BUTTON_DOWN, x, y+h-bb.h);
+            }
+            
+            if (IsCursored(0.0f, 0.0f, f.width, f.height) && UI::mouse_scroll) {
+                scroll += UI::mouse_scroll * -8.0f;
+            }
+            
+            if (scroll < 0.0f) scroll = 0.0f;
+            if (scroll+h > height) scroll = height - h;
+            
+            float trk_h = h-tb.h-bb.h;
+            float scr_h = trk_h * h / height;
+            if (scr_h < 8.0f) scr_h = 8.0f;
+            float scr_y = tb.h + ((trk_h - scr_h) * (scroll / (height-h)));
+            
+            float brr = scr_h - st.h - sb.h;
+            Glyph(SCROLL_BAR, x, scr_y);
+            Glyph(SCROLL_BAR+1, x, scr_y+sb.h+brr);
+            GlyphNoclip(x, scr_y+sb.h, tb.w, brr, sm.x, sm.y, sm.w, sm.h, Render::COLOR_WHITE, 0);
+        } else {
+            Glyph(BUTTON_UP + DISABLED, x, y);
+            Glyph(BUTTON_DOWN + DISABLED, x, y+h-bb.h);
+        }
+        
+        f.width -= tb.w;
+    }
+    
     void FrameBorder() {
         auto& t = FrameStack.top();
         const float s = 0.001f;
@@ -127,18 +216,14 @@ namespace Core::GUI {
     
         
     void EndFrame() {
+        auto &f = FrameStack.top();
+        if (f.scroll_h) *f.scroll_h = f.cursor_y - f.cursor_s;
         FrameStack.Remove();
     }
     
     void FrameBreakLine() {
         FrameStack.top().cursor_x = 0.0f;
         FrameStack.top().cursor_y += LINE_HEIGHT;
-    }
-    
-    inline bool IsCursored (float x, float y, float w, float h) {
-        float n_x = FrameStack.top().offset_x + x;
-        float n_y = FrameStack.top().offset_y + y;
-        return UI::cur_x > n_x && UI::cur_y > n_y && UI::cur_x < n_x + w && UI::cur_y < n_y + h;
     }
     
     bool SmallButton(const symbol& glyph) {
@@ -216,11 +301,11 @@ namespace Core::GUI {
     }
     
     // sets a string until an end pointer
-    void GlyphText(char const* text, char const* end, font_t font, float x, float y, float space) {
+    void GlyphText(char const* text, char const* end, font_t font, float x, float y, float space, const glm::vec3& color = Render::COLOR_WHITE) {
         for (char const* t = text; t != end; t++) {
             if (*t == ' ') { x += space; continue; }
             auto& f = UI::glyphinfo[font][(size_t)*t];
-            Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, font);
+            Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.w, f.h, f.x, f.y, color, font);
             x += f.w;
         }
     }
@@ -234,7 +319,7 @@ namespace Core::GUI {
         } nl = it;
     }
     
-    void Text(char const* text, font_t font) {
+    void Text(char const* text, font_t font, orientation alignment, const glm::vec3& color) {
         float x = FrameStack.top().cursor_x;
         float y = FrameStack.top().cursor_y;
         float a = FrameStack.top().width - x;
@@ -242,7 +327,21 @@ namespace Core::GUI {
         //GlyphText(text, font, x, y, 3.0f);
         float w; uint32_t sp; char const* end;
         GlyphMetrics(text, font, w, sp, end);
-        GlyphText(text, end, font, x, y, (a-w)/sp);
+        switch (alignment) {
+            case TEXT_LEFT:
+            default:
+                GlyphText(text, end, font, x, y, SPACE_WIDTH, color);
+                break;
+            case TEXT_CENTER:
+                GlyphText(text, end, font, x+((a-(w+SPACE_WIDTH*sp))/2.0f), y, SPACE_WIDTH, color);
+                break;
+            case TEXT_RIGHT:
+                GlyphText(text, end, font, x+(a-(w+SPACE_WIDTH*sp)), y, SPACE_WIDTH, color);
+                break;
+            case TEXT_JUSTIFIED:
+                GlyphText(text, end, font, x, y, (a-w)/sp, color);
+                break;
+        }
     }
     
     bool Button(char const* text) {
@@ -322,9 +421,82 @@ namespace Core::GUI {
         FrameStack.top().cursor_x += total_w;
     }
     
-    void DropdownBox(char** texts, uint32_t len) {
+    void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
+        auto& l = UI::glyphinfo[0][BUTTON_DROPDOWN + LEFT];
+        auto& m = UI::glyphinfo[0][BUTTON_DROPDOWN + MIDDLE];
+        auto& r = UI::glyphinfo[0][BUTTON_DROPDOWN + RIGHT];
+        float x = FrameStack.top().cursor_x;
+        float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.h) / SPACE_WIDTH);
+        //bool isclick = false;
         
+        float text_w; uint32_t text_sp; char const* text_end;
+        GlyphMetrics(texts[0], 1, text_w, text_sp, text_end);
+        text_w += text_sp * SPACE_WIDTH;
+        uint32_t segs = (text_w - l.w) / m.w;
+        float total_w = l.w + r.w + r.w + (m.w * segs);
         
+        uint32_t mode = 0;
+        if (IsCursored(x, y, total_w, r.h)) {
+            cursor = UI::CURSOR_CLICK;
+            
+            if (UI::ismouse_left) {
+                current_dropdown = texts;
+            }
+            
+            mode = SELECTED;
+        }
+        
+        if (current_dropdown == texts) {
+            auto& tl = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP_LEFT];
+            auto& tr = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP_RIGHT];
+            auto& bl = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM_LEFT];
+            auto& br = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM_RIGHT];
+            auto& l = UI::glyphinfo[0][BOX_PLAIN + CORNER_LEFT];
+            auto& r = UI::glyphinfo[0][BOX_PLAIN + CORNER_RIGHT];
+            auto& t = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP];
+            auto& b = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM];
+            auto& c = UI::glyphinfo[0][BOX_PLAIN + CORNER_CENTER];
+            float b_y = y + m.h;
+            float total_h = len * 16.0f;
+            float mid_w = total_w - tl.w - tr.w;
+            float mid_h = total_h - tl.h - bl.h;
+            
+            GlyphNoclip(x, b_y, tl.w, tl.h, tl.x, tl.y, tl.w, tl.h, Render::COLOR_WHITE, 0);
+            GlyphNoclip(x+total_w-tr.w, b_y, tr.w, tr.h, tr.x, tr.y, tr.w, tr.h, Render::COLOR_WHITE, 0);
+            GlyphNoclip(x, b_y+total_h-bl.h, bl.w, bl.h, bl.x, bl.y, bl.w, bl.h, Render::COLOR_WHITE, 0);
+            GlyphNoclip(x+total_w-br.w, b_y+total_h-br.h, br.w, br.h, br.x, br.y, br.w, br.h, Render::COLOR_WHITE, 0);
+            
+            GlyphNoclip(x+tl.w, b_y, mid_w, t.h, t.x, t.y, t.w, t.h, Render::COLOR_WHITE, 0);
+            GlyphNoclip(x+tl.w, b_y+tl.h+mid_h, mid_w, b.h, b.x, b.y, b.w, b.h, Render::COLOR_WHITE, 0);
+            
+            GlyphNoclip(x, b_y+tl.h, l.w, mid_h, l.x, l.y, l.w, l.h, Render::COLOR_WHITE, 0);
+            GlyphNoclip(x+tl.h+mid_w, b_y+tl.h, r.w, mid_h, r.x, r.y, r.w, r.h, Render::COLOR_WHITE, 0);
+            
+            GlyphNoclip(x+tl.w, b_y+tl.h, mid_w, mid_h, c.x, c.y, c.w, c.h, Render::COLOR_WHITE, 0);
+            
+            for (uint32_t i = 0; i < len; i++) {
+                float text_w; uint32_t text_sp; char const* text_end;
+                GlyphMetrics(texts[i], 1, text_w, text_sp, text_end);
+                float pred_sp = text_w + (text_sp * SPACE_WIDTH);
+                GlyphText(texts[i], text_end, 1, x+5.0f , b_y - 4.0f + i*16.0f, pred_sp < total_w ? SPACE_WIDTH : total_w - pred_sp / text_sp);
+                if (IsCursored(x, b_y + i*16.0f, total_w, 16.0f)) {
+                    cursor = UI::CURSOR_CLICK;
+                    if (UI::ismouse_left) selected = i;
+                }
+            }
+            
+            mode = PRESSED;
+        }
+        
+        Glyph(BUTTON_DROPDOWN + LEFT, x, y);
+        Glyph(BUTTON_DROPDOWN + RIGHT + mode, x + total_w - r.w , y);
+        for (uint32_t i = 0; i < segs+1; i++)
+            Glyph(BUTTON_DROPDOWN + MIDDLE, x + l.w + (m.w * i) , y);
+            
+        GlyphMetrics(texts[selected], 1, text_w, text_sp, text_end);
+        GlyphText(texts[selected], text_end, 1, x+5.0f , y-1.0f, 2.0f);
+        
+        FrameStack.top().cursor_x += total_w;
     }
     
     

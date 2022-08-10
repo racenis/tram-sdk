@@ -36,6 +36,7 @@ namespace Core::UI {
     bool ismouse_left = false;
     bool isnotmouse_left = false;
     bool wasmouse_left = false;
+    float mouse_scroll = 0.0f;
 
     float cur_x, cur_y;
 
@@ -52,6 +53,7 @@ namespace Core::UI {
     uint16_t keys_pressed = 0;
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
     void CharacterBackspaceCallback();
 
     std::unordered_map<int, KeyAction> KeyActionBindings = {
@@ -107,6 +109,7 @@ namespace Core::UI {
         });
 
         glfwSetKeyCallback(WINDOW, KeyCallback);
+        glfwSetScrollCallback(WINDOW, ScrollCallback);
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
@@ -239,6 +242,11 @@ namespace Core::UI {
         }
     }
     
+    void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+        mouse_scroll = yoffset;
+    }
+
+    
     void SetTextInput(char* text, uint32_t len) {
         input_text = text;
         input_text_len = len;
@@ -250,6 +258,8 @@ namespace Core::UI {
 
     void EndFrame(){
 
+        mouse_scroll = 0.0f;
+        
         glfwSwapBuffers(WINDOW);
         glfwPollEvents();
 

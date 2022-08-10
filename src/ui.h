@@ -82,6 +82,7 @@ namespace Core::UI {
     extern bool ismouse_left;
     extern bool isnotmouse_left;
     extern bool wasmouse_left;
+    extern float mouse_scroll;
 
     extern float cur_x, cur_y;
     
