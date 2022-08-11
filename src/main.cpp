@@ -41,7 +41,7 @@ int main() {
 
     // animations
     Animation mongusrun(UID("mongus"));
-    Animation floppaidle(UID("floppa_idle"));
+    Animation floppaidle(UID("turtle"));
     Animation bingusidle(UID("bingus_idle"));
     mongusrun.LoadFromDisk();
     floppaidle.LoadFromDisk();
@@ -61,10 +61,11 @@ int main() {
 
     // create the mongus model
     RenderComponent* monguser = PoolProxy<RenderComponent>::New();
+    //monguser->SetModel(UID("mongus"));
     monguser->SetModel(UID("mongus"));
     monguser->SetPose(poseList.begin());
     monguser->Init();
-    monguser->UpdateLocation(glm::vec3(0.0f, 1.0f, 0.0f));
+    monguser->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
     monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
@@ -75,6 +76,7 @@ int main() {
 
     // create the animation player for the mongus model
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
+    //monguser_armature->SetModel(UID("mongus"));
     monguser_armature->SetModel(UID("mongus"));
     monguser_armature->Init();
 
@@ -104,11 +106,12 @@ int main() {
         lit->UpdateLocation(cos(((float)tick) / 60.0f) * 100.0f, 0.01 ,sin(((float)tick) / 60.0f) * 100.0f);
         
         // this makes the mongus model bob up and down
-        monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
+        //monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
         
         //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
         //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         
+        /*
         GUI::Begin();
         GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);
         GUI::Frame(Core::GUI::FRAME_TOP, 128.0f);
@@ -187,7 +190,7 @@ int main() {
         
         GUI::EndFrame();
         GUI::End();
-
+        */
 
         // this loads the models and textures into video memory
         Async::ResourceLoader2ndStage();

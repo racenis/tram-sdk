@@ -55,6 +55,7 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
         boning.append(bone.tail_local[0])
         boning.append(bone.tail_local[2])
         boning.append(-bone.tail_local[1])
+        boning.append(-bone.matrix.to_euler().z)
         
         if len(bone.parent_recursive) > 0:
             boning.append(ob.parent.data.bones.find(bone.parent_recursive[0].name))
@@ -72,7 +73,7 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
     f = open(filepath, 'w', encoding='utf-8')
 
 
-    info = ""
+    info = "DYMDLv1 "
     info += str(len(exp['vert'])) + " "
     info += str(len(exp['polys'])) + " "
     info += str(len(ob.material_slots)) + " "
@@ -116,13 +117,14 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
     for bone in exp['bones']:
         line = ""
         line += str(bone[0]) + " "
-        line += str(bone[7]) + " "
+        line += str(bone[8]) + " "
         line += str(bone[1]) + " "
         line += str(bone[2]) + " "
         line += str(bone[3]) + " "
         line += str(bone[4]) + " "
         line += str(bone[5]) + " "
-        line += str(bone[6]) + "\n"
+        line += str(bone[6]) + " "
+        line += str(bone[7]) + "\n"
         f.write(line)
         
     for gru in ob.vertex_groups:

@@ -293,20 +293,43 @@ namespace Core {
             poseobj->pose[i] = glm::mat4(1.0f);
 
             glm::mat4 modelToBone = glm::translate(glm::mat4(1.0f), -boneInstance[i].head);
+            
+            auto& head = boneInstance[i].head;
+            auto& tail = boneInstance[i].tail;
+            auto& roll = boneInstance[i].roll;
+            
+            glm::vec3 tail_dir = glm::normalize(tail - head);
+            
+            auto rot = glm::rotation(tail_dir, glm::vec3(0.0f, 0.0f, -1.0f));
+            modelToBone = glm::toMat4(rot) * modelToBone;
+            auto rolltransf = glm::rotate(glm::mat4(1.0f), -roll, glm::vec3(0.0f, 0.0f, -1.0f));
+            modelToBone = rolltransf * modelToBone;
+
 
             glm::mat4 boneAnim = glm::mat4(1.0f);
             boneAnim = glm::toMat4(anim[i].rotation) * boneAnim;
             boneAnim = glm::translate(glm::mat4(1.0f), anim[i].location) * boneAnim;
 
-            glm::mat4 boneToModel = glm::translate(glm::mat4(1.0f), boneInstance[i].head);
-
-
-
+            glm::mat4 boneToModel = glm::inverse(modelToBone);
+            
+            //auto poz = boneToModel * boneAnim /* rolltransf*/;
+            
             if(boneInstance[i].parentIndex == (uint32_t)-1){
                 poseobj->pose[i] = boneToModel * boneAnim * modelToBone;
             } else {
                 poseobj->pose[i] = poseobj->pose[boneInstance[i].parentIndex] * boneToModel * boneAnim * modelToBone;
             }
+            
+            /*
+            glm::vec3 o(0.0f);
+            glm::vec3 x(1.0f, 0.0f, 0.0f);
+            glm::vec3 y(0.0f, 0.0f, -1.0f);
+            glm::vec3 z(0.0f, 1.0f, 0.0f);
+            o = poz * glm::vec4(o, 1.0f);
+            Render::AddLine(o, poz * glm::vec4(x, 1.0f), Render::COLOR_RED);
+            Render::AddLine(o, poz * glm::vec4(y, 1.0f), Render::COLOR_GREEN);
+            Render::AddLine(o, poz * glm::vec4(z, 1.0f), Render::COLOR_BLUE);
+            */
         }
     }    
 }

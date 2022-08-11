@@ -257,13 +257,20 @@ void Model::LoadFromDisk(){
         std::cout << "Loading: " << path << std::endl;
 
         assert(data);
+        
+        uint32_t f_version = 0;
+        char ver_name[20];
+        file >> ver_name;
+        if (strcmp(ver_name, "DYMDLv1") == 0) f_version = 1;
 
         uint32_t vcount = 0;     // number of vertices
         uint32_t tcount = 0;     // number of triangles
         uint32_t mcount = 0;     // number of materials
         uint32_t bcount = 0;     // number of bones
         uint32_t gcount = 0;     // number of vertex groups
-        file >> vcount;
+        
+        if (f_version == 1) file >> vcount;
+        else vcount = atoi(ver_name);
         file >> tcount;
         file >> mcount;
         file >> bcount;
@@ -336,6 +343,7 @@ void Model::LoadFromDisk(){
             file >> b.tail.x;
             file >> b.tail.y;
             file >> b.tail.z;
+            if (f_version == 1) file >> b.roll;
 
             b.name = UID(bonename);
             armature.push_back(b);

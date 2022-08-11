@@ -19,13 +19,13 @@ Instruction manual and other documentations [can be found here](https://racenis.
  - rename pooladdonly->stackpool
  	- rename
  	- fix compiler errors
- - fix the animations
-	- add bone roll to the dynamic model exporter
-	- add bone roll to the bone definition
-	- add bone roll to the model importer
-		- fix up old dynamic models
-	- replace the bone space matrix calculation
-	- re-export mongus and his animations and test them
+ - ~~fix the animations~~
+	- ~~add bone roll to the dynamic model exporter~~
+	- ~~add bone roll to the bone definition~~
+	- ~~add bone roll to the model importer~~
+		- ~~fix up old dynamic models~~
+	- ~~replace the bone space matrix calculation~~
+	- ~~re-export mongus and his animations and test them~~
  - ~~new immediate mode gui system~~
 	- ~~add non-msdf gui material~~
 	- ~~add frame stack~~

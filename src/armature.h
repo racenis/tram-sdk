@@ -17,6 +17,7 @@ namespace Core::Render {
         uint32_t parentIndex = -1;
         glm::vec3 head = glm::vec3(1.0f);
         glm::vec3 tail = glm::vec3(1.0f);
+        float roll = 0.0f;
     };
 
     struct Keyframe {
