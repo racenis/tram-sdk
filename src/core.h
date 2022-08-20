@@ -564,47 +564,46 @@ namespace Core {
 
 
     class WorldCell {
+    public:
         class Transition {
         public:
-            Transition(WorldCell* cell, size_t planecount);
-
-            void AddPlane(glm::vec4& nplane);
-
+            void AddPoint(glm::vec3& point);
+            void GeneratePlanes(bool disp = false);
             bool IsInside(glm::vec3& point);
-
-            WorldCell* GetInto(){return into;};
-
-            //void SetInto(WorldCell* ninto){into = ninto;};
+            void SetInto(WorldCell* new_into) { into = new_into; }
+            WorldCell* GetInto() { return into; }
         private:
             WorldCell* into;
-            glm::vec4* firstplane;
-            size_t max_planes;
-            size_t current_planes;
-            static PoolAddOnly<unsigned char> Pool;
+            std::vector<glm::vec3> points;
+            std::vector<glm::vec4> planes;
         };
     protected:
         name_t name = 0;
         bool interior = false;                  /// Is the cell an interior.
         bool interiorLights = false;            /// Does the cell have interior lighting.
         bool loaded = false;                    /// Is the cell loaded.
-        glm::vec3 origin;                       /// Where in the world the center of the cell is.
+        bool draw = false;
         std::vector<Entity*> entities;          /// List of pointers to entities that are in this cell.
-        std::vector<Transition*> trans_in;  /// List of pointers to transitions into the cell.
-        std::vector<Transition*> trans_out; /// List of pointers to transitions out of the cell into other cells.
-        static Pool<WorldCell> cellPool; // why
+        std::vector<Transition*> trans_in;      /// List of pointers to transitions into the cell.
+        std::vector<Transition*> trans_out;     /// List of pointers to transitions out of the cell into other cells.
         static std::unordered_map<uint64_t, WorldCell*> List;
         friend void LoadCells();
     public:
         WorldCell(){};
-        WorldCell(uint64_t cellName, glm::vec3 center, bool isInterior, bool hasInteriorLighting);
+        //WorldCell(uint64_t cellName, bool isInterior, bool hasInteriorLighting);
 
         bool IsLoaded() {return loaded;};
 
         bool IsInterior() {return interior;};
-        bool HasInteriorLighting() {return interior;};
-        uint64_t GetName(){return name;};
+        bool HasInteriorLighting() {return interiorLights;};
+        bool IsDrawn() {return draw;};
+        
+        
+        name_t GetName(){return name;};   
 
-        inline void GetOrigin(glm::vec3& g){g = origin;};
+        void SetName(name_t new_name);
+        
+        void SetDrawn(bool drawn) { draw = drawn; }
 
         void Load();
 
@@ -617,6 +616,8 @@ namespace Core {
         void RemoveEntity(Entity* entPtr){
             entities.erase(std::find(entities.begin(), entities.end(), entPtr));
         };
+        
+        size_t EntityCount() { return entities.size(); }
 
         // Adds a transition *into* the cell.
         void AddTransition(Transition* transPtr){

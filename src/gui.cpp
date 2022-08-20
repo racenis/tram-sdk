@@ -1,3 +1,8 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+//
+// GUI.CPP -- graphical user interface implementation.
+
 #include <gui.h>
 
 namespace Core::GUI {

@@ -13,10 +13,6 @@ class GLFWwindow;
 class GLFWcursor;
 
 namespace Core::UI {
-    class GUIScreen;
-    class GUIElement;
-
-
     enum InputState {
         STATE_DEFAULT,
         STATE_STARTUP,
@@ -78,6 +74,9 @@ namespace Core::UI {
 
     extern FontCharInfo fontinfo[4][256];
     extern GlyphCharInfo glyphinfo[4][256];
+    
+    extern bool escape_menu_open;
+    extern bool debug_menu_open;
 
     extern bool ismouse_left;
     extern bool isnotmouse_left;
@@ -94,18 +93,13 @@ namespace Core::UI {
     void Update();
     void EndFrame();
     void SetCursor(CursorType cursor);
-    void SetGUIScreen(GUIScreen* screen);
-    void SetHUDMenu(GUIScreen* screen);
-    void SetMainMenu(GUIScreen* screen);
     void SetTextInput(char* text, uint32_t len);
 
     void LoadFontInfo(const char* filename, size_t fontIndex);
     void LoadGlyphInfo(const char* filename, size_t fontIndex);
 
 
-
-    // TODO: factor the rest of this out to gui.h
-    class GUIScreen;
+    /*class GUIScreen;
 
     class GUIElement {
     public:
@@ -221,7 +215,7 @@ namespace Core::UI {
         const char* const text;
         glm::vec3 pos;
         glm::vec3 screen_pos;
-    };
+    };*/
 
 }
 

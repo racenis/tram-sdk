@@ -7,20 +7,32 @@
 #include <fstream>
 #include <cstring>
 
+#include <render.h>
+
 using namespace Core;
-
-Pool<WorldCell> WorldCell::cellPool("worldcellpool", 20, false);
 std::unordered_map<uint64_t, WorldCell*> WorldCell::List;
-PoolAddOnly<unsigned char> WorldCell::Transition::Pool("transition pool", 2000);
+//PoolAddOnly<unsigned char> WorldCell::Transition::Pool("transition pool", 2000);
+template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
+template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
 
-WorldCell::WorldCell(uint64_t cellName, glm::vec3 center, bool isInterior, bool hasInteriorLighting){
-    name = cellName;
-    origin = center;
-    interior = isInterior;
-    interiorLights = hasInteriorLighting;
+
+//WorldCell::WorldCell(uint64_t cellName, bool isInterior, bool hasInteriorLighting){
+    //name = cellName;
+    //interior = isInterior;
+    //interiorLights = hasInteriorLighting;
+    //List[name] = this;
+    //std::cout << "Added cell: " << ReverseUID(name) << std::endl;
+//};
+
+void WorldCell::SetName(name_t new_name) {
+    if (name) {
+        abort();
+        // TODO: add code to remove the cell from worldcell list
+    }
+    
+    name = new_name;
     List[name] = this;
-    std::cout << "Added cell: " << ReverseUID(name) << std::endl;
-};
+}
 
 WorldCell* WorldCell::Find(name_t name){
     std::unordered_map<uint64_t, WorldCell*>::iterator ff = WorldCell::List.find(name);
@@ -33,6 +45,7 @@ WorldCell* WorldCell::Find(name_t name){
 }
 
 WorldCell* WorldCell::Find (glm::vec3& point){
+    /*
     WorldCell* ptr = cellPool.begin();
     for(; ptr < cellPool.end(); ptr++){
         if(*((uint64_t*) ptr) == 0) continue;
@@ -45,7 +58,7 @@ WorldCell* WorldCell::Find (glm::vec3& point){
         if(*((uint64_t*) ptr) == 0) continue;
         if(ptr->IsInterior()) continue;
         if(ptr->IsInside(point)) return ptr;
-    }
+    }*/
 
     return nullptr;
 }
@@ -98,7 +111,7 @@ void WorldCell::AddEntity(Entity* entPtr){
 
     entPtr->Init();
 
-    if (!(entPtr->cell)) entPtr->location += origin;
+   // if (!(entPtr->cell)) entPtr->location += origin;
     entPtr->cell = this;
 
     if(loaded && !entPtr->isloaded && entPtr->auto_load){
@@ -111,27 +124,86 @@ void WorldCell::AddEntity(Entity* entPtr){
     }
 }
 
-WorldCell::Transition::Transition(WorldCell* cell, size_t planecount){
+/*WorldCell::Transition::Transition(WorldCell* cell){
     into = cell;
-    max_planes = planecount;
-    current_planes = 0;
-    firstplane = (glm::vec4*) Pool.AddNew(planecount * sizeof(glm::vec4));
-}
+    //max_planes = planecount;
+    //current_planes = 0;
+    //firstplane = (glm::vec4*) Pool.AddNew(planecount * sizeof(glm::vec4));
+}*/
 
-void WorldCell::Transition::AddPlane(glm::vec4& nplane){
-    if(current_planes == max_planes) return;
-    firstplane[current_planes] = nplane;
-    current_planes++;
+void WorldCell::Transition::AddPoint(glm::vec3& point){
+    points.push_back(point);
 }
 
 bool WorldCell::Transition::IsInside(glm::vec3& point){
-    glm::vec3 pp;
-    into->GetOrigin(pp);
-
-    pp = point - pp;
-
-    for(size_t i = 0; i < current_planes; i++)
-        if(glm::dot(firstplane[i], glm::vec4(pp, 1.0f)) < 0.0f) return false;
-
+    for(size_t i = 0; i < planes.size(); i++)
+        if(glm::dot(planes[i], glm::vec4(point, 1.0f)) < 0.0f) return false;    
     return true;
 }
+
+void WorldCell::Transition::GeneratePlanes(bool disp) {
+        assert(points.size() > 3);
+        
+        planes.clear();
+        
+        for (size_t i = 0; i < points.size(); i++) {
+            for (size_t j = i+1; j < points.size(); j++) {
+                for (size_t k = j+1; k < points.size(); k++) {
+                    auto& A = points[i];
+                    auto& B = points[j];
+                    auto& C = points[k];
+                    auto AB = B - A;
+                    auto AC = C - A;
+                    auto cross = glm::cross(AB, AC);
+                    auto d = -(cross.x*A.x + cross.y*A.y + cross.z*A.z);
+                    
+                    glm::vec4 plane = glm::vec4(cross, d);
+                    
+                    for (size_t it = 0; it < points.size(); it++) {
+                        if(i == it || j == it || k == it) continue;
+                        if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
+                            plane *= -1.0f;
+                            goto tryagain;
+                        }
+                    }
+                    
+                    okay:
+                    
+                    if (disp) {
+                        Render::AddLine(A, B, Render::COLOR_WHITE);
+                        Render::AddLine(A, C, Render::COLOR_WHITE);
+                        Render::AddLine(B, C, Render::COLOR_WHITE);
+                        
+                        Render::AddLine(A, A+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                        Render::AddLine(B, B+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                        Render::AddLine(C, C+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    }
+                    
+                    planes.push_back(plane);
+                    
+                    yeet:
+                    continue;
+                    
+                    tryagain:
+                    
+                    for (size_t it = 0; it < points.size(); it++) {
+                        if(i == it || j == it || k == it) continue;
+                        if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
+                            goto yeet;
+                        }
+                    }
+                    
+                    goto okay;
+                }
+            }
+        }
+        
+        std::sort(planes.begin(), planes.end(), [](const glm::vec4& a, const glm::vec4& b){ 
+            if (a.x != b.x) return a.x < b.x;
+            if (a.y != b.y) return a.y < b.y;
+            if (a.z != b.z) return a.z < b.z;
+            return a.w < b.w;});
+        planes.erase(unique( planes.begin(), planes.end() ), planes.end());
+        
+        
+    }

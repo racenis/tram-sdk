@@ -3,6 +3,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/menu.cpp"/>
     <File Name="src/gui.h"/>
     <File Name="src/gui.cpp"/>
     <File Name="src/render_opengl.cpp" ExcludeProjConfig="Debug;"/>

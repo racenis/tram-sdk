@@ -24,9 +24,8 @@ namespace Core::UI {
 
     GLFWcursor* cursors[4] = {nullptr};
 
-    GUIScreen* current_screen = nullptr;
-    GUIScreen* menu_screen = nullptr;
-    GUIScreen* hud_screen = nullptr;
+    bool escape_menu_open = false;
+    bool debug_menu_open = false;
 
     // TODO: fix this
     FontCharInfo fontinfo[4][256] = {0.0f};
@@ -55,6 +54,8 @@ namespace Core::UI {
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
     void CharacterBackspaceCallback();
+    
+    void ToggleMenu() { INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_MENU_OPEN : STATE_DEFAULT; }
 
     std::unordered_map<int, KeyAction> KeyActionBindings = {
         {GLFW_KEY_W, KeyAction {.type = KeyAction::KEYBOARD_KEY, .action = KEY_FORWARD}},
@@ -68,7 +69,8 @@ namespace Core::UI {
         {GLFW_KEY_F5, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
         {GLFW_KEY_F4, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ DRAW_PHYSICS_DEBUG = !DRAW_PHYSICS_DEBUG; }}},
         {GLFW_KEY_F9, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_FLYING : STATE_DEFAULT; }}},
-        {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_MENU_OPEN : STATE_DEFAULT; }}},
+        {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ ToggleMenu(); escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : escape_menu_open = true; }}},
+        {GLFW_KEY_GRAVE_ACCENT, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ ToggleMenu(); escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : debug_menu_open = true; }}},
         {GLFW_KEY_BACKSPACE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ CharacterBackspaceCallback(); }}}
     };
 
@@ -271,20 +273,6 @@ namespace Core::UI {
         Stats::Start(Stats::FRAME);
 
     }
-
-    void SetGUIScreen(GUIScreen* screen){
-        current_screen = screen;
-        if (current_screen && current_screen->is_menu) {
-            SetCursor(CURSOR_DEFAULT);
-            INPUT_STATE = STATE_MENU_OPEN;
-        } else {
-            SetCursor(CURSOR_NONE);
-            INPUT_STATE = STATE_DEFAULT;
-        }
-    }
-
-    void SetMainMenu(GUIScreen* screen){ menu_screen = screen; }
-    void SetHUDMenu(GUIScreen* screen){ hud_screen = screen; }
 
     void SetCursor(CursorType cursor){
         if (cursor == CURSOR_NONE) {
