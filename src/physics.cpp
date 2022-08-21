@@ -675,6 +675,7 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         return rigidBody->getLinearVelocity().length();
     }
     void PhysicsComponent::SetPath(){
+        /*
         btTransform trans = rigidBody->getWorldTransform();
         btVector3 location = trans.getOrigin();
 
@@ -703,10 +704,11 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
 
         action = new PathAction(this);
         dynamicsWorld->addAction(action);
-
+*/
 
     }
     void PhysicsComponent::UpdatePath(){
+        /*
         if(prev_path != nullptr && next_path != nullptr){
             btTransform trans = rigidBody->getWorldTransform();
             btVector3 location = trans.getOrigin();
@@ -766,10 +768,11 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
                 Core::Render::AddLineMarker(p_start, Render::COLOR_RED);
                 Core::Render::AddLineMarker(p_found, Render::COLOR_GREEN);
             }
-        }
+        }*/
     }
 
     void PhysicsComponent::UpdatePathRotate(const glm::vec3& loc){
+        /*
         btTransform trans;
         trans = rigidBody->getWorldTransform();
 
@@ -796,6 +799,7 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         pathConstraint->setLinearLowerLimit(btVector3(0.0f, 0.0f, 1.0f));
         pathConstraint->setLinearUpperLimit(btVector3(0.0f, 0.0f, 0.0f));
         dynamicsWorld->addConstraint(pathConstraint);
+         * */
     }
 
     void PhysicsComponent::Glue(PhysicsComponent* comp){

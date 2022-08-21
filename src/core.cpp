@@ -236,7 +236,8 @@ namespace Core {
     }
 
     void LoadPath(const char* filename){
-        std::ifstream file;
+        abort();
+/*        std::ifstream file;
         size_t path_verts;
         size_t path_edges;
         file.open(filename);
@@ -273,8 +274,81 @@ namespace Core {
             }
         }
 
-        file.close();
+        file.close();*/
     }
+    
+    
+    
+    void PathNode::CalculateLenghts(){
+        float c = 0.1f;
+        glm::vec3 prev_p;
+        glm::vec3 this_p;
+        ProducePoint(prev_p, 0.0f);
+        for (int i = 0; i < 10; i++) {
+            ProducePoint(this_p, c);
+            lens[i] = glm::distance(prev_p, this_p);
+            prev_p = this_p;
+            c += 0.1f;
+        }
+    }
+
+    void PathNode::ProducePoint(glm::vec3& p, const float& t){
+        glm::vec3 l1 = glm::mix(p1, p2, t);
+        glm::vec3 l2 = glm::mix(p3, p4, t);
+        p = glm::mix(l1, l2, t);
+    }
+
+    void PathNode::Render(){
+        float c = 0.1f;
+        glm::vec3 prev_p;
+        glm::vec3 this_p;
+        ProducePoint(prev_p, 0.0f);
+        for (int i = 0; i < 10; i++) {
+            ProducePoint(this_p, c);
+            Render::AddLine(prev_p, this_p, Render::COLOR_CYAN);
+            prev_p = this_p;
+            c += 0.1f;
+        }
+        Render::AddLineMarker(p1, Render::COLOR_BLUE);
+        Render::AddLineMarker(p2, Render::COLOR_BLUE);
+        Render::AddLineMarker(p3, Render::COLOR_BLUE);
+        Render::AddLineMarker(p4, Render::COLOR_BLUE);
+    }
+
+
+
+    void PathNode::Follower::GoForth(float ammount){
+        //int index = std::floor(t*10.0f);
+        //t += (ammount/current_node->lens[index]) * 0.1f;
+        
+        glm::vec3 v1;
+        glm::vec3 v2;
+        current_node->ProducePoint(v1, t);
+        current_node->ProducePoint(v2, t+0.01f);
+        
+        t += (ammount/glm::distance(v1, v2)) * 0.01f;
+        if (t >= 1.0f) {
+            current_node = current_node->next;
+            t = 0.0f;
+        }
+    }
+
+    void PathNode::Follower::Render(){
+        glm::vec3 pp;
+        current_node->ProducePoint(pp, t);
+        Render::AddLineMarker(pp, Render::COLOR_GREEN);
+    }
+
+    void PathNode::Follower::GetPosition(glm::vec3& pos){
+        current_node->ProducePoint(pos, t);
+    }
+    
+    
+    
+    
+    
+    
+    
 
     void Init(){
         // set the 0th string to 'none'

@@ -44,8 +44,8 @@ WorldCell* WorldCell::Find(name_t name){
     }
 }
 
-WorldCell* WorldCell::Find (glm::vec3& point){
-    /*
+WorldCell* WorldCell::Find (const glm::vec3& point){
+    auto& cellPool = PoolProxy<WorldCell>::GetPool();
     WorldCell* ptr = cellPool.begin();
     for(; ptr < cellPool.end(); ptr++){
         if(*((uint64_t*) ptr) == 0) continue;
@@ -58,7 +58,7 @@ WorldCell* WorldCell::Find (glm::vec3& point){
         if(*((uint64_t*) ptr) == 0) continue;
         if(ptr->IsInterior()) continue;
         if(ptr->IsInside(point)) return ptr;
-    }*/
+    }
 
     return nullptr;
 }
@@ -131,11 +131,11 @@ void WorldCell::AddEntity(Entity* entPtr){
     //firstplane = (glm::vec4*) Pool.AddNew(planecount * sizeof(glm::vec4));
 }*/
 
-void WorldCell::Transition::AddPoint(glm::vec3& point){
+void WorldCell::Transition::AddPoint(const glm::vec3& point){
     points.push_back(point);
 }
 
-bool WorldCell::Transition::IsInside(glm::vec3& point){
+bool WorldCell::Transition::IsInside(const glm::vec3& point){
     for(size_t i = 0; i < planes.size(); i++)
         if(glm::dot(planes[i], glm::vec4(point, 1.0f)) < 0.0f) return false;    
     return true;
@@ -207,3 +207,11 @@ void WorldCell::Transition::GeneratePlanes(bool disp) {
         
         
     }
+    
+    void WorldCell::Draw(){
+        for (auto& it : trans_in) it->GeneratePlanes(true);
+    }
+    
+    void WorldCell::Loader::LoadCells() {
+        
+        }

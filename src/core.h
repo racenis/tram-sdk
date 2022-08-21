@@ -378,13 +378,28 @@ namespace Core {
 
 
     struct PathNode {
-        uint32_t id;
-        glm::vec3 coords;
-        PathNode* next[3] = {nullptr};
-        char type;
+        PathNode* next;
+        PathNode* prev;
+        glm::vec3 p1;
+        glm::vec3 p2;
+        glm::vec3 p3;
+        glm::vec3 p4;
+        float lens[10];
+        
+        void ProducePoint(glm::vec3& p, const float& t);
+        void CalculateLenghts();
+        void Render();
+        
+        struct Follower {
+            PathNode* current_node;
+            float t = 0.0f;
+            
+            void GoForth(float ammount);
+            void Render();
+            void GetPosition(glm::vec3& pos);
+        };
     };
     
-    extern Pool<PathNode> pathNodePool;
 
 
     //fwd decl
@@ -567,15 +582,24 @@ namespace Core {
     public:
         class Transition {
         public:
-            void AddPoint(glm::vec3& point);
+            void AddPoint(const glm::vec3& point);
             void GeneratePlanes(bool disp = false);
-            bool IsInside(glm::vec3& point);
+            bool IsInside(const glm::vec3& point);
             void SetInto(WorldCell* new_into) { into = new_into; }
             WorldCell* GetInto() { return into; }
         private:
             WorldCell* into;
             std::vector<glm::vec3> points;
             std::vector<glm::vec4> planes;
+        };
+        class Loader {
+        public:
+            void SetLocation(const glm::vec3& new_location) { current_cell = Find(new_location); }
+            void UpdateLocation(const glm::vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) current_cell = n_trans; }
+            static void LoadCells();
+        private:
+            glm::vec3 location;
+            WorldCell* current_cell;
         };
     protected:
         name_t name = 0;
@@ -610,6 +634,8 @@ namespace Core {
         void Unload();
 
         void LoadFromDisk();
+        
+        void Draw();
 
         void AddEntity(Entity* entPtr);
 
@@ -622,6 +648,7 @@ namespace Core {
         // Adds a transition *into* the cell.
         void AddTransition(Transition* transPtr){
             trans_in.push_back(transPtr);
+            transPtr->SetInto(this);
         };
 
         // Adds a transition *from* the cell.
@@ -642,14 +669,14 @@ namespace Core {
         }
 
         // Checks if a point is inside the cell.
-        bool IsInside(glm::vec3& point){
+        bool IsInside(const glm::vec3& point){
             for(size_t i = 0; i < trans_in.size(); i++){
                 if(trans_in[i]->IsInside(point)) return true;
             }
             return false;
         }
 
-        static WorldCell* Find (glm::vec3& point);
+        static WorldCell* Find (const glm::vec3& point);
         static WorldCell* Find (name_t name);
     };
 

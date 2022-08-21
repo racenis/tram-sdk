@@ -332,27 +332,6 @@ namespace Core::Render {
 
         }
 
-
-        // TODO: move this into some kind of a path debug drawer
-        if(DRAW_PATH_DEBUG){
-            PathNode* pp = pathNodePool.begin();
-            while (pp < pathNodePool.end()){
-                char buffer[100];
-                sprintf(buffer, "ID: %d", pp->id);
-                AddLine(pp->coords, pp->coords + glm::vec3(0.0f, 1.0f, 0.0f), pp->type == 'l' ? COLOR_BLUE : pp->type == 'r' ? COLOR_RED : COLOR_PINK);
-                UI::SetDebugText(buffer, pp->coords, COLOR_GREEN);
-                for (size_t i = 0; i < 3; i++){
-                    if(pp->next[i] != nullptr){
-                        glm::vec3 f = pp->coords;
-                        glm::vec3 u = pp->next[i]->coords;
-                        AddLine(f, u, COLOR_YELLOW);
-                    }
-                }
-                pp++;
-            }
-        }
-
-
         // set opengl to draw everything on top and as a line
         glDisable(GL_DEPTH_TEST);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

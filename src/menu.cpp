@@ -7,22 +7,51 @@
 
 namespace Core::GUI {
     void DebugMenu() {
+        static bool debugdraw_lines = false;
+        
+        if (debugdraw_lines) for (size_t i = 0; i < PoolProxy<WorldCell>::GetPool().GetSize(); i++) if (*((uint64_t*)(PoolProxy<WorldCell>::GetPool().begin() + i))!=0) if( (PoolProxy<WorldCell>::GetPool().begin() + i)->IsDrawn())  (PoolProxy<WorldCell>::GetPool().begin() + i)->Draw();
+            
+        
+        
+        
         if (!UI::debug_menu_open) return;
         
         static bool worldcell_menu_open = false;
+        static bool debugdraw_menu_open = false;
         
         Frame(FRAME_TOP, 30);
         if (Button("WorldCell")) worldcell_menu_open = true;
+        if (Button("Debug Drawing")) debugdraw_menu_open = true;
         EndFrame();
         
         
-        
-        
-        
-        if(worldcell_menu_open) {
+        if (debugdraw_menu_open) {
             Frame(FRAME_CENTER, 320, 240);
             GUI::FillFrame(104.0f, 88.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
-            Frame(FRAME_RIGHT, 20); if(SmallButton(BUTTON_CROSS)) worldcell_menu_open = false; EndFrame();
+            Frame(FRAME_RIGHT, 20); if (SmallButton(BUTTON_CROSS)) debugdraw_menu_open = false; EndFrame();
+            Frame(FRAME_RIGHT, 320-4);
+            Text("Debug Drawing", 2); FrameBreakLine();
+            
+            Frame(FRAME_BOTTOM, 240-50);
+            Frame(FRAME_LEFT, 80);
+            Text("Physics:", 1); FrameBreakLine();
+            Text("Transitions:", 1); FrameBreakLine();
+            EndFrame();
+            
+            Frame(FRAME_RIGHT, 320-100);
+            CheckBox(Render::DRAW_PHYSICS_DEBUG); FrameBreakLine();
+            CheckBox(debugdraw_lines); FrameBreakLine();
+            EndFrame();
+            EndFrame();
+            
+            EndFrame();
+            EndFrame();
+        }
+        
+        if (worldcell_menu_open) {
+            Frame(FRAME_CENTER, 320, 240);
+            GUI::FillFrame(104.0f, 88.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
+            Frame(FRAME_RIGHT, 20); if (SmallButton(BUTTON_CROSS)) worldcell_menu_open = false; EndFrame();
             Frame(FRAME_RIGHT, 320-4);
             Text("WorldCell Inspector", 2); FrameBreakLine();
             static std::vector<char*> worldcell_names;
