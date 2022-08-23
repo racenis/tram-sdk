@@ -2,7 +2,8 @@
 #include <entitycomponents.h>
 
 // too too
-#include <glad.c>
+//#include <glad.c>
+#include <glad_gles3.c>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -334,7 +335,7 @@ namespace Core::Render {
 
         // set opengl to draw everything on top and as a line
         glDisable(GL_DEPTH_TEST);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glUseProgram(ShaderProgram::Find(Model::LINE_VERTEX, Material::FLAT_COLOR)->compiled_shader);
         
@@ -345,7 +346,7 @@ namespace Core::Render {
         lineBuffer.Draw();
 
         // back to drawing triangles
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         // set special text shader
         glUseProgram(ShaderProgram::Find(Model::TEXT_VERTEX, Material::TEXTURE_MSDF)->compiled_shader);
 

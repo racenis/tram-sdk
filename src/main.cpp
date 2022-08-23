@@ -9,7 +9,7 @@
 
 #include <gui.h>
 
-#include <chrono>
+#include <glfw3.h>
 
 //#include <filesystem>
 
@@ -137,6 +137,7 @@ int main() {
 
     
     while(!SHOULD_CLOSE){
+        //auto time = glfwGetTime();
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
@@ -182,8 +183,12 @@ int main() {
 
         Render::UpdateArmatures();
         Render::Render();
-        
+
         UI::EndFrame();
+        
+        
+       // auto time2 = glfwGetTime();
+        //std::cout << 1.0f/(time2-time) << " fps" << std::endl;
     }
 
     Async::Yeet();
