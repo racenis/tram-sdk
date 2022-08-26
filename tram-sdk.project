@@ -4,6 +4,7 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <VirtualDirectory Name="components">
+      <File Name="src/components/physicscomponent.h"/>
       <File Name="src/components/controllercomponent.cpp"/>
       <File Name="src/components/playercomponent.h"/>
       <File Name="src/components/controllercomponent.h"/>

@@ -39,7 +39,7 @@ namespace Core::GUI {
             EndFrame();
             
             Frame(FRAME_RIGHT, 320-100);
-            CheckBox(Render::DRAW_PHYSICS_DEBUG); FrameBreakLine();
+            CheckBox(DRAW_PHYSICS_DEBUG); FrameBreakLine();
             CheckBox(debugdraw_lines); FrameBreakLine();
             EndFrame();
             EndFrame();

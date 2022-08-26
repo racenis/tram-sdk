@@ -6,7 +6,7 @@
 #include <entities/player.h>
 #include <components/controllercomponent.h>
 #include <components/playercomponent.h>
-#include <physics.h>
+#include <components/physicscomponent.h>
 
 namespace Core {
 Player::Player(){

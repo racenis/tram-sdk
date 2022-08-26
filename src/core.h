@@ -301,6 +301,9 @@ namespace Core {
 
     extern bool SHOULD_CLOSE;
     extern float FRAME_TIME;
+    
+    extern bool DRAW_PHYSICS_DEBUG;
+    extern bool DRAW_PATH_DEBUG;
 
     // forward declarations
 

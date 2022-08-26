@@ -13,6 +13,7 @@
 #include <armature.h>
 
 #include <physics.h>
+#include <components/physicscomponent.h>
 
 #include <fstream>
 
@@ -42,7 +43,7 @@ CollisionModel* CollisionModel::Find(uint64_t modelName){
 void StepPhysics(float time){
     Stats::Start(Stats::PHYSICS);
     dynamicsWorld->stepSimulation(time, 1);
-    //if (Render::DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
+    if (DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
     Stats::Stop(Stats::PHYSICS);
 }
 

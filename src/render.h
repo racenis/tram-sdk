@@ -307,9 +307,6 @@ namespace Core::Render {
     extern Material GLYPH_TEXT_BOLD;
     extern Material GLYPH_HEADERS;
 
-    extern bool DRAW_PHYSICS_DEBUG;
-    extern bool DRAW_PATH_DEBUG;
-
     extern float FRAME_LIMIT;
 
     void Init();

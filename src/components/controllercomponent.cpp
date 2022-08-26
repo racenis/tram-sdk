@@ -4,7 +4,7 @@
 // CONTROLLERCOMPONENT.CPP -- Controller component implementation
 
 #include <components/controllercomponent.h>
-#include <physics.h>
+#include <components/physicscomponent.h>
 
 namespace Core {
     void ControllerComponent::Move(glm::vec3& direction){

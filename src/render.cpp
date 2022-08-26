@@ -34,9 +34,6 @@ namespace Core::Render {
     Material GLYPH_TEXT_BOLD;
     Material GLYPH_HEADERS;
 
-    bool DRAW_PHYSICS_DEBUG = false;
-    bool DRAW_PATH_DEBUG = false;
-
     float FRAME_LIMIT = 60.0f;
 
     float time_of_day = 0.8f;

@@ -5,7 +5,7 @@
 
 #include <entities/crate.h>
 #include <components/rendercomponent.h>
-#include <physics.h>
+#include <components/physicscomponent.h>
 
 namespace Core {
     Crate::Crate(std::string_view& str){

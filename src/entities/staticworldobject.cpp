@@ -5,7 +5,7 @@
 
 #include <entities/staticworldobject.h>
 #include <components/rendercomponent.h>
-#include <physics.h>
+#include <components/physicscomponent.h>
 
 namespace Core {
     using namespace Core::Physics;
