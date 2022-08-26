@@ -4,11 +4,13 @@
 // PHYSICS.CPP
 
 #include <btBulletDynamicsCommon.h>
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+//#include <glm/glm.hpp>
+//#include <glm/gtx/quaternion.hpp>
 
 #include <core.h>
-#include <entitycomponents.h>
+
+#include <components/armaturecomponent.h>
+#include <armature.h>
 
 #include <physics.h>
 
@@ -40,7 +42,7 @@ CollisionModel* CollisionModel::Find(uint64_t modelName){
 void StepPhysics(float time){
     Stats::Start(Stats::PHYSICS);
     dynamicsWorld->stepSimulation(time, 1);
-    if (Render::DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
+    //if (Render::DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
     Stats::Stop(Stats::PHYSICS);
 }
 

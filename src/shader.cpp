@@ -201,6 +201,20 @@ namespace Core::Render {
 
     /// Compiles shaders.
     void CompileShaders(){
+        auto normal_static_vertex =          new VertexShader("shaders/normal_static.vert", Model::STATIC_VERTEX);
+        auto normal_static_fragment =        new FragmentShader("shaders/normal_static.frag", Material::TEXTURE);
+        auto normal_static_fragment_alpha =  new FragmentShader("shaders/normal_static_alpha.frag", Material::TEXTURE_ALPHA);
+        auto normal_dynamic_vertex =         new VertexShader("shaders/normal_dynamic.vert", Model::DYNAMIC_VERTEX);
+        auto normal_dynamic_fragment =       new FragmentShader("shaders/normal_dynamic.frag", Material::TEXTURE);
+        auto normal_water_fragment =         new FragmentShader("shaders/normal_water.frag", Material::TEXTURE_WATER);
+        auto line_vertex =                   new VertexShader("shaders/line.vert", Model::LINE_VERTEX);
+        auto line_fragment =                 new FragmentShader("shaders/line.frag", Material::FLAT_COLOR);
+        auto text_vertex =                   new VertexShader("shaders/text.vert", Model::TEXT_VERTEX);
+        auto text_fragment =                 new FragmentShader("shaders/text.frag", Material::TEXTURE_MSDF);
+        auto glyph_vertex =                  new VertexShader("shaders/glyph.vert", Model::GLYPH_VERTEX);
+        auto glyph_fragment =                new FragmentShader("shaders/glyph.frag", Material::TEXTURE_GLYPH);
+        
+        /*
         auto normal_static_vertex =          new VertexShader("shaders/gles3/normal_static.vert", Model::STATIC_VERTEX);
         auto normal_static_fragment =        new FragmentShader("shaders/gles3/normal_static.frag", Material::TEXTURE);
         auto normal_static_fragment_alpha =  new FragmentShader("shaders/gles3/normal_static_alpha.frag", Material::TEXTURE_ALPHA);
@@ -213,6 +227,7 @@ namespace Core::Render {
         auto text_fragment =                 new FragmentShader("shaders/gles3/text.frag", Material::TEXTURE_MSDF);
         auto glyph_vertex =                  new VertexShader("shaders/gles3/glyph.vert", Model::GLYPH_VERTEX);
         auto glyph_fragment =                new FragmentShader("shaders/gles3/glyph.frag", Material::TEXTURE_GLYPH);
+        */
         
         ShaderProgram::Add(ShaderProgram(normal_static_vertex, normal_static_fragment));
         ShaderProgram::Add(ShaderProgram(normal_static_vertex, normal_static_fragment_alpha));

@@ -3,6 +3,17 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <VirtualDirectory Name="components">
+      <File Name="src/components/controllercomponent.cpp"/>
+      <File Name="src/components/playercomponent.h"/>
+      <File Name="src/components/controllercomponent.h"/>
+      <File Name="src/components/templatecomponent.h"/>
+      <File Name="src/components/lightcomponent.h"/>
+      <File Name="src/components/armaturecomponent.h"/>
+      <File Name="src/components/rendercomponent.h"/>
+      <File Name="src/components/entitycomponents.h"/>
+      <File Name="src/components/entitycomponents.cpp"/>
+    </VirtualDirectory>
     <File Name="src/menu.cpp"/>
     <File Name="src/gui.h"/>
     <File Name="src/gui.cpp"/>
@@ -15,6 +26,10 @@
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
+      <File Name="src/entities/crate.h"/>
+      <File Name="src/entities/lamp.h"/>
+      <File Name="src/entities/player.h"/>
+      <File Name="src/entities/staticworldobject.h"/>
       <File Name="src/entities/tram.cpp"/>
       <File Name="src/entities/staticworldobject.cpp"/>
       <File Name="src/entities/player.cpp"/>
@@ -35,8 +50,6 @@
     <File Name="src/net.h"/>
     <File Name="src/net.cpp"/>
     <File Name="src/main.cpp"/>
-    <File Name="src/entitycomponents.h"/>
-    <File Name="src/entitycomponents.cpp"/>
     <File Name="src/entity.cpp"/>
     <File Name="src/entities.h"/>
     <File Name="src/core.h"/>

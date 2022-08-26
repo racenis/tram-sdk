@@ -11,8 +11,8 @@
 #include <fstream>
 #include <cstring>
 
-//#include <glad.h>
-#include <glad_gles3.h>
+#include <glad.h>
+//#include <glad_gles3.h>
 #include <glfw3.h>
 
 using namespace Core::Render;
@@ -78,13 +78,18 @@ namespace Core::UI {
     void Init(){
         // start up glfw
         glfwInit();
-        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        
+        // this is for opengl 4.0
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-        //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        
+        // this is for opengl es 3.0
+        //glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
         glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
 
         // make a window & context
@@ -99,8 +104,8 @@ namespace Core::UI {
 
         // bind context to this thread
         glfwMakeContextCurrent(WINDOW);
-        //if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-        if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)){
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+        //if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)){
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();
         }

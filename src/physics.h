@@ -8,6 +8,8 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
+#include <core.h>
+
 class btCollisionShape;
 class btMotionState;
 class btRigidBody;
@@ -16,6 +18,11 @@ class btPoint2PointConstraint;
 class btHingeConstraint;
 class btActionInterface;
 class btRaycastVehicle;
+
+namespace Core {
+    class PhysicsComponent;
+    class ArmatureComponent;    
+}
 
 namespace Core::Physics {
     void InitPhysics();

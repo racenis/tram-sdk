@@ -1,34 +1,12 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 //
-// ENTITYCOMPONENTS.CPP -- Random trash related to entity components. All file should be yeeted.
+// CONTROLLERCOMPONENT.CPP -- Controller component implementation
 
-#include <core.h>
-#include <entitycomponents.h>
-
+#include <components/controllercomponent.h>
 #include <physics.h>
 
 namespace Core {
-    template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("render component pool", 250, false);
-    template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("light component pool", 250, false);
-
-    template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("player component pool", 5, false);
-    template <> Pool<ControllerComponent> PoolProxy<ControllerComponent>::pool("controller component pool", 25, false);
-
-
-
-    void Stats::Update(){
-        //Stats::renderobjects = Render::renderList.GetSize();
-        //Stats::animationcomponents = armatureCompPool.GetSize();
-        //Stats::physicscomponents = physicsCompPool.GetSize();
-    }
-
-
-
-
-
-
-
     void ControllerComponent::Move(glm::vec3& direction){
         if(physcomp == nullptr) return;
         glm::vec3 vel = direction * 7.0f;
@@ -52,11 +30,6 @@ namespace Core {
             glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
             glm::quat objrotation;
             physcomp->GetParent()->GetRotation(objrotation);
-
-            /*glm::vec3 aaa(1.0f, 1.0f, 1.0f);
-            aaa = objrotation*aaa;
-            aaa.y += 0.1f;
-            physcomp->GetParent()->SetRotation(aaa.x, aaa.y, aaa.z);*/
 
             fwd = objrotation * fwd;
 
@@ -121,6 +94,6 @@ namespace Core {
 
             Message::Send(msg);
         }
-
     }
 }
+

@@ -5,7 +5,7 @@
 // Implementation of animation loading, armature component.
 
 #include <armature.h>
-#include <entitycomponents.h>
+#include <components/armaturecomponent.h>
 
 #include <fstream>
 

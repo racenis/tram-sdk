@@ -10,7 +10,7 @@
 #include <cstring>
 #include <fstream>
 
-#include <glfw3.h>
+//#include <glfw3.h>
 
 
 
@@ -118,11 +118,12 @@ namespace Core {
         uint64_t physicscomponents = 0;
         
         void Start(Stats::Type stat){
-            start_time[stat] = glfwGetTime();
+            // TODO: add a wrapper for glfwGetTime();
+            //start_time[stat] = glfwGetTime();
         }
 
         void Stop(Stats::Type stat){
-            total_time[stat] += glfwGetTime() - start_time[stat];
+            //total_time[stat] += glfwGetTime() - start_time[stat];
         }
 
         void Reset(){
@@ -134,7 +135,7 @@ namespace Core {
 
             frame_passed++;
 
-            uint64_t this_frame = (uint64_t)glfwGetTime();
+            uint64_t this_frame = 0; //(uint64_t)glfwGetTime();
             if(this_frame != full_frame){
                 full_frame = this_frame;
 

@@ -1,8 +1,6 @@
 #include <iostream>
 
 #include <core.h>
-#include <entitycomponents.h>
-#include <entities.h>
 #include <async.h>
 #include <ui.h>
 #include <physics.h>
@@ -10,6 +8,15 @@
 #include <gui.h>
 
 #include <glfw3.h>
+
+#include <entities/crate.h>
+#include <entities/staticworldobject.h>
+#include <entities/player.h>
+
+#include <components/rendercomponent.h>
+#include <components/armaturecomponent.h>
+#include <components/lightcomponent.h>
+
 
 //#include <filesystem>
 

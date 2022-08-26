@@ -14,8 +14,8 @@
 
 #pragma GCC diagnostic pop
 
-//#include <glad.h>
-#include <glad_gles3.h>
+#include <glad.h>
+//#include <glad_gles3.h>
 
 #include <core.h>
 #include <render.h>

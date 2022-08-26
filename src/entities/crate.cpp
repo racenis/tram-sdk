@@ -3,8 +3,8 @@
 //
 // CRATE.CPP -- Crate entity.
 
-#include <core.h>
-#include <entities.h>
+#include <entities/crate.h>
+#include <components/rendercomponent.h>
 #include <physics.h>
 
 namespace Core {

@@ -3,9 +3,9 @@
 //
 // PLAYER.CPP -- Player entity.
 
-#include <core.h>
-#include <entities.h>
-
+#include <entities/player.h>
+#include <components/controllercomponent.h>
+#include <components/playercomponent.h>
 #include <physics.h>
 
 namespace Core {

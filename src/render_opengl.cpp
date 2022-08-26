@@ -1,9 +1,9 @@
 #include <render.h>
-#include <entitycomponents.h>
+#include <components/rendercomponent.h>
 
 // too too
-//#include <glad.c>
-#include <glad_gles3.c>
+#include <glad.c>
+//#include <glad_gles3.c>
 
 #include <glm/gtc/type_ptr.hpp>
 

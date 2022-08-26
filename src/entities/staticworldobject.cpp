@@ -3,8 +3,8 @@
 //
 // STATICWORLDOBJECT.CPP -- Static world object entity.
 
-#include <core.h>
-#include <entities.h>
+#include <entities/staticworldobject.h>
+#include <components/rendercomponent.h>
 #include <physics.h>
 
 namespace Core {
