@@ -36,8 +36,9 @@ Model* Model::Find(name_t name){
 }
 
 void Model::LoadFromMemory(){
-//std::cout << "Loading from memory THE MODEL" << std::endl;
-    if (vertForm == Model::STATIC_VERTEX && status == LOADED){
+    assert(status == LOADED);
+    
+    if (vertForm == Model::STATIC_VERTEX){
         StaticModelData* data = (StaticModelData*)mData;
 
         glGenBuffers(1, &vbo);
@@ -75,10 +76,9 @@ void Model::LoadFromMemory(){
         mData = nullptr;
 
         status = READY;
-        //AddToModelReminderQueue(this);
 
         return;
-    } else if (vertForm == Model::DYNAMIC_VERTEX && status == LOADED){
+    } else if (vertForm == Model::DYNAMIC_VERTEX){
         DynamicModelData* data = (DynamicModelData*)mData;
 
         glGenBuffers(1, &vbo);
@@ -119,7 +119,6 @@ void Model::LoadFromMemory(){
         mData = nullptr;
 
         status = READY;
-        //AddToModelReminderQueue(this);
 
         return;
     }

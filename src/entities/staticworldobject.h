@@ -21,7 +21,8 @@ namespace Core {
         void Unload();
         void Serialize();
         void MessageHandler(Message& msg);
-    protected:
+        inline static const char* data_name = "staticwobj";
+    
         struct DataOLD {
             void* padding = nullptr;
             uint64_t model;
@@ -43,8 +44,19 @@ namespace Core {
                 model.FromStringAsName(str);
                 lightmap.FromStringAsName(str);
             }
+            
+            name_t GetEditorModel() {
+                return model;
+            }
+            
+            std::vector<FieldInfo> GetEditorFieldInfo() {
+                return std::vector<FieldInfo> {
+                     { FieldInfo::FIELD_STRING, "Model", &model },
+                     { FieldInfo::FIELD_STRING, "Lightmap", &lightmap },
+                };
+            }
         };
-
+    protected:
         RenderComponent* rendercomponent = nullptr;
         PhysicsComponent* physicscomponent = nullptr;
     };

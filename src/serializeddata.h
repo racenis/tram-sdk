@@ -12,10 +12,6 @@
 namespace Core {
     class SerializedEntityData {
     public:
-        SerializedEntityData() = default;
-        virtual ~SerializedEntityData() = default;
-        virtual void ToString(std::string& str) = 0;
-        virtual void FromString(std::string_view& str) = 0;
         template <typename T>
         class Field {
         public:
@@ -27,6 +23,21 @@ namespace Core {
         private:
             T var;
         };
+        struct FieldInfo {
+            enum Type {
+                FIELD_UINT64,
+                FIELD_FLOAT,
+                FIELD_STRING
+            } type;
+            char const* name;
+            void* field;
+        };
+        SerializedEntityData() = default;
+        virtual ~SerializedEntityData() = default;
+        virtual void ToString(std::string& str) = 0;
+        virtual void FromString(std::string_view& str) = 0;
+        virtual name_t GetEditorModel() = 0;
+        virtual std::vector<FieldInfo> GetEditorFieldInfo() = 0;
     };
 
     // UNSIGNED INT TYPE
@@ -54,9 +65,9 @@ namespace Core {
             return var;
         }
 
-        void ToString(std::string& str) { assert(false); }
+        void ToString(std::string& str) { str += " "; str += std::to_string(var); }
 
-        void ToStringAsName(std::string& str) { assert(false); }
+        void ToStringAsName(std::string& str) { str += " "; str += ReverseUID(var); }
     private:
         uint64_t var;
     };
@@ -68,6 +79,11 @@ namespace Core {
         var = std::strtof(str.data(), &f_end);
         str.remove_prefix(f_end - str.data());
         return var;
+    }
+    
+    template <>
+    inline void SerializedEntityData::Field<float>::ToString(std::string& str) {
+        str += " "; str += std::to_string(var);
     }
 
 }

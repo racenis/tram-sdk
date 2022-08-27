@@ -5,8 +5,8 @@
 
 #include <core.h>
 #include <render.h>
-
-#include <render_opengl.cpp>
+#include <render/renderer.h>
+#include <components/rendercomponent.h>
 
 using namespace Core;
 
@@ -26,6 +26,7 @@ namespace Core::Render {
     glm::vec3 SUN_COLOR = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 AMBIENT_COLOR = glm::vec3(0.0f, 0.0f, 0.0f);
 
+    // move these into gui.cpp?
     Material FONT_REGULAR;
     Material FONT_TITLE;
     Material FONT_SYMBOLS;
@@ -38,10 +39,18 @@ namespace Core::Render {
 
     float time_of_day = 0.8f;
 
+
+    Pool<RenderListObject> renderList("render list", 500, false);
+    Pool<LightListObject> lightPool("lightpool", 100, true);
+    Octree<uint32_t> lightTree;
+
+    std::vector<LineVertex> colorlines;
+    std::vector<TextVertex> textvertices;
+    std::vector<GlyphVertex> glyphvertices;
     
 
     void Init(){
-        Init_OpenGL();
+        OpenGL::Init();
         
         FONT_REGULAR = Material(UID("jost"), Material::TEXTURE_MSDF);  // futura knock-off
         FONT_TITLE = Material(UID("inter"), Material::TEXTURE_MSDF);    // helvetica
@@ -61,8 +70,29 @@ namespace Core::Render {
     }
 
     void Render(){
-        Render_OpenGL();
+        OpenGL::Render();
     }
+    
+    void ScreenSize(float width, float height) {
+        SCREEN_WIDTH = width;
+        SCREEN_HEIGHT = height;
+        OpenGL::ScreenSize(width, height);
+    }
+    
+    void RenderListObject::FillFromModel(Model* mdl, uint32_t eboIndex){
+        vbo = mdl->vbo;
+        ebo = mdl->ebo;
+        vao = mdl->vao;
+        eboLen = mdl->eboLen[eboIndex];
+        eboOff = mdl->eboOff[eboIndex];
+        shader = OpenGL::FindShader(mdl->vertForm, (Material::Type)mdl->eboMat[eboIndex]);
+        texCount = mdl->materials.size();
+        for (uint32_t i = 0; i < texCount; i++){
+            textures[i] = mdl->materials[i]->GetTexture();
+        }
+
+        flags = FLAG_RENDER; // TODO: get the RFLAG_INTERIOR_LIGHTING in here somehow
+    };
     
     void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color){
         LineVertex vert;
@@ -190,6 +220,60 @@ namespace Core::Render {
 
 
 namespace Core {
+    void RenderComponent::Uninit(){
+            is_ready = true;
+            pose = nullptr;
 
+            for (size_t i = 0; i < 7; i++){
+                if(rLsObjPtr[i] == nullptr) continue;
+
+                Render::renderList.Remove(rLsObjPtr[i]);
+
+                rLsObjPtr[i] = nullptr;
+            }
+        };
+
+        void RenderComponent::Start(){
+            if(is_ready) return;
+
+
+            uint32_t pointers = 0;
+            for(uint32_t i = 0; i < 6; i++){
+                if (model->IsEBOEmpty(i)) continue;
+                rLsObjPtr[pointers] = Render::renderList.AddNew();
+                rLsObjPtr[pointers]->FillFromModel(model.GetResource(), i);
+                if(lightmap.GetResource() != nullptr) rLsObjPtr[pointers]->lightmap = lightmap->GetTexture();
+                rLsObjPtr[pointers]->pose = pose;
+                pointers++;
+
+            }
+
+            is_ready = true;
+
+            UpdateRenderListObjs();
+
+            return;
+        }
+
+        void RenderComponent::UpdateRenderListObjs(){
+            if (!is_ready) return;
+
+            for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
+                rLsObjPtr[i]->location = location;
+                rLsObjPtr[i]->rotation = rotation;
+
+                rLsObjPtr[i]->pose = pose;
+
+                rLsObjPtr[i]->flags &= -1 ^ Render::FLAG_INTERIOR_LIGHTING;
+                rLsObjPtr[i]->flags |= Render::FLAG_INTERIOR_LIGHTING * isInterior;
+
+                rLsObjPtr[i]->lights[0] = 0;
+                rLsObjPtr[i]->lights[1] = 0;
+                rLsObjPtr[i]->lights[2] = 0;
+                rLsObjPtr[i]->lights[3] = 0;
+                Render::lightTree.FindNearest(rLsObjPtr[i]->lights, rLsObjPtr[i]->location.x, rLsObjPtr[i]->location.y, rLsObjPtr[i]->location.z);
+            }
+
+        }
 
 }

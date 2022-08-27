@@ -62,8 +62,8 @@ int main() {
     //std::cout << std::filesystem::current_path() << std::endl;
 
     // register the entity types, so that they can be loaded from level files
-    Entity::Register("staticwobj", [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
-    Entity::Register("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
+    Entity::Register(StaticWorldObject::data_name, [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
+    Entity::Register(Crate::data_name, [](std::string_view& params) -> Entity* {return new Crate(params);});
 
     Core::Init();           // core init should always be first
     UI::Init();

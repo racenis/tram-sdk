@@ -47,7 +47,7 @@ namespace Core::Render {
 
 
     
-    // TODO: move into opengl-specific code
+
     struct RenderListObject {
         uint32_t flags = 0;
 
@@ -59,7 +59,6 @@ namespace Core::Render {
         uint32_t lights[4] = {0};
 
         uint32_t lightmap = 0;
-
         uint32_t vbo = 0;
         uint32_t ebo = 0;
         uint32_t vao = 0;
@@ -110,15 +109,21 @@ namespace Core::Render {
             TEXTURE_WATER,
             FLAT_COLOR
         };
+        
+        struct OpenGL {
+            uint32_t texture_name;
+        };
+        
     protected:
-        name_t name;                    /// Name of the material. Corresponds to the file name of the material (without the extension).
-        uint32_t refCount = 0;          /// How many loaded models are using this resource.
-        uint32_t texture = 0;           /// OpenGL name of the texture object.
-        Type type = TEXTURE;    /// Used to determine how the texture image should be loaded and which shader to use to draw the material.
-        uint32_t width = 0;             /// Width of the texture, in pixels.
-        uint32_t height = 0;            /// Height of the texture, in pixels.
-        uint8_t channels = 0;           /// Number of color channels.
-        uint8_t* textureData = nullptr; /// Pointer to the image data before it's uploaded to video memory.
+        uint32_t texture = 0;
+        
+        name_t name;
+        uint32_t refCount = 0;
+        Type type = TEXTURE;
+        uint32_t width = 0;
+        uint32_t height = 0;
+        uint8_t channels = 0;
+        uint8_t* textureData = nullptr;
 
         static Material* error_material;
         static std::unordered_map<uint64_t, Material> List;
@@ -202,6 +207,17 @@ namespace Core::Render {
             TEXT_VERTEX,
             GLYPH_VERTEX
         };
+        
+        struct OpenGL {
+            uint32_t vbo = 0;
+            uint32_t ebo = 0;
+            uint32_t vao = 0;
+
+            uint32_t eboOff[6] = {0};
+            uint32_t eboLen[6] = {0};
+            uint32_t eboMat[6] = {(uint32_t)(-1)};
+        };
+        
     protected:
         VertexFormat vertForm;
         name_t name;          /// Name of the model. Doubles as the filename.
@@ -255,34 +271,8 @@ namespace Core::Render {
         std::vector<unsigned int> groups;
     };
 
-    class VertexShader;
-    class FragmentShader;
     
-    // TODO: definetly move into opengl-specific code
-    class ShaderProgram {
-    public:
-        VertexShader* vertexShader;
-        FragmentShader* fragmentShader;
-        uint32_t compiled_shader = 0;
-        bool is_compiled = false;
 
-        ShaderProgram (VertexShader* vertexShader, FragmentShader* fragmentShader) : vertexShader(vertexShader), fragmentShader(fragmentShader) {}
-
-        void Link ();
-        
-        void BindTextures ();
-        
-        static void BindUniformBlock (bool (*filter)(ShaderProgram&), const char* const name, uint32_t binding);
-
-        static void Add (const ShaderProgram& shader);
-        
-        static ShaderProgram* Find (Model::VertexFormat vertexType, Material::Type materialType);
-        
-        static void CompileAll ();
-        
-    protected:
-        static std::vector<ShaderProgram> shaderPrograms;
-    };
 
     // TODO: move into opengl-specific code
     const uint32_t MAX_MATERIALS_PER_MODEL = 15;
@@ -311,11 +301,7 @@ namespace Core::Render {
 
     void Init();
     void Render();
-    void CompileShaders();
     void ScreenSize(float width, float height);
-    
-    // TODO: move into opengl-specific code
-    uint32_t FindShader(Model::VertexFormat format, Material::Type type);
 
     void SetSun(float timeOfDay);
 

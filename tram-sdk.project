@@ -18,8 +18,12 @@
     <File Name="src/menu.cpp"/>
     <File Name="src/gui.h"/>
     <File Name="src/gui.cpp"/>
-    <File Name="src/render_opengl.cpp" ExcludeProjConfig="Debug;"/>
     <VirtualDirectory Name="render">
+      <File Name="src/render/opengl_shader.cpp"/>
+      <File Name="src/render/opengl_loader.cpp"/>
+      <File Name="src/render/render.cpp"/>
+      <File Name="src/render/opengl_renderer.cpp"/>
+      <File Name="src/render/renderer.h"/>
       <File Name="src/render/armaturecomponent.cpp"/>
       <File Name="src/render/render_misc.cpp"/>
       <File Name="src/render/armature.cpp"/>
@@ -42,10 +46,8 @@
     <File Name="src/worldcell.cpp"/>
     <File Name="src/ui.h"/>
     <File Name="src/ui.cpp"/>
-    <File Name="src/shader.cpp"/>
     <File Name="src/serializeddata.h"/>
     <File Name="src/render.h"/>
-    <File Name="src/render.cpp"/>
     <File Name="src/physics.h"/>
     <File Name="src/physics.cpp"/>
     <File Name="src/net.h"/>

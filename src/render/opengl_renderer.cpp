@@ -1,5 +1,4 @@
-#include <render.h>
-#include <components/rendercomponent.h>
+#include <render/renderer.h>
 
 // too too
 #include <glad.c>
@@ -7,22 +6,12 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace Core::Render {
-    Pool<RenderListObject> renderList("render list", 500, false);
-    Pool<LightListObject> lightPool("lightpool", 100, true);
-    Octree<uint32_t> lightTree;
-
-    std::vector<LineVertex> colorlines;
-    std::vector<TextVertex> textvertices;
-    std::vector<GlyphVertex> glyphvertices;
-    
-    // TODO: move into opengl-specific code
+namespace Core::Render::OpenGL {
     struct ShaderUniformMatrices {
         glm::mat4 projection;       /// Projection matrix.
         glm::mat4 view;             /// View matrix.
     };
 
-    // TODO: move into opengl-specific code
     struct ShaderUniformModelMatrices{
         glm::mat4 model;        /// Model -> world space matrix. Rotates and translates vertices from how they are defined in the model to where they will appear in the world.
         glm::uvec4 modelLights; /// Indices for lights in the light list. The shader will use these 4 indices to determine with which lights the model should be lit up.
@@ -61,7 +50,8 @@ namespace Core::Render {
             glBindBufferBase(GL_UNIFORM_BUFFER, binding, handle);
 
             // TODO: figure out how to automatically create this lambda
-            ShaderProgram::BindUniformBlock([](ShaderProgram& shader){ return true; }, name.c_str(), binding);
+            BindUniformBlock ((char*)name.c_str(), binding);
+            //ShaderProgram::BindUniformBlock([](ShaderProgram& shader){ return true; }, name.c_str(), binding);
 
             glBindBuffer(GL_UNIFORM_BUFFER, 0);
         }
@@ -197,31 +187,14 @@ namespace Core::Render {
         
         
     void ScreenSize(float width, float height) {
-        SCREEN_WIDTH = width;
-        SCREEN_HEIGHT = height;
         matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
     }
         
-    void RenderListObject::FillFromModel(Model* mdl, uint32_t eboIndex){
-        vbo = mdl->vbo;
-        ebo = mdl->ebo;
-        vao = mdl->vao;
-        eboLen = mdl->eboLen[eboIndex];
-        eboOff = mdl->eboOff[eboIndex];
-        shader = FindShader(mdl->vertForm, (Material::Type)mdl->eboMat[eboIndex]);
-        texCount = mdl->materials.size();
-        for (uint32_t i = 0; i < texCount; i++){
-            textures[i] = mdl->materials[i]->GetTexture();
-        }
 
-        flags = FLAG_RENDER; // TODO: get the RFLAG_INTERIOR_LIGHTING in here somehow
-    };
         
-    void Init_OpenGL(){
+    void Init(){
             
         CompileShaders();
-
-        //glUseProgram(SHADER_NORMAL_STATIC);
 
         lineBuffer.Init();
         textBuffer.Init();
@@ -241,7 +214,7 @@ namespace Core::Render {
         
     }
     
-    void Render_OpenGL() {
+    void Render() {
         //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClearColor(255.0f/255.0f, 182.0f/255.0f, 193.0f/255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -337,7 +310,8 @@ namespace Core::Render {
         glDisable(GL_DEPTH_TEST);
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        glUseProgram(ShaderProgram::Find(Model::LINE_VERTEX, Material::FLAT_COLOR)->compiled_shader);
+        //glUseProgram(ShaderProgram::Find(Model::LINE_VERTEX, Material::FLAT_COLOR)->compiled_shader);
+        glUseProgram(FindShader(Model::LINE_VERTEX, Material::FLAT_COLOR));
         
 
         // upload the line buffer and draw lines
@@ -348,14 +322,16 @@ namespace Core::Render {
         // back to drawing triangles
         //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         // set special text shader
-        glUseProgram(ShaderProgram::Find(Model::TEXT_VERTEX, Material::TEXTURE_MSDF)->compiled_shader);
+        //glUseProgram(ShaderProgram::Find(Model::TEXT_VERTEX, Material::TEXTURE_MSDF)->compiled_shader);
+        glUseProgram(FindShader(Model::TEXT_VERTEX, Material::TEXTURE_MSDF));
 
         // upload the text array and draw the text
         textBuffer.UpdateData(textvertices.size(), textvertices.size() * sizeof(TextVertex), &textvertices[0]);
         textBuffer.Upload();
         textBuffer.Draw();
         
-        glUseProgram(ShaderProgram::Find(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH)->compiled_shader);
+        //glUseProgram(ShaderProgram::Find(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH)->compiled_shader);
+        glUseProgram(FindShader(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH));
         glyphBuffer.UpdateData(glyphvertices.size(), glyphvertices.size() * sizeof(GlyphVertex), &glyphvertices[0]);
         glyphBuffer.Upload();
         glyphBuffer.Draw();
@@ -373,64 +349,4 @@ namespace Core::Render {
         Stats::Stop(Stats::FRAME_NO_SWAP);
     }
    
-}
-
-namespace Core {
-    void RenderComponent::Uninit(){
-            is_ready = true;
-            pose = nullptr;
-
-            for (size_t i = 0; i < 7; i++){
-                if(rLsObjPtr[i] == nullptr) continue;
-
-                Render::renderList.Remove(rLsObjPtr[i]);
-
-                rLsObjPtr[i] = nullptr;
-            }
-        };
-
-        void RenderComponent::Start(){
-            if(is_ready) return;
-
-
-            uint32_t pointers = 0;
-            for(uint32_t i = 0; i < 6; i++){
-                if (model->IsEBOEmpty(i)) continue;
-                rLsObjPtr[pointers] = Render::renderList.AddNew();
-                rLsObjPtr[pointers]->FillFromModel(model.GetResource(), i);
-                if(lightmap.GetResource() != nullptr) rLsObjPtr[pointers]->lightmap = lightmap->GetTexture();
-                rLsObjPtr[pointers]->pose = pose;
-                pointers++;
-
-            }
-
-            is_ready = true;
-
-            UpdateRenderListObjs();
-
-            return;
-        }
-
-        void RenderComponent::UpdateRenderListObjs(){
-            if (!is_ready) return;
-
-            for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
-                rLsObjPtr[i]->location = location;
-                rLsObjPtr[i]->rotation = rotation;
-
-                rLsObjPtr[i]->pose = pose;
-
-                rLsObjPtr[i]->flags &= -1 ^ Render::FLAG_INTERIOR_LIGHTING;
-                rLsObjPtr[i]->flags |= Render::FLAG_INTERIOR_LIGHTING * isInterior;
-
-                rLsObjPtr[i]->lights[0] = 0;
-                rLsObjPtr[i]->lights[1] = 0;
-                rLsObjPtr[i]->lights[2] = 0;
-                rLsObjPtr[i]->lights[3] = 0;
-                Render::lightTree.FindNearest(rLsObjPtr[i]->lights, rLsObjPtr[i]->location.x, rLsObjPtr[i]->location.y, rLsObjPtr[i]->location.z);
-                //CalcLights(rLsObjPtr[i]);
-            }
-
-        }
-    
 }
