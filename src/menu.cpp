@@ -9,7 +9,7 @@ namespace Core::GUI {
     void DebugMenu() {
         static bool debugdraw_lines = false;
         
-        if (debugdraw_lines) for (size_t i = 0; i < PoolProxy<WorldCell>::GetPool().GetSize(); i++) if (*((uint64_t*)(PoolProxy<WorldCell>::GetPool().begin() + i))!=0) if( (PoolProxy<WorldCell>::GetPool().begin() + i)->IsDrawn())  (PoolProxy<WorldCell>::GetPool().begin() + i)->Draw();
+        if (debugdraw_lines) for (size_t i = 0; i < PoolProxy<WorldCell>::GetPool().GetSize(); i++) if (*((uint64_t*)(PoolProxy<WorldCell>::GetPool().begin().ptr + i))!=0) if( (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->IsDrawn())  (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->Draw();
             
         
         
@@ -58,11 +58,11 @@ namespace Core::GUI {
             static uint32_t worldcell_selected = 0;
             worldcell_names.clear();
             auto& worldcell_pool = PoolProxy<WorldCell>::GetPool();
-            for (size_t i = 0; i < worldcell_pool.GetSize(); i++) if (*((uint64_t*)(worldcell_pool.begin() + i))!=0) worldcell_names.push_back((char*)ReverseUID((worldcell_pool.begin() + i)->GetName())); else worldcell_names.push_back((char*)"[NONE]");
+            for (size_t i = 0; i < worldcell_pool.GetSize(); i++) if (*((uint64_t*)(worldcell_pool.begin().ptr + i))!=0) worldcell_names.push_back((char*)ReverseUID((worldcell_pool.begin().ptr + i)->GetName())); else worldcell_names.push_back((char*)"[NONE]");
             DropdownBox((const char**)worldcell_names.data(), worldcell_names.size(), worldcell_selected);
             FrameBreakLine();
             
-            auto worldcell = worldcell_pool.begin() + worldcell_selected;
+            auto worldcell = worldcell_pool.begin().ptr + worldcell_selected;
             char numbuffer[20];
             std::sprintf(numbuffer, "%lld", worldcell->EntityCount());
             bool is_draw = worldcell->IsDrawn();

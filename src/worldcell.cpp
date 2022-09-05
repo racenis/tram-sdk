@@ -46,15 +46,15 @@ WorldCell* WorldCell::Find(name_t name){
 
 WorldCell* WorldCell::Find (const glm::vec3& point){
     auto& cellPool = PoolProxy<WorldCell>::GetPool();
-    WorldCell* ptr = cellPool.begin();
-    for(; ptr < cellPool.end(); ptr++){
+    WorldCell* ptr = cellPool.begin().ptr;
+    for(; ptr < cellPool.end().ptr; ptr++){
         if(*((uint64_t*) ptr) == 0) continue;
         if(!ptr->IsInterior()) continue;
         if(ptr->IsInside(point)) return ptr;
     }
 
-    ptr = cellPool.begin();
-    for(; ptr < cellPool.end(); ptr++){
+    ptr = cellPool.begin().ptr;
+    for(; ptr < cellPool.end().ptr; ptr++){
         if(*((uint64_t*) ptr) == 0) continue;
         if(ptr->IsInterior()) continue;
         if(ptr->IsInside(point)) return ptr;
@@ -97,7 +97,17 @@ void WorldCell::LoadFromDisk(){
     while (std::getline(file, line)){
         size_t firstchar = line.find_first_not_of(" \t");
         if (firstchar != std::string::npos && line[firstchar] == '#') continue;
-        std::cout << "line : " << line << std::endl;
+        //std::cout << "line : " << line << std::endl;
+        
+        size_t first_name_end = line.find_first_of(" \t", firstchar);
+        std::string type_name = line.substr(firstchar, first_name_end);
+        
+        std::cout << "ent type: " << type_name << std::endl;
+        
+        if (type_name == "transition" || type_name == "path" || type_name == "navmesh") {
+            std::cout << "not an ent" << std::endl;
+            continue;
+        }
 
         std::string_view line_view (line);
         //Entity* ent = MakeEntityFromString(lvew);

@@ -6,6 +6,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <components/spritecomponent.h>
+
 namespace Core::Render::OpenGL {
     struct ShaderUniformMatrices {
         glm::mat4 projection;       /// Projection matrix.
@@ -142,7 +144,7 @@ namespace Core::Render::OpenGL {
     };
     
     // should be bound to dynamic
-    auto lightUniform = UniformBuffer(2, "Lights", sizeof(LightListObject)*50, lightPool.begin());
+    auto lightUniform = UniformBuffer(2, "Lights", sizeof(LightListObject)*50, lightPool.begin().ptr);
     
     // should be bound to static, static_alpha, dynamic, water
     auto matricesUniform = UniformBuffer(0, "Matrices", sizeof(ShaderUniformMatrices), &matrices);
@@ -349,4 +351,32 @@ namespace Core::Render::OpenGL {
         Stats::Stop(Stats::FRAME_NO_SWAP);
     }
    
+}
+
+namespace Core {
+    using namespace Core::Render::OpenGL;
+    
+     void SpriteComponent::Uninit(){
+        is_ready = true;
+
+        Render::renderList.Remove(robject);
+    };
+
+    void SpriteComponent::Start(){
+        if(is_ready) return;
+
+        robject = Render::renderList.AddNew();
+
+        
+
+
+        is_ready = true;
+        UpdateRenderListObject();
+    }
+
+    void SpriteComponent::UpdateRenderListObject(){
+        if (!is_ready) return;
+            robject->location = location;
+            robject->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+    }
 }

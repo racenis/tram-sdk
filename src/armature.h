@@ -35,7 +35,7 @@ namespace Core::Render {
 
     class Animation : public Resource {
     protected:
-        PoolAddOnly<uint8_t> animationpool;
+        StackPool<uint8_t> animationpool;
 
         static std::unordered_map<name_t, NameCount*> animationlist;
     public:

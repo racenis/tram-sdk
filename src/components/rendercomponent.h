@@ -13,6 +13,7 @@ namespace Core {
     class RenderComponent : public EntityComponent {
     public:
         RenderComponent() : model(this), lightmap(this){}
+        ~RenderComponent() = default;
         inline name_t GetModel(){return model->GetName();};
 
         inline name_t GetLightmap(){return (lightmap.GetResource() == nullptr) ? 0 : lightmap->GetName();};
@@ -26,11 +27,11 @@ namespace Core {
         };
 
         void SetPose(Render::PoseListObject* newPose){
-            pose = newPose == nullptr ? Render::poseList.begin() : newPose;
+            pose = newPose == nullptr ? Render::poseList.begin().ptr : newPose;
         };
 
         void Init(){
-            if(resources_waiting == 0) Start();
+            is_ready = false; if(resources_waiting == 0) Start();
         };
 
         void Uninit();

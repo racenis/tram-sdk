@@ -152,6 +152,8 @@ namespace Core::Render::OpenGL {
         auto normal_dynamic_vertex =         LoadVertexShader("shaders/normal_dynamic.vert");
         auto normal_dynamic_fragment =       LoadFragmentShader("shaders/normal_dynamic.frag");
         auto normal_water_fragment =         LoadFragmentShader("shaders/normal_water.frag");
+        auto sprite_vertex =                 LoadVertexShader("shaders/normal_sprite.vert");
+        auto sprite_fragment =               LoadFragmentShader("shaders/normal_sprite.frag");
         auto line_vertex =                   LoadVertexShader("shaders/line.vert");
         auto line_fragment =                 LoadFragmentShader("shaders/line.frag");
         auto text_vertex =                   LoadVertexShader("shaders/text.vert");
@@ -163,6 +165,7 @@ namespace Core::Render::OpenGL {
         StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(normal_static_vertex, normal_static_fragment_alpha));
         StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE,          LinkShader(normal_dynamic_vertex, normal_dynamic_fragment));
         StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_WATER,    LinkShader(normal_static_vertex, normal_water_fragment));
+        StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(sprite_vertex, sprite_fragment));
         StoreShaderForLater(Model::LINE_VERTEX,     Material::FLAT_COLOR,       LinkShader(line_vertex, line_fragment));
         StoreShaderForLater(Model::TEXT_VERTEX,     Material::TEXTURE_MSDF,     LinkShader(text_vertex, text_fragment));
         StoreShaderForLater(Model::GLYPH_VERTEX,    Material::TEXTURE_GLYPH,    LinkShader(glyph_vertex, glyph_fragment));

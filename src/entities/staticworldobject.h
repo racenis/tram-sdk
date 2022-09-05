@@ -21,7 +21,6 @@ namespace Core {
         void Unload();
         void Serialize();
         void MessageHandler(Message& msg);
-        inline static const char* data_name = "staticwobj";
     
         struct DataOLD {
             void* padding = nullptr;
@@ -36,8 +35,8 @@ namespace Core {
             Field<name_t> lightmap;
 
             void ToString(std::string& str) {
-                model.ToString(str);
-                lightmap.ToString(str);
+                model.ToStringAsName(str);
+                lightmap.ToStringAsName(str);
             }
 
             void FromString(std::string_view& str) {
@@ -54,6 +53,14 @@ namespace Core {
                      { FieldInfo::FIELD_STRING, "Model", &model },
                      { FieldInfo::FIELD_STRING, "Lightmap", &lightmap },
                 };
+            }
+            
+            char const* GetDataName() {
+                return "staticwobj";
+            }
+            
+            char const* GetEditorName() {
+                return "Staticworldobject";
             }
         };
     protected:

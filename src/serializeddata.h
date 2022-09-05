@@ -17,6 +17,8 @@ namespace Core {
         public:
             operator T() { return var; }
             Field& operator= (const T& other) { var = other; return *this;}
+            Field(T& other) { var = other; }
+            Field() = default;
 
             void ToString(std::string& str) { assert(false); }
             T& FromString(std::string_view& str) { assert(false); }
@@ -38,6 +40,8 @@ namespace Core {
         virtual void FromString(std::string_view& str) = 0;
         virtual name_t GetEditorModel() = 0;
         virtual std::vector<FieldInfo> GetEditorFieldInfo() = 0;
+        virtual char const* GetEditorName() = 0;
+        virtual char const* GetDataName() = 0;
     };
 
     // UNSIGNED INT TYPE
@@ -46,6 +50,8 @@ namespace Core {
     public:
         operator uint64_t() { return var; }
         Field& operator= (const uint64_t& other) { var = other; return *this;}
+        Field(uint64_t& other) { var = other; }
+        Field() = default;
 
         uint64_t& FromString(std::string_view& str){
             char* f_end;

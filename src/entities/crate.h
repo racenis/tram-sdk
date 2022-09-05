@@ -23,7 +23,6 @@ namespace Core {
         void Unload();
         void Serialize();
         void MessageHandler(Message& msg);
-        inline static const char* data_name = "crate";
     
         struct DataOLD {
             void* padding = nullptr;
@@ -37,8 +36,8 @@ namespace Core {
             Field<name_t> collmodel;
 
             void ToString(std::string& str) {
-                model.ToString(str);
-                collmodel.ToString(str);
+                model.ToStringAsName(str);
+                collmodel.ToStringAsName(str);
             }
 
             void FromString(std::string_view& str) {
@@ -55,6 +54,14 @@ namespace Core {
                      { FieldInfo::FIELD_STRING, "Model", &model },
                      { FieldInfo::FIELD_STRING, "CollisionMdl", &collmodel },
                 };
+            }
+            
+            char const* GetDataName() {
+                return "crate";
+            }
+            
+            char const* GetEditorName() {
+                return "Crate";
             }
         };
     protected:

@@ -52,7 +52,7 @@ namespace Core {
             dist = distance;
         }
         bool Remind(){return true;}// TODO: Yeet this
-        void Init(){lightLObj = Render::lightPool.AddNew(); light_tree_id = Render::lightTree.AddLeaf(lightLObj - Render::lightPool.begin(), location.x, location.y, location.z); is_ready = true; Update();};
+        void Init(){lightLObj = Render::lightPool.AddNew(); light_tree_id = Render::lightTree.AddLeaf(lightLObj - Render::lightPool.begin().ptr, location.x, location.y, location.z); is_ready = true; Update();};
         void Uninit(){Render::lightPool.Remove(lightLObj); Render::lightTree.RemoveLeaf(light_tree_id); lightLObj = nullptr;};
         void Start(){}
         void EventHandler(Event &event){return;}

@@ -24,11 +24,8 @@
 #include <algorithm>
 
 namespace Core {
-
-    // TODO: make all of the templates run constructors/destructors
-    // TODO: make template nethod names same as in std containers
     template <typename T>
-    class Pool{
+    class Pool {
     protected:
         std::string poolName;
         uint64_t poolSize;
@@ -37,7 +34,26 @@ namespace Core {
         T* last;
         T* lastfree;
     public:
-        Pool(std::string name, uint64_t initialSize, bool skipFirst){
+        struct iterator {
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type   = std::ptrdiff_t;
+            
+            iterator(T* ptr) : ptr(ptr) {}
+            
+            T& operator*() const { return *ptr; }
+            T* operator->() { return ptr; }
+
+            iterator& operator++() { do ptr++; while (*((uint64_t*)ptr) == 0); return *this; }  
+
+            iterator operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
+
+            friend bool operator== (const iterator& a, const iterator& b) { return a.ptr == b.ptr; };
+            friend bool operator!= (const iterator& a, const iterator& b) { return a.ptr != b.ptr; };  
+            
+            T* ptr;
+        };
+    
+        Pool(std::string name, uint64_t initialSize, bool skipFirst = false){
             poolName = name;
             maxSize = initialSize;
             poolSize = skipFirst ? 1 : 0;
@@ -53,7 +69,7 @@ namespace Core {
             }
 
         };
-        T* AddNew(){
+        /*T* AddNew(){
             if(poolSize == maxSize){
                 std::cout << "Pool " << poolName << " out of space!" << std::endl;
                 return nullptr;
@@ -76,25 +92,59 @@ namespace Core {
             new(newobj) T;
 
             return newobj;
+        };*/
+        
+        template <typename... Args>
+        T* AddNew(Args&&... args){
+            if(poolSize == maxSize){
+                std::cout << "Pool " << poolName << " out of space!" << std::endl;
+                return nullptr;
+            }
+
+            T* newobj;
+
+            if(lastfree != last){
+                newobj = lastfree;
+                uint64_t* skip = reinterpret_cast<uint64_t*>(lastfree);
+                skip++;
+                T** skip2 = reinterpret_cast<T**>(skip);
+                lastfree = *skip2;
+            } else {
+                newobj = lastfree;
+                poolSize++;
+                last++;
+                lastfree++;
+            }
+            
+            new(newobj) T(std::forward<Args>(args)...);
+
+            return newobj;
         };
+        
         void Remove(T* removeptr){
+            assert(removeptr >= first && removeptr < last); // pointer is in pool
+            removeptr->~T(); // destruct
             uint64_t* skip = reinterpret_cast<uint64_t*>(removeptr);
-            *skip = 0;
+            *skip = 0; // mark as empty
             skip++;
             T** nextfree = reinterpret_cast<T**>(skip);
-            *nextfree = lastfree;
+            *nextfree = lastfree; // add pointer to previous free place
             lastfree = removeptr;
         };
-        T* GetFirst(){return first;};
-        T* GetLast(){return last;};
-        T* begin(){return first;};
-        T* end(){return last;};
-        size_t GetSize(){return poolSize;};
+        T& operator[](size_t index) { return *(first + index); } // note that there is no checking for whether the index is valid
+        T* GetFirst(){return first;};   // yeet?
+        T* GetLast(){return last;};     // also yeet?
+        iterator begin(){return first;};
+        iterator end(){return last;};
+        size_t GetSize(){return poolSize;}; // yeet too?
+        size_t size(){return poolSize;};
 
+        // make sure that there will be enough room for the empty place marker and free list pointer
+        static_assert(sizeof(T) >= sizeof(T*) + sizeof(uint64_t));
     };
 
     template <typename T>
-    class PoolAddOnly{
+    class StackPool {
     protected:
         std::string poolName;
         size_t poolSize;
@@ -102,8 +152,8 @@ namespace Core {
         T* first;
         T* last;
     public:
-        PoolAddOnly(){};
-        PoolAddOnly(std::string name, size_t initialSize){
+        StackPool(){};
+        StackPool(std::string name, size_t initialSize){
             poolName = name;
             maxSize = initialSize;
             poolSize = 0;
@@ -123,8 +173,6 @@ namespace Core {
             poolSize += units;
             last += units;
 
-            new(newobj) T;
-
             return newobj;
         };
         void Reset(){
@@ -137,7 +185,6 @@ namespace Core {
         T* GetLast(){return last;};
         T* begin(){return first;};
         T* end(){return last;};
-
     };
 
     template <typename T>

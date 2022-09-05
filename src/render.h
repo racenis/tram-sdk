@@ -23,6 +23,7 @@ namespace Core::Render {
 
     const glm::vec3 CAMERA_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
     const glm::vec3 CAMERA_SIDE = glm::vec3(1.0f, 0.0f, 0.0f);
+    const glm::vec3 CAMERA_UP = glm::vec3(0.0f, 1.0f, 0.0f);
     
 
     extern float CAMERA_PITCH;
@@ -118,7 +119,7 @@ namespace Core::Render {
         uint32_t texture = 0;
         
         name_t name;
-        uint32_t refCount = 0;
+        uint32_t refCount = 0; // wut
         Type type = TEXTURE;
         uint32_t width = 0;
         uint32_t height = 0;
@@ -168,6 +169,13 @@ namespace Core::Render {
         glm::vec4 boneweight;
         uint32_t texture;
     };
+    
+    struct SpriteVertex {
+        glm::vec3 co;
+        glm::vec2 voffset;
+        float verticality;
+        uint32_t texture;
+    };
 
     struct LineVertex{
         glm::vec3 co;
@@ -203,6 +211,7 @@ namespace Core::Render {
     enum VertexFormat {
             STATIC_VERTEX,
             DYNAMIC_VERTEX,
+            SPRITE_VERTEX,
             LINE_VERTEX,
             TEXT_VERTEX,
             GLYPH_VERTEX
@@ -220,7 +229,7 @@ namespace Core::Render {
         
     protected:
         VertexFormat vertForm;
-        name_t name;          /// Name of the model. Doubles as the filename.
+        //name_t name;          /// Name of the model. Doubles as the filename.
 
         uint32_t vbo = 0;       /// OpenGL vertex buffer name.
         uint32_t ebo = 0;       /// OpenGL element buffer name.
@@ -271,7 +280,30 @@ namespace Core::Render {
         std::vector<unsigned int> groups;
     };
 
-    
+    class Sprite : public Resource {
+    protected:
+        float frame_x = 0.0f;
+        float frame_y = 0.0f;
+        float width = 0.0f;
+        float height = 0.0f;
+
+        Material* material;
+        
+        static std::unordered_map<name_t, Sprite*> List;
+    public:
+        Sprite (){}
+        Sprite(uint64_t name) : Resource(name) {}
+        inline Material* GetMaterial () const { return material; }
+        bool Load(){
+            LoadFromDisk();
+            LoadFromMemory();
+            return true;
+        }
+        bool Unload();
+        void LoadFromDisk();
+        void LoadFromMemory();
+        static Sprite* Find(name_t name);
+    };
 
 
     // TODO: move into opengl-specific code

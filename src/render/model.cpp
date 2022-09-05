@@ -383,7 +383,7 @@ void Model::LoadFromDisk(){
 
         // if we get this far, then it means that the model wasn't loaded from disk
 
-    std::cout << "Model " << ReverseUID(name) << " couldn't be loaded!" << std::endl;
+    std::cout << "Model file for " << ReverseUID(name) << " couldn't be accessed!" << std::endl;
 
     // copy the error model stuff
     vao = error_model->vao;

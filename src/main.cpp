@@ -4,6 +4,7 @@
 #include <async.h>
 #include <ui.h>
 #include <physics.h>
+#include <audio.h>
 
 #include <gui.h>
 
@@ -26,50 +27,20 @@ using namespace Core::UI;
 
 
 
-
-
-
-
-PathNode pn1 = {
-    .p1 = glm::vec3(3.0f, 0.0f, 0.0f),
-    .p2 = glm::vec3(1.0f, 1.0f, 0.0f),
-    .p3 = glm::vec3(-10.0f, 1.0f, 0.0f),
-    .p4 = glm::vec3(0.0f, 0.0f, 1.0f),
-};
-
-PathNode pn2 = {
-    .p1 = glm::vec3(0.0f, 0.0f, 1.0f),
-    .p2 = glm::vec3(10.0f, -1.0f, 0.0f),
-    .p3 = glm::vec3(15.0f, 0.0f, 3.0f),
-    .p4 = glm::vec3(0.0f, 0.0f, 19.0f),
-};
-
-PathNode pn3 = {
-    .p1 = glm::vec3(100.0f, 25.0f, 100.0f),
-    .p2 = glm::vec3(100.0f, 10.0f, 0.0f),
-    .p3 = glm::vec3(-1.0f, -1.0f, 0.0f),
-    .p4 = glm::vec3(3.0f, 0.0f, 0.0f),
-};
-
-PathNode::Follower pnf = { .current_node = &pn3, .t = 0.9f};
-
-
-
-
-
 int main() {
     std::cout << "Hello World! I have autism!" << std::endl;
     //std::cout << std::filesystem::current_path() << std::endl;
 
     // register the entity types, so that they can be loaded from level files
-    Entity::Register(StaticWorldObject::data_name, [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
-    Entity::Register(Crate::data_name, [](std::string_view& params) -> Entity* {return new Crate(params);});
+    Entity::Register("staticwobj", [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
+    Entity::Register("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
 
     Core::Init();           // core init should always be first
     UI::Init();
     Physics::InitPhysics(); // optional, but needed for StaticWorldObject, Crate and Player entities
     Render::Init();         // render init must always come after the ui inited
     Async::Init();          // async init must always come after render init
+    Audio::Init();
 
     // any kind of material or model loading must happen after both ui and render are inited
     Material::SetErrorMaterial(new Material(UID("defaulttexture"), Material::TEXTURE));
@@ -88,6 +59,10 @@ int main() {
     mongusrun.LoadFromDisk();
     floppaidle.LoadFromDisk();
     bingusidle.LoadFromDisk();
+    
+    // audios
+    Audio::Sound derp (UID("derp"));
+    derp.LoadFromDisk();
 
     // loading the demo level
     auto demo = PoolProxy<WorldCell>::New();
@@ -120,7 +95,7 @@ int main() {
     // create the mongus model
     RenderComponent* monguser = PoolProxy<RenderComponent>::New();
     monguser->SetModel(UID("mongus"));
-    monguser->SetPose(poseList.begin());
+    monguser->SetPose(poseList.begin().ptr);
     monguser->Init();
     monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
     monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
@@ -141,15 +116,18 @@ int main() {
     
     // turn on physics drawing
     DRAW_PHYSICS_DEBUG = true;
-
-    
+        
     while(!SHOULD_CLOSE){
         //auto time = glfwGetTime();
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
             player.GetLocation(Render::CAMERA_POSITION);
+            player.GetLocation(Audio::LISTENER_POSITION);
             Render::CAMERA_POSITION += glm::vec3(0.0f, 0.5f, 0.0f);
+            Audio::LISTENER_POSITION += glm::vec3(0.0f, 0.5f, 0.0f);
+            Audio::LISTENER_ORIENTATION[0] = Render::CAMERA_ROTATION * Render::CAMERA_FORWARD;
+            Audio::LISTENER_ORIENTATION[1] = Render::CAMERA_UP;
         }
         
         //time_of_day += 0.001f;
@@ -173,12 +151,15 @@ int main() {
         GUI::EscapeMenu();
         GUI::End();
         
+        Audio::Update();
+        
         // this loads the models and textures into video memory
         Async::ResourceLoader2ndStage();
         Async::FinishResource();
 
         if(tick == 100){
             monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
+            //Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
         }
 
         Event::Dispatch();
@@ -200,6 +181,7 @@ int main() {
 
     Async::Yeet();
 
+    Audio::Uninit();
     UI::Uninit();
     return 0;
 }

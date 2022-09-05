@@ -126,6 +126,8 @@ namespace Core::Async {
         finishedResourceRequestQueue.Unlock();
 
         while (req){
+            // TODO: check if requester pointer is valid
+            // TODO: check if requester ids match up
             if (req->requester){
                 req->requester->ResourceReady();
             }

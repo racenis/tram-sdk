@@ -21,8 +21,51 @@ namespace Core {
         void Serialize();
         void SerializeString(std::string& str);
         void MessageHandler(Message& msg);
+        
+        class Data: public SerializedEntityData {
+        public:
+            Field<float> color_r;
+            Field<float> color_g;
+            Field<float> color_b;
+            Field<float> distance;
+
+            void ToString(std::string& str) {
+                color_r.ToString(str);
+                color_g.ToString(str);
+                color_b.ToString(str);
+                distance.ToString(str);
+            }
+
+            void FromString(std::string_view& str) {
+                color_r.FromString(str);
+                color_g.FromString(str);
+                color_b.FromString(str);
+                distance.FromString(str);
+            }
+            
+            name_t GetEditorModel() {
+                return UID("mongus");
+            }
+            
+            std::vector<FieldInfo> GetEditorFieldInfo() {
+                return std::vector<FieldInfo> {
+                     { FieldInfo::FIELD_FLOAT, "Color R", &color_r },
+                     { FieldInfo::FIELD_FLOAT, "Color G", &color_g },
+                     { FieldInfo::FIELD_FLOAT, "Color B", &color_b },
+                     { FieldInfo::FIELD_FLOAT, "Distance", &distance },
+                };
+            }
+            
+            char const* GetDataName() {
+                return "lamp";
+            }
+            
+            char const* GetEditorName() {
+                return "Lamp";
+            }
+        };
     protected:
-        struct Data {
+        struct DataOLD {
             void* padding = nullptr;
             float color[3];
             float distance;

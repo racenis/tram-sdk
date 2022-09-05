@@ -3,7 +3,11 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/audioloader.cpp"/>
+    <File Name="src/audio.cpp"/>
+    <File Name="src/audio.h"/>
     <VirtualDirectory Name="components">
+      <File Name="src/components/spritecomponent.h"/>
       <File Name="src/components/physicscomponent.h"/>
       <File Name="src/components/controllercomponent.cpp"/>
       <File Name="src/components/playercomponent.h"/>
@@ -19,6 +23,7 @@
     <File Name="src/gui.h"/>
     <File Name="src/gui.cpp"/>
     <VirtualDirectory Name="render">
+      <File Name="src/render/sprite.cpp"/>
       <File Name="src/render/opengl_shader.cpp"/>
       <File Name="src/render/opengl_loader.cpp"/>
       <File Name="src/render/render.cpp"/>
@@ -84,6 +89,7 @@
         <Library Value="libBulletCollision.a"/>
         <Library Value="libLinearMath.a"/>
         <Library Value="libglfw3.a"/>
+        <Library Value="libOpenAL32.dll.a"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(ProjectName).exe" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>

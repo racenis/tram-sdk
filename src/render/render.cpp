@@ -221,59 +221,59 @@ namespace Core::Render {
 
 namespace Core {
     void RenderComponent::Uninit(){
-            is_ready = true;
-            pose = nullptr;
+        is_ready = true;
+        pose = nullptr;
 
-            for (size_t i = 0; i < 7; i++){
-                if(rLsObjPtr[i] == nullptr) continue;
+        for (size_t i = 0; i < 7; i++){
+            if(rLsObjPtr[i] == nullptr) continue;
 
-                Render::renderList.Remove(rLsObjPtr[i]);
+            Render::renderList.Remove(rLsObjPtr[i]);
 
-                rLsObjPtr[i] = nullptr;
-            }
-        };
+            rLsObjPtr[i] = nullptr;
+        }
+    };
 
-        void RenderComponent::Start(){
-            if(is_ready) return;
+    void RenderComponent::Start(){
+        if(is_ready) return;
 
 
-            uint32_t pointers = 0;
-            for(uint32_t i = 0; i < 6; i++){
-                if (model->IsEBOEmpty(i)) continue;
-                rLsObjPtr[pointers] = Render::renderList.AddNew();
-                rLsObjPtr[pointers]->FillFromModel(model.GetResource(), i);
-                if(lightmap.GetResource() != nullptr) rLsObjPtr[pointers]->lightmap = lightmap->GetTexture();
-                rLsObjPtr[pointers]->pose = pose;
-                pointers++;
+        uint32_t pointers = 0;
+        for(uint32_t i = 0; i < 6; i++){
+            if (model->IsEBOEmpty(i)) continue;
+            rLsObjPtr[pointers] = Render::renderList.AddNew();
+            rLsObjPtr[pointers]->FillFromModel(model.GetResource(), i);
+            if(lightmap.GetResource() != nullptr) rLsObjPtr[pointers]->lightmap = lightmap->GetTexture();
+            rLsObjPtr[pointers]->pose = pose;
+            pointers++;
 
-            }
-
-            is_ready = true;
-
-            UpdateRenderListObjs();
-
-            return;
         }
 
-        void RenderComponent::UpdateRenderListObjs(){
-            if (!is_ready) return;
+        is_ready = true;
 
-            for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
-                rLsObjPtr[i]->location = location;
-                rLsObjPtr[i]->rotation = rotation;
+        UpdateRenderListObjs();
 
-                rLsObjPtr[i]->pose = pose;
+        return;
+    }
 
-                rLsObjPtr[i]->flags &= -1 ^ Render::FLAG_INTERIOR_LIGHTING;
-                rLsObjPtr[i]->flags |= Render::FLAG_INTERIOR_LIGHTING * isInterior;
+    void RenderComponent::UpdateRenderListObjs(){
+        if (!is_ready) return;
 
-                rLsObjPtr[i]->lights[0] = 0;
-                rLsObjPtr[i]->lights[1] = 0;
-                rLsObjPtr[i]->lights[2] = 0;
-                rLsObjPtr[i]->lights[3] = 0;
-                Render::lightTree.FindNearest(rLsObjPtr[i]->lights, rLsObjPtr[i]->location.x, rLsObjPtr[i]->location.y, rLsObjPtr[i]->location.z);
-            }
+        for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
+            rLsObjPtr[i]->location = location;
+            rLsObjPtr[i]->rotation = rotation;
 
+            rLsObjPtr[i]->pose = pose;
+
+            rLsObjPtr[i]->flags &= -1 ^ Render::FLAG_INTERIOR_LIGHTING;
+            rLsObjPtr[i]->flags |= Render::FLAG_INTERIOR_LIGHTING * isInterior;
+
+            rLsObjPtr[i]->lights[0] = 0;
+            rLsObjPtr[i]->lights[1] = 0;
+            rLsObjPtr[i]->lights[2] = 0;
+            rLsObjPtr[i]->lights[3] = 0;
+            Render::lightTree.FindNearest(rLsObjPtr[i]->lights, rLsObjPtr[i]->location.x, rLsObjPtr[i]->location.y, rLsObjPtr[i]->location.z);
         }
+
+    }
 
 }

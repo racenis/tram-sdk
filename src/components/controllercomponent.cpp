@@ -39,6 +39,8 @@ namespace Core {
         }
 
 
+        glm::vec3 direction_normalized = glm::normalize(glm::vec3(direction.x, 0.0f, direction.z));
+        if (std::isnan(direction_normalized.x) || std::isnan(direction_normalized.y) || std::isnan(direction_normalized.z)) direction_normalized = glm::vec3(0.0f, 0.0f, 0.0f);
 
         if(action == ACTION_MOVE_FORWARD || action == ACTION_MOVE_BACKWARD || action == ACTION_MOVE_LEFT || action == ACTION_MOVE_RIGHT){
             float spee = IsInAir() ?  25.0f : 70.0f;
@@ -47,17 +49,17 @@ namespace Core {
             if(velocity > 4.0f) spee *= 1 / ((velocity * 5) + 1);
 
             if (action == ACTION_MOVE_FORWARD)
-                physcomp->Push(direction * spee);
+                physcomp->Push(direction_normalized * spee);
             else if (action == ACTION_MOVE_BACKWARD)
-                physcomp->Push(-direction * spee);
+                physcomp->Push(-direction_normalized * spee);
             else if (action == ACTION_MOVE_LEFT)
-                physcomp->Push(glm::vec3(direction.z, direction.y, -direction.x) * spee);
+                physcomp->Push(glm::vec3(direction_normalized.z, direction_normalized.y, -direction_normalized.x) * spee);
             else if (action == ACTION_MOVE_RIGHT)
-                physcomp->Push(glm::vec3(-direction.z, -direction.y, direction.x) * spee);
+                physcomp->Push(glm::vec3(-direction_normalized.z, -direction_normalized.y, direction_normalized.x) * spee);
         } else if (action == ACTION_JUMP && !IsInAir()){
             physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f));
         } else if (action == ACTION_FORWARD_JUMP && !IsInAir()){
-            physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f) + direction * 100.0f);
+            physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f) + direction_normalized * 100.0f);
         }
 
     }

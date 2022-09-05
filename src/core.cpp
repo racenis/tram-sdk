@@ -22,7 +22,7 @@ namespace Core {
     bool DRAW_PHYSICS_DEBUG = false;
     bool DRAW_PATH_DEBUG = false;
     
-    PoolAddOnly<char> stringPool("stringpool", 10000);
+    StackPool<char> stringPool("stringpool", 10000);
     std::unordered_map<std::string, uint64_t> stringHashMap;
     std::unordered_map<uint64_t, uint64_t> langStringHashMap;
 
