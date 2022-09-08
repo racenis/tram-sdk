@@ -1,8 +1,8 @@
 #version 400 core
 layout (location = 0) in vec3 Position;
-layout (location = 1) in vec3 Normal;
+layout (location = 1) in vec2 VOffset;
 layout (location = 2) in vec2 VertUV;
-layout (location = 3) in vec2 VertLightUV;
+layout (location = 3) in float Verticality;
 layout (location = 4) in uint TexIndex;
 
 layout (std140) uniform Matrices
@@ -22,8 +22,6 @@ layout (std140) uniform ModelMatrices
 };
 
 out vec2 vertUV;
-out vec2 vertLightUV;
-out vec3 vertColor;
 flat out uint texIndex;
 
 
@@ -31,13 +29,10 @@ flat out uint texIndex;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(Position, 1.0);
-	vec3 nPos = normalize(vec3(model * vec4(Normal, 0.0)));
-	vec3 lightColor = ambientcolor * time.y;
-	lightColor += suncolor * max(dot(nPos, normalize(sundir)), 0.0) * time.y;
+	vec4 scr_pos = projection * view * model * vec4(Position, 1.0);
 	
+    gl_Position = scr_pos + vec4(VOffset, 0.0, 0.0);
+
     vertUV = VertUV;
 	texIndex = TexIndex;
-	vertLightUV = VertLightUV;
-	vertColor = lightColor + (1.0 - time.y);
 }

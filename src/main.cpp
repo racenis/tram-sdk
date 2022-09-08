@@ -18,6 +18,9 @@
 #include <components/armaturecomponent.h>
 #include <components/lightcomponent.h>
 
+#include <components/spritecomponent.h>
+#include <components/particlecomponent.h>
+
 
 //#include <filesystem>
 
@@ -93,12 +96,12 @@ int main() {
 
 
     // create the mongus model
-    RenderComponent* monguser = PoolProxy<RenderComponent>::New();
-    monguser->SetModel(UID("mongus"));
-    monguser->SetPose(poseList.begin().ptr);
-    monguser->Init();
-    monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
-    monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //RenderComponent* monguser = PoolProxy<RenderComponent>::New();
+    //monguser->SetModel(UID("mongus"));
+    //monguser->SetPose(poseList.begin().ptr);
+    //monguser->Init();
+    //monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
+    //monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
     LightComponent* lit = PoolProxy<LightComponent>::New();;
@@ -107,15 +110,50 @@ int main() {
     lit->UpdateDistance(1000.0f);
 
     // create the animation player for the mongus model
-    ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
-    monguser_armature->SetModel(UID("mongus"));
-    monguser_armature->Init();
+    //ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
+    //monguser_armature->SetModel(UID("mongus"));
+    //monguser_armature->Init();
 
     // link the mongus model and his animation player
-    monguser->SetPose(monguser_armature->GetPosePtr());
+    //monguser->SetPose(monguser_armature->GetPosePtr());
     
     // turn on physics drawing
     DRAW_PHYSICS_DEBUG = true;
+    
+    
+    auto benis = Material::Find(UID("poland"));
+    auto sprite = Sprite::Find(UID("polandsprite"));
+    sprite->SetMaterial(benis);
+    sprite->frame_x = 40.0f / 256.0f;
+    sprite->frame_y = 40.0f / 256.0f;
+    sprite->frames = 24;
+    sprite->frames_w = 6;
+    sprite->width = 1.0f;
+    sprite->height = 1.0f;
+    //sprite->Load();
+    auto comp1 = new SpriteComponent;
+    auto comp2 = new SpriteComponent;
+    auto comp3 = new SpriteComponent;
+    comp1->SetSprite(UID("polandsprite"));
+    comp2->SetSprite(UID("polandsprite"));
+    comp3->SetSprite(UID("polandsprite"));
+    comp1->Init();
+    comp2->Init();
+    comp3->Init();
+    comp1->UpdateLocation(glm::vec3(0.0f, 3.0f, 0.0f));
+    comp2->UpdateLocation(glm::vec3(0.0f, 2.0f, 0.0f));
+    comp3->UpdateLocation(glm::vec3(0.0f, 1.0f, 0.0f));
+    comp1->SetPlaySpeed(3);
+    comp2->SetPlaySpeed(3);
+    comp3->SetPlaySpeed(3);
+    comp1->Play();
+    comp2->Play();
+    comp3->Play();
+    
+    auto partcomp = new ParticleComponent;
+    partcomp->SetSprite(UID("polandsprite"));
+    partcomp->Init();
+    partcomp->UpdateLocation(glm::vec3(0.0f, 3.0f, 0.0f));
         
     while(!SHOULD_CLOSE){
         //auto time = glfwGetTime();
@@ -141,8 +179,12 @@ int main() {
         lit->UpdateLocation(cos(((float)tick) / 60.0f) * 100.0f, 0.01 ,sin(((float)tick) / 60.0f) * 100.0f);
         
         // this makes the mongus model bob up and down
-        monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
+        //monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
         
+        comp1->Update();
+        comp2->Update();
+        comp3->Update();
+        partcomp->Update();
         //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
         //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         
@@ -158,7 +200,7 @@ int main() {
         Async::FinishResource();
 
         if(tick == 100){
-            monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
+            //monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
             //Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
         }
 

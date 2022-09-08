@@ -30,7 +30,7 @@ namespace Core::Render::OpenGL {
     
     uint32_t FindShader(Model::VertexFormat format, Material::Type type);
     
-    void BindUniformBlock (char* name, uint32_t binding);
+    void BindUniformBlock (const char* name, uint32_t binding);
     
 }
 

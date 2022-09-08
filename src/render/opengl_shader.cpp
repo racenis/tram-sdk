@@ -130,7 +130,7 @@ namespace Core::Render::OpenGL {
         }
     }
 
-    void BindUniformBlock (char* name, uint32_t binding) {
+    void BindUniformBlock (const char* name, uint32_t binding) {
         for (auto& sh : compiled_shaders) glUniformBlockBinding(std::get<2>(sh), glGetUniformBlockIndex(std::get<2>(sh), name), binding);
     }
     

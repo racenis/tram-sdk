@@ -173,6 +173,7 @@ namespace Core::Render {
     struct SpriteVertex {
         glm::vec3 co;
         glm::vec2 voffset;
+        glm::vec2 tex;
         float verticality;
         uint32_t texture;
     };
@@ -281,12 +282,15 @@ namespace Core::Render {
     };
 
     class Sprite : public Resource {
-    protected:
+    public:
+        // this is temporary; will make better way
         float frame_x = 0.0f;
         float frame_y = 0.0f;
         float width = 0.0f;
         float height = 0.0f;
-
+        size_t frames = 0;
+        size_t frames_w = 0;
+    protected:
         Material* material;
         
         static std::unordered_map<name_t, Sprite*> List;
@@ -294,6 +298,7 @@ namespace Core::Render {
         Sprite (){}
         Sprite(uint64_t name) : Resource(name) {}
         inline Material* GetMaterial () const { return material; }
+        inline void SetMaterial (Material* mat) { material = mat; }
         bool Load(){
             LoadFromDisk();
             LoadFromMemory();

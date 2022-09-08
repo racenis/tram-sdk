@@ -1,19 +1,19 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 //
-// SPRITECOMPONENT.H -- Sprite rendering component
-// This component will render a single sprite onto the screen.
+// PARTICLECOMPONENT.H -- Particle rendering component
+// This component will render some particles.
 
-#ifndef SPRITECOMPONENT_H
-#define SPRITECOMPONENT_H
+#ifndef PARTICLECOMPONENT_H
+#define PARTICLECOMPONENT_H
 
 #include <render.h>
 
 namespace Core {
-    class SpriteComponent : public EntityComponent {
+    class ParticleComponent : public EntityComponent {
     public:
-        SpriteComponent() : sprite(this){}
-        ~SpriteComponent() = default;
+        ParticleComponent() : sprite(this){}
+        ~ParticleComponent() = default;
         inline name_t GetSprite(){return sprite->GetName();}
 
         void SetSprite(name_t name){
@@ -30,9 +30,6 @@ namespace Core {
         
         void Update();
         
-        void Play();
-        
-        void Pause();
         
         void SetPlaySpeed(size_t speed);
 
@@ -46,20 +43,29 @@ namespace Core {
         void EventHandler(Event &event){return;}
 
     protected:
+        struct Particle {
+            glm::vec3 coords;
+            glm::vec3 velocity;
+            uint32_t age;
+        };
+        
+        std::vector<Particle> particles;
+        
+        uint32_t emission_rate = 1;
+        uint32_t particle_max_age = 60;
+        glm::vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
+        glm::vec3 initial_velocity = glm::vec3(0.0f, 0.15f, 0.0f);
+        float initial_velocity_randomness = 0.1f;
+    
         ResourceProxy<Render::Sprite> sprite;
     
         Render::RenderListObject* robject = nullptr;
         
         glm::vec3 location;
         
-        size_t anim_frame = 0;
-        size_t anim_speed = 0;
-        size_t anim_bframe = 0;
-        bool anim_isplaying = false;
-        
         uint32_t vertex_array;
         uint32_t vertex_buffer;
     };
 }
 
-#endif //SPRITECOMPONENT_H
+#endif //PARTICLECOMPONENT_H
