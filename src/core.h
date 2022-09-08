@@ -43,7 +43,7 @@ namespace Core {
             T& operator*() const { return *ptr; }
             T* operator->() { return ptr; }
 
-            iterator& operator++() { do ptr++; while (*((uint64_t*)ptr) == 0); return *this; }  
+            iterator& operator++() { do ptr++; while (*((uint64_t*)ptr) == 0 && *(((uint64_t*)ptr) + 1) != 0); return *this; }  
 
             iterator operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
 
@@ -58,7 +58,7 @@ namespace Core {
             maxSize = initialSize;
             poolSize = skipFirst ? 1 : 0;
 
-            first = static_cast<T*>(::operator new(initialSize * sizeof(T)));
+            first = static_cast<T*>(::operator new((initialSize * sizeof(T)) + sizeof(uint64_t) * 2));
             last = first;
             lastfree = first;
 
@@ -67,38 +67,17 @@ namespace Core {
                 last++;
                 lastfree++;
             }
+            
+            *((uint64_t*)last) = 0;
+            *(((uint64_t*)last) + 1) = 0;
 
         };
-        /*T* AddNew(){
-            if(poolSize == maxSize){
-                std::cout << "Pool " << poolName << " out of space!" << std::endl;
-                return nullptr;
-            }
-
-            T* newobj;
-
-            if(lastfree != last){
-                newobj = lastfree;
-                uint64_t* skip = reinterpret_cast<uint64_t*>(lastfree);
-                skip++;
-                T** skip2 = reinterpret_cast<T**>(skip);
-                lastfree = *skip2;
-            } else {
-                newobj = lastfree;
-                poolSize++;
-                last++;
-                lastfree++;
-            }
-            new(newobj) T;
-
-            return newobj;
-        };*/
         
         template <typename... Args>
         T* AddNew(Args&&... args){
             if(poolSize == maxSize){
                 std::cout << "Pool " << poolName << " out of space!" << std::endl;
-                return nullptr;
+                abort();
             }
 
             T* newobj;
@@ -114,6 +93,9 @@ namespace Core {
                 poolSize++;
                 last++;
                 lastfree++;
+                
+                *((uint64_t*)last) = 0;
+                *(((uint64_t*)last) + 1) = 0;
             }
             
             new(newobj) T(std::forward<Args>(args)...);
@@ -426,30 +408,49 @@ namespace Core {
         static Queue<Message> queue;
     };
 
-
-    struct PathNode {
-        PathNode* next;
-        PathNode* prev;
-        glm::vec3 p1;
-        glm::vec3 p2;
-        glm::vec3 p3;
-        glm::vec3 p4;
-        float lens[10];
-        
-        void ProducePoint(glm::vec3& p, const float& t);
-        void CalculateLenghts();
-        void Render();
-        
-        struct Follower {
-            PathNode* current_node;
-            float t = 0.0f;
+    struct Path {
+        struct Node {
+            Node* next;
+            Node* prev;
+            Node* left;
+            Node* right;
+            glm::vec3 p1;
+            glm::vec3 p2;
+            glm::vec3 p3;
+            glm::vec3 p4;
+            float lens[10];
             
-            void GoForth(float ammount);
+            void ProducePoint(glm::vec3& p, const float& t);
+            void CalculateLenghts();
             void Render();
-            void GetPosition(glm::vec3& pos);
+            
+            struct Follower {
+                Node* current_node;
+                float t = 0.0f;
+                
+                void GoForth(float ammount);
+                void Render();
+                void GetPosition(glm::vec3& pos);
+            };
         };
+        
+        name_t name = 0;
+        std::vector<Node> nodes;
     };
     
+    
+    struct Navmesh {
+        struct Node {
+            Node* next;
+            Node* prev;
+            Node* left;
+            Node* right;
+            glm::vec3 location;
+        };
+        
+        name_t name = 0;
+        std::vector<Node> nodes;
+    };
 
 
     //fwd decl
@@ -637,10 +638,12 @@ namespace Core {
             bool IsInside(const glm::vec3& point);
             void SetInto(WorldCell* new_into) { into = new_into; }
             WorldCell* GetInto() { return into; }
-        private:
+        protected:
+            name_t name = 0;
             WorldCell* into;
             std::vector<glm::vec3> points;
             std::vector<glm::vec4> planes;
+            friend class WorldCell;
         };
         class Loader {
         public:
@@ -660,6 +663,8 @@ namespace Core {
         std::vector<Entity*> entities;          /// List of pointers to entities that are in this cell.
         std::vector<Transition*> trans_in;      /// List of pointers to transitions into the cell.
         std::vector<Transition*> trans_out;     /// List of pointers to transitions out of the cell into other cells.
+        std::vector<Path*> paths;
+        std::vector<Navmesh*> navmeshes;
         static std::unordered_map<uint64_t, WorldCell*> List;
         friend void LoadCells();
     public:
@@ -685,7 +690,9 @@ namespace Core {
 
         void LoadFromDisk();
         
-        void Draw();
+        void DrawTransitions();
+        void DrawNavmeshes();
+        void DrawPaths();
 
         void AddEntity(Entity* entPtr);
 

@@ -6,6 +6,7 @@
 #include <core.h>
 #include <fstream>
 #include <cstring>
+#include <sstream>
 
 #include <render.h>
 
@@ -91,6 +92,7 @@ void WorldCell::LoadFromDisk(){
     file.open(path);
 
     if (!file){ std::cout << "Can't find worldcell: " << path << std::endl; return; }
+    std::cout << "Loading worldcell: " << ReverseUID(name) << std::endl;
 
     std::string line;
 
@@ -104,14 +106,113 @@ void WorldCell::LoadFromDisk(){
         
         std::cout << "ent type: " << type_name << std::endl;
         
-        if (type_name == "transition" || type_name == "path" || type_name == "navmesh") {
-            std::cout << "not an ent" << std::endl;
+        
+        if (type_name == "transition") {
+            // TODO: store the transition name in a lookupable map
+            auto trans = PoolProxy<WorldCell::Transition>::New();
+            std::stringstream ss (line.substr(first_name_end));
+            std::string name;
+            ss >> name;
+            trans->name = UID(name);
+            size_t pointcount;
+            ss >> pointcount;
+            for (size_t i = 0; i < pointcount; i++) {
+                glm::vec3 point;
+                ss >> point.x;
+                ss >> point.y;
+                ss >> point.z;
+                trans->AddPoint(point);
+            }
+            trans->SetInto(this);
+            trans->GeneratePlanes(false);
+            AddTransition(trans);
+            continue;
+        } else if (type_name == "path") {
+            // TODO: store the path name in a lookupable map
+            auto path = PoolProxy<Path>::New();
+            std::stringstream ss (line.substr(first_name_end));
+            std::string name;
+            ss >> name;
+            path->name = UID(name);
+            size_t pointcount;
+            ss >> pointcount;
+            std::unordered_map<uint32_t, Path::Node*> id_lookup;
+            for (size_t i = 0; i < pointcount; i++) {
+                uint32_t id;//, next_id, prev_id, left_id, right_id;
+                //ss >> id; ss >> next_id; ss >> prev_id; ss >> left_id; ss >> right_id;
+                ss >> id;
+                Path::Node nod;
+                ss >> *((uint32_t*)&nod.next);
+                ss >> *((uint32_t*)&nod.prev);
+                ss >> *((uint32_t*)&nod.left);
+                ss >> *((uint32_t*)&nod.right);
+                ss >> nod.p1.x;
+                ss >> nod.p1.y;
+                ss >> nod.p1.z;
+                ss >> nod.p2.x;
+                ss >> nod.p2.y;
+                ss >> nod.p2.z;
+                ss >> nod.p3.x;
+                ss >> nod.p3.y;
+                ss >> nod.p3.z;
+                ss >> nod.p4.x;
+                ss >> nod.p4.y;
+                ss >> nod.p4.z;
+                path->nodes.push_back(nod);
+                id_lookup[id] = &(path->nodes.back());
+            }
+            for (auto& it : path->nodes) {
+                it.next = id_lookup[*((uint32_t*)&it.next)];
+                it.prev = id_lookup[*((uint32_t*)&it.prev)];
+                it.left = id_lookup[*((uint32_t*)&it.left)];
+                it.right = id_lookup[*((uint32_t*)&it.right)];
+            }
+            paths.push_back(path);
+            continue;
+        } else if (type_name == "navmesh") {
+            // TODO: store the path name in a lookupable map
+            auto navmesh = PoolProxy<Navmesh>::New();
+            std::stringstream ss (line.substr(first_name_end));
+            std::string name;
+            ss >> name;
+            navmesh->name = UID(name);
+            size_t pointcount;
+            ss >> pointcount;
+            std::unordered_map<uint32_t, Navmesh::Node*> id_lookup;
+            for (size_t i = 0; i < pointcount; i++) {
+                uint32_t id;//, next_id, prev_id, left_id, right_id;
+                //ss >> id; ss >> next_id; ss >> prev_id; ss >> left_id; ss >> right_id;
+                ss >> id;
+                Navmesh::Node nod;
+                ss >> *((uint32_t*)&nod.next);
+                ss >> *((uint32_t*)&nod.prev);
+                ss >> *((uint32_t*)&nod.left);
+                ss >> *((uint32_t*)&nod.right);
+                ss >> nod.location.x;
+                ss >> nod.location.y;
+                ss >> nod.location.z;
+                navmesh->nodes.push_back(nod);
+                id_lookup[id] = &(navmesh->nodes.back());
+            }
+            for (auto& it : navmesh->nodes) {
+                std::cout << "1 pimpaalis " << it.next << " " << it.prev << " " << it.left << " " << it.right << std::endl;
+                it.next = id_lookup[*((uint32_t*)&it.next)];
+                it.prev = id_lookup[*((uint32_t*)&it.prev)];
+                it.left = id_lookup[*((uint32_t*)&it.left)];
+                it.right = id_lookup[*((uint32_t*)&it.right)];
+                std::cout << "2 pimpaalis " << it.next << " " << it.prev << " " << it.left << " " << it.right << std::endl;
+            }
+            navmeshes.push_back(navmesh);
             continue;
         }
 
         std::string_view line_view (line);
-        //Entity* ent = MakeEntityFromString(lvew);
         Entity* ent = Entity::Make(line_view);
+        if (ent == nullptr) {
+            std::cout << "Entity type '" << type_name << "' not recognized; in file " << path << std::endl;
+            continue;
+        }
+        
         this->AddEntity(ent);
     }
 };
@@ -218,9 +319,27 @@ void WorldCell::Transition::GeneratePlanes(bool disp) {
         
     }
     
-    void WorldCell::Draw(){
+    void WorldCell::DrawTransitions(){
         for (auto& it : trans_in) it->GeneratePlanes(true);
     }
+    
+    void WorldCell::DrawNavmeshes() {
+        for (auto nv : navmeshes)
+            for (auto& nd : nv->nodes) {
+                Render::AddLineMarker(nd.location, Render::COLOR_YELLOW);
+                if (nd.next) Render::AddLine(nd.location, nd.next->location, Render::COLOR_YELLOW);
+                if (nd.prev) Render::AddLine(nd.location, nd.prev->location, Render::COLOR_YELLOW);
+                if (nd.left) Render::AddLine(nd.location, nd.left->location, Render::COLOR_YELLOW);
+                if (nd.right) Render::AddLine(nd.location, nd.right->location, Render::COLOR_YELLOW);
+            }
+    }
+    
+    void WorldCell::DrawPaths() {
+        for (auto pt : paths)
+            for (auto& nd : pt->nodes)
+                nd.Render();
+    }
+    
     
     void WorldCell::Loader::LoadCells() {
         

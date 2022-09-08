@@ -86,8 +86,8 @@ namespace Core {
         btGeneric6DofConstraint* pathConstraint = nullptr;
         btPoint2PointConstraint* glueConstraint = nullptr;
         btHingeConstraint* hingeConstraint = nullptr;
-        PathNode* prev_path = nullptr;
-        PathNode* next_path = nullptr;
+        Path::Node* prev_path = nullptr;
+        Path::Node* next_path = nullptr;
         char path_pref = 's';
         float mass = 1.0f;
         glm::vec3 off_set = glm::vec3(0.0f, 0.0f, 0.0f);

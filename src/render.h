@@ -284,10 +284,9 @@ namespace Core::Render {
     class Sprite : public Resource {
     public:
         // this is temporary; will make better way
-        float frame_x = 0.0f;
-        float frame_y = 0.0f;
-        float width = 0.0f;
-        float height = 0.0f;
+        float width = 1.0f;
+        float height = 1.0f;
+        float scale = 1.0f;
         size_t frames = 0;
         size_t frames_w = 0;
     protected:

@@ -16,8 +16,8 @@ namespace Core {
         ~ParticleComponent() = default;
         inline name_t GetSprite(){return sprite->GetName();}
 
-        void SetSprite(name_t name){
-            sprite.SetResource(Render::Sprite::Find(name));
+        void SetSprite(Render::Sprite* sprite){
+            this->sprite.SetResource(sprite);
         }
 
         void Init(){
@@ -29,9 +29,6 @@ namespace Core {
         void Start();
         
         void Update();
-        
-        
-        void SetPlaySpeed(size_t speed);
 
         void UpdateRenderListObject();
 
@@ -42,6 +39,12 @@ namespace Core {
 
         void EventHandler(Event &event){return;}
 
+        // put these behind getter/setter methods, maybe?
+        uint32_t emission_rate = 1;
+        uint32_t particle_max_age = 120;
+        glm::vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
+        glm::vec3 initial_velocity = glm::vec3(0.0f, 0.15f, 0.0f);
+        float initial_velocity_randomness = 0.1f;
     protected:
         struct Particle {
             glm::vec3 coords;
@@ -51,12 +54,6 @@ namespace Core {
         
         std::vector<Particle> particles;
         
-        uint32_t emission_rate = 1;
-        uint32_t particle_max_age = 60;
-        glm::vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
-        glm::vec3 initial_velocity = glm::vec3(0.0f, 0.15f, 0.0f);
-        float initial_velocity_randomness = 0.1f;
-    
         ResourceProxy<Render::Sprite> sprite;
     
         Render::RenderListObject* robject = nullptr;

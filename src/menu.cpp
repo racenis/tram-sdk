@@ -7,10 +7,14 @@
 
 namespace Core::GUI {
     void DebugMenu() {
-        static bool debugdraw_lines = false;
+        static bool debugdraw_trans = false;
+        static bool debugdraw_paths = false;
+        static bool debugdraw_navmeshes = false;
         
-        if (debugdraw_lines) for (size_t i = 0; i < PoolProxy<WorldCell>::GetPool().GetSize(); i++) if (*((uint64_t*)(PoolProxy<WorldCell>::GetPool().begin().ptr + i))!=0) if( (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->IsDrawn())  (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->Draw();
-            
+        //if (debugdraw_trans) for (size_t i = 0; i < PoolProxy<WorldCell>::GetPool().GetSize(); i++) if (*((uint64_t*)(PoolProxy<WorldCell>::GetPool().begin().ptr + i))!=0) if( (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->IsDrawn())  (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->Draw();
+        if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawTransitions();
+        if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawPaths();
+        if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawNavmeshes();
         
         
         
@@ -36,11 +40,15 @@ namespace Core::GUI {
             Frame(FRAME_LEFT, 80);
             Text("Physics:", 1); FrameBreakLine();
             Text("Transitions:", 1); FrameBreakLine();
+            Text("Paths:", 1); FrameBreakLine();
+            Text("Navmeshes:", 1); FrameBreakLine();
             EndFrame();
             
             Frame(FRAME_RIGHT, 320-100);
             CheckBox(DRAW_PHYSICS_DEBUG); FrameBreakLine();
-            CheckBox(debugdraw_lines); FrameBreakLine();
+            CheckBox(debugdraw_trans); FrameBreakLine();
+            CheckBox(debugdraw_paths); FrameBreakLine();
+            CheckBox(debugdraw_navmeshes); FrameBreakLine();
             EndFrame();
             EndFrame();
             

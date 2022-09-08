@@ -86,7 +86,7 @@ int main() {
     
     demo_trans->GeneratePlanes();
     
-    demo->AddTransition(demo_trans);
+    //demo->AddTransition(demo_trans);
 
     // create the player entity
     Player player;
@@ -120,41 +120,6 @@ int main() {
     // turn on physics drawing
     DRAW_PHYSICS_DEBUG = true;
     
-    
-    auto benis = Material::Find(UID("poland"));
-    auto sprite = Sprite::Find(UID("polandsprite"));
-    sprite->SetMaterial(benis);
-    sprite->frame_x = 40.0f / 256.0f;
-    sprite->frame_y = 40.0f / 256.0f;
-    sprite->frames = 24;
-    sprite->frames_w = 6;
-    sprite->width = 1.0f;
-    sprite->height = 1.0f;
-    //sprite->Load();
-    auto comp1 = new SpriteComponent;
-    auto comp2 = new SpriteComponent;
-    auto comp3 = new SpriteComponent;
-    comp1->SetSprite(UID("polandsprite"));
-    comp2->SetSprite(UID("polandsprite"));
-    comp3->SetSprite(UID("polandsprite"));
-    comp1->Init();
-    comp2->Init();
-    comp3->Init();
-    comp1->UpdateLocation(glm::vec3(0.0f, 3.0f, 0.0f));
-    comp2->UpdateLocation(glm::vec3(0.0f, 2.0f, 0.0f));
-    comp3->UpdateLocation(glm::vec3(0.0f, 1.0f, 0.0f));
-    comp1->SetPlaySpeed(3);
-    comp2->SetPlaySpeed(3);
-    comp3->SetPlaySpeed(3);
-    comp1->Play();
-    comp2->Play();
-    comp3->Play();
-    
-    auto partcomp = new ParticleComponent;
-    partcomp->SetSprite(UID("polandsprite"));
-    partcomp->Init();
-    partcomp->UpdateLocation(glm::vec3(0.0f, 3.0f, 0.0f));
-        
     while(!SHOULD_CLOSE){
         //auto time = glfwGetTime();
         UI::Update();
@@ -181,10 +146,6 @@ int main() {
         // this makes the mongus model bob up and down
         //monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
         
-        comp1->Update();
-        comp2->Update();
-        comp3->Update();
-        partcomp->Update();
         //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
         //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         

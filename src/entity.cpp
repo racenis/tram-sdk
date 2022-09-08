@@ -113,7 +113,6 @@ namespace Core {
             entit = ff->second(params);
             return entit;
         } else {
-            std::cout << "invalid entity type: " << entType << std::endl;
             return nullptr;
         }
 

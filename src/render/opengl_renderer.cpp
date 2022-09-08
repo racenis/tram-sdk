@@ -553,12 +553,12 @@ namespace Core {
     void SpriteComponent::UpdateRenderListObject(){
         if (!is_ready) return;
         
-        float tex_width = sprite->frame_x;
-        float tex_height = sprite->frame_y;
+        float tex_width = sprite->width;
+        float tex_height = sprite->height;
         float tex_w_off = (float)(anim_frame % sprite->frames_w) * tex_width;
         float tex_h_off = (float)(anim_frame / sprite->frames_w) * tex_height;
-        float half_width = sprite->width / 2.0f;
-        float half_height = sprite->height / 2.0f;
+        float half_width = sprite->width * sprite->scale / 2.0f;
+        float half_height = sprite->height * sprite->scale / 2.0f;
 
         Render::SpriteVertex top_left {
             .co = glm::vec3(0.0f, 0.0f, 0.0f),
@@ -729,12 +729,12 @@ namespace Core {
     void ParticleComponent::UpdateRenderListObject(){
         if (!is_ready) return;
         
-        float tex_width = sprite->frame_x;
-        float tex_height = sprite->frame_y;
+        float tex_width = sprite->width;
+        float tex_height = sprite->height;
         float tex_w_off = 0.0f;//(float)(anim_frame % sprite->frames_w) * tex_width;
         float tex_h_off = 0.0f;//(float)(anim_frame / sprite->frames_w) * tex_height;
-        float half_width = sprite->width / 2.0f;
-        float half_height = sprite->height / 2.0f;
+        float half_width = sprite->width * sprite->scale / 2.0f;
+        float half_height = sprite->height * sprite->scale / 2.0f;
 
         std::vector<Render::SpriteVertex> vertices;
 

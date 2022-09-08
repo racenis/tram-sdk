@@ -29,8 +29,9 @@ namespace Core {
     Queue<Event> Core::Event::queue("event queue", 500);
     Queue<Message> Core::Message::queue("message queue", 500);
 
-    Pool<PathNode> pathNodePool("path node pool", 200, false);
-
+    //Pool<PathNode> pathNodePool("path node pool", 200, false);
+    template <> Pool<Path> PoolProxy<Path>::pool ("path pool", 50, false);
+    template <> Pool<Navmesh> PoolProxy<Navmesh>::pool ("navmesh pool", 50, false);
 
     Pool<Event::Listener> Core::Event::listeners[10] = {
         Pool<Event::Listener>("event listener: ", 50, false),
@@ -283,7 +284,7 @@ namespace Core {
     
     
     
-    void PathNode::CalculateLenghts(){
+    void Path::Node::CalculateLenghts(){
         float c = 0.1f;
         glm::vec3 prev_p;
         glm::vec3 this_p;
@@ -296,13 +297,13 @@ namespace Core {
         }
     }
 
-    void PathNode::ProducePoint(glm::vec3& p, const float& t){
+    void Path::Node::ProducePoint(glm::vec3& p, const float& t){
         glm::vec3 l1 = glm::mix(p1, p2, t);
         glm::vec3 l2 = glm::mix(p3, p4, t);
         p = glm::mix(l1, l2, t);
     }
 
-    void PathNode::Render(){
+    void Path::Node::Render(){
         float c = 0.1f;
         glm::vec3 prev_p;
         glm::vec3 this_p;
@@ -321,7 +322,7 @@ namespace Core {
 
 
 
-    void PathNode::Follower::GoForth(float ammount){
+    void Path::Node::Follower::GoForth(float ammount){
         //int index = std::floor(t*10.0f);
         //t += (ammount/current_node->lens[index]) * 0.1f;
         
@@ -337,13 +338,13 @@ namespace Core {
         }
     }
 
-    void PathNode::Follower::Render(){
+    void Path::Node::Follower::Render(){
         glm::vec3 pp;
         current_node->ProducePoint(pp, t);
         Render::AddLineMarker(pp, Render::COLOR_GREEN);
     }
 
-    void PathNode::Follower::GetPosition(glm::vec3& pos){
+    void Path::Node::Follower::GetPosition(glm::vec3& pos){
         current_node->ProducePoint(pos, t);
     }
     

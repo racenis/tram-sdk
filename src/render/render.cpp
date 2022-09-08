@@ -7,6 +7,8 @@
 #include <render.h>
 #include <render/renderer.h>
 #include <components/rendercomponent.h>
+#include <components/spritecomponent.h>
+#include <components/particlecomponent.h>
 
 using namespace Core;
 
@@ -70,6 +72,9 @@ namespace Core::Render {
     }
 
     void Render(){
+        for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
+        for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
+        
         OpenGL::Render();
     }
     

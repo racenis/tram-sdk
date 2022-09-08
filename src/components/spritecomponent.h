@@ -16,8 +16,8 @@ namespace Core {
         ~SpriteComponent() = default;
         inline name_t GetSprite(){return sprite->GetName();}
 
-        void SetSprite(name_t name){
-            sprite.SetResource(Render::Sprite::Find(name));
+        void SetSprite(Render::Sprite* sprite){
+            this->sprite.SetResource(sprite);
         }
 
         void Init(){
