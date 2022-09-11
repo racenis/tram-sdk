@@ -8,6 +8,8 @@
 #include <cstring>
 #include <sstream>
 
+#include <set>
+
 #include <render.h>
 
 using namespace Core;
@@ -15,6 +17,7 @@ std::unordered_map<uint64_t, WorldCell*> WorldCell::List;
 //PoolAddOnly<unsigned char> WorldCell::Transition::Pool("transition pool", 2000);
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
 template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
+template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcellloader pool", 10, false);
 
 
 //WorldCell::WorldCell(uint64_t cellName, bool isInterior, bool hasInteriorLighting){
@@ -80,6 +83,35 @@ void WorldCell::Unload(){
 
     loaded = false;
 };
+
+void WorldCell::Loader::LoadCells() {
+    std::set<WorldCell*> active_cells;
+    auto& loader_pool = PoolProxy<Loader>::GetPool();
+    auto& cell_pool = PoolProxy<WorldCell>::GetPool();
+    
+    for (auto& loader : loader_pool) {
+        if (loader.current_cell) {
+            active_cells.insert(loader.current_cell);
+            for (auto trans : loader.current_cell->trans_out) {
+                active_cells.insert(trans->into);
+            }
+        }
+    }
+    
+    //std::cout << "Active_cells: ";
+    //for (auto cell : active_cells) std::cout << ReverseUID(cell->GetName()) << " ";
+    //std::cout << std::endl;
+    
+    for (auto& cell : cell_pool) {
+        if(cell.IsLoaded() && !active_cells.contains(&cell)) {
+            cell.Unload();
+        }
+    }
+    
+    for (auto cell : active_cells) {
+        if (!cell->IsLoaded()) cell->Load();
+    }
+}
 
 
 void WorldCell::LoadFromDisk(){
@@ -341,6 +373,3 @@ void WorldCell::Transition::GeneratePlanes(bool disp) {
     }
     
     
-    void WorldCell::Loader::LoadCells() {
-        
-        }

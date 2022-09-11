@@ -72,8 +72,10 @@ namespace Core::Render {
     }
 
     void Render(){
+        #ifndef ENGINE_EDITOR_MODE
         for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
         for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
+        #endif // ENGINE_EDITOR_MODE
         
         OpenGL::Render();
     }

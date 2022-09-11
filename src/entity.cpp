@@ -32,6 +32,7 @@ namespace Core {
     }
     
     void Entity::CheckTransition(){
+        #ifndef ENGINE_EDITOR_MODE
         if(!cell) return;
 
         WorldCell* into = cell->FindTransition(location);
@@ -42,6 +43,7 @@ namespace Core {
             cell->RemoveEntity(this);
             into->AddEntity(this);
         }
+        #endif // ENGINE_EDITOR_MODE
     }
 
 

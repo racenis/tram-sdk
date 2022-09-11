@@ -18,6 +18,7 @@ class btPoint2PointConstraint;
 class btHingeConstraint;
 class btActionInterface;
 class btRaycastVehicle;
+class btCompoundShape;
 
 namespace Core {
     class PhysicsComponent;
@@ -44,7 +45,6 @@ namespace Core::Physics {
         CollisionModel(uint64_t mName){
             name = mName;
             status = UNLOADED;
-            //res_type = RESOURCE_COLLISONMODEL;
         }
 
         void LoadFromDisk();
@@ -54,7 +54,7 @@ namespace Core::Physics {
         static CollisionModel* Find(uint64_t modelName);
     protected:
         // TODO: change this to the actual type
-        void* model = nullptr;  /// Pointer to the physics library's collision shape.
+        btCompoundShape* model = nullptr;  /// Pointer to the physics library's collision shape.
         static std::unordered_map<uint64_t, CollisionModel*> List;
     };
 

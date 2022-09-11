@@ -16,7 +16,7 @@ namespace Core {
         ~RenderComponent() = default;
         inline name_t GetModel(){return model->GetName();};
 
-        inline name_t GetLightmap(){return (lightmap.GetResource() == nullptr) ? 0 : lightmap->GetName();};
+        inline name_t GetLightmap(){ return (lightmap.GetResource() == nullptr) ? 0 : lightmap->GetName();};
 
         void SetModel(uint64_t name){
             model.SetResource(Render::Model::Find(name));

@@ -118,8 +118,8 @@ namespace Core::Render {
     protected:
         uint32_t texture = 0;
         
-        name_t name;
-        uint32_t refCount = 0; // wut
+        //name_t name;
+        //uint32_t refCount = 0; // wut
         Type type = TEXTURE;
         uint32_t width = 0;
         uint32_t height = 0;

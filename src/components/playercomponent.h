@@ -54,6 +54,8 @@ namespace Core {
             keydown->ent = this;
             mouselistener = Event::AddListener(Event::CURSORPOS);
             mouselistener->ent = this;
+            cell_loader = PoolProxy<WorldCell::Loader>::New();
+            cell_loader->SetLocation(parent->GetLocation());
         }
         void Uninit(){
             Event::RemoveListener(Event::KEYPRESS, listener);
@@ -62,6 +64,8 @@ namespace Core {
             keydown = nullptr;
             Event::RemoveListener(Event::CURSORPOS, mouselistener);
             mouselistener = nullptr;
+            PoolProxy<WorldCell::Loader>::Delete(cell_loader);
+            cell_loader = nullptr;
         }
         void SetParent(Entity* ent){
             parent = ent;
@@ -75,12 +79,15 @@ namespace Core {
             is_move = true;
         }
         void Start(){}
+        //void UpdateLocation(const glm::vec3& location) { assert(cell_loader); cell_loader->SetLocation(location); }
+        void MoveUpdate() { assert(cell_loader); cell_loader->UpdateLocation(parent->GetLocation()); }
     private:
         Entity* parent = nullptr;
         Event::Listener* keydown = nullptr;
         Event::Listener* listener = nullptr;
         Event::Listener* mouselistener = nullptr;
         ControllerComponent* controller = nullptr;
+        WorldCell::Loader* cell_loader = nullptr;
 
         uint64_t vehicle = 0;
 

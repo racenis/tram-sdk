@@ -647,8 +647,8 @@ namespace Core {
         };
         class Loader {
         public:
-            void SetLocation(const glm::vec3& new_location) { current_cell = Find(new_location); }
-            void UpdateLocation(const glm::vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) current_cell = n_trans; }
+            void SetLocation(const glm::vec3& new_location) { location = new_location; current_cell = Find(new_location); }
+            void UpdateLocation(const glm::vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) { current_cell = n_trans; } }
             static void LoadCells();
         private:
             glm::vec3 location;

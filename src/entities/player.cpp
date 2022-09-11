@@ -49,7 +49,12 @@ void Player::SerializeString(std::string& str){
 }
 
 void Player::UpdateParameters() {
+    if (isloaded) {
+        assert(plomp);
+        plomp->MoveUpdate();
+    }
     //next_cell = cell->FindTransition(location);
+
 }
 void Player::MessageHandler(Message& msg){
     if(msg.type == Message::GET_IN){

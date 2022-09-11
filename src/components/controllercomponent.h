@@ -47,6 +47,8 @@ namespace Core {
         void EventHandler(Event &event){};
         void Move(glm::vec3& direction);
         void GetLocation(glm::vec3& location);
+        
+        // TODO: change how act works (also add update method)
         void Act(Action action);
 
         bool IsInAir();

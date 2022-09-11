@@ -18,478 +18,477 @@
 #include <fstream>
 
 namespace Core::Physics {
-std::unordered_map<uint64_t, CollisionModel*> CollisionModel::List;
+    std::unordered_map<uint64_t, CollisionModel*> CollisionModel::List;
 
-btBroadphaseInterface* broadphaseInterface;
-btDefaultCollisionConfiguration* collisionConfiguration;
-btCollisionDispatcher* collisionDispatcher;
-btSequentialImpulseConstraintSolver* constraintSolver;
-btDiscreteDynamicsWorld* dynamicsWorld;
-btIDebugDraw* debugDrawer;
-btVehicleRaycaster* vehicleRaycaster;
+    btBroadphaseInterface* broadphaseInterface;
+    btDefaultCollisionConfiguration* collisionConfiguration;
+    btCollisionDispatcher* collisionDispatcher;
+    btSequentialImpulseConstraintSolver* constraintSolver;
+    btDiscreteDynamicsWorld* dynamicsWorld;
+    btIDebugDraw* debugDrawer;
+    btVehicleRaycaster* vehicleRaycaster;
 
-CollisionModel* CollisionModel::Find(uint64_t modelName){
-    std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName);
-    CollisionModel* model;
-    if(ff == List.end()){
-        model = new CollisionModel(modelName);
-        List[modelName] = model;
-    } else {
-        model = ff->second;
-    }
-    return model;
-}
-
-void StepPhysics(float time){
-    Stats::Start(Stats::PHYSICS);
-    dynamicsWorld->stepSimulation(time, 1);
-    if (DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
-    Stats::Stop(Stats::PHYSICS);
-}
-
-class PathAction : public btActionInterface {
-public:
-
-    PathAction(PhysicsComponent* physComponent){
-        physcomp = physComponent;
-    }
-
-	virtual void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep);
-
-	virtual void debugDraw(btIDebugDraw* debugDrawer){}
-
-private:
-    PhysicsComponent* physcomp = nullptr;
-};
-
-/// Used to interface the physics library with the rest of the system.
-class EntMotionState : public btMotionState {
-public:
-    EntMotionState(Entity* ent, glm::vec3& offset) {
-        entity = ent;
-        troffse = offset;
-    }
-
-    virtual ~EntMotionState() {
-    }
-
-    void SetEntity(Entity* ent) {
-        entity = ent;
-    }
-
-    virtual void getWorldTransform(btTransform &worldTrans) const {
-        glm::vec3 loc;
-        glm::quat rot;
-
-        if (entity == nullptr){
-            loc = glm::vec3(0.0f, 0.0f, 0.0f);
-            rot = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+    CollisionModel* CollisionModel::Find(uint64_t modelName){
+        std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName);
+        CollisionModel* model;
+        if(ff == List.end()){
+            model = new CollisionModel(modelName);
+            List[modelName] = model;
         } else {
-            entity->GetLocation(loc);
-            entity->GetRotation(rot);
+            model = ff->second;
+        }
+        return model;
+    }
+
+    void StepPhysics(float time){
+        Stats::Start(Stats::PHYSICS);
+        dynamicsWorld->stepSimulation(time, 1);
+        if (DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
+        Stats::Stop(Stats::PHYSICS);
+    }
+
+    class PathAction : public btActionInterface {
+    public:
+
+        PathAction(PhysicsComponent* physComponent){
+            physcomp = physComponent;
         }
 
-        loc += troffse;
-
-        btVector3 translation;
-        translation.setX(loc.x);
-        translation.setY(loc.y);
-        translation.setZ(loc.z);
-
-        btQuaternion rotation;
-        rotation.setX(rot.x);
-        rotation.setY(rot.y);
-        rotation.setZ(rot.z);
-        rotation.setW(rot.w);
-
-        btTransform transf;
-        transf.setRotation(rotation);
-        transf.setOrigin(translation);
-
-        worldTrans = transf;
-    }
-
-    virtual void setWorldTransform(const btTransform &worldTrans) {
-        if (entity == nullptr) return;
-
-        glm::vec3 location;
-        glm::quat rotation;
-
-        btQuaternion rot = worldTrans.getRotation();
-        btVector3 loc = worldTrans.getOrigin();
-
-        location.x = loc.getX();
-        location.y = loc.getY();
-        location.z = loc.getZ();
-
-        location -= troffse;
-
-        rotation.x = rot.getX();
-        rotation.y = rot.getY();
-        rotation.z = rot.getZ();
-        rotation.w = rot.getW();
-
-        entity->SetTransform(location, rotation);
-    }
-
-protected:
-    Entity* entity = nullptr;
-    glm::vec3 troffse;
-};
-
-/// Used to interface the physics library with the rest of the system.
-class ArmMotionState : public btMotionState {
-public:
-    ArmMotionState(uint64_t boneName, ArmatureComponent* armature, glm::vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
-        ent = entity;
-        arm = armature;
-        offset = bindPos;
-        bone = boneName;
-        physcomp = physicsComp;
-    }
-
-    virtual ~ArmMotionState() {
-    }
-
-    virtual void getWorldTransform(btTransform &worldTrans) const {
-        glm::vec3 loc;
-        glm::quat rot;
-
-        ent->GetLocation(loc);
-        ent->GetRotation(rot);
-
-        loc += rot * offset;
-
-        btVector3 translation;
-        translation.setX(loc.x);
-        translation.setY(loc.y);
-        translation.setZ(loc.z);
-
-        btQuaternion rotation;
-        rotation.setX(rot.x);
-        rotation.setY(rot.y);
-        rotation.setZ(rot.z);
-        rotation.setW(rot.w);
-
-        btTransform transf;
-        transf.setRotation(rotation);
-        transf.setOrigin(translation);
-
-        worldTrans = transf;
-    }
-
-    virtual void setWorldTransform(const btTransform &worldTrans) {
-        glm::vec3 location;
-        glm::quat rotation;
-
-        btQuaternion rot = worldTrans.getRotation();
-        btVector3 loc = worldTrans.getOrigin();
-
-        location.x = loc.getX();
-        location.y = loc.getY();
-        location.z = loc.getZ();
-
-        rotation.x = rot.getX();
-        rotation.y = rot.getY();
-        rotation.z = rot.getZ();
-        rotation.w = rot.getW();
-
-        glm::vec3 ent_loc;
-        glm::quat ent_rot;
-
-        ent->GetLocation(ent_loc);
-        ent->GetRotation(ent_rot);
-
-        location = location - ent_loc;
-        location = glm::inverse(ent_rot) * location;
-        location = location - offset;
-
-        rotation = rotation * glm::inverse(ent_rot);
-
-        Render::Keyframe kframe;
-        kframe.rotation = rotation;
-        kframe.location = location;
-
-        arm->SetBoneKeyframe(bone, kframe);
-    }
-
-protected:
-    PhysicsComponent* physcomp;
-    ArmatureComponent* arm;
-    Entity* ent;
-    glm::vec3 offset;
-    uint64_t bone;
-};
-
-/// Debug drawer for the physics library.
-class PhysicsDebugDraw : public btIDebugDraw{
-public:
-
-    // TODO: implement this one
-	void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) {};
-
-	void reportErrorWarning(const char* warningString) {std::cout << warningString << std::endl;};
-
-	// TODO: implement this one
-	void draw3dText(const btVector3& location, const char* textString) {};
-
-	void setDebugMode(int debugMode) {};
-
-    int getDebugMode() const {
-        return DBG_MAX_DEBUG_DRAW_MODE;
-    }
-
-    void drawLine(const btVector3& from, const btVector3& to, const btVector3& color){
-        glm::vec3 f;
-        glm::vec3 t;
-        glm::vec3 c;
-        f.x = from.getX();
-        f.y = from.getY();
-        f.z = from.getZ();
-        t.x = to.getX();
-        t.y = to.getY();
-        t.z = to.getZ();
-        c.x = color.getX();
-        c.y = color.getY();
-        c.z = color.getZ();
-        Core::Render::AddLine(f, t, c);
-    }
-};
-
-void InitPhysics(){
-    broadphaseInterface = new btDbvtBroadphase();
-    collisionConfiguration = new btDefaultCollisionConfiguration();
-    collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
-    constraintSolver = new btSequentialImpulseConstraintSolver;
-
-    dynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher, broadphaseInterface, constraintSolver, collisionConfiguration);
-
-    dynamicsWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
-
-    debugDrawer  = new PhysicsDebugDraw;
-    dynamicsWorld->setDebugDrawer(debugDrawer);
-
-    vehicleRaycaster = new btDefaultVehicleRaycaster(dynamicsWorld);
-
-    btTransform trans;
-    trans.setIdentity();
-    btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), -3.0f);
-    btDefaultMotionState* planeMotionState = new btDefaultMotionState(trans);
-    btRigidBody::btRigidBodyConstructionInfo planeConstructionInfo(0.0f, planeMotionState, planeShape, btVector3(0.0f, 0.0f, 0.0f));
-    btRigidBody* planeRigidBody = new btRigidBody(planeConstructionInfo);
-
-    dynamicsWorld->addRigidBody(planeRigidBody);
-}
-
-void CollisionModel::LoadFromDisk(){
-    std::ifstream file;
-    std::string type;
-    char path[100] = "data/models/";
-
-    btCollisionShape* shape;
-    btTransform transf;
-    btQuaternion rotat;
-    btCompoundShape* cshape = new btCompoundShape();
-
-    strcat(path, ReverseUID(name));
-    strcat(path, ".collmdl");
-
-    file.open(path);
-    if(!file.is_open()){
-        std::cout << "Can't find collisionmodel: " << path << std::endl;
-
-        transf.setIdentity();
-        shape = new btBoxShape(btVector3(0.125f, 0.125f, 0.125f));
-
-        cshape->addChildShape(transf, shape);
-    } else {
-        std::cout << "Loading: " << path << std::endl;
-        file >> type;
-        while(file){
-            if (type == "box"){
-                float coords[3];
-                float rotation[3];
-                float dimensions[3];
-                file >> coords[0];
-                file >> coords[1];
-                file >> coords[2];
-                file >> rotation[0];
-                file >> rotation[1];
-                file >> rotation[2];
-                file >> dimensions[0];
-                file >> dimensions[1];
-                file >> dimensions[2];
-
-                transf.setIdentity();
-                transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                transf.setRotation(rotat);
-                shape = new btBoxShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
-
-                cshape->addChildShape(transf, shape);
-            } else if (type == "sphere"){
-                float coords[3];
-                float rotation[3];
-                float thickness;
-                file >> coords[0];
-                file >> coords[1];
-                file >> coords[2];
-                file >> rotation[0];
-                file >> rotation[1];
-                file >> rotation[2];
-                file >> thickness;
-
-                transf.setIdentity();
-                transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                transf.setRotation(rotat);
-                shape = new btSphereShape(thickness);
-
-                cshape->addChildShape(transf, shape);
-            } else if (type == "cylinder"){
-                float coords[3];
-                float rotation[3];
-                float dimensions[3];
-                file >> coords[0];
-                file >> coords[1];
-                file >> coords[2];
-                file >> rotation[0];
-                file >> rotation[1];
-                file >> rotation[2];
-                file >> dimensions[0];
-                file >> dimensions[1];
-                file >> dimensions[2];
-
-                transf.setIdentity();
-                transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                transf.setRotation(rotat);
-                shape = new btCylinderShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
-
-                cshape->addChildShape(transf, shape);
-            } else if (type == "capsule"){
-                float coords[3];
-                float rotation[3];
-                float thickness;
-                float height;
-                file >> coords[0];
-                file >> coords[1];
-                file >> coords[2];
-                file >> rotation[0];
-                file >> rotation[1];
-                file >> rotation[2];
-                file >> thickness;
-                file >> height;
-
-                transf.setIdentity();
-                transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                transf.setRotation(rotat);
-                shape = new btCapsuleShape(thickness, height);
-
-                cshape->addChildShape(transf, shape);
-            } else if (type == "cone"){
-                float coords[3];
-                float rotation[3];
-                float thickness;
-                float height;
-                file >> coords[0];
-                file >> coords[1];
-                file >> coords[2];
-                file >> rotation[0];
-                file >> rotation[1];
-                file >> rotation[2];
-                file >> thickness;
-                file >> height;
-
-                transf.setIdentity();
-                transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                transf.setRotation(rotat);
-                shape = new btConeShape(thickness, height);
-
-                cshape->addChildShape(transf, shape);
-            } else if (type == "cloud"){
-                float coords[3];
-                size_t verts;
-                file >> verts;
-
-                btConvexHullShape* convexhull  = new btConvexHullShape();
-                btVector3 v;
-
-                for (size_t i = 0; i < verts; i++){
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    v.setValue(coords[0], coords[1], coords[2]);
-                    convexhull->addPoint(v);
-                }
-
-                transf.setIdentity();
-                cshape->addChildShape(transf, convexhull);
-            } else if (type == "mesh"){
-                float coords[3];
-                size_t verts;
-                file >> verts;
-
-                btTriangleMesh* trimesh = new btTriangleMesh();
-
-                // TODO: allocate
-                // allocate memory for the meshy mesh??? like here??
-                // trimesh->preallocateVertices(verts);
-
-                btVector3 v[3];
-
-                for (size_t i = 0; i < verts; i++){
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    v[0].setValue(coords[0], coords[1], coords[2]);
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    v[1].setValue(coords[0], coords[1], coords[2]);
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    v[2].setValue(coords[0], coords[1], coords[2]);
-
-                    trimesh->addTriangle(v[0], v[1], v[2]);
-                }
-
-                btBvhTriangleMeshShape* mshape = new btBvhTriangleMeshShape(trimesh, true, true);
-
-                transf.setIdentity();
-                cshape->addChildShape(transf, mshape);
+        virtual void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep);
+
+        virtual void debugDraw(btIDebugDraw* debugDrawer){}
+
+    private:
+        PhysicsComponent* physcomp = nullptr;
+    };
+
+    class EntMotionState : public btMotionState {
+    public:
+        EntMotionState(Entity* ent, glm::vec3& offset) {
+            entity = ent;
+            troffse = offset;
+        }
+
+        virtual ~EntMotionState() {
+        }
+
+        void SetEntity(Entity* ent) {
+            entity = ent;
+        }
+
+        virtual void getWorldTransform(btTransform &worldTrans) const {
+            glm::vec3 loc;
+            glm::quat rot;
+
+            if (entity == nullptr){
+                loc = glm::vec3(0.0f, 0.0f, 0.0f);
+                rot = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+            } else {
+                entity->GetLocation(loc);
+                entity->GetRotation(rot);
             }
 
-            file >> type;
+            loc += troffse;
+
+            btVector3 translation;
+            translation.setX(loc.x);
+            translation.setY(loc.y);
+            translation.setZ(loc.z);
+
+            btQuaternion rotation;
+            rotation.setX(rot.x);
+            rotation.setY(rot.y);
+            rotation.setZ(rot.z);
+            rotation.setW(rot.w);
+
+            btTransform transf;
+            transf.setRotation(rotation);
+            transf.setOrigin(translation);
+
+            worldTrans = transf;
         }
+
+        virtual void setWorldTransform(const btTransform &worldTrans) {
+            if (entity == nullptr) return;
+
+            glm::vec3 location;
+            glm::quat rotation;
+
+            btQuaternion rot = worldTrans.getRotation();
+            btVector3 loc = worldTrans.getOrigin();
+
+            location.x = loc.getX();
+            location.y = loc.getY();
+            location.z = loc.getZ();
+
+            location -= troffse;
+
+            rotation.x = rot.getX();
+            rotation.y = rot.getY();
+            rotation.z = rot.getZ();
+            rotation.w = rot.getW();
+
+            entity->SetTransform(location, rotation);
+        }
+
+    protected:
+        Entity* entity = nullptr;
+        glm::vec3 troffse;
+    };
+
+    /// Used to interface the physics library with the rest of the system.
+    class ArmMotionState : public btMotionState {
+    public:
+        ArmMotionState(uint64_t boneName, ArmatureComponent* armature, glm::vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
+            ent = entity;
+            arm = armature;
+            offset = bindPos;
+            bone = boneName;
+            physcomp = physicsComp;
+        }
+
+        virtual ~ArmMotionState() {
+        }
+
+        virtual void getWorldTransform(btTransform &worldTrans) const {
+            glm::vec3 loc;
+            glm::quat rot;
+
+            ent->GetLocation(loc);
+            ent->GetRotation(rot);
+
+            loc += rot * offset;
+
+            btVector3 translation;
+            translation.setX(loc.x);
+            translation.setY(loc.y);
+            translation.setZ(loc.z);
+
+            btQuaternion rotation;
+            rotation.setX(rot.x);
+            rotation.setY(rot.y);
+            rotation.setZ(rot.z);
+            rotation.setW(rot.w);
+
+            btTransform transf;
+            transf.setRotation(rotation);
+            transf.setOrigin(translation);
+
+            worldTrans = transf;
+        }
+
+        virtual void setWorldTransform(const btTransform &worldTrans) {
+            glm::vec3 location;
+            glm::quat rotation;
+
+            btQuaternion rot = worldTrans.getRotation();
+            btVector3 loc = worldTrans.getOrigin();
+
+            location.x = loc.getX();
+            location.y = loc.getY();
+            location.z = loc.getZ();
+
+            rotation.x = rot.getX();
+            rotation.y = rot.getY();
+            rotation.z = rot.getZ();
+            rotation.w = rot.getW();
+
+            glm::vec3 ent_loc;
+            glm::quat ent_rot;
+
+            ent->GetLocation(ent_loc);
+            ent->GetRotation(ent_rot);
+
+            location = location - ent_loc;
+            location = glm::inverse(ent_rot) * location;
+            location = location - offset;
+
+            rotation = rotation * glm::inverse(ent_rot);
+
+            Render::Keyframe kframe;
+            kframe.rotation = rotation;
+            kframe.location = location;
+
+            arm->SetBoneKeyframe(bone, kframe);
+        }
+
+    protected:
+        PhysicsComponent* physcomp;
+        ArmatureComponent* arm;
+        Entity* ent;
+        glm::vec3 offset;
+        uint64_t bone;
+    };
+
+    /// Debug drawer for the physics library.
+    class PhysicsDebugDraw : public btIDebugDraw{
+    public:
+
+        // TODO: implement this one
+        void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) {};
+
+        void reportErrorWarning(const char* warningString) {std::cout << warningString << std::endl;};
+
+        // TODO: implement this one
+        void draw3dText(const btVector3& location, const char* textString) {};
+
+        void setDebugMode(int debugMode) {};
+
+        int getDebugMode() const {
+            return DBG_MAX_DEBUG_DRAW_MODE;
+        }
+
+        void drawLine(const btVector3& from, const btVector3& to, const btVector3& color){
+            glm::vec3 f;
+            glm::vec3 t;
+            glm::vec3 c;
+            f.x = from.getX();
+            f.y = from.getY();
+            f.z = from.getZ();
+            t.x = to.getX();
+            t.y = to.getY();
+            t.z = to.getZ();
+            c.x = color.getX();
+            c.y = color.getY();
+            c.z = color.getZ();
+            Core::Render::AddLine(f, t, c);
+        }
+    };
+
+    void InitPhysics(){
+        broadphaseInterface = new btDbvtBroadphase();
+        collisionConfiguration = new btDefaultCollisionConfiguration();
+        collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
+        constraintSolver = new btSequentialImpulseConstraintSolver;
+
+        dynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher, broadphaseInterface, constraintSolver, collisionConfiguration);
+
+        dynamicsWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
+
+        debugDrawer  = new PhysicsDebugDraw;
+        dynamicsWorld->setDebugDrawer(debugDrawer);
+
+        vehicleRaycaster = new btDefaultVehicleRaycaster(dynamicsWorld);
+
+        btTransform trans;
+        trans.setIdentity();
+        btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), -3.0f);
+        btDefaultMotionState* planeMotionState = new btDefaultMotionState(trans);
+        btRigidBody::btRigidBodyConstructionInfo planeConstructionInfo(0.0f, planeMotionState, planeShape, btVector3(0.0f, 0.0f, 0.0f));
+        btRigidBody* planeRigidBody = new btRigidBody(planeConstructionInfo);
+
+        dynamicsWorld->addRigidBody(planeRigidBody);
     }
 
-    model = cshape;
-    status = READY;
-}
+    void CollisionModel::LoadFromDisk(){
+        std::ifstream file;
+        std::string type;
+        char path[100] = "data/models/";
 
-void PathAction::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep){
-	    physcomp->UpdatePath();
-}
+        btCollisionShape* shape;
+        btTransform transf;
+        btQuaternion rotat;
+        btCompoundShape* cshape = new btCompoundShape();
 
-PhysicsComponent* Raycast(const glm::vec3& from, const glm::vec3& to){
-    btVector3 bto, bfrom;
+        strcat(path, ReverseUID(name));
+        strcat(path, ".collmdl");
 
-    bto.setValue(to.x, to.y, to.z);
-    bfrom.setValue(from.x, from.y, from.z);
+        file.open(path);
+        if(!file.is_open()){
+            std::cout << "Can't find collisionmodel: " << path << std::endl;
 
-    btCollisionWorld::ClosestRayResultCallback callback(bfrom, bto);
+            transf.setIdentity();
+            shape = new btBoxShape(btVector3(0.125f, 0.125f, 0.125f));
 
-    dynamicsWorld->rayTest(bfrom, bto, callback);
+            cshape->addChildShape(transf, shape);
+        } else {
+            std::cout << "Loading: " << path << std::endl;
+            file >> type;
+            while(file){
+                if (type == "box"){
+                    float coords[3];
+                    float rotation[3];
+                    float dimensions[3];
+                    file >> coords[0];
+                    file >> coords[1];
+                    file >> coords[2];
+                    file >> rotation[0];
+                    file >> rotation[1];
+                    file >> rotation[2];
+                    file >> dimensions[0];
+                    file >> dimensions[1];
+                    file >> dimensions[2];
 
-    if (callback.hasHit())
-        return (PhysicsComponent*)callback.m_collisionObject->getUserPointer();
-    else
-        return nullptr;
-}
+                    transf.setIdentity();
+                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
+                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
+                    transf.setRotation(rotat);
+                    shape = new btBoxShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
+
+                    cshape->addChildShape(transf, shape);
+                } else if (type == "sphere"){
+                    float coords[3];
+                    float rotation[3];
+                    float thickness;
+                    file >> coords[0];
+                    file >> coords[1];
+                    file >> coords[2];
+                    file >> rotation[0];
+                    file >> rotation[1];
+                    file >> rotation[2];
+                    file >> thickness;
+
+                    transf.setIdentity();
+                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
+                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
+                    transf.setRotation(rotat);
+                    shape = new btSphereShape(thickness);
+
+                    cshape->addChildShape(transf, shape);
+                } else if (type == "cylinder"){
+                    float coords[3];
+                    float rotation[3];
+                    float dimensions[3];
+                    file >> coords[0];
+                    file >> coords[1];
+                    file >> coords[2];
+                    file >> rotation[0];
+                    file >> rotation[1];
+                    file >> rotation[2];
+                    file >> dimensions[0];
+                    file >> dimensions[1];
+                    file >> dimensions[2];
+
+                    transf.setIdentity();
+                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
+                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
+                    transf.setRotation(rotat);
+                    shape = new btCylinderShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
+
+                    cshape->addChildShape(transf, shape);
+                } else if (type == "capsule"){
+                    float coords[3];
+                    float rotation[3];
+                    float thickness;
+                    float height;
+                    file >> coords[0];
+                    file >> coords[1];
+                    file >> coords[2];
+                    file >> rotation[0];
+                    file >> rotation[1];
+                    file >> rotation[2];
+                    file >> thickness;
+                    file >> height;
+
+                    transf.setIdentity();
+                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
+                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
+                    transf.setRotation(rotat);
+                    shape = new btCapsuleShape(thickness, height);
+
+                    cshape->addChildShape(transf, shape);
+                } else if (type == "cone"){
+                    float coords[3];
+                    float rotation[3];
+                    float thickness;
+                    float height;
+                    file >> coords[0];
+                    file >> coords[1];
+                    file >> coords[2];
+                    file >> rotation[0];
+                    file >> rotation[1];
+                    file >> rotation[2];
+                    file >> thickness;
+                    file >> height;
+
+                    transf.setIdentity();
+                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
+                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
+                    transf.setRotation(rotat);
+                    shape = new btConeShape(thickness, height);
+
+                    cshape->addChildShape(transf, shape);
+                } else if (type == "cloud"){
+                    float coords[3];
+                    size_t verts;
+                    file >> verts;
+
+                    btConvexHullShape* convexhull  = new btConvexHullShape();
+                    btVector3 v;
+
+                    for (size_t i = 0; i < verts; i++){
+                        file >> coords[0];
+                        file >> coords[1];
+                        file >> coords[2];
+                        v.setValue(coords[0], coords[1], coords[2]);
+                        convexhull->addPoint(v);
+                    }
+
+                    transf.setIdentity();
+                    cshape->addChildShape(transf, convexhull);
+                } else if (type == "mesh"){
+                    float coords[3];
+                    size_t verts;
+                    file >> verts;
+
+                    btTriangleMesh* trimesh = new btTriangleMesh();
+
+                    // TODO: allocate
+                    // allocate memory for the meshy mesh??? like here??
+                    // trimesh->preallocateVertices(verts);
+
+                    btVector3 v[3];
+
+                    for (size_t i = 0; i < verts; i++){
+                        file >> coords[0];
+                        file >> coords[1];
+                        file >> coords[2];
+                        v[0].setValue(coords[0], coords[1], coords[2]);
+                        file >> coords[0];
+                        file >> coords[1];
+                        file >> coords[2];
+                        v[1].setValue(coords[0], coords[1], coords[2]);
+                        file >> coords[0];
+                        file >> coords[1];
+                        file >> coords[2];
+                        v[2].setValue(coords[0], coords[1], coords[2]);
+
+                        trimesh->addTriangle(v[0], v[1], v[2]);
+                    }
+
+                    btBvhTriangleMeshShape* mshape = new btBvhTriangleMeshShape(trimesh, true, true);
+
+                    transf.setIdentity();
+                    cshape->addChildShape(transf, mshape);
+                }
+
+                file >> type;
+            }
+        }
+
+        model = cshape;
+        status = READY;
+    }
+
+    void PathAction::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep){
+            physcomp->UpdatePath();
+    }
+
+    PhysicsComponent* Raycast(const glm::vec3& from, const glm::vec3& to){
+        btVector3 bto, bfrom;
+
+        bto.setValue(to.x, to.y, to.z);
+        bfrom.setValue(from.x, from.y, from.z);
+
+        btCollisionWorld::ClosestRayResultCallback callback(bfrom, bto);
+
+        dynamicsWorld->rayTest(bfrom, bto, callback);
+
+        if (callback.hasHit())
+            return (PhysicsComponent*)callback.m_collisionObject->getUserPointer();
+        else
+            return nullptr;
+    }
 
 
 

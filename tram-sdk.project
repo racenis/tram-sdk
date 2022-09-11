@@ -3,10 +3,18 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <VirtualDirectory Name="physics">
+      <File Name="src/physics/collisionmodel.cpp"/>
+      <File Name="src/physics/motionstates.h"/>
+      <File Name="src/physics/actions.h"/>
+    </VirtualDirectory>
+    <File Name="src/navigation.cpp"/>
+    <File Name="src/navigation.h"/>
     <File Name="src/audioloader.cpp"/>
     <File Name="src/audio.cpp"/>
     <File Name="src/audio.h"/>
     <VirtualDirectory Name="components">
+      <File Name="src/components/aicomponent.h"/>
       <File Name="src/components/particlecomponent.h"/>
       <File Name="src/components/spritecomponent.h"/>
       <File Name="src/components/physicscomponent.h"/>
