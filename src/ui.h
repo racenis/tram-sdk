@@ -7,7 +7,7 @@
 #ifndef UI_H
 #define UI_H
 
-#include <render.h>
+#include <render/render.h>
 
 class GLFWwindow;
 class GLFWcursor;

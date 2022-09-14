@@ -4,16 +4,18 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <VirtualDirectory Name="physics">
+      <File Name="src/physics/physics.h"/>
+      <File Name="src/physics/physics.cpp"/>
       <File Name="src/physics/collisionmodel.cpp"/>
       <File Name="src/physics/motionstates.h"/>
       <File Name="src/physics/actions.h"/>
     </VirtualDirectory>
     <File Name="src/navigation.cpp"/>
     <File Name="src/navigation.h"/>
-    <File Name="src/audioloader.cpp"/>
     <File Name="src/audio.cpp"/>
     <File Name="src/audio.h"/>
     <VirtualDirectory Name="components">
+      <File Name="src/components/triggercomponent.h"/>
       <File Name="src/components/aicomponent.h"/>
       <File Name="src/components/particlecomponent.h"/>
       <File Name="src/components/spritecomponent.h"/>
@@ -32,6 +34,8 @@
     <File Name="src/gui.h"/>
     <File Name="src/gui.cpp"/>
     <VirtualDirectory Name="render">
+      <File Name="src/render/render.h"/>
+      <File Name="src/render/armature.h"/>
       <File Name="src/render/sprite.cpp"/>
       <File Name="src/render/opengl_shader.cpp"/>
       <File Name="src/render/opengl_loader.cpp"/>
@@ -45,6 +49,8 @@
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
+      <File Name="src/entities/entity.cpp"/>
+      <File Name="src/entities/entities.h"/>
       <File Name="src/entities/crate.h"/>
       <File Name="src/entities/lamp.h"/>
       <File Name="src/entities/player.h"/>
@@ -61,19 +67,13 @@
     <File Name="src/ui.h"/>
     <File Name="src/ui.cpp"/>
     <File Name="src/serializeddata.h"/>
-    <File Name="src/render.h"/>
-    <File Name="src/physics.h"/>
-    <File Name="src/physics.cpp"/>
     <File Name="src/net.h"/>
     <File Name="src/net.cpp"/>
     <File Name="src/main.cpp"/>
-    <File Name="src/entity.cpp"/>
-    <File Name="src/entities.h"/>
     <File Name="src/core.h"/>
     <File Name="src/core.cpp"/>
     <File Name="src/async.h"/>
     <File Name="src/async.cpp"/>
-    <File Name="src/armature.h"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

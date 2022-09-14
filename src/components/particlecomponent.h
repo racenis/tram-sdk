@@ -7,7 +7,7 @@
 #ifndef PARTICLECOMPONENT_H
 #define PARTICLECOMPONENT_H
 
-#include <render.h>
+#include <render/render.h>
 
 namespace Core {
     class ParticleComponent : public EntityComponent {

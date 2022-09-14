@@ -8,7 +8,7 @@
 #ifndef ARMATURECOMPONENT_H
 #define ARMATURECOMPONENT_H
 
-#include <render.h>
+#include <render/render.h>
 
 namespace Core {
 class ArmatureComponent : public EntityComponent {

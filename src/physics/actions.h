@@ -7,10 +7,24 @@
 #ifndef ACTIONS_H
 #define ACTIONS_H
 
-namespace Core {
-    
-    // put code in here
-    
+#include <btBulletDynamicsCommon.h>
+#include <components/physicscomponent.h>
+
+namespace Core::Physics {
+    class PathAction : public btActionInterface {
+    public:
+
+        PathAction(PhysicsComponent* physComponent){
+            physcomp = physComponent;
+        }
+
+        virtual void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep);
+
+        virtual void debugDraw(btIDebugDraw* debugDrawer){}
+
+    private:
+        PhysicsComponent* physcomp = nullptr;
+    };
 }
 
 #endif //ACTIONS_H

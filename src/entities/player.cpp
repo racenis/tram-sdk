@@ -33,7 +33,7 @@ void Player::Load(){
     physicscomponent->Init();
 
     physicscomponent->DisableRotation();
-    physicscomponent->DisableDebugDrawing();
+    //physicscomponent->DisableDebugDrawing();
 
     isloaded = true;
 

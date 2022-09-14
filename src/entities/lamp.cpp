@@ -4,7 +4,7 @@
 // LAMP.CPP -- Lamp entity.
 
 #include <core.h>
-#include <entities.h>
+#include <entities/entities.h>
 
 #ifdef BEGONIS
 

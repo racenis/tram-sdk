@@ -10,10 +10,7 @@ namespace Core::Net {
     //void (*pushfuncs[50])(const Command& c);
 
     /*void SubmitCommand(const Command& c){
-        // short-circuited rn
         (*pushfuncs[c.subsystem])(c);
-
-        // in the future relevant commands will be sent over the net
     }
 
     void RegisterQueue(uint8_t subsystem, void (*pushfunc)(const Command& c)){

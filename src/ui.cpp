@@ -5,7 +5,7 @@
 // Window opening, opengl context creation and user inputs.
 
 #include <core.h>
-#include <render.h>
+#include <render/render.h>
 #include <ui.h>
 
 #include <fstream>
@@ -156,7 +156,6 @@ namespace Core::UI {
         if(glfwGetKey(WINDOW, GLFW_KEY_F1) == GLFW_PRESS) glfwSetWindowShouldClose(WINDOW, true);
         SHOULD_CLOSE = glfwWindowShouldClose(WINDOW);
 
-
         if (INPUT_STATE == STATE_FLYING){
             if (glfwGetKey(WINDOW, GLFW_KEY_W) == GLFW_PRESS)
                 CAMERA_POSITION += CAMERA_ROTATION * CAMERA_FORWARD * CAMERA_SPEED;
@@ -172,8 +171,6 @@ namespace Core::UI {
         ismouse_left = !wasmouse_left && mouse_status_left;
         isnotmouse_left = wasmouse_left && !mouse_status_left;
         wasmouse_left = mouse_status_left;
-
-        //if (ismouse_left) std::cout << sizeof(FontCharInfo) << " " << sizeof(float[5]) << std::endl;
 
         // generate events from keypresses
         if (INPUT_STATE == STATE_DEFAULT){
@@ -209,12 +206,9 @@ namespace Core::UI {
 
         CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
 
-
         cur_x = cursorx;
         cur_y = cursory;
 
-
-        //if (current_screen) current_screen->Update();
         static InputState input_state_last = STATE_DEFAULT;
         if (input_state_last != STATE_MENU_OPEN && INPUT_STATE == STATE_MENU_OPEN) {
             SetCursor(CURSOR_DEFAULT);
@@ -222,7 +216,6 @@ namespace Core::UI {
             SetCursor(CURSOR_NONE);
         }
         input_state_last = INPUT_STATE;
-
     }
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -235,10 +228,6 @@ namespace Core::UI {
         } else if (KeyActionBindings[key].type == KeyAction::SPECIAL_OPTION && action == GLFW_PRESS) {
             KeyActionBindings[key].special_option();
         }
-
-        //if (action == GLFW_REPEAT) std::cout << "REPEATED!" << std::endl;
-
-        //std::cout << "Key-press: " << KeyActionBindings[key].action << std::endl;
     }
     
     void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
@@ -300,7 +289,6 @@ namespace Core::UI {
         std::ifstream file;
         file.open(filename);
         while(file){
-            // TODO: change the indices in the code to enums or something
             uint32_t index;
             float left, right, top, bottom, drop;
             file >> index;
@@ -323,7 +311,6 @@ namespace Core::UI {
         std::ifstream file;
         file.open(filename);
         while(file){
-            // TODO: change the indices in the code to enums or something
             uint32_t index;
             float x, y, w, h, drop;
             file >> index;
@@ -344,7 +331,7 @@ namespace Core::UI {
 
     void SetText(const char* text, uint32_t x, uint32_t y, float scale, float width, bool justify, bool stretch, uint32_t font, const glm::vec3& color){
         const float CHAR_W = 16.0f;     // the width & height for the characters in ui coordinates
-        const float CHAR_H = CHAR_W;     // don't touch these (unless you plan on re-generating all of the ui textures)
+        const float CHAR_H = CHAR_W;    // don't touch these (unless you plan on re-generating all of the ui textures)
         const float MIN_SPACE = 4.0f;   // a space will never be smaller than this.
 
         float line_offset = y;

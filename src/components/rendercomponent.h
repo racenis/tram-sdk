@@ -7,7 +7,7 @@
 #ifndef RENDERCOMPONENT_H
 #define RENDERCOMPONENT_H
 
-#include <render.h>
+#include <render/render.h>
 
 namespace Core {
     class RenderComponent : public EntityComponent {

@@ -3,7 +3,7 @@
 //
 // PHYSICS.H -- Physics library wrapper
 // Wrapper for the physics library. It's seperate, so that engine can compile without
-// the physics library, because it is a pain in the     to compile.
+// the physics library, because it is a pain in the to compile.
 
 #ifndef PHYSICS_H
 #define PHYSICS_H
@@ -19,6 +19,7 @@ class btHingeConstraint;
 class btActionInterface;
 class btRaycastVehicle;
 class btCompoundShape;
+class btCollisionObject;
 
 namespace Core {
     class PhysicsComponent;

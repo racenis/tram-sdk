@@ -11,7 +11,8 @@ namespace Core::GUI {
         static bool debugdraw_paths = false;
         static bool debugdraw_navmeshes = false;
         
-        //if (debugdraw_trans) for (size_t i = 0; i < PoolProxy<WorldCell>::GetPool().GetSize(); i++) if (*((uint64_t*)(PoolProxy<WorldCell>::GetPool().begin().ptr + i))!=0) if( (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->IsDrawn())  (PoolProxy<WorldCell>::GetPool().begin().ptr + i)->Draw();
+        
+        
         if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawTransitions();
         if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawPaths();
         if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawNavmeshes();

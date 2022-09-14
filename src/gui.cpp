@@ -130,6 +130,10 @@ namespace Core::GUI {
         *FrameStack.AddNew() = FrameObject {((size_x - width) / 2.0f) + pos_x, ((size_y - height) / 2.0f) + pos_y, width, height, 0.0f, 0.0f};
     }
     
+    void Frame() {
+        *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT, 0.0f, 0.0f};
+    }
+    
     void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
         auto& f = FrameStack.top();
         GlyphNoclip(0.0f, 0.0f, f.width, f.height, tex_x, tex_y, tex_w, tex_h, color, tex);
@@ -315,6 +319,7 @@ namespace Core::GUI {
         }
     }
     
+    
     // measures a string until newline
     void GlyphMetrics(char const* text, font_t font, float& w, uint32_t& sp, char const*& nl) {
         char const* it = text; w = 0.0f; sp = 0;
@@ -322,6 +327,18 @@ namespace Core::GUI {
             if (*it == ' ') sp++;
             w += UI::glyphinfo[font][(size_t)*it].w;
         } nl = it;
+    }
+    
+    // projects a world-space point onto the screen, then sets a text there
+    void DebugText(char const* text, const glm::vec3& location, const glm::vec3& color) {
+        glm::vec3 screen_location;
+        Render::Project(location, screen_location);
+        float w; uint32_t sp; char const* end;
+        GlyphMetrics(text, 1, w, sp, end);
+        
+        Frame();
+        GlyphText(text, 1, std::floor(screen_location.x - ((w+SPACE_WIDTH*sp)/2.0f)), std::floor(screen_location.y), SPACE_WIDTH, color);
+        EndFrame();
     }
     
     void Text(char const* text, font_t font, orientation alignment, const glm::vec3& color) {

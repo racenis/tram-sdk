@@ -4,8 +4,8 @@
 // CORE.CPP -- Core functions and globals.
 
 #include <core.h>
-#include <render.h>
-#include <armature.h>
+#include <render/render.h>
+#include <render/armature.h>
 
 #include <cstring>
 #include <fstream>

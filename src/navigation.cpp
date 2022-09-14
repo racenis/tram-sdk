@@ -4,7 +4,7 @@
 // NAVIGATION.CPP -- Navigation implementation
 
 #include <navigation.h>
-#include <render.h>
+#include <render/render.h>
 
 using namespace Core;
 template <> Pool<NavigationPlan> PoolProxy<NavigationPlan>::pool("navigation plan pool", 100);

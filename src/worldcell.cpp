@@ -10,23 +10,13 @@
 
 #include <set>
 
-#include <render.h>
+#include <render/render.h>
 
 using namespace Core;
 std::unordered_map<uint64_t, WorldCell*> WorldCell::List;
-//PoolAddOnly<unsigned char> WorldCell::Transition::Pool("transition pool", 2000);
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
 template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
 template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcellloader pool", 10, false);
-
-
-//WorldCell::WorldCell(uint64_t cellName, bool isInterior, bool hasInteriorLighting){
-    //name = cellName;
-    //interior = isInterior;
-    //interiorLights = hasInteriorLighting;
-    //List[name] = this;
-    //std::cout << "Added cell: " << ReverseUID(name) << std::endl;
-//};
 
 void WorldCell::SetName(name_t new_name) {
     if (name) {
@@ -80,7 +70,6 @@ void WorldCell::Unload(){
     for (auto& it : entities)
         if(it->IsAutoLoad()) it->Unload();
 
-
     loaded = false;
 };
 
@@ -98,10 +87,6 @@ void WorldCell::Loader::LoadCells() {
         }
     }
     
-    //std::cout << "Active_cells: ";
-    //for (auto cell : active_cells) std::cout << ReverseUID(cell->GetName()) << " ";
-    //std::cout << std::endl;
-    
     for (auto& cell : cell_pool) {
         if(cell.IsLoaded() && !active_cells.contains(&cell)) {
             cell.Unload();
@@ -113,10 +98,7 @@ void WorldCell::Loader::LoadCells() {
     }
 }
 
-
 void WorldCell::LoadFromDisk(){
-    //std::cout << "DONT USE THIS METHOD" << std::endl;
-    //return;
     char path[100] = "data/";
     strcat(path, ReverseUID(name));
     strcat(path, ".cell");
@@ -249,30 +231,21 @@ void WorldCell::LoadFromDisk(){
     }
 };
 
-void WorldCell::AddEntity(Entity* entPtr){
-    entities.push_back(entPtr);
+void WorldCell::AddEntity(Entity* entity){
+    entities.push_back(entity);
 
-    entPtr->Init();
+    entity->Init();
 
-   // if (!(entPtr->cell)) entPtr->location += origin;
-    entPtr->cell = this;
+    entity->cell = this;
 
-    if(loaded && !entPtr->isloaded && entPtr->auto_load){
-        entPtr->Load();
+    if(loaded && !entity->isloaded && entity->auto_load){
+        entity->Load();
     }
 
-    if (!loaded && entPtr->isloaded && entPtr->auto_load){
-        // or delete if not persistent or whatever
-        entPtr->Unload();
+    if (!loaded && entity->isloaded && entity->auto_load){
+        entity->Unload();
     }
 }
-
-/*WorldCell::Transition::Transition(WorldCell* cell){
-    into = cell;
-    //max_planes = planecount;
-    //current_planes = 0;
-    //firstplane = (glm::vec4*) Pool.AddNew(planecount * sizeof(glm::vec4));
-}*/
 
 void WorldCell::Transition::AddPoint(const glm::vec3& point){
     points.push_back(point);
@@ -285,91 +258,89 @@ bool WorldCell::Transition::IsInside(const glm::vec3& point){
 }
 
 void WorldCell::Transition::GeneratePlanes(bool disp) {
-        assert(points.size() > 3);
-        
-        planes.clear();
-        
-        for (size_t i = 0; i < points.size(); i++) {
-            for (size_t j = i+1; j < points.size(); j++) {
-                for (size_t k = j+1; k < points.size(); k++) {
-                    auto& A = points[i];
-                    auto& B = points[j];
-                    auto& C = points[k];
-                    auto AB = B - A;
-                    auto AC = C - A;
-                    auto cross = glm::cross(AB, AC);
-                    auto d = -(cross.x*A.x + cross.y*A.y + cross.z*A.z);
-                    
-                    glm::vec4 plane = glm::vec4(cross, d);
-                    
-                    for (size_t it = 0; it < points.size(); it++) {
-                        if(i == it || j == it || k == it) continue;
-                        if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
-                            plane *= -1.0f;
-                            goto tryagain;
-                        }
+    assert(points.size() > 3);
+    
+    planes.clear();
+    
+    for (size_t i = 0; i < points.size(); i++) {
+        for (size_t j = i+1; j < points.size(); j++) {
+            for (size_t k = j+1; k < points.size(); k++) {
+                auto& A = points[i];
+                auto& B = points[j];
+                auto& C = points[k];
+                auto AB = B - A;
+                auto AC = C - A;
+                auto cross = glm::cross(AB, AC);
+                auto d = -(cross.x*A.x + cross.y*A.y + cross.z*A.z);
+                
+                glm::vec4 plane = glm::vec4(cross, d);
+                
+                for (size_t it = 0; it < points.size(); it++) {
+                    if(i == it || j == it || k == it) continue;
+                    if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
+                        plane *= -1.0f;
+                        goto tryagain;
                     }
-                    
-                    okay:
-                    
-                    if (disp) {
-                        Render::AddLine(A, B, Render::COLOR_WHITE);
-                        Render::AddLine(A, C, Render::COLOR_WHITE);
-                        Render::AddLine(B, C, Render::COLOR_WHITE);
-                        
-                        Render::AddLine(A, A+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                        Render::AddLine(B, B+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                        Render::AddLine(C, C+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    }
-                    
-                    planes.push_back(plane);
-                    
-                    yeet:
-                    continue;
-                    
-                    tryagain:
-                    
-                    for (size_t it = 0; it < points.size(); it++) {
-                        if(i == it || j == it || k == it) continue;
-                        if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
-                            goto yeet;
-                        }
-                    }
-                    
-                    goto okay;
                 }
+                
+                okay:
+                
+                if (disp) {
+                    Render::AddLine(A, B, Render::COLOR_WHITE);
+                    Render::AddLine(A, C, Render::COLOR_WHITE);
+                    Render::AddLine(B, C, Render::COLOR_WHITE);
+                    
+                    Render::AddLine(A, A+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(B, B+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(C, C+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                }
+                
+                planes.push_back(plane);
+                
+                yeet:
+                continue;
+                
+                tryagain:
+                
+                for (size_t it = 0; it < points.size(); it++) {
+                    if(i == it || j == it || k == it) continue;
+                    if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
+                        goto yeet;
+                    }
+                }
+                
+                goto okay;
             }
         }
-        
-        std::sort(planes.begin(), planes.end(), [](const glm::vec4& a, const glm::vec4& b){ 
-            if (a.x != b.x) return a.x < b.x;
-            if (a.y != b.y) return a.y < b.y;
-            if (a.z != b.z) return a.z < b.z;
-            return a.w < b.w;});
-        planes.erase(unique( planes.begin(), planes.end() ), planes.end());
-        
-        
     }
     
-    void WorldCell::DrawTransitions(){
-        for (auto& it : trans_in) it->GeneratePlanes(true);
-    }
+    std::sort(planes.begin(), planes.end(), [](const glm::vec4& a, const glm::vec4& b){ 
+        if (a.x != b.x) return a.x < b.x;
+        if (a.y != b.y) return a.y < b.y;
+        if (a.z != b.z) return a.z < b.z;
+        return a.w < b.w;});
+    planes.erase(unique( planes.begin(), planes.end() ), planes.end());
+}
     
-    void WorldCell::DrawNavmeshes() {
-        for (auto nv : navmeshes)
-            for (auto& nd : nv->nodes) {
-                Render::AddLineMarker(nd.location, Render::COLOR_YELLOW);
-                if (nd.next) Render::AddLine(nd.location, nd.next->location, Render::COLOR_YELLOW);
-                if (nd.prev) Render::AddLine(nd.location, nd.prev->location, Render::COLOR_YELLOW);
-                if (nd.left) Render::AddLine(nd.location, nd.left->location, Render::COLOR_YELLOW);
-                if (nd.right) Render::AddLine(nd.location, nd.right->location, Render::COLOR_YELLOW);
-            }
-    }
-    
-    void WorldCell::DrawPaths() {
-        for (auto pt : paths)
-            for (auto& nd : pt->nodes)
-                nd.Render();
-    }
-    
-    
+void WorldCell::DrawTransitions(){
+    for (auto& it : trans_in) it->GeneratePlanes(true);
+}
+
+void WorldCell::DrawNavmeshes() {
+    for (auto nv : navmeshes)
+        for (auto& nd : nv->nodes) {
+            Render::AddLineMarker(nd.location, Render::COLOR_YELLOW);
+            if (nd.next) Render::AddLine(nd.location, nd.next->location, Render::COLOR_YELLOW);
+            if (nd.prev) Render::AddLine(nd.location, nd.prev->location, Render::COLOR_YELLOW);
+            if (nd.left) Render::AddLine(nd.location, nd.left->location, Render::COLOR_YELLOW);
+            if (nd.right) Render::AddLine(nd.location, nd.right->location, Render::COLOR_YELLOW);
+        }
+}
+
+void WorldCell::DrawPaths() {
+    for (auto pt : paths)
+        for (auto& nd : pt->nodes)
+            nd.Render();
+}
+
+

@@ -4,7 +4,7 @@
 // RENDER.CPP -- Rendering stuff.
 
 #include <core.h>
-#include <render.h>
+#include <render/render.h>
 #include <render/renderer.h>
 #include <components/rendercomponent.h>
 #include <components/spritecomponent.h>

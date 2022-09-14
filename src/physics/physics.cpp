@@ -3,19 +3,14 @@
 //
 // PHYSICS.CPP
 
-#include <btBulletDynamicsCommon.h>
-//#include <glm/glm.hpp>
-//#include <glm/gtx/quaternion.hpp>
+#include <physics/physics.h>
 
-#include <core.h>
+#include <physics/actions.h>
+#include <physics/motionstates.h>
 
-#include <components/armaturecomponent.h>
-#include <armature.h>
+#include <components/triggercomponent.h>
 
-#include <physics.h>
-#include <components/physicscomponent.h>
-
-#include <fstream>
+#include <gui.h>
 
 namespace Core::Physics {
     std::unordered_map<uint64_t, CollisionModel*> CollisionModel::List;
@@ -27,6 +22,11 @@ namespace Core::Physics {
     btDiscreteDynamicsWorld* dynamicsWorld;
     btIDebugDraw* debugDrawer;
     btVehicleRaycaster* vehicleRaycaster;
+    
+    enum UserIndex : int {
+        USERINDEX_PHYSICSCOMPONENT = 1,
+        USERINDEX_TRIGGERCOMPONENT = 2,
+    };
 
     CollisionModel* CollisionModel::Find(uint64_t modelName){
         std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName);
@@ -44,193 +44,51 @@ namespace Core::Physics {
         Stats::Start(Stats::PHYSICS);
         dynamicsWorld->stepSimulation(time, 1);
         if (DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
+        
+        
+        // process the triggers
+        int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
+        for (int i = 0; i < numManifolds; i++)
+        {
+            btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject* obA = contactManifold->getBody0();
+            const btCollisionObject* obB = contactManifold->getBody1();
+            
+            if (obA->getUserIndex() == USERINDEX_TRIGGERCOMPONENT &&
+                obB->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
+                contactManifold->getNumContacts()) {
+                assert(obA->getUserPointer());
+                assert(obB->getUserPointer());
+                ((TriggerComponent*)obA->getUserPointer())->Collision((PhysicsComponent*)obB->getUserPointer());
+            }
+            
+            if (obA->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
+                obB->getUserIndex() == USERINDEX_TRIGGERCOMPONENT &&
+                contactManifold->getNumContacts()) {
+                assert(obA->getUserPointer());
+                assert(obB->getUserPointer());
+                ((TriggerComponent*)obB->getUserPointer())->Collision((PhysicsComponent*)obA->getUserPointer());
+            }
+        }
+        
+        for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
+        
         Stats::Stop(Stats::PHYSICS);
     }
-
-    class PathAction : public btActionInterface {
-    public:
-
-        PathAction(PhysicsComponent* physComponent){
-            physcomp = physComponent;
-        }
-
-        virtual void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep);
-
-        virtual void debugDraw(btIDebugDraw* debugDrawer){}
-
-    private:
-        PhysicsComponent* physcomp = nullptr;
-    };
-
-    class EntMotionState : public btMotionState {
-    public:
-        EntMotionState(Entity* ent, glm::vec3& offset) {
-            entity = ent;
-            troffse = offset;
-        }
-
-        virtual ~EntMotionState() {
-        }
-
-        void SetEntity(Entity* ent) {
-            entity = ent;
-        }
-
-        virtual void getWorldTransform(btTransform &worldTrans) const {
-            glm::vec3 loc;
-            glm::quat rot;
-
-            if (entity == nullptr){
-                loc = glm::vec3(0.0f, 0.0f, 0.0f);
-                rot = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-            } else {
-                entity->GetLocation(loc);
-                entity->GetRotation(rot);
-            }
-
-            loc += troffse;
-
-            btVector3 translation;
-            translation.setX(loc.x);
-            translation.setY(loc.y);
-            translation.setZ(loc.z);
-
-            btQuaternion rotation;
-            rotation.setX(rot.x);
-            rotation.setY(rot.y);
-            rotation.setZ(rot.z);
-            rotation.setW(rot.w);
-
-            btTransform transf;
-            transf.setRotation(rotation);
-            transf.setOrigin(translation);
-
-            worldTrans = transf;
-        }
-
-        virtual void setWorldTransform(const btTransform &worldTrans) {
-            if (entity == nullptr) return;
-
-            glm::vec3 location;
-            glm::quat rotation;
-
-            btQuaternion rot = worldTrans.getRotation();
-            btVector3 loc = worldTrans.getOrigin();
-
-            location.x = loc.getX();
-            location.y = loc.getY();
-            location.z = loc.getZ();
-
-            location -= troffse;
-
-            rotation.x = rot.getX();
-            rotation.y = rot.getY();
-            rotation.z = rot.getZ();
-            rotation.w = rot.getW();
-
-            entity->SetTransform(location, rotation);
-        }
-
-    protected:
-        Entity* entity = nullptr;
-        glm::vec3 troffse;
-    };
-
-    /// Used to interface the physics library with the rest of the system.
-    class ArmMotionState : public btMotionState {
-    public:
-        ArmMotionState(uint64_t boneName, ArmatureComponent* armature, glm::vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
-            ent = entity;
-            arm = armature;
-            offset = bindPos;
-            bone = boneName;
-            physcomp = physicsComp;
-        }
-
-        virtual ~ArmMotionState() {
-        }
-
-        virtual void getWorldTransform(btTransform &worldTrans) const {
-            glm::vec3 loc;
-            glm::quat rot;
-
-            ent->GetLocation(loc);
-            ent->GetRotation(rot);
-
-            loc += rot * offset;
-
-            btVector3 translation;
-            translation.setX(loc.x);
-            translation.setY(loc.y);
-            translation.setZ(loc.z);
-
-            btQuaternion rotation;
-            rotation.setX(rot.x);
-            rotation.setY(rot.y);
-            rotation.setZ(rot.z);
-            rotation.setW(rot.w);
-
-            btTransform transf;
-            transf.setRotation(rotation);
-            transf.setOrigin(translation);
-
-            worldTrans = transf;
-        }
-
-        virtual void setWorldTransform(const btTransform &worldTrans) {
-            glm::vec3 location;
-            glm::quat rotation;
-
-            btQuaternion rot = worldTrans.getRotation();
-            btVector3 loc = worldTrans.getOrigin();
-
-            location.x = loc.getX();
-            location.y = loc.getY();
-            location.z = loc.getZ();
-
-            rotation.x = rot.getX();
-            rotation.y = rot.getY();
-            rotation.z = rot.getZ();
-            rotation.w = rot.getW();
-
-            glm::vec3 ent_loc;
-            glm::quat ent_rot;
-
-            ent->GetLocation(ent_loc);
-            ent->GetRotation(ent_rot);
-
-            location = location - ent_loc;
-            location = glm::inverse(ent_rot) * location;
-            location = location - offset;
-
-            rotation = rotation * glm::inverse(ent_rot);
-
-            Render::Keyframe kframe;
-            kframe.rotation = rotation;
-            kframe.location = location;
-
-            arm->SetBoneKeyframe(bone, kframe);
-        }
-
-    protected:
-        PhysicsComponent* physcomp;
-        ArmatureComponent* arm;
-        Entity* ent;
-        glm::vec3 offset;
-        uint64_t bone;
-    };
 
     /// Debug drawer for the physics library.
     class PhysicsDebugDraw : public btIDebugDraw{
     public:
 
-        // TODO: implement this one
-        void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) {};
+        void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) {
+            drawLine(PointOnB, normalOnB, color);
+        };
 
         void reportErrorWarning(const char* warningString) {std::cout << warningString << std::endl;};
 
-        // TODO: implement this one
-        void draw3dText(const btVector3& location, const char* textString) {};
+        void draw3dText(const btVector3& location, const char* textString) {
+            Core::GUI::DebugText(textString, glm::vec3(location.getX(), location.getY(), location.getZ()), Render::COLOR_WHITE);
+        };
 
         void setDebugMode(int debugMode) {};
 
@@ -280,195 +138,7 @@ namespace Core::Physics {
         dynamicsWorld->addRigidBody(planeRigidBody);
     }
 
-    void CollisionModel::LoadFromDisk(){
-        std::ifstream file;
-        std::string type;
-        char path[100] = "data/models/";
-
-        btCollisionShape* shape;
-        btTransform transf;
-        btQuaternion rotat;
-        btCompoundShape* cshape = new btCompoundShape();
-
-        strcat(path, ReverseUID(name));
-        strcat(path, ".collmdl");
-
-        file.open(path);
-        if(!file.is_open()){
-            std::cout << "Can't find collisionmodel: " << path << std::endl;
-
-            transf.setIdentity();
-            shape = new btBoxShape(btVector3(0.125f, 0.125f, 0.125f));
-
-            cshape->addChildShape(transf, shape);
-        } else {
-            std::cout << "Loading: " << path << std::endl;
-            file >> type;
-            while(file){
-                if (type == "box"){
-                    float coords[3];
-                    float rotation[3];
-                    float dimensions[3];
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    file >> rotation[0];
-                    file >> rotation[1];
-                    file >> rotation[2];
-                    file >> dimensions[0];
-                    file >> dimensions[1];
-                    file >> dimensions[2];
-
-                    transf.setIdentity();
-                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                    transf.setRotation(rotat);
-                    shape = new btBoxShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
-
-                    cshape->addChildShape(transf, shape);
-                } else if (type == "sphere"){
-                    float coords[3];
-                    float rotation[3];
-                    float thickness;
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    file >> rotation[0];
-                    file >> rotation[1];
-                    file >> rotation[2];
-                    file >> thickness;
-
-                    transf.setIdentity();
-                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                    transf.setRotation(rotat);
-                    shape = new btSphereShape(thickness);
-
-                    cshape->addChildShape(transf, shape);
-                } else if (type == "cylinder"){
-                    float coords[3];
-                    float rotation[3];
-                    float dimensions[3];
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    file >> rotation[0];
-                    file >> rotation[1];
-                    file >> rotation[2];
-                    file >> dimensions[0];
-                    file >> dimensions[1];
-                    file >> dimensions[2];
-
-                    transf.setIdentity();
-                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                    transf.setRotation(rotat);
-                    shape = new btCylinderShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
-
-                    cshape->addChildShape(transf, shape);
-                } else if (type == "capsule"){
-                    float coords[3];
-                    float rotation[3];
-                    float thickness;
-                    float height;
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    file >> rotation[0];
-                    file >> rotation[1];
-                    file >> rotation[2];
-                    file >> thickness;
-                    file >> height;
-
-                    transf.setIdentity();
-                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                    transf.setRotation(rotat);
-                    shape = new btCapsuleShape(thickness, height);
-
-                    cshape->addChildShape(transf, shape);
-                } else if (type == "cone"){
-                    float coords[3];
-                    float rotation[3];
-                    float thickness;
-                    float height;
-                    file >> coords[0];
-                    file >> coords[1];
-                    file >> coords[2];
-                    file >> rotation[0];
-                    file >> rotation[1];
-                    file >> rotation[2];
-                    file >> thickness;
-                    file >> height;
-
-                    transf.setIdentity();
-                    transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-                    rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-                    transf.setRotation(rotat);
-                    shape = new btConeShape(thickness, height);
-
-                    cshape->addChildShape(transf, shape);
-                } else if (type == "cloud"){
-                    float coords[3];
-                    size_t verts;
-                    file >> verts;
-
-                    btConvexHullShape* convexhull  = new btConvexHullShape();
-                    btVector3 v;
-
-                    for (size_t i = 0; i < verts; i++){
-                        file >> coords[0];
-                        file >> coords[1];
-                        file >> coords[2];
-                        v.setValue(coords[0], coords[1], coords[2]);
-                        convexhull->addPoint(v);
-                    }
-
-                    transf.setIdentity();
-                    cshape->addChildShape(transf, convexhull);
-                } else if (type == "mesh"){
-                    float coords[3];
-                    size_t verts;
-                    file >> verts;
-
-                    btTriangleMesh* trimesh = new btTriangleMesh();
-
-                    // TODO: allocate
-                    // allocate memory for the meshy mesh??? like here??
-                    // trimesh->preallocateVertices(verts);
-
-                    btVector3 v[3];
-
-                    for (size_t i = 0; i < verts; i++){
-                        file >> coords[0];
-                        file >> coords[1];
-                        file >> coords[2];
-                        v[0].setValue(coords[0], coords[1], coords[2]);
-                        file >> coords[0];
-                        file >> coords[1];
-                        file >> coords[2];
-                        v[1].setValue(coords[0], coords[1], coords[2]);
-                        file >> coords[0];
-                        file >> coords[1];
-                        file >> coords[2];
-                        v[2].setValue(coords[0], coords[1], coords[2]);
-
-                        trimesh->addTriangle(v[0], v[1], v[2]);
-                    }
-
-                    btBvhTriangleMeshShape* mshape = new btBvhTriangleMeshShape(trimesh, true, true);
-
-                    transf.setIdentity();
-                    cshape->addChildShape(transf, mshape);
-                }
-
-                file >> type;
-            }
-        }
-
-        model = cshape;
-        status = READY;
-    }
+    
 
     void PathAction::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep){
             physcomp->UpdatePath();
@@ -499,9 +169,10 @@ namespace Core::Physics {
 }
 
 namespace Core {
-using namespace Core::Physics;
+    using namespace Core::Physics;
 
-template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
+    template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
+    template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
 
     void PhysicsComponent::Init(){
         if(resources_waiting == 0) Start();
@@ -530,6 +201,7 @@ template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics co
 
         dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
         rigidBody->setUserPointer(this);
+        rigidBody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
 
         if(should_asleep) rigidBody->setActivationState(0);
 
@@ -820,6 +492,107 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
 
         delete glueConstraint;
         glueConstraint = nullptr;
+    }
+
+
+
+
+
+
+
+
+
+
+    void TriggerComponent::Init(){
+        if (resources_waiting == 0) Start();
+    }
+    
+    void TriggerComponent::Start(){
+        if (model.GetResource())
+            shape = (btCollisionShape*)model.GetResource()->GetPtr();
+
+        btTransform transform;
+        transform.setIdentity();
+        transform.setOrigin(btVector3(0.0f, 1.1f, -3.0f));
+        
+        btQuaternion rotation;
+        rotation.setEuler(0.785f, 0.0f, 0.0f);
+        transform.setRotation(rotation);
+        
+        trigger = new btCollisionObject();
+        trigger->setCollisionShape(new btBoxShape(btVector3(btScalar(0.99f),btScalar(0.99f),btScalar(0.99f))));
+        trigger->setWorldTransform(transform);
+        trigger->setUserPointer(this);
+        trigger->setUserIndex(USERINDEX_TRIGGERCOMPONENT);
+        trigger->setCollisionFlags(trigger->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        
+        dynamicsWorld->addCollisionObject(trigger);
+        
+        
+        //dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+	
+        /*
+        if(bone == 0)
+            motionState = new EntMotionState(parent, off_set);
+            else
+                motionState = new ArmMotionState(bone, armature, off_set, parent, this);
+
+        btScalar bmass = mass;
+        btVector3 inertia(0.0f, 0.0f, 0.0f);
+        shape->calculateLocalInertia(bmass, inertia);
+        btRigidBody::btRigidBodyConstructionInfo rigidBodyConstructionInfo(bmass, motionState, shape, inertia);
+
+        rigidBody = new btRigidBody(rigidBodyConstructionInfo);
+
+        dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+        rigidBody->setUserPointer(this);
+
+        if(should_asleep) rigidBody->setActivationState(0);
+        */
+        
+
+        is_ready = true;
+
+        //return true;
+    }
+    
+    void TriggerComponent::Uninit(){
+        dynamicsWorld->removeCollisionObject(trigger);
+        delete trigger;
+    };
+
+    void TriggerComponent::SetCollisionMask(uint32_t flags){
+        collisionMask = flags;
+        /*if (is_ready) {
+            dynamicsWorld->removeRigidBody(rigidBody);
+            dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+        }*/
+    }
+    
+    void TriggerComponent::SetCollisionGroup(uint32_t flags){
+        collisionGroup = flags;
+        /*if (is_ready) {
+            dynamicsWorld->removeRigidBody(rigidBody);
+            dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+        }*/
+    }
+    
+    void TriggerComponent::Collision (PhysicsComponent* other) {
+        if (!filter_callback || filter_callback(this, other)) {
+            if (!is_collided && !was_collided && activation_callback) activation_callback(this);
+
+            is_collided = true;
+        }
+    }
+    
+    void TriggerComponent::ResetCollisions() {
+        was_collided = is_collided;
+        is_collided = false;
+    }
+    
+    bool TriggerComponent::IsTriggered() {
+        return true;
     }
 
 

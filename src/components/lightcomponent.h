@@ -7,7 +7,7 @@
 #ifndef LIGHTCOMPONENT_H
 #define LIGHTCOMPONENT_H
 
-#include <render.h>
+#include <render/render.h>
 
 namespace Core {
   class LightComponent : public EntityComponent {

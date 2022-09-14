@@ -4,7 +4,7 @@
 // SPRITE.CPP
 // Methods for the sprite resource.
 
-#include <render.h>
+#include <render/render.h>
 
 #include <async.h>
 

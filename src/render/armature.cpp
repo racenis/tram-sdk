@@ -4,7 +4,7 @@
 // ARMATURE.CPP -- animation code.
 // Implementation of animation loading, armature component.
 
-#include <armature.h>
+#include <render/armature.h>
 #include <components/armaturecomponent.h>
 
 #include <fstream>

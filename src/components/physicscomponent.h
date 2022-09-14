@@ -7,7 +7,7 @@
 #ifndef PHYSICSCOMPONENT_H
 #define PHYSICSCOMPONENT_H
 
-#include <physics.h>
+#include <physics/physics.h>
 
 namespace Core {
     class PhysicsComponent : public EntityComponent {

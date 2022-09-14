@@ -3,7 +3,7 @@
 #include <core.h>
 #include <async.h>
 #include <ui.h>
-#include <physics.h>
+#include <physics/physics.h>
 #include <audio.h>
 
 #include <gui.h>
@@ -18,17 +18,11 @@
 #include <components/armaturecomponent.h>
 #include <components/lightcomponent.h>
 
-#include <components/spritecomponent.h>
-#include <components/particlecomponent.h>
-
-
-//#include <filesystem>
+#include <components/triggercomponent.h>
 
 using namespace Core;
 using namespace Core::Render;
 using namespace Core::UI;
-
-
 
 int main() {
     std::cout << "Hello World! I have autism!" << std::endl;
@@ -68,9 +62,9 @@ int main() {
     derp.LoadFromDisk();
 
     // loading the demo level
-    //auto demo = PoolProxy<WorldCell>::New();
-    //demo->SetName(UID("demo"));
-    //demo->LoadFromDisk();
+    auto demo = PoolProxy<WorldCell>::New();
+    demo->SetName(UID("demo"));
+    demo->LoadFromDisk();
     //demo->Load();
     
     // transition for the demo level
@@ -89,6 +83,7 @@ int main() {
     //demo->AddTransition(demo_trans);
 
 
+    /*
     auto cell1 = PoolProxy<WorldCell>::New();
     auto cell2 = PoolProxy<WorldCell>::New();
     auto cell3 = PoolProxy<WorldCell>::New();
@@ -104,24 +99,15 @@ int main() {
     cell3->LoadFromDisk();
     cell4->LoadFromDisk();
     cell5->LoadFromDisk();
-    //cell1->Load();
-    //cell2->Load();
-    //cell3->Load();
-    //cell4->Load();
-    //cell5->Load();
     cell1->AddLink(cell2);
     cell1->AddLink(cell3);
     cell1->AddLink(cell4);
-    
     cell2->AddLink(cell1);
-    
     cell3->AddLink(cell1);
-    
     cell4->AddLink(cell1);
     cell4->AddLink(cell5);
-    
     cell5->AddLink(cell4);
-    
+    */
     
 
 
@@ -157,10 +143,7 @@ int main() {
     // turn on physics drawing
     DRAW_PHYSICS_DEBUG = true;
     
-    
-    
     while(!SHOULD_CLOSE){
-        //auto time = glfwGetTime();
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
@@ -190,7 +173,7 @@ int main() {
         
         GUI::Begin();
         GUI::DebugMenu();
-        GUI::EscapeMenu();
+        GUI::EscapeMenu();        
         GUI::End();
         
         Audio::Update();
@@ -217,16 +200,11 @@ int main() {
         Render::Render();
 
         UI::EndFrame();
-        
-        
-       // auto time2 = glfwGetTime();
-        //std::cout << 1.0f/(time2-time) << " fps" << std::endl;
     }
 
     Async::Yeet();
 
     Audio::Uninit();
     UI::Uninit();
-    return 0;
 }
 

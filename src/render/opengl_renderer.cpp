@@ -282,7 +282,7 @@ namespace Core::Render::OpenGL {
     void ScreenSize(float width, float height) {
         matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
     }
-        
+    
 
         
     void Init(){
@@ -372,7 +372,7 @@ namespace Core::Render::OpenGL {
             RenderListObject* robj = pp.second;
             //char debug_text_buffer[200];
             //sprintf(debug_text_buffer, "Robj %d %f %f %f lights %d %d %d %d", robj->vao, robj->location[0], robj->location[1], robj->location[2], robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3]);
-            //UI::SetDebugText(debug_text_buffer, robj->location, COLOR_GREEN);
+            //GUI::DebugText(debug_text_buffer, robj->location, COLOR_GREEN);
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(robj->location[0], robj->location[1], robj->location[2]));
@@ -475,6 +475,11 @@ namespace Core::Render::OpenGL {
     }
    
 }
+
+    void Core::Render::Project(const glm::vec3& point, glm::vec3& result) {
+        result = glm::project(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT));
+        result.y = Render::SCREEN_HEIGHT - result.y;
+    }
 
 namespace Core {
     using namespace Core::Render::OpenGL;
