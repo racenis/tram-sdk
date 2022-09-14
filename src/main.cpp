@@ -18,8 +18,6 @@
 #include <components/armaturecomponent.h>
 #include <components/lightcomponent.h>
 
-#include <components/triggercomponent.h>
-
 using namespace Core;
 using namespace Core::Render;
 using namespace Core::UI;
@@ -67,48 +65,6 @@ int main() {
     demo->LoadFromDisk();
     //demo->Load();
     
-    // transition for the demo level
-    //auto demo_trans = PoolProxy<WorldCell::Transition>::New();
-    //demo_trans->AddPoint(glm::vec3(-5.0f, 0.0f, -5.0f));
-    //demo_trans->AddPoint(glm::vec3(5.0f, 0.0f, -5.0f));
-    //demo_trans->AddPoint(glm::vec3(-5.0f, 0.0f, 5.0f));
-    //demo_trans->AddPoint(glm::vec3(5.0f, 0.0f, 5.0f));
-    //demo_trans->AddPoint(glm::vec3(-5.0f, 5.0f, -5.0f));
-    //demo_trans->AddPoint(glm::vec3(5.0f, 5.0f, -5.0f));
-    //demo_trans->AddPoint(glm::vec3(-5.0f, 5.0f, 5.0f));
-    //demo_trans->AddPoint(glm::vec3(5.0f, 5.0f, 5.0f));
-    
-    //demo_trans->GeneratePlanes();
-    
-    //demo->AddTransition(demo_trans);
-
-
-    /*
-    auto cell1 = PoolProxy<WorldCell>::New();
-    auto cell2 = PoolProxy<WorldCell>::New();
-    auto cell3 = PoolProxy<WorldCell>::New();
-    auto cell4 = PoolProxy<WorldCell>::New();
-    auto cell5 = PoolProxy<WorldCell>::New();
-    cell1->SetName(UID("loader-test-cell1"));
-    cell2->SetName(UID("loader-test-cell2"));
-    cell3->SetName(UID("loader-test-cell3"));
-    cell4->SetName(UID("loader-test-cell4"));
-    cell5->SetName(UID("loader-test-cell5"));
-    cell1->LoadFromDisk();
-    cell2->LoadFromDisk();
-    cell3->LoadFromDisk();
-    cell4->LoadFromDisk();
-    cell5->LoadFromDisk();
-    cell1->AddLink(cell2);
-    cell1->AddLink(cell3);
-    cell1->AddLink(cell4);
-    cell2->AddLink(cell1);
-    cell3->AddLink(cell1);
-    cell4->AddLink(cell1);
-    cell4->AddLink(cell5);
-    cell5->AddLink(cell4);
-    */
-    
 
 
     // create the player entity
@@ -119,12 +75,12 @@ int main() {
 
 
     // create the mongus model
-    //RenderComponent* monguser = PoolProxy<RenderComponent>::New();
-    //monguser->SetModel(UID("mongus"));
-    //monguser->SetPose(poseList.begin().ptr);
-    //monguser->Init();
-    //monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
-    //monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    RenderComponent* monguser = PoolProxy<RenderComponent>::New();
+    monguser->SetModel(UID("mongus"));
+    monguser->SetPose(poseList.begin().ptr);
+    monguser->Init();
+    monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
+    monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
     LightComponent* lit = PoolProxy<LightComponent>::New();;
@@ -133,12 +89,12 @@ int main() {
     lit->UpdateDistance(1000.0f);
 
     // create the animation player for the mongus model
-    //ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
-    //monguser_armature->SetModel(UID("mongus"));
-    //monguser_armature->Init();
+    ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
+    monguser_armature->SetModel(UID("mongus"));
+    monguser_armature->Init();
 
     // link the mongus model and his animation player
-    //monguser->SetPose(monguser_armature->GetPosePtr());
+    monguser->SetPose(monguser_armature->GetPosePtr());
     
     // turn on physics drawing
     DRAW_PHYSICS_DEBUG = true;
@@ -166,10 +122,10 @@ int main() {
         lit->UpdateLocation(cos(((float)tick) / 60.0f) * 100.0f, 0.01 ,sin(((float)tick) / 60.0f) * 100.0f);
         
         // this makes the mongus model bob up and down
-        //monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
+        monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
         
-        //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
-        //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
+        SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
+        SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         
         GUI::Begin();
         GUI::DebugMenu();
@@ -183,8 +139,8 @@ int main() {
         Async::FinishResource();
 
         if(tick == 100){
-            //monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
-            //Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
+            monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
+            Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
         }
 
         Event::Dispatch();
@@ -207,4 +163,3 @@ int main() {
     Audio::Uninit();
     UI::Uninit();
 }
-

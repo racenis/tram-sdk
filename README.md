@@ -16,9 +16,67 @@ Instruction manual and other documentations [can be found here](https://racenis.
 
 ## To-do list
 
- - rename pooladdonly->stackpool
- 	- rename
- 	- fix compiler errors
+#### For version 0.0.1
+- Refactor LightComponent.h
+- Re-check documentation
+
+#### For next versions
+- AnimationComponent
+	- Make the code more readable
+	- Blend weights
+	- Different speeds
+	- Pause/resume
+	- Fade in/out
+	- Events on animations finishing/looping
+	- Other keyframe interpolation options
+- ControllerComponent
+	- Remember actions between frames
+	- Configurable transitions between animations
+- Add an AudioComponent
+	- Pause/resume
+	- Sounds larger than 32KB
+- SpriteComponent
+	- Better system of defining frames
+	- Multiple frame lists per sprite
+- ParticleComponent
+	- I have no idea where I am going with it
+	- Maybe add callbacks for processing the particle behaviour
+- TriggerComponent
+	- I have a feeling that it needs more features
+	- More callbacks, maybe?
+- Entities
+	- More constructors for them
+- Containers
+	- Rename 'PoolAddOnly' to 'StackPool'
+	- Add a PODPool
+- Fix the mongus entity
+- Add LIGMAScript
+
+#### For versions later than next versions
+- AudioComponent
+	- Some sort of real-time spatial effect system
+- Rendering
+	- Shiny stuff shader
+	- Transparency blending
+	- Figure out how to do different back-ends
+	- Deferred rendering
+	- Layers
+	- Occlusion culling
+	- Bump and specularity maps
+- Fix the tramway entity
+- Fix the bus entity
+- Optimize the model material bucketing system
+- Make the player controller more responsive
+- Add a proper third person camera 
+- Add some generic gameplay systems
+	- Tools/items
+	- Item management/inventory
+	- Dialog
+	- Cutscenes
+	- AI
+- Async job system
+
+#### For previouse versions
  - ~~fix the animations~~
 	- ~~add bone roll to the dynamic model exporter~~
 	- ~~add bone roll to the bone definition~~
@@ -35,33 +93,13 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- ~~add buttons~~
 	- ~~add dropdown selections~~
 	- ~~add text boxes~~
- - optimize the model material bucketing system
- - make the player controller more responsive
- - add a proper third person camera
- - add some generic gameplay systems
-	- tools/items
-	- item management/inventory
-	- dialog
-	- cutscenes
-	- ai
- - make the level editor
-	- make the ui
-	- integrate it with engine
-	- make tools
-		- bezier path tool
-		- level transition tool
-		- occlusion tool
-		- navmesh tool
- - async job system
-	- navmesh path finder
- - occlusion culling
- - advanced rendering
-	- layers
- - advanced effects
-	- texture transparency
-	- shiny materials
-	- bump maps
-	- particles
-	- sprites
- - webgl support
- - test custom container templates
+ - ~~advanced rendering effects~~
+	- ~~particles~~
+	- ~~sprites~~
+ - ~~make the level editor~~
+	- ~~make the ui~~
+	- ~~integrate it with engine~~
+	- ~~make tools~~
+		- ~~bezier path tool~~
+		- ~~level transition tool~~
+		- ~~navmesh tool~~

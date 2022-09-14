@@ -60,12 +60,13 @@ namespace Core {
         ResourceProxy<Render::Model> model;
         ResourceProxy<Render::Material> lightmap;
 
+        // this thing is ??? i mean yeah, but no
         Render::RenderListObject* rLsObjPtr[7] = {nullptr};
 
         Render::PoseListObject* pose = nullptr;
 
         glm::vec3 location;
-
+        
         glm::quat rotation;
 
         bool isInterior = false;

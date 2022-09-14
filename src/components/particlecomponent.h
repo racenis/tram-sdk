@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 //
-// PARTICLECOMPONENT.H -- Particle rendering component
+// PARTICLECOMPONENT.H -- Particle rendering component [incomplete]
 // This component will render some particles.
 
 #ifndef PARTICLECOMPONENT_H

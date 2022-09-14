@@ -4,5 +4,21 @@
 </h1>
 
 <p>
-	GUI code is located in the ui.h file, but it's temporary and it will be moved out to a seperate gui.h file.
+	GUI code is located in the <code>gui.h</code> file. It has a simple implementation of an immediate mode GUI.
+</p>
+
+<h3>
+	Using
+</h3>
+
+<p>
+	Somewhere in your main render/logic loop you need to put a <code>GUI::Begin()</code> call to start issuing GUI commands for that frame.
+</p>
+
+<p>
+	After starting the GUI for that rendering frame, you can issue various layout and widget commands. There's <code>GUI::DebugMenu()</code> and <code>GUI::EscapeMenu()</code> commands for premade menus, but you can define your own. All of the widgets are in the <code>gui.h</code> file.
+</p>
+
+<p>
+	After all of your commands call the <code>GUI::End()</code> to finish the GUI logic and submit the elements for rendering.
 </p>

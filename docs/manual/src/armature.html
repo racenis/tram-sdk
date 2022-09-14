@@ -8,7 +8,7 @@
 </p>
 
 <p>
-	In the source code it is found under the <code>Core::Render</code> namespace. Definitions are in the <code>armature.h</code> file.
+	In the source code it is found under the <code>Core::Render</code> namespace. Definitions are in the <code>armature.h</code> file. All of the files are located in the <code>src/render</code> directory.
 </p>
 
 <h3>
@@ -50,22 +50,24 @@
 		Note
 	</h4>
 	<p>
-		Animation system as it is right now is broken:
+		<del>Animation system as it is right now is broken:</del>
 		<ul>
 			<li>
-				When the 3D model deformation matrices are being calculated, the bone rotations are being processed in the wrong coordinate space, this is mostly because:
+				<del>When the 3D model deformation matrices are being calculated, the bone rotations are being processed in the wrong coordinate space, this is mostly because:</del>
 				<ul>
 					<li>
-						I forgot to put the bone roll in the armature definition in the model file formats.
+						<del>I forgot to put the bone roll in the armature definition in the model file formats.</del>
 					</li>
 				</ul>
 			</li>
 			<li>
-				There was something else, but I forgot.
+				<del>There was something else, but I forgot.</del>
 			</li>
 			<li>
-				Animation data structure has sub-optimal memory layout.
+				<del>Animation data structure has sub-optimal memory layout.</del>
 			</li>
 		</ul>
+		
+		Nevermind, I fixed it.
 	</p>
 </div>

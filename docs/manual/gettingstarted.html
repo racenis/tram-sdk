@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>page1 title</title>
+		<title>Getting started</title>
 		<style>
 			html {
 				font-family: Arial, Helvetica, sans-serif;
@@ -37,6 +37,10 @@
 			
 			.note-box { border: 1px solid #D0C1A6; padding: 8px; margin: 4px 12px; }
 			.note-box p { margin: 4px 0 0 0; }
+			
+			.underline { padding-bottom: 2px; border-bottom: 1px solid #D0C1A6; }
+			
+			.footnote { font-size: 10px; margin-bottom: 4px; }
 			
 			a:link { text-decoration: underline; color: #1AB3F0; }
 			a:visited { text-decoration: underline; color: #1AB3F0; }
@@ -95,12 +99,12 @@
 					<a href="player.html" class="menu-link">Player</a><br/>
 				</td>
 				<td valign="top" class="right-pane">
-					<!-- PAGE_TITLE: page1 title -->
+					<!-- PAGE_TITLE: Getting started -->
 <h1>Getting started</h1>
-<p>The source code is available in a software repository at <a target="_blank" href="http://github.com">github.com</a>. After downloading the source code, you will need a few libraries before compiling it.</p>
-<p>You will need to get the <a target="_blank" href="https://github.com/bulletphysics/bullet3/releases">bullet physics library</a> and compile it, then get the glfw library and compile it too, then generate <a href="https://glad.dav1d.de/">OpenGL 4.0 headers</a>, also get the <a href="https://github.com/nothings/stb/blob/master/stb_image.h">stb image</a> and <a href="https://github.com/g-truc/glm">glm</a> libraries. Put them all in the <code>libraries/</code> folder that you get from the repository. That's it for the dependencies.</p>
-<p>Then just use CMake. You're supposed to provide your own <code>main.cpp</code> file with the <code>main()</code> function in it, but the engine comes with a basic <code>main()</code> function that has all of the important things in it.</p>
-
+<p>The source code is available in a software repository at <a target="_blank" href="https://github.com/racenis/tram-sdk">github.com</a>. After downloading the source code, you will need a few libraries before compiling it.</p>
+<p>You will need to get the <a target="_blank" href="https://github.com/bulletphysics/bullet3/releases">bullet physics library</a> and compile it, then get the <a target="_blank" href="https://github.com/glfw/glfw">glfw</a> library and compile it too, as well as the <a target="_blank" href="https://github.com/kcat/openal-soft">OpenAL-soft</a>, then generate <a target="_blank" href="https://glad.dav1d.de/">OpenGL 4.0 headers</a>, also get the <a target="_blank" href="https://github.com/nothings/stb/blob/master/stb_image.h">stb image</a>, <a target="_blank" href="https://github.com/nothings/stb/blob/master/stb_vorbis.c">stb vorbis</a> and <a target="_blank" href="https://github.com/g-truc/glm">glm</a> libraries. Put them all in the <code>libraries/</code> folder that you get from the repository. That's it for the dependencies.</p>
+<p><del>Then just use CMake.</del> The CMake script is broken. There should be a project file for the CodeLiter IDE included in the files, but for basic compilation you just need to compile all of the <code>.cpp</code> files in the <code>/src/</code> directory and sub-directories and link it with <code>-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lglfw3 -lOpenAL32.dll  -lglfw3 -lgdi32 -lopengl32</code> parameters (for gcc at least). You're supposed to provide your own <code>main.cpp</code> file with the <code>main()</code> function in it, but the engine comes with a basic <code>main()</code> function that has all of the important things in it.</p>
+<p>This is awful and I should probably write a script that gets all of the dependencies and compilations automatically.</p>
 				</td>
 			</tr>
 		</table>

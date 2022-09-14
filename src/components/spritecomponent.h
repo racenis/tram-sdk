@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 //
-// SPRITECOMPONENT.H -- Sprite rendering component
+// SPRITECOMPONENT.H -- Sprite rendering component [incomplete]
 // This component will render a single sprite onto the screen.
 
 #ifndef SPRITECOMPONENT_H

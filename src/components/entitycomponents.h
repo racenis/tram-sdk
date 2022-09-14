@@ -30,6 +30,7 @@ namespace Core {
     
     #ifdef BEGONISER
     // this AI component implementation is complete shit
+    // i think it can be deleted
     class AIComponent : public EntityComponent {
     public:
         enum Flag : uint64_t {
@@ -102,6 +103,8 @@ namespace Core {
     extern Pool<PhysicsComponent> physicsCompPool;
 
     // the old path node system is yeeted, so none of this works anymore
+    
+    // this probably will need to be rewritten completely
     class TramComponent : public EntityComponent {
     public:
         void EventHandler(Event &event){
