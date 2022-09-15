@@ -44,6 +44,10 @@ namespace Core {
         void SetHingeConstraint(PhysicsComponent* other_component, glm::vec3 axis, glm::vec3 point_this, glm::vec3 point_other);
         void UnsetHingeConstraint();
         void SetHingeAxis(const glm::vec3& axis);
+        void SetRotation(const glm::quat& rotation);
+        void SetLocation(const glm::vec3& location);
+        void UpdateRotation(const glm::quat& rotation);
+        void UpdateLocation(const glm::vec3& location);
         void SetLocalRotation(const glm::quat& rotation);
         void SetOffset(const glm::vec3& offset);
         void EnableRotation();

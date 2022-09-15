@@ -9,7 +9,7 @@
 
 namespace Core {
     Crate::Crate(std::string_view& str){
-        SetParameters(str);
+        Entity::SetParameters(str);
 
         serialized_data = new Data();
         auto data = (Data*) serialized_data;
@@ -33,7 +33,13 @@ namespace Core {
         if (!isloaded) return;
         rendercomponent->UpdateLocation(location);
         rendercomponent->UpdateRotation(rotation);
-        //rendercomponent->SetCellParams(cell->HasInteriorLighting());
+    }
+    
+    void Crate::SetParameters() {
+        if (!isloaded) return;
+        UpdateParameters();
+        physicscomponent->UpdateLocation(location);
+        physicscomponent->UpdateRotation(rotation);
     }
 
     void Crate::Load(){
@@ -84,5 +90,12 @@ namespace Core {
     void Crate::MessageHandler(Message& msg){
         if (msg.type == Message::ACTIVATE) Activate(msg);
         return;
+    }
+    
+    void Crate::Testingolingo() {
+        assert(isloaded);
+        assert(physicscomponent);
+        physicscomponent->DisableRotation();
+        physicscomponent->SetRotation(glm::vec3(0.0f, 0.785f, 0.0f));
     }
 }

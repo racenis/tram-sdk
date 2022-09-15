@@ -9,6 +9,8 @@
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
 
+#include <gui.h>
+
 namespace Core::Render::OpenGL {
     struct ShaderUniformMatrices {
         glm::mat4 projection;       /// Projection matrix.
@@ -348,7 +350,12 @@ namespace Core::Render::OpenGL {
         UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
 
         //lightUniform.Upload();
-        UploadUniformBuffer(light_uniform_binding, sizeof(LightListObject)*50, lightPool.begin().ptr);
+        UploadUniformBuffer(light_uniform_buffer, sizeof(LightListObject)*50, &lightPool.begin()->location);
+        //for (auto& it : lightPool) {
+        //    std::cout << it.location.x << " " << it.location.y << " " << it.location.z << " " << it.distance <<std::endl;
+        //}
+        //std::cout << std::endl;
+        //fuck
 
         static std::vector<std::pair<uint64_t, RenderListObject*>> rvec;
 
@@ -370,9 +377,12 @@ namespace Core::Render::OpenGL {
 
         for (std::pair<uint64_t, RenderListObject*>& pp : rvec){
             RenderListObject* robj = pp.second;
-            //char debug_text_buffer[200];
-            //sprintf(debug_text_buffer, "Robj %d %f %f %f lights %d %d %d %d", robj->vao, robj->location[0], robj->location[1], robj->location[2], robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3]);
-            //GUI::DebugText(debug_text_buffer, robj->location, COLOR_GREEN);
+            
+            if (DRAW_RENDER_DEBUG) {
+                char debug_text_buffer[200];
+                sprintf(debug_text_buffer, "Robj vao:%d location-xyz: %f %f %f lights: %d %d %d %d", robj->vao, robj->location[0], robj->location[1], robj->location[2], robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3]);
+                GUI::DebugText(debug_text_buffer, robj->location, COLOR_GREEN);
+            }
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(robj->location[0], robj->location[1], robj->location[2]));

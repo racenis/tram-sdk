@@ -80,7 +80,7 @@ namespace Core::Physics {
             rotation.z = rot.getZ();
             rotation.w = rot.getW();
 
-            entity->SetTransform(location, rotation);
+            entity->UpdateTransform(location, rotation);
         }
 
     protected:

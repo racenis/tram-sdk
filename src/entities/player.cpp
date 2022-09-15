@@ -33,7 +33,7 @@ void Player::Load(){
     physicscomponent->Init();
 
     physicscomponent->DisableRotation();
-    physicscomponent->DisableDebugDrawing();
+    //physicscomponent->DisableDebugDrawing();
 
     isloaded = true;
 
@@ -53,9 +53,14 @@ void Player::UpdateParameters() {
         assert(plomp);
         plomp->MoveUpdate();
     }
-    //next_cell = cell->FindTransition(location);
-
 }
+
+void Player::SetParameters() {
+    UpdateParameters();
+    // actually we should add a SetUpdate() to the player component and call that
+    // TODO: fix
+}
+
 void Player::MessageHandler(Message& msg){
     if(msg.type == Message::GET_IN){
         plomp->IgnoreMove();

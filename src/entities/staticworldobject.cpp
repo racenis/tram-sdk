@@ -11,7 +11,7 @@ namespace Core {
     using namespace Core::Physics;
 
     StaticWorldObject::StaticWorldObject(std::string_view& str){
-        SetParameters(str);
+        Entity::SetParameters(str);
 
         serialized_data = new Data();
         auto data = (Data*) serialized_data;
@@ -24,7 +24,16 @@ namespace Core {
             rendercomponent->UpdateLocation(location);
             rendercomponent->UpdateRotation(rotation);
         }
-    };
+    }
+    
+    void StaticWorldObject::SetParameters() {
+        if(isloaded){
+            rendercomponent->UpdateLocation(location);
+            rendercomponent->UpdateRotation(rotation);
+            physicscomponent->UpdateLocation(location);
+            physicscomponent->UpdateRotation(rotation);
+        }
+    }
 
     void StaticWorldObject::Load(){
         Data* data = (Data*) serialized_data;

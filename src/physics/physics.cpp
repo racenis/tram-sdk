@@ -296,6 +296,36 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         btVector3 aaa(axis.x, axis.y, axis.z);
         hingeConstraint->setAxis(aaa);
     }
+    
+    void PhysicsComponent::SetRotation(const glm::quat& rotation) {
+        assert(motionState);
+        UpdateRotation(rotation);
+        btTransform trans = rigidBody->getWorldTransform();
+        motionState->setWorldTransform(trans);
+    }
+    
+    void PhysicsComponent::SetLocation(const glm::vec3& location) {
+        assert(motionState);
+        UpdateLocation(location);
+        btTransform trans = rigidBody->getWorldTransform();
+        motionState->setWorldTransform(trans);
+    }
+    
+    void PhysicsComponent::UpdateRotation(const glm::quat& rotation) {
+        assert(rigidBody);
+        btTransform trans = rigidBody->getWorldTransform();
+        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+        rigidBody->setWorldTransform(trans);
+    }
+    
+    void PhysicsComponent::UpdateLocation(const glm::vec3& location) {
+        assert(rigidBody);
+        btTransform trans = rigidBody->getWorldTransform();
+        trans.setOrigin(btVector3 (location.x, location.y, location.z));
+        rigidBody->setWorldTransform(trans);
+    }
+    
+    
     void PhysicsComponent::SetLocalRotation(const glm::quat& rotation){
         glm::quat parent_rotation;
         parent->GetRotation(parent_rotation);

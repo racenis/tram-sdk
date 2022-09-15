@@ -18,6 +18,8 @@
 #include <components/armaturecomponent.h>
 #include <components/lightcomponent.h>
 
+#include <components/controllercomponent.h>
+
 using namespace Core;
 using namespace Core::Render;
 using namespace Core::UI;
@@ -85,8 +87,8 @@ int main() {
     // create a light
     LightComponent* lit = PoolProxy<LightComponent>::New();;
     lit->Init();
-    lit->UpdateColor(255.0f, 0.0f, 255.0f);
-    lit->UpdateDistance(1000.0f);
+    lit->UpdateColor(glm::vec3(1.0f, 0.0f, 1.0f));
+    lit->UpdateDistance(100.0f);
 
     // create the animation player for the mongus model
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
@@ -98,7 +100,7 @@ int main() {
     
     // turn on physics drawing
     DRAW_PHYSICS_DEBUG = true;
-    
+        
     while(!SHOULD_CLOSE){
         UI::Update();
 
@@ -119,7 +121,7 @@ int main() {
         tick++;
 
         // this will make the light spin
-        lit->UpdateLocation(cos(((float)tick) / 60.0f) * 100.0f, 0.01 ,sin(((float)tick) / 60.0f) * 100.0f);
+        lit->UpdateLocation(glm::vec3(cos(((float)tick) / 60.0f) * 5.0f, 0.01 ,sin(((float)tick) / 60.0f) * 5.0f));
         
         // this makes the mongus model bob up and down
         monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
@@ -138,7 +140,7 @@ int main() {
         Async::ResourceLoader2ndStage();
         Async::FinishResource();
 
-        if(tick == 100){
+        if(tick == 245){
             monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
             Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
         }
@@ -147,6 +149,8 @@ int main() {
         Message::Dispatch();
         
         WorldCell::Loader::LoadCells();
+        
+        ControllerComponent::UpdateAll();
 
         // updates the physics world
         float phys_step = 1.0f / 60.0f;

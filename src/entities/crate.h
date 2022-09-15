@@ -19,10 +19,12 @@ namespace Core {
 
         Crate(const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot);
         void UpdateParameters();
+        void SetParameters();
         void Load();
         void Unload();
         void Serialize();
         void MessageHandler(Message& msg);
+        void Testingolingo();
     
         struct DataOLD {
             void* padding = nullptr;

@@ -20,6 +20,7 @@ namespace Core {
     float FRAME_TIME = 0;
 
     bool DRAW_PHYSICS_DEBUG = false;
+    bool DRAW_RENDER_DEBUG = false;
     bool DRAW_PATH_DEBUG = false;
     
     StackPool<char> stringPool("stringpool", 10000);

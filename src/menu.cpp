@@ -39,6 +39,7 @@ namespace Core::GUI {
             
             Frame(FRAME_BOTTOM, 240-50);
             Frame(FRAME_LEFT, 80);
+            Text("Render:", 1); FrameBreakLine();
             Text("Physics:", 1); FrameBreakLine();
             Text("Transitions:", 1); FrameBreakLine();
             Text("Paths:", 1); FrameBreakLine();
@@ -46,6 +47,7 @@ namespace Core::GUI {
             EndFrame();
             
             Frame(FRAME_RIGHT, 320-100);
+            CheckBox(DRAW_RENDER_DEBUG); FrameBreakLine();
             CheckBox(DRAW_PHYSICS_DEBUG); FrameBreakLine();
             CheckBox(debugdraw_trans); FrameBreakLine();
             CheckBox(debugdraw_paths); FrameBreakLine();

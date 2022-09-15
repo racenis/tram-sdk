@@ -22,6 +22,7 @@ namespace Core {
         void Serialize();
         void SerializeString(std::string& str);
         void UpdateParameters();
+        void SetParameters();
         void MessageHandler(Message& msg);
     protected:
         PlayerComponent* plomp;

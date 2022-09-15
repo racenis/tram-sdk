@@ -17,6 +17,7 @@ namespace Core {
     public:
         StaticWorldObject(std::string_view& str);
         void UpdateParameters();
+        void SetParameters();
         void Load();
         void Unload();
         void Serialize();

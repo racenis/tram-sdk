@@ -15,18 +15,19 @@ namespace Core {
     void ControllerComponent::GetLocation(glm::vec3& location){
         physcomp->GetParent()->GetLocation(location);
     }
-
-    void ControllerComponent::Act(Action action){
-        // this is stinky
-        // this is VERY STINKY
-        // i am ashame
-
+    void ControllerComponent::SetDirection(const glm::quat& dir) {
+        physcomp->SetRotation(dir);
+    }
+    void ControllerComponent::Update(){
         if(!physcomp) return;
-        if(action == ACTION_IDLE){
-            PlayOnce(ACTION_IDLE);
+        
+        if(current_action == ACTION_IDLE){
+            if (action_updated) PlayOnce(ACTION_IDLE);
+            action_updated = false;
         }
-        if(action == ACTION_MOVE_FORWARD_VERY_FAST){
-            Play (ACTION_MOVE_FORWARD_VERY_FAST);
+        
+        if(current_action == ACTION_LIVESEY){
+            if (action_updated) Play (ACTION_LIVESEY);
             glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
             glm::quat objrotation;
             physcomp->GetParent()->GetRotation(objrotation);
@@ -36,31 +37,37 @@ namespace Core {
             fwd = fwd* 2.0f;
 
             if(physcomp->GetVelocity() < 3.0f)physcomp->Push(fwd);
+            action_updated = false;
         }
-
-
-        glm::vec3 direction_normalized = glm::normalize(glm::vec3(direction.x, 0.0f, direction.z));
-        if (std::isnan(direction_normalized.x) || std::isnan(direction_normalized.y) || std::isnan(direction_normalized.z)) direction_normalized = glm::vec3(0.0f, 0.0f, 0.0f);
-
-        if(action == ACTION_MOVE_FORWARD || action == ACTION_MOVE_BACKWARD || action == ACTION_MOVE_LEFT || action == ACTION_MOVE_RIGHT){
+        
+        if(current_action == ACTION_WALK){
             float spee = IsInAir() ?  25.0f : 70.0f;
             float velocity = physcomp->GetVelocity();
 
             if(velocity > 4.0f) spee *= 1 / ((velocity * 5) + 1);
+            
+            glm::vec3 move_direction = glm::vec3(0.0f, 0.0f, 0.0f);
 
-            if (action == ACTION_MOVE_FORWARD)
-                physcomp->Push(direction_normalized * spee);
-            else if (action == ACTION_MOVE_BACKWARD)
-                physcomp->Push(-direction_normalized * spee);
-            else if (action == ACTION_MOVE_LEFT)
-                physcomp->Push(glm::vec3(direction_normalized.z, direction_normalized.y, -direction_normalized.x) * spee);
-            else if (action == ACTION_MOVE_RIGHT)
-                physcomp->Push(glm::vec3(-direction_normalized.z, -direction_normalized.y, direction_normalized.x) * spee);
-        } else if (action == ACTION_JUMP && !IsInAir()){
+            if (current_modifier == ACTIONMODIFIER_FORWARD || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT)
+                move_direction += glm::vec3(0.0f, 0.0f, -1.0f);
+            if (current_modifier == ACTIONMODIFIER_BACKWARD || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
+                move_direction += glm::vec3(0.0f, 0.0f, 1.0f);
+            if (current_modifier == ACTIONMODIFIER_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT)
+                move_direction += glm::vec3(1.0f, 0.0f, 0.0f);
+            if (current_modifier == ACTIONMODIFIER_RIGHT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
+                move_direction += glm::vec3(-1.0f, 0.0f, 0.0f);
+            
+            glm::vec3 direction_normalized = glm::normalize(glm::vec3(move_direction.x, 0.0f, move_direction.z));
+            if (std::isnan(direction_normalized.x) || std::isnan(direction_normalized.y) || std::isnan(direction_normalized.z)) direction_normalized = glm::vec3(0.0f, 0.0f, 0.0f);
+            
+            physcomp->PushLocal(direction_normalized * spee);
+            action_updated = false;
+        } else if (current_action == ACTION_JUMP && !IsInAir()){
             physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f));
-        } else if (action == ACTION_FORWARD_JUMP && !IsInAir()){
+            action_updated = false;
+        }/* else if (current_action == ACTION_FORWARD_JUMP && !IsInAir()){
             physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f) + direction_normalized * 100.0f);
-        }
+        }*/
 
     }
 

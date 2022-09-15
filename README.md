@@ -17,8 +17,8 @@ Instruction manual and other documentations [can be found here](https://racenis.
 ## To-do list
 
 #### For version 0.0.1
-- Refactor LightComponent.h
-- Re-check documentation
+- ~~Refactor LightComponent.h~~ oops, forgot
+- ~~Re-check documentation~~
 
 #### For next versions
 - AnimationComponent

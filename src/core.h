@@ -332,6 +332,7 @@ namespace Core {
     extern float FRAME_TIME;
     
     extern bool DRAW_PHYSICS_DEBUG;
+    extern bool DRAW_RENDER_DEBUG;
     extern bool DRAW_PATH_DEBUG;
 
     // forward declarations
@@ -498,20 +499,20 @@ namespace Core {
         /// Like SetParameters, but in reverse.
         void ParametersString(std::string& str);
 
-        /// Called every time the entity's rotation, translation, etc. changes.
-        /// Normally this would be used to update the entity's RenderComponent etc. to the new location, or something like that.
         void virtual UpdateParameters() = 0;
+        
+        void virtual SetParameters() = 0;
 
         /// Sets the translation of the entity.
-        void SetLocation(float x, float y, float z){ location = glm::vec3(x, y, z); UpdateParameters(); CheckTransition(); }
-        void SetLocation(const glm::vec3& loc) { location = loc; UpdateParameters(); CheckTransition();}
+        void SetLocation(float x, float y, float z){ location = glm::vec3(x, y, z); SetParameters(); CheckTransition(); }
+        void SetLocation(const glm::vec3& loc) { location = loc; SetParameters(); CheckTransition();}
 
         /// Sets the rotation of the entity.
-        void SetRotation(float x, float y, float z){ rotation = glm::quat(glm::vec3(x, y, z)); UpdateParameters(); }
-        void SetRotation(glm::quat& rot){ rotation = rot; UpdateParameters(); }
+        void SetRotation(float x, float y, float z){ rotation = glm::quat(glm::vec3(x, y, z)); SetParameters(); }
+        void SetRotation(glm::quat& rot){ rotation = rot; SetParameters(); }
 
         /// Sets both the rotation and the translation of the entity.
-        inline void SetTransform(const glm::vec3& loc, const glm::quat& rot){
+        inline void UpdateTransform(const glm::vec3& loc, const glm::quat& rot){
             location = loc;
             rotation = rot;
             UpdateParameters();
