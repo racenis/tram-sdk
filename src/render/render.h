@@ -265,7 +265,7 @@ namespace Core::Render {
         void LoadFromDisk();
         void LoadFromMemory();
         size_t GetArmatureSize(){return armature.size();};
-        Bone* GetArmatureFirstPtr(){return &armature.front();};
+        Bone* GetArmature(){return &armature.front();};
         static void SetErrorModel(Model* model) {error_model = model; model->Load();}
         static Model* Find(name_t name);
     };

@@ -130,28 +130,38 @@ namespace Core {
     void ArmatureComponent::Init(){
         poseobj = Render::poseList.AddNew();
 
-        for (size_t i = 0; i < 30; i++) poseobj->pose[i] = glm::mat4(1.0f);
+        for (size_t i = 0; i < Render::BONE_COUNT; i++) poseobj->pose[i] = glm::mat4(1.0f);
 
         if (resources_waiting == 0) Start();
-
     };
         
-    void ArmatureComponent::Uninit(){};
+    void ArmatureComponent::Uninit(){}; // wtf why is nothing in here
     
     void ArmatureComponent::Start(){
         boneCount = model->GetArmatureSize();
-        Render::Bone* armB = model->GetArmatureFirstPtr();
+        Render::Bone* armB = model->GetArmature();
+        
+        // instead of making a copy of the whole armature, only the parent/child relationships should be copied
         for(unsigned int i = 0; i < boneCount; i++){
             boneInstance[i] = *armB;
             armB++;
         }
+        
+        // it's probably not necessary to cache this, but whatever
+        armature_bone_count = model->GetArmatureSize();
+        armature_bones = model->GetArmature();
+        
+        // making a copy of bone parents is needed for some fun effects
+        for (size_t i = 0; i < armature_bone_count; i++) {
+            armature_bone_parents[i] = armature_bones[i].parentIndex;
+        }
 
         is_ready = true;
-
-        return;
     }
     
     void ArmatureComponent::SetBoneKeyframe (uint64_t boneName, Render::Keyframe& keyframe){
+        // not super efficient, but it works
+        // maybe add a method for setting the keyframe based on the index
         for (size_t i = 0; i < boneCount; i++){
             if (boneInstance[i].name == boneName){
                 animInstance[i] = keyframe;
@@ -179,7 +189,7 @@ namespace Core {
 
         // TODO: add code to empty keyframe pointers in the slot before copying in new ones
 
-        Render::NameCount* nc = Render::Animation::Find(animationName);//Render::animationList.FindAnimationPtr(animationName);
+        Render::NameCount* nc = Render::Animation::Find(animationName);
         Render::Keyframe* kf;
 
         if(nc == nullptr){
@@ -210,6 +220,63 @@ namespace Core {
             kf += kfcount;
             nc = (Render::NameCount*)kf;
         }
+        
+        
+        {
+            
+        // find an empty slot for the animation
+        size_t slot;
+        for (slot = 0; slot < ANIM_COUNT; slot++) {
+            // maybe reset the animation if its already playing, instead of just returning?
+            if (anim_playing[slot] == animationName) return;
+            if (anim_playing[slot] == 0) break;
+        }
+        
+        // maybe log an error if all animation slots taken?
+        if (slot == ANIM_COUNT) return;
+        
+        anim_playing[slot] = animationName;
+        
+        // maybe add an option to start the animation at a specific frame, instead of the beginning
+        anim_info[slot].frame = 0.0f; 
+        anim_info[slot].repeats = repeats; 
+        anim_info[slot].weight = weight; 
+        anim_info[slot].speed = speed; 
+        
+        anim_info[slot].animation_header = Render::Animation::Find(animationName);
+
+        if(anim_info[slot].animation_header == nullptr){
+            std::cout << "Animation " << ReverseUID(animationName) << " not found!" << std::endl;
+            anim_playing[slot] = 0;
+            return;
+        }
+
+        size_t anim_bone_count = anim_info[slot].animation_header->second;
+        
+        Render::NameCount* keyframe_header = anim_info[slot].animation_header + 1;
+        
+        // match up bones in the armature to keyframe headers in the animation data
+        for (size_t i = 0; i < anim_bone_count; i++) {
+            size_t bone_slot = -1llu;
+
+            for(size_t j = 0; j < armature_bone_count; j++){
+                if(armature_bones[j].name == keyframe_header->first){
+                    bone_slot = j;
+                    break;
+                }
+            }
+
+            if(bone_slot != -1llu){
+                anim_info[slot].keyframe_headers[bone_slot] = keyframe_header;
+            }
+
+            // skip over all of the keyframes and get to the next header
+            keyframe_header = (Render::NameCount*)(((Render::Keyframe*)(keyframe_header + 1)) + keyframe_header->second);
+        }        
+    
+        }
+        
+        
     }
     
     void ArmatureComponent::StopAnimation(uint64_t animationName){
@@ -222,72 +289,62 @@ namespace Core {
     }
     
     void ArmatureComponent::Update(){
-        Render::Keyframe anim[30];                          //this is where we store the calculated animation for this frame
-        for (uint64_t i = 0; i < boneCount; i++)    //copy in the start animation
-            anim[i] = animInstance[i];
-
-        // * do the animations *
-
-        for (uint64_t i = 0; i < 8; i++){
+        Render::Keyframe anim_mixed[BONE_COUNT];
+        for (uint64_t i = 0; i < armature_bone_count; i++) anim_mixed[i] = animInstance[i];
+        
+        // mix together keyframes
+        for (size_t i = 0; i < ANIM_COUNT; i++){
             if(animPlaying[i] == 0) continue;
 
-            animFrame[i] += (FRAME_TIME - lastUpdate) * 24 * animSpeed[i];
-
-            for (uint64_t k = 0; k < boneCount; k++){
-                if(boneKeyframes[i][k] != nullptr){
-
-                    uint64_t kframe = -1llu;
-                    for(uint64_t j = 0; j < boneKeyframeCount[i][k]; j++){
-                        if((boneKeyframes[i][k] + j)->frame > animFrame[i]){
-                            kframe = j;
+            /**/animFrame[i] += (FRAME_TIME - lastUpdate) * 24 * animSpeed[i];
+            
+            auto& anim = anim_info[i];
+            anim.frame += (FRAME_TIME - lastUpdate) * 24 * anim_info[i].speed;
+            
+            for (size_t k = 0; k < armature_bone_count; k++){
+                Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
+                if (keyframe_header != nullptr) {
+                    Render::Keyframe* keyframes = (Render::Keyframe*)(keyframe_header + 1);
+                    size_t keyframe_count = keyframe_header->second;
+                    
+                    // find the first keyframe that happens after the animation's current frame
+                    size_t second_keyframe = -1llu;
+                    for (size_t i = 0; i < keyframe_count; i++) {
+                        if (keyframes[i].frame > anim.frame) {
+                            second_keyframe = i;
                             break;
                         }
                     }
-
-                    if(kframe == -1llu){
-                        if((boneKeyframes[i][k] + boneKeyframeCount[i][k] - 1)->frame < animFrame[i]){
-                            animRepeats[i]--;
-                            //std::cout << "repeated " << animRepeats[i] << std::endl;
-                            if(animRepeats[i] == 0){
-                                animPlaying[i] = 0;
-                                k = -1;
-                                continue;
-                            }
-                            animFrame[i] = 0.0f;
+                    
+                    // if not found, that means that the current frame is past the end of the animation
+                    if (second_keyframe == -1llu) {
+                        anim.repeats--;
+                        anim.frame = 0.0f;
+                        
+                        second_keyframe = 1;
+                        
+                        if (anim.repeats == 0) {
+                            StopAnimation(anim.animation_header->first);
+                            continue;
                         }
-                        kframe = 0;
                     }
-
-                    Render::Keyframe* kptr = boneKeyframes[i][k] + kframe;
-                    Render::Keyframe* kptr2;
-                    float mixw;
-
-                    if(kframe == 0){
-                        kptr2 = kptr;
-                        mixw = 1.0f;
-                    } else {
-                        kptr2 = kptr--;
-                        mixw = (animFrame[i] - kptr2->frame) / (kptr->frame - kptr2->frame);
-                    }
-
-
-
-                    anim[k].location += glm::mix(kptr2->location, kptr->location, mixw);
-                    anim[k].rotation *= glm::mix(kptr2->rotation, kptr->rotation, mixw);
-                    anim[k].scale *= glm::mix(kptr2->scale, kptr->scale, mixw);
-
+                    
+                    size_t first_keyframe = second_keyframe - 1;
+                    
+                    // interpolation ratio between keyframes
+                    float mix_w = (anim.frame - keyframes[second_keyframe].frame) / (keyframes[first_keyframe].frame - keyframes[second_keyframe].frame);
+                    
+                    // mix together will all other animations
+                    anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * anim.weight;
+                    anim_mixed[k].rotation *= glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w) * anim.weight;
+                    anim_mixed[k].scale *= glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w) * anim.weight;                    
                 }
-
-
             }
-
         }
 
         lastUpdate = FRAME_TIME;
-
-
-        //animations done, now do skinning
-
+        
+        // convert mixed keyframes to pose matrices
         for(uint64_t i = 0; i < boneCount; i++){
 
             poseobj->pose[i] = glm::mat4(1.0f);
@@ -307,8 +364,8 @@ namespace Core {
 
 
             glm::mat4 boneAnim = glm::mat4(1.0f);
-            boneAnim = glm::toMat4(anim[i].rotation) * boneAnim;
-            boneAnim = glm::translate(glm::mat4(1.0f), anim[i].location) * boneAnim;
+            boneAnim = glm::toMat4(anim_mixed[i].rotation) * boneAnim;
+            boneAnim = glm::translate(glm::mat4(1.0f), anim_mixed[i].location) * boneAnim;
 
             glm::mat4 boneToModel = glm::inverse(modelToBone);
             
@@ -320,7 +377,7 @@ namespace Core {
                 poseobj->pose[i] = poseobj->pose[boneInstance[i].parentIndex] * boneToModel * boneAnim * modelToBone;
             }
             
-            /*
+            /* idk i don't remember what this debugging code is for, but might be useful
             glm::vec3 o(0.0f);
             glm::vec3 x(1.0f, 0.0f, 0.0f);
             glm::vec3 y(0.0f, 0.0f, -1.0f);

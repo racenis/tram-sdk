@@ -30,7 +30,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Events on animations finishing/looping
 	- Other keyframe interpolation options
 - ControllerComponent
-	- Remember actions between frames
+	- ~~Remember actions between frames~~
 	- Configurable transitions between animations
 - Add an AudioComponent
 	- Pause/resume

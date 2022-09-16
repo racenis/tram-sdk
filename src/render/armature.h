@@ -10,7 +10,8 @@
 #include <core.h>
 
 namespace Core::Render {
-    typedef std::pair<name_t, uint64_t> NameCount;
+    typedef std::pair<name_t, uint64_t> NameCount; // animation header
+    const size_t BONE_COUNT = 30;
 
     struct Bone {
         name_t name = 0;
@@ -27,8 +28,9 @@ namespace Core::Render {
         glm::vec3 scale = glm::vec3(1.0f);
     };
     
+    // rename to just Pose?
     struct PoseListObject{
-        glm::mat4 pose[30];
+        glm::mat4 pose[BONE_COUNT];
     };
 
     extern Pool<PoseListObject> poseList;

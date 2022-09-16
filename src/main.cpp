@@ -99,7 +99,7 @@ int main() {
     monguser->SetPose(monguser_armature->GetPosePtr());
     
     // turn on physics drawing
-    DRAW_PHYSICS_DEBUG = true;
+    //DRAW_PHYSICS_DEBUG = true;
         
     while(!SHOULD_CLOSE){
         UI::Update();
@@ -140,9 +140,9 @@ int main() {
         Async::ResourceLoader2ndStage();
         Async::FinishResource();
 
-        if(tick == 245){
+        if(tick == 100){
             monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
-            Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
+            //Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
         }
 
         Event::Dispatch();
