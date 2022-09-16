@@ -22,10 +22,11 @@ Instruction manual and other documentations [can be found here](https://racenis.
 
 #### For next versions
 - AnimationComponent
-	- Make the code more readable
-	- Blend weights
-	- Different speeds
+	- ~~Make the code more readable~~
+	- ~~Blend weights~~
+	- ~~Different speeds~~
 	- Pause/resume
+		- Pausing on the last frame
 	- Fade in/out
 	- Events on animations finishing/looping
 	- Other keyframe interpolation options
@@ -44,6 +45,8 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - TriggerComponent
 	- I have a feeling that it needs more features
 	- More callbacks, maybe?
+		- OnDeactivate callback
+		- OnActivate callback with reference to entity that commited the activation
 - Entities
 	- More constructors for them
 - Containers
@@ -65,6 +68,8 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Bump and specularity maps
 - Fix the tramway entity
 - Fix the bus entity
+- Sprite batching
+- Change font rendering to use sprite system
 - Optimize the model material bucketing system
 - Make the player controller more responsive
 - Add a proper third person camera 

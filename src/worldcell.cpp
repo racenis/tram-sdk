@@ -152,8 +152,7 @@ void WorldCell::LoadFromDisk(){
             ss >> pointcount;
             std::unordered_map<uint32_t, Path::Node*> id_lookup;
             for (size_t i = 0; i < pointcount; i++) {
-                uint32_t id;//, next_id, prev_id, left_id, right_id;
-                //ss >> id; ss >> next_id; ss >> prev_id; ss >> left_id; ss >> right_id;
+                uint32_t id;
                 ss >> id;
                 Path::Node nod;
                 ss >> *((uint32_t*)&nod.next);
@@ -194,8 +193,7 @@ void WorldCell::LoadFromDisk(){
             ss >> pointcount;
             std::unordered_map<uint32_t, Navmesh::Node*> id_lookup;
             for (size_t i = 0; i < pointcount; i++) {
-                uint32_t id;//, next_id, prev_id, left_id, right_id;
-                //ss >> id; ss >> next_id; ss >> prev_id; ss >> left_id; ss >> right_id;
+                uint32_t id;
                 ss >> id;
                 Navmesh::Node nod;
                 ss >> *((uint32_t*)&nod.next);
@@ -209,12 +207,10 @@ void WorldCell::LoadFromDisk(){
                 id_lookup[id] = &(navmesh->nodes.back());
             }
             for (auto& it : navmesh->nodes) {
-                std::cout << "1 pimpaalis " << it.next << " " << it.prev << " " << it.left << " " << it.right << std::endl;
                 it.next = id_lookup[*((uint32_t*)&it.next)];
                 it.prev = id_lookup[*((uint32_t*)&it.prev)];
                 it.left = id_lookup[*((uint32_t*)&it.left)];
                 it.right = id_lookup[*((uint32_t*)&it.right)];
-                std::cout << "2 pimpaalis " << it.next << " " << it.prev << " " << it.left << " " << it.right << std::endl;
             }
             navmeshes.push_back(navmesh);
             continue;
