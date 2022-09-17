@@ -7,9 +7,19 @@
 #ifndef TEMPLATECOMPONENT_H
 #define TEMPLATECOMPONENT_H
 
+#include <core.h>
+
 namespace Core {
     
-    // put code in here
+    class TemplateComponent : public EntityComponent {
+    public:
+        TemplateComponent();
+        ~TemplateComponent();
+        void Init();
+        void Uninit();
+        void Start();
+        void EventHandler(Event &event);
+    };
     
 }
 

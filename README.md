@@ -33,10 +33,10 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - ControllerComponent
 	- ~~Remember actions between frames~~
 	- Configurable transitions between animations
-- Add an AudioComponent
-	- Pause/resume
+- ~~Add an AudioComponent~~
+	- ~~Pause/resume~~
 	- Sounds larger than 32KB
-- SpriteComponent
+- ~~SpriteComponent~~
 	- ~~Better system of defining frames~~
 	- ~~Multiple frame lists per sprite~~ canceled
 - ParticleComponent

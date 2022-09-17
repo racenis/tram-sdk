@@ -20,6 +20,7 @@
 
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
+#include <components/audiocomponent.h>
 
 #include <components/controllercomponent.h>
 
@@ -62,7 +63,7 @@ int main() {
     
     // audios
     Audio::Sound derp (UID("derp"));
-    derp.LoadFromDisk();
+    //derp.LoadFromDisk();
 
     // loading the demo level
     auto demo = PoolProxy<WorldCell>::New();
@@ -119,6 +120,14 @@ int main() {
     tolet_emitter->SetSprite(tolet_sprite);
     tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
     tolet_emitter->Init();
+    
+    auto derp_player = PoolProxy<AudioComponent>::New();
+    derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    derp_player->SetSound(&derp);
+    derp_player->SetRepeating(true);
+    derp_player->Init();
+    
+    auto crate_ent = Entity::Find(UID("estijs"));
         
     while(!SHOULD_CLOSE){
         UI::Update();
@@ -162,7 +171,19 @@ int main() {
         if(tick == 100){
             monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
             //Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
+            derp_player->Play();
         }
+        
+        if (tick == 50) crate_ent = Entity::FindName(UID("estijs"));
+
+        //std::cout << crate_ent << std::endl;
+
+        if (tick > 50) {
+            glm::vec3 crate_loc;
+            crate_ent->GetLocation(crate_loc);
+            derp_player->UpdateLocation(crate_loc);
+        }
+
 
         Event::Dispatch();
         Message::Dispatch();
