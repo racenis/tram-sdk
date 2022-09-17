@@ -139,6 +139,8 @@ namespace Core::Render {
             //res_type = RESOURCE_MATERIAL;
         }
         inline uint32_t GetTexture() const {return texture;};
+        inline uint32_t GetWidth() const {return width;};
+        inline uint32_t GetHeight() const {return height;};
         inline Material::Type GetType() const {return type;};
         bool Load(){
             LoadFromDisk();
@@ -283,12 +285,16 @@ namespace Core::Render {
 
     class Sprite : public Resource {
     public:
-        // this is temporary; will make better way
-        float width = 1.0f;
-        float height = 1.0f;
-        float scale = 1.0f;
-        size_t frames = 0;
-        size_t frames_w = 0;
+        struct Frame {
+            uint16_t offset_x;
+            uint16_t offset_y;
+            uint16_t width;
+            uint16_t height;
+            float scale;
+            float length;
+        };
+        
+        std::vector<Frame> frames;
     protected:
         Material* material;
         
@@ -304,6 +310,7 @@ namespace Core::Render {
             return true;
         }
         bool Unload();
+        void AutogenTiledFrames(uint16_t frame_offset_x, uint16_t frame_offset_y, uint16_t frame_width, uint16_t frame_height, uint16_t frames_per_row, uint16_t frame_count, float scale, float length);
         void LoadFromDisk();
         void LoadFromMemory();
         static Sprite* Find(name_t name);

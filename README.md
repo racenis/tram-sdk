@@ -37,8 +37,8 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Pause/resume
 	- Sounds larger than 32KB
 - SpriteComponent
-	- Better system of defining frames
-	- Multiple frame lists per sprite
+	- ~~Better system of defining frames~~
+	- ~~Multiple frame lists per sprite~~ canceled
 - ParticleComponent
 	- I have no idea where I am going with it
 	- Maybe add callbacks for processing the particle behaviour
@@ -68,7 +68,11 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Bump and specularity maps
 - Fix the tramway entity
 - Fix the bus entity
-- Sprite batching
+- SpriteComponent
+	- Batching
+- ParticleComponent
+	- Batching together with sprites
+	- Animated particles
 - Change font rendering to use sprite system
 - Optimize the model material bucketing system
 - Make the player controller more responsive
