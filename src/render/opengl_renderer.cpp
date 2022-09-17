@@ -254,31 +254,31 @@ namespace Core::Render::OpenGL {
      //       }, std::vector<Material*>(), GL_LINES, colorlines.size(), colorlines.size() * sizeof(LineVertex), &colorlines[0]);
             
     auto textBuffer = VertexBuffer(std::vector<VertexBuffer::VertexFormat>{
-            {2, GL_FLOAT, sizeof(TextVertex), nullptr},
-            {2, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, texco)},
-            {3, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, color)},
-            {2, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, scale)},
-            {1, GL_FLOAT, sizeof(TextVertex), (void*)offsetof(TextVertex, thickness)},
-            {1, GL_UNSIGNED_INT, sizeof(TextVertex), (void*)offsetof(TextVertex, texture)}
+            {2, GL_FLOAT, sizeof(SpriteVertex), nullptr},
+            {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texco)},
+            {3, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, color)},
+            {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, voffset)},
+            {1, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, verticality)},
+            {1, GL_UNSIGNED_INT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texture)}
         }, std::vector<Material*>{
             &FONT_REGULAR,
             &FONT_TITLE,
             &FONT_TITLE, // <--- just a placeholder
             &FONT_TITLE, // <--- also a placeholder
             &FONT_SYMBOLS
-        }, GL_TRIANGLES, textvertices.size(), textvertices.size() * sizeof(TextVertex), &textvertices[0]);
+        }, GL_TRIANGLES, textvertices.size(), textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
         
     auto glyphBuffer = VertexBuffer(std::vector<VertexBuffer::VertexFormat>{
-        {2, GL_FLOAT, sizeof(GlyphVertex), nullptr},
-        {2, GL_FLOAT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, texco)},
-        {3, GL_FLOAT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, color)},
-        {1, GL_UNSIGNED_INT, sizeof(GlyphVertex), (void*)offsetof(GlyphVertex, texture)}
+        {2, GL_FLOAT, sizeof(SpriteVertex), nullptr},
+        {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texco)},
+        {3, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, color)},
+        {1, GL_UNSIGNED_INT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texture)}
     }, std::vector<Material*>{
         &GLYPH_GUI,
         &GLYPH_TEXT,
         &GLYPH_TEXT_BOLD,
         &GLYPH_HEADERS
-    }, GL_TRIANGLES, glyphvertices.size(), glyphvertices.size() * sizeof(GlyphVertex), &glyphvertices[0]);
+    }, GL_TRIANGLES, glyphvertices.size(), glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
         
         
     void ScreenSize(float width, float height) {
@@ -458,16 +458,16 @@ namespace Core::Render::OpenGL {
         //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         // set special text shader
         //glUseProgram(ShaderProgram::Find(Model::TEXT_VERTEX, Material::TEXTURE_MSDF)->compiled_shader);
-        glUseProgram(FindShader(Model::TEXT_VERTEX, Material::TEXTURE_MSDF));
+        glUseProgram(FindShader(Model::SPRITE_VERTEX, Material::TEXTURE_MSDF));
 
         // upload the text array and draw the text
-        textBuffer.UpdateData(textvertices.size(), textvertices.size() * sizeof(TextVertex), &textvertices[0]);
+        textBuffer.UpdateData(textvertices.size(), textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
         textBuffer.Upload();
         textBuffer.Draw();
         
         //glUseProgram(ShaderProgram::Find(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH)->compiled_shader);
-        glUseProgram(FindShader(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH));
-        glyphBuffer.UpdateData(glyphvertices.size(), glyphvertices.size() * sizeof(GlyphVertex), &glyphvertices[0]);
+        glUseProgram(FindShader(Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH));
+        glyphBuffer.UpdateData(glyphvertices.size(), glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
         glyphBuffer.Upload();
         glyphBuffer.Draw();
 
@@ -519,7 +519,7 @@ namespace Core {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, voffset));
         glEnableVertexAttribArray(1);
         
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, tex));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, texco));
         glEnableVertexAttribArray(2);
 
         glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, verticality));
@@ -579,7 +579,7 @@ namespace Core {
         Render::SpriteVertex top_left {
             .co = glm::vec3(0.0f, 0.0f, 0.0f),
             .voffset = glm::vec2 (-half_width, half_height),
-            .tex = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
+            .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
@@ -587,7 +587,7 @@ namespace Core {
         Render::SpriteVertex top_right {
             .co = glm::vec3(0.0f, 0.0f, 0.0f),
             .voffset = glm::vec2 (half_width, half_height),
-            .tex = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
+            .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
@@ -595,7 +595,7 @@ namespace Core {
         Render::SpriteVertex bottom_left {
             .co = glm::vec3(0.0f, 0.0f, 0.0f),
             .voffset = glm::vec2 (-half_width, -half_height),
-            .tex = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
+            .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
@@ -603,7 +603,7 @@ namespace Core {
         Render::SpriteVertex bottom_right {
             .co = glm::vec3(0.0f, 0.0f, 0.0f),
             .voffset = glm::vec2 (half_width, -half_height),
-            .tex = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
+            .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
@@ -678,7 +678,7 @@ namespace Core {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, voffset));
         glEnableVertexAttribArray(1);
         
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, tex));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, texco));
         glEnableVertexAttribArray(2);
 
         glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, verticality));
@@ -759,7 +759,7 @@ namespace Core {
                 //.co = glm::vec3(0.0f, 0.0f, 0.0f),
                 .co = particle.coords,
                 .voffset = glm::vec2 (-half_width, half_height),
-                .tex = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
+                .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
                 .verticality = 1.0f,
                 .texture = 0
             };
@@ -768,7 +768,7 @@ namespace Core {
                 //.co = glm::vec3(0.0f, 0.0f, 0.0f),
                 .co = particle.coords,
                 .voffset = glm::vec2 (half_width, half_height),
-                .tex = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
+                .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
                 .verticality = 1.0f,
                 .texture = 0
             };
@@ -777,7 +777,7 @@ namespace Core {
                 //.co = glm::vec3(0.0f, 0.0f, 0.0f),
                 .co = particle.coords,
                 .voffset = glm::vec2 (-half_width, -half_height),
-                .tex = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
+                .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
                 .verticality = 1.0f,
                 .texture = 0
             };
@@ -786,7 +786,7 @@ namespace Core {
                 //.co = glm::vec3(0.0f, 0.0f, 0.0f),
                 .co = particle.coords,
                 .voffset = glm::vec2 (half_width, -half_height),
-                .tex = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
+                .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
                 .verticality = 1.0f,
                 .texture = 0
             };

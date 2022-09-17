@@ -47,8 +47,8 @@ namespace Core::Render {
     Octree<uint32_t> lightTree;
 
     std::vector<LineVertex> colorlines;
-    std::vector<TextVertex> textvertices;
-    std::vector<GlyphVertex> glyphvertices;
+    std::vector<SpriteVertex> textvertices;
+    std::vector<SpriteVertex> glyphvertices;
     
 
     void Init(){
@@ -124,10 +124,10 @@ namespace Core::Render {
     }
     
     void SetGlyph(float x, float y, float tex_x, float tex_y, float width, float height, float scale_x, float scale_y, float thickness, uint32_t texture, const glm::vec3& color){
-        TextVertex tleft;   // top left
-        TextVertex tright;  // top right
-        TextVertex bleft;   // bottom left
-        TextVertex bright;  // bottom right
+        SpriteVertex tleft;   // top left
+        SpriteVertex tright;  // top right
+        SpriteVertex bleft;   // bottom left
+        SpriteVertex bright;  // bottom right
 
         thickness = thickness - 1.0f;
 
@@ -156,21 +156,21 @@ namespace Core::Render {
         bright.texco.y = tex_y + height;
 
         tleft.color = color;
-        tleft.scale = scale;
+        tleft.voffset = scale;
         tleft.texture = texture;
-        tleft.thickness = thickness;
+        tleft.verticality = thickness;
         tright.color = color;
-        tright.scale = scale;
+        tright.voffset = scale;
         tright.texture = texture;
-        tright.thickness = thickness;
+        tright.verticality = thickness;
         bleft.color = color;
-        bleft.scale = scale;
+        bleft.voffset = scale;
         bleft.texture = texture;
-        bleft.thickness = thickness;
+        bleft.verticality = thickness;
         bright.color = color;
-        bright.scale = scale;
+        bright.voffset = scale;
         bright.texture = texture;
-        bright.thickness = thickness;
+        bright.verticality = thickness;
 
         textvertices.push_back(bleft);
         textvertices.push_back(bright);
@@ -181,10 +181,10 @@ namespace Core::Render {
     }
     
     void SetGlyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex){
-        GlyphVertex tleft;   // top left
-        GlyphVertex tright;  // top right
-        GlyphVertex bleft;   // bottom left
-        GlyphVertex bright;  // bottom right
+        SpriteVertex tleft;   // top left
+        SpriteVertex tright;  // top right
+        SpriteVertex bleft;   // bottom left
+        SpriteVertex bright;  // bottom right
 
         tleft.co.x = x;
         tleft.co.y = y;

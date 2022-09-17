@@ -15,8 +15,8 @@ namespace Core::Render {
     extern Octree<uint32_t> lightTree;
 
     extern std::vector<LineVertex> colorlines;
-    extern std::vector<TextVertex> textvertices;
-    extern std::vector<GlyphVertex> glyphvertices;
+    extern std::vector<SpriteVertex> textvertices;
+    extern std::vector<SpriteVertex> glyphvertices;
 }
 
 namespace Core::Render::OpenGL {

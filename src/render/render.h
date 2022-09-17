@@ -175,7 +175,8 @@ namespace Core::Render {
     struct SpriteVertex {
         glm::vec3 co;
         glm::vec2 voffset;
-        glm::vec2 tex;
+        glm::vec2 texco;
+        glm::vec3 color;
         float verticality;
         uint32_t texture;
     };
@@ -183,22 +184,6 @@ namespace Core::Render {
     struct LineVertex{
         glm::vec3 co;
         glm::vec3 color;
-    };
-
-    struct TextVertex{
-        glm::vec2 co;
-        glm::vec2 texco;
-        glm::vec2 scale;
-        glm::vec3 color;
-        float thickness;
-        uint32_t texture;
-    };
-    
-    struct GlyphVertex{
-        glm::vec2 co;
-        glm::vec2 texco;
-        glm::vec3 color;
-        uint32_t texture;
     };
 
     struct ModelIndex{
@@ -215,9 +200,7 @@ namespace Core::Render {
             STATIC_VERTEX,
             DYNAMIC_VERTEX,
             SPRITE_VERTEX,
-            LINE_VERTEX,
-            TEXT_VERTEX,
-            GLYPH_VERTEX
+            LINE_VERTEX
         };
         
         struct OpenGL {

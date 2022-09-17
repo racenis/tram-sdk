@@ -167,8 +167,8 @@ namespace Core::Render::OpenGL {
         StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_WATER,    LinkShader(normal_static_vertex, normal_water_fragment));
         StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(sprite_vertex, sprite_fragment));
         StoreShaderForLater(Model::LINE_VERTEX,     Material::FLAT_COLOR,       LinkShader(line_vertex, line_fragment));
-        StoreShaderForLater(Model::TEXT_VERTEX,     Material::TEXTURE_MSDF,     LinkShader(text_vertex, text_fragment));
-        StoreShaderForLater(Model::GLYPH_VERTEX,    Material::TEXTURE_GLYPH,    LinkShader(glyph_vertex, glyph_fragment));
+        StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_MSDF,     LinkShader(text_vertex, text_fragment));
+        StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_GLYPH,    LinkShader(glyph_vertex, glyph_fragment));
         
         for (auto& sh : compiled_shaders) BindTextures(std::get<2>(sh));
     }
