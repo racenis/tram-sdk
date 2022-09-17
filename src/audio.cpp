@@ -28,34 +28,19 @@ namespace Core::Audio {
     
     
     void PlaySound(Sound* sound, const glm::vec3& location) {
-        abort();
-        SoundSource* source = all_sounds.AddNew();
-        
-        alGenSources(1, &source->source_name);
-        alSourcef( source->source_name, AL_PITCH, 1);
-        alSourcef( source->source_name, AL_GAIN, 1.0f);
-        alSource3f( source->source_name, AL_POSITION, location.x, location.y, location.z);
-        alSource3f( source->source_name, AL_VELOCITY, 0, 0, 0);
-        alSourcei( source->source_name, AL_LOOPING, AL_FALSE);
-        alSourcei( source->source_name, AL_BUFFER, sound->sound_buffer);
-
-        alSourcePlay(source->source_name);
-            
-        std::cout << "Playing the sound " << ReverseUID(sound->GetName()) << std::endl;
+        assert(false && "PlaySound() not implemented");
     }
     
     void Init() {
         sound_device = alcOpenDevice(nullptr);
-        if (!sound_device) printf("Audio device didn't initialize!\n");
+        if (!sound_device) std::cout << "Audio device didn't open!" << std::endl;
         sound_context = alcCreateContext(sound_device, nullptr);
-        if (!sound_context) printf("Audio context didn't initialize!\n");
-        if (!alcMakeContextCurrent(sound_context)) printf("Audio context didn't get currented!\n");
-        const char* name = nullptr;
-        if (alcIsExtensionPresent(sound_device, "ALC_ENUMERATE_ALL_EXT"))
-            name = alcGetString(sound_device, ALC_ALL_DEVICES_SPECIFIER);
-        if (!name || alcGetError(sound_device) != ALC_NO_ERROR)
-            name = alcGetString(sound_device, ALC_DEVICE_SPECIFIER);
-        printf("Opened \"%s\"\n", name);
+        if (!sound_context) std::cout << "Audio context didn't create!" << std::endl;
+        if (!alcMakeContextCurrent(sound_context)) std::cout << "Audio context didn't get currented!" << std::endl;
+        const char* device_name = nullptr;
+        if (alcIsExtensionPresent(sound_device, "ALC_ENUMERATE_ALL_EXT")) device_name = alcGetString(sound_device, ALC_ALL_DEVICES_SPECIFIER);
+        if (!device_name || alcGetError(sound_device) != ALC_NO_ERROR) device_name = alcGetString(sound_device, ALC_DEVICE_SPECIFIER);
+        std::cout << "Audio device: " << device_name << std::endl;
     }
     
     void Update() {
@@ -82,13 +67,17 @@ namespace Core::Audio {
     }
     
     void Uninit() {
-        for (auto it : all_sounds) {
+        /*for (auto it : all_sounds) {
             alDeleteSources(1, &it.source_name);
         }
         
         for (auto it : sound_map) {
             alDeleteBuffers(1, &it.second->sound_buffer);
-        }
+        }*/
+        
+        for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.Uninit();
+        for (auto it : sound_map) it.second->Unload();
+        
         
         
         alcMakeContextCurrent(nullptr);
@@ -104,22 +93,31 @@ namespace Core::Audio {
         if (sound_length < 0) {
             std::cout << "There was an error loading the sound " << ReverseUID(name) << std::endl;
         } else {
-            alGenBuffers(1, &sound_buffer);
+            static const int32_t buffer_size = 64 * 1024;
+            sound_buffer_count = (sound_length + buffer_size - 1) / buffer_size;
+            std::cout << "generating " << sound_buffer_count << "buffers" << std::endl;
+            
+            alGenBuffers(sound_buffer_count, sound_buffers);
 
             int32_t format;
             if(channels == 1)
                 format = AL_FORMAT_MONO16;
             else if(channels == 2)
                 format = AL_FORMAT_STEREO16;
-
-            alBufferData (sound_buffer, format, sound_data, sound_length, sample_rate);
+            else
+                assert(false && "Invalid channel format");
+            
+            for (int32_t i = 0; i < sound_buffer_count; i++) {
+                alBufferData (sound_buffers[i], format, sound_data + (buffer_size * i), (i + 1 == sound_buffer_count ? sound_length - (buffer_size * (sound_buffer_count - 1)) : buffer_size) * sizeof(int16_t), sample_rate);
+            }
+            
             
             sound_map[name] = this;
         }
     }
     
     void Sound::Unload() {
-        alDeleteBuffers(1, &sound_buffer);
+        alDeleteBuffers(sound_buffer_count, sound_buffers);
     }
     
     Sound* Sound::Find (name_t name) {
@@ -145,43 +143,45 @@ namespace Core {
     }
     
     void AudioComponent::Uninit() {
-        alDeleteSources(1, &source->source_name);
+        alDeleteSources(1, &source);
         is_ready = false;
     }
     
-    void AudioComponent::Start() {
-        source = all_sounds.AddNew();
-        
-        alGenSources(1, &source->source_name);
-        alSourcef(source->source_name, AL_PITCH, 1);
-        alSourcef(source->source_name, AL_GAIN, 1.0f);
-        alSource3f(source->source_name, AL_POSITION, location.x, location.y, location.z);
-        alSource3f(source->source_name, AL_VELOCITY, 0, 0, 0);
-        alSourcei(source->source_name, AL_LOOPING, repeat ? AL_TRUE : AL_FALSE);
-        alSourcei(source->source_name, AL_BUFFER, sound->sound_buffer);
+    void AudioComponent::Start() {        
+        alGenSources(1, &source);
+        alSourcef(source, AL_PITCH, 1);
+        alSourcef(source, AL_GAIN, 1.0f);
+        alSource3f(source, AL_POSITION, location.x, location.y, location.z);
+        alSource3f(source, AL_VELOCITY, 0, 0, 0);
+        alSourcei(source, AL_LOOPING, repeat ? AL_TRUE : AL_FALSE);
+        if (sound->sound_buffer_count == 1) {
+            alSourcei(source, AL_BUFFER, sound->sound_buffers[0]);
+        } else {
+            alSourceQueueBuffers(source, sound->sound_buffer_count, sound->sound_buffers);
+        }
         
         is_ready = true;
     }
     
     void AudioComponent::UpdateLocation(const glm::vec3& location) {
-        if (is_ready) alSource3f(source->source_name, AL_POSITION, location.x, location.y, location.z);
+        if (is_ready) alSource3f(source, AL_POSITION, location.x, location.y, location.z);
         this->location = location;
     }
     
     void AudioComponent::SetRepeating(bool is_repeating) {
-        if (is_ready) alSourcei(source->source_name, AL_LOOPING, is_repeating ? AL_TRUE : AL_FALSE);
+        if (is_ready) alSourcei(source, AL_LOOPING, is_repeating ? AL_TRUE : AL_FALSE);
         repeat = is_repeating;
     }
     
     void AudioComponent::Play() {
-        if (is_ready) alSourcePlay(source->source_name);
+        if (is_ready) alSourcePlay(source);
     }
     
     void AudioComponent::Pause() {
-        if (is_ready) alSourcePause(source->source_name);
+        if (is_ready) alSourcePause(source);
     }
     
     void AudioComponent::Stop() {
-        if (is_ready) alSourceStop(source->source_name);
+        if (is_ready) alSourceStop(source);
     }
 }

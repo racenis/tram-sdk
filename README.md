@@ -35,7 +35,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Configurable transitions between animations
 - ~~Add an AudioComponent~~
 	- ~~Pause/resume~~
-	- Sounds larger than 32KB
+	- ~~Sounds larger than 32KB~~
 - ~~SpriteComponent~~
 	- ~~Better system of defining frames~~
 	- ~~Multiple frame lists per sprite~~ canceled
@@ -52,6 +52,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Containers
 	- Rename 'PoolAddOnly' to 'StackPool'
 	- Add a PODPool
+	- Add iterators to stacks
 - Fix the mongus entity
 - Add LIGMAScript
 
@@ -76,6 +77,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Change font rendering to use sprite system
 - Optimize the model material bucketing system
 - Make the player controller more responsive
+- Physics cached collision primitives
 - Add a proper third person camera 
 - Add some generic gameplay systems
 	- Tools/items

@@ -30,7 +30,7 @@ namespace Core {
         void EventHandler(Event &event){}
     protected:
         ResourceProxy<Audio::Sound> sound;
-        Audio::SoundSource* source = nullptr;
+        uint32_t source;
         glm::vec3 location;
         bool repeat = false;
     };
