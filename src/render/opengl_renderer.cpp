@@ -29,6 +29,24 @@ namespace Core::Render::OpenGL {
         float screenHeight;
     };
     
+    struct VertexFormat {
+        int32_t size;
+        uint32_t type;
+        int32_t stride;
+        void* pointer;
+    };
+    
+    struct VertexArray {
+        uint32_t array_handle;
+        uint32_t buffer_handle;
+        uint32_t vertex_count;
+        bool dynamic_draw;
+    };
+    
+    VertexArray line_array;
+    VertexArray text_array;
+    VertexArray glyph_array;
+    
     ShaderUniformMatrices matrices;
     ShaderUniformModelMatrices modelMatrices;
     
@@ -43,6 +61,20 @@ namespace Core::Render::OpenGL {
     uint32_t model_matrix_uniform_buffer;
     uint32_t light_uniform_buffer;
     uint32_t bone_uniform_buffer;
+    
+    std::vector<std::vector<VertexFormat>> vertex_formats = {
+        {}, // put the static vertex definition in here
+        {}, // put the dynamic vertex definition in here
+        {   // sprite vertex
+            {2, GL_FLOAT, sizeof(SpriteVertex), nullptr},
+            {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texco)},
+            {3, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, color)},
+            {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, voffset)},
+            {1, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, verticality)},
+            {1, GL_UNSIGNED_INT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texture)}
+        },
+        {}  // put the line vertex definition in here
+    };
     
     uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
         uint32_t handle;
@@ -64,24 +96,6 @@ namespace Core::Render::OpenGL {
         glBufferSubData(GL_UNIFORM_BUFFER, 0, data_size, data);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
-    
-    struct VertexFormat {
-        int32_t size;
-        uint32_t type;
-        int32_t stride;
-        void* pointer;
-    };
-    
-    struct VertexArray {
-        uint32_t array_handle;
-        uint32_t buffer_handle;
-        uint32_t vertex_count;
-        bool dynamic_draw;
-    };
-    
-    VertexArray line_array;
-    VertexArray text_array;
-    VertexArray glyph_array;
     
     VertexArray MakeVertexArray (const std::vector<VertexFormat>& vertex_format, uint32_t initial_size, bool dynamic_draw = true) {
         VertexArray array = { .dynamic_draw = dynamic_draw };
@@ -253,14 +267,7 @@ namespace Core::Render::OpenGL {
      //       {3, GL_FLOAT, sizeof(LineVertex), (void*)offsetof(LineVertex, color)}
      //       }, std::vector<Material*>(), GL_LINES, colorlines.size(), colorlines.size() * sizeof(LineVertex), &colorlines[0]);
             
-    auto textBuffer = VertexBuffer(std::vector<VertexBuffer::VertexFormat>{
-            {2, GL_FLOAT, sizeof(SpriteVertex), nullptr},
-            {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texco)},
-            {3, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, color)},
-            {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, voffset)},
-            {1, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, verticality)},
-            {1, GL_UNSIGNED_INT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texture)}
-        }, std::vector<Material*>{
+    auto textBuffer = VertexBuffer(*((std::vector<VertexBuffer::VertexFormat>*)(&vertex_formats[Model::SPRITE_VERTEX])), std::vector<Material*>{
             &FONT_REGULAR,
             &FONT_TITLE,
             &FONT_TITLE, // <--- just a placeholder
@@ -268,12 +275,7 @@ namespace Core::Render::OpenGL {
             &FONT_SYMBOLS
         }, GL_TRIANGLES, textvertices.size(), textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
         
-    auto glyphBuffer = VertexBuffer(std::vector<VertexBuffer::VertexFormat>{
-        {2, GL_FLOAT, sizeof(SpriteVertex), nullptr},
-        {2, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texco)},
-        {3, GL_FLOAT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, color)},
-        {1, GL_UNSIGNED_INT, sizeof(SpriteVertex), (void*)offsetof(SpriteVertex, texture)}
-    }, std::vector<Material*>{
+    auto glyphBuffer = VertexBuffer(*((std::vector<VertexBuffer::VertexFormat>*)(&vertex_formats[Model::SPRITE_VERTEX])), std::vector<Material*>{
         &GLYPH_GUI,
         &GLYPH_TEXT,
         &GLYPH_TEXT_BOLD,

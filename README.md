@@ -56,7 +56,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Fix the mongus entity
 - Add LIGMAScript
 - OpenGL renderer
-	- Create a vector of VertexFormat vectors
+	- ~~Create a vector of VertexFormat vectors~~
 	- Switch SpriteComponent initialization to use MakeVertexArray() function
 	- Add a GeometryBatch upload step to Render() function
 	- Implement rendering layers
