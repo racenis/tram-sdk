@@ -58,7 +58,8 @@ namespace Core::Render {
         glm::quat rotation;
 
         uint32_t lights[4] = {0};
-
+        
+        uint32_t layer = 0;
         uint32_t lightmap = 0;
         uint32_t vbo = 0;
         uint32_t ebo = 0;
@@ -74,12 +75,15 @@ namespace Core::Render {
 
         /// Assembles a key for sorting
         uint64_t CalcSortKey(const glm::vec3& cameraPosition){
-            uint64_t sortkey;
+            uint64_t sortkey = 0;
             sortkey = flags & FLAG_TRANSPARENT ? 1 : 0;
-            sortkey = sortkey << 63;
-            sortkey = sortkey | ((uint64_t)shader << 48);
-            sortkey = sortkey | ((uint64_t)vao << 32);
-            sortkey = sortkey | (((uint64_t)(glm::distance(cameraPosition, location) * 0.1f)) & 0x000000000000FFFF);
+            sortkey = sortkey << 60;
+            sortkey = sortkey | (((uint64_t)layer) << 61);    // 3 bits for the layer number
+            sortkey = sortkey | (((uint64_t)shader) << 48);   // 12 bits for the shader
+            sortkey = sortkey | (((uint64_t)vao) << 32);      // 16 bits or the vertex array number
+            // TODO: reverse the distance if FLAG_REVERSE_SORT is set
+            // also i think that the bitmask for the distance thing is incorrect
+            sortkey = sortkey | (((uint64_t)(glm::distance(cameraPosition, location) * 3000000.0f)) & 0x00000000FFFFFFFF); // 32 bits for the distance
             return sortkey;
         }
     };
