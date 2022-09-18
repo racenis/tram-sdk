@@ -55,6 +55,12 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Add iterators to stacks
 - Fix the mongus entity
 - Add LIGMAScript
+- OpenGL renderer
+	- Create a vector of VertexFormat vectors
+	- Switch SpriteComponent initialization to use MakeVertexArray() function
+	- Add a GeometryBatch upload step to Render() function
+	- Implement rendering layers
+	- Switch GUI to using batched sprites for glyph rendering
 
 #### For versions later than next versions
 - AudioComponent
@@ -74,6 +80,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - ParticleComponent
 	- Batching together with sprites
 	- Animated particles
+- Create a custom 16-bit character encoding
 - Change font rendering to use sprite system
 - Optimize the model material bucketing system
 - Make the player controller more responsive
@@ -86,6 +93,11 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Cutscenes
 	- AI
 - Async job system
+
+#### For very later versions
+- Vertex animation
+- 3D text component
+- Tilemaps
 
 #### For previouse versions
  - ~~fix the animations~~

@@ -17,6 +17,25 @@ namespace Core::Render {
     extern std::vector<LineVertex> colorlines;
     extern std::vector<SpriteVertex> textvertices;
     extern std::vector<SpriteVertex> glyphvertices;
+    
+    class GeometryBatch {
+    public:
+        Material::Type material_type;
+        Model::VertexFormat vertex_format;
+        
+        RenderListObject* render_object = nullptr;
+        Material* material_list[16] = {nullptr};
+        union {
+            std::vector<SpriteVertex>* sprite_vector = nullptr;
+            std::vector<LineVertex>* line_vector;
+        };
+        
+        static void Find(uint32_t& index, GeometryBatch*& ptr, Material* mat, Material::Type mat_type, Model::VertexFormat vert_fmt);
+        static void Remove(uint32_t index, GeometryBatch* ptr);
+    protected:
+        static std::vector<GeometryBatch> geometry_batches;
+    };
+    
 }
 
 namespace Core::Render::OpenGL {

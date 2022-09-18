@@ -5,6 +5,7 @@
 // Methods for the sprite resource.
 
 #include <render/render.h>
+#include <render/renderer.h>
 
 #include <async.h>
 
@@ -13,8 +14,8 @@ using namespace Core::Render;
 
 std::unordered_map<uint64_t, Sprite*> Sprite::List;
 
-// TODO: Implement batching with buckets.
-// Each bucket has a list of up to 16 sprites that use that bucket.
+// TODO: Implement batching with buckets.                                       | ok
+// Each bucket has a list of up to 16 sprites that use that bucket.             | added GeometryBatch to rendered.h
 // Every time a sprite is loaded, it finds itself a bucket that has a free slot
 // and adds itself to the bucket. Conversely, when the sprite is unloaded, it
 // removes itself from the slot.
@@ -37,6 +38,7 @@ Sprite* Sprite::Find(name_t name){
 
 void Sprite::LoadFromMemory() {
     assert(status == LOADED);
+    if (is_batched) GeometryBatch::Find(batch_index, batch, material, material->GetType(), Model::VertexFormat::SPRITE_VERTEX);
     status = READY;
 }
 

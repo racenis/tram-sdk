@@ -45,7 +45,7 @@ namespace Core::Render {
         FLAG_INTERIOR_LIGHTING = 64
     };
 
-
+    
 
     
 
@@ -157,6 +157,7 @@ namespace Core::Render {
         static void SetErrorMaterial(Material* mat) {error_material = mat; mat->Load();}
         static Material* Find(name_t name);
         static void LoadMaterialInfo(const char* filename);
+        friend class Sprite;
     };
 
     struct StaticModelVertex{
@@ -270,6 +271,7 @@ namespace Core::Render {
         std::vector<unsigned int> groups;
     };
 
+    struct GeometryBatch;
     class Sprite : public Resource {
     public:
         struct Frame {
@@ -285,12 +287,17 @@ namespace Core::Render {
     protected:
         Material* material;
         
+        bool is_batched = false;
+        GeometryBatch* batch = nullptr;
+        uint32_t batch_index = 0;
+        
         static std::unordered_map<name_t, Sprite*> List;
     public:
         Sprite (){}
         Sprite(uint64_t name) : Resource(name) {}
         inline Material* GetMaterial () const { return material; }
         inline void SetMaterial (Material* mat) { material = mat; }
+        inline void SetBatched (bool is_batched) { this->is_batched = is_batched; }
         bool Load(){
             LoadFromDisk();
             LoadFromMemory();
@@ -302,7 +309,6 @@ namespace Core::Render {
         void LoadFromMemory();
         static Sprite* Find(name_t name);
     };
-
 
     // TODO: move into opengl-specific code
     const uint32_t MAX_MATERIALS_PER_MODEL = 15;

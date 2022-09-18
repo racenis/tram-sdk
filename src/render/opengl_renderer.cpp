@@ -428,7 +428,7 @@ namespace Core::Render::OpenGL {
 
             if (robj->ebo != 0) {
                 glBindVertexArray(robj->vao);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, robj->ebo);
+                //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, robj->ebo);
                 glDrawElements(GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
             } else {
                 glBindVertexArray(robj->vao);

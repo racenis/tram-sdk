@@ -45,6 +45,8 @@ namespace Core::Render {
     Pool<RenderListObject> renderList("render list", 500, false);
     Pool<LightListObject> lightPool("lightpool", 100, true);
     Octree<uint32_t> lightTree;
+    
+    std::vector<GeometryBatch> GeometryBatch::geometry_batches;
 
     std::vector<LineVertex> colorlines;
     std::vector<SpriteVertex> textvertices;
@@ -221,6 +223,50 @@ namespace Core::Render {
         glyphvertices.push_back(bright);
         glyphvertices.push_back(tright);
         glyphvertices.push_back(tleft);
+    }
+
+    // this whole batch searching thing could be optimized
+    void GeometryBatch::Find(uint32_t& index, GeometryBatch*& ptr, Material* mat, Material::Type mat_type, Model::VertexFormat vert_fmt) {
+        // first check if material is already batched
+        for (auto& batch : geometry_batches) {
+            if (batch.material_type == mat_type && batch.vertex_format == vert_fmt) {
+                for (uint32_t i = 0; i < 16; i++) {
+                    if (batch.material_list[i] == mat) {
+                        index = i;
+                        ptr = &batch;
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // if not, then check if there already is a batch with a suitable type
+        for (auto& batch : geometry_batches) {
+            if (batch.material_type == mat_type && batch.vertex_format == vert_fmt) {
+                for (uint32_t i = 0; i < 16; i++) {
+                    if (batch.material_list[i] == nullptr) {
+                        index = i;
+                        ptr = &batch;
+                        batch.material_list[i] = mat;
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // else create a new batch
+        
+        geometry_batches.push_back(GeometryBatch{});
+        geometry_batches.back().material_type = mat_type;
+        geometry_batches.back().vertex_format = vert_fmt;
+        geometry_batches.back().material_list[0] = mat;
+        geometry_batches.back().render_object = nullptr;
+        index = 0;
+        ptr = &geometry_batches.back();
+    }
+    
+    void GeometryBatch::Remove(uint32_t index, GeometryBatch* ptr) {
+        ptr->material_list[index] = nullptr;
     }
 
 }
