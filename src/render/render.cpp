@@ -52,6 +52,8 @@ namespace Core::Render {
     std::vector<SpriteVertex> textvertices;
     std::vector<SpriteVertex> glyphvertices;
     
+    GeometryBatch* glyph_batch = nullptr;
+    
 
     void Init(){
         OpenGL::Init();
@@ -71,12 +73,20 @@ namespace Core::Render {
         GLYPH_TEXT.Load();
         GLYPH_TEXT_BOLD.Load();
         GLYPH_HEADERS.Load();
+        
+        uint32_t throwaway;
+        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_GUI, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
+        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_TEXT, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
+        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_TEXT_BOLD, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
+        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_HEADERS, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
+        glyph_batch->render_object->flags = glyph_batch->render_object->flags | FLAG_NO_DEPTH_TEST;
     }
 
     void Render(){
         #ifndef ENGINE_EDITOR_MODE
         for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
         for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
+        GeometryBatch::Update();
         #endif // ENGINE_EDITOR_MODE
         
         OpenGL::Render();
@@ -89,8 +99,8 @@ namespace Core::Render {
     }
     
     void RenderListObject::FillFromModel(Model* mdl, uint32_t eboIndex){
-        vbo = mdl->vbo;
-        ebo = mdl->ebo;
+        //vbo = mdl->vbo;
+        //ebo = mdl->ebo;
         vao = mdl->vao;
         eboLen = mdl->eboLen[eboIndex];
         eboOff = mdl->eboOff[eboIndex];
@@ -100,7 +110,7 @@ namespace Core::Render {
             textures[i] = mdl->materials[i]->GetTexture();
         }
 
-        flags = FLAG_RENDER; // TODO: get the RFLAG_INTERIOR_LIGHTING in here somehow
+        flags = FLAG_RENDER | FLAG_DRAW_INDEXED; // TODO: get the RFLAG_INTERIOR_LIGHTING in here somehow
     };
     
     void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color){
@@ -217,58 +227,20 @@ namespace Core::Render {
         bright.color = color;
         bright.texture = tex;
 
-        glyphvertices.push_back(bleft);
-        glyphvertices.push_back(bright);
-        glyphvertices.push_back(tleft);
-        glyphvertices.push_back(bright);
-        glyphvertices.push_back(tright);
-        glyphvertices.push_back(tleft);
-    }
-
-    // this whole batch searching thing could be optimized
-    void GeometryBatch::Find(uint32_t& index, GeometryBatch*& ptr, Material* mat, Material::Type mat_type, Model::VertexFormat vert_fmt) {
-        // first check if material is already batched
-        for (auto& batch : geometry_batches) {
-            if (batch.material_type == mat_type && batch.vertex_format == vert_fmt) {
-                for (uint32_t i = 0; i < 16; i++) {
-                    if (batch.material_list[i] == mat) {
-                        index = i;
-                        ptr = &batch;
-                        return;
-                    }
-                }
-            }
-        }
+        //glyphvertices.push_back(bleft);
+        //glyphvertices.push_back(bright);
+        //glyphvertices.push_back(tleft);
+        //glyphvertices.push_back(bright);
+        //glyphvertices.push_back(tright);
+        //glyphvertices.push_back(tleft);
         
-        // if not, then check if there already is a batch with a suitable type
-        for (auto& batch : geometry_batches) {
-            if (batch.material_type == mat_type && batch.vertex_format == vert_fmt) {
-                for (uint32_t i = 0; i < 16; i++) {
-                    if (batch.material_list[i] == nullptr) {
-                        index = i;
-                        ptr = &batch;
-                        batch.material_list[i] = mat;
-                        return;
-                    }
-                }
-            }
-        }
-        
-        // else create a new batch
-        
-        geometry_batches.push_back(GeometryBatch{});
-        geometry_batches.back().material_type = mat_type;
-        geometry_batches.back().vertex_format = vert_fmt;
-        geometry_batches.back().material_list[0] = mat;
-        geometry_batches.back().render_object = nullptr;
-        index = 0;
-        ptr = &geometry_batches.back();
+        glyph_batch->sprite_vector->push_back(bleft);
+        glyph_batch->sprite_vector->push_back(bright);
+        glyph_batch->sprite_vector->push_back(tleft);
+        glyph_batch->sprite_vector->push_back(bright);
+        glyph_batch->sprite_vector->push_back(tright);
+        glyph_batch->sprite_vector->push_back(tleft);
     }
-    
-    void GeometryBatch::Remove(uint32_t index, GeometryBatch* ptr) {
-        ptr->material_list[index] = nullptr;
-    }
-
 }
 
 

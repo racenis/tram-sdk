@@ -1,9 +1,9 @@
 #version 400 core
 layout (location = 0) in vec3 Position;
-layout (location = 1) in vec2 VOffset;
-layout (location = 2) in vec2 VertUV;
-layout (location = 3) in float Verticality;
-layout (location = 4) in uint TexIndex;
+layout (location = 3) in vec2 VOffset;
+layout (location = 1) in vec2 VertUV;
+layout (location = 4) in float Verticality;
+layout (location = 5) in uint TexIndex;
 
 layout (std140) uniform Matrices
 {

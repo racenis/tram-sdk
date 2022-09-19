@@ -358,6 +358,8 @@ namespace Core::Render::OpenGL {
         //}
         //std::cout << std::endl;
         //fuck
+        
+        static uint32_t layer; layer = 0;
 
         static std::vector<std::pair<uint64_t, RenderListObject*>> rvec;
 
@@ -426,17 +428,22 @@ namespace Core::Render::OpenGL {
                 glActiveTexture(GL_TEXTURE15);
                 glBindTexture(GL_TEXTURE_2D, robj->lightmap);
             }
+            
+            
+            if (layer != robj->layer) {
+                // *whatever opengl call clears the depth buffer*
+                layer = robj->layer;
+            }
 
-
-            if (robj->ebo != 0) {
+            if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
+            if (robj->flags & FLAG_DRAW_INDEXED) {
                 glBindVertexArray(robj->vao);
-                //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, robj->ebo);
                 glDrawElements(GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
             } else {
                 glBindVertexArray(robj->vao);
                 glDrawArrays(GL_TRIANGLES, 0, robj->eboLen);
             }
-
+            if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);
 
 
         }
@@ -495,6 +502,7 @@ namespace Core::Render::OpenGL {
 
 namespace Core {
     using namespace Core::Render::OpenGL;
+    using namespace Core::Render;
     
     void SpriteComponent::Uninit(){
         is_ready = true;
@@ -507,37 +515,18 @@ namespace Core {
 
 
         robject = Render::renderList.AddNew();
-
-        glGenBuffers(1, &robject->vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, robject->vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*6, NULL, GL_DYNAMIC_DRAW);
-
-        glGenVertexArrays(1, &robject->vao);
-        glBindVertexArray(robject->vao);
         
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), nullptr);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, voffset));
-        glEnableVertexAttribArray(1);
+        auto vert_array = MakeVertexArray(vertex_formats[Model::SPRITE_VERTEX], 6, true);
         
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, texco));
-        glEnableVertexAttribArray(2);
-
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, verticality));
-        glEnableVertexAttribArray(3);
-
-        glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, texture));
-        glEnableVertexAttribArray(4);
+        vertex_array = vert_array.array_handle;
+        vertex_buffer = vert_array.buffer_handle;
         
-        glBindBuffer(GL_ARRAY_BUFFER, robject->vbo);
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //robject->vbo = vert_array.buffer_handle;
+        robject->vao = vert_array.array_handle;
         
         robject->flags = Render::FLAG_RENDER;
         robject->lightmap = 0;
-        robject->ebo = 0;
+        //robject->ebo = 0;
         robject->eboLen = 6;
         robject->eboOff = 0;
         robject->texCount = 1;
@@ -619,7 +608,7 @@ namespace Core {
         vertices.push_back(bottom_left);
         vertices.push_back(bottom_right);
 
-        glBindBuffer(GL_ARRAY_BUFFER, robject->vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
         
         
@@ -667,36 +656,16 @@ namespace Core {
 
         robject = Render::renderList.AddNew();
 
-        glGenBuffers(1, &robject->vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, robject->vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*6, NULL, GL_DYNAMIC_DRAW);
-
-        glGenVertexArrays(1, &robject->vao);
-        glBindVertexArray(robject->vao);
+        auto vert_array = MakeVertexArray(vertex_formats[Model::SPRITE_VERTEX], 6, true);
         
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), nullptr);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, voffset));
-        glEnableVertexAttribArray(1);
+        vertex_array = vert_array.array_handle;
+        vertex_buffer = vert_array.buffer_handle;
         
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, texco));
-        glEnableVertexAttribArray(2);
-
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, verticality));
-        glEnableVertexAttribArray(3);
-
-        glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(Render::SpriteVertex), (void*)offsetof(Render::SpriteVertex, texture));
-        glEnableVertexAttribArray(4);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, robject->vbo);
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        robject->vao = vert_array.array_handle;
         
         robject->flags = Render::FLAG_RENDER;
         robject->lightmap = 0;
-        robject->ebo = 0;
+        //robject->ebo = 0;
         robject->eboLen = 6;
         robject->eboOff = 0;
         robject->texCount = 1;
@@ -802,7 +771,7 @@ namespace Core {
         }
         
 
-        glBindBuffer(GL_ARRAY_BUFFER, robject->vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
         
         robject->eboLen = 6 * vertices.size();
@@ -810,4 +779,107 @@ namespace Core {
         robject->location = location;
         robject->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
     }
+}
+
+// idk if this works, haven't tested, but looks okay
+namespace Core::Render {
+    // this whole batch searching thing could be optimized
+    void GeometryBatch::Find(uint32_t& index, GeometryBatch*& ptr, Material* mat, Material::Type mat_type, Model::VertexFormat vert_fmt) {
+        assert (vert_fmt == Model::SPRITE_VERTEX || vert_fmt == Model::LINE_VERTEX);
+        
+        // first check if material is already batched
+        for (auto& batch : geometry_batches) {
+            if (batch.material_type == mat_type && batch.vertex_format == vert_fmt) {
+                for (uint32_t i = 0; i < 16; i++) {
+                    if (batch.material_list[i] == mat) {
+                        index = i;
+                        ptr = &batch;
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // if not, then check if there already is a batch with a suitable type
+        for (auto& batch : geometry_batches) {
+            if (batch.material_type == mat_type && batch.vertex_format == vert_fmt) {
+                for (uint32_t i = 0; i < 16; i++) {
+                    if (batch.material_list[i] == nullptr) {
+                        index = i;
+                        ptr = &batch;
+                        batch.material_list[i] = mat;
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // else create a new batch
+        
+        auto vert_array = MakeVertexArray(vertex_formats[vert_fmt], 6, true);
+        
+        geometry_batches.push_back(GeometryBatch{});
+        auto& batch = geometry_batches.back();
+        
+        batch.material_type = mat_type;
+        batch.vertex_format = vert_fmt;
+        batch.material_list[0] = mat;
+        batch.vertex_array = vert_array.array_handle;
+        batch.vertex_buffer = vert_array.buffer_handle;
+        
+        batch.render_object = renderList.AddNew();
+        batch.render_object->shader = FindShader(vert_fmt, mat_type);
+        batch.render_object->vao = vert_array.array_handle;
+        batch.render_object->flags = FLAG_RENDER;
+        batch.render_object->location = glm::vec3(0.0f, 0.0f, 0.0f);
+        batch.render_object->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+        
+        if (vert_fmt == Model::SPRITE_VERTEX) {
+            batch.sprite_vector = new std::vector<SpriteVertex>;
+        } else {
+            assert(vert_fmt == Model::LINE_VERTEX);
+            batch.line_vector = new std::vector<LineVertex>;
+        }
+        
+        index = 0;
+        ptr = &geometry_batches.back();
+    }
+    
+    void GeometryBatch::Remove(uint32_t index, GeometryBatch* ptr) {
+        ptr->material_list[index] = nullptr;
+    }
+    
+    void GeometryBatch::Update() {
+        for (auto& batch : geometry_batches) {
+            assert(batch.render_object);
+            assert(batch.vertex_buffer);
+            
+            if (batch.vertex_format == Model::SPRITE_VERTEX) {
+                glBindBuffer(GL_ARRAY_BUFFER, batch.vertex_buffer);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*batch.sprite_vector->size(), &batch.sprite_vector->front(), GL_DYNAMIC_DRAW);
+                batch.render_object->eboLen = batch.sprite_vector->size();
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                batch.sprite_vector->clear();
+            } else {
+                assert(batch.vertex_format == Model::LINE_VERTEX);
+                glBindBuffer(GL_ARRAY_BUFFER, batch.vertex_buffer);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Render::LineVertex)*batch.line_vector->size(), &batch.line_vector->front(), GL_DYNAMIC_DRAW);
+                batch.render_object->eboLen = batch.line_vector->size();
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                batch.line_vector->clear();
+            }
+            
+            // this could only be done when a material is added or removed from the batch, but whatever
+            uint32_t last_tex_index = 0;
+            for (size_t i = 0; i < 16; i++) {
+                if (batch.material_list[i]) {
+                    batch.render_object->textures[i] = batch.material_list[i]->GetTexture();
+                    last_tex_index = i;
+                }
+            }
+            batch.render_object->texCount = last_tex_index;
+        }
+    }
+    
+    
 }

@@ -40,8 +40,10 @@ namespace Core::Render {
         FLAG_NO_RENDER = 0,
         FLAG_RENDER = 1,
 
-        FLAG_REVERSE_SORT = 4,
-        FLAG_TRANSPARENT = 8,
+        FLAG_DRAW_INDEXED = 4,
+        FLAG_REVERSE_SORT = 8,
+        FLAG_TRANSPARENT = 16,
+        FLAG_NO_DEPTH_TEST = 32,
         FLAG_INTERIOR_LIGHTING = 64
     };
 
@@ -61,8 +63,8 @@ namespace Core::Render {
         
         uint32_t layer = 0;
         uint32_t lightmap = 0;
-        uint32_t vbo = 0;
-        uint32_t ebo = 0;
+        //uint32_t vbo = 0;
+        //uint32_t ebo = 0;
         uint32_t vao = 0;
         uint32_t eboLen = 0;
         uint32_t eboOff = 0;

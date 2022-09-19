@@ -55,12 +55,13 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Add iterators to stacks
 - Fix the mongus entity
 - Add LIGMAScript
-- OpenGL renderer
+- ~~OpenGL renderer~~
 	- ~~Create a vector of VertexFormat vectors~~
-	- Switch SpriteComponent initialization to use MakeVertexArray() function
-	- Add a GeometryBatch upload step to Render() function
-	- Implement rendering layers
-	- Switch GUI to using batched sprites for glyph rendering
+	- ~~Switch SpriteComponent initialization to use MakeVertexArray() function~~
+	- ~~Take out buffer index and also element index out of the RendeListObject~~
+	- ~~Add a GeometryBatch upload step to Render() function~~
+	- ~~Implement rendering layers~~
+	- ~~Switch GUI to using batched sprites for glyph rendering~~
 
 #### For versions later than next versions
 - AudioComponent
@@ -75,10 +76,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Bump and specularity maps
 - Fix the tramway entity
 - Fix the bus entity
-- SpriteComponent
-	- Batching
 - ParticleComponent
-	- Batching together with sprites
 	- Animated particles
 - Create a custom 16-bit character encoding
 - Change font rendering to use sprite system
@@ -93,6 +91,14 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Cutscenes
 	- AI
 - Async job system
+- Oof
+	- SpriteComponent
+		- Batching
+	- ParticleComponent
+		- Batching together with sprites
+	- Sprite
+		- Loading frames from a file
+		- Alternate 
 
 #### For very later versions
 - Vertex animation
