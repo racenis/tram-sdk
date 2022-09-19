@@ -141,7 +141,7 @@ namespace Core {
         }
     }
         
-    void ArmatureComponent::PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed){
+    void ArmatureComponent::PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame){
         // find an empty slot for the animation
         size_t slot;
         for (slot = 0; slot < ANIM_COUNT; slot++) {
@@ -160,6 +160,11 @@ namespace Core {
         anim_info[slot].repeats = repeats; 
         anim_info[slot].weight = weight; 
         anim_info[slot].speed = speed; 
+        anim_info[slot].interpolate = interpolate; 
+        anim_info[slot].pause = false; 
+        anim_info[slot].fade_in = false; 
+        anim_info[slot].fade_out = false; 
+        anim_info[slot].pause_on_last_frame = pause_on_last_frame; 
         
         anim_info[slot].animation_header = Render::Animation::Find(animation_name);
 
@@ -194,10 +199,40 @@ namespace Core {
     }
     
     void ArmatureComponent::StopAnimation(name_t animation_name){
-        for (int i = 0; i < 8; i++){
+        for (size_t i = 0; i < ANIM_COUNT; i++){
             if(anim_playing[i] == animation_name){
                 anim_playing[i] = 0;
                 // TODO: reset all of the keyframe pointers
+                return;
+            }
+        }
+    }
+    
+    void ArmatureComponent::PauseAnimation(name_t animation_name, bool pause) {
+        for (size_t i = 0; i < ANIM_COUNT; i++){
+            if(anim_playing[i] == animation_name){
+                anim_info[i].pause = pause;
+                return;
+            }
+        }
+    }
+    
+    void ArmatureComponent::FadeAnimation(name_t animation_name, bool fade_in, float fade_speed) {
+        for (size_t i = 0; i < ANIM_COUNT; i++){
+            if(anim_playing[i] == animation_name){
+                anim_info[i].fade_in = fade_in;
+                anim_info[i].fade_out = !fade_in;
+                anim_info[i].fade_speed = fade_speed;
+                anim_info[i].fade_ammount = fade_in ? 0.0f : 1.0f;
+                return;
+            }
+        }
+    }
+    
+    void ArmatureComponent::SetFrameAnimation(name_t animation_name, float frame) {
+        for (size_t i = 0; i < ANIM_COUNT; i++){
+            if(anim_playing[i] == animation_name){
+                anim_info[i].frame = frame;
                 return;
             }
         }
@@ -212,7 +247,8 @@ namespace Core {
             if(anim_playing[i] == 0) continue;
             
             auto& anim = anim_info[i];
-            anim.frame += (FRAME_TIME - last_update) * 24 * anim_info[i].speed;
+            float frames_since_update = (FRAME_TIME - last_update) * 24.0f;
+            if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
             
             for (size_t k = 0; k < armature_bone_count; k++){
                 Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
@@ -231,26 +267,43 @@ namespace Core {
                     
                     // if not found, that means that the current frame is past the end of the animation
                     if (second_keyframe == -1llu) {
-                        anim.repeats--;
-                        anim.frame = 0.0f;
-                        
-                        second_keyframe = 1;
-                        
-                        if (anim.repeats == 0) {
-                            StopAnimation(anim.animation_header->first);
-                            continue;
+                        if (anim.pause_on_last_frame && anim.repeats == 1) {
+                            second_keyframe = keyframe_count - 1;
+                            anim.pause = true;
+                        } else {
+                            anim.repeats--;
+                            anim.frame = 0.0f;
+                            
+                            second_keyframe = 1;
+                            
+                            if (anim.repeats == 0) {
+                                StopAnimation(anim.animation_header->first);
+                                continue;
+                            }
                         }
                     }
                     
                     size_t first_keyframe = second_keyframe - 1;
                     
                     // interpolation ratio between keyframes
-                    float mix_w = (anim.frame - keyframes[second_keyframe].frame) / (keyframes[first_keyframe].frame - keyframes[second_keyframe].frame);
+                    float mix_w = anim.interpolate ? (anim.frame - keyframes[second_keyframe].frame) / (keyframes[first_keyframe].frame - keyframes[second_keyframe].frame) : 0.0f;
+                    
+                    // total mix weight
+                    float total_mix_weight = anim.weight;
+                    if (anim.fade_in) {
+                        anim.fade_ammount += frames_since_update * anim.fade_speed;
+                        total_mix_weight *= anim.fade_ammount;
+                        if (anim.fade_ammount > 1.0f) anim.fade_in = false;
+                    } else if (anim.fade_out) {
+                        anim.fade_ammount -= frames_since_update * anim.fade_speed;
+                        total_mix_weight *= anim.fade_ammount;
+                        if (anim.fade_ammount < 0.0f) StopAnimation(anim.animation_header->first);
+                    }
                     
                     // mix together will all other animations
-                    anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * anim.weight;
-                    anim_mixed[k].rotation *= glm::mix(glm::quat(glm::vec3(0.0f)), glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w), anim.weight);
-                    anim_mixed[k].scale *= glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w) * anim.weight;                    
+                    anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * total_mix_weight;
+                    anim_mixed[k].rotation *= glm::mix(glm::quat(glm::vec3(0.0f)), glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w), total_mix_weight);
+                    anim_mixed[k].scale *= glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w) * total_mix_weight;                    
                 }
             }
         }

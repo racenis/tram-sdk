@@ -25,11 +25,11 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- ~~Make the code more readable~~
 	- ~~Blend weights~~
 	- ~~Different speeds~~
-	- Pause/resume
-		- Pausing on the last frame
-	- Fade in/out
+	- ~~Pause/resume~~
+		- ~~Pausing on the last frame~~
+	- ~~Fade in/out~~
 	- Events on animations finishing/looping
-	- Other keyframe interpolation options
+	- ~~Other keyframe interpolation options~~
 - ControllerComponent
 	- ~~Remember actions between frames~~
 	- Configurable transitions between animations

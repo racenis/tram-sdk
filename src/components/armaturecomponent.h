@@ -20,6 +20,13 @@ class ArmatureComponent : public EntityComponent {
             float weight;
             float speed;
             float frame;
+            float fade_speed;
+            float fade_ammount;
+            bool interpolate;
+            bool fade_in;
+            bool fade_out;
+            bool pause;
+            bool pause_on_last_frame;
             Render::NameCount* animation_header = nullptr;
             Render::NameCount* keyframe_headers[BONE_COUNT] = {nullptr};
         };
@@ -46,8 +53,11 @@ class ArmatureComponent : public EntityComponent {
         name_t GetModel() { return model->GetName(); }
         Render::PoseListObject* GetPosePtr(){ return poseobj; };
         void SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe);
-        void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed);
+        void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);
         void StopAnimation(name_t animation_name);
+        void PauseAnimation(name_t animation_name, bool pause);
+        void FadeAnimation(name_t animation_name, bool fade_in, float fade_speed);
+        void SetFrameAnimation(name_t animation_name, float frame);
         void Update();
         void EventHandler(Event &event){ return; }
     };
