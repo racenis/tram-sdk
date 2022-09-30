@@ -32,6 +32,10 @@ namespace Core {
 
         void SetCollisionMask(uint32_t flags);
         void SetCollisionGroup(uint32_t flags);
+        
+        // TODO: make these move the trigger after init
+        void SetLocation(glm::vec3 location) { this->location = location; }
+        void SetRotation(glm::quat rotation) { this->rotation = rotation; }
 
         bool IsTriggered();
         
@@ -41,6 +45,9 @@ namespace Core {
     private:
         Entity* parent = nullptr;
         ResourceProxy<Physics::CollisionModel> model;
+        
+        glm::vec3 location;
+        glm::quat rotation;
         
         btCollisionShape* shape = nullptr;
         btCollisionObject* trigger = nullptr;

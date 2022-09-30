@@ -130,7 +130,7 @@ namespace Core::Physics {
 
         btTransform trans;
         trans.setIdentity();
-        btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), -3.0f);
+        btCollisionShape* planeShape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), -9.0f);
         btDefaultMotionState* planeMotionState = new btDefaultMotionState(trans);
         btRigidBody::btRigidBodyConstructionInfo planeConstructionInfo(0.0f, planeMotionState, planeShape, btVector3(0.0f, 0.0f, 0.0f));
         btRigidBody* planeRigidBody = new btRigidBody(planeConstructionInfo);
@@ -541,16 +541,22 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         if (model.GetResource())
             shape = (btCollisionShape*)model.GetResource()->GetPtr();
 
+        assert(shape);
+
         btTransform transform;
         transform.setIdentity();
-        transform.setOrigin(btVector3(0.0f, 1.1f, -3.0f));
+        transform.setOrigin(btVector3(location.x, location.y, location.z));
         
-        btQuaternion rotation;
-        rotation.setEuler(0.785f, 0.0f, 0.0f);
-        transform.setRotation(rotation);
+        btQuaternion rotation_quat;
+        rotation_quat.setX(rotation.x);
+        rotation_quat.setY(rotation.y);
+        rotation_quat.setZ(rotation.z);
+        rotation_quat.setW(rotation.w);
+        transform.setRotation(rotation_quat);
         
         trigger = new btCollisionObject();
-        trigger->setCollisionShape(new btBoxShape(btVector3(btScalar(0.99f),btScalar(0.99f),btScalar(0.99f))));
+        //trigger->setCollisionShape(new btBoxShape(btVector3(btScalar(0.99f),btScalar(0.99f),btScalar(0.99f))));
+        trigger->setCollisionShape(shape);
         trigger->setWorldTransform(transform);
         trigger->setUserPointer(this);
         trigger->setUserIndex(USERINDEX_TRIGGERCOMPONENT);

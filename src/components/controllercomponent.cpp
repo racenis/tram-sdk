@@ -41,7 +41,8 @@ namespace Core {
         }
         
         if(current_action == ACTION_WALK){
-            float spee = IsInAir() ?  25.0f : 70.0f;
+            // TODO: fix IsInAir() and then uncomment line below
+            float spee = 70.0f;//IsInAir() ?  25.0f : 70.0f;
             float velocity = physcomp->GetVelocity();
 
             if(velocity > 4.0f) spee *= 1 / ((velocity * 5) + 1);

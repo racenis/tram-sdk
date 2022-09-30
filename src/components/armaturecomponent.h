@@ -54,6 +54,7 @@ class ArmatureComponent : public EntityComponent {
         Render::PoseListObject* GetPosePtr(){ return poseobj; };
         void SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe);
         void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);
+        bool IsPlayingAnimation(name_t animation_name);
         void StopAnimation(name_t animation_name);
         void PauseAnimation(name_t animation_name, bool pause);
         void FadeAnimation(name_t animation_name, bool fade_in, float fade_speed);

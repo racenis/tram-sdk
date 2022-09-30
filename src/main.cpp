@@ -29,7 +29,7 @@ using namespace Core::Render;
 using namespace Core::UI;
 
 int main() {
-    std::cout << "Hello World! I have autism!" << std::endl;
+    std::cout << ENGINE_VERSION << std::endl;
     //std::cout << std::filesystem::current_path() << std::endl;
 
     // register the entity types, so that they can be loaded from level files
@@ -61,6 +61,9 @@ int main() {
     floppaidle.LoadFromDisk();
     bingusidle.LoadFromDisk();
     
+    Animation aaaa(UID("viewmodels"));
+    aaaa.LoadFromDisk();
+    
     // audios
     Audio::Sound derp (UID("derp"));
     //derp.LoadFromDisk();
@@ -70,7 +73,6 @@ int main() {
     demo->SetName(UID("demo"));
     demo->LoadFromDisk();
     //demo->Load();
-    
 
 
     // create the player entity
@@ -82,7 +84,7 @@ int main() {
 
     // create the mongus model
     RenderComponent* monguser = PoolProxy<RenderComponent>::New();
-    monguser->SetModel(UID("mongus"));
+    monguser->SetModel(UID("viewmodel_stapler"));
     monguser->SetPose(poseList.begin().ptr);
     monguser->Init();
     monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
@@ -96,7 +98,7 @@ int main() {
 
     // create the animation player for the mongus model
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
-    monguser_armature->SetModel(UID("mongus"));
+    monguser_armature->SetModel(UID("viewmodel_stapler"));
     monguser_armature->Init();
 
     // link the mongus model and his animation player
@@ -110,16 +112,16 @@ int main() {
     tolet_sprite->SetMaterial(Material::Find(UID("poland")));
     tolet_sprite->AutogenTiledFrames(0, 0, 40, 40, 6, 24, 15.0f, 1.0f);
     
-    auto tolet_spinner = PoolProxy<SpriteComponent>::New();
-    tolet_spinner->SetSprite(tolet_sprite);
-    tolet_spinner->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
-    tolet_spinner->Init();
-    tolet_spinner->Play();
+    //auto tolet_spinner = PoolProxy<SpriteComponent>::New();
+    //tolet_spinner->SetSprite(tolet_sprite);
+    //tolet_spinner->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
+    //tolet_spinner->Init();
+    //tolet_spinner->Play();
     
-    auto tolet_emitter = PoolProxy<ParticleComponent>::New();
-    tolet_emitter->SetSprite(tolet_sprite);
-    tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
-    tolet_emitter->Init();
+    //auto tolet_emitter = PoolProxy<ParticleComponent>::New();
+    //tolet_emitter->SetSprite(tolet_sprite);
+    //tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
+    //tolet_emitter->Init();
     
     auto derp_player = PoolProxy<AudioComponent>::New();
     derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -159,7 +161,7 @@ int main() {
         
         GUI::Begin();
         GUI::DebugMenu();
-        GUI::EscapeMenu();        
+        GUI::EscapeMenu();
         GUI::End();
         
         Audio::Update();
@@ -169,14 +171,12 @@ int main() {
         Async::FinishResource();
 
         if(tick == 100){
-            monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
-            //Audio::PlaySound(&derp, glm::vec3(0.0f, 0.0f, 0.0f));
-            derp_player->Play();
+            monguser_armature->PlayAnimation(UID("StaplerFire"), 100, 1.0f, 1.0f);
+            //derp_player->Play();
         }
         
         if (tick == 50) crate_ent = Entity::FindName(UID("estijs"));
 
-        //std::cout << crate_ent << std::endl;
 
         if (tick > 50) {
             glm::vec3 crate_loc;

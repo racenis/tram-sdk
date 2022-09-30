@@ -111,9 +111,9 @@ namespace Core::UI {
         }
 
         glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        #ifndef FRAMELIMIT
-        glfwSwapInterval(1);
-        #endif
+        if (FRAME_LIMIT) {
+            glfwSwapInterval(1);
+        }
 
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
             glViewport(0, 0, width, height);
@@ -273,6 +273,10 @@ namespace Core::UI {
 
         Stats::Start(Stats::FRAME);
 
+    }
+    
+    double GetTime() {
+        return glfwGetTime();
     }
 
     void SetCursor(CursorType cursor){

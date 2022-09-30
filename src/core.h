@@ -334,6 +334,10 @@ namespace Core {
     extern bool DRAW_PHYSICS_DEBUG;
     extern bool DRAW_RENDER_DEBUG;
     extern bool DRAW_PATH_DEBUG;
+    
+    extern char const* ENGINE_VERSION;
+    
+    extern size_t RESOURCE_VRAM_USAGE;
 
     // forward declarations
 
@@ -451,6 +455,7 @@ namespace Core {
         
         name_t name = 0;
         std::vector<Node> nodes;
+        static Octree<Node*> all_nodes;
     };
 
 
@@ -485,10 +490,11 @@ namespace Core {
         /// Prepares the entity for removal.
         void Yeet();
 
-        [[nodiscard]] inline name_t GetName() const { return name; }
-        [[nodiscard]] inline uint64_t GetID() const { return id; }
-        [[nodiscard]] inline bool IsLoaded() const { return isloaded; }
-        [[nodiscard]] inline bool IsAutoLoad() const { return auto_load; }
+        inline name_t GetName() const { return name; }
+        inline uint64_t GetID() const { return id; }
+        inline WorldCell* GetCell() { return cell; }
+        inline bool IsLoaded() const { return isloaded; }
+        inline bool IsAutoLoad() const { return auto_load; }
         inline bool IsInInterior() { return in_interior; }
         inline bool IsPersistent() { return  persistent; }
         inline bool IsChanged() { return changed; }
@@ -502,6 +508,8 @@ namespace Core {
         void virtual UpdateParameters() = 0;
         
         void virtual SetParameters() = 0;
+        
+        inline void SetPersistent(bool persistent) { this->persistent = persistent; }
 
         /// Sets the translation of the entity.
         void SetLocation(float x, float y, float z){ location = glm::vec3(x, y, z); SetParameters(); CheckTransition(); }
@@ -678,6 +686,8 @@ namespace Core {
         bool HasInteriorLighting() {return interiorLights;};
         bool IsDrawn() {return draw;};
         
+        void SetInterior(bool interior) { this->interior = interior; }
+        void SetInteriorLights(bool interior_lights) { this->interiorLights = interior_lights; }
         
         name_t GetName(){return name;};   
 

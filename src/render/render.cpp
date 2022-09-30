@@ -110,7 +110,7 @@ namespace Core::Render {
             textures[i] = mdl->materials[i]->GetTexture();
         }
 
-        flags = FLAG_RENDER | FLAG_DRAW_INDEXED; // TODO: get the RFLAG_INTERIOR_LIGHTING in here somehow
+        flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
     };
     
     void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color){
@@ -268,6 +268,7 @@ namespace Core {
             rLsObjPtr[pointers] = Render::renderList.AddNew();
             rLsObjPtr[pointers]->FillFromModel(model.GetResource(), i);
             if(lightmap.GetResource() != nullptr) rLsObjPtr[pointers]->lightmap = lightmap->GetTexture();
+            if(isInterior) rLsObjPtr[pointers]->flags = rLsObjPtr[pointers]->flags | Render::FLAG_INTERIOR_LIGHTING;
             rLsObjPtr[pointers]->pose = pose;
             pointers++;
 

@@ -56,7 +56,10 @@ void Player::UpdateParameters() {
 }
 
 void Player::SetParameters() {
+    if (!isloaded) return;
     UpdateParameters();
+    physicscomponent->SetLocation(location);
+    physicscomponent->UpdateRotation(rotation);
     // actually we should add a SetUpdate() to the player component and call that
     // TODO: fix
 }

@@ -41,6 +41,7 @@ namespace Core {
         rendercomponent = PoolProxy<RenderComponent>::New();
         rendercomponent->SetModel(data->model);
         rendercomponent->SetLightmap(data->lightmap);
+        rendercomponent->SetCellParams(cell->HasInteriorLighting());
 
         physicscomponent = PoolProxy<PhysicsComponent>::New();
         physicscomponent->SetModel(data->model);

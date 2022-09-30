@@ -10,14 +10,22 @@ namespace Core::GUI {
         static bool debugdraw_trans = false;
         static bool debugdraw_paths = false;
         static bool debugdraw_navmeshes = false;
-        
+        static bool debugdraw_stats = false;
         
         
         if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawTransitions();
         if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawPaths();
         if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawNavmeshes();
         
-        
+        if (debugdraw_stats) {
+            char meminfobuffer[100]; char timeinfobuffer[100]; char fpsinfobuffer[100];
+            sprintf(meminfobuffer, "VRAM approximate usage: %lldKB", (RESOURCE_VRAM_USAGE / 1024));
+            sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::final_time_avg[Stats::FRAME]);
+            sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::final_time_avg[Stats::FRAME]));
+            GUI::Text(meminfobuffer, 2); GUI::FrameBreakLine();
+            GUI::Text(timeinfobuffer, 2); GUI::FrameBreakLine();
+            GUI::Text(fpsinfobuffer, 2); GUI::FrameBreakLine();
+        }
         
         if (!UI::debug_menu_open) return;
         
@@ -28,7 +36,6 @@ namespace Core::GUI {
         if (Button("WorldCell")) worldcell_menu_open = true;
         if (Button("Debug Drawing")) debugdraw_menu_open = true;
         EndFrame();
-        
         
         if (debugdraw_menu_open) {
             Frame(FRAME_CENTER, 320, 240);
@@ -44,6 +51,7 @@ namespace Core::GUI {
             Text("Transitions:", 1); FrameBreakLine();
             Text("Paths:", 1); FrameBreakLine();
             Text("Navmeshes:", 1); FrameBreakLine();
+            Text("Statistics:", 1); FrameBreakLine();
             EndFrame();
             
             Frame(FRAME_RIGHT, 320-100);
@@ -52,6 +60,7 @@ namespace Core::GUI {
             CheckBox(debugdraw_trans); FrameBreakLine();
             CheckBox(debugdraw_paths); FrameBreakLine();
             CheckBox(debugdraw_navmeshes); FrameBreakLine();
+            CheckBox(debugdraw_stats); FrameBreakLine();
             EndFrame();
             EndFrame();
             

@@ -131,6 +131,7 @@ namespace Core::Render {
         uint32_t height = 0;
         uint8_t channels = 0;
         uint8_t* textureData = nullptr;
+        size_t approx_vram_usage = 0;
 
         static Material* error_material;
         static std::unordered_map<uint64_t, Material> List;
@@ -236,6 +237,7 @@ namespace Core::Render {
         std::vector<Material*> materials;
         std::vector<Bone> armature;
         ModelData* mData = nullptr;
+        size_t approx_vram_usage = 0;
 
         static Model* error_model;
         static std::unordered_map<uint64_t, Render::Model*> List;

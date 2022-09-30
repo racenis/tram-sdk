@@ -67,8 +67,17 @@ void WorldCell::Load(){
 
 void WorldCell::Unload(){
     std::cout << "Unloading cell: " << ReverseUID(name) << std::endl;
-    for (auto& it : entities)
-        if(it->IsAutoLoad()) it->Unload();
+    auto entities_copy = entities;
+    for (auto& it : entities_copy) {
+        if (it->IsAutoLoad()) {
+            if (it->IsPersistent()) {
+                it->Unload();
+            } else {
+                std::cout << "Yeeting " << ReverseUID(it->GetName()) << " out of existance!" << std::endl;
+                it->Yeet();
+            }
+        }
+    }
 
     loaded = false;
 };
@@ -128,6 +137,8 @@ void WorldCell::LoadFromDisk(){
             std::string name;
             ss >> name;
             trans->name = UID(name);
+            ss >> name;
+            name_t into_cell_name = UID(name);
             size_t pointcount;
             ss >> pointcount;
             for (size_t i = 0; i < pointcount; i++) {
@@ -137,9 +148,19 @@ void WorldCell::LoadFromDisk(){
                 ss >> point.z;
                 trans->AddPoint(point);
             }
-            trans->SetInto(this);
+            
+            auto into_cell_ptr = WorldCell::Find(into_cell_name);
+            assert(into_cell_ptr);
+            
+            trans->SetInto(into_cell_ptr);
             trans->GeneratePlanes(false);
-            AddTransition(trans);
+            
+            if (into_cell_ptr == this) {
+                AddTransition(trans);
+            } else {
+                AddTransitionFrom(trans);
+            }
+            
             continue;
         } else if (type_name == "path") {
             // TODO: store the path name in a lookupable map
@@ -205,6 +226,7 @@ void WorldCell::LoadFromDisk(){
                 ss >> nod.location.z;
                 navmesh->nodes.push_back(nod);
                 id_lookup[id] = &(navmesh->nodes.back());
+                Navmesh::all_nodes.AddLeaf(&(navmesh->nodes.back()), nod.location.x, nod.location.y, nod.location.z);
             }
             for (auto& it : navmesh->nodes) {
                 it.next = id_lookup[*((uint32_t*)&it.next)];
@@ -254,6 +276,9 @@ bool WorldCell::Transition::IsInside(const glm::vec3& point){
 }
 
 void WorldCell::Transition::GeneratePlanes(bool disp) {
+    if (!(points.size() > 3)) {
+        std::cout << "fuck my ass:" << ReverseUID(name) << std::endl;
+    }
     assert(points.size() > 3);
     
     planes.clear();
@@ -286,9 +311,9 @@ void WorldCell::Transition::GeneratePlanes(bool disp) {
                     Render::AddLine(A, C, Render::COLOR_WHITE);
                     Render::AddLine(B, C, Render::COLOR_WHITE);
                     
-                    Render::AddLine(A, A+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    Render::AddLine(B, B+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    Render::AddLine(C, C+(cross*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(A, A+(glm::normalize(cross)*0.5f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(B, B+(glm::normalize(cross)*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(C, C+(glm::normalize(cross)*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
                 }
                 
                 planes.push_back(plane);
@@ -320,6 +345,7 @@ void WorldCell::Transition::GeneratePlanes(bool disp) {
     
 void WorldCell::DrawTransitions(){
     for (auto& it : trans_in) it->GeneratePlanes(true);
+    for (auto& it : trans_out) it->GeneratePlanes(true);
 }
 
 void WorldCell::DrawNavmeshes() {

@@ -108,6 +108,7 @@ namespace Core {
     template <> Pool<ArmatureComponent> PoolProxy<ArmatureComponent>::pool("armature component pool", 50, false);
     
     void ArmatureComponent::Init(){
+        // why is there no 'is_ready' stuff in here?
         poseobj = Render::poseList.AddNew();
 
         for (size_t i = 0; i < Render::BONE_COUNT; i++) poseobj->pose[i] = glm::mat4(1.0f);
@@ -115,7 +116,12 @@ namespace Core {
         if (resources_waiting == 0) Start();
     };
         
-    void ArmatureComponent::Uninit(){}; // wtf why is nothing in here
+    void ArmatureComponent::Uninit(){
+        assert(poseobj);
+        Render::poseList.Remove(poseobj);
+        poseobj = nullptr;
+        is_ready = false;
+    };
     
     void ArmatureComponent::Start(){
         // it's probably not necessary to cache this, but whatever
@@ -164,7 +170,10 @@ namespace Core {
         anim_info[slot].pause = false; 
         anim_info[slot].fade_in = false; 
         anim_info[slot].fade_out = false; 
-        anim_info[slot].pause_on_last_frame = pause_on_last_frame; 
+        anim_info[slot].pause_on_last_frame = pause_on_last_frame;
+        anim_info[slot].animation_header = nullptr;
+        
+        for (size_t i; i < BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
         
         anim_info[slot].animation_header = Render::Animation::Find(animation_name);
 
@@ -215,6 +224,15 @@ namespace Core {
                 return;
             }
         }
+    }
+    
+    bool ArmatureComponent::IsPlayingAnimation(name_t animation_name) {
+        for (size_t i = 0; i < ANIM_COUNT; i++) {
+            if (anim_playing[i] == animation_name) {
+                return true;
+            }
+        }
+        return false;
     }
     
     void ArmatureComponent::FadeAnimation(name_t animation_name, bool fade_in, float fade_speed) {
@@ -332,6 +350,7 @@ namespace Core {
             glm::mat4 boneAnim = glm::mat4(1.0f);
             boneAnim = glm::toMat4(anim_mixed[i].rotation) * boneAnim;
             boneAnim = glm::translate(glm::mat4(1.0f), anim_mixed[i].location) * boneAnim;
+            //boneAnim = glm::scale(glm::mat4(1.0f), anim_mixed[i].scale) * boneAnim;
             // where's the scale? forgotted?
 
             glm::mat4 boneToModel = glm::inverse(modelToBone);

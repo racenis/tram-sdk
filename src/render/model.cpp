@@ -72,6 +72,10 @@ void Model::LoadFromMemory(){
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
+        size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(StaticModelVertex));
+        approx_vram_usage += approx_memory;
+        RESOURCE_VRAM_USAGE += approx_memory;
+
         delete mData;
         mData = nullptr;
 
@@ -114,6 +118,10 @@ void Model::LoadFromMemory(){
         glEnableVertexAttribArray(5);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
+        size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(DynamicModelVertex));
+        approx_vram_usage += approx_memory;
+        RESOURCE_VRAM_USAGE += approx_memory;
 
         delete mData;
         mData = nullptr;

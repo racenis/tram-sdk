@@ -17,8 +17,11 @@ layout (std140) uniform ModelMatrices
 	uvec4 modellights;
 	vec3 sundir;
 	vec3 suncolor;
-	vec3 ambientcolor;
-	vec3 time;
+	vec4 ambientcolor;
+	float time;
+	float sunweight;
+	float screenwidth;
+	float screenheight;
 };
 
 out vec2 vertUV;
@@ -33,11 +36,12 @@ void main()
 {
     gl_Position = projection * view * model * vec4(Position, 1.0);
 	vec3 nPos = normalize(vec3(model * vec4(Normal, 0.0)));
-	vec3 lightColor = ambientcolor * time.y;
-	lightColor += suncolor * max(dot(nPos, normalize(sundir)), 0.0) * time.y;
+	vec3 lightColor = vec3(ambientcolor);
+	lightColor += suncolor * max(dot(nPos, normalize(sundir)), 0.0);
+	lightColor *= sunweight;
 	
     vertUV = VertUV;
 	texIndex = TexIndex;
 	vertLightUV = VertLightUV;
-	vertColor = lightColor + (1.0 - time.y);
+	vertColor = lightColor + (1.0 - sunweight);
 }

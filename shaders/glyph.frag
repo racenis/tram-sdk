@@ -11,6 +11,6 @@ void main()
 {
 	vec4 sampledColor = texture(sampler[texindex], vertUV);
 	if (sampledColor.w < 0.99) discard;
-	fragColor = sampledColor * color;
+	fragColor = sampledColor * vec4(color, 1.0);
 	//fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

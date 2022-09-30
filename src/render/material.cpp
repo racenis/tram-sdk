@@ -157,6 +157,11 @@ void Material::LoadFromMemory(){
     }
     glGenerateMipmap(GL_TEXTURE_2D);
 
+    float approx_memory = width * height * channels;  // image size
+    approx_memory = approx_memory * 1.3f;             // plus mipmaps
+    approx_vram_usage = (size_t) approx_memory;
+    RESOURCE_VRAM_USAGE += approx_vram_usage;
+
     delete[] textureData;
     textureData = nullptr;
 

@@ -94,6 +94,7 @@ namespace Core::UI {
     void EndFrame();
     void SetCursor(CursorType cursor);
     void SetTextInput(char* text, uint32_t len);
+    double GetTime();
 
     void LoadFontInfo(const char* filename, size_t fontIndex);
     void LoadGlyphInfo(const char* filename, size_t fontIndex);

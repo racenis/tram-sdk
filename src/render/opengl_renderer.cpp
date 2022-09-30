@@ -346,7 +346,7 @@ namespace Core::Render::OpenGL {
         
         matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), CAMERA_POSITION) * glm::toMat4(CAMERA_ROTATION));
 
-        if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, CAMERA_ROTATION * glm::vec3(0.0f, 0.0f, -20.0f));
+        if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, CAMERA_ROTATION * glm::vec3(0.0f, 0.0f, -5.0f));
 
         //matricesUniform.Upload();
         UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
@@ -382,11 +382,13 @@ namespace Core::Render::OpenGL {
         for (std::pair<uint64_t, RenderListObject*>& pp : rvec){
             RenderListObject* robj = pp.second;
             
+            #ifndef ENGINE_EDITOR_MODE
             if (DRAW_RENDER_DEBUG) {
                 char debug_text_buffer[200];
                 sprintf(debug_text_buffer, "Robj vao:%d location-xyz: %f %f %f lights: %d %d %d %d", robj->vao, robj->location[0], robj->location[1], robj->location[2], robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3]);
                 GUI::DebugText(debug_text_buffer, robj->location, COLOR_GREEN);
             }
+            #endif // ENGINE_EDITOR_MODE
 
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(robj->location[0], robj->location[1], robj->location[2]));
@@ -407,11 +409,12 @@ namespace Core::Render::OpenGL {
             modelMatrices.modelLights.z = robj->lights[2];
             modelMatrices.modelLights.w = robj->lights[3];
 
-            if (robj->flags & FLAG_INTERIOR_LIGHTING)
+            if (robj->flags & FLAG_INTERIOR_LIGHTING) {
                 modelMatrices.sunWeight = 0.0f;
-            else
+            } else {
                 modelMatrices.sunWeight = 1.0f;
-
+            }
+                
 
             modelMatrices.model = model;
             //modelMatricesUniform.Upload();

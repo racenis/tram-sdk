@@ -7,6 +7,8 @@
 #include <render/render.h>
 #include <render/armature.h>
 
+#include <ui.h>
+
 #include <cstring>
 #include <fstream>
 
@@ -15,6 +17,7 @@
 
 
 namespace Core {
+    char const* ENGINE_VERSION = "Tramway SDK v0.0.2";
     
     bool SHOULD_CLOSE = false;
     float FRAME_TIME = 0;
@@ -22,6 +25,8 @@ namespace Core {
     bool DRAW_PHYSICS_DEBUG = false;
     bool DRAW_RENDER_DEBUG = false;
     bool DRAW_PATH_DEBUG = false;
+    
+    size_t RESOURCE_VRAM_USAGE = 0;
     
     StackPool<char> stringPool("stringpool", 10000);
     std::unordered_map<std::string, uint64_t> stringHashMap;
@@ -123,15 +128,19 @@ namespace Core {
         uint64_t physicscomponents = 0;
         
         void Start(Stats::Type stat){
-            // TODO: add a wrapper for glfwGetTime();
-            //start_time[stat] = glfwGetTime();
+            #ifndef ENGINE_EDITOR_MODE
+            start_time[stat] = UI::GetTime();
+            #endif // ENGINE_EDITOR_MODE
         }
 
         void Stop(Stats::Type stat){
-            //total_time[stat] += glfwGetTime() - start_time[stat];
+            #ifndef ENGINE_EDITOR_MODE
+            total_time[stat] += UI::GetTime() - start_time[stat];
+            #endif // ENGINE_EDITOR_MODE
         }
 
         void Reset(){
+            #ifndef ENGINE_EDITOR_MODE
             for (size_t i = 0; i < sizeof(Stats::Type); i++){
                 final_time[i] = ((float) total_time[i]) * 1000.0f;
                 final_time_cum[i] += final_time[i];
@@ -140,7 +149,7 @@ namespace Core {
 
             frame_passed++;
 
-            uint64_t this_frame = 0; //(uint64_t)glfwGetTime();
+            uint64_t this_frame = (uint64_t)UI::GetTime();
             if(this_frame != full_frame){
                 full_frame = this_frame;
 
@@ -151,7 +160,7 @@ namespace Core {
 
                 frame_passed = 0;
             }
-
+            #endif // ENGINE_EDITOR_MODE
         }
     }
 
