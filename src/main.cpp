@@ -84,7 +84,7 @@ int main() {
 
     // create the mongus model
     RenderComponent* monguser = PoolProxy<RenderComponent>::New();
-    monguser->SetModel(UID("viewmodel_stapler"));
+    monguser->SetModel(UID("viewmodel_rifle"));
     monguser->SetPose(poseList.begin().ptr);
     monguser->Init();
     monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
@@ -98,7 +98,7 @@ int main() {
 
     // create the animation player for the mongus model
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
-    monguser_armature->SetModel(UID("viewmodel_stapler"));
+    monguser_armature->SetModel(UID("viewmodel_rifle"));
     monguser_armature->Init();
 
     // link the mongus model and his animation player
@@ -171,7 +171,7 @@ int main() {
         Async::FinishResource();
 
         if(tick == 100){
-            monguser_armature->PlayAnimation(UID("StaplerFire"), 100, 1.0f, 1.0f);
+            monguser_armature->PlayAnimation(UID("RifleFire"), 100, 1.0f, 1.0f);
             //derp_player->Play();
         }
         

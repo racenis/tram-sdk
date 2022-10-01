@@ -787,18 +787,19 @@ namespace Core {
     public:
         ResourceProxy(EntityComponent* parent) : parent(parent) {}
         void SetResource(Resource* res){
-            if(resource)resource->RemoveRef();
+            if (resource) resource->RemoveRef();
 
             resource = res;
             resource->AddRef();
 
-            parent->resources_waiting++;
-
-
-            Async::RequestResource(parent, resource);
+            if (resource->GetStatus() != Resource::READY) {
+                parent->resources_waiting++;
+                Async::RequestResource(parent, resource);
+            }
         }
         T* GetResource() { return (T*)resource; }
         T* operator->() { return (T*)resource; }
+        // where's the destructor?
     protected:
         EntityComponent* parent;
         Resource* resource = nullptr;

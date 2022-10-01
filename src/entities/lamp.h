@@ -16,10 +16,10 @@ namespace Core {
     public:
         Lamp(std::string_view& str);
         void UpdateParameters();
+        void SetParameters();
         void Load();
         void Unload();
         void Serialize();
-        void SerializeString(std::string& str);
         void MessageHandler(Message& msg);
         
         class Data: public SerializedEntityData {
@@ -65,13 +65,7 @@ namespace Core {
             }
         };
     protected:
-        struct DataOLD {
-            void* padding = nullptr;
-            float color[3];
-            float distance;
-        };
-
-        LightComponent* light;
+        LightComponent* light = nullptr;
     };
 }
 

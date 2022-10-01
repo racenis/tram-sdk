@@ -114,10 +114,13 @@ namespace Core::Audio {
             
             sound_map[name] = this;
         }
+        
+        status = READY;
     }
     
     void Sound::Unload() {
         alDeleteBuffers(sound_buffer_count, sound_buffers);
+        status = UNLOADED;
     }
     
     Sound* Sound::Find (name_t name) {
@@ -183,5 +186,11 @@ namespace Core {
     
     void AudioComponent::Stop() {
         if (is_ready) alSourceStop(source);
+    }
+    
+    bool AudioComponent::IsPlaying() {
+        int32_t state;
+        alGetSourcei (source, AL_SOURCE_STATE, &state);
+        return state == AL_PLAYING;
     }
 }

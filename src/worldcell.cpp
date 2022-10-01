@@ -127,9 +127,6 @@ void WorldCell::LoadFromDisk(){
         size_t first_name_end = line.find_first_of(" \t", firstchar);
         std::string type_name = line.substr(firstchar, first_name_end);
         
-        std::cout << "ent type: " << type_name << std::endl;
-        
-        
         if (type_name == "transition") {
             // TODO: store the transition name in a lookupable map
             auto trans = PoolProxy<WorldCell::Transition>::New();
@@ -276,9 +273,6 @@ bool WorldCell::Transition::IsInside(const glm::vec3& point){
 }
 
 void WorldCell::Transition::GeneratePlanes(bool disp) {
-    if (!(points.size() > 3)) {
-        std::cout << "fuck my ass:" << ReverseUID(name) << std::endl;
-    }
     assert(points.size() > 3);
     
     planes.clear();

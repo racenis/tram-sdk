@@ -100,7 +100,6 @@ namespace Core {
     }
 
     Entity* Entity::Make (std::string_view& params){
-        std::cout << params << std::endl;
         size_t st_f = params.find_first_not_of(" \t");
         size_t st_e = params.find_first_of(" \t", st_f);
 

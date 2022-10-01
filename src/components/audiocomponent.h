@@ -23,6 +23,7 @@ namespace Core {
         void UpdateLocation(const glm::vec3& location);
         void SetSound(Audio::Sound* sound) { this->sound.SetResource(sound); }
         void SetRepeating(bool is_repeating);
+        bool IsPlaying();
         void Play();
         void Pause();
         void Stop();

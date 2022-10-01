@@ -414,7 +414,6 @@ namespace Core::Render::OpenGL {
             } else {
                 modelMatrices.sunWeight = 1.0f;
             }
-                
 
             modelMatrices.model = model;
             //modelMatricesUniform.Upload();

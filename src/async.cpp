@@ -28,7 +28,7 @@ namespace Core::Async {
         ResourceRequest* req = resourceRequestQueue.AddNew();
 
         req->requester = requester;
-        req->requester_id = requester->GetID();
+        req->requester_id = requester ? requester->GetID() : 0;
         req->requested_res = requested_resource;
 
         resourceRequestQueue.Unlock();

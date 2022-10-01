@@ -50,9 +50,7 @@ namespace Core {
             UpdateRenderListObjs();
         }
 
-        void SetCellParams (bool isInteriorLight){
-            isInterior = isInteriorLight;
-        }
+        void SetCellParams (bool isInteriorLight);
 
         void EventHandler(Event &event){return;}
 

@@ -4,75 +4,72 @@
 // LAMP.CPP -- Lamp entity.
 
 #include <core.h>
-#include <entities/entities.h>
+#include <entities/lamp.h>
+#include <components/lightcomponent.h>
 
-#ifdef BEGONIS
+namespace Core {
+    Lamp::Lamp(std::string_view& str){
+        Entity::SetParameters(str);
 
-Lamp::Lamp(std::string_view& str){
-        SetParameters(str);
+        serialized_data = new Data();
+        auto data = (Data*) serialized_data;
 
-        serializeddata = entityData.AddNew();
-        Data* data = (Data*) serializeddata;
-
-        data->color[0] = PFloat(str);
-        data->color[1] = PFloat(str);
-        data->color[2] = PFloat(str);
-        data->distance = PFloat(str);
-    };
+        data->FromString(str);
+    }
+    
     void Lamp::UpdateParameters() {
-        if(isloaded) light->UpdateLocation(location.x, location.y, location.z);
-    };
+        if (!isloaded) return;
+        light->UpdateLocation(location);
+    }
+    
+    void Lamp::SetParameters() {
+        UpdateParameters();
+    }
+    
     void Lamp::Load(){
-        std::cout << "Loading light: " << ReverseUID(name) << std::endl;
-        Data* data = (Data*) serializeddata;
-        light = lightCompPool.AddNew();
+        auto data = (Data*) serialized_data;
 
-        light->UpdateColor(data->color[0], data->color[1], data->color[2]);
+        light = PoolProxy<LightComponent>::New();
+        light->UpdateColor(glm::vec3(data->color_r, data->color_g, data->color_b));
         light->UpdateDistance(data->distance);
+
+        delete serialized_data;
+        serialized_data = nullptr;
+
         light->Init();
-
-        entityData.Remove(serializeddata);
-        serializeddata = nullptr;
-
         isloaded = true;
 
         UpdateParameters();
     }
+    
     void Lamp::Unload(){
-
         isloaded = false;
 
         Serialize();
 
         light->Uninit();
 
-        lightCompPool.Remove(light);
+        PoolProxy<LightComponent>::Delete(light);
         light = nullptr;
     }
 
     void Lamp::Serialize(){
-        serializeddata = entityData.AddNew();
-        Data* data = (Data*) serializeddata;
-
-        light->GetColor(data->color);   // idk if this actually works
-        light->GetDistance(data->distance);
-    }
-
-    void Lamp::SerializeString(std::string& str){
-        Data* data = (Data*) serializeddata;
-        str = "lamp ";
-        ParametersString(str);
-        str.append(std::to_string(data->color[0]));
-        str.push_back(' ');
-        str.append(std::to_string(data->color[1]));
-        str.push_back(' ');
-        str.append(std::to_string(data->color[2]));
-        str.push_back(' ');
-        str.append(std::to_string(data->distance));
+        serialized_data = new Data();
+        auto data = (Data*) serialized_data;
+        
+        glm::vec3 light_color;
+        float light_distance;
+        
+        light->GetColor(light_color); // idk if this actually works
+        light->GetDistance(light_distance);
+        
+        data->color_r = light_color.r;
+        data->color_g = light_color.g;
+        data->color_b = light_color.b;
+        data->distance = light_distance;
     }
 
     void Lamp::MessageHandler(Message& msg){
         return;
     }
-
-#endif // BEGONIS
+}

@@ -23,8 +23,6 @@ namespace Core {
                 lightLObj->location = location;
                 lightLObj->color = color;
                 lightLObj->distance = distance;
-            } else {
-                std::cout << "Can't update unloaded light." << std::endl; // maybe yeet?
             }
         };
         void UpdateLocation(const glm::vec3& location){

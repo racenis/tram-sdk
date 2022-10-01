@@ -257,6 +257,19 @@ namespace Core {
             rLsObjPtr[i] = nullptr;
         }
     };
+    
+    void RenderComponent::SetCellParams (bool isInteriorLight){
+        isInterior = isInteriorLight;
+        if (is_ready) {
+            for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
+                if (isInteriorLight) {
+                    rLsObjPtr[i]->flags = rLsObjPtr[i]->flags | Render::FLAG_INTERIOR_LIGHTING;
+                } else {
+                    rLsObjPtr[i]->flags = rLsObjPtr[i]->flags & (~Render::FLAG_INTERIOR_LIGHTING);
+                }
+            }
+        }
+    }
 
     void RenderComponent::Start(){
         if(is_ready) return;
