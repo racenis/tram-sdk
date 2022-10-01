@@ -93,7 +93,7 @@ namespace Core::UI {
         glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
 
         // make a window & context
-        WINDOW = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, (const char*)u8"TRAMVAJU DRIFTA UN PAGRABU PĒTĪŠANAS SIMULATORS 2022 VERSIJA 0.4 ES CERU KA KAUT KAS ARĪ STRĀDĀS", nullptr, nullptr);
+        WINDOW = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.2-alfa", nullptr, nullptr);
         if (WINDOW == nullptr){
             //const char* description;
             //int code = glfwGetError(&description);
