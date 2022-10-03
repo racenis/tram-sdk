@@ -11,6 +11,7 @@
 #include <set>
 
 #include <render/render.h>
+#include <navigation.h>
 
 using namespace Core;
 std::unordered_map<uint64_t, WorldCell*> WorldCell::List;

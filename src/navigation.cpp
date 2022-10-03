@@ -7,6 +7,8 @@
 #include <render/render.h>
 
 using namespace Core;
+template <> Pool<Path> PoolProxy<Path>::pool ("path pool", 50, false);
+template <> Pool<Navmesh> PoolProxy<Navmesh>::pool ("navmesh pool", 50, false);
 template <> Pool<NavigationPlan> PoolProxy<NavigationPlan>::pool("navigation plan pool", 100);
 Octree<Navmesh::Node*> Navmesh::all_nodes;
 
@@ -23,8 +25,6 @@ NavigationPlan* MakeNavigationPlan(const glm::vec3& from, const glm::vec3& to) {
 void YeetNavigationPlan(NavigationPlan* plan) {
     PoolProxy<NavigationPlan>::Delete(plan);
 }
-
-
 
 void Path::Node::CalculateLenghts(){
     float c = 0.1f;

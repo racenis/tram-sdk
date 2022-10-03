@@ -47,10 +47,6 @@ namespace Core::Render {
         FLAG_INTERIOR_LIGHTING = 64
     };
 
-    
-
-    
-
     struct RenderListObject {
         uint32_t flags = 0;
 
@@ -88,6 +84,24 @@ namespace Core::Render {
             sortkey = sortkey | (((uint64_t)(glm::distance(cameraPosition, location) * 3000000.0f)) & 0x00000000FFFFFFFF); // 32 bits for the distance
             return sortkey;
         }
+    };
+        
+    struct VertexProperty {
+        enum {
+            FLOAT32,
+            INT32,
+            UINT32
+        } type;
+        enum {
+            POSITION_VECTOR,
+            NORMAL_VECTOR,
+            TEXTURE_COORDINATE,
+            LIGHTMAP_COORDINATE,
+            OTHER
+        } function;
+        uint32_t size;
+        uint32_t stride;
+        uint64_t offset;
     };
 
     // TODO: move into opengl-specific code

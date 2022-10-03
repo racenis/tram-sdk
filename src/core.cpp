@@ -35,10 +35,6 @@ namespace Core {
     Queue<Event> Core::Event::queue("event queue", 500);
     Queue<Message> Core::Message::queue("message queue", 500);
 
-    //Pool<PathNode> pathNodePool("path node pool", 200, false);
-    template <> Pool<Path> PoolProxy<Path>::pool ("path pool", 50, false);
-    template <> Pool<Navmesh> PoolProxy<Navmesh>::pool ("navmesh pool", 50, false);
-
     Pool<Event::Listener> Core::Event::listeners[10] = {
         Pool<Event::Listener>("event listener: ", 50, false),
         Pool<Event::Listener>("event listener: ", 50, false),

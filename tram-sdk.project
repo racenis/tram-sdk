@@ -3,6 +3,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/templates.h"/>
     <VirtualDirectory Name="physics">
       <File Name="src/physics/physics.h"/>
       <File Name="src/physics/physics.cpp"/>
