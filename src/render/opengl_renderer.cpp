@@ -574,7 +574,71 @@ namespace Core::Render::OpenGL {
         }
     }
     
+    uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
+        uint32_t texture;
+        uint32_t opengl_tex_format;
+        
+        switch (color_mode) {
+            case COLORMODE_R:
+                opengl_tex_format = GL_RED;
+                break;
+            case COLORMODE_RG:
+                opengl_tex_format = GL_RG;
+                break;
+            case COLORMODE_RGB:
+                opengl_tex_format = GL_RGB;
+                break;
+            case COLORMODE_RGBA:
+                opengl_tex_format = GL_RGBA;
+        }
+        
+        // TODO: add a similar switch() to the texture_filter, so that you can change them
+        
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        assert(data);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, opengl_tex_format, width, height, 0, opengl_tex_format, GL_UNSIGNED_BYTE, data);
+            
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        return texture;
+    }
     
+    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle, uint32_t& element_buffer_handle,  uint32_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+        glGenBuffers(1, &vertex_buffer_handle);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
+        glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
+
+        glGenBuffers(1, &element_buffer_handle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, index_data, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vertex_array_handle);
+
+        glBindVertexArray(vertex_array_handle);
+
+        for (size_t i = 0; i < vertex_format.size(); i++) {
+            uint32_t opengl_type = vertex_format[i].type == VertexProperty::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+            
+            if (opengl_type == GL_FLOAT) {
+                glVertexAttribPointer(i, vertex_format[i].size, opengl_type, GL_FALSE, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            } else {
+                glVertexAttribIPointer(i, vertex_format[i].size, opengl_type, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            }
+            
+            glEnableVertexAttribArray(i);
+        }
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
+    }
 }
 
     void Core::Render::Project(const glm::vec3& point, glm::vec3& result) {

@@ -40,6 +40,17 @@ namespace Core::Render {
         static std::vector<GeometryBatch> geometry_batches;
     };
     
+    enum ColorMode {
+        COLORMODE_R,
+        COLORMODE_RG,
+        COLORMODE_RGB,
+        COLORMODE_RGBA
+    };
+    
+    enum TextureFilter {
+        TEXTUREFILTER_LINEAR,
+        TEXTUREFILTER_LINEAR_MIPMAPPED
+    };
 }
 
 namespace Core::Render::OpenGL {
@@ -69,6 +80,11 @@ namespace Core::Render::OpenGL {
     void SetRotation(DrawListEntryHandle entry, glm::quat& rotation);
     
     void RemoveDrawListEntry(DrawListEntryHandle entry);
+    
+    uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
+    
+    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle, uint32_t& element_buffer_handle,  uint32_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
+    
 }
 
 #endif //RENDERER_H

@@ -88,21 +88,26 @@ namespace Core::Render {
         
     struct VertexProperty {
         enum {
+            POSITION_VECTOR,
+            NORMAL_VECTOR,
+            TEXTURE_COORDINATE,
+            TEXTURE_INDEX,
+            LIGHTMAP_COORDINATE,
+            BONE_INDEX,
+            BONE_WEIGHT,
+            OTHER
+        } function;
+        enum {
             FLOAT32,
             INT32,
             UINT32
         } type;
-        enum {
-            POSITION_VECTOR,
-            NORMAL_VECTOR,
-            TEXTURE_COORDINATE,
-            LIGHTMAP_COORDINATE,
-            OTHER
-        } function;
         uint32_t size;
         uint32_t stride;
         uint64_t offset;
     };
+    
+    typedef std::vector<VertexProperty> VertexDefinition;
 
     // TODO: move into opengl-specific code
     struct LightListObject {
@@ -184,6 +189,14 @@ namespace Core::Render {
         glm::vec2 lighttex;
         uint32_t texture;
     };
+    
+    static const VertexDefinition STATIC_MODEL_VERTEX_DEFINITION = {
+        {VertexProperty::POSITION_VECTOR,       VertexProperty::FLOAT32, 3, sizeof(StaticModelVertex), offsetof(StaticModelVertex, co)},
+        {VertexProperty::NORMAL_VECTOR,         VertexProperty::FLOAT32, 3, sizeof(StaticModelVertex), offsetof(StaticModelVertex, normal)},
+        {VertexProperty::TEXTURE_COORDINATE,    VertexProperty::FLOAT32, 2, sizeof(StaticModelVertex), offsetof(StaticModelVertex, tex)},
+        {VertexProperty::LIGHTMAP_COORDINATE,   VertexProperty::FLOAT32, 2, sizeof(StaticModelVertex), offsetof(StaticModelVertex, lighttex)},
+        {VertexProperty::TEXTURE_INDEX,         VertexProperty::UINT32,  1, sizeof(StaticModelVertex), offsetof(StaticModelVertex, texture)}
+    };
 
     struct DynamicModelVertex{
         glm::vec3 co;
@@ -192,6 +205,15 @@ namespace Core::Render {
         glm::ivec4 bone;
         glm::vec4 boneweight;
         uint32_t texture;
+    };
+    
+    static const VertexDefinition DYNAMIC_MODEL_VERTEX_DEFINITION = {
+        {VertexProperty::POSITION_VECTOR,       VertexProperty::FLOAT32, 3, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, co)},
+        {VertexProperty::NORMAL_VECTOR,         VertexProperty::FLOAT32, 3, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, normal)},
+        {VertexProperty::TEXTURE_COORDINATE,    VertexProperty::FLOAT32, 2, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, tex)},
+        {VertexProperty::BONE_INDEX,            VertexProperty::UINT32,  4, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, bone)},
+        {VertexProperty::BONE_WEIGHT,           VertexProperty::FLOAT32, 4, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, boneweight)},
+        {VertexProperty::TEXTURE_INDEX,         VertexProperty::UINT32,  1, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, texture)}
     };
     
     struct SpriteVertex {

@@ -4,11 +4,12 @@
 // MODEL.CPP
 // Methods for the 3D model resource.
 
-#include <glad.h>
+//#include <glad.h>
 //#include <glad_gles3.h>
 
 #include <core.h>
 #include <render/render.h>
+#include <render/renderer.h>
 
 #include <async.h>
 
@@ -36,42 +37,23 @@ Model* Model::Find(name_t name){
 }
 
 void Model::LoadFromMemory(){
+    using namespace Core::Render::OpenGL;
     assert(status == LOADED);
     
     if (vertex_format == Model::STATIC_VERTEX){
         StaticModelData* data = (StaticModelData*)mData;
 
-        glGenBuffers(1, &vertex_buffer_handle);
-        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
-        glBufferData(GL_ARRAY_BUFFER, data->vertices.size() * sizeof(StaticModelVertex), &data->vertices[0], GL_STATIC_DRAW);
-
-        glGenBuffers(1, &element_buffer_handle);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, data->indices.size() * sizeof(ModelIndex), &data->indices[0], GL_STATIC_DRAW);
-
-
-
-        glGenVertexArrays(1, &vertex_array_handle);
-
-        glBindVertexArray(vertex_array_handle);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(StaticModelVertex), nullptr);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(StaticModelVertex), (void*)offsetof(StaticModelVertex, normal));
-        glEnableVertexAttribArray(1);
-
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(StaticModelVertex), (void*)offsetof(StaticModelVertex, tex));
-        glEnableVertexAttribArray(2);
-
-        glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(StaticModelVertex), (void*)offsetof(StaticModelVertex, lighttex));
-        glEnableVertexAttribArray(3);
-
-        glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(StaticModelVertex), (void*)offsetof(StaticModelVertex, texture));
-        glEnableVertexAttribArray(4);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
-
+        CreateIndexedVertexArray(
+            STATIC_MODEL_VERTEX_DEFINITION,
+            vertex_buffer_handle,
+            element_buffer_handle,
+            vertex_array_handle, 
+            data->vertices.size() * sizeof(StaticModelVertex),
+            &data->vertices[0],
+            data->indices.size() * sizeof(ModelIndex),
+            &data->indices[0]
+        );
+        
         size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(StaticModelVertex));
         approx_vram_usage += approx_memory;
         RESOURCE_VRAM_USAGE += approx_memory;
@@ -85,39 +67,16 @@ void Model::LoadFromMemory(){
     } else if (vertex_format == Model::DYNAMIC_VERTEX){
         DynamicModelData* data = (DynamicModelData*)mData;
 
-        glGenBuffers(1, &vertex_buffer_handle);
-        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
-        glBufferData(GL_ARRAY_BUFFER, data->vertices.size() * sizeof(DynamicModelVertex), &data->vertices[0], GL_STATIC_DRAW);
-
-        glGenBuffers(1, &element_buffer_handle);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, data->indices.size() * sizeof(ModelIndex), &data->indices[0], GL_STATIC_DRAW);
-
-
-
-        glGenVertexArrays(1, &vertex_array_handle);
-
-        glBindVertexArray(vertex_array_handle);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DynamicModelVertex), nullptr);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(DynamicModelVertex), (void*)offsetof(DynamicModelVertex, normal));
-        glEnableVertexAttribArray(1);
-
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(DynamicModelVertex), (void*)offsetof(DynamicModelVertex, tex));
-        glEnableVertexAttribArray(2);
-
-        glVertexAttribIPointer(3, 4, GL_UNSIGNED_INT, sizeof(DynamicModelVertex), (void*)offsetof(DynamicModelVertex, bone));
-        glEnableVertexAttribArray(3);
-
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(DynamicModelVertex), (void*)offsetof(DynamicModelVertex, boneweight));
-        glEnableVertexAttribArray(4);
-
-        glVertexAttribIPointer(5, 1, GL_UNSIGNED_INT, sizeof(DynamicModelVertex), (void*)offsetof(DynamicModelVertex, texture));
-        glEnableVertexAttribArray(5);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
+        CreateIndexedVertexArray(
+            DYNAMIC_MODEL_VERTEX_DEFINITION,
+            vertex_buffer_handle,
+            element_buffer_handle,
+            vertex_array_handle, 
+            data->vertices.size() * sizeof(DynamicModelVertex),
+            &data->vertices[0],
+            data->indices.size() * sizeof(ModelIndex),
+            &data->indices[0]
+        );
 
         size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(DynamicModelVertex));
         approx_vram_usage += approx_memory;

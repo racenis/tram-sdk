@@ -19,6 +19,7 @@
 
 #include <core.h>
 #include <render/render.h>
+#include <render/renderer.h>
 
 #include <fstream>
 
@@ -135,27 +136,14 @@ void Material::LoadFromDisk(){
 }
 
 void Material::LoadFromMemory(){
+    using namespace Core::Render::OpenGL;
     assert(status == LOADED);
 
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // this one can be set to GL_LINEAR for lower quality/faster rendering
-    // maybe for lightmaps too
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    assert(textureData);
-
     if(type == TEXTURE_ALPHA || type == TEXTURE_MSDF || type == TEXTURE_GLYPH){
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+        texture = CreateTexture(COLORMODE_RGBA, TEXTUREFILTER_LINEAR, width, height, textureData);
     } else {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+        texture = CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, textureData);
     }
-    glGenerateMipmap(GL_TEXTURE_2D);
 
     float approx_memory = width * height * channels;  // image size
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
