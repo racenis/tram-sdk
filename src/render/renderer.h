@@ -78,12 +78,18 @@ namespace Core::Render::OpenGL {
     void SetLights(DrawListEntryHandle entry, uint32_t* lights);
     void SetLocation(DrawListEntryHandle entry, glm::vec3& location);
     void SetRotation(DrawListEntryHandle entry, glm::quat& rotation);
+    void SetDrawListVertexArray(DrawListEntryHandle entry, uint32_t vertex_array_handle);
+    void SetDrawListElements(DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length);
+    void SetDrawListShader(DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type);
+    void SetDrawListTextures(DrawListEntryHandle entry, size_t texture_count, uint32_t* textures);
     
     void RemoveDrawListEntry(DrawListEntryHandle entry);
     
     uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
     
     void CreateIndexedVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle, uint32_t& element_buffer_handle,  uint32_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
+    void CreateVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle,  uint32_t& vertex_array_handle);
+    void UpdateVertexArray(uint32_t vertex_buffer_handle, size_t data_size, void* data);
     
 }
 

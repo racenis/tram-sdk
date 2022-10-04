@@ -294,14 +294,14 @@ namespace Core::Render::OpenGL {
         CompileShaders();
 
         //lineBuffer.Init();            
-        line_array = MakeVertexArray(std::vector<VertexFormat> {
+        /*line_array = MakeVertexArray(std::vector<VertexFormat> {
             {3, GL_FLOAT, sizeof(LineVertex), nullptr},
             {3, GL_FLOAT, sizeof(LineVertex), (void*)offsetof(LineVertex, color)}
-            }, 0, true);
+            }, 0, true);*/
         
         
-        textBuffer.Init();
-        glyphBuffer.Init();
+        /*textBuffer.Init();*/
+        /*glyphBuffer.Init();*/
         
         //lightUniform.Init();
         //matricesUniform.Init();
@@ -440,10 +440,10 @@ namespace Core::Render::OpenGL {
             if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
             if (robj->flags & FLAG_DRAW_INDEXED) {
                 glBindVertexArray(robj->vao);
-                glDrawElements(GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
+                glDrawElements(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
             } else {
                 glBindVertexArray(robj->vao);
-                glDrawArrays(GL_TRIANGLES, 0, robj->eboLen);
+                glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
             }
             if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);
 
@@ -460,10 +460,10 @@ namespace Core::Render::OpenGL {
 
         // upload the line buffer and draw lines
         //lineBuffer.UpdateData(colorlines.size(), colorlines.size() * sizeof(LineVertex), &colorlines[0]);
-        UploadVertexArray(line_array, colorlines.size() * sizeof(LineVertex), colorlines.size(), &colorlines[0]);
+        /////////////UploadVertexArray(line_array, colorlines.size() * sizeof(LineVertex), colorlines.size(), &colorlines[0]);
         //lineBuffer.Upload();
         //lineBuffer.Draw();
-        DrawVertexArray(line_array, std::vector<Material*>(), false);
+        /////////////DrawVertexArray(line_array, std::vector<Material*>(), false);
 
         // back to drawing triangles
         //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -472,15 +472,15 @@ namespace Core::Render::OpenGL {
         glUseProgram(FindShader(Model::SPRITE_VERTEX, Material::TEXTURE_MSDF));
 
         // upload the text array and draw the text
-        textBuffer.UpdateData(textvertices.size(), textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
+        /*textBuffer.UpdateData(textvertices.size(), textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
         textBuffer.Upload();
-        textBuffer.Draw();
+        textBuffer.Draw();*/
         
         //glUseProgram(ShaderProgram::Find(Model::GLYPH_VERTEX, Material::TEXTURE_GLYPH)->compiled_shader);
         glUseProgram(FindShader(Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH));
-        glyphBuffer.UpdateData(glyphvertices.size(), glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
+        /*glyphBuffer.UpdateData(glyphvertices.size(), glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
         glyphBuffer.Upload();
-        glyphBuffer.Draw();
+        glyphBuffer.Draw();*/
 
         // back to drawing everything in its supposed place
         glEnable(GL_DEPTH_TEST);
@@ -574,6 +574,26 @@ namespace Core::Render::OpenGL {
         }
     }
     
+    void SetDrawListVertexArray(DrawListEntryHandle entry, uint32_t vertex_array_handle) {
+        ((RenderListObject*)entry.draw_list_entries[0])->vao = vertex_array_handle;
+    }
+    
+    void SetDrawListElements(DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length) {
+        ((RenderListObject*)entry.draw_list_entries[0])->eboOff = element_offset;
+        ((RenderListObject*)entry.draw_list_entries[0])->eboLen = element_length;
+    }
+    
+    void SetDrawListShader(DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type) {
+        ((RenderListObject*)entry.draw_list_entries[0])->shader = FindShader(vertex_format, material_type);
+    }
+    
+    void SetDrawListTextures(DrawListEntryHandle entry, size_t texture_count, uint32_t* textures) {
+        for (size_t i = 0; i < texture_count; i++) {
+            ((RenderListObject*)entry.draw_list_entries[0])->textures[i] = textures[i];
+        }
+        ((RenderListObject*)entry.draw_list_entries[0])->texCount = texture_count;
+    }
+    
     uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
         uint32_t texture;
         uint32_t opengl_tex_format;
@@ -638,6 +658,41 @@ namespace Core::Render::OpenGL {
         }
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
+        
+        glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+    
+    void CreateVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle,  uint32_t& vertex_array_handle) {
+        glGenBuffers(1, &vertex_buffer_handle);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
+        glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+
+        glGenVertexArrays(1, &vertex_array_handle);
+
+        glBindVertexArray(vertex_array_handle);
+
+        for (size_t i = 0; i < vertex_format.size(); i++) {
+            uint32_t opengl_type = vertex_format[i].type == VertexProperty::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+            
+            if (opengl_type == GL_FLOAT) {
+                glVertexAttribPointer(i, vertex_format[i].size, opengl_type, GL_FALSE, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            } else {
+                glVertexAttribIPointer(i, vertex_format[i].size, opengl_type, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            }
+            
+            glEnableVertexAttribArray(i);
+        }
+
+        glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    
+    void UpdateVertexArray(uint32_t vertex_buffer_handle, size_t data_size, void* data) {
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
+        glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
 

@@ -48,6 +48,22 @@ namespace Core::Render {
     
     std::vector<GeometryBatch> GeometryBatch::geometry_batches;
 
+
+
+    uint32_t colorlines_vertex_array = 0;
+    uint32_t colorlines_vertex_buffer = 0;
+    DrawListEntryHandle colorlines_entry;
+    
+    uint32_t textvertices_vertex_array = 0;
+    uint32_t textvertices_vertex_buffer = 0;
+    DrawListEntryHandle textvertices_entry;
+    
+    uint32_t glyphvertices_vertex_array = 0;
+    uint32_t glyphvertices_vertex_buffer = 0;
+    DrawListEntryHandle glyphvertices_entry;
+    
+    
+
     std::vector<LineVertex> colorlines;
     std::vector<SpriteVertex> textvertices;
     std::vector<SpriteVertex> glyphvertices;
@@ -74,20 +90,58 @@ namespace Core::Render {
         GLYPH_TEXT_BOLD.Load();
         GLYPH_HEADERS.Load();
         
-        uint32_t throwaway;
+        // i literally don't remember what is going on in here with the "batches"
+        /*uint32_t throwaway;
         GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_GUI, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
         GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_TEXT, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
         GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_TEXT_BOLD, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
         GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_HEADERS, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
-        glyph_batch->render_object->flags = glyph_batch->render_object->flags | FLAG_NO_DEPTH_TEST;
+        glyph_batch->render_object->flags = glyph_batch->render_object->flags | FLAG_NO_DEPTH_TEST;*/
+        
+        // this is pain in my assholes
+        
+        OpenGL::CreateVertexArray(LINE_VERTEX_DEFINITION, colorlines_vertex_buffer, colorlines_vertex_array);
+        colorlines_entry = OpenGL::InsertDrawListEntry();
+        OpenGL::SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
+        OpenGL::SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);
+        OpenGL::SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
+        
+        OpenGL::CreateVertexArray(SPRITE_VERTEX_DEFINITION, textvertices_vertex_buffer, textvertices_vertex_array);
+        textvertices_entry = OpenGL::InsertDrawListEntry();
+        OpenGL::SetDrawListVertexArray(textvertices_entry, textvertices_vertex_array);
+        OpenGL::SetDrawListShader(textvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_MSDF);
+        OpenGL::SetFlags(textvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+        uint32_t textvertices_textures[5] = {FONT_REGULAR.GetTexture(), FONT_TITLE.GetTexture(), FONT_TITLE.GetTexture(), FONT_TITLE.GetTexture(), FONT_SYMBOLS.GetTexture()};
+        OpenGL::SetDrawListTextures(textvertices_entry, 5, textvertices_textures);
+        
+        OpenGL::CreateVertexArray(SPRITE_VERTEX_DEFINITION, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
+        glyphvertices_entry = OpenGL::InsertDrawListEntry();
+        OpenGL::SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
+        OpenGL::SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);
+        OpenGL::SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+        uint32_t glyphvertices_textures[4] = {GLYPH_GUI.GetTexture(), GLYPH_TEXT.GetTexture(), GLYPH_TEXT_BOLD.GetTexture(), GLYPH_HEADERS.GetTexture()};
+        OpenGL::SetDrawListTextures(glyphvertices_entry, 4, glyphvertices_textures);
+
     }
 
     void Render(){
         #ifndef ENGINE_EDITOR_MODE
         for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
         for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
-        GeometryBatch::Update();
+        //GeometryBatch::Update();
         #endif // ENGINE_EDITOR_MODE
+        
+        OpenGL::UpdateVertexArray(colorlines_vertex_buffer, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
+        OpenGL::SetDrawListElements(colorlines_entry, 0, colorlines.size());
+        colorlines.clear();
+        
+        OpenGL::UpdateVertexArray(textvertices_vertex_buffer, textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
+        OpenGL::SetDrawListElements(textvertices_entry, 0, textvertices.size());
+        textvertices.clear();
+        
+        OpenGL::UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
+        OpenGL::SetDrawListElements(glyphvertices_entry, 0, glyphvertices.size());
+        glyphvertices.clear();
         
         OpenGL::Render();
     }
@@ -236,19 +290,19 @@ namespace Core::Render {
         bright.color = color;
         bright.texture = tex;
 
-        //glyphvertices.push_back(bleft);
-        //glyphvertices.push_back(bright);
-        //glyphvertices.push_back(tleft);
-        //glyphvertices.push_back(bright);
-        //glyphvertices.push_back(tright);
-        //glyphvertices.push_back(tleft);
+        glyphvertices.push_back(bleft);
+        glyphvertices.push_back(bright);
+        glyphvertices.push_back(tleft);
+        glyphvertices.push_back(bright);
+        glyphvertices.push_back(tright);
+        glyphvertices.push_back(tleft);
         
-        glyph_batch->sprite_vector->push_back(bleft);
-        glyph_batch->sprite_vector->push_back(bright);
-        glyph_batch->sprite_vector->push_back(tleft);
-        glyph_batch->sprite_vector->push_back(bright);
-        glyph_batch->sprite_vector->push_back(tright);
-        glyph_batch->sprite_vector->push_back(tleft);
+        //glyph_batch->sprite_vector->push_back(bleft);
+        //glyph_batch->sprite_vector->push_back(bright);
+        //glyph_batch->sprite_vector->push_back(tleft);
+        //glyph_batch->sprite_vector->push_back(bright);
+        //glyph_batch->sprite_vector->push_back(tright);
+        //glyph_batch->sprite_vector->push_back(tleft);
     }
 }
 

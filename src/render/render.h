@@ -44,7 +44,8 @@ namespace Core::Render {
         FLAG_REVERSE_SORT = 8,
         FLAG_TRANSPARENT = 16,
         FLAG_NO_DEPTH_TEST = 32,
-        FLAG_INTERIOR_LIGHTING = 64
+        FLAG_INTERIOR_LIGHTING = 64,
+        FLAG_DRAW_LINES = 128
     };
 
     struct RenderListObject {
@@ -90,6 +91,7 @@ namespace Core::Render {
         enum {
             POSITION_VECTOR,
             NORMAL_VECTOR,
+            COLOR_VECTOR,
             TEXTURE_COORDINATE,
             TEXTURE_INDEX,
             LIGHTMAP_COORDINATE,
@@ -225,9 +227,25 @@ namespace Core::Render {
         uint32_t texture;
     };
 
+    static const VertexDefinition SPRITE_VERTEX_DEFINITION = {
+        {VertexProperty::POSITION_VECTOR,       VertexProperty::FLOAT32, 2, sizeof(SpriteVertex), 0},
+        {VertexProperty::TEXTURE_COORDINATE,    VertexProperty::FLOAT32, 2, sizeof(SpriteVertex), offsetof(SpriteVertex, texco)},
+        {VertexProperty::COLOR_VECTOR,          VertexProperty::FLOAT32, 3, sizeof(SpriteVertex), offsetof(SpriteVertex, color)},
+        
+        {VertexProperty::OTHER,                 VertexProperty::FLOAT32, 2, sizeof(SpriteVertex), offsetof(SpriteVertex, voffset)},
+        {VertexProperty::OTHER,                 VertexProperty::FLOAT32, 1, sizeof(SpriteVertex), offsetof(SpriteVertex, verticality)},
+        
+        {VertexProperty::TEXTURE_INDEX,         VertexProperty::UINT32,  1, sizeof(SpriteVertex), offsetof(SpriteVertex, texture)}
+    };
+    
     struct LineVertex{
         glm::vec3 co;
         glm::vec3 color;
+    };
+    
+    static const VertexDefinition LINE_VERTEX_DEFINITION = {
+        {VertexProperty::POSITION_VECTOR,       VertexProperty::FLOAT32, 3, sizeof(LineVertex), 0},
+        {VertexProperty::COLOR_VECTOR,          VertexProperty::FLOAT32, 3, sizeof(LineVertex), offsetof(LineVertex, color)}
     };
 
     struct ModelIndex{
