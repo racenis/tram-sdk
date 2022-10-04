@@ -101,14 +101,23 @@ namespace Core::Render {
     void RenderListObject::FillFromModel(Model* mdl, uint32_t eboIndex){
         //vbo = mdl->vbo;
         //ebo = mdl->ebo;
-        vao = mdl->vao;
-        eboLen = mdl->eboLen[eboIndex];
-        eboOff = mdl->eboOff[eboIndex];
-        shader = OpenGL::FindShader(mdl->vertForm, (Material::Type)mdl->eboMat[eboIndex]);
+        vao = mdl->vertex_array_handle;
+        eboLen = mdl->element_ranges[eboIndex].element_length;
+        eboOff = mdl->element_ranges[eboIndex].element_offset;
+        shader = OpenGL::FindShader(mdl->vertex_format, (Material::Type)mdl->element_ranges[eboIndex].material_type);
         texCount = mdl->materials.size();
         for (uint32_t i = 0; i < texCount; i++){
             textures[i] = mdl->materials[i]->GetTexture();
         }
+        
+        std::cout << std::endl;
+        std::cout << "model : " << ReverseUID(mdl->GetName()) << std::endl;
+        std::cout << "eboIndex : " << eboIndex << std::endl;
+        std::cout << "vao : " << vao << std::endl;
+        std::cout << "eboLen : " << eboLen << std::endl;
+        std::cout << "eboOff : " << eboOff << std::endl;
+        std::cout << "shader : " << shader << std::endl;
+        std::cout << "texCount : " << texCount << std::endl;
 
         flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
     };
@@ -245,28 +254,22 @@ namespace Core::Render {
 
 
 namespace Core {
+    using namespace Core::Render;
+    
     void RenderComponent::Uninit(){
         is_ready = true;
         pose = nullptr;
-
-        for (size_t i = 0; i < 7; i++){
-            if(rLsObjPtr[i] == nullptr) continue;
-
-            Render::renderList.Remove(rLsObjPtr[i]);
-
-            rLsObjPtr[i] = nullptr;
-        }
+        
+        OpenGL::RemoveDrawListEntry(draw_list_entry);
     };
     
     void RenderComponent::SetCellParams (bool isInteriorLight){
         isInterior = isInteriorLight;
         if (is_ready) {
-            for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
-                if (isInteriorLight) {
-                    rLsObjPtr[i]->flags = rLsObjPtr[i]->flags | Render::FLAG_INTERIOR_LIGHTING;
-                } else {
-                    rLsObjPtr[i]->flags = rLsObjPtr[i]->flags & (~Render::FLAG_INTERIOR_LIGHTING);
-                }
+            if (isInteriorLight) {
+                OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
+            } else {
+                OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) & (~FLAG_INTERIOR_LIGHTING));
             }
         }
     }
@@ -274,19 +277,12 @@ namespace Core {
     void RenderComponent::Start(){
         if(is_ready) return;
 
-
-        uint32_t pointers = 0;
-        for(uint32_t i = 0; i < 6; i++){
-            if (model->IsEBOEmpty(i)) continue;
-            rLsObjPtr[pointers] = Render::renderList.AddNew();
-            rLsObjPtr[pointers]->FillFromModel(model.GetResource(), i);
-            if(lightmap.GetResource() != nullptr) rLsObjPtr[pointers]->lightmap = lightmap->GetTexture();
-            if(isInterior) rLsObjPtr[pointers]->flags = rLsObjPtr[pointers]->flags | Render::FLAG_INTERIOR_LIGHTING;
-            rLsObjPtr[pointers]->pose = pose;
-            pointers++;
-
-        }
-
+        draw_list_entry = OpenGL::InsertDrawListEntry(model.GetResource());
+        
+        if (lightmap.GetResource() != nullptr) OpenGL::SetLightmap(draw_list_entry, lightmap->GetTexture());
+        if (isInterior) OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
+        if (pose) OpenGL::SetPose(draw_list_entry, pose);
+        
         is_ready = true;
 
         UpdateRenderListObjs();
@@ -297,22 +293,14 @@ namespace Core {
     void RenderComponent::UpdateRenderListObjs(){
         if (!is_ready) return;
 
-        for(uint32_t i = 0; rLsObjPtr[i] != nullptr; i++){
-            rLsObjPtr[i]->location = location;
-            rLsObjPtr[i]->rotation = rotation;
-
-            rLsObjPtr[i]->pose = pose;
-
-            rLsObjPtr[i]->flags &= -1 ^ Render::FLAG_INTERIOR_LIGHTING;
-            rLsObjPtr[i]->flags |= Render::FLAG_INTERIOR_LIGHTING * isInterior;
-
-            rLsObjPtr[i]->lights[0] = 0;
-            rLsObjPtr[i]->lights[1] = 0;
-            rLsObjPtr[i]->lights[2] = 0;
-            rLsObjPtr[i]->lights[3] = 0;
-            Render::lightTree.FindNearest(rLsObjPtr[i]->lights, rLsObjPtr[i]->location.x, rLsObjPtr[i]->location.y, rLsObjPtr[i]->location.z);
-        }
-
+        OpenGL::SetLocation(draw_list_entry, location);
+        OpenGL::SetRotation(draw_list_entry, rotation);
+        
+        uint32_t lights[4];
+        lightTree.FindNearest(lights, location.x, location.y, location.z);
+        OpenGL::SetLights(draw_list_entry, lights);
+        
+        OpenGL::SetPose(draw_list_entry, pose); // why is this being set every frame
     }
 
 }

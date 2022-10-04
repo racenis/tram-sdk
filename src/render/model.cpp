@@ -38,22 +38,22 @@ Model* Model::Find(name_t name){
 void Model::LoadFromMemory(){
     assert(status == LOADED);
     
-    if (vertForm == Model::STATIC_VERTEX){
+    if (vertex_format == Model::STATIC_VERTEX){
         StaticModelData* data = (StaticModelData*)mData;
 
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glGenBuffers(1, &vertex_buffer_handle);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
         glBufferData(GL_ARRAY_BUFFER, data->vertices.size() * sizeof(StaticModelVertex), &data->vertices[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &ebo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glGenBuffers(1, &element_buffer_handle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, data->indices.size() * sizeof(ModelIndex), &data->indices[0], GL_STATIC_DRAW);
 
 
 
-        glGenVertexArrays(1, &vao);
+        glGenVertexArrays(1, &vertex_array_handle);
 
-        glBindVertexArray(vao);
+        glBindVertexArray(vertex_array_handle);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(StaticModelVertex), nullptr);
         glEnableVertexAttribArray(0);
@@ -70,7 +70,7 @@ void Model::LoadFromMemory(){
         glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(StaticModelVertex), (void*)offsetof(StaticModelVertex, texture));
         glEnableVertexAttribArray(4);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
 
         size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(StaticModelVertex));
         approx_vram_usage += approx_memory;
@@ -82,22 +82,22 @@ void Model::LoadFromMemory(){
         status = READY;
 
         return;
-    } else if (vertForm == Model::DYNAMIC_VERTEX){
+    } else if (vertex_format == Model::DYNAMIC_VERTEX){
         DynamicModelData* data = (DynamicModelData*)mData;
 
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glGenBuffers(1, &vertex_buffer_handle);
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
         glBufferData(GL_ARRAY_BUFFER, data->vertices.size() * sizeof(DynamicModelVertex), &data->vertices[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &ebo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glGenBuffers(1, &element_buffer_handle);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, data->indices.size() * sizeof(ModelIndex), &data->indices[0], GL_STATIC_DRAW);
 
 
 
-        glGenVertexArrays(1, &vao);
+        glGenVertexArrays(1, &vertex_array_handle);
 
-        glBindVertexArray(vao);
+        glBindVertexArray(vertex_array_handle);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DynamicModelVertex), nullptr);
         glEnableVertexAttribArray(0);
@@ -117,7 +117,7 @@ void Model::LoadFromMemory(){
         glVertexAttribIPointer(5, 1, GL_UNSIGNED_INT, sizeof(DynamicModelVertex), (void*)offsetof(DynamicModelVertex, texture));
         glEnableVertexAttribArray(5);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_handle);
 
         size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(DynamicModelVertex));
         approx_vram_usage += approx_memory;
@@ -141,13 +141,28 @@ bool Model::Unload(){
 
 
 
+// TODO: make bucketing system better
+// right now you can only have one bucket per material
+// you should be able to have multiple buckets of the same material,
+// so that you can have more than 15 materials of the same type in a model
 
+// also you should have the same logic for both model types, instead of those huge branches
+
+// and iostream is kinda slow, so a better file reading thing should be used
 void Model::LoadFromDisk(){
+    assert(status == UNLOADED);
     std::ifstream file;
     char path[200];
 
-    std::vector<ModelIndex> bucket[6];      //buckets for material types
-
+    struct VertexBucket {
+        std::vector<ModelIndex> indices;
+    };
+    
+    // index into this vector = material::type enum
+    // increase VertexBucket() count if material::type count gets increased
+    std::vector<VertexBucket> vertex_buckets {VertexBucket(), VertexBucket(), VertexBucket(), VertexBucket(), VertexBucket(), VertexBucket()};
+    
+    
     strcpy(path, "data/models/");
     strcat(path, ReverseUID(name));
     strcat(path, ".stmdl");
@@ -155,7 +170,7 @@ void Model::LoadFromDisk(){
 
     file.open(path);
     if (file.is_open()) {
-        vertForm = STATIC_VERTEX;
+        vertex_format = STATIC_VERTEX;
         StaticModelData* data = new StaticModelData;
         mData = data;
 
@@ -169,6 +184,8 @@ void Model::LoadFromDisk(){
         file >> vcount;
         file >> tcount;
         file >> mcount;
+        
+        
 
         if(mcount > MAX_MATERIALS_PER_MODEL){
             std::cout << "Too many materials in model: " << ReverseUID(name) << std::endl;
@@ -183,8 +200,8 @@ void Model::LoadFromDisk(){
             mat = Material::Find(UID(matName));
 
             materials.push_back(mat);
-
         }
+        
         for(uint32_t i = 0; i < vcount; i++){
             StaticModelVertex v;
             file >> v.co.x;
@@ -200,6 +217,7 @@ void Model::LoadFromDisk(){
             v.texture = 0;
             data->vertices.push_back(v);
         }
+        
         for(uint32_t i = 0; i < tcount; i++){
             ModelIndex t;
             Material::Type matType;
@@ -212,23 +230,28 @@ void Model::LoadFromDisk(){
             matType = materials[matIndex]->GetType();
 
             if(matIndex > MAX_MATERIALS_PER_MODEL - 1) matIndex = 0;
-            bucket[matType].push_back(t);
-            eboMat[matType] = matType;
-
+            vertex_buckets[matType].indices.push_back(t);
 
             data->vertices[t.tri.x].texture = matIndex;
             data->vertices[t.tri.y].texture = matIndex;
             data->vertices[t.tri.z].texture = matIndex;
         }
+        
         file.close();
 
         data->indices.reserve(tcount);
 
-        for (size_t i = 0; i < 6; i++){
-            eboOff[i] = data->indices.size();
-            eboLen[i] = bucket[i].size();
-            if (bucket[i].size() > 0){
-                data->indices.insert(data->indices.end(), bucket[i].begin(), bucket[i].end());
+        for (size_t i = 0; i < 6; i++) {
+            if (vertex_buckets[i].indices.size() > 0) {
+                ElementRange range;
+                range.material_type = (Material::Type)i;
+                range.material_count = materials.size();
+                for (uint32_t k = 0; k < 16; k++) range.materials[k] = k;
+                range.element_length = vertex_buckets[i].indices.size();
+                range.element_offset = data->indices.size();
+                
+                element_ranges.push_back(range);
+                data->indices.insert(data->indices.end(), vertex_buckets[i].indices.begin(), vertex_buckets[i].indices.end());
             }
         }
 
@@ -258,7 +281,7 @@ void Model::LoadFromDisk(){
 
     file.open(path);
     if (file.is_open()) {
-        vertForm = DYNAMIC_VERTEX;
+        vertex_format = DYNAMIC_VERTEX;
         DynamicModelData* data = new DynamicModelData;
         mData = data;
 
@@ -332,8 +355,7 @@ void Model::LoadFromDisk(){
             matType = materials[matIndex]->GetType();
 
             if(matIndex > MAX_MATERIALS_PER_MODEL - 1) matIndex = 0;
-            bucket[matType].push_back(t);
-            eboMat[matType] = matType;
+            vertex_buckets[matType].indices.push_back(t);
 
             data->vertices[t.tri.x].texture = matIndex;
             data->vertices[t.tri.y].texture = matIndex;
@@ -366,11 +388,17 @@ void Model::LoadFromDisk(){
 
         data->indices.reserve(tcount);
 
-        for (size_t i = 0; i < 6; i++){
-            eboOff[i] = data->indices.size();
-            eboLen[i] = bucket[i].size();
-            if (bucket[i].size() > 0){
-                data->indices.insert(data->indices.end(), bucket[i].begin(), bucket[i].end());
+        for (size_t i = 0; i < 6; i++) {
+            if (vertex_buckets[i].indices.size() > 0) {
+                ElementRange range;
+                range.material_type = (Material::Type)i;
+                range.material_count = materials.size();
+                for (uint32_t k = 0; k < 16; k++) range.materials[k] = k;
+                range.element_length = vertex_buckets[i].indices.size();
+                range.element_offset = data->indices.size();
+                
+                element_ranges.push_back(range);
+                data->indices.insert(data->indices.end(), vertex_buckets[i].indices.begin(), vertex_buckets[i].indices.end());
             }
         }
 
@@ -394,15 +422,21 @@ void Model::LoadFromDisk(){
     std::cout << "Model file for " << ReverseUID(name) << " couldn't be accessed!" << std::endl;
 
     // copy the error model stuff
-    vao = error_model->vao;
-    vbo = error_model->vbo;
-    ebo = error_model->ebo;
+    //vao = error_model->vao;
+    //vbo = error_model->vbo;
+    //ebo = error_model->ebo;
 
-    for (size_t i = 0; i < 6; i++){
-        eboLen[i] = error_model->eboLen[i];
-        eboOff[i] = error_model->eboOff[i];
-        eboMat[i] = error_model->eboMat[i];
-    }
+    //for (size_t i = 0; i < 6; i++){
+    //    eboLen[i] = error_model->eboLen[i];
+    //    eboOff[i] = error_model->eboOff[i];
+    //    eboMat[i] = error_model->eboMat[i];
+    //}
+    
+    vertex_array_handle = error_model->vertex_array_handle;
+    vertex_buffer_handle = error_model->vertex_buffer_handle;
+    element_buffer_handle = error_model->element_buffer_handle;
+    
+    element_ranges = error_model->element_ranges;
 
     materials = error_model->materials;
     armature = error_model->armature;

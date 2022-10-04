@@ -55,6 +55,20 @@ namespace Core::Render::OpenGL {
     
     void BindUniformBlock (const char* name, uint32_t binding);
     
+    
+    
+    DrawListEntryHandle InsertDrawListEntry();
+    DrawListEntryHandle InsertDrawListEntry(Model* model);
+    
+    uint32_t GetFlags(DrawListEntryHandle entry);
+    void SetFlags(DrawListEntryHandle entry, uint32_t flags);
+    void SetPose(DrawListEntryHandle entry, PoseListObject* pose);
+    void SetLightmap(DrawListEntryHandle entry, uint32_t lightmap);
+    void SetLights(DrawListEntryHandle entry, uint32_t* lights);
+    void SetLocation(DrawListEntryHandle entry, glm::vec3& location);
+    void SetRotation(DrawListEntryHandle entry, glm::quat& rotation);
+    
+    void RemoveDrawListEntry(DrawListEntryHandle entry);
 }
 
 #endif //RENDERER_H

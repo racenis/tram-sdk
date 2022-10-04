@@ -60,6 +60,7 @@ namespace Core {
 
         // this thing is ??? i mean yeah, but no
         Render::RenderListObject* rLsObjPtr[7] = {nullptr};
+        Render::DrawListEntryHandle draw_list_entry;
 
         Render::PoseListObject* pose = nullptr;
 

@@ -52,8 +52,8 @@ namespace Core::Render {
 
         PoseListObject* pose = nullptr;
 
-        glm::vec3 location;
-        glm::quat rotation;
+        glm::vec3 location = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::quat rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
 
         uint32_t lights[4] = {0};
         
@@ -211,6 +211,11 @@ namespace Core::Render {
     struct ModelIndex{
         glm::ivec3 tri;
     };
+    
+    // this is just a placeholder
+    struct DrawListEntryHandle {
+        void* draw_list_entries[6] = { nullptr };
+    };
 
 
     struct ModelData{};
@@ -218,37 +223,32 @@ namespace Core::Render {
     // TODO: figure out what to do with the models
     class Model : public Resource {
     public:
-    enum VertexFormat {
+        enum VertexFormat {
             STATIC_VERTEX,
             DYNAMIC_VERTEX,
             SPRITE_VERTEX,
             LINE_VERTEX
         };
         
-        struct OpenGL {
-            uint32_t vbo = 0;
-            uint32_t ebo = 0;
-            uint32_t vao = 0;
-
-            uint32_t eboOff[6] = {0};
-            uint32_t eboLen[6] = {0};
-            uint32_t eboMat[6] = {(uint32_t)(-1)};
+        struct ElementRange {
+            uint32_t element_offset = 0;
+            uint32_t element_length = 0;
+            uint32_t material_count = 0;
+            Material::Type material_type;
+            uint32_t materials[15] = { 0 };
         };
         
-    protected:
-        VertexFormat vertForm;
-        //name_t name;          /// Name of the model. Doubles as the filename.
-
-        uint32_t vbo = 0;       /// OpenGL vertex buffer name.
-        uint32_t ebo = 0;       /// OpenGL element buffer name.
-        uint32_t vao = 0;       /// OpenGL vertex array object name.
-
-        uint32_t eboOff[6] = {0};   /// Offset into the element buffer where the material group starts.
-        uint32_t eboLen[6] = {0};   /// Length of the material group.
-        uint32_t eboMat[6] = {(uint32_t)(-1)}; /// Idk i don't remebrer.
-
-        uint32_t refCount = 0;
+        VertexFormat vertex_format = STATIC_VERTEX;
+        
+        uint32_t vertex_buffer_handle = 0;
+        uint32_t element_buffer_handle = 0;
+        uint32_t vertex_array_handle = 0;
+        
+        std::vector<ElementRange> element_ranges;
+        
         std::vector<Material*> materials;
+        
+    protected:
         std::vector<Bone> armature;
         ModelData* mData = nullptr;
         size_t approx_vram_usage = 0;
@@ -260,10 +260,6 @@ namespace Core::Render {
     public:
         Model (uint64_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
 
-        uint32_t GetVBO() {return vbo;}
-        uint32_t GetEBO() {return ebo;}
-        uint32_t GetVAO() {return vao;}
-        bool IsEBOEmpty(uint32_t eboIndex) {return eboLen[eboIndex] == 0;};
         bool Load(){
             LoadFromDisk();
             LoadFromMemory();

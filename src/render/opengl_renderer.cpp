@@ -494,7 +494,87 @@ namespace Core::Render::OpenGL {
 
         Stats::Stop(Stats::FRAME_NO_SWAP);
     }
-   
+    
+    DrawListEntryHandle InsertDrawListEntry() {
+        return DrawListEntryHandle { .draw_list_entries = { renderList.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
+    }
+    
+    DrawListEntryHandle InsertDrawListEntry(Model* model) {
+        assert(model);
+        assert(model->GetStatus() == Resource::READY);
+        
+        DrawListEntryHandle entries;
+        
+        for (size_t i = 0; i < model->element_ranges.size(); i++) {
+            RenderListObject* entry = Render::renderList.AddNew();
+            
+            entry->vao = model->vertex_array_handle;
+            entry->shader = FindShader(model->vertex_format, model->element_ranges[i].material_type);
+            entry->texCount = model->element_ranges[i].material_count;
+            entry->eboLen = model->element_ranges[i].element_length;
+            entry->eboOff = model->element_ranges[i].element_offset;
+            entry->flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
+            
+            for (size_t k = 0; k < model->element_ranges[i].material_count; k++) {
+                entry->textures[k] = model->materials[model->element_ranges[i].materials[k]]->GetTexture();
+            }
+            
+            entries.draw_list_entries[i] = entry;
+        }
+        
+        return entries;
+    }
+    
+    void RemoveDrawListEntry(DrawListEntryHandle entry) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            renderList.Remove((RenderListObject*)entry.draw_list_entries[i]);
+        }
+    }
+    
+    uint32_t GetFlags(DrawListEntryHandle entry) {
+        assert(entry.draw_list_entries[0]);
+        return ((RenderListObject*)entry.draw_list_entries[0])->flags;
+    }
+    
+    void SetFlags(DrawListEntryHandle entry, uint32_t flags) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            ((RenderListObject*)entry.draw_list_entries[i])->flags = flags;
+        }
+    }
+    
+    void SetPose(DrawListEntryHandle entry, PoseListObject* pose) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            ((RenderListObject*)entry.draw_list_entries[i])->pose = pose;
+        }
+    }
+    
+    void SetLightmap(DrawListEntryHandle entry, uint32_t lightmap) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            ((RenderListObject*)entry.draw_list_entries[i])->lightmap = lightmap;
+        }
+    }
+    
+    void SetLights(DrawListEntryHandle entry, uint32_t* lights) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            for (size_t k = 0; k < 4; k++) {
+                ((RenderListObject*)entry.draw_list_entries[i])->lights[k] = lights[k];
+            }
+        }
+    }
+    
+    void SetLocation(DrawListEntryHandle entry, glm::vec3& location) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            ((RenderListObject*)entry.draw_list_entries[i])->location = location;
+        }
+    }
+    
+    void SetRotation(DrawListEntryHandle entry, glm::quat& rotation) {
+        for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
+            ((RenderListObject*)entry.draw_list_entries[i])->rotation = rotation;
+        }
+    }
+    
+    
 }
 
     void Core::Render::Project(const glm::vec3& point, glm::vec3& result) {

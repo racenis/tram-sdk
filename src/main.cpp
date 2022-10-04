@@ -18,9 +18,9 @@
 #include <components/armaturecomponent.h>
 #include <components/lightcomponent.h>
 
-#include <components/spritecomponent.h>
-#include <components/particlecomponent.h>
-#include <components/audiocomponent.h>
+//#include <components/spritecomponent.h>
+//#include <components/particlecomponent.h>
+//#include <components/audiocomponent.h>
 
 #include <components/controllercomponent.h>
 
@@ -120,11 +120,11 @@ int main() {
     //tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
     //tolet_emitter->Init();
     
-    auto derp_player = PoolProxy<AudioComponent>::New();
-    derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
-    derp_player->SetSound(&derp);
-    derp_player->SetRepeating(true);
-    derp_player->Init();
+    //auto derp_player = PoolProxy<AudioComponent>::New();
+    //derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    //derp_player->SetSound(&derp);
+    //derp_player->SetRepeating(true);
+    //derp_player->Init();
     
     auto crate_ent = Entity::Find(UID("estijs"));
         
@@ -178,7 +178,7 @@ int main() {
         if (tick > 50) {
             glm::vec3 crate_loc;
             crate_ent->GetLocation(crate_loc);
-            derp_player->UpdateLocation(crate_loc);
+            //derp_player->UpdateLocation(crate_loc);
         }
 
 
