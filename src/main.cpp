@@ -18,8 +18,8 @@
 #include <components/armaturecomponent.h>
 #include <components/lightcomponent.h>
 
-//#include <components/spritecomponent.h>
-//#include <components/particlecomponent.h>
+#include <components/spritecomponent.h>
+#include <components/particlecomponent.h>
 //#include <components/audiocomponent.h>
 
 #include <components/controllercomponent.h>
@@ -109,16 +109,16 @@ int main() {
     tolet_sprite->SetMaterial(Material::Find(UID("poland")));
     tolet_sprite->AutogenTiledFrames(0, 0, 40, 40, 6, 24, 15.0f, 1.0f);
     
-    //auto tolet_spinner = PoolProxy<SpriteComponent>::New();
-    //tolet_spinner->SetSprite(tolet_sprite);
-    //tolet_spinner->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
-    //tolet_spinner->Init();
-    //tolet_spinner->Play();
+    auto tolet_spinner = PoolProxy<SpriteComponent>::New();
+    tolet_spinner->SetSprite(tolet_sprite);
+    tolet_spinner->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
+    tolet_spinner->Init();
+    tolet_spinner->Play();
     
-    //auto tolet_emitter = PoolProxy<ParticleComponent>::New();
-    //tolet_emitter->SetSprite(tolet_sprite);
-    //tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
-    //tolet_emitter->Init();
+    auto tolet_emitter = PoolProxy<ParticleComponent>::New();
+    tolet_emitter->SetSprite(tolet_sprite);
+    tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
+    tolet_emitter->Init();
     
     //auto derp_player = PoolProxy<AudioComponent>::New();
     //derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));

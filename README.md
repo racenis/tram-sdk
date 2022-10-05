@@ -59,9 +59,9 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- ~~Create a vector of VertexFormat vectors~~
 	- ~~Switch SpriteComponent initialization to use MakeVertexArray() function~~
 	- ~~Take out buffer index and also element index out of the RendeListObject~~
-	- ~~Add a GeometryBatch upload step to Render() function~~
+	- ~~Add a GeometryBatch upload step to Render() function~~ [cancelled]
 	- ~~Implement rendering layers~~
-	- ~~Switch GUI to using batched sprites for glyph rendering~~
+	- ~~Switch GUI to using batched sprites for glyph rendering~~ [cancelled]
 
 #### For versions later than next versions
 - AudioComponent
@@ -93,12 +93,12 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Async job system
 - Oof
 	- SpriteComponent
-		- Batching
+		- Batching [cancelled]
 	- ParticleComponent
-		- Batching together with sprites
+		- Batching together with sprites [cancelled]
 	- Sprite
 		- Loading frames from a file
-		- Alternate 
+		- Alternate [???]
 
 #### For very later versions
 - Vertex animation

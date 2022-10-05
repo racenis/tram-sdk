@@ -21,7 +21,7 @@ namespace Core {
         }
 
         void Init(){
-            is_ready = false; if(resources_waiting == 0) Start();
+            if(resources_waiting == 0) Start();
         }
 
         void Uninit();
@@ -48,7 +48,8 @@ namespace Core {
     protected:
         ResourceProxy<Render::Sprite> sprite;
     
-        Render::RenderListObject* robject = nullptr;
+        //Render::RenderListObject* robject = nullptr;
+        Render::DrawListEntryHandle draw_list_entry;
         
         glm::vec3 location;
         

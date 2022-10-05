@@ -16,6 +16,7 @@
     <File Name="src/audio.cpp"/>
     <File Name="src/audio.h"/>
     <VirtualDirectory Name="components">
+      <File Name="src/components/rendercomponent.cpp"/>
       <File Name="src/components/audiocomponent.h"/>
       <File Name="src/components/triggercomponent.h"/>
       <File Name="src/components/aicomponent.h"/>

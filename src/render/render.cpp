@@ -45,9 +45,6 @@ namespace Core::Render {
     Pool<RenderListObject> renderList("render list", 500, false);
     Pool<LightListObject> lightPool("lightpool", 100, true);
     Octree<uint32_t> lightTree;
-    
-    std::vector<GeometryBatch> GeometryBatch::geometry_batches;
-
 
 
     uint32_t colorlines_vertex_array = 0;
@@ -68,9 +65,6 @@ namespace Core::Render {
     std::vector<SpriteVertex> textvertices;
     std::vector<SpriteVertex> glyphvertices;
     
-    GeometryBatch* glyph_batch = nullptr;
-    
-
     void Init(){
         OpenGL::Init();
         
@@ -307,54 +301,4 @@ namespace Core::Render {
 }
 
 
-namespace Core {
-    using namespace Core::Render;
-    
-    void RenderComponent::Uninit(){
-        is_ready = true;
-        pose = nullptr;
-        
-        OpenGL::RemoveDrawListEntry(draw_list_entry);
-    };
-    
-    void RenderComponent::SetCellParams (bool isInteriorLight){
-        isInterior = isInteriorLight;
-        if (is_ready) {
-            if (isInteriorLight) {
-                OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
-            } else {
-                OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) & (~FLAG_INTERIOR_LIGHTING));
-            }
-        }
-    }
 
-    void RenderComponent::Start(){
-        if(is_ready) return;
-
-        draw_list_entry = OpenGL::InsertDrawListEntry(model.GetResource());
-        
-        if (lightmap.GetResource() != nullptr) OpenGL::SetLightmap(draw_list_entry, lightmap->GetTexture());
-        if (isInterior) OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
-        if (pose) OpenGL::SetPose(draw_list_entry, pose);
-        
-        is_ready = true;
-
-        UpdateRenderListObjs();
-
-        return;
-    }
-
-    void RenderComponent::UpdateRenderListObjs(){
-        if (!is_ready) return;
-
-        OpenGL::SetLocation(draw_list_entry, location);
-        OpenGL::SetRotation(draw_list_entry, rotation);
-        
-        uint32_t lights[4];
-        lightTree.FindNearest(lights, location.x, location.y, location.z);
-        OpenGL::SetLights(draw_list_entry, lights);
-        
-        OpenGL::SetPose(draw_list_entry, pose); // why is this being set every frame
-    }
-
-}

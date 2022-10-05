@@ -16,7 +16,7 @@ std::unordered_map<uint64_t, Sprite*> Sprite::List;
 
 // TODO: Implement batching with buckets.                                       | ok
 // Each bucket has a list of up to 16 sprites that use that bucket.             | added GeometryBatch to rendered.h
-// Every time a sprite is loaded, it finds itself a bucket that has a free slot
+// Every time a sprite is loaded, it finds itself a bucket that has a free slot | cancelled sprite batching
 // and adds itself to the bucket. Conversely, when the sprite is unloaded, it
 // removes itself from the slot.
 // Each sprite also holds an index into the list of buckets and an index into
@@ -38,7 +38,7 @@ Sprite* Sprite::Find(name_t name){
 
 void Sprite::LoadFromMemory() {
     assert(status == LOADED);
-    if (is_batched) GeometryBatch::Find(batch_index, batch, material, material->GetType(), Model::VertexFormat::SPRITE_VERTEX);
+    //if (is_batched) GeometryBatch::Find(batch_index, batch, material, material->GetType(), Model::VertexFormat::SPRITE_VERTEX);
     status = READY;
 }
 

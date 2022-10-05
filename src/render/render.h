@@ -325,7 +325,6 @@ namespace Core::Render {
         std::vector<unsigned int> groups;
     };
 
-    struct GeometryBatch;
     class Sprite : public Resource {
     public:
         struct Frame {
@@ -341,17 +340,12 @@ namespace Core::Render {
     protected:
         Material* material;
         
-        bool is_batched = false;
-        GeometryBatch* batch = nullptr;
-        uint32_t batch_index = 0;
-        
         static std::unordered_map<name_t, Sprite*> List;
     public:
         Sprite (){}
         Sprite(uint64_t name) : Resource(name) {}
         inline Material* GetMaterial () const { return material; }
         inline void SetMaterial (Material* mat) { material = mat; }
-        inline void SetBatched (bool is_batched) { this->is_batched = is_batched; }
         bool Load(){
             LoadFromDisk();
             LoadFromMemory();

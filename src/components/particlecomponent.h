@@ -56,7 +56,8 @@ namespace Core {
         
         ResourceProxy<Render::Sprite> sprite;
     
-        Render::RenderListObject* robject = nullptr;
+        //Render::RenderListObject* robject = nullptr;
+        Render::DrawListEntryHandle draw_list_entry;
         
         glm::vec3 location;
         

@@ -18,43 +18,29 @@ namespace Core {
 
         inline name_t GetLightmap(){ return (lightmap.GetResource() == nullptr) ? 0 : lightmap->GetName();};
 
-        void SetModel(uint64_t name){
-            model.SetResource(Render::Model::Find(name));
-        };
+        void SetModel(uint64_t name);
 
-        void SetLightmap(uint64_t name){
-            lightmap.SetResource(Render::Material::Find(name));
-        };
+        void SetLightmap(uint64_t name);
 
-        void SetPose(Render::PoseListObject* newPose){
-            pose = newPose == nullptr ? Render::poseList.begin().ptr : newPose;
-        };
+        void SetPose(Render::PoseListObject* newPose);
 
-        void Init(){
-            is_ready = false; if(resources_waiting == 0) Start();
-        };
+        void Init();
 
         void Uninit();
 
         void Start();
 
-        void UpdateRenderListObjs();
+        void UpdateLocation(glm::vec3 nlocation);
 
-        void UpdateLocation(glm::vec3 nlocation){
-            location = nlocation;
-            UpdateRenderListObjs();
-        }
-
-        void UpdateRotation(glm::quat nrotation){
-            rotation = nrotation;
-            UpdateRenderListObjs();
-        }
+        void UpdateRotation(glm::quat nrotation);
 
         void SetCellParams (bool isInteriorLight);
 
         void EventHandler(Event &event){return;}
 
     protected:
+        void InsertDrawListEntry();
+    
         ResourceProxy<Render::Model> model;
         ResourceProxy<Render::Material> lightmap;
 

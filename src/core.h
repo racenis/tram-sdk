@@ -397,6 +397,7 @@ namespace Core {
         }
         T* GetResource() { return (T*)resource; }
         T* operator->() { return (T*)resource; }
+        explicit operator bool() { return resource != nullptr; }
         // where's the destructor?
     protected:
         EntityComponent* parent;
