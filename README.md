@@ -10,35 +10,30 @@ Software library and tools for making the Tramway Drifting and Dungeon Explorati
 
 ![Software Development Kit logo](/docs/screen11.png)
 
+### How finished is it?
+
+It's usable, but the programming interfaces aren't very stable. User experience also is very lacking.
+
+### Links
+
 More information and also screenshots can be found on the [github.io page](https://racenis.github.io/tram-sdk/). 
 
 Instruction manual and other documentations [can be found here](https://racenis.github.io/tram-sdk/manual/). 
 
 ## To-do list
 
-#### For version 0.0.1
-- ~~Refactor LightComponent.h~~ oops, forgot
-- ~~Re-check documentation~~
+#### Small fixes
+- Finishing the abstract rendering interface
+	- Change uint32_t for handles and everything to a typedef!!
+- Rename PoseListObject to Pose
+- Yeet opengl_loader.cpp
+- Move armaturecomponent implementation from armature.cpp to armaturecomponent.cpp
 
 #### For next versions
 - AnimationComponent
-	- ~~Make the code more readable~~
-	- ~~Blend weights~~
-	- ~~Different speeds~~
-	- ~~Pause/resume~~
-		- ~~Pausing on the last frame~~
-	- ~~Fade in/out~~
-	- Events on animations finishing/looping
-	- ~~Other keyframe interpolation options~~
+	- Events/callbacks on animations finishing/looping
 - ControllerComponent
-	- ~~Remember actions between frames~~
 	- Configurable transitions between animations
-- ~~Add an AudioComponent~~
-	- ~~Pause/resume~~
-	- ~~Sounds larger than 32KB~~
-- ~~SpriteComponent~~
-	- ~~Better system of defining frames~~
-	- ~~Multiple frame lists per sprite~~ canceled
 - ParticleComponent
 	- I have no idea where I am going with it
 	- Maybe add callbacks for processing the particle behaviour
@@ -53,15 +48,11 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Rename 'PoolAddOnly' to 'StackPool'
 	- Add a PODPool
 	- Add iterators to stacks
+- Think of additional widgets
+- Switch to using sprites for defining fonts
 - Fix the mongus entity
 - Add LIGMAScript
-- ~~OpenGL renderer~~
-	- ~~Create a vector of VertexFormat vectors~~
-	- ~~Switch SpriteComponent initialization to use MakeVertexArray() function~~
-	- ~~Take out buffer index and also element index out of the RendeListObject~~
-	- ~~Add a GeometryBatch upload step to Render() function~~ [cancelled]
-	- ~~Implement rendering layers~~
-	- ~~Switch GUI to using batched sprites for glyph rendering~~ [cancelled]
+
 
 #### For versions later than next versions
 - AudioComponent
@@ -92,43 +83,20 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- AI
 - Async job system
 - Oof
-	- SpriteComponent
-		- Batching [cancelled]
-	- ParticleComponent
-		- Batching together with sprites [cancelled]
 	- Sprite
 		- Loading frames from a file
 		- Alternate [???]
+- Split animation into animation and StreamableAnimation
+	- All of Animations share the same keyframe pool (more efficient)
+	- Animations that need to be streamed in and later removed have their own pools (StreamableAnimation)
 
 #### For very later versions
 - Vertex animation
 - 3D text component
 - Tilemaps
 
-#### For previouse versions
- - ~~fix the animations~~
-	- ~~add bone roll to the dynamic model exporter~~
-	- ~~add bone roll to the bone definition~~
-	- ~~add bone roll to the model importer~~
-		- ~~fix up old dynamic models~~
-	- ~~replace the bone space matrix calculation~~
-	- ~~re-export mongus and his animations and test them~~
- - ~~new immediate mode gui system~~
-	- ~~add non-msdf gui material~~
-	- ~~add frame stack~~
-	- ~~add a clipping glyph setter~~
-	- ~~add scrolling frames~~
-	- ~~add texts~~
-	- ~~add buttons~~
-	- ~~add dropdown selections~~
-	- ~~add text boxes~~
- - ~~advanced rendering effects~~
-	- ~~particles~~
-	- ~~sprites~~
- - ~~make the level editor~~
-	- ~~make the ui~~
-	- ~~integrate it with engine~~
-	- ~~make tools~~
-		- ~~bezier path tool~~
-		- ~~level transition tool~~
-		- ~~navmesh tool~~
+### Important questions that need answering
+- Can you change the sun color/direction and ambient color?
+- Can you change the color that is used to clear the screen?
+- Can you define your own fonts?
+- Can you define your own GUI skins?

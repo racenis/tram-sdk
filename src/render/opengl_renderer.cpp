@@ -12,6 +12,8 @@
 #include <gui.h>
 
 namespace Core::Render::OpenGL {
+    Pool<DrawListEntry> draw_list("render list", 500, false);
+    
     struct ShaderUniformMatrices {
         glm::mat4 projection;       /// Projection matrix.
         glm::mat4 view;             /// View matrix.
@@ -112,12 +114,14 @@ namespace Core::Render::OpenGL {
 
         static uint32_t layer; layer = 0;
 
-        static std::vector<std::pair<uint64_t, RenderListObject*>> rvec;
+        static std::vector<std::pair<uint64_t, DrawListEntry*>> rvec;
 
         rvec.clear();
 
-        RenderListObject* robj = renderList.GetFirst();
-        RenderListObject* rlast = renderList.GetLast();
+
+        // TODO: change this to using iterators
+        DrawListEntry* robj = draw_list.GetFirst();
+        DrawListEntry* rlast = draw_list.GetLast();
 
         Stats::Start(Stats::RENDER);
         for(;robj < rlast; robj++){
@@ -125,13 +129,13 @@ namespace Core::Render::OpenGL {
 
             // TODO: do view culling in here
 
-            rvec.push_back(std::pair<uint64_t, RenderListObject*>(robj->CalcSortKey(CAMERA_POSITION), robj));
+            rvec.push_back(std::pair<uint64_t, DrawListEntry*>(robj->CalcSortKey(CAMERA_POSITION), robj));
         }
 
         sort(rvec.begin(), rvec.end());
 
-        for (std::pair<uint64_t, RenderListObject*>& pp : rvec){
-            RenderListObject* robj = pp.second;
+        for (std::pair<uint64_t, DrawListEntry*>& pp : rvec){
+            DrawListEntry* robj = pp.second;
             
             #ifndef ENGINE_EDITOR_MODE
             if (DRAW_RENDER_DEBUG) {
@@ -150,8 +154,6 @@ namespace Core::Render::OpenGL {
 
             if(robj->pose != nullptr){
                 UploadUniformBuffer(bone_uniform_buffer, sizeof(PoseListObject), glm::value_ptr(robj->pose->pose[0]));
-                //boneUniform.data = glm::value_ptr(robj->pose->pose[0]);
-                //boneUniform.Upload();
             }
 
 
@@ -167,7 +169,6 @@ namespace Core::Render::OpenGL {
             }
 
             modelMatrices.model = model;
-            //modelMatricesUniform.Upload();
             UploadUniformBuffer(model_matrix_uniform_buffer, sizeof(ShaderUniformModelMatrices), &modelMatrices);
 
 
@@ -206,7 +207,7 @@ namespace Core::Render::OpenGL {
     }
     
     DrawListEntryHandle InsertDrawListEntry() {
-        return DrawListEntryHandle { .draw_list_entries = { renderList.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
+        return DrawListEntryHandle { .draw_list_entries = { draw_list.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
     }
     
     DrawListEntryHandle InsertDrawListEntry(Model* model) {
@@ -216,7 +217,7 @@ namespace Core::Render::OpenGL {
         DrawListEntryHandle entries;
         
         for (size_t i = 0; i < model->element_ranges.size(); i++) {
-            RenderListObject* entry = Render::renderList.AddNew();
+            DrawListEntry* entry = draw_list.AddNew();
             
             entry->vao = model->vertex_array_handle;
             entry->shader = FindShader(model->vertex_format, model->element_ranges[i].material_type);
@@ -237,71 +238,71 @@ namespace Core::Render::OpenGL {
     
     void RemoveDrawListEntry(DrawListEntryHandle entry) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
-            renderList.Remove((RenderListObject*)entry.draw_list_entries[i]);
+            draw_list.Remove((DrawListEntry*)entry.draw_list_entries[i]);
         }
     }
     
     uint32_t GetFlags(DrawListEntryHandle entry) {
         assert(entry.draw_list_entries[0]);
-        return ((RenderListObject*)entry.draw_list_entries[0])->flags;
+        return ((DrawListEntry*)entry.draw_list_entries[0])->flags;
     }
     
     void SetFlags(DrawListEntryHandle entry, uint32_t flags) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
-            ((RenderListObject*)entry.draw_list_entries[i])->flags = flags;
+            ((DrawListEntry*)entry.draw_list_entries[i])->flags = flags;
         }
     }
     
     void SetPose(DrawListEntryHandle entry, PoseListObject* pose) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
-            ((RenderListObject*)entry.draw_list_entries[i])->pose = pose;
+            ((DrawListEntry*)entry.draw_list_entries[i])->pose = pose;
         }
     }
     
     void SetLightmap(DrawListEntryHandle entry, uint32_t lightmap) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
-            ((RenderListObject*)entry.draw_list_entries[i])->lightmap = lightmap;
+            ((DrawListEntry*)entry.draw_list_entries[i])->lightmap = lightmap;
         }
     }
     
     void SetLights(DrawListEntryHandle entry, uint32_t* lights) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             for (size_t k = 0; k < 4; k++) {
-                ((RenderListObject*)entry.draw_list_entries[i])->lights[k] = lights[k];
+                ((DrawListEntry*)entry.draw_list_entries[i])->lights[k] = lights[k];
             }
         }
     }
     
     void SetLocation(DrawListEntryHandle entry, glm::vec3& location) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
-            ((RenderListObject*)entry.draw_list_entries[i])->location = location;
+            ((DrawListEntry*)entry.draw_list_entries[i])->location = location;
         }
     }
     
     void SetRotation(DrawListEntryHandle entry, glm::quat& rotation) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
-            ((RenderListObject*)entry.draw_list_entries[i])->rotation = rotation;
+            ((DrawListEntry*)entry.draw_list_entries[i])->rotation = rotation;
         }
     }
     
     void SetDrawListVertexArray(DrawListEntryHandle entry, uint32_t vertex_array_handle) {
-        ((RenderListObject*)entry.draw_list_entries[0])->vao = vertex_array_handle;
+        ((DrawListEntry*)entry.draw_list_entries[0])->vao = vertex_array_handle;
     }
     
     void SetDrawListElements(DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length) {
-        ((RenderListObject*)entry.draw_list_entries[0])->eboOff = element_offset;
-        ((RenderListObject*)entry.draw_list_entries[0])->eboLen = element_length;
+        ((DrawListEntry*)entry.draw_list_entries[0])->eboOff = element_offset;
+        ((DrawListEntry*)entry.draw_list_entries[0])->eboLen = element_length;
     }
     
     void SetDrawListShader(DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type) {
-        ((RenderListObject*)entry.draw_list_entries[0])->shader = FindShader(vertex_format, material_type);
+        ((DrawListEntry*)entry.draw_list_entries[0])->shader = FindShader(vertex_format, material_type);
     }
     
     void SetDrawListTextures(DrawListEntryHandle entry, size_t texture_count, uint32_t* textures) {
         for (size_t i = 0; i < texture_count; i++) {
-            ((RenderListObject*)entry.draw_list_entries[0])->textures[i] = textures[i];
+            ((DrawListEntry*)entry.draw_list_entries[0])->textures[i] = textures[i];
         }
-        ((RenderListObject*)entry.draw_list_entries[0])->texCount = texture_count;
+        ((DrawListEntry*)entry.draw_list_entries[0])->texCount = texture_count;
     }
     
     uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
@@ -411,298 +412,3 @@ namespace Core::Render::OpenGL {
         result.y = Render::SCREEN_HEIGHT - result.y;
     }
 
-namespace Core {
-    using namespace Core::Render::OpenGL;
-    using namespace Core::Render;
-    
-    void SpriteComponent::Uninit(){
-        is_ready = false;
-        //Render::renderList.Remove(robject);
-        OpenGL::RemoveDrawListEntry(draw_list_entry);
-    };
-
-    void SpriteComponent::Start(){
-        assert(!is_ready);
-
-        //robject = Render::renderList.AddNew();
-        
-        CreateVertexArray(SPRITE_VERTEX_DEFINITION, vertex_buffer, vertex_array);
-        
-        auto texture_handle = sprite->GetMaterial()->GetTexture();
-        
-        draw_list_entry = OpenGL::InsertDrawListEntry();
-        OpenGL::SetDrawListVertexArray(draw_list_entry, vertex_array);
-        OpenGL::SetDrawListElements(draw_list_entry, 0, 6);
-        OpenGL::SetFlags(draw_list_entry, FLAG_RENDER);
-        OpenGL::SetDrawListTextures(draw_list_entry, 1, &texture_handle);
-        OpenGL::SetDrawListShader(draw_list_entry, Model::SPRITE_VERTEX, Material::TEXTURE_ALPHA);
-        //robject->vao = vertex_array;
-        //robject->flags = Render::FLAG_RENDER;
-        //robject->eboLen = 6;
-        //robject->eboOff = 0;
-        //robject->texCount = 1;
-        //robject->textures[0] = sprite->GetMaterial()->GetTexture();
-        //robject->shader = FindShader(Render::Model::SPRITE_VERTEX, Render::Material::TEXTURE_ALPHA);
-        
-        is_ready = true;
-        UpdateRenderListObject();
-    }
-    
-    void SpriteComponent::Update(){
-        if (!is_ready) return;
-        
-        if (anim_isplaying) {
-            UpdateRenderListObject();
-        
-            if (!(anim_bframe < anim_speed)) {
-                anim_bframe = 0;
-                anim_frame++;
-                if (!(anim_frame < sprite->frames.size())) anim_frame = 0;
-            }
-            anim_bframe++;
-        }
-    }
-
-    void SpriteComponent::UpdateRenderListObject(){
-        if (!is_ready) return;
-
-        // maybe cache these values, instead of re-calculating them for each frame?
-        float tex_width = (float)sprite->frames[anim_frame].width / (float)sprite->GetMaterial()->GetWidth();//sprite->width;
-        float tex_height = (float)sprite->frames[anim_frame].height / (float)sprite->GetMaterial()->GetHeight(); //sprite->height;
-        float tex_w_off = (float)sprite->frames[anim_frame].offset_x / (float)sprite->GetMaterial()->GetWidth();//(float)(anim_frame % sprite->frames_w) * tex_width;
-        float tex_h_off = (float)sprite->frames[anim_frame].offset_y / (float)sprite->GetMaterial()->GetHeight();//(float)(anim_frame / sprite->frames_w) * tex_height;
-        float half_width = tex_width * sprite->frames[anim_frame].scale / 2.0f;
-        float half_height = tex_height * sprite->frames[anim_frame].scale / 2.0f;
-
-        Render::SpriteVertex top_left {
-            .co = glm::vec3(0.0f, 0.0f, 0.0f),
-            .voffset = glm::vec2 (-half_width, half_height),
-            .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
-            .verticality = 1.0f,
-            .texture = 0
-        };
-        
-        Render::SpriteVertex top_right {
-            .co = glm::vec3(0.0f, 0.0f, 0.0f),
-            .voffset = glm::vec2 (half_width, half_height),
-            .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
-            .verticality = 1.0f,
-            .texture = 0
-        };
-        
-        Render::SpriteVertex bottom_left {
-            .co = glm::vec3(0.0f, 0.0f, 0.0f),
-            .voffset = glm::vec2 (-half_width, -half_height),
-            .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
-            .verticality = 1.0f,
-            .texture = 0
-        };
-        
-        Render::SpriteVertex bottom_right {
-            .co = glm::vec3(0.0f, 0.0f, 0.0f),
-            .voffset = glm::vec2 (half_width, -half_height),
-            .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
-            .verticality = 1.0f,
-            .texture = 0
-        };
-
-        std::vector<Render::SpriteVertex> vertices;
-        
-        vertices.push_back(top_left);
-        vertices.push_back(bottom_left);
-        vertices.push_back(top_right);
-        vertices.push_back(top_right);
-        vertices.push_back(bottom_left);
-        vertices.push_back(bottom_right);
-
-        //glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
-        OpenGL::UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
-        
-        OpenGL::SetLocation(draw_list_entry, location);
-        //robject->location = location;
-        //robject->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-    }
-    
-            
-    void SpriteComponent::Play() {
-        anim_isplaying = true;
-    }
-    
-    void SpriteComponent::Pause() {
-        anim_isplaying = true;
-    }
-    
-    void SpriteComponent::SetPlaySpeed(size_t speed) {
-        anim_speed = speed;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    void ParticleComponent::Uninit(){
-        is_ready = true;
-
-        //Render::renderList.Remove(robject);
-        OpenGL::RemoveDrawListEntry(draw_list_entry);
-    };
-
-    void ParticleComponent::Start(){
-        if(is_ready) return;
-
-
-        //robject = Render::renderList.AddNew();
-
-
-        CreateVertexArray(SPRITE_VERTEX_DEFINITION, vertex_buffer, vertex_array);
-        //auto vert_array = MakeVertexArray(vertex_formats[Model::SPRITE_VERTEX], 6, true);
-        
-        //vertex_array = vert_array.array_handle;
-        //vertex_buffer = vert_array.buffer_handle;
-        
-        //robject->vao = vertex_array;
-        
-        auto texture_handle = sprite->GetMaterial()->GetTexture();
-        
-        draw_list_entry = OpenGL::InsertDrawListEntry();
-        OpenGL::SetDrawListVertexArray(draw_list_entry, vertex_array);
-        OpenGL::SetDrawListElements(draw_list_entry, 0, 6);
-        OpenGL::SetFlags(draw_list_entry, FLAG_RENDER);
-        OpenGL::SetDrawListTextures(draw_list_entry, 1, &texture_handle);
-        OpenGL::SetDrawListShader(draw_list_entry, Model::SPRITE_VERTEX, Material::TEXTURE_ALPHA);
-        
-        //robject->flags = Render::FLAG_RENDER;
-        //robject->lightmap = 0;
-        //robject->ebo = 0;
-        //robject->eboLen = 6;
-        //robject->eboOff = 0;
-        //robject->texCount = 1;
-        //robject->textures[0] = sprite->GetMaterial()->GetTexture();
-        //robject->lights[0] = 0;
-        //robject->lights[1] = 0;
-        //robject->lights[2] = 0;
-        //robject->lights[3] = 0;
-       // robject->shader = FindShader(Render::Model::SPRITE_VERTEX, Render::Material::TEXTURE_ALPHA);
-        
-        is_ready = true;
-        UpdateRenderListObject();
-    }
-    
-    void ParticleComponent::Update(){
-        if (!is_ready) return;
-        
-        for (auto it = particles.begin(); it < particles.end();) {
-            it->velocity += gravity;
-            it->coords += it->velocity;
-            it->age++;
-            
-            if (it->age > particle_max_age) {
-                it = particles.erase(it);
-            } else {
-                it++;
-            }
-        }
-        
-        glm::vec3 random_vec;
-        static int tick = 0;
-        tick++; srand(tick*6217);
-        random_vec.x = 0.5f - ((float)rand()/(float)RAND_MAX);
-        tick++; srand(tick*6217);
-        random_vec.y = 0.5f - ((float)rand()/(float)RAND_MAX);
-        tick++; srand(tick*6217);
-        random_vec.z = 0.5f - ((float)rand()/(float)RAND_MAX);
-        
-        glm::vec3 velocity = initial_velocity + (random_vec*initial_velocity_randomness);
-        particles.push_back(Particle {velocity, velocity, 0});
-        
-        //std::cout << random_vec.x << "\t" << random_vec.y << "\t" << random_vec.z << std::endl;
-        //std::cout << "particles: " << particles.size() << std::endl;
-        
-        UpdateRenderListObject();
-    }
-
-    void ParticleComponent::UpdateRenderListObject(){
-        if (!is_ready) return;
-        
-        float tex_width = sprite->frames.front().width / (float)sprite->GetMaterial()->GetWidth();
-        float tex_height = sprite->frames.front().height / (float)sprite->GetMaterial()->GetHeight();
-        float tex_w_off = sprite->frames.front().offset_x / (float)sprite->GetMaterial()->GetWidth();
-        float tex_h_off = sprite->frames.front().offset_y / (float)sprite->GetMaterial()->GetHeight();
-        float half_width = tex_width * sprite->frames.front().scale / 2.0f;
-        float half_height = tex_height * sprite->frames.front().scale / 2.0f;
-
-        std::vector<Render::SpriteVertex> vertices;
-
-        for (auto particle : particles) {
-            Render::SpriteVertex top_left {
-                //.co = glm::vec3(0.0f, 0.0f, 0.0f),
-                .co = particle.coords,
-                .voffset = glm::vec2 (-half_width, half_height),
-                .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
-                .verticality = 1.0f,
-                .texture = 0
-            };
-            
-            Render::SpriteVertex top_right {
-                //.co = glm::vec3(0.0f, 0.0f, 0.0f),
-                .co = particle.coords,
-                .voffset = glm::vec2 (half_width, half_height),
-                .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
-                .verticality = 1.0f,
-                .texture = 0
-            };
-            
-            Render::SpriteVertex bottom_left {
-                //.co = glm::vec3(0.0f, 0.0f, 0.0f),
-                .co = particle.coords,
-                .voffset = glm::vec2 (-half_width, -half_height),
-                .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
-                .verticality = 1.0f,
-                .texture = 0
-            };
-            
-            Render::SpriteVertex bottom_right {
-                //.co = glm::vec3(0.0f, 0.0f, 0.0f),
-                .co = particle.coords,
-                .voffset = glm::vec2 (half_width, -half_height),
-                .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
-                .verticality = 1.0f,
-                .texture = 0
-            };
-
-            vertices.push_back(top_left);
-            vertices.push_back(bottom_left);
-            vertices.push_back(top_right);
-            vertices.push_back(top_right);
-            vertices.push_back(bottom_left);
-            vertices.push_back(bottom_right);
-        }
-        
-
-        //glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(Render::SpriteVertex)*vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
-        
-        //robject->eboLen = 6 * vertices.size();
-        
-        OpenGL::UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
-        OpenGL::SetDrawListElements(draw_list_entry, 0, /*6 * */vertices.size());
-        
-        
-        OpenGL::SetLocation(draw_list_entry, location);
-        
-        //robject->location = location;
-        //robject->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-    }
-}

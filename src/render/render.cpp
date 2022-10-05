@@ -42,7 +42,6 @@ namespace Core::Render {
     float time_of_day = 0.8f;
 
 
-    Pool<RenderListObject> renderList("render list", 500, false);
     Pool<LightListObject> lightPool("lightpool", 100, true);
     Octree<uint32_t> lightTree;
 
@@ -83,14 +82,6 @@ namespace Core::Render {
         GLYPH_TEXT.Load();
         GLYPH_TEXT_BOLD.Load();
         GLYPH_HEADERS.Load();
-        
-        // i literally don't remember what is going on in here with the "batches"
-        /*uint32_t throwaway;
-        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_GUI, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
-        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_TEXT, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
-        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_TEXT_BOLD, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
-        GeometryBatch::Find(throwaway, glyph_batch, &GLYPH_HEADERS, Material::TEXTURE_GLYPH, Model::SPRITE_VERTEX);
-        glyph_batch->render_object->flags = glyph_batch->render_object->flags | FLAG_NO_DEPTH_TEST;*/
         
         // this is pain in my assholes
         
@@ -144,159 +135,6 @@ namespace Core::Render {
         SCREEN_WIDTH = width;
         SCREEN_HEIGHT = height;
         OpenGL::ScreenSize(width, height);
-    }
-    
-    void RenderListObject::FillFromModel(Model* mdl, uint32_t eboIndex){
-        //vbo = mdl->vbo;
-        //ebo = mdl->ebo;
-        vao = mdl->vertex_array_handle;
-        eboLen = mdl->element_ranges[eboIndex].element_length;
-        eboOff = mdl->element_ranges[eboIndex].element_offset;
-        shader = OpenGL::FindShader(mdl->vertex_format, (Material::Type)mdl->element_ranges[eboIndex].material_type);
-        texCount = mdl->materials.size();
-        for (uint32_t i = 0; i < texCount; i++){
-            textures[i] = mdl->materials[i]->GetTexture();
-        }
-        
-        std::cout << std::endl;
-        std::cout << "model : " << ReverseUID(mdl->GetName()) << std::endl;
-        std::cout << "eboIndex : " << eboIndex << std::endl;
-        std::cout << "vao : " << vao << std::endl;
-        std::cout << "eboLen : " << eboLen << std::endl;
-        std::cout << "eboOff : " << eboOff << std::endl;
-        std::cout << "shader : " << shader << std::endl;
-        std::cout << "texCount : " << texCount << std::endl;
-
-        flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
-    };
-    
-    void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color){
-        LineVertex vert;
-
-        vert.co[0] = from[0];
-        vert.co[1] = from[1];
-        vert.co[2] = from[2];
-        vert.color[0] = color[0];
-        vert.color[1] = color[1];
-        vert.color[2] = color[2];
-
-        colorlines.push_back(vert);
-
-        vert.co[0] = to[0];
-        vert.co[1] = to[1];
-        vert.co[2] = to[2];
-        vert.color[0] = color[0];
-        vert.color[1] = color[1];
-        vert.color[2] = color[2];
-
-        colorlines.push_back(vert);
-    }
-    
-    void SetGlyph(float x, float y, float tex_x, float tex_y, float width, float height, float scale_x, float scale_y, float thickness, uint32_t texture, const glm::vec3& color){
-        SpriteVertex tleft;   // top left
-        SpriteVertex tright;  // top right
-        SpriteVertex bleft;   // bottom left
-        SpriteVertex bright;  // bottom right
-
-        thickness = thickness - 1.0f;
-
-        glm::vec2 scale;
-        scale.x = scale_x * 2;
-        scale.y = scale_y * 2;
-
-        tleft.co.x = x;
-        tleft.co.y = y;
-        tleft.texco.x = tex_x;
-        tleft.texco.y = tex_y;
-
-        tright.co.x = x + width * scale_x;
-        tright.co.y = y;
-        tright.texco.x = tex_x + width;
-        tright.texco.y = tex_y;
-
-        bleft.co.x = x;
-        bleft.co.y = y + height * scale_y;
-        bleft.texco.x = tex_x;
-        bleft.texco.y = tex_y + height;
-
-        bright.co.x = x + width * scale_x;
-        bright.co.y = y + height * scale_y;
-        bright.texco.x = tex_x + width;
-        bright.texco.y = tex_y + height;
-
-        tleft.color = color;
-        tleft.voffset = scale;
-        tleft.texture = texture;
-        tleft.verticality = thickness;
-        tright.color = color;
-        tright.voffset = scale;
-        tright.texture = texture;
-        tright.verticality = thickness;
-        bleft.color = color;
-        bleft.voffset = scale;
-        bleft.texture = texture;
-        bleft.verticality = thickness;
-        bright.color = color;
-        bright.voffset = scale;
-        bright.texture = texture;
-        bright.verticality = thickness;
-
-        textvertices.push_back(bleft);
-        textvertices.push_back(bright);
-        textvertices.push_back(tleft);
-        textvertices.push_back(bright);
-        textvertices.push_back(tright);
-        textvertices.push_back(tleft);
-    }
-    
-    void SetGlyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex){
-        SpriteVertex tleft;   // top left
-        SpriteVertex tright;  // top right
-        SpriteVertex bleft;   // bottom left
-        SpriteVertex bright;  // bottom right
-
-        tleft.co.x = x;
-        tleft.co.y = y;
-        tleft.texco.x = tex_x;
-        tleft.texco.y = tex_y;
-        
-        tright.co.x = x + w;
-        tright.co.y = y;
-        tright.texco.x = tex_x + tex_w;
-        tright.texco.y = tex_y;
-        
-        bleft.co.x = x;
-        bleft.co.y = y + h;
-        bleft.texco.x = tex_x;
-        bleft.texco.y = tex_y + tex_h;
-        
-        bright.co.x = x + w;
-        bright.co.y = y + h;
-        bright.texco.x = tex_x + tex_w;
-        bright.texco.y = tex_y + tex_h;
-        
-        tleft.color = color;
-        tleft.texture = tex;
-        tright.color = color;
-        tright.texture = tex;
-        bleft.color = color;
-        bleft.texture = tex;
-        bright.color = color;
-        bright.texture = tex;
-
-        glyphvertices.push_back(bleft);
-        glyphvertices.push_back(bright);
-        glyphvertices.push_back(tleft);
-        glyphvertices.push_back(bright);
-        glyphvertices.push_back(tright);
-        glyphvertices.push_back(tleft);
-        
-        //glyph_batch->sprite_vector->push_back(bleft);
-        //glyph_batch->sprite_vector->push_back(bright);
-        //glyph_batch->sprite_vector->push_back(tleft);
-        //glyph_batch->sprite_vector->push_back(bright);
-        //glyph_batch->sprite_vector->push_back(tright);
-        //glyph_batch->sprite_vector->push_back(tleft);
     }
 }
 

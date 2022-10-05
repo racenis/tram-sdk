@@ -7,7 +7,11 @@
 #ifndef LIGHTCOMPONENT_H
 #define LIGHTCOMPONENT_H
 
-#include <render/render.h>
+#include <render/renderer.h>
+
+// TODO:
+// - put the lights behind an abstraction? maybe? in the renderer.h?
+// - move the implementations of methods into a seperate lightcomponent.cpp file
 
 namespace Core {
   class LightComponent : public EntityComponent {
