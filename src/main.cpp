@@ -97,6 +97,8 @@ int main() {
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
     monguser_armature->SetModel(UID("mongus"));
     monguser_armature->Init();
+    monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 2.0f);
+    monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << ReverseUID(name) << " IS FINISH!" << std::endl; });
 
     // link the mongus model and his animation player
     monguser->SetPose(monguser_armature->GetPosePtr());
@@ -168,7 +170,7 @@ int main() {
         Async::FinishResource();
 
         if(tick == 100){
-            monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 1.0f);
+            
             //derp_player->Play();
         }
         

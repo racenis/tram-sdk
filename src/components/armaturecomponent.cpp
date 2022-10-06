@@ -9,7 +9,8 @@ namespace Core {
     template <> Pool<ArmatureComponent> PoolProxy<ArmatureComponent>::pool("armature component pool", 50, false);
     
     void ArmatureComponent::Init(){
-        // why is there no 'is_ready' stuff in here?
+        assert(!is_ready);
+        
         poseobj = Render::poseList.AddNew();
 
         for (size_t i = 0; i < Render::BONE_COUNT; i++) poseobj->pose[i] = glm::mat4(1.0f);
@@ -18,6 +19,7 @@ namespace Core {
     };
         
     void ArmatureComponent::Uninit(){
+        assert(is_ready);
         assert(poseobj);
         Render::poseList.Remove(poseobj);
         poseobj = nullptr;
@@ -25,6 +27,7 @@ namespace Core {
     };
     
     void ArmatureComponent::Start(){
+        assert(!is_ready);
         // it's probably not necessary to cache this, but whatever
         armature_bone_count = model->GetArmatureSize();
         armature_bones = model->GetArmature();
@@ -33,6 +36,8 @@ namespace Core {
         for (size_t i = 0; i < armature_bone_count; i++) {
             armature_bone_parents[i] = armature_bones[i].parentIndex;
         }
+        
+        for (size_t i = 0; i < ANIM_COUNT; i++) if (anim_playing[i]) FindKeyframePointers(i);
 
         is_ready = true;
     }
@@ -68,6 +73,7 @@ namespace Core {
         anim_info[slot].weight = weight; 
         anim_info[slot].speed = speed; 
         anim_info[slot].interpolate = interpolate; 
+        anim_info[slot].fade_ammount = 1.0f;
         anim_info[slot].pause = false; 
         anim_info[slot].fade_in = false; 
         anim_info[slot].fade_out = false; 
@@ -83,7 +89,14 @@ namespace Core {
             anim_playing[slot] = 0;
             return;
         }
-
+        
+        if (is_ready) {
+            FindKeyframePointers(slot);
+        }
+    }
+    
+    void ArmatureComponent::FindKeyframePointers(size_t animation_index) {
+        const auto& slot = animation_index;
         size_t anim_bone_count = anim_info[slot].animation_header->second;
         
         Render::NameCount* keyframe_header = anim_info[slot].animation_header + 1;
@@ -105,7 +118,7 @@ namespace Core {
 
             // skip over all of the keyframes and get to the next header
             keyframe_header = (Render::NameCount*)(((Render::Keyframe*)(keyframe_header + 1)) + keyframe_header->second);
-        }        
+        }
     }
     
     void ArmatureComponent::StopAnimation(name_t animation_name){
@@ -113,6 +126,8 @@ namespace Core {
             if(anim_playing[i] == animation_name){
                 anim_playing[i] = 0;
                 // TODO: reset all of the keyframe pointers
+                
+                if (anim_finish_callback) anim_finish_callback(this, animation_name);
                 return;
             }
         }
@@ -158,22 +173,66 @@ namespace Core {
     }
     
     void ArmatureComponent::Update(){
+        if (!is_ready) return;
         Render::Keyframe anim_mixed[BONE_COUNT];
         for (uint64_t i = 0; i < armature_bone_count; i++) anim_mixed[i] = base_pose[i];
+        
+        // increment animations' frames and check if they have stopped/repeated
+        for (size_t i = 0; i < ANIM_COUNT; i++) {
+            if(anim_playing[i] == 0) continue;
+            
+            // increase the frames of the animation
+            auto& anim = anim_info[i];
+            float frames_since_update = (FRAME_TIME - last_update) * 24.0f;
+            if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
+            
+            // find the first keyframe header
+            for (size_t k = 0; k < armature_bone_count; k++){
+                Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
+                if (keyframe_header == nullptr) continue;
+                
+                Render::Keyframe* keyframes = (Render::Keyframe*)(keyframe_header + 1);
+                size_t keyframe_count = keyframe_header->second;
+                
+                // if playback's current frame is after the last frame of the animation
+                if (anim.frame > keyframes[keyframe_count-1].frame) {
+                    if (anim.pause_on_last_frame && anim.repeats == 1) {
+                        anim.frame = keyframes[keyframe_count-1].frame - 0.1f;
+                        anim.pause = true;
+                    } else {
+                        anim.repeats--;
+                        anim.frame = 0.0f;
+                        
+                        if (anim.repeats == 0) {
+                            StopAnimation(anim.animation_header->first);
+                            continue;
+                        }
+                    }
+                }
+                
+                if (anim.fade_in) {
+                    anim.fade_ammount += frames_since_update * anim.fade_speed;
+                    if (anim.fade_ammount > 1.0f) anim.fade_in = false;
+                } else if (anim.fade_out) {
+                    anim.fade_ammount -= frames_since_update * anim.fade_speed;
+                    if (anim.fade_ammount < 0.0f) StopAnimation(anim.animation_header->first);
+                }
+            }
+        }
+        
         
         // mix together keyframes
         for (size_t i = 0; i < ANIM_COUNT; i++){
             if(anim_playing[i] == 0) continue;
             
-            auto& anim = anim_info[i];
-            float frames_since_update = (FRAME_TIME - last_update) * 24.0f;
-            if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
+
             
             for (size_t k = 0; k < armature_bone_count; k++){
                 Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
                 if (keyframe_header != nullptr) {
                     Render::Keyframe* keyframes = (Render::Keyframe*)(keyframe_header + 1);
                     size_t keyframe_count = keyframe_header->second;
+                    auto& anim = anim_info[i];
                     
                     // find the first keyframe that happens after the animation's current frame
                     size_t second_keyframe = -1llu;
@@ -185,21 +244,9 @@ namespace Core {
                     }
                     
                     // if not found, that means that the current frame is past the end of the animation
+                    // so let's set the animation to the last frame
                     if (second_keyframe == -1llu) {
-                        if (anim.pause_on_last_frame && anim.repeats == 1) {
-                            second_keyframe = keyframe_count - 1;
-                            anim.pause = true;
-                        } else {
-                            anim.repeats--;
-                            anim.frame = 0.0f;
-                            
-                            second_keyframe = 1;
-                            
-                            if (anim.repeats == 0) {
-                                StopAnimation(anim.animation_header->first);
-                                continue;
-                            }
-                        }
+                        second_keyframe = keyframe_count - 1;
                     }
                     
                     size_t first_keyframe = second_keyframe - 1;
@@ -208,16 +255,7 @@ namespace Core {
                     float mix_w = anim.interpolate ? (anim.frame - keyframes[second_keyframe].frame) / (keyframes[first_keyframe].frame - keyframes[second_keyframe].frame) : 0.0f;
                     
                     // total mix weight
-                    float total_mix_weight = anim.weight;
-                    if (anim.fade_in) {
-                        anim.fade_ammount += frames_since_update * anim.fade_speed;
-                        total_mix_weight *= anim.fade_ammount;
-                        if (anim.fade_ammount > 1.0f) anim.fade_in = false;
-                    } else if (anim.fade_out) {
-                        anim.fade_ammount -= frames_since_update * anim.fade_speed;
-                        total_mix_weight *= anim.fade_ammount;
-                        if (anim.fade_ammount < 0.0f) StopAnimation(anim.animation_header->first);
-                    }
+                    float total_mix_weight = anim.weight * anim.fade_ammount;
                     
                     // mix together will all other animations
                     anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * total_mix_weight;
