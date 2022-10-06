@@ -43,42 +43,14 @@ namespace Core::Audio {
         std::cout << "Audio device: " << device_name << std::endl;
     }
     
-    void Update() {
-        /*SoundSource* it = all_sounds.begin().ptr;
-        while (it < all_sounds.end().ptr) {
-            if (*((uint64_t*)it) != 0) {
-                int32_t state;
-                alGetSourcei (it->source_name, AL_SOURCE_STATE, &state);
-                
-                if (state != AL_PLAYING) {
-                    alDeleteSources(1, &it->source_name);
-                    all_sounds.Remove(it);
-                    std::cout << "Sound yeeted" << std::endl;
-                }
-            }
-            
-            it++;
-        }*/
-        
-        
-        
+    void Update() {        
         alListener3f( AL_POSITION, LISTENER_POSITION.x, LISTENER_POSITION.y, LISTENER_POSITION.z);
         alListenerfv(AL_ORIENTATION, &LISTENER_ORIENTATION[0][0]);
     }
     
     void Uninit() {
-        /*for (auto it : all_sounds) {
-            alDeleteSources(1, &it.source_name);
-        }
-        
-        for (auto it : sound_map) {
-            alDeleteBuffers(1, &it.second->sound_buffer);
-        }*/
-        
         for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.Uninit();
         for (auto it : sound_map) it.second->Unload();
-        
-        
         
         alcMakeContextCurrent(nullptr);
         alcDestroyContext(sound_context);

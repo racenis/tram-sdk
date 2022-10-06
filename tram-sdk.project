@@ -16,6 +16,7 @@
     <File Name="src/audio.cpp"/>
     <File Name="src/audio.h"/>
     <VirtualDirectory Name="components">
+      <File Name="src/components/armaturecomponent.cpp"/>
       <File Name="src/components/particlecomponent.cpp"/>
       <File Name="src/components/spritecomponent.cpp"/>
       <File Name="src/components/rendercomponent.cpp"/>
@@ -43,7 +44,6 @@
       <File Name="src/render/armature.h"/>
       <File Name="src/render/sprite.cpp"/>
       <File Name="src/render/opengl_shader.cpp"/>
-      <File Name="src/render/opengl_loader.cpp"/>
       <File Name="src/render/render.cpp"/>
       <File Name="src/render/opengl_renderer.cpp"/>
       <File Name="src/render/renderer.h"/>

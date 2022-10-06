@@ -23,11 +23,20 @@ Instruction manual and other documentations [can be found here](https://racenis.
 ## To-do list
 
 #### Small fixes
-- Finishing the abstract rendering interface
-	- Change uint32_t for handles and everything to a typedef!!
-- Rename PoseListObject to Pose
-- Yeet opengl_loader.cpp
+- ~~Finishing the abstract rendering interface~~
+	- ~~Change uint32_t for handles and everything to a typedef!!~~
+- ~~Rename PoseListObject to Pose~~
+- ~~Yeet opengl_loader.cpp~~
 - Move armaturecomponent implementation from armature.cpp to armaturecomponent.cpp
+- ~~Make armaturecomponent better~~
+	- Animations play even if started before component is loaded
+	- Callbacks on finish
+- AudioComponents can play more than 128 sounds at the same time
+- Move CAMERA_FORWARD/UP/etc. consts into core.h
+- Add a function to audio.h to set listener orientation
+- Optimize event listeners
+	- Single pool for every types listener
+	- Very good!
 
 #### For next versions
 - AnimationComponent

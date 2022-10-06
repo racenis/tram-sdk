@@ -82,7 +82,7 @@ namespace Core::Render::OpenGL {
         light_uniform_buffer = MakeUniformBuffer("Lights", light_uniform_binding, sizeof(LightListObject)*50);
         matrix_uniform_buffer = MakeUniformBuffer("Matrices", matrix_uniform_binding, sizeof(ShaderUniformMatrices));
         model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
-        bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(PoseListObject));
+        bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
         
         matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
@@ -153,7 +153,7 @@ namespace Core::Render::OpenGL {
             glUseProgram(robj->shader);
 
             if(robj->pose != nullptr){
-                UploadUniformBuffer(bone_uniform_buffer, sizeof(PoseListObject), glm::value_ptr(robj->pose->pose[0]));
+                UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(robj->pose->pose[0]));
             }
 
 
@@ -253,13 +253,13 @@ namespace Core::Render::OpenGL {
         }
     }
     
-    void SetPose(DrawListEntryHandle entry, PoseListObject* pose) {
+    void SetPose(DrawListEntryHandle entry, Pose* pose) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->pose = pose;
         }
     }
     
-    void SetLightmap(DrawListEntryHandle entry, uint32_t lightmap) {
+    void SetLightmap(DrawListEntryHandle entry, texturehandle_t lightmap) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->lightmap = lightmap;
         }
@@ -285,7 +285,7 @@ namespace Core::Render::OpenGL {
         }
     }
     
-    void SetDrawListVertexArray(DrawListEntryHandle entry, uint32_t vertex_array_handle) {
+    void SetDrawListVertexArray(DrawListEntryHandle entry, vertexhandle_t vertex_array_handle) {
         ((DrawListEntry*)entry.draw_list_entries[0])->vao = vertex_array_handle;
     }
     
@@ -305,7 +305,7 @@ namespace Core::Render::OpenGL {
         ((DrawListEntry*)entry.draw_list_entries[0])->texCount = texture_count;
     }
     
-    uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
+    texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
         uint32_t texture;
         uint32_t opengl_tex_format;
         
@@ -343,7 +343,7 @@ namespace Core::Render::OpenGL {
         return texture;
     }
     
-    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle, uint32_t& element_buffer_handle,  uint32_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& element_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
         glGenBuffers(1, &vertex_buffer_handle);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
         glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
@@ -375,7 +375,7 @@ namespace Core::Render::OpenGL {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     
-    void CreateVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle,  uint32_t& vertex_array_handle) {
+    void CreateVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
         glGenBuffers(1, &vertex_buffer_handle);
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
         glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
@@ -400,7 +400,7 @@ namespace Core::Render::OpenGL {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     
-    void UpdateVertexArray(uint32_t vertex_buffer_handle, size_t data_size, void* data) {
+    void UpdateVertexArray(vertexhandle_t vertex_buffer_handle, size_t data_size, void* data) {
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
         glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

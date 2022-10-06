@@ -12,12 +12,8 @@
 #include <cstring>
 #include <fstream>
 
-//#include <glfw3.h>
-
-
-
 namespace Core {
-    char const* ENGINE_VERSION = "Tramway SDK v0.0.2";
+    char const* ENGINE_VERSION = "Tramway SDK v0.0.3-alpha";
     
     bool SHOULD_CLOSE = false;
     float FRAME_TIME = 0;

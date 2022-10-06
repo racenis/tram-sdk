@@ -26,8 +26,8 @@ namespace Core {
         }
     };
 
-    void RenderComponent::SetPose(Render::PoseListObject* newPose){
-        pose = newPose == nullptr ? Render::poseList.begin().ptr : newPose;
+    void RenderComponent::SetPose(Render::Pose* newPose){
+        pose = newPose == nullptr ? Render::poseList.begin().ptr : newPose; // make a global variable BLANK_POSE or something like that? instead of poseList.begin()?
         
         if (is_ready) {
             OpenGL::SetPose(draw_list_entry, pose);

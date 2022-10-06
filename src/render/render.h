@@ -37,6 +37,13 @@ namespace Core::Render {
     // this should be yeeted
     extern float time_of_day;
 
+    typedef uint32_t vertexhandle_t;
+    typedef uint32_t texturehandle_t;
+    // this is just a placeholder (or is it?)
+    struct DrawListEntryHandle {
+        void* draw_list_entries[6] = { nullptr };
+    };
+
     class Material : public Resource {
     public:
         enum Type {
@@ -49,7 +56,7 @@ namespace Core::Render {
             FLAT_COLOR
         };
     protected:
-        uint32_t texture = 0;
+        texturehandle_t texture = 0;
         
         Type type = TEXTURE;
         uint32_t width = 0;
@@ -69,7 +76,7 @@ namespace Core::Render {
             type = mType;
             status = UNLOADED;
         }
-        inline uint32_t GetTexture() const {return texture;};
+        inline texturehandle_t GetTexture() const { return texture; };
         inline uint32_t GetWidth() const {return width;};
         inline uint32_t GetHeight() const {return height;};
         inline Material::Type GetType() const {return type;};
@@ -86,12 +93,6 @@ namespace Core::Render {
         static void LoadMaterialInfo(const char* filename);
         friend class Sprite;
     };
-    
-    // this is just a placeholder
-    struct DrawListEntryHandle {
-        void* draw_list_entries[6] = { nullptr };
-    };
-
 
     struct ModelData{};
 
@@ -114,9 +115,9 @@ namespace Core::Render {
         
         VertexFormat vertex_format = STATIC_VERTEX;
         
-        uint32_t vertex_buffer_handle = 0;
-        uint32_t element_buffer_handle = 0;
-        uint32_t vertex_array_handle = 0;
+        vertexhandle_t vertex_buffer_handle = 0;
+        vertexhandle_t element_buffer_handle = 0;
+        vertexhandle_t vertex_array_handle = 0;
         
         std::vector<ElementRange> element_ranges;
         

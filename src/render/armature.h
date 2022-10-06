@@ -28,12 +28,11 @@ namespace Core::Render {
         glm::vec3 scale = glm::vec3(1.0f);
     };
     
-    // rename to just Pose?
-    struct PoseListObject{
+    struct Pose {
         glm::mat4 pose[BONE_COUNT];
     };
 
-    extern Pool<PoseListObject> poseList;
+    extern Pool<Pose> poseList;
 
     class Animation : public Resource {
     protected:

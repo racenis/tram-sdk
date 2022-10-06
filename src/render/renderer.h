@@ -179,7 +179,7 @@ namespace Core::Render::OpenGL {
     
     uint32_t GetFlags(DrawListEntryHandle entry);
     void SetFlags(DrawListEntryHandle entry, uint32_t flags);
-    void SetPose(DrawListEntryHandle entry, PoseListObject* pose);
+    void SetPose(DrawListEntryHandle entry, Pose* pose);
     void SetLightmap(DrawListEntryHandle entry, uint32_t lightmap);
     void SetLights(DrawListEntryHandle entry, uint32_t* lights);
     void SetLocation(DrawListEntryHandle entry, glm::vec3& location);
@@ -193,14 +193,14 @@ namespace Core::Render::OpenGL {
     
     uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
     
-    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle, uint32_t& element_buffer_handle,  uint32_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
-    void CreateVertexArray(const VertexDefinition& vertex_format, uint32_t& vertex_buffer_handle,  uint32_t& vertex_array_handle);
-    void UpdateVertexArray(uint32_t vertex_buffer_handle, size_t data_size, void* data);
+    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& element_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
+    void CreateVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle);
+    void UpdateVertexArray(vertexhandle_t vertex_buffer_handle, size_t data_size, void* data);
     
     struct DrawListEntry {
         uint32_t flags = 0;
 
-        PoseListObject* pose = nullptr;
+        Pose* pose = nullptr;
 
         glm::vec3 location = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::quat rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));

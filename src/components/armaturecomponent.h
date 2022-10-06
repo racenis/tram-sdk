@@ -33,7 +33,7 @@ class ArmatureComponent : public EntityComponent {
 
         Render::Keyframe base_pose[BONE_COUNT];
         
-        Render::PoseListObject* poseobj = nullptr;
+        Render::Pose* poseobj = nullptr;
         ResourceProxy<Render::Model> model;
         
         float last_update = 0.0f;
@@ -51,7 +51,7 @@ class ArmatureComponent : public EntityComponent {
         void Start();
         void SetModel(name_t name) { model.SetResource(Render::Model::Find(name)); }
         name_t GetModel() { return model->GetName(); }
-        Render::PoseListObject* GetPosePtr(){ return poseobj; };
+        Render::Pose* GetPosePtr(){ return poseobj; };
         void SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe);
         void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);
         bool IsPlayingAnimation(name_t animation_name);

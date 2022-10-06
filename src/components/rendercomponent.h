@@ -22,7 +22,7 @@ namespace Core {
 
         void SetLightmap(uint64_t name);
 
-        void SetPose(Render::PoseListObject* newPose);
+        void SetPose(Render::Pose* newPose);
 
         void Init();
 
@@ -46,7 +46,7 @@ namespace Core {
 
         Render::DrawListEntryHandle draw_list_entry;
 
-        Render::PoseListObject* pose = nullptr;
+        Render::Pose* pose = nullptr;
 
         glm::vec3 location;
         

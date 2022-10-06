@@ -27,8 +27,6 @@ namespace Core::Audio {
         static Sound* Find (name_t name);
     };
     
-    void PlaySound(Sound* sound, const glm::vec3& location);
-    
     void Init();
     void Update();
     void Uninit();
