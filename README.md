@@ -27,22 +27,21 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- ~~Change uint32_t for handles and everything to a typedef!!~~
 - ~~Rename PoseListObject to Pose~~
 - ~~Yeet opengl_loader.cpp~~
-- Move armaturecomponent implementation from armature.cpp to armaturecomponent.cpp
+- ~~Move armaturecomponent implementation from armature.cpp to armaturecomponent.cpp~~
 - ~~Make armaturecomponent better~~
-	- Animations play even if started before component is loaded
-	- Callbacks on finish
+	- ~~Animations play even if started before component is loaded~~
+	- ~~Callbacks on finish~~
 - AudioComponents can play more than 128 sounds at the same time
-- Move CAMERA_FORWARD/UP/etc. consts into core.h
-- Add a function to audio.h to set listener orientation
-- Optimize event listeners
-	- Single pool for every types listener
-	- Very good!
+	- Periodically check if an AudioComponent is 
+- ~~Move CAMERA_FORWARD/UP/etc. consts into core.h~~
+- ~~Add a function to audio.h to set listener orientation~~
+- ~~Optimize event listeners~~
+	- ~~Single pool for every types listener~~
+	- ~~Very good!~~
 
 #### For next versions
-- AnimationComponent
-	- Events/callbacks on animations finishing/looping
-- ControllerComponent
-	- Configurable transitions between animations
+- ~~AnimationComponent~~
+	- ~~Events/callbacks on animations finishing/looping~~
 - ParticleComponent
 	- I have no idea where I am going with it
 	- Maybe add callbacks for processing the particle behaviour
@@ -69,9 +68,9 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Rendering
 	- Shiny stuff shader
 	- Transparency blending
-	- Figure out how to do different back-ends
+	- ~~Figure out how to do different back-ends~~
 	- Deferred rendering
-	- Layers
+	- ~~Layers~~
 	- Occlusion culling
 	- Bump and specularity maps
 - Fix the tramway entity
@@ -103,6 +102,20 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Vertex animation
 - 3D text component
 - Tilemaps
+
+### New features that would be nice to have, but are not very important
+- ControllerComponents have configurable transitions between animations
+	- In the form of:
+		- State/from
+		- State/to
+		- Fade-out rate
+		- Fade-in rate
+	- Or something like that
+- ControllerComponents have fake IK
+	- Leg placement for creatures with legs
+	- Ability to look at (turn head/etc. towards) something
+- ArmatureComponents have different blending modes for animations
+	- Might take some time to figure out
 
 ### Important questions that need answering
 - Can you change the sun color/direction and ambient color?

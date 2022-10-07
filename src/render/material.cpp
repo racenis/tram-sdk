@@ -27,7 +27,8 @@ using namespace Core;
 using namespace Core::Render;
 
 Material* Material::error_material = nullptr;
-std::unordered_map<uint64_t, Material> Material::List;
+std::unordered_map<uint64_t, Material*> Material::List;
+template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
 
 void Material::LoadMaterialInfo(const char* filename){
     using namespace Core::Render;
@@ -62,23 +63,23 @@ void Material::LoadMaterialInfo(const char* filename){
             std::cout << "Error material list material: " << name << std::endl;
         }
 
-        List.emplace(UID(name), Material(UID(name), mattype));
+        List[UID(name)] = PoolProxy<Material>::New(UID(name), mattype);
     }
     
     file.close();
 }
 
 Material* Material::Find(name_t name){
-    std::unordered_map<uint64_t, Material>::iterator ff = List.find(name);
+    std::unordered_map<uint64_t, Material*>::iterator ff = List.find(name);
     if(ff == List.end()){
         // something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()
         // TODO: fix that
-        List.emplace(name, Render::Material(name, TEXTURE_LIGHTMAP));
-        ff = List.find(name);
+        auto material = PoolProxy<Material>::New(name, TEXTURE_LIGHTMAP);
+        List[name] = material;
+        return material;
     }
 
-    Material* material = &ff->second;
-    return material;
+    return ff->second;
 }
 
 void Material::LoadFromDisk(){

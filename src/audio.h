@@ -4,8 +4,8 @@
 #include <core.h>
 
 namespace Core::Audio {
-    extern glm::vec3 LISTENER_POSITION;
-    extern glm::vec3 LISTENER_ORIENTATION[2];
+    //extern glm::vec3 LISTENER_POSITION;
+    //extern glm::vec3 LISTENER_ORIENTATION[2];
     const size_t SOUND_BUFFERS_PER_SOUND = 10;
     
     class Sound : public Resource {
@@ -30,6 +30,8 @@ namespace Core::Audio {
     void Init();
     void Update();
     void Uninit();
+    void SetListenerPosition(const glm::vec3& position);
+    void SetListenerOrientation(const glm::quat& orientation);
     
 }
 

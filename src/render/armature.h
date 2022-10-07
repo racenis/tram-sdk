@@ -46,6 +46,7 @@ namespace Core::Render {
 
         void LoadFromDisk();
         void LoadFromMemory(){}
+        static void LoadAll();
     };
 
     void UpdateArmatures();

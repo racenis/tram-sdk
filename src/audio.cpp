@@ -57,6 +57,15 @@ namespace Core::Audio {
         alcCloseDevice(sound_device);
     }
     
+    void SetListenerPosition(const glm::vec3& position) {
+        LISTENER_POSITION = position;
+    }
+    
+    void SetListenerOrientation(const glm::quat& orientation) {
+        LISTENER_ORIENTATION[0] = orientation * DIRECTION_FORWARD;
+        LISTENER_ORIENTATION[1] = DIRECTION_UP;
+    }
+    
     void Sound::LoadFromDisk() {
         sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + ReverseUID(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
         

@@ -31,42 +31,31 @@ namespace Core {
     Queue<Event> Core::Event::queue("event queue", 500);
     Queue<Message> Core::Message::queue("message queue", 500);
 
-    Pool<Event::Listener> Core::Event::listeners[10] = {
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-        Pool<Event::Listener>("event listener: ", 50, false),
-    };
-
+    std::vector<std::vector<Event::Listener*>> Core::Event::dispatch_table(LAST_EVENT);
+    Pool<Event::Listener> Core::Event::listeners("event listener pool", 50, false);
        
     Event::Listener* Event::AddListener(Event::Type type){
-        return listeners[type].AddNew();
+        auto new_listener = listeners.AddNew();
+        dispatch_table[type].push_back(new_listener);
+        new_listener->type = type;
+        
+        return new_listener;
     }
 
-    void Event::RemoveListener(Event::Type type, Event::Listener* listener){
+    void Event::RemoveListener(Event::Listener* listener){
         // you could probably deduct the type of listener from its pointer
-        listeners[type].Remove(listener);
+        dispatch_table[listener->type].erase(std::find(dispatch_table[listener->type].begin(), dispatch_table[listener->type].end(), listener));
+        listeners.Remove(listener);
     }
 
     void Event::Dispatch(){
         Event* event = Event::queue.GetFirstPtr();
         while (event){
-            Event::Type type = event->type;
-
-            Event::Listener* ls = listeners[type].GetFirst();
-            Event::Listener* nd = listeners[type].GetLast();
+            event_t type = event->type;
 
             // TODO: add the thing that check the distances
-            for (; ls < nd; ls++){
-                if(ls->ent != nullptr){
-                    ls->ent->EventHandler(*event);
-                }
+            for (auto listener : dispatch_table[type]){
+                listener->ent->EventHandler(*event);
             }
 
             Event::queue.Remove();

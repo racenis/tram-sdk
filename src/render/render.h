@@ -19,10 +19,6 @@ namespace Core::Render {
     extern glm::vec3 SUN_DIRECTION;
     extern glm::vec3 SUN_COLOR;
     extern glm::vec3 AMBIENT_COLOR;
-
-    const glm::vec3 CAMERA_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
-    const glm::vec3 CAMERA_SIDE = glm::vec3(1.0f, 0.0f, 0.0f);
-    const glm::vec3 CAMERA_UP = glm::vec3(0.0f, 1.0f, 0.0f);
     
     // shouldn't these be in ui.h?
     extern float CAMERA_PITCH;
@@ -66,8 +62,7 @@ namespace Core::Render {
         size_t approx_vram_usage = 0;
 
         static Material* error_material;
-        static std::unordered_map<uint64_t, Material> List;
-
+        static std::unordered_map<uint64_t, Material*> List;
     public:
 
         Material (){}

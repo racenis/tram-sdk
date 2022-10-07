@@ -86,11 +86,13 @@ namespace Core::Render::OpenGL {
         
         matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
-        poseList.AddNew();
-        for (size_t i = 0; i < 30; i++){
+        // initialize the default pose
+        for (size_t i = 0; i < BONE_COUNT; i++){
             poseList.begin()->pose[i] = glm::mat4(1.0f);
         }
         
+        // initialize the default light
+        new(lightPool.begin().ptr) LightListObject;
     }
     
     void Render() {

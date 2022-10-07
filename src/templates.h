@@ -55,8 +55,9 @@ namespace Core {
             last = first;
             lastfree = first;
 
+
             if(skipFirst){
-                new(first) T;
+                //new(first) T;
                 last++;
                 lastfree++;
             }
@@ -310,7 +311,8 @@ namespace Core {
     template <typename T>
     class PoolProxy {
     public:
-        static T* New(){return pool.AddNew();}
+        template <typename... Args>
+        static T* New(Args&&... args){return pool.AddNew(std::forward<Args>(args)...);}
         static void Delete(T* obj){pool.Remove(obj);}
         static Pool<T>& GetPool(){return pool;}
     protected:

@@ -50,13 +50,13 @@ namespace Core {
             glm::vec3 move_direction = glm::vec3(0.0f, 0.0f, 0.0f);
 
             if (current_modifier == ACTIONMODIFIER_FORWARD || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT)
-                move_direction += glm::vec3(0.0f, 0.0f, -1.0f);
+                move_direction += DIRECTION_FORWARD;
             if (current_modifier == ACTIONMODIFIER_BACKWARD || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
-                move_direction += glm::vec3(0.0f, 0.0f, 1.0f);
+                move_direction -= DIRECTION_FORWARD;
             if (current_modifier == ACTIONMODIFIER_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT)
-                move_direction += glm::vec3(1.0f, 0.0f, 0.0f);
+                move_direction += DIRECTION_SIDE;
             if (current_modifier == ACTIONMODIFIER_RIGHT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
-                move_direction += glm::vec3(-1.0f, 0.0f, 0.0f);
+                move_direction -= DIRECTION_SIDE;
             
             glm::vec3 direction_normalized = glm::normalize(glm::vec3(move_direction.x, 0.0f, move_direction.z));
             if (std::isnan(direction_normalized.x) || std::isnan(direction_normalized.y) || std::isnan(direction_normalized.z)) direction_normalized = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -64,7 +64,7 @@ namespace Core {
             physcomp->PushLocal(direction_normalized * spee);
             action_updated = false;
         } else if (current_action == ACTION_JUMP && !IsInAir()){
-            physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f));
+            physcomp->Push(DIRECTION_UP * 100.0f);
             action_updated = false;
         }/* else if (current_action == ACTION_FORWARD_JUMP && !IsInAir()){
             physcomp->Push(glm::vec3(0.0f, 100.0f, 0.0f) + direction_normalized * 100.0f);

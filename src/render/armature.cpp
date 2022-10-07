@@ -12,6 +12,7 @@
 namespace Core::Render {
     std::unordered_map<name_t, NameCount*> Animation::animationlist;
     Pool<Pose> poseList("pose list", 100, true);
+    template <> Pool<Animation> PoolProxy<Animation>::pool("animation pool", 50, false);
 
     void Animation::LoadFromDisk(){
         using namespace Render;
@@ -101,6 +102,10 @@ namespace Core::Render {
             else
                 armobj->Update();
         }
+    }
+    
+    void Animation::LoadAll() {
+        for (auto& anim : PoolProxy<Animation>::GetPool()) anim.LoadFromDisk();
     }
 }
 

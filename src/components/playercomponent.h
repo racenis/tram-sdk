@@ -110,13 +110,13 @@ namespace Core {
             cell_loader->SetLocation(parent->GetLocation());
         }
         void Uninit(){
-            Event::RemoveListener(Event::KEYPRESS, listener);
+            Event::RemoveListener(listener);
             listener = nullptr;
-            Event::RemoveListener(Event::KEYDOWN, keydown);
+            Event::RemoveListener(keydown);
             keydown = nullptr;
-            Event::RemoveListener(Event::KEYUP, keyup);
+            Event::RemoveListener(keyup);
             keyup = nullptr;
-            Event::RemoveListener(Event::CURSORPOS, mouselistener);
+            Event::RemoveListener(mouselistener);
             mouselistener = nullptr;
             PoolProxy<WorldCell::Loader>::Delete(cell_loader);
             cell_loader = nullptr;

@@ -29,6 +29,10 @@ namespace Core {
     
     extern size_t RESOURCE_VRAM_USAGE;
 
+    const glm::vec3 DIRECTION_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
+    const glm::vec3 DIRECTION_SIDE = glm::vec3(1.0f, 0.0f, 0.0f);
+    const glm::vec3 DIRECTION_UP = glm::vec3(0.0f, 1.0f, 0.0f);
+
     // forward declarations
 
     // TODO: check which ones can be yeeted
@@ -53,12 +57,16 @@ namespace Core {
     struct Path;
     struct Navmesh;
 
+    typedef uint16_t event_t;
+    typedef uint64_t message_t;
+
     struct Event {
         enum Type : uint16_t {
             KEYPRESS,
             KEYDOWN,
             KEYUP,
-            CURSORPOS
+            CURSORPOS,
+            LAST_EVENT
         };
 
         struct Listener {
@@ -66,22 +74,22 @@ namespace Core {
             uint64_t poster = 0;
             glm::vec3 location;
             float dist = 0.0f;
-            uint16_t typemask = 0;
+            event_t type = 0;
         };
 
         static void Post (Event &event);
         static void Dispatch();
         static Event::Listener* AddListener(Event::Type type);
-        static void RemoveListener(Event::Type type, Event::Listener* listener);
+        static void RemoveListener(Event::Listener* listener);
 
-        Event::Type type;
-        uint16_t subtype;
+        event_t type;
+        event_t subtype;
         glm::vec3 location;
         uint64_t posterID;
         void* data;
 
-        // there's probably a way better way to do this, but this works...
-        static Pool<Event::Listener> listeners[10];
+        static Pool<Event::Listener> listeners;
+        static std::vector<std::vector<Event::Listener*>> dispatch_table;
         static Queue<Event> queue;
     };
 
@@ -91,13 +99,14 @@ namespace Core {
             HELLO,
             ACTIVATE,
             GET_IN,
-            GET_OUT
+            GET_OUT,
+            LAST_MESSAGE
         };
 
         static void Send (Message &message);
         static void Dispatch();
 
-        Message::Type type;
+        message_t type;
         uint64_t receiverID;
         uint64_t senderID;
         void* data = nullptr;

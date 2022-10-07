@@ -44,8 +44,8 @@ int main() {
     Audio::Init();
 
     // any kind of material or model loading must happen after both ui and render are inited
-    Material::SetErrorMaterial(new Material(UID("defaulttexture"), Material::TEXTURE));
-    Model::SetErrorModel(new Model(UID("errorstatic")));
+    Material::SetErrorMaterial(PoolProxy<Material>::New(UID("defaulttexture"), Material::TEXTURE));
+    Model::SetErrorModel(PoolProxy<Model>::New(UID("errorstatic")));
 
     // load all of the language strings
     LoadText("data/lv.lang");
@@ -53,17 +53,10 @@ int main() {
     // texture info stuff
     Material::LoadMaterialInfo("data/texture.list");
 
-    // animations
-    Animation mongusrun(UID("mongus"));
-    Animation floppaidle(UID("turtle"));
-    Animation bingusidle(UID("bingus_idle"));
-    mongusrun.LoadFromDisk();
-    floppaidle.LoadFromDisk();
-    bingusidle.LoadFromDisk();
-    
-    // audios
-    Audio::Sound derp (UID("derp"));
-    //derp.LoadFromDisk();
+    PoolProxy<Animation>::New(UID("mongus"));
+    PoolProxy<Animation>::New(UID("turtle"));
+    PoolProxy<Animation>::New(UID("bingus_idle"));
+    Animation::LoadAll();
 
     // loading the demo level
     auto demo = PoolProxy<WorldCell>::New();
@@ -134,12 +127,12 @@ int main() {
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
-            player.GetLocation(Render::CAMERA_POSITION);
-            player.GetLocation(Audio::LISTENER_POSITION);
-            Render::CAMERA_POSITION += glm::vec3(0.0f, 0.5f, 0.0f);
-            Audio::LISTENER_POSITION += glm::vec3(0.0f, 0.5f, 0.0f);
-            Audio::LISTENER_ORIENTATION[0] = Render::CAMERA_ROTATION * Render::CAMERA_FORWARD;
-            Audio::LISTENER_ORIENTATION[1] = Render::CAMERA_UP;
+            glm::vec3 player_head;
+            player.GetLocation(player_head);
+            player_head += glm::vec3(0.0f, 0.5f, 0.0f);
+            Render::CAMERA_POSITION = player_head;
+            Audio::SetListenerPosition(player_head);
+            Audio::SetListenerOrientation(Render::CAMERA_ROTATION);
         }
         
         //time_of_day += 0.001f;

@@ -21,6 +21,7 @@ using namespace Core::Render;
 
 Model* Model::error_model = nullptr;
 std::unordered_map<uint64_t, Model*> Model::List;
+template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
 
 Model* Model::Find(name_t name){
     std::unordered_map<uint64_t, Model*>::iterator ff = List.find(name);
