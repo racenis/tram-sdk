@@ -11,6 +11,7 @@
 
 namespace Core::Render {
     std::unordered_map<name_t, NameCount*> Animation::animationlist;
+    StackPool<uint8_t> Animation::animationpool("animation keyframe pool", 50000);
     Pool<Pose> poseList("pose list", 100, true);
     template <> Pool<Animation> PoolProxy<Animation>::pool("animation pool", 50, false);
 
@@ -33,7 +34,7 @@ namespace Core::Render {
         uint64_t bc;
         uint64_t kc;
         uint64_t a_name;
-        NameCount* nameptr = (NameCount*)animationpool.begin();
+        NameCount* nameptr;
         Keyframe* kframe;
 
 
@@ -41,6 +42,7 @@ namespace Core::Render {
         file >> ac;         //count of animation entries in the file
 
         for (uint64_t i = 0; i < ac; i++){
+            nameptr = (NameCount*)animationpool.AddNew(sizeof(NameCount));
             file >> noot;       //name of animation as string
             file >> bc;         //count of bones used by animation
             a_name = UID(noot);   //uint64 hash of name string
@@ -49,19 +51,18 @@ namespace Core::Render {
             nameptr->second = bc;
             animationlist[a_name] = nameptr;
 
-            nameptr++;
             for (uint64_t j = 0; j < bc; j++){
+                nameptr = (NameCount*)animationpool.AddNew(sizeof(NameCount));
                 file >> noot;       //name of bone as string
                 file >> kc;         //count of keyframes for the bone
                 a_name = UID(noot);   //uint64 hash of bone name
 
                 nameptr->first = a_name;
                 nameptr->second = kc;
-                nameptr++;
 
 
                 for (uint64_t k = 0; k < kc; k++){
-                    kframe = (Keyframe*)nameptr;
+                    kframe = (Keyframe*)animationpool.AddNew(sizeof(Keyframe));
                     file >> kframe->frame;
                     file >> kframe->location.x;
                     file >> kframe->location.y;
@@ -73,8 +74,6 @@ namespace Core::Render {
                     file >> kframe->scale.x;
                     file >> kframe->scale.y;
                     file >> kframe->scale.z;
-                    kframe++;
-                    nameptr = (NameCount*)kframe;
                 }
             }
         }

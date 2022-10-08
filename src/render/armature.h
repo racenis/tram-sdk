@@ -36,11 +36,11 @@ namespace Core::Render {
 
     class Animation : public Resource {
     protected:
-        StackPool<uint8_t> animationpool;
+        static StackPool<uint8_t> animationpool;
 
         static std::unordered_map<name_t, NameCount*> animationlist;
     public:
-        Animation(name_t name) : Resource(name), animationpool(std::string("animationpool for ") + ReverseUID(name), 50000) {}
+        Animation(name_t name) : Resource(name) {}
 
         static NameCount* Find(name_t anim_name);
 
