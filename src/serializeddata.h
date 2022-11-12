@@ -17,7 +17,7 @@ namespace Core {
         public:
             operator T() { return var; }
             Field& operator= (const T& other) { var = other; return *this;}
-            Field(T& other) { var = other; }
+            Field(const T& other) { var = other; }
             Field() = default;
 
             void ToString(std::string& str) { assert(false); }
@@ -29,9 +29,10 @@ namespace Core {
             enum Type {
                 FIELD_UINT64,
                 FIELD_FLOAT,
-                FIELD_STRING
+                FIELD_NAME
             } type;
-            char const* name;
+            char const* display_name;
+            char const* data_name;
             void* field;
         };
         SerializedEntityData() = default;

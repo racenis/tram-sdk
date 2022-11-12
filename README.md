@@ -22,26 +22,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 
 ## To-do list
 
-#### Small fixes
-- ~~Finishing the abstract rendering interface~~
-	- ~~Change uint32_t for handles and everything to a typedef!!~~
-- ~~Rename PoseListObject to Pose~~
-- ~~Yeet opengl_loader.cpp~~
-- ~~Move armaturecomponent implementation from armature.cpp to armaturecomponent.cpp~~
-- ~~Make armaturecomponent better~~
-	- ~~Animations play even if started before component is loaded~~
-	- ~~Callbacks on finish~~
-- AudioComponents can play more than 128 sounds at the same time
-	- Periodically check if an AudioComponent is 
-- ~~Move CAMERA_FORWARD/UP/etc. consts into core.h~~
-- ~~Add a function to audio.h to set listener orientation~~
-- ~~Optimize event listeners~~
-	- ~~Single pool for every types listener~~
-	- ~~Very good!~~
-
 #### For next versions
-- ~~AnimationComponent~~
-	- ~~Events/callbacks on animations finishing/looping~~
 - ParticleComponent
 	- I have no idea where I am going with it
 	- Maybe add callbacks for processing the particle behaviour
@@ -50,16 +31,13 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- More callbacks, maybe?
 		- OnDeactivate callback
 		- OnActivate callback with reference to entity that commited the activation
-- Entities
-	- More constructors for them
-- Containers
-	- Rename 'PoolAddOnly' to 'StackPool'
-	- Add a PODPool
-	- Add iterators to stacks
-- Think of additional widgets
+- Think of additional GUI widgets
 - Switch to using sprites for defining fonts
-- Fix the mongus entity
 - Add LIGMAScript
+- Add operator()(Resource*) {} to ResourceProxy
+- Add a ComponentProxy
+	- Automatically removes components
+- Merge PoolProxy with Pool
 
 
 #### For versions later than next versions
@@ -68,9 +46,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Rendering
 	- Shiny stuff shader
 	- Transparency blending
-	- ~~Figure out how to do different back-ends~~
 	- Deferred rendering
-	- ~~Layers~~
 	- Occlusion culling
 	- Bump and specularity maps
 - Fix the tramway entity
@@ -94,9 +70,7 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Sprite
 		- Loading frames from a file
 		- Alternate [???]
-- Split animation into animation and StreamableAnimation
-	- All of Animations share the same keyframe pool (more efficient)
-	- Animations that need to be streamed in and later removed have their own pools (StreamableAnimation)
+
 
 #### For very later versions
 - Vertex animation
@@ -116,6 +90,9 @@ Instruction manual and other documentations [can be found here](https://racenis.
 	- Ability to look at (turn head/etc. towards) something
 - ArmatureComponents have different blending modes for animations
 	- Might take some time to figure out
+- AudioComponents can play more than 128 sounds at the same time
+- Split animation into animation and StreamableAnimation
+	- Animations that need to be streamed in and later removed have their own keyframe pools
 
 ### Important questions that need answering
 - Can you change the sun color/direction and ambient color?

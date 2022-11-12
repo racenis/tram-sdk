@@ -36,6 +36,7 @@ namespace Core {
 
     void RenderComponent::Init() {
         assert(!is_ready);
+        is_init = true;
         if (resources_waiting == 0) Start();
     };
     

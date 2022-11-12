@@ -10,7 +10,7 @@ namespace Core {
     
     void ArmatureComponent::Init(){
         assert(!is_ready);
-        
+        is_init = true;
         poseobj = Render::poseList.AddNew();
 
         for (size_t i = 0; i < Render::BONE_COUNT; i++) poseobj->pose[i] = glm::mat4(1.0f);

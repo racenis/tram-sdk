@@ -175,6 +175,7 @@ namespace Core {
     template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
 
     void PhysicsComponent::Init(){
+        is_init = true;
         if(resources_waiting == 0) Start();
         //if (!shape) collModel->AddRef();
 

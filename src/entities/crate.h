@@ -53,8 +53,8 @@ namespace Core {
             
             std::vector<FieldInfo> GetEditorFieldInfo() {
                 return std::vector<FieldInfo> {
-                     { FieldInfo::FIELD_STRING, "Model", &model },
-                     { FieldInfo::FIELD_STRING, "CollisionMdl", &collmodel },
+                     { FieldInfo::FIELD_NAME, "Model", "model", &model },
+                     { FieldInfo::FIELD_NAME, "CollisionMdl", "collision-model", &collmodel },
                 };
             }
             

@@ -21,6 +21,7 @@ namespace Core {
         }
 
         void Init(){
+            is_init = true;
             is_ready = false; if(resources_waiting == 0) Start();
         }
 

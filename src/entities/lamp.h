@@ -49,10 +49,10 @@ namespace Core {
             
             std::vector<FieldInfo> GetEditorFieldInfo() {
                 return std::vector<FieldInfo> {
-                     { FieldInfo::FIELD_FLOAT, "Color R", &color_r },
-                     { FieldInfo::FIELD_FLOAT, "Color G", &color_g },
-                     { FieldInfo::FIELD_FLOAT, "Color B", &color_b },
-                     { FieldInfo::FIELD_FLOAT, "Distance", &distance },
+                     { FieldInfo::FIELD_FLOAT, "Color R", "color-r", &color_r },
+                     { FieldInfo::FIELD_FLOAT, "Color G", "color-g", &color_g },
+                     { FieldInfo::FIELD_FLOAT, "Color B", "color-b", &color_b },
+                     { FieldInfo::FIELD_FLOAT, "Distance", "distance", &distance },
                 };
             }
             
