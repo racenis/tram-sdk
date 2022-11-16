@@ -21,7 +21,7 @@ namespace Core {
         void Uninit();
         void Start();
         void UpdateLocation(const glm::vec3& location);
-        void SetSound(Audio::Sound* sound) { this->sound.SetResource(sound); }
+        void SetSound(Audio::Sound* sound) { this->sound = sound; }
         void SetRepeating(bool is_repeating);
         bool IsPlaying();
         void Play();

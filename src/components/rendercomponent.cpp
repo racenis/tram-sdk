@@ -10,7 +10,7 @@ namespace Core {
     using namespace Core::Render;
     
     void RenderComponent::SetModel(uint64_t name){
-        model.SetResource(Render::Model::Find(name));
+        model = Render::Model::Find(name);
         
         if (is_ready) {
             OpenGL::RemoveDrawListEntry(draw_list_entry);
@@ -19,7 +19,7 @@ namespace Core {
     };
 
     void RenderComponent::SetLightmap(uint64_t name){
-        lightmap.SetResource(Render::Material::Find(name));
+        lightmap = Render::Material::Find(name);
         
         if (is_ready) {
             OpenGL::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
@@ -87,7 +87,7 @@ namespace Core {
     }
 
     void RenderComponent::InsertDrawListEntry() {
-        draw_list_entry = OpenGL::InsertDrawListEntry(model.GetResource());
+        draw_list_entry = OpenGL::InsertDrawListEntry(model.get());
         
         OpenGL::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
         if (isInterior) OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);

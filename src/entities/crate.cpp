@@ -46,11 +46,12 @@ namespace Core {
     void Crate::Load(){
         auto data = (Data*) serialized_data;
 
-        rendercomponent = PoolProxy<RenderComponent>::New();
+        rendercomponent.make();
+        physicscomponent.make();
+        
         rendercomponent->SetModel(data->model);
         rendercomponent->SetPose(nullptr);
 
-        physicscomponent = PoolProxy<PhysicsComponent>::New();
         physicscomponent->SetParent(this);
         physicscomponent->SetModel(data->collmodel);
         physicscomponent->SetMass(68.9f);
@@ -74,10 +75,8 @@ namespace Core {
         rendercomponent->Uninit();
         physicscomponent->Uninit();
 
-        PoolProxy<RenderComponent>::Delete(rendercomponent);
-        rendercomponent = nullptr;
-        PoolProxy<PhysicsComponent>::Delete(physicscomponent);
-        physicscomponent = nullptr;
+        rendercomponent.clear();
+        physicscomponent.clear();
     }
 
     void Crate::Serialize() {

@@ -17,7 +17,7 @@ namespace Core {
         inline name_t GetSprite(){return sprite->GetName();}
 
         void SetSprite(Render::Sprite* sprite){
-            this->sprite.SetResource(sprite);
+            this->sprite = sprite;
         }
 
         void Init(){

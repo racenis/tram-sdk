@@ -67,8 +67,8 @@ namespace Core {
             }
         };
     protected:
-        RenderComponent* rendercomponent;
-        PhysicsComponent* physicscomponent;
+        Component<RenderComponent> rendercomponent;
+        Component<PhysicsComponent> physicscomponent;
     };
 }
 

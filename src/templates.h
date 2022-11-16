@@ -320,5 +320,18 @@ namespace Core {
     };
 
     template <typename T> using PoopProxy = PoolProxy<T>;
+    
+    template <typename T>
+    class PoolPtr {
+    public:
+        PoolPtr () { ptr = PoolProxy<T>::New(); }
+        ~PoolPtr () { PoolProxy<T>::Delete(ptr); }
+        T* GetResource() { return ptr; }
+        T* operator->() { return ptr; }
+        T& operator*() { return ptr; }
+        explicit operator bool() { return ptr != nullptr; }
+    protected:
+        T* ptr;
+    };
 }
 #endif // TEMPLATES_H

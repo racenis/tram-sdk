@@ -22,6 +22,16 @@ Instruction manual and other documentations [can be found here](https://racenis.
 
 ## To-do list
 
+- Remove Uninit() method from all components
+	- Move the code into the destructor
+- Remove SetParameters() from Entity
+	- Move it into the constructor
+- Remove Yeet() from Entity
+	- Move the code into the destructor
+- Convert name_t into a class
+- Remove SetErrorModel() and SetErrorMaterial()
+	- Move the code into Render::Init()
+
 #### For next versions
 - ParticleComponent
 	- I have no idea where I am going with it
@@ -34,10 +44,8 @@ Instruction manual and other documentations [can be found here](https://racenis.
 - Think of additional GUI widgets
 - Switch to using sprites for defining fonts
 - Add LIGMAScript
-- Add operator()(Resource*) {} to ResourceProxy
-- Add a ComponentProxy
-	- Automatically removes components
-- Merge PoolProxy with Pool
+- ~~Add a ComponentProxy~~
+	- ~~Automatically removes components~~
 
 
 #### For versions later than next versions

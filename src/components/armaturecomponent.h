@@ -53,7 +53,7 @@ class ArmatureComponent : public EntityComponent {
         void Init();
         void Uninit();
         void Start();
-        void SetModel(name_t name) { model.SetResource(Render::Model::Find(name)); }
+        void SetModel(name_t name) { model = Render::Model::Find(name); }
         name_t GetModel() { return model->GetName(); }
         Render::Pose* GetPosePtr(){ return poseobj; };
         void SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe);

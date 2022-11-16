@@ -22,9 +22,9 @@ namespace Core {
         void Uninit();
         void Start();
 
-        uint64_t GetModel(){ return model.GetResource()->GetName(); }
+        uint64_t GetModel(){ return model->GetName(); }
         Entity* GetParent(){ return parent; }
-        void SetModel(uint64_t modelName){ model.SetResource(Physics::CollisionModel::Find(modelName)); }
+        void SetModel(uint64_t modelName){ model = Physics::CollisionModel::Find(modelName); }
         void SetParent(Entity* newparent){ parent = newparent; }
 
         void SetActivationCallback(void (*activation_callback)(TriggerComponent*)) { this->activation_callback = activation_callback; }

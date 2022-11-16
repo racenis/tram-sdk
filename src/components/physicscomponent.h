@@ -21,12 +21,12 @@ namespace Core {
         void Start();
         bool IsReady(){return is_ready;};
 
-        uint64_t GetModel(){return model.GetResource()->GetName();};
+        uint64_t GetModel(){return model->GetName();};
         void SetParent(Entity* newparent){parent = newparent;};
         Entity* GetParent(){return parent;};
         void SetModel(uint64_t modelName){
             //collModel = Physics::CollisionModel::Find(modelName);
-            model.SetResource(Physics::CollisionModel::Find(modelName));
+            model = Physics::CollisionModel::Find(modelName);
         };
 
         void SetMass(float nMass);

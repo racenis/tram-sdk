@@ -223,6 +223,7 @@ namespace Core {
         friend class WorldCell;
     };
 
+    /// Base class for EntityComponents.
     class EntityComponent {
     public:
         EntityComponent(){ id = GenerateID(); }
@@ -260,7 +261,24 @@ namespace Core {
         virtual void Start() = 0;
         template <typename T> friend class ResourceProxy;
     };
-
+    
+    /// Wrapper for an EntityComponent pointer.
+    template <typename T>
+    class Component {
+    public:
+        Component() {}
+        ~Component() { if (ptr) PoolProxy<T>::Delete(ptr); }
+        void make() { ptr = PoolProxy<T>::New(); }
+        void clear() { PoolProxy<T>::Delete(ptr); ptr = nullptr; }
+        T* get() { return ptr; }
+        T* operator->() { return ptr; }
+        T& operator*() { return ptr; }
+        explicit operator bool() { return ptr != nullptr; }
+    protected:
+        T* ptr = nullptr;
+    };
+    
+    
     class WorldCell {
     public:
         class Transition {
@@ -315,6 +333,7 @@ namespace Core {
 
         void SetName(name_t new_name);
         
+        // what is this and why do we need this?
         void SetDrawn(bool drawn) { draw = drawn; }
 
         void Load();
@@ -407,21 +426,26 @@ namespace Core {
     class ResourceProxy {
     public:
         ResourceProxy(EntityComponent* parent) : parent(parent) {}
-        void SetResource(Resource* res){
+        ~ResourceProxy() { set(nullptr); }
+        void set(Resource* res){
             if (resource) resource->RemoveRef();
 
             resource = res;
-            resource->AddRef();
-
-            if (resource->GetStatus() != Resource::READY) {
-                parent->resources_waiting++;
-                Async::RequestResource(parent, resource);
+            
+            if (resource) {
+                resource->AddRef();
+                
+                if (resource->GetStatus() != Resource::READY) {
+                    parent->resources_waiting++;
+                    Async::RequestResource(parent, resource);
+                }
             }
         }
-        T* GetResource() { return (T*)resource; }
+        T* get() { return (T*)resource; }
+        T* operator= (Resource* res) { set(res); return get(); }
         T* operator->() { return (T*)resource; }
+        T& operator*() { return *((T*)resource); }
         explicit operator bool() { return resource != nullptr; }
-        // where's the destructor?
     protected:
         EntityComponent* parent;
         Resource* resource = nullptr;

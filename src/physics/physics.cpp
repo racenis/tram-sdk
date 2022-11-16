@@ -184,8 +184,8 @@ namespace Core {
         //}
     };
     void PhysicsComponent::Start(){
-        if (model.GetResource())
-            shape = (btCollisionShape*)model.GetResource()->GetPtr();
+        if (model.get())
+            shape = (btCollisionShape*)model->GetPtr();
 
 
         if(bone == 0)
@@ -539,8 +539,8 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
     }
     
     void TriggerComponent::Start(){
-        if (model.GetResource())
-            shape = (btCollisionShape*)model.GetResource()->GetPtr();
+        if (model.get())
+            shape = (btCollisionShape*)model->GetPtr();
 
         assert(shape);
 
