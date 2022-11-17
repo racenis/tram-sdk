@@ -13,11 +13,9 @@ namespace Core {
     class PhysicsComponent : public EntityComponent {
     public:
         PhysicsComponent() : model(this){}
-        ~PhysicsComponent() = default;
+        ~PhysicsComponent();
         void EventHandler(Event &event){};
         bool SetUpRigidBody();
-        void Init();
-        void Uninit();
         void Start();
         bool IsReady(){return is_ready;};
 

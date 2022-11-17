@@ -16,7 +16,6 @@ namespace Core {
         TemplateComponent();
         ~TemplateComponent();
         void Init();
-        void Uninit();
         void Start();
         void EventHandler(Event &event);
     };

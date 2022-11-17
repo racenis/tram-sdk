@@ -174,15 +174,6 @@ namespace Core {
     template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
     template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
 
-    void PhysicsComponent::Init(){
-        is_init = true;
-        if(resources_waiting == 0) Start();
-        //if (!shape) collModel->AddRef();
-
-        //if(!SetUpRigidBody()){
-            //AddToReminderQueue(this, (bool (EntityComponent::*)())SetUpRigidBody);
-        //}
-    };
     void PhysicsComponent::Start(){
         if (model.get())
             shape = (btCollisionShape*)model->GetPtr();
@@ -210,7 +201,7 @@ namespace Core {
 
         //return true;
     }
-    void PhysicsComponent::Uninit(){
+    PhysicsComponent::~PhysicsComponent(){
         if (pathConstraint) dynamicsWorld->removeConstraint(pathConstraint);
         if (glueConstraint) dynamicsWorld->removeConstraint(glueConstraint);
         if (hingeConstraint) dynamicsWorld->removeConstraint(hingeConstraint);
@@ -533,10 +524,6 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
 
 
 
-
-    void TriggerComponent::Init(){
-        if (resources_waiting == 0) Start();
-    }
     
     void TriggerComponent::Start(){
         if (model.get())
@@ -594,7 +581,7 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         //return true;
     }
     
-    void TriggerComponent::Uninit(){
+    TriggerComponent::~TriggerComponent(){
         dynamicsWorld->removeCollisionObject(trigger);
         delete trigger;
     };

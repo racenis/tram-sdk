@@ -65,7 +65,8 @@ namespace Core {
             }
         };
     protected:
-        LightComponent* light = nullptr;
+        Component<LightComponent> light;
+        SerializedData<Data> data;
     };
 }
 

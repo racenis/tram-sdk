@@ -17,8 +17,7 @@ namespace Core {
     class AudioComponent : public EntityComponent {
     public:
         AudioComponent() : sound(this){}
-        void Init();
-        void Uninit();
+        ~AudioComponent();
         void Start();
         void UpdateLocation(const glm::vec3& location);
         void SetSound(Audio::Sound* sound) { this->sound = sound; }

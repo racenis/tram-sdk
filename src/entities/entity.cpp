@@ -13,10 +13,6 @@ namespace Core {
     std::unordered_map<name_t, Entity*> Entity::NameList;
     std::unordered_map<std::string, Entity* (*)(std::string_view& params)> Entity::entityConstructors;
     
-    void Entity::SerializeString(std::string& str) {
-        serialized_data->ToString(str);
-    }
-    
     Entity::Entity() {
         std::cout << "Entity base constructor." << std::endl;
         this->id = GenerateID();
@@ -64,18 +60,6 @@ namespace Core {
             if (name_it != Entity::NameList.end()) Entity::NameList.erase(name_it);
         }
     }
-
-    void Entity::Yeet(){
-
-    };
-
-    //delete this too
-    void Entity::RemoveSerializedData(){
-        if(!serialized_data) return;
-
-        delete serialized_data;
-        serialized_data = nullptr;
-    }
     
     void Entity::CheckTransition(){
         #ifndef ENGINE_EDITOR_MODE
@@ -92,7 +76,6 @@ namespace Core {
         #endif // ENGINE_EDITOR_MODE
     }
 
-
     void Entity::Register(const char* name, Entity* (*constr_func)(std::string_view& params)){
         entityConstructors[name] = constr_func;
     }
@@ -105,10 +88,6 @@ namespace Core {
         if (name) {
             Entity::NameList[name] = this;
         }
-    }
-
-    //delete
-    void Entity::Deregister(){
     }
     
     Entity* Entity::Find (uint64_t entityID){
@@ -153,10 +132,6 @@ namespace Core {
             return nullptr;
         }
 
-
-    }
-
-    void Entity::SetParameters (std::string_view& params){
 
     }
 

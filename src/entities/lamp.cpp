@@ -8,12 +8,8 @@
 #include <components/lightcomponent.h>
 
 namespace Core {
-    Lamp::Lamp(std::string_view& str){
-        Entity::SetParameters(str);
-
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
-
+    Lamp::Lamp(std::string_view& str) : Entity (str) {
+        data.make();
         data->FromString(str);
     }
     
@@ -27,14 +23,11 @@ namespace Core {
     }
     
     void Lamp::Load(){
-        auto data = (Data*) serialized_data;
-
-        light = PoolProxy<LightComponent>::New();
+        light.make();
         light->UpdateColor(glm::vec3(data->color_r, data->color_g, data->color_b));
         light->UpdateDistance(data->distance);
 
-        delete serialized_data;
-        serialized_data = nullptr;
+        data.clear();
 
         light->Init();
         isloaded = true;
@@ -47,15 +40,11 @@ namespace Core {
 
         Serialize();
 
-        light->Uninit();
-
-        PoolProxy<LightComponent>::Delete(light);
-        light = nullptr;
+        light.clear();
     }
 
     void Lamp::Serialize(){
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
+        data.make();
         
         glm::vec3 light_color;
         float light_distance;

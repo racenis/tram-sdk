@@ -40,10 +40,6 @@ namespace Core {
             // check what events the behaviours are interested in
             // then register event listeners for them
         }
-
-        void Uninit() override {
-            // unregisted all of the event listeners
-        }
         
         void Start() override {
             // do nothing, since we don't need any resources

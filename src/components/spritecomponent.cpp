@@ -9,7 +9,7 @@
 namespace Core {
     using namespace Core::Render;
     
-    void SpriteComponent::Uninit(){
+    SpriteComponent::~SpriteComponent(){
         is_ready = false;
 
         OpenGL::RemoveDrawListEntry(draw_list_entry);

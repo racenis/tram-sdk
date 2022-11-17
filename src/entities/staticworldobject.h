@@ -65,8 +65,10 @@ namespace Core {
             }
         };
     protected:
-        RenderComponent* rendercomponent = nullptr;
-        PhysicsComponent* physicscomponent = nullptr;
+        Component<RenderComponent> rendercomponent;
+        Component<PhysicsComponent> physicscomponent;
+        
+        SerializedData<Data> data;
     };
 }
 

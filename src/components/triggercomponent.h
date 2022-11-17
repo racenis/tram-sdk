@@ -16,10 +16,8 @@ namespace Core {
     class TriggerComponent : public EntityComponent {
     public:
         TriggerComponent() : model(this){}
-        ~TriggerComponent() = default;
+        ~TriggerComponent();
         void EventHandler(Event &event){};
-        void Init();
-        void Uninit();
         void Start();
 
         uint64_t GetModel(){ return model->GetName(); }

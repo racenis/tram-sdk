@@ -50,8 +50,8 @@ class ArmatureComponent : public EntityComponent {
         AnimationPlaybackInfo anim_info[ANIM_COUNT];
     public:
         ArmatureComponent() : model(this){}
+        ~ArmatureComponent();
         void Init();
-        void Uninit();
         void Start();
         void SetModel(name_t name) { model = Render::Model::Find(name); }
         name_t GetModel() { return model->GetName(); }

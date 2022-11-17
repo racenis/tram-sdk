@@ -122,16 +122,12 @@ namespace Core {
 
         virtual void Serialize() = 0;
 
-        void SerializeString(std::string& str);
-
         Entity();
         Entity(name_t name);
         Entity(std::string_view& str);
         
         virtual ~Entity();
         
-        void Yeet();
-
         inline name_t GetName() const { return name; }
         inline uint64_t GetID() const { return id; }
         inline WorldCell* GetCell() { return cell; }
@@ -140,8 +136,6 @@ namespace Core {
         inline bool IsInInterior() { return in_interior; }
         inline bool IsPersistent() { return  persistent; }
         inline bool IsChanged() { return changed; }
-
-        void SetParameters (std::string_view& params);
 
         void ParametersString(std::string& str);
 
@@ -178,8 +172,6 @@ namespace Core {
 
         void CheckTransition();
 
-        void RemoveSerializedData();
-
         void Activate (Message& msg){
             std::cout << ReverseUID(name) << " got activated" << std::endl;
             return;
@@ -188,10 +180,6 @@ namespace Core {
         static Entity* Make (std::string_view& params);
 
         static void Register (const char* name, Entity* (*constr_func)(std::string_view& params));
-
-        void Register();
-
-        void Deregister();
 
         static Entity* Find (uint64_t entityID);
 
@@ -212,7 +200,7 @@ namespace Core {
         glm::quat rotation = {0.0f, 0.0f, 0.0f, 1.0f};
         glm::vec3 location = {0.0f, 0.0f, 0.0f};
 
-        SerializedEntityData* serialized_data = nullptr; // TODO: yeet this
+        void Register();
 
         static std::unordered_map<uint64_t, Entity*> List;
         static std::unordered_map<name_t, Entity*> NameList;
@@ -230,10 +218,6 @@ namespace Core {
             is_init = true;
             if (resources_waiting == 0) Start();
         }
-
-        // I think that we should remove the Uninit method
-        // and replace it with desturcotrs
-        virtual void Uninit() = 0;
 
         virtual void EventHandler(Event &event) = 0;
 

@@ -13,9 +13,7 @@ namespace Core {
     StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
         std::cout << "Staticwobj constructor." << std::endl;
 
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
-
+        data.make();
         data->FromString(str);
     };
 
@@ -36,21 +34,18 @@ namespace Core {
     }
 
     void StaticWorldObject::Load(){
-        Data* data = (Data*) serialized_data;
-
-        rendercomponent = PoolProxy<RenderComponent>::New();
+        rendercomponent.make();
         rendercomponent->SetModel(data->model);
         rendercomponent->SetLightmap(data->lightmap);
         rendercomponent->SetCellParams(cell->HasInteriorLighting());
 
-        physicscomponent = PoolProxy<PhysicsComponent>::New();
+        physicscomponent.make();
         physicscomponent->SetModel(data->model);
         physicscomponent->SetMass(0.0f);
         physicscomponent->SetParent(this);
         physicscomponent->SetCollisionGroup(COLL_WORLDOBJ);
 
-        delete serialized_data;
-        serialized_data = nullptr;
+        data.clear();
 
         rendercomponent->Init();
         physicscomponent->Init();
@@ -63,18 +58,12 @@ namespace Core {
         isloaded = false;
         Serialize();
 
-        rendercomponent->Uninit();
-        physicscomponent->Uninit();
-
-        PoolProxy<RenderComponent>::Delete(rendercomponent);
-        rendercomponent = nullptr;
-        PoolProxy<PhysicsComponent>::Delete(physicscomponent);
-        physicscomponent = nullptr;
+        rendercomponent.clear();
+        physicscomponent.clear();
     };
 
     void StaticWorldObject::Serialize() {
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
+        data.make();
 
         data->model = rendercomponent->GetModel();
         data->lightmap = rendercomponent->GetLightmap();

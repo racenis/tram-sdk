@@ -76,7 +76,7 @@ void WorldCell::Unload(){
             } else {
                 std::cout << "Yeeting " << ReverseUID(it->GetName()) << " out of existance!" << std::endl;
                 //it->Yeet();
-                it->~Entity();
+                delete it;
                 // TODO: actually delete the entity
             }
         }

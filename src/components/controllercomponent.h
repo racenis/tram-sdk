@@ -45,7 +45,6 @@ namespace Core {
             ACTIONMODIFIER_BACKWARD_RIGHT
         };
         void Init(){};
-        void Uninit(){};
         void Start(){}
         bool Remind(){return true;};
         void EventHandler(Event &event){};

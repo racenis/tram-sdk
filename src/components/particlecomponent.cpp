@@ -9,7 +9,7 @@
 namespace Core {
     using namespace Core::Render;
     
-    void ParticleComponent::Uninit(){
+    ParticleComponent::~ParticleComponent(){
         is_ready = true;
 
         OpenGL::RemoveDrawListEntry(draw_list_entry);

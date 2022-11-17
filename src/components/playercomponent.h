@@ -109,7 +109,7 @@ namespace Core {
             cell_loader = PoolProxy<WorldCell::Loader>::New();
             cell_loader->SetLocation(parent->GetLocation());
         }
-        void Uninit(){
+        ~PlayerComponent(){
             Event::RemoveListener(listener);
             listener = nullptr;
             Event::RemoveListener(keydown);

@@ -13,7 +13,7 @@ namespace Core {
     class RenderComponent : public EntityComponent {
     public:
         RenderComponent() : model(this), lightmap(this){}
-        ~RenderComponent() = default;
+        ~RenderComponent();
         inline name_t GetModel(){return model->GetName();};
 
         inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
@@ -23,10 +23,6 @@ namespace Core {
         void SetLightmap(uint64_t name);
 
         void SetPose(Render::Pose* newPose);
-
-        void Init();
-
-        void Uninit();
 
         void Start();
 

@@ -76,9 +76,6 @@ namespace Core {
 
         Serialize();
 
-        rendercomponent->Uninit();
-        physicscomponent->Uninit();
-
         rendercomponent.clear();
         physicscomponent.clear();
     }

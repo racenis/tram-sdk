@@ -49,7 +49,7 @@ namespace Core::Audio {
     }
     
     void Uninit() {
-        for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.Uninit();
+        for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
         for (auto it : sound_map) it.second->Unload();
         
         alcMakeContextCurrent(nullptr);
@@ -122,11 +122,7 @@ namespace Core {
     
     template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("audio component pool", 150);
     
-    void AudioComponent::Init() {
-        if (resources_waiting == 0) Start();
-    }
-    
-    void AudioComponent::Uninit() {
+    AudioComponent::~AudioComponent() {
         alDeleteSources(1, &source);
         is_ready = false;
     }

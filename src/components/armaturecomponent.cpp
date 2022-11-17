@@ -18,7 +18,7 @@ namespace Core {
         if (resources_waiting == 0) Start();
     };
         
-    void ArmatureComponent::Uninit(){
+    ArmatureComponent::~ArmatureComponent(){
         assert(is_ready);
         assert(poseobj);
         Render::poseList.Remove(poseobj);

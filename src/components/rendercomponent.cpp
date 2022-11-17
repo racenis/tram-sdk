@@ -33,14 +33,8 @@ namespace Core {
             OpenGL::SetPose(draw_list_entry, pose);
         }
     };
-
-    void RenderComponent::Init() {
-        assert(!is_ready);
-        is_init = true;
-        if (resources_waiting == 0) Start();
-    };
     
-    void RenderComponent::Uninit(){
+    RenderComponent::~RenderComponent(){
         assert(is_ready);
         is_ready = false;
         
