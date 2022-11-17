@@ -8,13 +8,15 @@
 #include <components/physicscomponent.h>
 
 namespace Core {
-    Crate::Crate(std::string_view& str){
-        Entity::SetParameters(str);
+    Crate::Crate(std::string_view& str) : Entity(str) {
+        std::cout << "Crate constructor." << std::endl;
+        //Entity::SetParameters(str);
 
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
+        //serialized_data = new Data();
+        //auto data = (Data*) serialized_data;
+        serializeddata.make();
 
-        data->FromString(str);
+        serializeddata->FromString(str);
     }
 
     Crate::Crate(const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot){
@@ -22,11 +24,11 @@ namespace Core {
         location = pos;
         rotation = glm::quat(rot);
 
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
-
-        data->model = UID(modelname);
-        data->collmodel = UID(collisionmodelname);
+        //serialized_data = new Data();
+        //auto data = (Data*) serialized_data;
+        serializeddata.make();
+        serializeddata->model = UID(modelname);
+        serializeddata->collmodel = UID(collisionmodelname);
     }
 
     void Crate::UpdateParameters() {
@@ -44,21 +46,23 @@ namespace Core {
     }
 
     void Crate::Load(){
-        auto data = (Data*) serialized_data;
-
+        //auto data = (Data*) serialized_data;
+        
+        serializeddata.make();
         rendercomponent.make();
         physicscomponent.make();
         
-        rendercomponent->SetModel(data->model);
+        rendercomponent->SetModel(serializeddata->model);
         rendercomponent->SetPose(nullptr);
 
         physicscomponent->SetParent(this);
-        physicscomponent->SetModel(data->collmodel);
+        physicscomponent->SetModel(serializeddata->collmodel);
         physicscomponent->SetMass(68.9f);
         physicscomponent->SetStartAsleep();
 
-        delete serialized_data;
-        serialized_data = nullptr;
+        //delete serialized_data;
+        //serialized_data = nullptr;
+        serializeddata.clear();
 
         rendercomponent->Init();
         physicscomponent->Init();
@@ -80,11 +84,12 @@ namespace Core {
     }
 
     void Crate::Serialize() {
-        serialized_data = new Data();
-        auto data = (Data*) serialized_data;
+        //serialized_data = new Data();
+        //auto data = (Data*) serialized_data;
+        serializeddata.make();
 
-        data->model = rendercomponent->GetModel();
-        data->collmodel = physicscomponent->GetModel();
+        serializeddata->model = rendercomponent->GetModel();
+        serializeddata->collmodel = physicscomponent->GetModel();
     }
 
     void Crate::MessageHandler(Message& msg){

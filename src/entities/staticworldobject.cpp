@@ -10,8 +10,8 @@
 namespace Core {
     using namespace Core::Physics;
 
-    StaticWorldObject::StaticWorldObject(std::string_view& str){
-        Entity::SetParameters(str);
+    StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
+        std::cout << "Staticwobj constructor." << std::endl;
 
         serialized_data = new Data();
         auto data = (Data*) serialized_data;

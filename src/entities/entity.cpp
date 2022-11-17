@@ -16,14 +16,60 @@ namespace Core {
     void Entity::SerializeString(std::string& str) {
         serialized_data->ToString(str);
     }
+    
+    Entity::Entity() {
+        std::cout << "Entity base constructor." << std::endl;
+        this->id = GenerateID();
+        Register();
+    }
+    
+    Entity::Entity(name_t name) {
+        this->id = GenerateID();
+        this->name = name;
+        Register();
+    }
+    
+    Entity::Entity(std::string_view& str) {
+        name = SerializedEntityData::Field<name_t>().FromStringAsName(str);
+
+        location.x = SerializedEntityData::Field<float>().FromString(str);
+        location.y = SerializedEntityData::Field<float>().FromString(str);
+        location.z = SerializedEntityData::Field<float>().FromString(str);
+
+        float rx = SerializedEntityData::Field<float>().FromString(str);
+        float ry = SerializedEntityData::Field<float>().FromString(str);
+        float rz = SerializedEntityData::Field<float>().FromString(str);
+
+        rotation = glm::quat(glm::vec3(rx, ry, rz));
+
+        action = SerializedEntityData::Field<name_t>().FromStringAsName(str);
+        
+        if (!id) id = GenerateID();
+        Register();
+        std::cout << "Entity base constructor: " << ReverseUID(this->GetName()) << std::endl;
+    }
+    
+    Entity::~Entity() {
+        std::cout << "Entity base destructor: " << ReverseUID(this->GetName()) << std::endl;
+
+        if (cell) cell->RemoveEntity(this);
+
+        if (id) {
+            auto id_it = Entity::List.find(id);
+            if (id_it != Entity::List.end()) Entity::List.erase(id_it);
+        }
+
+        if (name) {
+            auto name_it = Entity::NameList.find(name);
+            if (name_it != Entity::NameList.end()) Entity::NameList.erase(name_it);
+        }
+    }
 
     void Entity::Yeet(){
-        if(cell) cell->RemoveEntity(this);
-        if(isloaded) Unload();
-        if(serialized_data) RemoveSerializedData();
-        Deregister();
+
     };
 
+    //delete this too
     void Entity::RemoveSerializedData(){
         if(!serialized_data) return;
 
@@ -61,18 +107,8 @@ namespace Core {
         }
     }
 
+    //delete
     void Entity::Deregister(){
-        if (id) {
-            auto id_it = Entity::List.find(id);
-            if (id_it != Entity::List.end())
-                Entity::List.erase(id_it);
-        }
-
-        if (name) {
-            auto name_it = Entity::NameList.find(name);
-            if (name_it != Entity::NameList.end())
-                Entity::NameList.erase(name_it);
-        }
     }
     
     Entity* Entity::Find (uint64_t entityID){
@@ -121,19 +157,7 @@ namespace Core {
     }
 
     void Entity::SetParameters (std::string_view& params){
-        name = SerializedEntityData::Field<name_t>().FromStringAsName(params);
 
-        location.x = SerializedEntityData::Field<float>().FromString(params);
-        location.y = SerializedEntityData::Field<float>().FromString(params);
-        location.z = SerializedEntityData::Field<float>().FromString(params);
-
-        float rx = SerializedEntityData::Field<float>().FromString(params);
-        float ry = SerializedEntityData::Field<float>().FromString(params);
-        float rz = SerializedEntityData::Field<float>().FromString(params);
-
-        rotation = glm::quat(glm::vec3(rx, ry, rz));
-
-        action = SerializedEntityData::Field<name_t>().FromStringAsName(params);
     }
 
     void Entity::ParametersString(std::string& str){

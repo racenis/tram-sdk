@@ -124,14 +124,11 @@ namespace Core {
 
         void SerializeString(std::string& str);
 
-        Entity() = default;
-
-        inline void Init(){
-            if(!id){
-                id = GenerateID();
-                Register();
-            }
-        }
+        Entity();
+        Entity(name_t name);
+        Entity(std::string_view& str);
+        
+        virtual ~Entity();
         
         void Yeet();
 
@@ -227,7 +224,7 @@ namespace Core {
     class EntityComponent {
     public:
         EntityComponent(){ id = GenerateID(); }
-        virtual ~EntityComponent() {}
+        virtual ~EntityComponent() { std::cout << "EntityComponent base destructor." << std::endl;  }
 
         virtual void Init() {
             is_init = true;

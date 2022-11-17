@@ -17,6 +17,7 @@ namespace Core {
     class Player : public Entity {
     public:
         Player();
+        ~Player() {std::cout << "Player destructor!" << std::endl;}
         void Load();
         void Unload();
         void Serialize();

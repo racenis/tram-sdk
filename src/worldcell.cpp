@@ -75,7 +75,9 @@ void WorldCell::Unload(){
                 it->Unload();
             } else {
                 std::cout << "Yeeting " << ReverseUID(it->GetName()) << " out of existance!" << std::endl;
-                it->Yeet();
+                //it->Yeet();
+                it->~Entity();
+                // TODO: actually delete the entity
             }
         }
     }
@@ -250,7 +252,7 @@ void WorldCell::LoadFromDisk(){
 void WorldCell::AddEntity(Entity* entity){
     entities.push_back(entity);
 
-    entity->Init();
+    //entity->Init();
 
     entity->cell = this;
 

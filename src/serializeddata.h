@@ -44,6 +44,21 @@ namespace Core {
         virtual char const* GetEditorName() = 0;
         virtual char const* GetDataName() = 0;
     };
+    
+    template <typename T>
+    class SerializedData {
+    public:
+        SerializedData() {}
+        ~SerializedData() { if (ptr) delete ptr; }
+        void make() { if (ptr) delete ptr; ptr = new T; }
+        void clear() { delete ptr; ptr = nullptr; }
+        T* get() { return ptr; }
+        T* operator->() { return ptr; }
+        T& operator*() { return ptr; }
+        explicit operator bool() { return ptr != nullptr; }
+    protected:
+        T* ptr = nullptr;
+    };
 
     // UNSIGNED INT TYPE
     template <>

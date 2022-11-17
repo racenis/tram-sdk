@@ -69,6 +69,7 @@ namespace Core {
     protected:
         Component<RenderComponent> rendercomponent;
         Component<PhysicsComponent> physicscomponent;
+        SerializedData<Data> serializeddata;
     };
 }
 

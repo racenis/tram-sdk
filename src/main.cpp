@@ -121,7 +121,7 @@ int main() {
     //derp_player->SetRepeating(true);
     //derp_player->Init();
     
-    auto crate_ent = Entity::Find(UID("estijs"));
+    //auto crate_ent = Entity::Find(UID("estijs"));
         
     while(!SHOULD_CLOSE){
         UI::Update();
@@ -137,11 +137,22 @@ int main() {
         
         //time_of_day += 0.001f;
         SetSun(time_of_day); // this sets the ambient lighting
-
-
+        
         static int tick = 0;
         tick++;
-
+        
+        
+        if (tick == 300) {
+            auto aaa = Entity::FindName(UID("estijs"));
+            std::cout << "estijs: " << aaa << std::endl;
+            delete aaa;
+        }
+        
+        if (tick == 350) {
+                        auto aaa = Entity::FindName(UID("estijs"));
+            std::cout << "estijs: " << aaa << std::endl;
+        }
+        
         // this will make the light spin
         lit->UpdateLocation(glm::vec3(cos(((float)tick) / 60.0f) * 5.0f, 0.01 ,sin(((float)tick) / 60.0f) * 5.0f));
         
@@ -162,20 +173,6 @@ int main() {
         Async::ResourceLoader2ndStage();
         Async::FinishResource();
 
-        if(tick == 100){
-            
-            //derp_player->Play();
-        }
-        
-        if (tick == 50) crate_ent = Entity::FindName(UID("estijs"));
-
-
-        if (tick > 50) {
-            glm::vec3 crate_loc;
-            crate_ent->GetLocation(crate_loc);
-            //derp_player->UpdateLocation(crate_loc);
-        }
-
 
         Event::Dispatch();
         Message::Dispatch();
@@ -194,8 +191,16 @@ int main() {
         UI::EndFrame();
     }
 
+    std::cout << "endframe 1" << std::endl;
+
     Async::Yeet();
+    
+    std::cout << "endframe 2" << std::endl;
 
     Audio::Uninit();
+    
+    std::cout << "endframe 3" << std::endl;
     UI::Uninit();
+    
+    std::cout << "endframe 4" << std::endl;
 }
