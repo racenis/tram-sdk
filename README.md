@@ -22,12 +22,12 @@ Instruction manual and other documentations [can be found here](https://racenis.
 
 ## To-do list
 
-- Remove Uninit() method from all components
-	- Move the code into the destructor
-- Remove SetParameters() from Entity
-	- Move it into the constructor
-- Remove Yeet() from Entity
-	- Move the code into the destructor
+- ~~Remove Uninit() method from all components~~
+	- ~~Move the code into the destructor~~
+- ~~Remove SetParameters() from Entity~~
+	- ~~Move it into the constructor~~
+- ~~Remove Yeet() from Entity~~
+	- ~~Move the code into the destructor~~
 - Convert name_t into a class
 - Remove SetErrorModel() and SetErrorMaterial()
 	- Move the code into Render::Init()

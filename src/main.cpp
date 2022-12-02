@@ -1,5 +1,7 @@
 #include <iostream>
 
+#ifdef NEKADEEE
+
 #include <core.h>
 #include <async.h>
 #include <ui.h>
@@ -203,4 +205,27 @@ int main() {
     UI::Uninit();
     
     std::cout << "endframe 4" << std::endl;
+}
+
+#endif
+
+
+
+#include <core.h>
+#include <file.h>
+
+int main() {
+    Core::Init();
+    
+    std::cout << Core::ENGINE_VERSION << std::endl;
+    std::cout << "Hello World!" << std::endl;
+    
+    
+    Core::File bepis("bepis.txt", Core::MODE_READ);
+
+    std::cout << bepis.is_open() << std::endl;
+
+    bepis.write_int32(69);
+    bepis.write_float32(69.0f);
+    bepis.write_uint8(69);
 }
