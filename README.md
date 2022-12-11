@@ -25,12 +25,16 @@ Right now I'm using glad for OpenGL pointer acquisition, glfw for windowing, glm
 
 ### Building
 I don't have any makefiles right now, so I suggest that you dump all of the code from the `src` directory into your favorite IDE.
+
 Set the compiler include search directories to `src` and `libraries`.
+
 For the linker, set the search directories to `libraries/binaries/win64`, if you're compiling on windows. For Linux you should install the relevant packages from your package manager. Here's the linking order that should work: `-Llibraries  -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lglfw3 -lOpenAL32  -lglfw3 -lgdi32 -lopengl32`. The last two are for windows only, I think.
 
 ### Libraries
 For convenience, I have included all of the library header files in the `libraries` directory. Since compiling all of the libraries from source takes about an hour, I have also included binaries for 64-bit windows in the `libraries/binaries/win64` directory. They should work for gcc and clang compilers.
+
 If you're on Linux, then all of the binaries should be available to you from your package manager.
+
 If you're using the microsoft's C++ compiler, then good luck.
 
 ### Contributions
