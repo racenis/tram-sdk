@@ -1,5 +1,7 @@
 #include <iostream>
 
+#define NEKADEEE
+
 #ifdef NEKADEEE
 
 #include <core.h>
@@ -124,7 +126,7 @@ int main() {
     //derp_player->Init();
     
     //auto crate_ent = Entity::Find(UID("estijs"));
-        
+    
     while(!SHOULD_CLOSE){
         UI::Update();
 
@@ -146,13 +148,7 @@ int main() {
         
         if (tick == 300) {
             auto aaa = Entity::FindName(UID("estijs"));
-            std::cout << "estijs: " << aaa << std::endl;
             delete aaa;
-        }
-        
-        if (tick == 350) {
-                        auto aaa = Entity::FindName(UID("estijs"));
-            std::cout << "estijs: " << aaa << std::endl;
         }
         
         // this will make the light spin
@@ -208,7 +204,7 @@ int main() {
 }
 
 #endif
-
+#ifndef NEKADEEE
 
 
 #include <core.h>
@@ -219,13 +215,6 @@ int main() {
     
     std::cout << Core::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
-    
-    
-    Core::File bepis("bepis.txt", Core::MODE_READ);
-
-    std::cout << bepis.is_open() << std::endl;
-
-    bepis.write_int32(69);
-    bepis.write_float32(69.0f);
-    bepis.write_uint8(69);
 }
+
+#endif

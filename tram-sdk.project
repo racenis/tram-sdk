@@ -101,13 +101,13 @@
         <IncludePath Value="libraries"/>
       </Compiler>
       <Linker Options="-lglfw3;-lgdi32;-lopengl32" Required="yes">
-        <LibraryPath Value="libraries"/>
+        <LibraryPath Value="libraries/binaries/win64"/>
         <Library Value="libBulletSoftBody.a"/>
         <Library Value="libBulletDynamics.a"/>
         <Library Value="libBulletCollision.a"/>
         <Library Value="libLinearMath.a"/>
         <Library Value="libglfw3.a"/>
-        <Library Value="libOpenAL32.dll.a"/>
+        <Library Value="libOpenAL32.a"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(ProjectName).exe" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
