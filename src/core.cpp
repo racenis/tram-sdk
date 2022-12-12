@@ -81,7 +81,7 @@ namespace Core {
     }
 
     name_t FindLangStr(name_t name){
-        std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name);
+        std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name.key);
 
         if(ff == langStringHashMap.end()){
             return 0;
@@ -90,9 +90,9 @@ namespace Core {
         }
     }
 
-    const char* ReverseUID(name_t uid){
-        return stringPool.begin() + uid;
-    }
+    //const char* ReverseUID(name_t uid){
+    //    return stringPool.begin() + uid;
+    //}
 
     namespace Stats {
         double total_time[sizeof(Stats::Type)] = {0.0};
@@ -145,7 +145,7 @@ namespace Core {
         }
     }
 
-    uint64_t UID(std::string name){
+    /*uint64_t UID(std::string name){
         std::unordered_map<std::string, uint64_t>::iterator ff = stringHashMap.find(name);
         if(ff == stringHashMap.end()){
             uint64_t key = stringPool.GetSize();
@@ -173,8 +173,46 @@ namespace Core {
         } else {
             return ff->second;
         }
+    }*/
+
+    UID::UID(const std::string& value) {
+        const char* str = value.c_str();
+        *this = UID(str);
+    }
+    
+    // TODO: optimize this
+    UID::UID(const char*& value) {
+        std::string name = value;
+        std::unordered_map<std::string, uint64_t>::iterator ff = stringHashMap.find(name);
+        if(ff == stringHashMap.end()){
+            uint64_t key = stringPool.GetSize();
+            char* newstr = stringPool.AddNew(name.size() + 1);
+
+            stringHashMap.emplace(name, key);
+            strcpy(newstr, name.c_str());
+            //return key;
+            this->key = key;
+        } else {
+            //return ff->second;
+            this->key = ff->second;
+        }
     }
 
+    UID::UID(const uint64_t& value) {
+        this->key = value;
+    }
+    
+    UID::operator std::string() {
+        return stringPool.begin() + key;
+    }
+    
+    UID::operator char const*() {
+        return stringPool.begin() + key;
+    }
+
+    //const char* ReverseUID(name_t uid){
+    //    return stringPool.begin() + uid;
+    //}
 
 
 
@@ -218,14 +256,14 @@ namespace Core {
             file.ignore(1);
             std::getline(file, langstr);
 
-            uint64_t strkey = UID(strid);
+            name_t strkey = UID(strid);
             uint64_t langkey = stringPool.GetSize();
 
             char* tbr = stringPool.AddNew(langstr.length() + 1);
 
             strcpy(tbr, langstr.c_str());
 
-            langStringHashMap[strkey] = langkey;
+            langStringHashMap[strkey.key] = langkey;
 
         }
         file.close();
@@ -275,8 +313,9 @@ namespace Core {
 
     void Init(){
         // set the 0th string to 'none'
-        std::string none = "none";
-        UID(none);
+        //std::string none = "none";
+        //UID(none);
+        UID("none");
     }
 
 

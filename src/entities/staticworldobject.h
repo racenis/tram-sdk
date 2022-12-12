@@ -36,13 +36,13 @@ namespace Core {
             Field<name_t> lightmap;
 
             void ToString(std::string& str) {
-                model.ToStringAsName(str);
-                lightmap.ToStringAsName(str);
+                model.ToString(str);
+                lightmap.ToString(str);
             }
 
             void FromString(std::string_view& str) {
-                model.FromStringAsName(str);
-                lightmap.FromStringAsName(str);
+                model.FromString(str);
+                lightmap.FromString(str);
             }
             
             name_t GetEditorModel() {

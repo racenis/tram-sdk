@@ -85,7 +85,7 @@ namespace Core {
         anim_info[slot].animation_header = Render::Animation::Find(animation_name);
 
         if(anim_info[slot].animation_header == nullptr){
-            std::cout << "Animation " << ReverseUID(animation_name) << " not found!" << std::endl;
+            std::cout << "Animation " << animation_name << " not found!" << std::endl;
             anim_playing[slot] = 0;
             return;
         }

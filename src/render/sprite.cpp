@@ -23,12 +23,12 @@ std::unordered_map<uint64_t, Sprite*> Sprite::List;
 // the sprite list inside of its bucket.
 
 Sprite* Sprite::Find(name_t name){
-    std::unordered_map<uint64_t, Sprite*>::iterator ff = List.find(name);
+    std::unordered_map<uint64_t, Sprite*>::iterator ff = List.find(name.key);
     Sprite* sprite;
 
     if(ff == List.end()){
-        sprite = new Sprite(name);
-        List[name] = sprite;
+        sprite = new Sprite(name.key);
+        List[name.key] = sprite;
     } else {
         sprite = ff->second;
     }

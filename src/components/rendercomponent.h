@@ -18,9 +18,9 @@ namespace Core {
 
         inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
 
-        void SetModel(uint64_t name);
+        void SetModel(name_t name);
 
-        void SetLightmap(uint64_t name);
+        void SetLightmap(name_t name);
 
         void SetPose(Render::Pose* newPose);
 

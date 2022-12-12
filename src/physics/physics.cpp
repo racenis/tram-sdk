@@ -28,12 +28,12 @@ namespace Core::Physics {
         USERINDEX_TRIGGERCOMPONENT = 2,
     };
 
-    CollisionModel* CollisionModel::Find(uint64_t modelName){
-        std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName);
+    CollisionModel* CollisionModel::Find(name_t modelName){
+        std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName.key);
         CollisionModel* model;
         if(ff == List.end()){
             model = new CollisionModel(modelName);
-            List[modelName] = model;
+            List[modelName.key] = model;
         } else {
             model = ff->second;
         }

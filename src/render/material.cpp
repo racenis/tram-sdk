@@ -63,19 +63,19 @@ void Material::LoadMaterialInfo(const char* filename){
             std::cout << "Error material list material: " << name << std::endl;
         }
 
-        List[UID(name)] = PoolProxy<Material>::New(UID(name), mattype);
+        List[UID(name).key] = PoolProxy<Material>::New(UID(name), mattype);
     }
     
     file.close();
 }
 
 Material* Material::Find(name_t name){
-    std::unordered_map<uint64_t, Material*>::iterator ff = List.find(name);
+    std::unordered_map<uint64_t, Material*>::iterator ff = List.find(name.key);
     if(ff == List.end()){
         // something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()
         // TODO: fix that
         auto material = PoolProxy<Material>::New(name, TEXTURE_LIGHTMAP);
-        List[name] = material;
+        List[name.key] = material;
         return material;
     }
 
@@ -105,7 +105,7 @@ void Material::LoadFromDisk(){
         channels = 3;
     }
 
-    strcat(path, ReverseUID(name));
+    strcat(path, name);
     strcat(path, ".png");
 
     stbi_set_flip_vertically_on_load(true);
@@ -126,7 +126,7 @@ void Material::LoadFromDisk(){
         stbi_image_free(loadtexture);
 
     } else {
-        std::cout << "Texture " << ReverseUID(name) << " couldn't be loaded!" << std::endl;
+        std::cout << "Texture " << name << " couldn't be loaded!" << std::endl;
 
         // copy the error texture
         texture = error_material->texture;

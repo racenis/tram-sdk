@@ -16,7 +16,35 @@
 #include <templates.h>
 
 namespace Core {
-    typedef uint64_t name_t;
+    struct UID {
+        UID() {}
+        UID(const std::string& value);
+        UID(const char*& value);
+        UID(const uint64_t& value);
+        ~UID() { }
+        UID(const UID& value) { *this = value; }
+        UID& operator=(const UID& value) {
+            key = value.key;
+            return *this;
+        }
+        
+        bool operator==(const UID& other) const {
+            return key == other.key;
+        }
+        
+        bool operator==(const uint64_t& other) const {
+            return key == other;
+        }
+        
+        explicit operator bool() { return key; }
+        
+        operator std::string();
+        operator char const*();
+        
+        uint64_t key = 0;
+    };
+    
+    typedef UID name_t;
 
     extern bool SHOULD_CLOSE;
     extern float FRAME_TIME;
@@ -40,10 +68,10 @@ namespace Core {
     class EntityComponent;
     class SerializedEntityData;
 
-    uint64_t UID(std::string name);
-    uint64_t UID(std::string_view name, size_t length);
+    //uint64_t UID(std::string name);
+    //uint64_t UID(std::string_view name, size_t length);
     name_t FindLangStr(name_t name);
-    const char* ReverseUID(uint64_t uid);
+    //const char* ReverseUID(uint64_t uid);
     
     void LoadText(const char* filename);
 
@@ -173,7 +201,7 @@ namespace Core {
         void CheckTransition();
 
         void Activate (Message& msg){
-            std::cout << ReverseUID(name) << " got activated" << std::endl;
+            std::cout << name << " got activated" << std::endl;
             return;
         }
 
@@ -203,7 +231,7 @@ namespace Core {
         void Register();
 
         static std::unordered_map<uint64_t, Entity*> List;
-        static std::unordered_map<name_t, Entity*> NameList;
+        static std::unordered_map<uint64_t, Entity*> NameList;
         static std::unordered_map<std::string, Entity* (*)(std::string_view& params)> entityConstructors;
         friend class WorldCell;
     };
@@ -392,7 +420,7 @@ namespace Core {
         Resource(){}
         Resource(name_t name) : name(name) {}
         inline Resource::Status GetStatus() const {return status;}
-        inline uint64_t GetName() {return name;};
+        inline name_t GetName() {return name;};
         inline size_t GetRef() {return references;}
         inline void AddRef(){references++;}
         inline void RemoveRef(){references--;}

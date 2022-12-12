@@ -61,7 +61,7 @@ namespace Core {
     };
 
     // UNSIGNED INT TYPE
-    template <>
+    /*template <>
     class SerializedEntityData::Field<uint64_t> {
     public:
         operator uint64_t() { return var; }
@@ -92,7 +92,38 @@ namespace Core {
         void ToStringAsName(std::string& str) { str += " "; str += ReverseUID(var); }
     private:
         uint64_t var;
-    };
+    };*/
+
+    template <>
+    inline uint64_t& SerializedEntityData::Field<uint64_t>::FromString(std::string_view &str) {
+        char* f_end;
+        var = std::strtod(str.data(), &f_end);
+        str.remove_prefix(f_end - str.data());
+        return var;
+    }
+    
+    template <>
+    inline void SerializedEntityData::Field<uint64_t>::ToString(std::string& str) {
+        str += " "; str += std::to_string(var);
+    }
+
+    // UID TYPE
+    template <>
+    inline name_t& SerializedEntityData::Field<name_t>::FromString(std::string_view &str) {
+        size_t uid_start = str.find_first_not_of(" \t");
+        size_t uid_end = str.find_first_of(" \t", uid_start);
+
+        std::string_view uid_str = str.substr(uid_start, uid_end - uid_start);
+        var = UID(std::string(uid_str));
+
+        str.remove_prefix(uid_end);
+        return var;
+    }
+    
+    template <>
+    inline void SerializedEntityData::Field<name_t>::ToString(std::string& str) {
+        str += " "; str += std::string(var);
+    }
 
     // FLOAT TYPE
     template <>

@@ -20,9 +20,9 @@ namespace Core {
         void EventHandler(Event &event){};
         void Start();
 
-        uint64_t GetModel(){ return model->GetName(); }
+        name_t GetModel(){ return model->GetName(); }
         Entity* GetParent(){ return parent; }
-        void SetModel(uint64_t modelName){ model = Physics::CollisionModel::Find(modelName); }
+        void SetModel(name_t modelName){ model = Physics::CollisionModel::Find(modelName); }
         void SetParent(Entity* newparent){ parent = newparent; }
 
         void SetActivationCallback(void (*activation_callback)(TriggerComponent*)) { this->activation_callback = activation_callback; }

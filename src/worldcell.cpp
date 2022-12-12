@@ -21,16 +21,17 @@ template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcel
 
 void WorldCell::SetName(name_t new_name) {
     if (name) {
+        std::cout << "WHY ARE YOU REJECTING ME" << std::endl;
         abort();
         // TODO: add code to remove the cell from worldcell list
     }
     
     name = new_name;
-    List[name] = this;
+    List[name.key] = this;
 }
 
 WorldCell* WorldCell::Find(name_t name){
-    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WorldCell::List.find(name);
+    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WorldCell::List.find(name.key);
 
     if(ff == WorldCell::List.end()){
         return nullptr;
@@ -59,7 +60,7 @@ WorldCell* WorldCell::Find (const glm::vec3& point){
 }
 
 void WorldCell::Load(){
-    std::cout << "Loading cell: " << ReverseUID(name) << std::endl;
+    std::cout << "Loading cell: " << name << std::endl;
     for (auto& it : entities)
         if(it->IsAutoLoad()) it->Load();
 
@@ -67,14 +68,14 @@ void WorldCell::Load(){
 };
 
 void WorldCell::Unload(){
-    std::cout << "Unloading cell: " << ReverseUID(name) << std::endl;
+    std::cout << "Unloading cell: " << name << std::endl;
     auto entities_copy = entities;
     for (auto& it : entities_copy) {
         if (it->IsAutoLoad()) {
             if (it->IsPersistent()) {
                 it->Unload();
             } else {
-                std::cout << "Yeeting " << ReverseUID(it->GetName()) << " out of existance!" << std::endl;
+                std::cout << "Yeeting " << it->GetName() << " out of existance!" << std::endl;
                 //it->Yeet();
                 delete it;
                 // TODO: actually delete the entity
@@ -112,13 +113,13 @@ void WorldCell::Loader::LoadCells() {
 
 void WorldCell::LoadFromDisk(){
     char path[100] = "data/";
-    strcat(path, ReverseUID(name));
+    strcat(path, name);
     strcat(path, ".cell");
     std::ifstream file;
     file.open(path);
 
     if (!file){ std::cout << "Can't find worldcell: " << path << std::endl; return; }
-    std::cout << "Loading worldcell: " << ReverseUID(name) << std::endl;
+    std::cout << "Loading worldcell: " << name << std::endl;
 
     std::string line;
 

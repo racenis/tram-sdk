@@ -74,11 +74,11 @@ namespace Core::GUI {
             Frame(FRAME_RIGHT, 20); if (SmallButton(BUTTON_CROSS)) worldcell_menu_open = false; EndFrame();
             Frame(FRAME_RIGHT, 320-4);
             Text("WorldCell Inspector", 2); FrameBreakLine();
-            static std::vector<char*> worldcell_names;
+            static std::vector<char const*> worldcell_names;
             static uint32_t worldcell_selected = 0;
             worldcell_names.clear();
             auto& worldcell_pool = PoolProxy<WorldCell>::GetPool();
-            for (size_t i = 0; i < worldcell_pool.GetSize(); i++) if (*((uint64_t*)(worldcell_pool.begin().ptr + i))!=0) worldcell_names.push_back((char*)ReverseUID((worldcell_pool.begin().ptr + i)->GetName())); else worldcell_names.push_back((char*)"[NONE]");
+            for (size_t i = 0; i < worldcell_pool.GetSize(); i++) if (*((uint64_t*)(worldcell_pool.begin().ptr + i))!=0) worldcell_names.push_back((char const*)(worldcell_pool.begin().ptr + i)->GetName()); else worldcell_names.push_back((char*)"[NONE]");
             DropdownBox((const char**)worldcell_names.data(), worldcell_names.size(), worldcell_selected);
             FrameBreakLine();
             
@@ -102,7 +102,7 @@ namespace Core::GUI {
             EndFrame();
             
             Frame(FRAME_RIGHT, 320-80);
-            Text(ReverseUID(worldcell->GetName()), 1); FrameBreakLine();
+            Text(worldcell->GetName(), 1); FrameBreakLine();
             Text(numbuffer, 1); FrameBreakLine();
             CheckBox(is_load); FrameBreakLine();
             CheckBox(is_int); FrameBreakLine();

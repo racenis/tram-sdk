@@ -10,7 +10,7 @@
 namespace Core {
     
     std::unordered_map<uint64_t, Entity*> Entity::List;
-    std::unordered_map<name_t, Entity*> Entity::NameList;
+    std::unordered_map<uint64_t, Entity*> Entity::NameList;
     std::unordered_map<std::string, Entity* (*)(std::string_view& params)> Entity::entityConstructors;
     
     Entity::Entity() {
@@ -26,7 +26,7 @@ namespace Core {
     }
     
     Entity::Entity(std::string_view& str) {
-        name = SerializedEntityData::Field<name_t>().FromStringAsName(str);
+        name = SerializedEntityData::Field<name_t>().FromString(str);
 
         location.x = SerializedEntityData::Field<float>().FromString(str);
         location.y = SerializedEntityData::Field<float>().FromString(str);
@@ -38,15 +38,15 @@ namespace Core {
 
         rotation = glm::quat(glm::vec3(rx, ry, rz));
 
-        action = SerializedEntityData::Field<name_t>().FromStringAsName(str);
+        action = SerializedEntityData::Field<name_t>().FromString(str);
         
         if (!id) id = GenerateID();
         Register();
-        std::cout << "Entity base constructor: " << ReverseUID(this->GetName()) << std::endl;
+        std::cout << "Entity base constructor: " << this->GetName() << std::endl;
     }
     
     Entity::~Entity() {
-        std::cout << "Entity base destructor: " << ReverseUID(this->GetName()) << std::endl;
+        std::cout << "Entity base destructor: " << this->GetName() << std::endl;
 
         if (cell) cell->RemoveEntity(this);
 
@@ -56,7 +56,7 @@ namespace Core {
         }
 
         if (name) {
-            auto name_it = Entity::NameList.find(name);
+            auto name_it = Entity::NameList.find(name.key);
             if (name_it != Entity::NameList.end()) Entity::NameList.erase(name_it);
         }
     }
@@ -69,7 +69,7 @@ namespace Core {
 
 
         if (into) {
-            std::cout << ReverseUID(name) << " transitioned into " << ReverseUID(into->GetName()) << std::endl;
+            std::cout << name << " transitioned into " << into->GetName() << std::endl;
             cell->RemoveEntity(this);
             into->AddEntity(this);
         }
@@ -86,7 +86,7 @@ namespace Core {
         }
 
         if (name) {
-            Entity::NameList[name] = this;
+            Entity::NameList[name.key] = this;
         }
     }
     
@@ -101,7 +101,7 @@ namespace Core {
     }
 
     Entity* Entity::FindName(name_t entityName){
-        std::unordered_map<uint64_t, Entity*>::iterator ff = Entity::NameList.find(entityName);
+        std::unordered_map<uint64_t, Entity*>::iterator ff = Entity::NameList.find(entityName.key);
 
         if(ff == Entity::NameList.end()){
             return nullptr;
@@ -137,7 +137,7 @@ namespace Core {
 
     void Entity::ParametersString(std::string& str){
         // TODO: convert this to new way
-        str.append(ReverseUID(name));
+        str.append(std::string(name));
         str.push_back(' ');
         str.append(std::to_string(location.x));
         str.push_back(' ');
@@ -155,7 +155,7 @@ namespace Core {
         str.push_back(' ');
         str.append(std::to_string(rot.z));
         str.push_back(' ');
-        str.append(ReverseUID(action));
+        str.append(std::string(action));
         str.push_back(' ');
     }
 

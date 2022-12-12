@@ -10,7 +10,7 @@
 #include <fstream>
 
 namespace Core::Render {
-    std::unordered_map<name_t, NameCount*> Animation::animationlist;
+    std::unordered_map<uint64_t, NameCount*> Animation::animationlist;
     StackPool<uint8_t> Animation::animationpool("animation keyframe pool", 50000);
     Pool<Pose> poseList("pose list", 100, true);
     template <> Pool<Animation> PoolProxy<Animation>::pool("animation pool", 50, false);
@@ -20,7 +20,7 @@ namespace Core::Render {
         std::ifstream file;
 
         std::string filename = "data/animations/";
-        filename += ReverseUID(name);
+        filename += std::string(name);
         filename += ".anim";
 
         file.open(filename);
@@ -45,7 +45,7 @@ namespace Core::Render {
             nameptr = (NameCount*)animationpool.AddNew(sizeof(NameCount));
             file >> noot;       //name of animation as string
             file >> bc;         //count of bones used by animation
-            a_name = UID(noot);   //uint64 hash of name string
+            a_name = UID(noot).key;   //uint64 hash of name string
 
             nameptr->first = a_name;
             nameptr->second = bc;
@@ -55,7 +55,7 @@ namespace Core::Render {
                 nameptr = (NameCount*)animationpool.AddNew(sizeof(NameCount));
                 file >> noot;       //name of bone as string
                 file >> kc;         //count of keyframes for the bone
-                a_name = UID(noot);   //uint64 hash of bone name
+                a_name = UID(noot).key;   //uint64 hash of bone name
 
                 nameptr->first = a_name;
                 nameptr->second = kc;
@@ -82,10 +82,10 @@ namespace Core::Render {
     }
 
     NameCount* Animation::Find(name_t name){
-        std::unordered_map<uint64_t, NameCount*>::iterator ff = animationlist.find(name);
+        std::unordered_map<uint64_t, NameCount*>::iterator ff = animationlist.find(name.key);
 
         if(ff == animationlist.end()){
-            std::cout << "Can't find animation " << ReverseUID(name) << "!" << std::endl;
+            std::cout << "Can't find animation " << name << "!" << std::endl;
             return nullptr;
         } else {
             return ff->second;

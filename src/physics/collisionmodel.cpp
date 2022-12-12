@@ -18,7 +18,7 @@ void Core::Physics::CollisionModel::LoadFromDisk(){
     btQuaternion rotat;
     btCompoundShape* cshape = new btCompoundShape();
 
-    strcat(path, ReverseUID(name));
+    strcat(path, name);
     strcat(path, ".collmdl");
 
     file.open(path);

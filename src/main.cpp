@@ -95,7 +95,7 @@ int main() {
     monguser_armature->SetModel(UID("mongus"));
     monguser_armature->Init();
     monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 2.0f);
-    monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << ReverseUID(name) << " IS FINISH!" << std::endl; });
+    monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
 
     // link the mongus model and his animation player
     monguser->SetPose(monguser_armature->GetPosePtr());
@@ -103,6 +103,7 @@ int main() {
     // turn on physics drawing
     //DRAW_PHYSICS_DEBUG = true;
     
+    std::cout << "DCIKS" << std::endl;
     
     auto tolet_sprite = new Sprite;
     tolet_sprite->SetMaterial(Material::Find(UID("poland")));
@@ -205,7 +206,6 @@ int main() {
 
 #endif
 #ifndef NEKADEEE
-
 
 #include <core.h>
 #include <file.h>

@@ -18,7 +18,7 @@ namespace Core::Audio {
     };
     
     Pool<SoundSource> all_sounds("sound source pool", 100, false);
-    std::unordered_map<name_t, Sound*> sound_map;
+    std::unordered_map<uint64_t, Sound*> sound_map;
     
     glm::vec3 LISTENER_POSITION = glm::vec3(0.0f);
     glm::vec3 LISTENER_ORIENTATION[2] = {glm::vec3(0.0f), glm::vec3(0.0f)};
@@ -67,12 +67,12 @@ namespace Core::Audio {
     }
     
     void Sound::LoadFromDisk() {
-        sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + ReverseUID(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
+        sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + std::string(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
         
         printf("data_len: %d, channels: %d, sample_rate: %d, audio: %lld\n", sound_length, channels, sample_rate, (long long)sound_data);
         
         if (sound_length < 0) {
-            std::cout << "There was an error loading the sound " << ReverseUID(name) << std::endl;
+            std::cout << "There was an error loading the sound " << name << std::endl;
         } else {
             static const int32_t buffer_size = 64 * 1024;
             sound_buffer_count = (sound_length + buffer_size - 1) / buffer_size;
@@ -93,7 +93,7 @@ namespace Core::Audio {
             }
             
             
-            sound_map[name] = this;
+            sound_map[name.key] = this;
         }
         
         status = READY;
@@ -105,12 +105,12 @@ namespace Core::Audio {
     }
     
     Sound* Sound::Find (name_t name) {
-        auto sound = sound_map.find(name);
+        auto sound = sound_map.find(name.key);
         
         if (sound != sound_map.end()) {
             return sound->second;
         } else {
-            std::cout << "Can't find the sound " << ReverseUID(name) << ", aborting." << std::endl;
+            std::cout << "Can't find the sound " << name << ", aborting." << std::endl;
             abort();
         }
     }

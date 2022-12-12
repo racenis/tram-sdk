@@ -24,12 +24,12 @@ std::unordered_map<uint64_t, Model*> Model::List;
 template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
 
 Model* Model::Find(name_t name){
-    std::unordered_map<uint64_t, Model*>::iterator ff = List.find(name);
+    std::unordered_map<uint64_t, Model*>::iterator ff = List.find(name.key);
     Model* model;
 
     if(ff == List.end()){
         model = new Model(name);
-        List[name] = model;
+        List[name.key] = model;
     } else {
         model = ff->second;
     }
@@ -124,7 +124,7 @@ void Model::LoadFromDisk(){
     
     
     strcpy(path, "data/models/");
-    strcat(path, ReverseUID(name));
+    strcat(path, name);
     strcat(path, ".stmdl");
 
 
@@ -148,7 +148,7 @@ void Model::LoadFromDisk(){
         
 
         if(mcount > MAX_MATERIALS_PER_MODEL){
-            std::cout << "Too many materials in model: " << ReverseUID(name) << std::endl;
+            std::cout << "Too many materials in model: " << name << std::endl;
             mcount = MAX_MATERIALS_PER_MODEL;
         }
 
@@ -236,7 +236,7 @@ void Model::LoadFromDisk(){
     // try opening it as a dynamic model
 
     strcpy(path, "data/models/");
-    strcat(path, ReverseUID(name));
+    strcat(path, name);
     strcat(path, ".dymdl");
 
     file.open(path);
@@ -268,7 +268,7 @@ void Model::LoadFromDisk(){
         file >> gcount;
 
         if(mcount > MAX_MATERIALS_PER_MODEL){
-            std::cout << "Too many materials in model: " << ReverseUID(name) << std::endl;
+            std::cout << "Too many materials in model: " << name << std::endl;
             mcount = MAX_MATERIALS_PER_MODEL;
         }
 
@@ -341,7 +341,7 @@ void Model::LoadFromDisk(){
         for(uint32_t i = 0; i < gcount; i++){
             std::string g;
             file >> g;
-            data->groups.push_back(UID(g));
+            data->groups.push_back(UID(g).key);
         }
         file.close();
 
@@ -379,7 +379,7 @@ void Model::LoadFromDisk(){
 
         // if we get this far, then it means that the model wasn't loaded from disk
 
-    std::cout << "Model file for " << ReverseUID(name) << " couldn't be accessed!" << std::endl;
+    std::cout << "Model file for " << name << " couldn't be accessed!" << std::endl;
 
     // copy the error model stuff
     //vao = error_model->vao;

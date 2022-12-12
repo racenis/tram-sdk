@@ -38,13 +38,13 @@ namespace Core {
             Field<name_t> collmodel;
 
             void ToString(std::string& str) {
-                model.ToStringAsName(str);
-                collmodel.ToStringAsName(str);
+                model.ToString(str);
+                collmodel.ToString(str);
             }
 
             void FromString(std::string_view& str) {
-                model.FromStringAsName(str);
-                collmodel.FromStringAsName(str);
+                model.FromString(str);
+                collmodel.FromString(str);
             }
             
             name_t GetEditorModel() {

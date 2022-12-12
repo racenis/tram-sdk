@@ -66,7 +66,7 @@ namespace Core::Render {
     public:
 
         Material (){}
-        Material(uint64_t mName, Material::Type mType) {
+        Material(name_t mName, Material::Type mType) {
             name = mName;
             type = mType;
             status = UNLOADED;
@@ -126,7 +126,7 @@ namespace Core::Render {
         static Model* error_model;
         static std::unordered_map<uint64_t, Render::Model*> List;
     public:
-        Model (uint64_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
+        Model (name_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
 
         bool Load(){
             LoadFromDisk();
@@ -157,7 +157,7 @@ namespace Core::Render {
     protected:
         Material* material;
         
-        static std::unordered_map<name_t, Sprite*> List;
+        static std::unordered_map<uint64_t, Sprite*> List;
     public:
         Sprite (){}
         Sprite(uint64_t name) : Resource(name) {}

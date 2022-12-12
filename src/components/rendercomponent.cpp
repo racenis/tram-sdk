@@ -9,16 +9,16 @@
 namespace Core {
     using namespace Core::Render;
     
-    void RenderComponent::SetModel(uint64_t name){
+    void RenderComponent::SetModel(name_t name){
         model = Render::Model::Find(name);
-        
+        std::cout << "SETTING MODEL: " << name << std::endl;
         if (is_ready) {
             OpenGL::RemoveDrawListEntry(draw_list_entry);
             InsertDrawListEntry();
         }
     };
 
-    void RenderComponent::SetLightmap(uint64_t name){
+    void RenderComponent::SetLightmap(name_t name){
         lightmap = Render::Material::Find(name);
         
         if (is_ready) {

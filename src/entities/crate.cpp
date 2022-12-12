@@ -47,18 +47,18 @@ namespace Core {
 
     void Crate::Load(){
         //auto data = (Data*) serialized_data;
-        
-        serializeddata.make();
+
         rendercomponent.make();
         physicscomponent.make();
         
-        rendercomponent->SetModel(serializeddata->model);
+        rendercomponent->SetModel((name_t)serializeddata->model);
         rendercomponent->SetPose(nullptr);
 
         physicscomponent->SetParent(this);
         physicscomponent->SetModel(serializeddata->collmodel);
         physicscomponent->SetMass(68.9f);
         physicscomponent->SetStartAsleep();
+        
 
         //delete serialized_data;
         //serialized_data = nullptr;

@@ -43,7 +43,7 @@ namespace Core::Physics {
     class CollisionModel : public Resource{
     public:
         CollisionModel(){}
-        CollisionModel(uint64_t mName){
+        CollisionModel(name_t mName){
             name = mName;
             status = UNLOADED;
         }
@@ -52,7 +52,7 @@ namespace Core::Physics {
         void LoadFromMemory(){}
         inline void* GetPtr(){return model;}
 
-        static CollisionModel* Find(uint64_t modelName);
+        static CollisionModel* Find(name_t modelName);
     protected:
         // TODO: change this to the actual type
         btCompoundShape* model = nullptr;  /// Pointer to the physics library's collision shape.
