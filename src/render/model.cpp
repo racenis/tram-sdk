@@ -16,24 +16,25 @@
 #include <fstream>
 #include <cstring>
 
+#include <templates/hashmap.h>
+
 using namespace Core;
 using namespace Core::Render;
 
 Model* Model::error_model = nullptr;
-std::unordered_map<uint64_t, Model*> Model::List;
+
+//std::unordered_map<uint64_t, Model*> Model::List;
+Hashmap<Model*> MODEL_LIST("model name list", 500);
 template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
 
 Model* Model::Find(name_t name){
-    std::unordered_map<uint64_t, Model*>::iterator ff = List.find(name.key);
-    Model* model;
-
-    if(ff == List.end()){
-        model = new Model(name);
-        List[name.key] = model;
-    } else {
-        model = ff->second;
+    Model* model = MODEL_LIST.Find(name);
+    
+    if (!model) {
+        model = PoolProxy<Model>::New(name);
+        MODEL_LIST.Insert(UID(name), model);
     }
-
+    
     return model;
 }
 

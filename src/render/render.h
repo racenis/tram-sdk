@@ -62,7 +62,6 @@ namespace Core::Render {
         size_t approx_vram_usage = 0;
 
         static Material* error_material;
-        static std::unordered_map<uint64_t, Material*> List;
     public:
 
         Material (){}
@@ -83,8 +82,8 @@ namespace Core::Render {
         bool Unload();
         void LoadFromDisk();
         void LoadFromMemory();
-        static void SetErrorMaterial(Material* mat) {error_material = mat; mat->Load();}
         static Material* Find(name_t name);
+        static void SetErrorMaterial(Material* mat) { error_material = mat; mat->Load(); }
         static void LoadMaterialInfo(const char* filename);
         friend class Sprite;
     };
@@ -124,7 +123,6 @@ namespace Core::Render {
         size_t approx_vram_usage = 0;
 
         static Model* error_model;
-        static std::unordered_map<uint64_t, Render::Model*> List;
     public:
         Model (name_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
 
@@ -136,10 +134,10 @@ namespace Core::Render {
         bool Unload();
         void LoadFromDisk();
         void LoadFromMemory();
-        size_t GetArmatureSize(){return armature.size();};
-        Bone* GetArmature(){return &armature.front();};
-        static void SetErrorModel(Model* model) {error_model = model; model->Load();}
+        size_t GetArmatureSize() { return armature.size(); }
+        Bone* GetArmature() { return &armature.front(); }
         static Model* Find(name_t name);
+        static void SetErrorModel(Model* model) { error_model = model; model->Load(); }
     };
 
     class Sprite : public Resource {

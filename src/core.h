@@ -38,8 +38,8 @@ namespace Core {
         
         explicit operator bool() { return key; }
         
-        operator std::string();
-        operator char const*();
+        operator std::string() const;
+        operator char const*() const;
         
         uint64_t key = 0;
     };

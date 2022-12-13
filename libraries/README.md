@@ -21,6 +21,9 @@ Some of these libraries are not covered under the MIT license, so check before m
 ## glfw
 <https://github.com/glfw/glfw>
 
+## MurmurHash2
+<https://github.com/aappleby/smhasher>
+
 ## stb_image
 <https://github.com/nothings/stb/blob/master/stb_image.h>
 

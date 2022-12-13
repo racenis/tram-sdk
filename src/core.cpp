@@ -202,11 +202,11 @@ namespace Core {
         this->key = value;
     }
     
-    UID::operator std::string() {
+    UID::operator std::string() const {
         return stringPool.begin() + key;
     }
     
-    UID::operator char const*() {
+    UID::operator char const*() const {
         return stringPool.begin() + key;
     }
 

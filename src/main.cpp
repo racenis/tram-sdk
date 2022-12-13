@@ -1,6 +1,6 @@
 #include <iostream>
 
-#define NEKADEEE
+//#define NEKADEEE
 
 #ifdef NEKADEEE
 
@@ -210,11 +210,21 @@ int main() {
 #include <core.h>
 #include <file.h>
 
+#include <logging.h>
+
 int main() {
     Core::Init();
     
     std::cout << Core::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
+    
+    Core::Log(69, "muh {} dick  ", 420.0f);
+    Core::Log(69, "muh {} dick  ", 420ull);
+    Core::Log(69, "muh {} dick  ", -420ll);
+    
+    Core::Log(420, "I have {} benises and their all {} cm long", "many", 17.4f);
+    
+    Core::Log(123, "Entity {} speed is {} km/h", Core::UID("my nigga"), 450.1f);
 }
 
 #endif

@@ -50,7 +50,12 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- ~~Move the code into the destructor~~
 - Convert name_t into a class
 - Remove SetErrorModel() and SetErrorMaterial()
-	- Move the code into Render::Init()
+	- ~~Move the code into Render::Init()~~
+	- Actually no, just add a thing that checks if something is set
+- Message / Event system
+	- Add a way to define custom message/event types
+- System tracker
+- Render/Armature component linking
 
 #### For next versions
 - ParticleComponent

@@ -21,13 +21,16 @@
 #include <render/render.h>
 #include <render/renderer.h>
 
+#include <templates/hashmap.h>
+
 #include <fstream>
 
 using namespace Core;
 using namespace Core::Render;
 
 Material* Material::error_material = nullptr;
-std::unordered_map<uint64_t, Material*> Material::List;
+//std::unordered_map<uint64_t, Material*> Material::List;
+Hashmap<Material*> MATERIAL_LIST("material name list", 500);
 template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
 
 void Material::LoadMaterialInfo(const char* filename){
@@ -63,23 +66,24 @@ void Material::LoadMaterialInfo(const char* filename){
             std::cout << "Error material list material: " << name << std::endl;
         }
 
-        List[UID(name).key] = PoolProxy<Material>::New(UID(name), mattype);
+        MATERIAL_LIST.Insert(UID(name), PoolProxy<Material>::New(UID(name), mattype));
     }
     
     file.close();
 }
 
 Material* Material::Find(name_t name){
-    std::unordered_map<uint64_t, Material*>::iterator ff = List.find(name.key);
-    if(ff == List.end()){
-        // something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()
-        // TODO: fix that
-        auto material = PoolProxy<Material>::New(name, TEXTURE_LIGHTMAP);
-        List[name.key] = material;
-        return material;
+    // APPARENTLY:
+    // "something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()"
+    // TODO: check if it still happens
+    Material* material = MATERIAL_LIST.Find(name);
+    
+    if (!material) {
+        material = PoolProxy<Material>::New(name, TEXTURE_LIGHTMAP);
+        MATERIAL_LIST.Insert(UID(name), material);
     }
-
-    return ff->second;
+    
+    return material;
 }
 
 void Material::LoadFromDisk(){
@@ -91,7 +95,6 @@ void Material::LoadFromDisk(){
     int channels;
 
     if(type == TEXTURE_LIGHTMAP){
-        // TO DO: write that thing with the 2 images and merging them
         strcpy(path, "data/textures/lightmap/");
         channels = 3;
     } else if(type == TEXTURE_ALPHA){
