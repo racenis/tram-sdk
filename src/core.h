@@ -467,56 +467,41 @@ namespace Core {
         void SetDebugText(const char* text, const glm::vec3& location, const glm::vec3& color);
     }
 
-    // TODO: review the interface and improve if possible
-    // also probably take this out into another header file
-    namespace Stats {
-        enum Type {
-            FRAME,
-            FRAME_NO_SWAP,
-            RENDER,
-            RENDERSORT,
-            PHYSICS
+    
+    namespace System {
+        enum System : uint32_t {
+            SYSTEM_CORE,
+            SYSTEM_UI,
+            SYSTEM_ASYNC,
+            SYSTEM_RENDER,
+            SYSTEM_PHYSICS,
+            SYSTEM_AUDIO,
+            SYSTEM_MISC,
+            SYSTEM_LAST
         };
-
-        extern double total_time[sizeof(Stats::Type)];
-        extern double start_time[sizeof(Stats::Type)];
-        extern float final_time[sizeof(Stats::Type)];
-        extern float final_time_cum[sizeof(Stats::Type)];
-        extern float final_time_avg[sizeof(Stats::Type)];
-
-        extern uint64_t full_frame;
-        extern size_t frame_passed;
-
-        extern uint64_t renderobjects;
-        extern uint64_t animationcomponents;
-        extern uint64_t physicscomponents;
-
-        void Start(Stats::Type stat);
-
-        void Stop(Stats::Type stat);
-
-        void Reset();
-
-        void Update();
-
-        class Counter {
-        public:
-            Counter(Stats::Type statToBeCounted){
-                stat = statToBeCounted;
-                Start(stat);
-            }
-
-            ~Counter(){
-                Stop(stat);
-            }
-        private:
-            Stats::Type stat;
-        };
-
+        
+        uint32_t Register (char const* name, char const* short_name);
+        void SetInitialized (uint32_t system, bool is_initialized);
+        bool IsInitialized (uint32_t system);
+        char const* GetName (uint32_t system);
+        char const* GetShortName (uint32_t system);
     }
 
-
-
+    namespace Stats {
+        enum Resource : uint32_t {
+            RESOURCE_VRAM
+        };
+        
+        void Start (uint32_t system);
+        void Stop (uint32_t system);
+        
+        void Add (Resource resource, size_t ammount);
+        void Remove (Resource resource, size_t ammount);
+        
+        void Collate ();
+        float GetStat (uint32_t system);
+        float GetStat (Resource resource);
+    }
 }
 
 #endif

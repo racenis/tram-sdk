@@ -3,6 +3,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/entity.h"/>
+    <File Name="src/worldcell.h"/>
+    <File Name="src/entitycomponent.h"/>
     <File Name="src/logging.cpp"/>
     <File Name="src/logging.h"/>
     <VirtualDirectory Name="templates">

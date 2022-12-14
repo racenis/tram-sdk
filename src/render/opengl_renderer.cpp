@@ -125,7 +125,6 @@ namespace Core::Render::OpenGL {
         DrawListEntry* robj = draw_list.GetFirst();
         DrawListEntry* rlast = draw_list.GetLast();
 
-        Stats::Start(Stats::RENDER);
         for(;robj < rlast; robj++){
             if(*((uint64_t*)robj) == 0) continue;
 
@@ -203,9 +202,6 @@ namespace Core::Render::OpenGL {
 
 
         }
-
-        Stats::Stop(Stats::RENDER);
-        Stats::Stop(Stats::FRAME_NO_SWAP);
     }
     
     DrawListEntryHandle InsertDrawListEntry() {

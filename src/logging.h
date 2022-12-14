@@ -13,7 +13,6 @@ namespace Core {
     namespace implementation {
         template <typename T> void concat (const T& value) {
             concat<const char*> ("UNDEFINED");
-            std::cout << typeid(T).name() << std::endl;
         }
         
         template <> void concat (const std::string_view& value);
@@ -55,16 +54,16 @@ namespace Core {
         }
     }
     
-    
-    
-    
-    
-
-    
     template <typename... Args>
     void Log (int system, const std::string_view& format, Args&&... args) {
         std::string_view format_view = format;
         implementation::log (system, format_view, args...);
+    }
+    
+    template <typename... Args>
+    void Log (const std::string_view& format, Args&&... args) {
+        std::string_view format_view = format;
+        implementation::log (0, format_view, args...);
     }
 }
 

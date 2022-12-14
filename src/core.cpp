@@ -89,12 +89,41 @@ namespace Core {
             return ff->second;
         }
     }
+    
+    struct SystemInfo {
+        char const* name;
+        char const* short_name;
+        bool is_initialized;
+    };
+
+    std::vector<SystemInfo> ALL_SYSTEMS;
+
+    uint32_t System::Register (char const* name, char const* short_name) {
+        static uint32_t last_issued_ID = System::SYSTEM_LAST;
+        
+        ALL_SYSTEMS.push_back(SystemInfo{
+            .name = name,
+            .short_name = short_name,
+            .is_initialized = false
+        });
+        
+        return last_issued_ID++;
+    }
+
+    char const* System::GetName (uint32_t system) {
+        return ALL_SYSTEMS[system].name;
+    }
+
+    char const* System::GetShortName (uint32_t system) {
+        return ALL_SYSTEMS[system].short_name;
+    }
+
 
     //const char* ReverseUID(name_t uid){
     //    return stringPool.begin() + uid;
     //}
 
-    namespace Stats {
+    /*namespace Stats {
         double total_time[sizeof(Stats::Type)] = {0.0};
         double start_time[sizeof(Stats::Type)] = {0.0};
         float final_time[sizeof(Stats::Type)] = {0.0f};
@@ -143,7 +172,7 @@ namespace Core {
             }
             #endif // ENGINE_EDITOR_MODE
         }
-    }
+    }*/
 
     /*uint64_t UID(std::string name){
         std::unordered_map<std::string, uint64_t>::iterator ff = stringHashMap.find(name);
@@ -315,7 +344,41 @@ namespace Core {
         // set the 0th string to 'none'
         //std::string none = "none";
         //UID(none);
-        UID("none");
+        UID none("none");
+        
+        // these are all of the default systems, as of now.
+        // feel free to extend the list
+        ALL_SYSTEMS = {{
+            .name = "Core",
+            .short_name = "CORE",
+            .is_initialized = false
+        }, {
+            .name = "User Interface",
+            .short_name = "UI",
+            .is_initialized = false
+        }, {
+            .name = "Async",
+            .short_name = "ASYNC",
+            .is_initialized = false
+        }, {
+            .name = "Rendering",
+            .short_name = "CORE",
+            .is_initialized = false
+        }, {
+            .name = "Physics",
+            .short_name = "PHYSICS",
+            .is_initialized = false
+        }, {
+            .name = "Audio",
+            .short_name = "AUDIO",
+            .is_initialized = false
+        }, {
+            .name = "Misc",
+            .short_name = "MISC",
+            .is_initialized = false
+        }};
+        
+        assert(ALL_SYSTEMS.size() == System::SYSTEM_LAST);
     }
 
 

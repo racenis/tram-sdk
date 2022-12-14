@@ -41,20 +41,14 @@ If you're using the microsoft's C++ compiler, then good luck.
 No code contributions accepted right now, but if you find a bug or have a suggestion, then you can open a github issue.
 
 ## To-do list
-
-- ~~Remove Uninit() method from all components~~
-	- ~~Move the code into the destructor~~
-- ~~Remove SetParameters() from Entity~~
-	- ~~Move it into the constructor~~
-- ~~Remove Yeet() from Entity~~
-	- ~~Move the code into the destructor~~
-- Convert name_t into a class
-- Remove SetErrorModel() and SetErrorMaterial()
-	- ~~Move the code into Render::Init()~~
-	- Actually no, just add a thing that checks if something is set
+- Put all of the Entity/Component/Cell definitions in seperate
+- Make system reject register above 64 systems
+- Finish file writer
+- Add input polling functions to UI
+- Add Event/Message/Logging ID Enum collision avoidance
+	- Something like this, but for fonts too
 - Message / Event system
 	- Add a way to define custom message/event types
-- System tracker
 - Render/Armature component linking
 
 #### For next versions
@@ -66,11 +60,11 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- More callbacks, maybe?
 		- OnDeactivate callback
 		- OnActivate callback with reference to entity that commited the activation
+- Put LODs into files
 - Think of additional GUI widgets
 - Switch to using sprites for defining fonts
 - Add LIGMAScript
-- ~~Add a ComponentProxy~~
-	- ~~Automatically removes components~~
+
 
 
 #### For versions later than next versions
@@ -82,6 +76,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Deferred rendering
 	- Occlusion culling
 	- Bump and specularity maps
+- Logging redirection
 - Fix the tramway entity
 - Fix the bus entity
 - ParticleComponent

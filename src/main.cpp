@@ -212,6 +212,10 @@ int main() {
 
 #include <logging.h>
 
+using namespace Core;
+
+
+
 int main() {
     Core::Init();
     
@@ -225,6 +229,19 @@ int main() {
     Core::Log(420, "I have {} benises and their all {} cm long", "many", 17.4f);
     
     Core::Log(123, "Entity {} speed is {} km/h", Core::UID("my nigga"), 450.1f);
+    
+    Core::Log("Where is my benis?");
+    
+    Core::Log("Is it {} {} long.", 12.0f + 5.4f, "cm");
+    
+    Core::Log("System no. {} is called {}, or {} for short.", (uint32_t)System::SYSTEM_ASYNC, System::GetName(System::SYSTEM_ASYNC), System::GetShortName(System::SYSTEM_ASYNC));
+    Core::Log("System no. {} is called {}, or {} for short.", (uint32_t)System::SYSTEM_PHYSICS, System::GetName(System::SYSTEM_PHYSICS), System::GetShortName(System::SYSTEM_PHYSICS));
+    Core::Log("System no. {} is called {}, or {} for short.", (uint32_t)System::SYSTEM_AUDIO, System::GetName(System::SYSTEM_AUDIO), System::GetShortName(System::SYSTEM_AUDIO));
+    
+    uint32_t NEW_SYSTEM = System::Register("Legonis", "LEGON");
+    
+    Log("System with ID {} is called {}, or {} for short.", NEW_SYSTEM, System::GetName(NEW_SYSTEM), System::GetShortName(NEW_SYSTEM));
+    
 }
 
 #endif

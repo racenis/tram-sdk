@@ -266,13 +266,6 @@ namespace Core::UI {
         
         glfwSwapBuffers(WINDOW);
         glfwPollEvents();
-
-        Stats::Stop(Stats::FRAME);
-        Stats::Reset();
-        Stats::Update();
-
-        Stats::Start(Stats::FRAME);
-
     }
     
     double GetTime() {

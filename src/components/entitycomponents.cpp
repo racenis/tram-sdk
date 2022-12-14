@@ -21,19 +21,4 @@ namespace Core {
 
     template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool("sprite component pool", 100, false);
     template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool("particle component pool", 100, false);
-
-
-    void Stats::Update(){
-        //Stats::renderobjects = Render::renderList.GetSize();
-        //Stats::animationcomponents = armatureCompPool.GetSize();
-        //Stats::physicscomponents = physicsCompPool.GetSize();
-    }
-
-
-
-
-
-
-    
-    
 }

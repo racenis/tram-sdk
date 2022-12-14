@@ -19,9 +19,9 @@ namespace Core::GUI {
         
         if (debugdraw_stats) {
             char meminfobuffer[100]; char timeinfobuffer[100]; char fpsinfobuffer[100];
-            sprintf(meminfobuffer, "VRAM approximate usage: %lldKB", (RESOURCE_VRAM_USAGE / 1024));
-            sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::final_time_avg[Stats::FRAME]);
-            sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::final_time_avg[Stats::FRAME]));
+            //sprintf(meminfobuffer, "VRAM approximate usage: %lldKB", (RESOURCE_VRAM_USAGE / 1024));
+            //sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::final_time_avg[Stats::FRAME]);
+            //sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::final_time_avg[Stats::FRAME]));
             GUI::Text(meminfobuffer, 2); GUI::FrameBreakLine();
             GUI::Text(timeinfobuffer, 2); GUI::FrameBreakLine();
             GUI::Text(fpsinfobuffer, 2); GUI::FrameBreakLine();

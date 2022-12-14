@@ -41,7 +41,6 @@ namespace Core::Physics {
     }
 
     void StepPhysics(float time){
-        Stats::Start(Stats::PHYSICS);
         dynamicsWorld->stepSimulation(time, 1);
         if (DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
         
@@ -72,8 +71,6 @@ namespace Core::Physics {
         }
         
         for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
-        
-        Stats::Stop(Stats::PHYSICS);
     }
 
     /// Debug drawer for the physics library.
