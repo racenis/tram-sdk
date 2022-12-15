@@ -18,106 +18,26 @@ namespace Core {
     bool SHOULD_CLOSE = false;
     float FRAME_TIME = 0;
 
+
+    // this one should actually go into the ?? uhh ??
+    // the extension. right.
     bool DRAW_PHYSICS_DEBUG = false;
     bool DRAW_RENDER_DEBUG = false;
     bool DRAW_PATH_DEBUG = false;
     
     size_t RESOURCE_VRAM_USAGE = 0;
     
-    StackPool<char> stringPool("stringpool", 10000);
-    std::unordered_map<std::string, uint64_t> stringHashMap;
-    std::unordered_map<uint64_t, uint64_t> langStringHashMap;
 
-    Queue<Event> Core::Event::queue("event queue", 500);
-    Queue<Message> Core::Message::queue("message queue", 500);
-
-    std::vector<std::vector<Event::Listener*>> Core::Event::dispatch_table(LAST_EVENT);
-    Pool<Event::Listener> Core::Event::listeners("event listener pool", 50, false);
-       
-    Event::Listener* Event::AddListener(Event::Type type){
-        auto new_listener = listeners.AddNew();
-        dispatch_table[type].push_back(new_listener);
-        new_listener->type = type;
-        
-        return new_listener;
-    }
-
-    void Event::RemoveListener(Event::Listener* listener){
-        // you could probably deduct the type of listener from its pointer
-        dispatch_table[listener->type].erase(std::find(dispatch_table[listener->type].begin(), dispatch_table[listener->type].end(), listener));
-        listeners.Remove(listener);
-    }
-
-    void Event::Dispatch(){
-        Event* event = Event::queue.GetFirstPtr();
-        while (event){
-            event_t type = event->type;
-
-            // TODO: add the thing that check the distances
-            for (auto listener : dispatch_table[type]){
-                listener->ent->EventHandler(*event);
-            }
-
-            Event::queue.Remove();
-            event = Event::queue.GetFirstPtr();
-        }
-    }
-
-    void Message::Dispatch(){
-        Message* message = Message::queue.GetFirstPtr();
-        while(message){
-            Entity* receiver = Entity::Find(message->receiverID);
-            if (receiver) receiver->MessageHandler(*message);
-
-            Message::queue.Remove();
-            message = Message::queue.GetFirstPtr();
-        }
-    }
-
-    uint64_t GenerateID(){
-        static uint64_t num = 0;
-        num++;
-        return num;
-    }
-
-    name_t FindLangStr(name_t name){
-        std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name.key);
-
-        if(ff == langStringHashMap.end()){
-            return 0;
-        } else {
-            return ff->second;
-        }
-    }
     
-    struct SystemInfo {
-        char const* name;
-        char const* short_name;
-        bool is_initialized;
-    };
 
-    std::vector<SystemInfo> ALL_SYSTEMS;
+    
 
-    uint32_t System::Register (char const* name, char const* short_name) {
-        static uint32_t last_issued_ID = System::SYSTEM_LAST;
-        
-        ALL_SYSTEMS.push_back(SystemInfo{
-            .name = name,
-            .short_name = short_name,
-            .is_initialized = false
-        });
-        
-        return last_issued_ID++;
-    }
 
-    char const* System::GetName (uint32_t system) {
-        return ALL_SYSTEMS[system].name;
-    }
 
-    char const* System::GetShortName (uint32_t system) {
-        return ALL_SYSTEMS[system].short_name;
-    }
+    
+    
 
+    // Some of this code here should be salvageable
 
     //const char* ReverseUID(name_t uid){
     //    return stringPool.begin() + uid;
@@ -204,40 +124,7 @@ namespace Core {
         }
     }*/
 
-    UID::UID(const std::string& value) {
-        const char* str = value.c_str();
-        *this = UID(str);
-    }
     
-    // TODO: optimize this
-    UID::UID(const char*& value) {
-        std::string name = value;
-        std::unordered_map<std::string, uint64_t>::iterator ff = stringHashMap.find(name);
-        if(ff == stringHashMap.end()){
-            uint64_t key = stringPool.GetSize();
-            char* newstr = stringPool.AddNew(name.size() + 1);
-
-            stringHashMap.emplace(name, key);
-            strcpy(newstr, name.c_str());
-            //return key;
-            this->key = key;
-        } else {
-            //return ff->second;
-            this->key = ff->second;
-        }
-    }
-
-    UID::UID(const uint64_t& value) {
-        this->key = value;
-    }
-    
-    UID::operator std::string() const {
-        return stringPool.begin() + key;
-    }
-    
-    UID::operator char const*() const {
-        return stringPool.begin() + key;
-    }
 
     //const char* ReverseUID(name_t uid){
     //    return stringPool.begin() + uid;
@@ -245,13 +132,9 @@ namespace Core {
 
 
 
-    void Event::Post (Event &event){
-        *(Event::queue.AddNew()) = event;
-    }
 
-    void Message::Send(Message &message){
-        *(Message::queue.AddNew()) = message;
-    }
+
+
 
     void QuatLookAt(glm::quat& quaternion, const glm::vec3& from, const glm::vec3& to){
         const glm::vec3 start = normalize(from);
@@ -274,29 +157,7 @@ namespace Core {
         point = from + (glm::dot(projectable, line) / glm::dot(line, line) * line);
     }
 
-    void LoadText(const char* filename){
-        std::ifstream file;
-        file.open(filename);
-        while(file){
-            std::string strid;
-            std::string langstr;
-
-            file >> strid;
-            file.ignore(1);
-            std::getline(file, langstr);
-
-            name_t strkey = UID(strid);
-            uint64_t langkey = stringPool.GetSize();
-
-            char* tbr = stringPool.AddNew(langstr.length() + 1);
-
-            strcpy(tbr, langstr.c_str());
-
-            langStringHashMap[strkey.key] = langkey;
-
-        }
-        file.close();
-    }
+    
 
     void LoadPath(const char* filename){
         abort();
@@ -342,43 +203,21 @@ namespace Core {
 
     void Init(){
         // set the 0th string to 'none'
-        //std::string none = "none";
-        //UID(none);
         UID none("none");
         
-        // these are all of the default systems, as of now.
-        // feel free to extend the list
-        ALL_SYSTEMS = {{
-            .name = "Core",
-            .short_name = "CORE",
-            .is_initialized = false
-        }, {
-            .name = "User Interface",
-            .short_name = "UI",
-            .is_initialized = false
-        }, {
-            .name = "Async",
-            .short_name = "ASYNC",
-            .is_initialized = false
-        }, {
-            .name = "Rendering",
-            .short_name = "CORE",
-            .is_initialized = false
-        }, {
-            .name = "Physics",
-            .short_name = "PHYSICS",
-            .is_initialized = false
-        }, {
-            .name = "Audio",
-            .short_name = "AUDIO",
-            .is_initialized = false
-        }, {
-            .name = "Misc",
-            .short_name = "MISC",
-            .is_initialized = false
-        }};
         
-        assert(ALL_SYSTEMS.size() == System::SYSTEM_LAST);
+        // these are all of the default systems, as of now.
+        // feel free to extend the list, but do note that this list
+        // is in the same order as the System::System enumeration.
+        System::Register("Core", "CORE");
+        System::Register("User Interface", "UI");
+        System::Register("Async", "ASYNC");
+        System::Register("Rendering", "RENDER");
+        System::Register("Physics", "PHYSICS");
+        System::Register("Audio", "AUDIO");
+        System::Register("Misc", "MISC");
+        
+        
     }
 
 

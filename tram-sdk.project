@@ -4,6 +4,13 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/etc.cpp"/>
+      <File Name="src/framework/worldcell.cpp"/>
+      <File Name="src/framework/uid.cpp"/>
+      <File Name="src/framework/system.cpp"/>
+      <File Name="src/framework/stats.cpp"/>
+      <File Name="src/framework/message.cpp"/>
+      <File Name="src/framework/event.cpp"/>
       <File Name="src/framework/entity.cpp"/>
       <File Name="src/framework/etc.h"/>
       <File Name="src/framework/resource.h"/>

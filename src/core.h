@@ -43,10 +43,9 @@ namespace Core {
 
     //uint64_t UID(std::string name);
     //uint64_t UID(std::string_view name, size_t length);
-    name_t FindLangStr(name_t name);
     //const char* ReverseUID(uint64_t uid);
     
-    void LoadText(const char* filename);
+    
 
     void Init();
 
