@@ -266,6 +266,10 @@ void WorldCell::AddEntity(Entity* entity){
     }
 }
 
+void WorldCell::RemoveEntity(Entity* entPtr){
+    entities.erase(std::find(entities.begin(), entities.end(), entPtr));
+};
+
 void WorldCell::Transition::AddPoint(const glm::vec3& point){
     points.push_back(point);
 }

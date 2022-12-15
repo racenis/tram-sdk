@@ -3,9 +3,19 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="src/entity.h"/>
-    <File Name="src/worldcell.h"/>
-    <File Name="src/entitycomponent.h"/>
+    <VirtualDirectory Name="framework">
+      <File Name="src/framework/entity.cpp"/>
+      <File Name="src/framework/etc.h"/>
+      <File Name="src/framework/resource.h"/>
+      <File Name="src/framework/system.h"/>
+      <File Name="src/framework/stats.h"/>
+      <File Name="src/framework/uid.h"/>
+      <File Name="src/framework/event.h"/>
+      <File Name="src/framework/message.h"/>
+      <File Name="src/framework/worldcell.h"/>
+      <File Name="src/framework/entitycomponent.h"/>
+      <File Name="src/framework/entity.h"/>
+    </VirtualDirectory>
     <File Name="src/logging.cpp"/>
     <File Name="src/logging.h"/>
     <VirtualDirectory Name="templates">

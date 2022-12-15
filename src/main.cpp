@@ -1,6 +1,6 @@
 #include <iostream>
 
-//#define NEKADEEE
+#define NEKADEEE
 
 #ifdef NEKADEEE
 

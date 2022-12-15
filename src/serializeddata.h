@@ -6,8 +6,10 @@
 #ifndef SERIALIZEDDATA_H
 #define SERIALIZEDDATA_H
 
-#include "core.h"
-#include <string>
+#include <cassert>
+#include <vector>
+
+#include <framework/uid.h>
 
 namespace Core {
     class SerializedEntityData {

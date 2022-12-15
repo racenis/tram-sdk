@@ -177,9 +177,9 @@ namespace Core::UI {
             keys_pressed ^= keys_up;
             keys_pressed |= keys_down;
 
-            if (keys_pressed) {Event kpress = {Event::KEYPRESS, keys_pressed, glm::vec3(0.0, 0.0, 0.0), 0, nullptr}; Event::Post(kpress);}
-            if (keys_down) {Event kpress = {Event::KEYDOWN, keys_down, glm::vec3(0.0, 0.0, 0.0), 0, nullptr}; Event::Post(kpress);}
-            if (keys_up) {Event kpress = {Event::KEYUP, keys_up, glm::vec3(0.0, 0.0, 0.0), 0, nullptr}; Event::Post(kpress);}
+            if (keys_pressed) {Event kpress = {Event::KEYPRESS, keys_pressed, 0, nullptr}; Event::Post(kpress);}
+            if (keys_down) {Event kpress = {Event::KEYDOWN, keys_down, 0, nullptr}; Event::Post(kpress);}
+            if (keys_up) {Event kpress = {Event::KEYUP, keys_up, 0, nullptr}; Event::Post(kpress);}
 
             keys_down = 0;
             keys_up = 0;
@@ -188,7 +188,7 @@ namespace Core::UI {
         // generate cursor change position event
         glfwGetCursorPos(WINDOW, &cursorx, &cursory);
         if (INPUT_STATE == STATE_DEFAULT && (cursorx != cursorx_last || cursory != cursory_last)) {
-            Event mousse = {Event::CURSORPOS, 0xFFFF, glm::vec3(0.0, 0.0, 0.0), 0, nullptr};
+            Event mousse = {Event::CURSORPOS, 0xFFFF, 0, nullptr};
             Event::Post(mousse);
         }
 

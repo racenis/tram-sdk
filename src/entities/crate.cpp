@@ -90,7 +90,7 @@ namespace Core {
     }
 
     void Crate::MessageHandler(Message& msg){
-        if (msg.type == Message::ACTIVATE) Activate(msg);
+        //if (msg.type == Message::ACTIVATE) Activate(msg);
         return;
     }
     
