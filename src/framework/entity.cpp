@@ -160,9 +160,4 @@ namespace Core {
         str.append(std::string(action));
         str.push_back(' ');
     }
-
-    
-    
-    
-    
 }

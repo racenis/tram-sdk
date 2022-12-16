@@ -40,6 +40,7 @@ void Player::Load(){
 }
 void Player::Unload(){
     std::cout << "Player is not unloadable!!!" << std::endl;
+    PoolProxy<PlayerComponent>::Delete(plomp);
 }
 void Player::Serialize(){
     std::cout << "Player not seriaziable" << std::endl;

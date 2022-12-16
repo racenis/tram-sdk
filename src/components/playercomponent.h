@@ -98,26 +98,22 @@ namespace Core {
             //std::cout << "fw " << move_forward << " bw " << move_backward << " l " << move_left << " r " << move_right << std::endl;
         };
         void Init(){
-            listener = Event::AddListener(Event::KEYPRESS);
-            listener->ent = this;
-            keydown = Event::AddListener(Event::KEYDOWN);
-            keydown->ent = this;
-            keyup = Event::AddListener(Event::KEYUP);
-            keyup->ent = this;
-            mouselistener = Event::AddListener(Event::CURSORPOS);
-            mouselistener->ent = this;
+            listener = Event::AddListener(Event::KEYPRESS, this);
+            keydown = Event::AddListener(Event::KEYDOWN, this);
+            keyup = Event::AddListener(Event::KEYUP, this);
+            mouselistener = Event::AddListener(Event::CURSORPOS, this);
             cell_loader = PoolProxy<WorldCell::Loader>::New();
             cell_loader->SetLocation(parent->GetLocation());
         }
         ~PlayerComponent(){
             Event::RemoveListener(listener);
-            listener = nullptr;
+            listener = 0;
             Event::RemoveListener(keydown);
-            keydown = nullptr;
+            keydown = 0;
             Event::RemoveListener(keyup);
-            keyup = nullptr;
+            keyup = 0;
             Event::RemoveListener(mouselistener);
-            mouselistener = nullptr;
+            mouselistener = 0;
             PoolProxy<WorldCell::Loader>::Delete(cell_loader);
             cell_loader = nullptr;
         }
@@ -137,10 +133,10 @@ namespace Core {
         void MoveUpdate() { assert(cell_loader); cell_loader->UpdateLocation(parent->GetLocation()); }
     private:
         Entity* parent = nullptr;
-        Event::Listener* keydown = nullptr;
-        Event::Listener* keyup = nullptr;
-        Event::Listener* listener = nullptr;
-        Event::Listener* mouselistener = nullptr;
+        listener_t keydown = 0;
+        listener_t keyup = 0;
+        listener_t listener = 0;
+        listener_t mouselistener = 0;
         ControllerComponent* controller = nullptr;
         WorldCell::Loader* cell_loader = nullptr;
 

@@ -217,7 +217,10 @@ namespace Core {
         System::Register("Audio", "AUDIO");
         System::Register("Misc", "MISC");
         
-        
+        // this will register all of the default events
+        for (event_t i = 0; i < Event::LAST_EVENT; i++) {
+            Event::Register();
+        }
     }
 
 

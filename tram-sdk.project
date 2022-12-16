@@ -26,6 +26,7 @@
     <File Name="src/logging.cpp"/>
     <File Name="src/logging.h"/>
     <VirtualDirectory Name="templates">
+      <File Name="src/templates/macros.h"/>
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#define NEKADEEE
+//#define NEKADEEE
 
 #ifdef NEKADEEE
 
@@ -214,7 +214,9 @@ int main() {
 
 using namespace Core;
 
+#include <templates/macros.h>
 
+TRAM_SDK_REGISTER_EVENT_DATATYPE(Event::KEYDOWN, float)
 
 int main() {
     Core::Init();
@@ -222,26 +224,16 @@ int main() {
     std::cout << Core::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
     
-    Core::Log(69, "muh {} dick  ", 420.0f);
-    Core::Log(69, "muh {} dick  ", 420ull);
-    Core::Log(69, "muh {} dick  ", -420ll);
-    
-    Core::Log(420, "I have {} benises and their all {} cm long", "many", 17.4f);
-    
-    Core::Log(123, "Entity {} speed is {} km/h", Core::UID("my nigga"), 450.1f);
-    
-    Core::Log("Where is my benis?");
-    
-    Core::Log("Is it {} {} long.", 12.0f + 5.4f, "cm");
-    
-    Core::Log("System no. {} is called {}, or {} for short.", (uint32_t)System::SYSTEM_ASYNC, System::GetName(System::SYSTEM_ASYNC), System::GetShortName(System::SYSTEM_ASYNC));
-    Core::Log("System no. {} is called {}, or {} for short.", (uint32_t)System::SYSTEM_PHYSICS, System::GetName(System::SYSTEM_PHYSICS), System::GetShortName(System::SYSTEM_PHYSICS));
-    Core::Log("System no. {} is called {}, or {} for short.", (uint32_t)System::SYSTEM_AUDIO, System::GetName(System::SYSTEM_AUDIO), System::GetShortName(System::SYSTEM_AUDIO));
-    
     uint32_t NEW_SYSTEM = System::Register("Legonis", "LEGON");
-    
     Log("System with ID {} is called {}, or {} for short.", NEW_SYSTEM, System::GetName(NEW_SYSTEM), System::GetShortName(NEW_SYSTEM));
     
+    //Log("Float version: {}, whereas Int version is: {}. Fascinating!", RetrieveData<float>(Event::KEYUP), RetrieveData<int>(Event::KEYDOWN));
+    Event vevent {
+        .type = Event::KEYDOWN,
+        .data = new float(420)
+    };
+    
+    Log("This my log: {}", Event::RetrieveData<Event::KEYDOWN>(vevent));
 }
 
 #endif

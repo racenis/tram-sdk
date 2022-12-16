@@ -33,6 +33,7 @@ namespace Core {
 
         inline uint64_t GetID() { return id; }
 
+        // TODO:
         // probably a good idea to make this a protected method
         // and add async function a friend function
         void ResourceReady() { resources_waiting--; if (resources_waiting == 0 && is_init) Start();}
