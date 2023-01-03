@@ -8,7 +8,7 @@
 #ifndef CONTROLLERCOMPONENT_H
 #define CONTROLLERCOMPONENT_H
 
-#include <core.h>
+#include <framework/core.h>
 
 // TODO: refactor so that this include can be replaced with forward declaration
 #include <components/armaturecomponent.h>

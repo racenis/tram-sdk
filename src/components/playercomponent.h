@@ -9,7 +9,7 @@
 #define PLAYERCOMPONENT_H
 
 #include <components/controllercomponent.h>
-#include <ui.h>
+#include <framework/ui.h>
 
 namespace Core {
     class PlayerComponent : public EntityComponent {

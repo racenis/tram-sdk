@@ -3,7 +3,7 @@
 //
 // NAVIGATION.CPP -- Navigation implementation
 
-#include <navigation.h>
+#include <framework/navigation.h>
 #include <render/render.h>
 
 using namespace Core;

@@ -7,7 +7,7 @@
 #include <framework/entity.h>
 #include <framework/worldcell.h>
 #include <framework/etc.h>
-#include <serializeddata.h>
+#include <framework/serializeddata.h>
 
 namespace Core {
     // TODO: swap all of these out for my own hashmap

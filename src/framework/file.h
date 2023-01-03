@@ -1,7 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <core.h>
+#include <framework/core.h>
 
 namespace Core {
     enum FileAccessMode {

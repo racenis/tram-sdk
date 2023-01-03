@@ -3,7 +3,55 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/main.cpp"/>
+    <VirtualDirectory Name="extensions">
+      <VirtualDirectory Name="menu">
+        <File Name="src/extensions/menu/menu.cpp"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="audio">
+      <File Name="src/audio/audio.h"/>
+      <File Name="src/audio/audio.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="components">
+      <File Name="src/components/triggercomponent.h"/>
+      <File Name="src/components/templatecomponent.h"/>
+      <File Name="src/components/spritecomponent.h"/>
+      <File Name="src/components/spritecomponent.cpp"/>
+      <File Name="src/components/rendercomponent.h"/>
+      <File Name="src/components/rendercomponent.cpp"/>
+      <File Name="src/components/playercomponent.h"/>
+      <File Name="src/components/physicscomponent.h"/>
+      <File Name="src/components/particlecomponent.h"/>
+      <File Name="src/components/particlecomponent.cpp"/>
+      <File Name="src/components/lightcomponent.h"/>
+      <File Name="src/components/entitycomponents.h"/>
+      <File Name="src/components/entitycomponents.cpp"/>
+      <File Name="src/components/controllercomponent.h"/>
+      <File Name="src/components/controllercomponent.cpp"/>
+      <File Name="src/components/audiocomponent.h"/>
+      <File Name="src/components/armaturecomponent.h"/>
+      <File Name="src/components/armaturecomponent.cpp"/>
+      <File Name="src/components/aicomponent.h"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/ui.h"/>
+      <File Name="src/framework/ui.cpp"/>
+      <File Name="src/framework/templates.h"/>
+      <File Name="src/framework/serializeddata.h"/>
+      <File Name="src/framework/net.h"/>
+      <File Name="src/framework/net.cpp"/>
+      <File Name="src/framework/navigation.h"/>
+      <File Name="src/framework/navigation.cpp"/>
+      <File Name="src/framework/logging.h"/>
+      <File Name="src/framework/logging.cpp"/>
+      <File Name="src/framework/gui.h"/>
+      <File Name="src/framework/gui.cpp"/>
+      <File Name="src/framework/file.h"/>
+      <File Name="src/framework/core.h"/>
+      <File Name="src/framework/core.cpp"/>
+      <File Name="src/framework/async.h"/>
+      <File Name="src/framework/async.cpp"/>
       <File Name="src/framework/etc.cpp"/>
       <File Name="src/framework/worldcell.cpp"/>
       <File Name="src/framework/uid.cpp"/>
@@ -23,8 +71,6 @@
       <File Name="src/framework/entitycomponent.h"/>
       <File Name="src/framework/entity.h"/>
     </VirtualDirectory>
-    <File Name="src/logging.cpp"/>
-    <File Name="src/logging.h"/>
     <VirtualDirectory Name="templates">
       <File Name="src/templates/macros.h"/>
       <File Name="src/templates/hashmap.h"/>
@@ -32,8 +78,6 @@
     <VirtualDirectory Name="platform">
       <File Name="src/platform/file.cpp"/>
     </VirtualDirectory>
-    <File Name="src/file.h"/>
-    <File Name="src/templates.h"/>
     <VirtualDirectory Name="physics">
       <File Name="src/physics/physics.h"/>
       <File Name="src/physics/physics.cpp"/>
@@ -41,34 +85,6 @@
       <File Name="src/physics/motionstates.h"/>
       <File Name="src/physics/actions.h"/>
     </VirtualDirectory>
-    <File Name="src/navigation.cpp"/>
-    <File Name="src/navigation.h"/>
-    <File Name="src/audio.cpp"/>
-    <File Name="src/audio.h"/>
-    <VirtualDirectory Name="components">
-      <File Name="src/components/armaturecomponent.cpp"/>
-      <File Name="src/components/particlecomponent.cpp"/>
-      <File Name="src/components/spritecomponent.cpp"/>
-      <File Name="src/components/rendercomponent.cpp"/>
-      <File Name="src/components/audiocomponent.h"/>
-      <File Name="src/components/triggercomponent.h"/>
-      <File Name="src/components/aicomponent.h"/>
-      <File Name="src/components/particlecomponent.h"/>
-      <File Name="src/components/spritecomponent.h"/>
-      <File Name="src/components/physicscomponent.h"/>
-      <File Name="src/components/controllercomponent.cpp"/>
-      <File Name="src/components/playercomponent.h"/>
-      <File Name="src/components/controllercomponent.h"/>
-      <File Name="src/components/templatecomponent.h"/>
-      <File Name="src/components/lightcomponent.h"/>
-      <File Name="src/components/armaturecomponent.h"/>
-      <File Name="src/components/rendercomponent.h"/>
-      <File Name="src/components/entitycomponents.h"/>
-      <File Name="src/components/entitycomponents.cpp"/>
-    </VirtualDirectory>
-    <File Name="src/menu.cpp"/>
-    <File Name="src/gui.h"/>
-    <File Name="src/gui.cpp"/>
     <VirtualDirectory Name="render">
       <File Name="src/render/render.h"/>
       <File Name="src/render/armature.h"/>
@@ -98,17 +114,6 @@
       <File Name="src/entities/crate.cpp"/>
       <File Name="src/entities/bus.cpp"/>
     </VirtualDirectory>
-    <File Name="src/worldcell.cpp"/>
-    <File Name="src/ui.h"/>
-    <File Name="src/ui.cpp"/>
-    <File Name="src/serializeddata.h"/>
-    <File Name="src/net.h"/>
-    <File Name="src/net.cpp"/>
-    <File Name="src/main.cpp"/>
-    <File Name="src/core.h"/>
-    <File Name="src/core.cpp"/>
-    <File Name="src/async.h"/>
-    <File Name="src/async.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

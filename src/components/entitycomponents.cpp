@@ -3,7 +3,7 @@
 //
 // ENTITYCOMPONENTS.CPP -- Random trash related to entity components. All file should be yeeted.
 
-#include <core.h>
+#include <framework/core.h>
 #include <components/rendercomponent.h>
 #include <components/lightcomponent.h>
 #include <components/playercomponent.h>

@@ -10,7 +10,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 // TODO: yeet this
-#include <templates.h>
+#include <framework/templates.h>
 #include <unordered_map>
 
 namespace Core {

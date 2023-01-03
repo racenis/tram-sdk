@@ -3,7 +3,7 @@
 //
 // RENDER_MISC.CPP -- random rendering stuff
 
-#include <core.h>
+#include <framework/core.h>
 #include <render/render.h>
 #include <render/renderer.h>
 

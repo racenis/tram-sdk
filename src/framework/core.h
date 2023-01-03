@@ -7,6 +7,7 @@
 #ifndef TRAM_CORE_H
 #define TRAM_CORE_H
 
+// TODO: yeet these
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
 #include <framework/etc.h>
@@ -19,45 +20,41 @@
 #include <framework/worldcell.h>
 
 namespace Core {
-    extern bool SHOULD_CLOSE;
-    extern float FRAME_TIME;
+    extern bool SHOULD_CLOSE;           // TODO: rename
+    extern float FRAME_TIME;            // TODO: rename
     
+    // TODO: move these into an extension or something
     extern bool DRAW_PHYSICS_DEBUG;
     extern bool DRAW_RENDER_DEBUG;
     extern bool DRAW_PATH_DEBUG;
     
-    extern char const* ENGINE_VERSION;
-    
+    // TODO: move this into stats
     extern size_t RESOURCE_VRAM_USAGE;
-
-    const glm::vec3 DIRECTION_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
-    const glm::vec3 DIRECTION_SIDE = glm::vec3(1.0f, 0.0f, 0.0f);
-    const glm::vec3 DIRECTION_UP = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    // forward declarations
+    
+    extern char const* ENGINE_VERSION;
 
     // TODO: check which ones can be yeeted
     class WorldCell;
     class EntityComponent;
     class SerializedEntityData;
-
-    //uint64_t UID(std::string name);
-    //uint64_t UID(std::string_view name, size_t length);
-    //const char* ReverseUID(uint64_t uid);
+    struct Path;
+    struct Navmesh;
     
-    
-
     void Init();
 
+
+    // TODO: move these into math
+    const glm::vec3 DIRECTION_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
+    const glm::vec3 DIRECTION_SIDE = glm::vec3(1.0f, 0.0f, 0.0f);
+    const glm::vec3 DIRECTION_UP = glm::vec3(0.0f, 1.0f, 0.0f);
+    
     void QuatLookAt(glm::quat& quaternion, const glm::vec3& from, const glm::vec3& to);
     void ProjectLine(glm::vec3& point, const glm::vec3& from, const glm::vec3& to);
 
-    struct Path;
-    struct Navmesh;
-
+    
+    // TODO: move these into gui or something
     namespace UI {
         void SetText(const char* text, uint32_t x, uint32_t y, float scale, float width, bool justify, bool stretch, uint32_t font, const glm::vec3& color);
-
         void SetDebugText(const char* text, const glm::vec3& location, const glm::vec3& color);
     }
 }

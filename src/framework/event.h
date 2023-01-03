@@ -7,7 +7,7 @@
 #include <cstdint>
 
 // TODO: remove this
-#include <templates.h>
+#include <framework/templates.h>
 
 namespace Core {
     typedef uint16_t event_t;

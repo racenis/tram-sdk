@@ -7,7 +7,7 @@
 #ifndef TEMPLATECOMPONENT_H
 #define TEMPLATECOMPONENT_H
 
-#include <core.h>
+#include <framework/core.h>
 
 namespace Core {
     

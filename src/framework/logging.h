@@ -6,7 +6,7 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#include <core.h>
+#include <framework/core.h>
 #include <concepts>
 
 namespace Core {

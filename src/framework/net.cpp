@@ -3,8 +3,8 @@
 //
 // NET.CPP -- will be put stuff in here when networking will be implemented.
 
-#include <core.h>
-#include <net.h>
+#include <framework/core.h>
+#include <framework/net.h>
 
 namespace Core::Net {
     //void (*pushfuncs[50])(const Command& c);

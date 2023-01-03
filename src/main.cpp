@@ -1,16 +1,16 @@
 #include <iostream>
 
-//#define NEKADEEE
+#define NEKADEEE
 
 #ifdef NEKADEEE
 
-#include <core.h>
-#include <async.h>
-#include <ui.h>
+#include <framework/core.h>
+#include <framework/async.h>
+#include <framework/ui.h>
 #include <physics/physics.h>
-#include <audio.h>
+#include <audio/audio.h>
 
-#include <gui.h>
+#include <framework/gui.h>
 
 #include <glfw3.h>
 
@@ -207,10 +207,10 @@ int main() {
 #endif
 #ifndef NEKADEEE
 
-#include <core.h>
-#include <file.h>
+#include <framework/core.h>
+#include <framework/file.h>
 
-#include <logging.h>
+#include <framework/logging.h>
 
 using namespace Core;
 

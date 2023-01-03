@@ -7,7 +7,7 @@
 #undef R
 #undef C
 
-#include <audio.h>
+#include <audio/audio.h>
 #include <components/audiocomponent.h>
 
 namespace Core::Audio {

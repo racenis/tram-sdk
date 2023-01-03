@@ -6,7 +6,7 @@
 #ifndef NAVIGATION_H
 #define NAVIGATION_H
 
-#include <core.h>
+#include <framework/core.h>
 
 namespace Core {
     struct Path {

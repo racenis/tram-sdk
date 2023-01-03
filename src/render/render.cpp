@@ -3,7 +3,7 @@
 //
 // RENDER.CPP -- Rendering stuff.
 
-#include <core.h>
+#include <framework/core.h>
 #include <render/render.h>
 #include <render/renderer.h>
 #include <components/rendercomponent.h>

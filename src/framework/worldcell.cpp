@@ -3,7 +3,7 @@
 //
 // WORLDCELL.CPP -- implementations for the worldcell and transition class methods.
 
-#include <core.h>
+#include <framework/core.h>
 #include <fstream>
 #include <cstring>
 #include <sstream>
@@ -11,7 +11,7 @@
 #include <set>
 
 #include <render/render.h>
-#include <navigation.h>
+#include <framework/navigation.h>
 
 using namespace Core;
 std::unordered_map<uint64_t, WorldCell*> WorldCell::List;

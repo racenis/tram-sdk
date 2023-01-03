@@ -6,7 +6,7 @@
 #ifndef AUDIOCOMPONENT_H
 #define AUDIOCOMPONENT_H
 
-#include <audio.h>
+#include <audio/audio.h>
 
 namespace Core::Audio {
     struct SoundSource;

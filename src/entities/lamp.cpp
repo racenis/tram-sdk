@@ -3,7 +3,7 @@
 //
 // LAMP.CPP -- Lamp entity.
 
-#include <core.h>
+#include <framework/core.h>
 #include <entities/lamp.h>
 #include <components/lightcomponent.h>
 

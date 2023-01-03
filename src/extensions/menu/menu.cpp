@@ -3,7 +3,7 @@
 //
 // MENU.CPP -- implementations of some default menus
 
-#include <gui.h>
+#include <framework/gui.h>
 
 namespace Core::GUI {
     void DebugMenu() {

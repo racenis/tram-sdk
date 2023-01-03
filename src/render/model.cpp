@@ -7,11 +7,11 @@
 //#include <glad.h>
 //#include <glad_gles3.h>
 
-#include <core.h>
+#include <framework/core.h>
 #include <render/render.h>
 #include <render/renderer.h>
 
-#include <async.h>
+#include <framework/async.h>
 
 #include <fstream>
 #include <cstring>

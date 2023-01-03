@@ -8,7 +8,7 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-#include <core.h>
+#include <framework/core.h>
 
 class btCollisionShape;
 class btMotionState;

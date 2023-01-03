@@ -10,7 +10,7 @@
 
 #include <components/triggercomponent.h>
 
-#include <gui.h>
+#include <framework/gui.h>
 
 namespace Core::Physics {
     std::unordered_map<uint64_t, CollisionModel*> CollisionModel::List;

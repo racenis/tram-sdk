@@ -4,9 +4,9 @@
 // UI.CPP -- User interface stuff
 // Window opening, opengl context creation and user inputs.
 
-#include <core.h>
+#include <framework/core.h>
 #include <render/render.h>
-#include <ui.h>
+#include <framework/ui.h>
 
 #include <fstream>
 #include <cstring>

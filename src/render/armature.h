@@ -7,7 +7,7 @@
 #ifndef ARMATURE_H
 #define ARMATURE_H
 
-#include <core.h>
+#include <framework/core.h>
 
 namespace Core::Render {
     typedef std::pair<name_t, uint64_t> NameCount; // animation header

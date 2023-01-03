@@ -6,7 +6,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <ui.h>
+#include <framework/ui.h>
 
 namespace Core::GUI {
     typedef uint32_t font_t;

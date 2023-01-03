@@ -7,7 +7,7 @@
 #ifndef AICOMPONENT_H
 #define AICOMPONENT_H
 
-#include <core.h>
+#include <framework/core.h>
 #include <components/controllercomponent.h>
 
 // this is just a sketch right now

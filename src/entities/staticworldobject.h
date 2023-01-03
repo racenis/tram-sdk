@@ -6,8 +6,8 @@
 #ifndef STATICWORLDOBJECT_H
 #define STATICWORLDOBJECT_H
 
-#include <core.h>
-#include <serializeddata.h>
+#include <framework/core.h>
+#include <framework/serializeddata.h>
 
 namespace Core {
     class RenderComponent;

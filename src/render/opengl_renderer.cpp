@@ -9,7 +9,7 @@
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
 
-#include <gui.h>
+#include <framework/gui.h>
 
 namespace Core::Render::OpenGL {
     Pool<DrawListEntry> draw_list("render list", 500, false);

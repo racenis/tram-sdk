@@ -3,7 +3,7 @@
 //
 // HASHMAP.CPP -- implementation of the hashmap
 
-#include <core.h>
+#include <framework/core.h>
 
 namespace Core {
     template <typename T>

@@ -3,7 +3,7 @@
 //
 // GUI.CPP -- graphical user interface implementation.
 
-#include <gui.h>
+#include <framework/gui.h>
 
 namespace Core::GUI {
     struct FrameObject {

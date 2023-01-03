@@ -41,9 +41,22 @@ If you're using the microsoft's C++ compiler, then good luck.
 No code contributions accepted right now, but if you find a bug or have a suggestion, then you can open a github issue.
 
 ## To-do list
+CURRENT DEVELOPMENT:
+- Finish writing the report
+	- Test performance of the engine
+	- Finish the platform/file.cpp implementation
+	- Switch all file loading to file.h abstraction
+	- Test performance again
+- Switch namespace Core to tram
+- Move language stuff out of the framework/etc.h/etc.cpp
+- Do all of the TODO's
+- Do a bunch of testing
+- Make changes
+- Write up the documentation
 - Put all of the Entity/Component/Cell definitions in seperate
 - Make system reject register above 64 systems
 - Finish file writer
+- Rewrite key generator to use bitfields
 - Add input polling functions to UI
 - Add Event/Message/Logging ID Enum collision avoidance
 	- Something like this, but for fonts too
