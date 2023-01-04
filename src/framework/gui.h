@@ -84,10 +84,6 @@ namespace Core::GUI {
     
     void TextBox(char* text, uint32_t max_len);
     void DropdownBox(char const** texts, uint32_t len, uint32_t& selected);
-    
-    void DebugMenu();
-    void EscapeMenu();
-    
 }
 
 #endif // GUI_H

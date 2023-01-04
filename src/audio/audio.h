@@ -2,6 +2,7 @@
 #define AUDIO_H
 
 #include <framework/core.h>
+#include <framework/math.h>
 #include <framework/resource.h>
 
 

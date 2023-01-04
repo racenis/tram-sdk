@@ -70,7 +70,7 @@ namespace Core::UI {
         {GLFW_KEY_E, KeyAction {.type = KeyAction::KEYBOARD_KEY, .action = KEY_ACTIVATE}},
 
         {GLFW_KEY_F5, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
-        {GLFW_KEY_F4, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ DRAW_PHYSICS_DEBUG = !DRAW_PHYSICS_DEBUG; }}},
+        //{GLFW_KEY_F4, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ DRAW_PHYSICS_DEBUG = !DRAW_PHYSICS_DEBUG; }}},
         {GLFW_KEY_F9, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_FLYING : STATE_DEFAULT; }}},
         {GLFW_KEY_ESCAPE, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ ToggleMenu(); escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : escape_menu_open = true; }}},
         {GLFW_KEY_GRAVE_ACCENT, KeyAction {.type = KeyAction::SPECIAL_OPTION, .special_option = [](){ ToggleMenu(); escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : debug_menu_open = true; }}},
@@ -152,11 +152,10 @@ namespace Core::UI {
     }
 
     void Update(){
-
-        FRAME_TIME = glfwGetTime();
+        TIME = glfwGetTime();
 
         if(glfwGetKey(WINDOW, GLFW_KEY_F1) == GLFW_PRESS) glfwSetWindowShouldClose(WINDOW, true);
-        SHOULD_CLOSE = glfwWindowShouldClose(WINDOW);
+        EXIT = glfwWindowShouldClose(WINDOW);
 
         if (INPUT_STATE == STATE_FLYING){
             if (glfwGetKey(WINDOW, GLFW_KEY_W) == GLFW_PRESS)

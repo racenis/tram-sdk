@@ -23,6 +23,7 @@ namespace Core::Render {
     float SCREEN_HEIGHT = 600.0f;
 
     bool THIRD_PERSON = false;
+    bool DRAW_RENDER_DEBUG = false;
     
     glm::vec3 SUN_DIRECTION = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 SUN_COLOR = glm::vec3(1.0f, 1.0f, 1.0f);

@@ -32,6 +32,8 @@
 
 #include <components/controllercomponent.h>
 
+#include <extensions/menu/menu.h>
+
 using namespace Core;
 using namespace Core::Render;
 using namespace Core::UI;
@@ -132,7 +134,7 @@ int main() {
     
     //auto crate_ent = Entity::Find(UID("estijs"));
     
-    while(!SHOULD_CLOSE){
+    while(!EXIT){
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
@@ -166,8 +168,8 @@ int main() {
         SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         
         GUI::Begin();
-        GUI::DebugMenu();
-        GUI::EscapeMenu();
+        Ext::Menu::DebugMenu();
+        Ext::Menu::EscapeMenu();
         GUI::End();
         
         Audio::Update();

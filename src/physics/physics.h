@@ -9,6 +9,7 @@
 #define PHYSICS_H
 
 #include <framework/core.h>
+#include <framework/math.h>
 #include <framework/resource.h>
 
 #include <unordered_map>
@@ -32,6 +33,8 @@ namespace Core {
 namespace Core::Physics {
     void InitPhysics();
     void StepPhysics(float time);
+    
+    extern bool DRAW_PHYSICS_DEBUG;
 
     enum CollisionGroup { // TODO: specify the underlying type for this enum (i think it's uint32_t)
         COLL_WORLDOBJ = 2,   /// StaticWorldObject's, etc.

@@ -1,12 +1,16 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// MENU.CPP -- implementations of some default menus
 
 #include <framework/gui.h>
 #include <framework/worldcell.h>
 
-namespace Core::GUI {
+#include <physics/physics.h>
+#include <render/render.h>
+
+
+using namespace Core::GUI;
+
+namespace Core::Ext::Menu {
     void DebugMenu() {
         static bool debugdraw_trans = false;
         static bool debugdraw_paths = false;
@@ -56,8 +60,8 @@ namespace Core::GUI {
             EndFrame();
             
             Frame(FRAME_RIGHT, 320-100);
-            CheckBox(DRAW_RENDER_DEBUG); FrameBreakLine();
-            CheckBox(DRAW_PHYSICS_DEBUG); FrameBreakLine();
+            CheckBox(Render::DRAW_RENDER_DEBUG); FrameBreakLine();
+            CheckBox(Physics::DRAW_PHYSICS_DEBUG); FrameBreakLine();
             CheckBox(debugdraw_trans); FrameBreakLine();
             CheckBox(debugdraw_paths); FrameBreakLine();
             CheckBox(debugdraw_navmeshes); FrameBreakLine();

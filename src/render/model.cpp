@@ -8,6 +8,8 @@
 //#include <glad_gles3.h>
 
 #include <framework/core.h>
+#include <framework/stats.h>
+
 #include <render/render.h>
 #include <render/renderer.h>
 
@@ -58,7 +60,8 @@ void Model::LoadFromMemory(){
         
         size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(StaticModelVertex));
         approx_vram_usage += approx_memory;
-        RESOURCE_VRAM_USAGE += approx_memory;
+        //RESOURCE_VRAM_USAGE += approx_memory;
+        Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
 
         delete mData;
         mData = nullptr;
@@ -82,7 +85,8 @@ void Model::LoadFromMemory(){
 
         size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(DynamicModelVertex));
         approx_vram_usage += approx_memory;
-        RESOURCE_VRAM_USAGE += approx_memory;
+        //RESOURCE_VRAM_USAGE += approx_memory;
+        Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
 
         delete mData;
         mData = nullptr;

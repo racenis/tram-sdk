@@ -6,6 +6,7 @@
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
       <VirtualDirectory Name="menu">
+        <File Name="src/extensions/menu/menu.h"/>
         <File Name="src/extensions/menu/menu.cpp"/>
       </VirtualDirectory>
     </VirtualDirectory>
@@ -35,6 +36,8 @@
       <File Name="src/components/aicomponent.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/math.cpp"/>
+      <File Name="src/framework/math.h"/>
       <File Name="src/framework/ui.h"/>
       <File Name="src/framework/ui.cpp"/>
       <File Name="src/framework/templates.h"/>

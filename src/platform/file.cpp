@@ -1,6 +1,7 @@
 #include <framework/file.h>
 #include <charconv>
 #include <cstring>
+#include <cassert>
 #include <iostream>
 
 namespace Core {

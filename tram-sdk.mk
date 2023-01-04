@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Poga
-Date                   :=04/01/2023
+Date                   :=05/01/2023
 CodeLitePath           :="C:/Program Files/CodeLite"
 MakeDirCommand         :=mkdir
 LinkerName             :=C:/mingw64/bin/g++.exe
@@ -66,11 +66,11 @@ AS       := C:/mingw64/bin/as.exe
 CodeLiteDir:=C:\Program Files\CodeLite
 WXWIN:=C:\Users\Poga\Desktop\miskaste\wxwidgets
 WXCFG:=gcc_dll\mswu
-Objects0=$(IntermediateDirectory)/src_extensions_menu_menu.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_player.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_tram.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_lamp.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_material.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_armature.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_renderer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_physics_collisionmodel.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_platform_file.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_render.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_staticworldobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_gui.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_controllercomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_core.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_particlecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_ui.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_rendercomponent.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_audio_audio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_render_misc.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_physics_physics.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_entitycomponents.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_message.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_navigation.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_armaturecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_spritecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_async.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_render_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_armaturecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_bus.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_crate.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_mongus.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_logging.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_stats.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_etc.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_worldcell.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_framework_uid.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_event.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_net.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_framework_math.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_menu_menu.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_player.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_tram.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_lamp.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_material.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_armature.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_renderer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_physics_collisionmodel.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_file.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_render.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_staticworldobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_gui.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_controllercomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_core.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_particlecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_ui.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_components_rendercomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_audio_audio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_render_misc.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_physics_physics.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_entitycomponents.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_message.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_navigation.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_armaturecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_spritecomponent.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_framework_async.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_armaturecomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_bus.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_crate.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_mongus.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_logging.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_stats.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_etc.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_framework_worldcell.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_uid.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_event.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_net.cpp$(ObjectSuffix) 
 
 
 
@@ -101,6 +101,14 @@ PreBuild:
 ##
 ## Objects
 ##
+$(IntermediateDirectory)/src_framework_math.cpp$(ObjectSuffix): src/framework/math.cpp $(IntermediateDirectory)/src_framework_math.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/math.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_math.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_framework_math.cpp$(DependSuffix): src/framework/math.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_math.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_math.cpp$(DependSuffix) -MM src/framework/math.cpp
+
+$(IntermediateDirectory)/src_framework_math.cpp$(PreprocessSuffix): src/framework/math.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_math.cpp$(PreprocessSuffix) src/framework/math.cpp
+
 $(IntermediateDirectory)/src_extensions_menu_menu.cpp$(ObjectSuffix): src/extensions/menu/menu.cpp $(IntermediateDirectory)/src_extensions_menu_menu.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/extensions/menu/menu.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_extensions_menu_menu.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/src_extensions_menu_menu.cpp$(DependSuffix): src/extensions/menu/menu.cpp

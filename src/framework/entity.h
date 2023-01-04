@@ -6,6 +6,7 @@
 
 #include <framework/uid.h>
 #include <framework/core.h>
+#include <framework/math.h>
 
 
 namespace Core {

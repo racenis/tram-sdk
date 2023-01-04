@@ -12,6 +12,8 @@
 #include <framework/uid.h>
 
 namespace Core {
+    extern bool DRAW_PATH_DEBUG;
+    
     struct Path {
         struct Node {
             Node* next;

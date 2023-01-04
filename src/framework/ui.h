@@ -99,6 +99,8 @@ namespace Core::UI {
     // TODO: yeet these
     void LoadFontInfo(const char* filename, size_t fontIndex);
     void LoadGlyphInfo(const char* filename, size_t fontIndex);
+    void SetText(const char* text, uint32_t x, uint32_t y, float scale, float width, bool justify, bool stretch, uint32_t font, const vec3& color);
+    void SetDebugText(const char* text, const vec3& location, const vec3& color);
 }
 
 

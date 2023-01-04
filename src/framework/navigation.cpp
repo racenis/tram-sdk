@@ -11,6 +11,7 @@ template <> Pool<Path> PoolProxy<Path>::pool ("path pool", 50, false);
 template <> Pool<Navmesh> PoolProxy<Navmesh>::pool ("navmesh pool", 50, false);
 template <> Pool<NavigationPlan> PoolProxy<NavigationPlan>::pool("navigation plan pool", 100);
 Octree<Navmesh::Node*> Navmesh::all_nodes;
+bool DRAW_PATH_DEBUG = false;
 
 NavigationPlan* MakeNavigationPlan(const glm::vec3& from, const glm::vec3& to) {
     NavigationPlan* plan = PoolProxy<NavigationPlan>::New();

@@ -18,6 +18,8 @@
 //#include <glad_gles3.h>
 
 #include <framework/core.h>
+#include <framework/stats.h>
+
 #include <render/render.h>
 #include <render/renderer.h>
 
@@ -152,7 +154,8 @@ void Material::LoadFromMemory(){
     float approx_memory = width * height * channels;  // image size
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
     approx_vram_usage = (size_t) approx_memory;
-    RESOURCE_VRAM_USAGE += approx_vram_usage;
+    //RESOURCE_VRAM_USAGE += approx_vram_usage;
+    Stats::Add(Stats::RESOURCE_VRAM, approx_vram_usage);
 
     delete[] textureData;
     textureData = nullptr;

@@ -7,6 +7,8 @@
 
 #include <framework/core.h>
 #include <framework/async.h>
+#include <framework/resource.h>
+#include <framework/entitycomponent.h>
 
 #include <thread>
 
@@ -153,6 +155,4 @@ namespace Core::Async {
 
         resource_loader_thread.join();
     }
-
-
 }

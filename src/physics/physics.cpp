@@ -23,6 +23,8 @@ namespace Core::Physics {
     btIDebugDraw* debugDrawer;
     btVehicleRaycaster* vehicleRaycaster;
     
+    bool DRAW_PHYSICS_DEBUG = false;
+    
     enum UserIndex : int {
         USERINDEX_PHYSICSCOMPONENT = 1,
         USERINDEX_TRIGGERCOMPONENT = 2,
