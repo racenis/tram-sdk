@@ -9,6 +9,7 @@
 
 #include <audio/audio.h>
 #include <components/audiocomponent.h>
+#include <unordered_map>
 
 namespace Core::Audio {
     struct SoundSource {

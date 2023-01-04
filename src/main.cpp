@@ -7,6 +7,10 @@
 #include <framework/core.h>
 #include <framework/async.h>
 #include <framework/ui.h>
+#include <framework/entity.h>
+#include <framework/worldcell.h>
+#include <framework/event.h>
+#include <framework/message.h>
 #include <physics/physics.h>
 #include <audio/audio.h>
 

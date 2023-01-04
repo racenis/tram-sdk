@@ -1,6 +1,7 @@
 #include <framework/file.h>
 #include <charconv>
 #include <cstring>
+#include <iostream>
 
 namespace Core {
     class DiskFile {

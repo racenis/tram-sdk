@@ -8,8 +8,13 @@
 #ifndef PLAYERCOMPONENT_H
 #define PLAYERCOMPONENT_H
 
-#include <components/controllercomponent.h>
 #include <framework/ui.h>
+#include <framework/event.h>
+#include <framework/entity.h>
+#include <framework/worldcell.h>
+
+#include <components/controllercomponent.h>
+
 
 namespace Core {
     class PlayerComponent : public EntityComponent {

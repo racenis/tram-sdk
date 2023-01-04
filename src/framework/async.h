@@ -4,7 +4,8 @@
 // ASYNC.H -- All of the multithreaded code
 // Asynchronous resource loading
 
-#include <framework/core.h>
+#include <framework/resource.h>
+#include <framework/entitycomponent.h>
 
 namespace Core::Async {
 

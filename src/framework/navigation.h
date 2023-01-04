@@ -6,7 +6,10 @@
 #ifndef NAVIGATION_H
 #define NAVIGATION_H
 
+#include <templates/octree.h>
+
 #include <framework/core.h>
+#include <framework/uid.h>
 
 namespace Core {
     struct Path {

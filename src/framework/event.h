@@ -6,9 +6,6 @@
 
 #include <cstdint>
 
-// TODO: remove this
-#include <framework/templates.h>
-
 namespace Core {
     typedef uint16_t event_t;
     typedef uint64_t id_t;
@@ -37,11 +34,13 @@ namespace Core {
         static void RemoveListener(listener_t listener_id);
 
         /// Experimental template function.
+        /*
         template<event_t event_type>
         static decltype(EventDataType<event_type>().type)& RetrieveData(Event& event) {
             assert(event_type == event.type);
             return *((decltype(EventDataType<event_type>().type)*)event.data);
         }
+        */
 
         event_t type;
         event_t subtype;

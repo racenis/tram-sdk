@@ -7,6 +7,8 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <templates/octree.h>
+
 #include <render/render.h>
 
 namespace Core::Render {

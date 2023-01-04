@@ -8,7 +8,10 @@
 #define MOTIONSTATES_H
 
 #include <btBulletDynamicsCommon.h>
+
 #include <framework/core.h>
+#include <framework/entity.h>
+
 #include <components/physicscomponent.h>
 #include <components/armaturecomponent.h>
 

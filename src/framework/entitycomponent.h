@@ -4,9 +4,9 @@
 #ifndef ENTITYCOMPONENT_H
 #define ENTITYCOMPONENT_H
 
-#include <framework/etc.h>
+#include <templates/pool.h>
 
-#include <framework/templates.h>
+#include <framework/etc.h>
 
 namespace Core {
     class Event;

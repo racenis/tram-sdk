@@ -3,7 +3,10 @@
 //
 // CRATE.CPP -- Crate entity.
 
+#include <framework/worldcell.h>
+
 #include <entities/crate.h>
+
 #include <components/rendercomponent.h>
 #include <components/physicscomponent.h>
 

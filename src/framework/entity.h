@@ -5,13 +5,8 @@
 #define ENTITY_H
 
 #include <framework/uid.h>
+#include <framework/core.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
-
-// TODO: yeet this
-#include <framework/templates.h>
-#include <unordered_map>
 
 namespace Core {
     class WorldCell;

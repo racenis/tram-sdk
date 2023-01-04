@@ -2,6 +2,8 @@
 #define AUDIO_H
 
 #include <framework/core.h>
+#include <framework/resource.h>
+
 
 namespace Core::Audio {
     //extern glm::vec3 LISTENER_POSITION;

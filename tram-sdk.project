@@ -72,6 +72,11 @@
       <File Name="src/framework/entity.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="templates">
+      <File Name="src/templates/octree.h"/>
+      <File Name="src/templates/stack.h"/>
+      <File Name="src/templates/queue.h"/>
+      <File Name="src/templates/stackpool.h"/>
+      <File Name="src/templates/pool.h"/>
       <File Name="src/templates/macros.h"/>
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>

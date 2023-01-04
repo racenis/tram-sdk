@@ -1,5 +1,10 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #ifndef FILE_H
 #define FILE_H
+
+#include <string>
 
 #include <framework/core.h>
 

@@ -7,7 +7,14 @@
 #ifndef ARMATURE_H
 #define ARMATURE_H
 
+#include <unordered_map>
+
+#include <templates/pool.h>
+#include <templates/stackpool.h>
+
 #include <framework/core.h>
+#include <framework/uid.h>
+#include <framework/resource.h>
 
 namespace Core::Render {
     typedef std::pair<name_t, uint64_t> NameCount; // animation header
@@ -36,6 +43,7 @@ namespace Core::Render {
 
     class Animation : public Resource {
     protected:
+        // TODO: move these static variables into ARMATURE.CPP
         static StackPool<uint8_t> animationpool;
 
         static std::unordered_map<uint64_t, NameCount*> animationlist;

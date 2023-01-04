@@ -5,8 +5,10 @@
 // Window opening, opengl context creation and user inputs.
 
 #include <framework/core.h>
-#include <render/render.h>
+#include <framework/event.h>
 #include <framework/ui.h>
+
+#include <render/render.h>
 
 #include <fstream>
 #include <cstring>

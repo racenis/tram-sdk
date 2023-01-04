@@ -6,8 +6,7 @@
 
 #include <cstdint>
 
-// TODO: remove this
-#include <framework/templates.h>
+#include <templates/queue.h>
 
 namespace Core {
     typedef uint64_t message_t;

@@ -9,6 +9,8 @@
 #include <framework/etc.h>
 #include <framework/serializeddata.h>
 
+#include <iostream>
+
 namespace Core {
     // TODO: swap all of these out for my own hashmap
     std::unordered_map<uint64_t, Entity*> ENTITY_ID_LIST;

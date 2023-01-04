@@ -7,8 +7,9 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include <render/armature.h>
+#include <vector>
 
+#include <render/armature.h>
 
 namespace Core::Render {
     class Model;

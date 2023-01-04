@@ -4,6 +4,7 @@
 // MENU.CPP -- implementations of some default menus
 
 #include <framework/gui.h>
+#include <framework/worldcell.h>
 
 namespace Core::GUI {
     void DebugMenu() {

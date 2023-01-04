@@ -3,6 +3,8 @@
 //
 // GUI.CPP -- graphical user interface implementation.
 
+#include <templates/stack.h>
+
 #include <framework/gui.h>
 
 namespace Core::GUI {

@@ -9,6 +9,7 @@
 #define CONTROLLERCOMPONENT_H
 
 #include <framework/core.h>
+#include <framework/entitycomponent.h>
 
 // TODO: refactor so that this include can be replaced with forward declaration
 #include <components/armaturecomponent.h>

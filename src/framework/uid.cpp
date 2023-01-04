@@ -1,7 +1,10 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/uid.h>
 
 #include <cstring>
-#include <framework/templates.h>
+#include <templates/stackpool.h>
 
 // TODO: yeet this
 #include <unordered_map>

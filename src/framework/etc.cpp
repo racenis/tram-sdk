@@ -1,5 +1,7 @@
 #include <framework/etc.h>
 
+#include <templates/stackpool.h>
+
 #include <framework/templates.h>
 #include <cstring>
 

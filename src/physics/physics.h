@@ -9,6 +9,9 @@
 #define PHYSICS_H
 
 #include <framework/core.h>
+#include <framework/resource.h>
+
+#include <unordered_map>
 
 class btCollisionShape;
 class btMotionState;

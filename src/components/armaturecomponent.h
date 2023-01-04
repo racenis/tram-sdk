@@ -8,6 +8,8 @@
 #ifndef ARMATURECOMPONENT_H
 #define ARMATURECOMPONENT_H
 
+#include <framework/core.h>
+#include <framework/entitycomponent.h>
 #include <render/render.h>
 
 namespace Core {

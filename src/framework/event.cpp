@@ -1,3 +1,10 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
+#include <vector>
+
+#include <templates/queue.h>
+
 #include <framework/event.h>
 #include <framework/entitycomponent.h>
 

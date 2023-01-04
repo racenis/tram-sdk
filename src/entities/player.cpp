@@ -4,6 +4,9 @@
 // PLAYER.CPP -- Player entity.
 
 #include <entities/player.h>
+
+#include <framework/message.h>
+
 #include <components/controllercomponent.h>
 #include <components/playercomponent.h>
 #include <components/physicscomponent.h>

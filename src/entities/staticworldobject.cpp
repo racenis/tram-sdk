@@ -3,6 +3,8 @@
 //
 // STATICWORLDOBJECT.CPP -- Static world object entity.
 
+#include <framework/worldcell.h>
+
 #include <entities/staticworldobject.h>
 #include <components/rendercomponent.h>
 #include <components/physicscomponent.h>

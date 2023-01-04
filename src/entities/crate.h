@@ -6,7 +6,8 @@
 #ifndef CRATE_H
 #define CRATE_H
 
-#include <framework/core.h>
+#include <framework/entity.h>
+#include <framework/entitycomponent.h>
 #include <framework/serializeddata.h>
 
 namespace Core {

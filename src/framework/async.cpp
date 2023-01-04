@@ -3,6 +3,8 @@
 //
 // ASYNC.CPP -- implementation of async.h
 
+#include <templates/queue.h>
+
 #include <framework/core.h>
 #include <framework/async.h>
 

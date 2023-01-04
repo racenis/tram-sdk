@@ -7,17 +7,19 @@
 #ifndef TRAM_CORE_H
 #define TRAM_CORE_H
 
-// TODO: yeet these
-#include <framework/entity.h>
-#include <framework/entitycomponent.h>
-#include <framework/etc.h>
-#include <framework/event.h>
-#include <framework/message.h>
-#include <framework/resource.h>
-#include <framework/stats.h>
-#include <framework/system.h>
-#include <framework/uid.h>
-#include <framework/worldcell.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+//#include <framework/entity.h>
+//#include <framework/entitycomponent.h>
+//#include <framework/etc.h>
+//#include <framework/event.h>
+//#include <framework/message.h>
+//#include <framework/resource.h>
+//#include <framework/stats.h>
+//#include <framework/system.h>
+//#include <framework/uid.h>
+//#include <framework/worldcell.h>
 
 namespace Core {
     extern bool SHOULD_CLOSE;           // TODO: rename

@@ -1,6 +1,7 @@
 #include <framework/logging.h>
 #include <cstring>
 #include <charconv>
+#include <iostream>
 
 namespace Core::implementation {
     char buffer[500] = {'\0'}; // yes.. haha .. YES!!

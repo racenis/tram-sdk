@@ -4,6 +4,9 @@
 // CORE.CPP -- Core functions and globals.
 
 #include <framework/core.h>
+#include <framework/event.h>
+#include <framework/system.h>
+
 #include <render/render.h>
 #include <render/armature.h>
 

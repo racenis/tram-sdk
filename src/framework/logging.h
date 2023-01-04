@@ -7,6 +7,7 @@
 #define LOGGING_H
 
 #include <framework/core.h>
+#include <framework/uid.h>
 #include <concepts>
 
 namespace Core {
