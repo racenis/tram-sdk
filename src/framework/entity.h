@@ -8,7 +8,6 @@
 #include <framework/core.h>
 #include <framework/math.h>
 
-
 namespace Core {
     class WorldCell;
     class Message;
@@ -43,13 +42,11 @@ namespace Core {
         
         inline void SetPersistent(bool persistent) { this->persistent = persistent; }
 
-        void SetLocation(float x, float y, float z){ location = glm::vec3(x, y, z); SetParameters(); CheckTransition(); }
-        void SetLocation(const glm::vec3& loc) { location = loc; SetParameters(); CheckTransition();}
+        void SetLocation(const vec3& loc) { location = loc; SetParameters(); CheckTransition();}
 
-        void SetRotation(float x, float y, float z){ rotation = glm::quat(glm::vec3(x, y, z)); SetParameters(); }
-        void SetRotation(glm::quat& rot){ rotation = rot; SetParameters(); }
+        void SetRotation(const quat& rot) { rotation = rot; SetParameters(); }
 
-        inline void UpdateTransform(const glm::vec3& loc, const glm::quat& rot){
+        inline void UpdateTransform(const vec3& loc, const quat& rot){
             location = loc;
             rotation = rot;
             UpdateParameters();
@@ -60,11 +57,12 @@ namespace Core {
             SetLocation(location + move_by);
         }
 
-        inline void GetLocation(glm::vec3& loc) { loc = location; }
-        inline const glm::vec3& GetLocation() { return location; }
-
+        // idk why these methods exist
+        inline void GetLocation(vec3& loc) { loc = location; }
         inline void GetRotation(glm::quat& rot) { rot = rotation; }
-        inline const glm::quat& GetRotation() { return rotation; }
+        
+        inline const vec3& GetLocation() { return location; }
+        inline const quat& GetRotation() { return rotation; }
 
         virtual void MessageHandler(Message& msg) = 0;
 
@@ -74,11 +72,9 @@ namespace Core {
 
         static void Register (const char* name, Entity* (*constr_func)(std::string_view& params));
 
-        // TODO: rename this to FindByID
-        static Entity* Find (uint64_t entityID);
+        static Entity* FindByID (uint64_t entityID);
 
-        // TODO: rename this to FindByName
-        static Entity* FindName(name_t entityName);
+        static Entity* FindByName (name_t entityName);
     protected:
         uint64_t id = 0;
         name_t name = 0;
@@ -92,8 +88,8 @@ namespace Core {
         
         WorldCell* cell = nullptr;
         
-        glm::quat rotation = {0.0f, 0.0f, 0.0f, 1.0f};
-        glm::vec3 location = {0.0f, 0.0f, 0.0f};
+        quat rotation = {0.0f, 0.0f, 0.0f, 1.0f};
+        vec3 location = {0.0f, 0.0f, 0.0f};
 
         void Register();
 

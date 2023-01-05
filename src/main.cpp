@@ -77,7 +77,7 @@ int main() {
 
     // create the player entity
     Player player;
-    player.SetLocation(0.0f, 1.0f, 0.0f);
+    player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
     player.Load();
 
 
@@ -154,7 +154,7 @@ int main() {
         
         
         if (tick == 300) {
-            auto aaa = Entity::FindName(UID("estijs"));
+            auto aaa = Entity::FindByName(UID("estijs"));
             delete aaa;
         }
         

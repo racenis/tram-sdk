@@ -10,6 +10,7 @@
 #include <framework/serializeddata.h>
 
 #include <iostream>
+#include <unordered_map>
 
 namespace Core {
     // TODO: swap all of these out for my own hashmap
@@ -94,7 +95,7 @@ namespace Core {
         }
     }
     
-    Entity* Entity::Find (uint64_t entityID){
+    Entity* Entity::FindByID (uint64_t entityID){
         std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_ID_LIST.find(entityID);
 
         if(ff == ENTITY_ID_LIST.end()){
@@ -104,7 +105,7 @@ namespace Core {
         }
     }
 
-    Entity* Entity::FindName(name_t entityName){
+    Entity* Entity::FindByName(name_t entityName){
         std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_NAME_LIST.find(entityName.key);
 
         if(ff == ENTITY_NAME_LIST.end()){

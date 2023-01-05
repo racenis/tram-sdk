@@ -11,6 +11,7 @@ namespace Core {
     typedef glm::vec3 vec3;
     typedef glm::quat quat;
     typedef glm::mat4 mat4;
+    typedef glm::vec4 vec4;
     
     const vec3 DIRECTION_FORWARD    (0.0f,  0.0f, -1.0f);
     const vec3 DIRECTION_SIDE       (1.0f,  0.0f,  0.0f);

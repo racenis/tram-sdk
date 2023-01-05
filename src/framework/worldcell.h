@@ -6,13 +6,8 @@
 
 #include <vector>
 
-// TODO: remove the map
-#include <unordered_map>
-
-
-#include <glm/glm.hpp>
-
 #include <framework/uid.h>
+#include <framework/math.h>
 
 namespace Core {
     class Entity;
@@ -23,31 +18,31 @@ namespace Core {
     public:
         class Transition {
         public:
-            void AddPoint(const glm::vec3& point);
+            void AddPoint(const vec3& point);
             void GeneratePlanes(bool disp = false);
-            bool IsInside(const glm::vec3& point);
+            bool IsInside(const vec3& point);
             void SetInto(WorldCell* new_into) { into = new_into; }
             WorldCell* GetInto() { return into; }
         protected:
             name_t name = 0;
             WorldCell* into;
-            std::vector<glm::vec3> points;
-            std::vector<glm::vec4> planes;
+            std::vector<vec3> points;
+            std::vector<vec4> planes;
             friend class WorldCell;
         };
         class Loader {
         public:
-            void SetLocation(const glm::vec3& new_location) { location = new_location; current_cell = Find(new_location); }
-            void UpdateLocation(const glm::vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) { current_cell = n_trans; } }
+            void SetLocation(const vec3& new_location) { location = new_location; current_cell = Find(new_location); }
+            void UpdateLocation(const vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) { current_cell = n_trans; } }
             static void LoadCells();
         private:
-            glm::vec3 location;
+            vec3 location;
             WorldCell* current_cell;
         };
     protected:
         name_t name = 0;
         bool interior = false;
-        bool interiorLights = false;
+        bool interiorLights = false;    // why is this in camelCase
         bool loaded = false;
         bool draw = false;
         std::vector<Entity*> entities;
@@ -55,7 +50,6 @@ namespace Core {
         std::vector<Transition*> trans_out; // this one too?
         std::vector<Path*> paths;
         std::vector<Navmesh*> navmeshes;
-        static std::unordered_map<uint64_t, WorldCell*> List;
         friend void LoadCells();
     public:
         WorldCell(){};

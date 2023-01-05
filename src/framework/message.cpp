@@ -7,7 +7,7 @@ namespace Core {
     void Message::Dispatch(){
         Message* message = Message::queue.GetFirstPtr();
         while(message){
-            Entity* receiver = Entity::Find(message->receiverID);
+            Entity* receiver = Entity::FindByID(message->receiverID);
             if (receiver) receiver->MessageHandler(*message);
 
             Message::queue.Remove();

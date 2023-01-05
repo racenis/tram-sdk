@@ -32,10 +32,10 @@ namespace Core {
             if (is_move && (event.type == Event::KEYDOWN || event.type == Event::KEYUP)) {
                 bool move_value = event.type == Event::KEYDOWN;
                 
-                if (event.subtype & KEY_FORWARD) move_forward = move_value;
-                if (event.subtype & KEY_BACKWARD) move_backward = move_value;
-                if (event.subtype & KEY_LEFT) move_left = move_value;
-                if (event.subtype & KEY_RIGHT) move_right = move_value;
+                if (event.subtype & KEY_ACTION_FORWARD) move_forward = move_value;
+                if (event.subtype & KEY_ACTION_BACKWARD) move_backward = move_value;
+                if (event.subtype & KEY_ACTION_LEFT) move_left = move_value;
+                if (event.subtype & KEY_ACTION_RIGHT) move_right = move_value;
             }
                 
                 
@@ -92,7 +92,7 @@ namespace Core {
                 modifier = ACTIONMODIFIER_BACKWARD_RIGHT;
             }
         
-            if (event.subtype & KEY_JUMP) {
+            if (event.subtype & KEY_ACTION_JUMP) {
                 action = ACTION_JUMP;
                 modifier = ACTIONMODIFIER_NONE;
             }

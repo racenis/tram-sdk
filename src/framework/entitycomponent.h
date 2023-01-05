@@ -6,6 +6,7 @@
 
 #include <templates/pool.h>
 
+#include <framework/async.h>
 #include <framework/etc.h>
 
 namespace Core {
@@ -32,11 +33,6 @@ namespace Core {
         inline void SetParent(Entity* parent) { this->parent = parent; }
 
         inline uint64_t GetID() { return id; }
-
-        // TODO:
-        // probably a good idea to make this a protected method
-        // and add async function a friend function
-        void ResourceReady() { resources_waiting--; if (resources_waiting == 0 && is_init) Start();}
     protected:
         uint64_t id;
         size_t resources_waiting = 0;
@@ -44,7 +40,10 @@ namespace Core {
         bool is_init = false;
         Entity* parent = nullptr;
 
+        void ResourceReady() { resources_waiting--; if (resources_waiting == 0 && is_init) Start(); }
+
         virtual void Start() = 0;
+        friend void Async::FinishResource();
         template <typename T> friend class ResourceProxy;
     };
     

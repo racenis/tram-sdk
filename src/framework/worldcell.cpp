@@ -22,7 +22,7 @@
 //#include <framework/navigation.h>
 
 using namespace Core;
-std::unordered_map<uint64_t, WorldCell*> WorldCell::List;
+std::unordered_map<uint64_t, WorldCell*> WORLDCELL_LIST;
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
 template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
 template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcellloader pool", 10, false);
@@ -35,13 +35,13 @@ void WorldCell::SetName(name_t new_name) {
     }
     
     name = new_name;
-    List[name.key] = this;
+    WORLDCELL_LIST[name.key] = this;
 }
 
 WorldCell* WorldCell::Find(name_t name){
-    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WorldCell::List.find(name.key);
+    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
 
-    if(ff == WorldCell::List.end()){
+    if(ff == WORLDCELL_LIST.end()){
         return nullptr;
     } else {
         return ff->second;
