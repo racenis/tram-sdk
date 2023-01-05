@@ -7,6 +7,7 @@
 #include <framework/core.h>
 #include <framework/event.h>
 #include <framework/ui.h>
+#include <framework/system.h>
 
 #include <render/render.h>
 
@@ -83,6 +84,8 @@ namespace Core::UI {
     }
 
     void Init(){
+        assert(System::IsInitialized(System::SYSTEM_CORE));
+        
         // start up glfw
         glfwInit();
         
@@ -150,6 +153,8 @@ namespace Core::UI {
         LoadGlyphInfo("data/glyph.info", 0);
         LoadGlyphInfo("data/glyph_text.info", 1);
         LoadGlyphInfo("data/glyph_text_bold.info", 2);
+        
+        System::SetInitialized(System::SYSTEM_UI, true);
     }
 
     void Uninit(){
@@ -179,7 +184,7 @@ namespace Core::UI {
         wasmouse_left = mouse_status_left;
 
         // generate events from keypresses
-        if (INPUT_STATE == STATE_DEFAULT){
+        /*if (INPUT_STATE == STATE_DEFAULT){
             keys_pressed ^= keys_up;
             keys_pressed |= keys_down;
 
@@ -189,7 +194,7 @@ namespace Core::UI {
 
             keys_down = 0;
             keys_up = 0;
-        }
+        }*/
 
         // generate cursor change position event
         glfwGetCursorPos(WINDOW, &cursorx, &cursory);
@@ -225,14 +230,16 @@ namespace Core::UI {
     }
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (KeyActionBindings[glfw_key_to_keyboardkey(key)].type == KeyBinding::KEYBOARD_ACTION) {
+        const auto& binding = KeyActionBindings[glfw_key_to_keyboardkey(key)];
+        
+        if (binding.type == KeyBinding::KEYBOARD_ACTION && INPUT_STATE == STATE_DEFAULT) {            
             if (action == GLFW_PRESS) {
-                keys_down |= KeyActionBindings[glfw_key_to_keyboardkey(key)].action;
+                Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
             } else if (action == GLFW_RELEASE) {
-                keys_up |= KeyActionBindings[glfw_key_to_keyboardkey(key)].action;
+                Event::Post({Event::KEYUP, binding.action, 0, nullptr});
             }
-        } else if (KeyActionBindings[glfw_key_to_keyboardkey(key)].type == KeyBinding::SPECIAL_OPTION && action == GLFW_PRESS) {
-            KeyActionBindings[glfw_key_to_keyboardkey(key)].special_option();
+        } else if (binding.type == KeyBinding::SPECIAL_OPTION && action == GLFW_PRESS) {
+            binding.special_option();
         }
     }
     

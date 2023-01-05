@@ -11,6 +11,7 @@
 #include <components/triggercomponent.h>
 
 #include <framework/gui.h>
+#include <framework/system.h>
 
 namespace Core::Physics {
     std::unordered_map<uint64_t, CollisionModel*> CollisionModel::List;
@@ -135,6 +136,8 @@ namespace Core::Physics {
         btRigidBody* planeRigidBody = new btRigidBody(planeConstructionInfo);
 
         dynamicsWorld->addRigidBody(planeRigidBody);
+        
+        System::SetInitialized(System::SYSTEM_PHYSICS, true);
     }
 
     

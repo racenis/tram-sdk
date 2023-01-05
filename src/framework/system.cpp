@@ -29,4 +29,12 @@ namespace Core::System {
     char const* GetShortName (uint32_t system) {
         return ALL_SYSTEMS[system].short_name;
     }
+    
+    void SetInitialized (uint32_t system, bool is_initialized) {
+        ALL_SYSTEMS[system].is_initialized = is_initialized;
+    }
+    
+    bool IsInitialized (uint32_t system) {
+        return ALL_SYSTEMS[system].is_initialized;
+    }
 }

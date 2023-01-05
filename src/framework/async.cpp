@@ -7,6 +7,7 @@
 
 #include <framework/core.h>
 #include <framework/async.h>
+#include <framework/system.h>
 #include <framework/resource.h>
 #include <framework/entitycomponent.h>
 
@@ -145,14 +146,20 @@ namespace Core::Async {
     }
 
     void Init(){
+        assert(System::IsInitialized(System::SYSTEM_CORE));
+        
         loaders_should_stop = false;
-
         resource_loader_thread = std::thread(ResourceLoader);
+        
+        System::SetInitialized(System::SYSTEM_ASYNC, true);
     }
 
     void Yeet(){
+        assert(System::IsInitialized(System::SYSTEM_ASYNC));
+        
         loaders_should_stop = true;
-
         resource_loader_thread.join();
+        
+        System::SetInitialized(System::SYSTEM_ASYNC, false);
     }
 }

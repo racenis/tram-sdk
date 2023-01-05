@@ -24,7 +24,7 @@ namespace Core {
     // TODO: these should be moved into their own file
     
 
-    void Init(){
+    void Init() {
         // set the 0th string to 'none'
         UID none("none");
         
@@ -44,6 +44,8 @@ namespace Core {
         for (event_t i = 0; i < Event::LAST_EVENT; i++) {
             Event::Register();
         }
+        
+        System::SetInitialized(System::SYSTEM_CORE, true);
     }
 
 

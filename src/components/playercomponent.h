@@ -15,6 +15,7 @@
 
 #include <components/controllercomponent.h>
 
+#include <framework/logging.h>
 
 namespace Core {
     class PlayerComponent : public EntityComponent {
@@ -32,22 +33,13 @@ namespace Core {
             if (is_move && (event.type == Event::KEYDOWN || event.type == Event::KEYUP)) {
                 bool move_value = event.type == Event::KEYDOWN;
                 
-                if (event.subtype & KEY_ACTION_FORWARD) move_forward = move_value;
-                if (event.subtype & KEY_ACTION_BACKWARD) move_backward = move_value;
-                if (event.subtype & KEY_ACTION_LEFT) move_left = move_value;
-                if (event.subtype & KEY_ACTION_RIGHT) move_right = move_value;
+                if (event.subtype == KEY_ACTION_FORWARD)    move_forward =  move_value;
+                if (event.subtype == KEY_ACTION_BACKWARD)   move_backward = move_value;
+                if (event.subtype == KEY_ACTION_LEFT)       move_left =     move_value;
+                if (event.subtype == KEY_ACTION_RIGHT)      move_right =    move_value;
             }
-                
-                
 
-            //} else if (event.type == Event::KEYDOWN) {
-            //    if(event.subtype & KEY_ACTIVATE) controller->ActivateInFront();
-
-
-
-            //glm::vec3 vecdir = direction * forwarddir;
-            //controller->SetDirection(vecdir);
-            //controller->SetRotDirection(direction);
+            // I have literally no idea what is going on in here
 
             auto action = ACTION_IDLE;
             auto modifier = ACTIONMODIFIER_NONE;
@@ -92,16 +84,13 @@ namespace Core {
                 modifier = ACTIONMODIFIER_BACKWARD_RIGHT;
             }
         
-            if (event.subtype & KEY_ACTION_JUMP) {
+            if (event.subtype == KEY_ACTION_JUMP) {
                 action = ACTION_JUMP;
                 modifier = ACTIONMODIFIER_NONE;
             }
             
             controller->Act(action, modifier, 0);
-            
-            //std::cout << "action: " << (uint64_t)action << " modifier: " << (uint64_t)modifier << std::endl;
-            //std::cout << "fw " << move_forward << " bw " << move_backward << " l " << move_left << " r " << move_right << std::endl;
-        };
+        }
         void Init(){
             listener = Event::AddListener(Event::KEYPRESS, this);
             keydown = Event::AddListener(Event::KEYDOWN, this);
@@ -134,7 +123,6 @@ namespace Core {
             is_move = true;
         }
         void Start(){}
-        //void UpdateLocation(const glm::vec3& location) { assert(cell_loader); cell_loader->SetLocation(location); }
         void MoveUpdate() { assert(cell_loader); cell_loader->UpdateLocation(parent->GetLocation()); }
     private:
         Entity* parent = nullptr;

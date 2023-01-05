@@ -7,6 +7,8 @@
 #undef R
 #undef C
 
+#include <framework/system.h>
+#include <framework/logging.h>
 #include <audio/audio.h>
 #include <components/audiocomponent.h>
 #include <unordered_map>
@@ -33,19 +35,24 @@ namespace Core::Audio {
     }
     
     void Init() {
+        assert(System::IsInitialized(System::SYSTEM_CORE));
+        assert(System::IsInitialized(System::SYSTEM_UI));
+        
         sound_device = alcOpenDevice(nullptr);
-        if (!sound_device) std::cout << "Audio device didn't open!" << std::endl;
+        if (!sound_device) Log (System::SYSTEM_AUDIO, "Audio device didn't open!");
         sound_context = alcCreateContext(sound_device, nullptr);
-        if (!sound_context) std::cout << "Audio context didn't create!" << std::endl;
-        if (!alcMakeContextCurrent(sound_context)) std::cout << "Audio context didn't get currented!" << std::endl;
+        if (!sound_context) Log (System::SYSTEM_AUDIO, "Audio context didn't create!");
+        if (!alcMakeContextCurrent(sound_context)) Log (System::SYSTEM_AUDIO, "Audio context didn't get currented!");
         const char* device_name = nullptr;
         if (alcIsExtensionPresent(sound_device, "ALC_ENUMERATE_ALL_EXT")) device_name = alcGetString(sound_device, ALC_ALL_DEVICES_SPECIFIER);
         if (!device_name || alcGetError(sound_device) != ALC_NO_ERROR) device_name = alcGetString(sound_device, ALC_DEVICE_SPECIFIER);
-        std::cout << "Audio device: " << device_name << std::endl;
+        Log (System::SYSTEM_AUDIO, "{}", device_name);
+        
+        System::SetInitialized(System::SYSTEM_AUDIO, true);
     }
     
     void Update() {        
-        alListener3f( AL_POSITION, LISTENER_POSITION.x, LISTENER_POSITION.y, LISTENER_POSITION.z);
+        alListener3f(AL_POSITION, LISTENER_POSITION.x, LISTENER_POSITION.y, LISTENER_POSITION.z);
         alListenerfv(AL_ORIENTATION, &LISTENER_ORIENTATION[0][0]);
     }
     

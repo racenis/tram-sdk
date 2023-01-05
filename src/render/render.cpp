@@ -4,6 +4,7 @@
 // RENDER.CPP -- Rendering stuff.
 
 #include <framework/core.h>
+#include <framework/system.h>
 #include <render/render.h>
 #include <render/renderer.h>
 #include <components/rendercomponent.h>
@@ -66,6 +67,9 @@ namespace Core::Render {
     std::vector<SpriteVertex> glyphvertices;
     
     void Init(){
+        assert(System::IsInitialized(System::SYSTEM_CORE));
+        assert(System::IsInitialized(System::SYSTEM_UI));
+        
         OpenGL::Init();
         
         FONT_REGULAR = Material(UID("jost"), Material::TEXTURE_MSDF);  // futura knock-off
@@ -107,7 +111,8 @@ namespace Core::Render {
         OpenGL::SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
         uint32_t glyphvertices_textures[4] = {GLYPH_GUI.GetTexture(), GLYPH_TEXT.GetTexture(), GLYPH_TEXT_BOLD.GetTexture(), GLYPH_HEADERS.GetTexture()};
         OpenGL::SetDrawListTextures(glyphvertices_entry, 4, glyphvertices_textures);
-
+        
+        System::SetInitialized(System::SYSTEM_RENDER, true);
     }
 
     void Render(){

@@ -144,16 +144,15 @@ namespace Core::UI {
         STATE_MENU_OPEN
     };
 
-    // TODO: change from bitmask to normal enum
     enum KeyboardAction : uint16_t {
-        KEY_ACTION_NONE =      0,
-        KEY_ACTION_FORWARD =   1,
-        KEY_ACTION_BACKWARD =  2,
-        KEY_ACTION_LEFT =      4,
-        KEY_ACTION_RIGHT =     8,
-        KEY_ACTION_JUMP =      16,
-        KEY_ACTION_CROUCH =    32,
-        KEY_ACTION_ACTIVATE =  64
+        KEY_ACTION_NONE,
+        KEY_ACTION_FORWARD,
+        KEY_ACTION_BACKWARD,
+        KEY_ACTION_LEFT,
+        KEY_ACTION_RIGHT,
+        KEY_ACTION_JUMP,
+        KEY_ACTION_CROUCH,
+        KEY_ACTION_ACTIVATE
     };
 
     struct KeyBinding {
