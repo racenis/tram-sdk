@@ -41,46 +41,48 @@ If you're using the microsoft's C++ compiler, then good luck.
 No code contributions accepted right now, but if you find a bug or have a suggestion, then you can open a github issue.
 
 ## To-do list
-CURRENT DEVELOPMENT:
+#### Version 0.0.4
+- Switch out all of the std::cout's to Log's
 - Finish writing the report
 	- Test performance of the engine
 	- Finish the platform/file.cpp implementation
 	- Switch all file loading to file.h abstraction
 	- Test performance again
+- Finish the Stats system
 - Switch namespace Core to tram
 - Move language stuff out of the framework/etc.h/etc.cpp
-- Do all of the TODO's
-- Do a bunch of testing
-- Make changes
-- Write up the documentation
-- Put all of the Entity/Component/Cell definitions in seperate
 - Make system reject register above 64 systems
 - Finish file writer
-- Rewrite key generator to use bitfields
+- Rewrite render sort key generator to use bitfields
 - Add input polling functions to UI
-- Add Event/Message/Logging ID Enum collision avoidance
-	- Something like this, but for fonts too
-- Message / Event system
-	- Add a way to define custom message/event types
 - Render/Armature component linking
 
-#### For next versions
-- ParticleComponent
-	- I have no idea where I am going with it
-	- Maybe add callbacks for processing the particle behaviour
-- TriggerComponent
-	- I have a feeling that it needs more features
-	- More callbacks, maybe?
-		- OnDeactivate callback
-		- OnActivate callback with reference to entity that commited the activation
-- Put LODs into files
-- Think of additional GUI widgets
-- Switch to using sprites for defining fonts
-- Add LIGMAScript
+#### Version 0.0.5
+- Sprites
+	- Add option to load frames from disk
+- Fonts/glyphs 
+	- Add an option to register custom fonts
+	- Add a typedef font_t
+	- Function font_t RegisterFont (type regular/msdf, font_t)
+- Switch to using sprites
+	- Instead of feeding it a font index, instead feeda font_t
+
+#### Version 0.0.6
+- New CharacterController
+	- Switch from RigidBody to Kinetic
+- Partially rewrite the PhysicsComponent
+	- Delete unused methods
+	- Add more methods
+
+#### Version 0.0.7
+- Rewrite path following for the PhysicsComponent
+- Implement navigation
+
+#### Version 0.0.8
+- Add scripting
 
 
-
-#### For versions later than next versions
+#### For later versions
 - AudioComponent
 	- Some sort of real-time spatial effect system
 - Rendering
@@ -100,6 +102,7 @@ CURRENT DEVELOPMENT:
 - Make the player controller more responsive
 - Physics cached collision primitives
 - Add a proper third person camera 
+- Put LODs into files
 - Add some generic gameplay systems
 	- Tools/items
 	- Item management/inventory
@@ -134,9 +137,3 @@ CURRENT DEVELOPMENT:
 - AudioComponents can play more than 128 sounds at the same time
 - Split animation into animation and StreamableAnimation
 	- Animations that need to be streamed in and later removed have their own keyframe pools
-
-### Important questions that need answering
-- Can you change the sun color/direction and ambient color?
-- Can you change the color that is used to clear the screen?
-- Can you define your own fonts?
-- Can you define your own GUI skins?
