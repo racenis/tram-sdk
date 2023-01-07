@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// RENDERCOMPONENT.H -- Model rendering component
-// This component will render a single model onto the screen.
 
-#ifndef RENDERCOMPONENT_H
-#define RENDERCOMPONENT_H
+#ifndef COMPONENTS_RENDERCOMPONENT_H
+#define COMPONENTS_RENDERCOMPONENT_H
 
 #include <render/render.h>
 
@@ -52,4 +49,4 @@ namespace Core {
     };
 }
 
-#endif //RENDERCOMPONENT_H
+#endif // COMPONENTS_RENDERCOMPONENT_H

@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef ENTITYCOMPONENT_H
-#define ENTITYCOMPONENT_H
+#ifndef FRAMEWORK_ENTITYCOMPONENT_H
+#define FRAMEWORK_ENTITYCOMPONENT_H
 
 #include <templates/pool.h>
 
@@ -13,7 +13,6 @@ namespace Core {
     class Event;
     class Entity;
     
-    /// Base class for all Entity Components.
     class EntityComponent {
     public:
         EntityComponent(){ id = GenerateID(); }
@@ -66,4 +65,4 @@ namespace Core {
     };
 }
 
-#endif // ENTITYCOMPONENT_H
+#endif // FRAMEWORK_ENTITYCOMPONENT_H

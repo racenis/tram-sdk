@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#ifndef FRAMEWORK_SYSTEM_H
+#define FRAMEWORK_SYSTEM_H
 
 #include <cstdint>
 
@@ -25,4 +25,4 @@ namespace Core::System {
     char const* GetShortName (uint32_t system);
 }
 
-#endif // SYSTEM_H
+#endif // FRAMEWORK_SYSTEM_H

@@ -1,3 +1,6 @@
+// This file is mostly for testing.
+// If you're using this as a library, then you need to implement your own main() function.
+
 #include <iostream>
 
 #define NEKADEEE
@@ -39,7 +42,6 @@ using namespace Core::Render;
 using namespace Core::UI;
 
 int main() {
-    std::cout << ENGINE_VERSION << std::endl;
     //std::cout << std::filesystem::current_path() << std::endl;
 
     // register the entity types, so that they can be loaded from level files

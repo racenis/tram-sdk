@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// UI.H -- User interface
-// Keyboard/mouse inputs, windowing
 
-#ifndef UI_H
-#define UI_H
+#ifndef FRAMEWORK_UI_H
+#define FRAMEWORK_UI_H
 
 #include <render/render.h>
 
@@ -228,4 +225,4 @@ namespace Core::UI {
 
 
 
-#endif // UI_H
+#endif // FRAMEWORK_UI_H

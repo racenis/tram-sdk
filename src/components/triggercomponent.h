@@ -3,8 +3,8 @@
 //
 // TRIGGERCOMPONENT.H -- Trigger component [kinda works]
 
-#ifndef TRIGGERCOMPONENT_H
-#define TRIGGERCOMPONENT_H
+#ifndef COMPONENTS_TRIGGERCOMPONENT_H
+#define COMPONENTS_TRIGGERCOMPONENT_H
 
 #include <physics/physics.h>
 #include <components/physicscomponent.h>
@@ -61,4 +61,4 @@ namespace Core {
     };
 }
 
-#endif //TRIGGERCOMPONENT_H
+#endif // COMPONENTS_TRIGGERCOMPONENT_H

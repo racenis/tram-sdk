@@ -1,10 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// GUI.H -- graphical user interface.
 
-#ifndef GUI_H
-#define GUI_H
+#ifndef FRAMEWORK_GUI_H
+#define FRAMEWORK_GUI_H
 
 #include <framework/ui.h>
 
@@ -86,4 +84,4 @@ namespace Core::GUI {
     void DropdownBox(char const** texts, uint32_t len, uint32_t& selected);
 }
 
-#endif // GUI_H
+#endif // FRAMEWORK_GUI_H

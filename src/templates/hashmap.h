@@ -1,7 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// HASHMAP.CPP -- implementation of the hashmap
+
+#ifndef TEMPLATES_HASHMAP_H
+#define TEMPLATES_HASHMAP_H
 
 #include <framework/core.h>
 
@@ -84,3 +85,5 @@ namespace Core {
     };
 
 }
+
+#endif // TEMPLATES_HASHMAP_H

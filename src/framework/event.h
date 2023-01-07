@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef EVENT_H
-#define EVENT_H
+#ifndef FRAMEWORK_EVENT_H
+#define FRAMEWORK_EVENT_H
 
 #include <cstdint>
 
@@ -62,4 +62,4 @@ namespace Core {
     };
 }
 
-#endif // EVENT_H
+#endif // FRAMEWORK_EVENT_H

@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// NET.H -- Networking code
-// This is where the networking code will be put once it's ready.
 
-#ifndef NET_H
-#define NET_H
+#ifndef FRAMEWORK_NET_H
+#define FRAMEWORK_NET_H
 
 namespace Core::Net {
 
@@ -13,7 +10,7 @@ namespace Core::Net {
 
     //void RegisterQueue(uint8_t subsystem, void (*pushfunc)(const Command& c));
 
-
+    // idk, maybe some day i'll actually implement this...
 
 }
-#endif // NET_H
+#endif // FRAMEWORK_NET_H

@@ -1,12 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// PLAYERCOMPONENTS.H -- Player component
-// This component implements the specific behaviours of the
-// player entity.
 
-#ifndef PLAYERCOMPONENT_H
-#define PLAYERCOMPONENT_H
+#ifndef COMPONENTS_PLAYERCOMPONENT_H
+#define COMPONENTS_PLAYERCOMPONENT_H
 
 #include <framework/ui.h>
 #include <framework/event.h>
@@ -150,4 +146,4 @@ namespace Core {
     
 }
 
-#endif //PLAYERCOMPONENT_H
+#endif // COMPONENTS_PLAYERCOMPONENT_H

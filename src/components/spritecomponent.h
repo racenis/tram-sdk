@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// SPRITECOMPONENT.H -- Sprite rendering component [incomplete]
-// This component will render a single sprite onto the screen.
 
-#ifndef SPRITECOMPONENT_H
-#define SPRITECOMPONENT_H
+#ifndef COMPONENTS_SPRITECOMPONENT_H
+#define COMPONENTS_SPRITECOMPONENT_H
 
 #include <render/render.h>
 
@@ -42,7 +39,6 @@ namespace Core {
     protected:
         ResourceProxy<Render::Sprite> sprite;
     
-        //Render::RenderListObject* robject = nullptr;
         Render::DrawListEntryHandle draw_list_entry;
         
         glm::vec3 location;
@@ -57,4 +53,4 @@ namespace Core {
     };
 }
 
-#endif //SPRITECOMPONENT_H
+#endif // COMPONENTS_SPRITECOMPONENT_H

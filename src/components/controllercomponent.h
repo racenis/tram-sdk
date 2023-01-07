@@ -1,12 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// CONTROLLERCOMPONENTS.H -- Creature controller component
-// This component controls the movement and physical actions of
-// creatures (NPCs, monsters, players, and so on and so forth).
 
-#ifndef CONTROLLERCOMPONENT_H
-#define CONTROLLERCOMPONENT_H
+#ifndef COMPONENTS_CONTROLLERCOMPONENT_H
+#define COMPONENTS_CONTROLLERCOMPONENT_H
 
 #include <framework/core.h>
 #include <framework/entitycomponent.h>
@@ -109,4 +105,4 @@ namespace Core {
     };
 }
 
-#endif //CONTROLLERCOMPONENT_H
+#endif // COMPONENTS_CONTROLLERCOMPONENT_H

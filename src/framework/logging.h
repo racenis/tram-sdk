@@ -1,10 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// LOGGING.H -- Logging function
 
-#ifndef LOGGING_H
-#define LOGGING_H
+#ifndef FRAMEWORK_LOGGING_H
+#define FRAMEWORK_LOGGING_H
 
 #include <framework/core.h>
 #include <framework/uid.h>

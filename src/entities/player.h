@@ -1,10 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// PLAYER.H -- Player entity
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef ENTITIES_PLAYER_H
+#define ENTITIES_PLAYER_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -33,4 +31,4 @@ namespace Core {
     };
 }
 
-#endif //PLAYER_H
+#endif // ENTITIES_PLAYER_H

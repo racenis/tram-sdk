@@ -1,14 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ENTITIES.H -- Base entities
-// Basic entity types.
 
-#ifndef ENTITIES_H
-#define ENTITIES_H
-
-//#include <entitycomponents.h>
-//#include <serializeddata.h>
+#ifndef ENTITIES_ENTITIES_H
+#define ENTITIES_ENTITIES_H
 
 namespace Core {
     // TODO: factor out all of these
@@ -106,4 +100,4 @@ namespace Core {
     
 }
 
-#endif // ENTITIES_H
+#endif // ENTITIES_ENTITIES_H

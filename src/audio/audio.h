@@ -1,5 +1,5 @@
-#ifndef AUDIO_H
-#define AUDIO_H
+#ifndef AUDIO_AUDIO_H
+#define AUDIO_AUDIO_H
 
 #include <framework/core.h>
 #include <framework/math.h>
@@ -38,4 +38,4 @@ namespace Core::Audio {
     
 }
 
-#endif // AUDIO_H
+#endif // AUDIO_AUDIO_H

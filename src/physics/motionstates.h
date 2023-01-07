@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// MOTIONSTATES.H -- Custom motion states for the bullet physics
-//
 
-#ifndef MOTIONSTATES_H
-#define MOTIONSTATES_H
+#ifndef PHYSICS_MOTIONSTATES_H
+#define PHYSICS_MOTIONSTATES_H
 
 #include <btBulletDynamicsCommon.h>
 
@@ -177,4 +174,4 @@ namespace Core::Physics {
     
 }
 
-#endif //MOTIONSTATES_H
+#endif // PHYSICS_MOTIONSTATES_H

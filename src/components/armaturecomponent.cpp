@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ARMATURECOMPONENT.CPP -- ArmatureComponent implementation.
 
 #include <components/armaturecomponent.h>
 

@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// LIGHTCOMPONENTS.H - Light source component
-// A wrapper around the light concept in the rendering engine.
 
-#ifndef LIGHTCOMPONENT_H
-#define LIGHTCOMPONENT_H
+#ifndef COMPONENTS_LIGHTCOMPONENT_H
+#define COMPONENTS_LIGHTCOMPONENT_H
 
 #include <render/renderer.h>
 
@@ -54,4 +51,4 @@ namespace Core {
     };
 }
 
-#endif //LIGHTCOMPONENT_H
+#endif // COMPONENTS_LIGHTCOMPONENT_H

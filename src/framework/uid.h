@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef UID_H
-#define UID_H
+#ifndef FRAMEWORK_UID_H
+#define FRAMEWORK_UID_H
 
 #include <string>
 
@@ -38,4 +38,4 @@ namespace Core {
     typedef UID name_t;
 }
 
-#endif // UID_H
+#endif // FRAMEWORK_UID_H

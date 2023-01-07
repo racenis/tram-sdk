@@ -1,12 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ARMATURECOMPONENT.H -- armature/animation component
-// This component is for genereting pose matrices from an armature (it's
-// sometimes also called a skeleton), as well as playing back animations.
 
-#ifndef ARMATURECOMPONENT_H
-#define ARMATURECOMPONENT_H
+#ifndef COMPONENTS_ARMATURECOMPONENT_H
+#define COMPONENTS_ARMATURECOMPONENT_H
 
 #include <framework/core.h>
 #include <framework/entitycomponent.h>
@@ -71,4 +67,4 @@ class ArmatureComponent : public EntityComponent {
     };
 }
 
-#endif //ARMATURECOMPONENT_H
+#endif // COMPONENTS_ARMATURECOMPONENT_H

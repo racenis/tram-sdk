@@ -1,10 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// STATICWORLDOBJECT.H -- Staticworldobject entity
 
-#ifndef STATICWORLDOBJECT_H
-#define STATICWORLDOBJECT_H
+#ifndef ENTITIES_STATICWORLDOBJECT_H
+#define ENTITIES_STATICWORLDOBJECT_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -73,4 +71,4 @@ namespace Core {
     };
 }
 
-#endif //STATICWORLDOBJECT_H
+#endif // ENTITIES_STATICWORLDOBJECT_H

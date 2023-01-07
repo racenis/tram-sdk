@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// PHYSICSCOMPONENT.H -- Core entity components
-// Basic components for the basic entities
 
-#ifndef PHYSICSCOMPONENT_H
-#define PHYSICSCOMPONENT_H
+#ifndef COMPONENTS_PHYSICSCOMPONENT_H
+#define COMPONENTS_PHYSICSCOMPONENT_H
 
 #include <physics/physics.h>
 
@@ -80,7 +77,6 @@ namespace Core {
         Entity* parent = nullptr;
         ArmatureComponent* armature = nullptr;
         uint64_t bone = 0;
-        //Physics::CollisionModel* collModel = nullptr;
         ResourceProxy<Physics::CollisionModel> model;
         btCollisionShape* shape = nullptr;
         btMotionState* motionState = nullptr;
@@ -88,8 +84,6 @@ namespace Core {
         btGeneric6DofConstraint* pathConstraint = nullptr;
         btPoint2PointConstraint* glueConstraint = nullptr;
         btHingeConstraint* hingeConstraint = nullptr;
-        //Path::Node* prev_path = nullptr;
-        //Path::Node* next_path = nullptr;
         char path_pref = 's';
         float mass = 1.0f;
         glm::vec3 off_set = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -107,4 +101,4 @@ namespace Core {
     };
 }
 
-#endif //PHYSICSCOMPONENT_H
+#endif // COMPONENTS_PHYSICSCOMPONENT_H

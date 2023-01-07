@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// POOL.H -- Pool container template.
 
 #ifndef TEMPLATES_POOL_H
 #define TEMPLATES_POOL_H

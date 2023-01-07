@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// PARTICLECOMPONENT.CPP -- implementation of ParticleComponent
 
 #include <render/renderer.h>
 #include <components/particlecomponent.h>

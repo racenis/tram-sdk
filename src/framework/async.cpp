@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ASYNC.CPP -- implementation of async.h
 
 #include <templates/queue.h>
 
@@ -27,6 +25,10 @@ namespace Core::Async {
     Queue<ResourceRequest> resourceRequestQueue2ndStage("resource request queue 2nd stage", 500);
     Queue<ResourceRequest> finishedResourceRequestQueue("finished resource request queue", 500);
 
+    /// Adds a resource to the loading queue.
+    /// @param requester EntityComponent that will be notified when the resource is loaded.
+    /// Can be set to nullptr, in which case nothing will be notified.
+    /// @param requested_resource The resource that will be loaded.
     void RequestResource(EntityComponent* requester, Resource* requested_resource) {
         resourceRequestQueue.Lock();
 
@@ -39,6 +41,8 @@ namespace Core::Async {
         resourceRequestQueue.Unlock();
     }
 
+    /// Resource loading function.
+    /// Should only be used by through the Async::Init() function.
     void ResourceLoader() {
         while (!loaders_should_stop){
 
@@ -78,6 +82,8 @@ namespace Core::Async {
         }
     }
 
+    /// Processes the second resource queue.
+    /// @warning This function should only be called from the rendering thread.
     void ResourceLoader2ndStage(){
         resourceRequestQueue2ndStage.Lock();
         ResourceRequest* req = resourceRequestQueue2ndStage.GetFirstPtr();
@@ -103,6 +109,8 @@ namespace Core::Async {
 
     }
 
+    /// Loads a resource from disk, skipping the queue.
+    /// Shouldn't be used outside of resource LoadFromDisk() methods. 
     void ForceLoadResource(Resource* res){
         if(res->GetStatus() == Resource::UNLOADED){
             res->LoadFromDisk();
@@ -125,6 +133,7 @@ namespace Core::Async {
         }
     }
 
+    /// Notifies EntityComponents about finished resources.
     void FinishResource(){
         finishedResourceRequestQueue.Lock();
         ResourceRequest* req = finishedResourceRequestQueue.GetFirstPtr();
@@ -145,7 +154,8 @@ namespace Core::Async {
 
     }
 
-    void Init(){
+    /// Starts the async resource loader thread.
+    void Init() {
         assert(System::IsInitialized(System::SYSTEM_CORE));
         
         loaders_should_stop = false;
@@ -154,7 +164,8 @@ namespace Core::Async {
         System::SetInitialized(System::SYSTEM_ASYNC, true);
     }
 
-    void Yeet(){
+    /// Stops the async resource loader thread.
+    void Yeet() {
         assert(System::IsInitialized(System::SYSTEM_ASYNC));
         
         loaders_should_stop = true;

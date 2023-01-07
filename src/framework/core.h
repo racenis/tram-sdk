@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// CORE.H -- Engine core definitons
-// Basic engine datatypes, templates, useful functions.
 
-#ifndef TRAM_CORE_H
-#define TRAM_CORE_H
+#ifndef FRAMEWORK_CORE_H
+#define FRAMEWORK_CORE_H
 
 namespace Core {
     extern bool EXIT;
@@ -16,4 +13,4 @@ namespace Core {
     void Init();
 }
 
-#endif
+#endif // FRAMEWORK_CORE_H

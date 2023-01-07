@@ -28,6 +28,7 @@ namespace Core {
     Queue<Event> EVENT_QUEUE("event queue", 500);
     std::vector<Pool<ListenerInfo>> LISTENER_TABLE;
 
+    /// Registers a new event type.
     event_t Event::Register() {
         auto new_event_id = LISTENER_TABLE.size();
         LISTENER_TABLE.emplace_back(std::string("Event Listener Pool ") + std::to_string(new_event_id), 50);
@@ -41,6 +42,7 @@ namespace Core {
         return handle;
     }
     
+    /// Registers a listener.
     listener_t Event::AddListener(event_t type, EntityComponent* component) {
         ListenerInfo* entry = LISTENER_TABLE[type].AddNew();
         entry->component = component;
@@ -48,6 +50,7 @@ namespace Core {
         return EncodeListenerHandle(type, entry);
     }
     
+    /// Registers a listener.
     listener_t Event::AddListener(event_t type, Entity* entity) {
         ListenerInfo* entry = LISTENER_TABLE[type].AddNew();
         entry->entity = entity;
@@ -55,6 +58,7 @@ namespace Core {
         return EncodeListenerHandle(type, entry);
     }
     
+    /// Registers a listener.
     listener_t Event::AddListener(event_t type, void (*function)(Event& event)) {
         ListenerInfo* entry = LISTENER_TABLE[type].AddNew();
         entry->function = function;
@@ -62,26 +66,14 @@ namespace Core {
         return EncodeListenerHandle(type, entry);
     }
     
-    /*Event::Listener* Event::AddListener(Event::Type type){
-        auto new_listener = listeners.AddNew();
-        dispatch_table[type].push_back(new_listener);
-        new_listener->type = type;
-        
-        return new_listener;
-    }*/
-
-    /*void Event::RemoveListener(Event::Listener* listener){
-        // you could probably deduct the type of listener from its pointer
-        dispatch_table[listener->type].erase(std::find(dispatch_table[listener->type].begin(), dispatch_table[listener->type].end(), listener));
-        listeners.Remove(listener);
-    }*/
-    
+    /// Deregisters a listener.
     void Event::RemoveListener(listener_t listener_id) {
         event_t type = listener_id >> 48;
         ListenerInfo* entry = (ListenerInfo*)((listener_id << 16) >> 16);
         LISTENER_TABLE[type].Remove(entry);
     }
 
+    /// Dispatches events from the event queue.
     void Event::Dispatch(){
         Event* event = EVENT_QUEUE.GetFirstPtr();
         while (event){
@@ -107,6 +99,7 @@ namespace Core {
         }
     }
     
+    /// Adds an event to the event queue.
     void Event::Post (const Event &event){
         *(EVENT_QUEUE.AddNew()) = event;
     }

@@ -1,12 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// PHYSICS.H -- Physics library wrapper
-// Wrapper for the physics library. It's seperate, so that engine can compile without
-// the physics library, because it is a pain in the to compile.
 
-#ifndef PHYSICS_H
-#define PHYSICS_H
+#ifndef PHYSICS_PHYSICS_H
+#define PHYSICS_PHYSICS_H
 
 #include <framework/core.h>
 #include <framework/math.h>
@@ -124,4 +120,4 @@ namespace Core {
     };
     #endif // BENIGONIS
 }
-#endif // PHYSICS_H
+#endif // PHYSICS_PHYSICS_H

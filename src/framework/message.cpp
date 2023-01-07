@@ -3,7 +3,8 @@
 
 namespace Core {
     Queue<Message> Core::Message::queue("message queue", 500);
-
+    
+    /// Dispatches the messages from the message queue.
     void Message::Dispatch(){
         Message* message = Message::queue.GetFirstPtr();
         while(message){
@@ -15,6 +16,7 @@ namespace Core {
         }
     }
     
+    /// Adds a message to the message queue.
     void Message::Send(Message &message){
         *(Message::queue.AddNew()) = message;
     }

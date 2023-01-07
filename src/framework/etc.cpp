@@ -5,20 +5,13 @@
 #include <framework/templates.h>
 #include <cstring>
 
-// TODO: yeet these
 #include <fstream>
 #include <unordered_map>
 
 namespace Core {
     StackPool<char> stringPoolforLangs("stringpool for langs", 10000);
     std::unordered_map<uint64_t, uint64_t> langStringHashMap;
-    
-    uint64_t GenerateID(){
-        static uint64_t num = 0;
-        num++;
-        return num;
-    }
-    
+        
     // when refactoring this, it would be good idea to move these out to a language.cpp or something
     void LoadText(const char* filename){
         std::ifstream file;

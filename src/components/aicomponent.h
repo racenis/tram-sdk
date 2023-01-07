@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// AICOMPONENT.H -- AI component [sketch]
-// AI component for character behaviours
 
-#ifndef AICOMPONENT_H
-#define AICOMPONENT_H
+#ifndef COMPONENTS_AICOMPONENT_H
+#define COMPONENTS_AICOMPONENT_H
 
 #include <framework/core.h>
 #include <components/controllercomponent.h>
@@ -107,4 +104,4 @@ namespace Core {
     
 }
 
-#endif //AICOMPONENT_H
+#endif // COMPONENTS_AICOMPONENT_H

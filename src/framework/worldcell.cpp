@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// WORLDCELL.CPP -- implementations for the worldcell and transition class methods.
 
 #include <templates/pool.h>
 
@@ -17,9 +15,6 @@
 #include <sstream>
 
 #include <set>
-
-//#include <render/render.h>
-//#include <framework/navigation.h>
 
 using namespace Core;
 std::unordered_map<uint64_t, WorldCell*> WORLDCELL_LIST;

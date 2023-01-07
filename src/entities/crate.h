@@ -1,10 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// CRATE.H -- Crate entity
 
-#ifndef CRATE_H
-#define CRATE_H
+#ifndef ENTITIES_CRATE_H
+#define ENTITIES_CRATE_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -74,4 +72,4 @@ namespace Core {
     };
 }
 
-#endif //CRATE_H
+#endif // ENTITIES_CRATE_H

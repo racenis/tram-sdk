@@ -41,7 +41,6 @@
       <File Name="src/framework/math.h"/>
       <File Name="src/framework/ui.h"/>
       <File Name="src/framework/ui.cpp"/>
-      <File Name="src/framework/templates.h"/>
       <File Name="src/framework/serializeddata.h"/>
       <File Name="src/framework/net.h"/>
       <File Name="src/framework/net.cpp"/>

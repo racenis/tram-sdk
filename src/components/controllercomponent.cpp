@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// CONTROLLERCOMPONENT.CPP -- Controller component implementation
 
 #include <framework/entity.h>
 #include <framework/message.h>

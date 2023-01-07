@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef STATS_H
-#define STATS_H
+#ifndef FRAMEWORK_STATS_H
+#define FRAMEWORK_STATS_H
 
 #include <cstdint>
 
@@ -22,4 +22,4 @@ namespace Core::Stats {
     float GetStat (Resource resource);
 }
 
-#endif // STATS_H
+#endif // FRAMEWORK_STATS_H

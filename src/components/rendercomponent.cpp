@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// RENDERCOMPONENT.CPP -- implementation of RenderComponent
 
 #include <render/renderer.h>
 #include <components/rendercomponent.h>

@@ -1,8 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ENTITY.CPP -- Entity base class methods
-// Methods that all of the entity types share.
 
 #include <framework/entity.h>
 #include <framework/worldcell.h>

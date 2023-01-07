@@ -1,30 +1,34 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// CORE.CPP -- Core functions and globals.
 
 #include <framework/core.h>
 #include <framework/event.h>
 #include <framework/system.h>
+#include <framework/uid.h>
 
-#include <render/render.h>
-#include <render/armature.h>
-
-#include <framework/ui.h>
-
-#include <cstring>
-#include <fstream>
+#include <iostream>
 
 namespace Core {
+    /// Engine version string.
+    /// If you fork the engine, you should probably change this.
     char const* ENGINE_VERSION = "Tramway SDK v0.0.4-alpha";
     
+    /// If set to true, then the main loop should stop and animation should exit.
     bool EXIT = false;
+    
+    /// Time since program started, in seconds.
+    /// Updated every time the UI::Update() is called. Should be once a frame.
     float TIME = 0.0f;
 
-    // TODO: these should be moved into their own file
-    
+    /// Generates a unique ID number.
+    uint64_t GenerateID () {
+        static uint64_t num = 0;
+        num++;
+        return num;
+    }
 
-    void Init() {
+    /// Initializes the core of the framework.
+    void Init () {
         // set the 0th string to 'none'
         UID none("none");
         
@@ -46,11 +50,9 @@ namespace Core {
         }
         
         System::SetInitialized(System::SYSTEM_CORE, true);
+        
+        std::cout << ENGINE_VERSION << std::endl;
     }
-
-
-
-
 }
 
 

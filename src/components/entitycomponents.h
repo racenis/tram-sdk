@@ -1,13 +1,10 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ENTITYCOMPONENTS.H -- Core entity components
-// Basic components for the basic entities
 
 // TODO: refactor component implementations out of this headerino
 
-#ifndef ENTITYCOMPONENTS_H
-#define ENTITYCOMPONENTS_H
+#ifndef COMPONENTS_ENTITYCOMPONENTS_H
+#define COMPONENTS_ENTITYCOMPONENTS_H
 
 // for the rendercomp
 #include <render.h>
@@ -281,4 +278,4 @@ namespace Core {
 
 }
 
-#endif // ENTITYCOMPONENTS_H
+#endif // COMPONENTS_ENTITYCOMPONENTS_H

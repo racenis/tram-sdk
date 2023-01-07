@@ -1,10 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// LAMP.H -- Lamp entity
 
-#ifndef LAMP_H
-#define LAMP_H
+#ifndef ENTITIES_LAMP_H
+#define ENTITIES_LAMP_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -71,4 +69,4 @@ namespace Core {
     };
 }
 
-#endif //LAMP_H
+#endif // ENTITIES_LAMP_H

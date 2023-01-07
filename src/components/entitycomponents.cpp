@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ENTITYCOMPONENTS.CPP -- Random trash related to entity components. All file should be yeeted.
 
 #include <framework/core.h>
 #include <components/rendercomponent.h>

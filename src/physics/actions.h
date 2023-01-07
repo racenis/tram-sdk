@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ACTIONS.H -- Custom actions for the bullet physics
-// This file is a template for other source files
 
-#ifndef ACTIONS_H
-#define ACTIONS_H
+#ifndef PHYSICS_ACTIONS_H
+#define PHYSICS_ACTIONS_H
 
 #include <btBulletDynamicsCommon.h>
 #include <components/physicscomponent.h>
@@ -27,4 +24,4 @@ namespace Core::Physics {
     };
 }
 
-#endif //ACTIONS_H
+#endif // PHYSICS_ACTIONS_H

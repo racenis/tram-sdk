@@ -106,7 +106,7 @@ namespace Core::UI {
         glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
 
         // make a window & context
-        WINDOW = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.2-alfa", nullptr, nullptr);
+        WINDOW = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.4-alfa", nullptr, nullptr);
         if (WINDOW == nullptr){
             //const char* description;
             //int code = glfwGetError(&description);
@@ -185,19 +185,6 @@ namespace Core::UI {
         ismouse_left = !wasmouse_left && mouse_status_left;
         isnotmouse_left = wasmouse_left && !mouse_status_left;
         wasmouse_left = mouse_status_left;
-
-        // generate events from keypresses
-        /*if (INPUT_STATE == STATE_DEFAULT){
-            keys_pressed ^= keys_up;
-            keys_pressed |= keys_down;
-
-            if (keys_pressed) {Event kpress = {Event::KEYPRESS, keys_pressed, 0, nullptr}; Event::Post(kpress);}
-            if (keys_down) {Event kpress = {Event::KEYDOWN, keys_down, 0, nullptr}; Event::Post(kpress);}
-            if (keys_up) {Event kpress = {Event::KEYUP, keys_up, 0, nullptr}; Event::Post(kpress);}
-
-            keys_down = 0;
-            keys_up = 0;
-        }*/
 
         // generate cursor change position event
         glfwGetCursorPos(WINDOW, &cursorx, &cursory);

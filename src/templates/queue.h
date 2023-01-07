@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// STACKPOOL.H -- Stackpool container template.
 
 #ifndef TEMPLATES_QUEUE_H
 #define TEMPLATES_QUEUE_H

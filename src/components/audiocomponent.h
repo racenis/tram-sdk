@@ -3,8 +3,8 @@
 //
 // AUDIOCOMPONENT.H -- Sound player component
 
-#ifndef AUDIOCOMPONENT_H
-#define AUDIOCOMPONENT_H
+#ifndef COMPONENTS_AUDIOCOMPONENT_H
+#define COMPONENTS_AUDIOCOMPONENT_H
 
 #include <audio/audio.h>
 
@@ -37,4 +37,4 @@ namespace Core {
     
 }
 
-#endif //AUDIOCOMPONENT_H
+#endif // COMPONENTS_AUDIOCOMPONENT_H

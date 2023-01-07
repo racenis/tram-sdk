@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#ifndef FRAMEWORK_RESOURCE_H
+#define FRAMEWORK_RESOURCE_H
 
 #include <framework/uid.h>
 #include <framework/entitycomponent.h>
@@ -69,4 +69,4 @@ namespace Core {
     };
 }
 
-#endif // RESOURCE_H
+#endif // FRAMEWORK_RESOURCE_H
