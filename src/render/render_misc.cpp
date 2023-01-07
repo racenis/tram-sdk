@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// RENDER_MISC.CPP -- random rendering stuff
 
 #include <framework/core.h>
 #include <render/render.h>

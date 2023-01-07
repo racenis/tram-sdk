@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// RENDER.CPP -- Rendering stuff.
 
 #include <framework/core.h>
 #include <framework/system.h>
@@ -11,14 +9,13 @@
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
 
+#include <render/opengl/renderer.h>
+
 using namespace Core;
 
 namespace Core::Render {
     glm::vec3 CAMERA_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::quat CAMERA_ROTATION = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-
-    float CAMERA_PITCH = 0.0f;
-    float CAMERA_YAW = -90.0f;
 
     float SCREEN_WIDTH = 800.0f;
     float SCREEN_HEIGHT = 600.0f;
@@ -40,9 +37,6 @@ namespace Core::Render {
     Material GLYPH_HEADERS;
 
     float FRAME_LIMIT = 60.0f;
-
-    float time_of_day = 0.8f;
-
 
     Pool<LightListObject> lightPool("lightpool", 100, true);
     Octree<uint32_t> lightTree;
@@ -70,6 +64,7 @@ namespace Core::Render {
         assert(System::IsInitialized(System::SYSTEM_CORE));
         assert(System::IsInitialized(System::SYSTEM_UI));
         
+        // since we only have the OpenGL renderer, we'll init that one
         OpenGL::Init();
         
         FONT_REGULAR = Material(UID("jost"), Material::TEXTURE_MSDF);  // futura knock-off
@@ -90,27 +85,27 @@ namespace Core::Render {
         
         // this is pain in my assholes
         
-        OpenGL::CreateVertexArray(LINE_VERTEX_DEFINITION, colorlines_vertex_buffer, colorlines_vertex_array);
-        colorlines_entry = OpenGL::InsertDrawListEntry();
-        OpenGL::SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
-        OpenGL::SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);
-        OpenGL::SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
+        CreateVertexArray (LINE_VERTEX_DEFINITION, colorlines_vertex_buffer, colorlines_vertex_array);
+        colorlines_entry = InsertDrawListEntry ();
+        SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
+        SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);
+        SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
         
-        OpenGL::CreateVertexArray(SPRITE_VERTEX_DEFINITION, textvertices_vertex_buffer, textvertices_vertex_array);
-        textvertices_entry = OpenGL::InsertDrawListEntry();
-        OpenGL::SetDrawListVertexArray(textvertices_entry, textvertices_vertex_array);
-        OpenGL::SetDrawListShader(textvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_MSDF);
-        OpenGL::SetFlags(textvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+        CreateVertexArray(SPRITE_VERTEX_DEFINITION, textvertices_vertex_buffer, textvertices_vertex_array);
+        textvertices_entry = InsertDrawListEntry();
+        SetDrawListVertexArray(textvertices_entry, textvertices_vertex_array);
+        SetDrawListShader(textvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_MSDF);
+        SetFlags(textvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
         uint32_t textvertices_textures[5] = {FONT_REGULAR.GetTexture(), FONT_TITLE.GetTexture(), FONT_TITLE.GetTexture(), FONT_TITLE.GetTexture(), FONT_SYMBOLS.GetTexture()};
-        OpenGL::SetDrawListTextures(textvertices_entry, 5, textvertices_textures);
+        SetDrawListTextures(textvertices_entry, 5, textvertices_textures);
         
-        OpenGL::CreateVertexArray(SPRITE_VERTEX_DEFINITION, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
-        glyphvertices_entry = OpenGL::InsertDrawListEntry();
-        OpenGL::SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
-        OpenGL::SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);
-        OpenGL::SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+        CreateVertexArray(SPRITE_VERTEX_DEFINITION, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
+        glyphvertices_entry = InsertDrawListEntry();
+        SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
+        SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);
+        SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
         uint32_t glyphvertices_textures[4] = {GLYPH_GUI.GetTexture(), GLYPH_TEXT.GetTexture(), GLYPH_TEXT_BOLD.GetTexture(), GLYPH_HEADERS.GetTexture()};
-        OpenGL::SetDrawListTextures(glyphvertices_entry, 4, glyphvertices_textures);
+        SetDrawListTextures(glyphvertices_entry, 4, glyphvertices_textures);
         
         System::SetInitialized(System::SYSTEM_RENDER, true);
     }
@@ -122,25 +117,25 @@ namespace Core::Render {
         //GeometryBatch::Update();
         #endif // ENGINE_EDITOR_MODE
         
-        OpenGL::UpdateVertexArray(colorlines_vertex_buffer, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
-        OpenGL::SetDrawListElements(colorlines_entry, 0, colorlines.size());
+        UpdateVertexArray(colorlines_vertex_buffer, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
+        SetDrawListElements(colorlines_entry, 0, colorlines.size());
         colorlines.clear();
         
-        OpenGL::UpdateVertexArray(textvertices_vertex_buffer, textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
-        OpenGL::SetDrawListElements(textvertices_entry, 0, textvertices.size());
+        UpdateVertexArray(textvertices_vertex_buffer, textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
+        SetDrawListElements(textvertices_entry, 0, textvertices.size());
         textvertices.clear();
         
-        OpenGL::UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
-        OpenGL::SetDrawListElements(glyphvertices_entry, 0, glyphvertices.size());
+        UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
+        SetDrawListElements(glyphvertices_entry, 0, glyphvertices.size());
         glyphvertices.clear();
         
-        OpenGL::Render();
+        RenderFrame();
     }
     
     void ScreenSize(float width, float height) {
         SCREEN_WIDTH = width;
         SCREEN_HEIGHT = height;
-        OpenGL::ScreenSize(width, height);
+        SetScreenSize(width, height);
     }
 }
 

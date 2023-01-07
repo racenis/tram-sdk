@@ -1,11 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// MODEL.CPP
-// Methods for the 3D model resource.
-
-//#include <glad.h>
-//#include <glad_gles3.h>
 
 #include <framework/core.h>
 #include <framework/stats.h>
@@ -25,7 +19,6 @@ using namespace Core::Render;
 
 Model* Model::error_model = nullptr;
 
-//std::unordered_map<uint64_t, Model*> Model::List;
 Hashmap<Model*> MODEL_LIST("model name list", 500);
 template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
 
@@ -41,7 +34,6 @@ Model* Model::Find(name_t name){
 }
 
 void Model::LoadFromMemory(){
-    using namespace Core::Render::OpenGL;
     assert(status == LOADED);
     
     if (vertex_format == Model::STATIC_VERTEX){

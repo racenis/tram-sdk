@@ -1,8 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// MATERIAL.CPP
-// Methods for the material resource.
 
 // turning off an annoying warning in the library code
 #pragma GCC diagnostic push
@@ -14,7 +11,7 @@
 
 #pragma GCC diagnostic pop
 
-#include <glad.h>
+//#include <glad.h>
 //#include <glad_gles3.h>
 
 #include <framework/core.h>
@@ -31,7 +28,6 @@ using namespace Core;
 using namespace Core::Render;
 
 Material* Material::error_material = nullptr;
-//std::unordered_map<uint64_t, Material*> Material::List;
 Hashmap<Material*> MATERIAL_LIST("material name list", 500);
 template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
 
@@ -142,7 +138,6 @@ void Material::LoadFromDisk(){
 }
 
 void Material::LoadFromMemory(){
-    using namespace Core::Render::OpenGL;
     assert(status == LOADED);
 
     if(type == TEXTURE_ALPHA || type == TEXTURE_MSDF || type == TEXTURE_GLYPH){

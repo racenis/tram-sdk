@@ -13,7 +13,7 @@ namespace Core {
         model = Render::Model::Find(name);
         std::cout << "SETTING MODEL: " << name << std::endl;
         if (is_ready) {
-            OpenGL::RemoveDrawListEntry(draw_list_entry);
+            RemoveDrawListEntry(draw_list_entry);
             InsertDrawListEntry();
         }
     };
@@ -22,7 +22,7 @@ namespace Core {
         lightmap = Render::Material::Find(name);
         
         if (is_ready) {
-            OpenGL::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
+            Render::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
         }
     };
 
@@ -30,7 +30,7 @@ namespace Core {
         pose = newPose == nullptr ? Render::poseList.begin().ptr : newPose; // make a global variable BLANK_POSE or something like that? instead of poseList.begin()?
         
         if (is_ready) {
-            OpenGL::SetPose(draw_list_entry, pose);
+            Render::SetPose(draw_list_entry, pose);
         }
     };
     
@@ -38,16 +38,16 @@ namespace Core {
         assert(is_ready);
         is_ready = false;
         
-        OpenGL::RemoveDrawListEntry(draw_list_entry);
+        RemoveDrawListEntry(draw_list_entry);
     };
     
     void RenderComponent::SetCellParams (bool isInteriorLight){
         isInterior = isInteriorLight;
         if (is_ready) {
             if (isInteriorLight) {
-                OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
+                SetFlags(draw_list_entry, GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
             } else {
-                OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) & (~FLAG_INTERIOR_LIGHTING));
+                SetFlags(draw_list_entry, GetFlags(draw_list_entry) & (~FLAG_INTERIOR_LIGHTING));
             }
         }
     }
@@ -56,11 +56,11 @@ namespace Core {
         location = nlocation;
         
         if (is_ready) {
-            OpenGL::SetLocation(draw_list_entry, location);
+            SetLocation(draw_list_entry, location);
             
             uint32_t lights[4];
             lightTree.FindNearest(lights, location.x, location.y, location.z);
-            OpenGL::SetLights(draw_list_entry, lights);
+            SetLights(draw_list_entry, lights);
         }
     }
 
@@ -68,7 +68,7 @@ namespace Core {
         rotation = nrotation;
         
         if (is_ready) {
-            OpenGL::SetRotation(draw_list_entry, rotation);
+            SetRotation(draw_list_entry, rotation);
         }
     }
 
@@ -81,18 +81,18 @@ namespace Core {
     }
 
     void RenderComponent::InsertDrawListEntry() {
-        draw_list_entry = OpenGL::InsertDrawListEntry(model.get());
+        draw_list_entry = InsertDrawListEntryFromModel(model.get());
         
-        OpenGL::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
-        if (isInterior) OpenGL::SetFlags(draw_list_entry, OpenGL::GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
+        Render::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
+        if (isInterior) SetFlags(draw_list_entry, GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
         
-        OpenGL::SetLocation(draw_list_entry, location);
-        OpenGL::SetRotation(draw_list_entry, rotation);
+        SetLocation(draw_list_entry, location);
+        SetRotation(draw_list_entry, rotation);
         
         uint32_t lights[4];
         lightTree.FindNearest(lights, location.x, location.y, location.z);
-        OpenGL::SetLights(draw_list_entry, lights);
+        SetLights(draw_list_entry, lights);
         
-        OpenGL::SetPose(draw_list_entry, pose);
+        Render::SetPose(draw_list_entry, pose);
     }
 }

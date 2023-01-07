@@ -1,11 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// RENDERER.H -- Abstract rendering interface
-// Rendering interface on the level of draw call, vertex lists and textures.
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RENDER_RENDERER_H
+#define RENDER_RENDERER_H
 
 #include <templates/octree.h>
 
@@ -63,11 +60,11 @@ namespace Core::Render {
     
     
     
-    struct StaticModelVertex{
-        glm::vec3 co;
-        glm::vec3 normal;
-        glm::vec2 tex;
-        glm::vec2 lighttex;
+    struct StaticModelVertex {
+        vec3 co;
+        vec3 normal;
+        vec2 tex;
+        vec2 lighttex;
         uint32_t texture;
     };
     
@@ -79,12 +76,12 @@ namespace Core::Render {
         {VertexProperty::TEXTURE_INDEX,         VertexProperty::UINT32,  1, sizeof(StaticModelVertex), offsetof(StaticModelVertex, texture)}
     };
 
-    struct DynamicModelVertex{
-        glm::vec3 co;
-        glm::vec3 normal;
-        glm::vec2 tex;
-        glm::ivec4 bone;
-        glm::vec4 boneweight;
+    struct DynamicModelVertex {
+        vec3 co;
+        vec3 normal;
+        vec2 tex;
+        ivec4 bone;
+        vec4 boneweight;
         uint32_t texture;
     };
     
@@ -98,10 +95,10 @@ namespace Core::Render {
     };
     
     struct SpriteVertex {
-        glm::vec3 co;
-        glm::vec2 voffset;
-        glm::vec2 texco;
-        glm::vec3 color;
+        vec3 co;
+        vec2 voffset;
+        vec2 texco;
+        vec3 color;
         float verticality;
         uint32_t texture;
     };
@@ -117,9 +114,9 @@ namespace Core::Render {
         {VertexProperty::TEXTURE_INDEX,         VertexProperty::UINT32,  1, sizeof(SpriteVertex), offsetof(SpriteVertex, texture)}
     };
     
-    struct LineVertex{
-        glm::vec3 co;
-        glm::vec3 color;
+    struct LineVertex {
+        vec3 co;
+        vec3 color;
     };
     
     static const VertexDefinition LINE_VERTEX_DEFINITION = {
@@ -127,8 +124,8 @@ namespace Core::Render {
         {VertexProperty::COLOR_VECTOR,          VertexProperty::FLOAT32, 3, sizeof(LineVertex), offsetof(LineVertex, color)}
     };
 
-    struct ModelIndex{
-        glm::ivec3 tri;
+    struct ModelIndex {
+        ivec3 tri;
     };
     
     struct StaticModelData : public ModelData {
@@ -143,9 +140,9 @@ namespace Core::Render {
     };
     
     struct LightListObject {
-        glm::vec3 location = {0.0f, 0.0f, 0.0f};
+        vec3 location = {0.0f, 0.0f, 0.0f};
         float padding;
-        glm::vec3 color = {0.0f, 0.0f, 0.0f};
+        vec3 color = {0.0f, 0.0f, 0.0f};
         float distance = 0.0f;
         float padding2[8];
     };
@@ -159,82 +156,34 @@ namespace Core::Render {
     extern std::vector<LineVertex> colorlines;
     extern std::vector<SpriteVertex> textvertices;
     extern std::vector<SpriteVertex> glyphvertices;
+    
+
+    extern void (*SetScreenSize) (float width, float height);
+
+    extern DrawListEntryHandle (*InsertDrawListEntry) ();
+    extern DrawListEntryHandle (*InsertDrawListEntryFromModel) (Model* model);
+    
+    extern uint32_t (*GetFlags) (DrawListEntryHandle entry);
+    extern void (*SetFlags) (DrawListEntryHandle entry, uint32_t flags);
+    extern void (*SetPose) (DrawListEntryHandle entry, Pose* pose);
+    extern void (*SetLightmap) (DrawListEntryHandle entry, uint32_t lightmap);
+    extern void (*SetLights) (DrawListEntryHandle entry, uint32_t* lights);
+    extern void (*SetLocation) (DrawListEntryHandle entry, glm::vec3& location);
+    extern void (*SetRotation) (DrawListEntryHandle entry, glm::quat& rotation);
+    extern void (*SetDrawListVertexArray) (DrawListEntryHandle entry, uint32_t vertex_array_handle);
+    extern void (*SetDrawListElements) (DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length);
+    extern void (*SetDrawListShader) (DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type);
+    extern void (*SetDrawListTextures) (DrawListEntryHandle entry, size_t texture_count, uint32_t* textures);
+    
+    extern void (*RemoveDrawListEntry) (DrawListEntryHandle entry);
+    
+    extern uint32_t (*CreateTexture) (ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
+    
+    extern void (*CreateIndexedVertexArray) (const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& element_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
+    extern void (*CreateVertexArray) (const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle);
+    extern void (*UpdateVertexArray) (vertexhandle_t vertex_buffer_handle, size_t data_size, void* data);
+    
+    extern void (*RenderFrame) ();
 }
 
-namespace Core::Render::OpenGL {
-    void Init();
-
-    void Render();
-    
-    void ScreenSize(float width, float height);
-    
-    void CompileShaders();
-    
-    uint32_t FindShader(Model::VertexFormat format, Material::Type type);
-    
-    void BindUniformBlock (const char* name, uint32_t binding);
-    
-    
-    
-    DrawListEntryHandle InsertDrawListEntry();
-    DrawListEntryHandle InsertDrawListEntry(Model* model);
-    
-    uint32_t GetFlags(DrawListEntryHandle entry);
-    void SetFlags(DrawListEntryHandle entry, uint32_t flags);
-    void SetPose(DrawListEntryHandle entry, Pose* pose);
-    void SetLightmap(DrawListEntryHandle entry, uint32_t lightmap);
-    void SetLights(DrawListEntryHandle entry, uint32_t* lights);
-    void SetLocation(DrawListEntryHandle entry, glm::vec3& location);
-    void SetRotation(DrawListEntryHandle entry, glm::quat& rotation);
-    void SetDrawListVertexArray(DrawListEntryHandle entry, uint32_t vertex_array_handle);
-    void SetDrawListElements(DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length);
-    void SetDrawListShader(DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type);
-    void SetDrawListTextures(DrawListEntryHandle entry, size_t texture_count, uint32_t* textures);
-    
-    void RemoveDrawListEntry(DrawListEntryHandle entry);
-    
-    uint32_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
-    
-    void CreateIndexedVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& element_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
-    void CreateVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle);
-    void UpdateVertexArray(vertexhandle_t vertex_buffer_handle, size_t data_size, void* data);
-    
-    struct DrawListEntry {
-        uint32_t flags = 0;
-
-        Pose* pose = nullptr;
-
-        glm::vec3 location = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::quat rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-
-        uint32_t lights[4] = {0};
-        
-        uint32_t layer = 0;
-        uint32_t lightmap = 0;
-        uint32_t vao = 0;
-        uint32_t eboLen = 0;
-        uint32_t eboOff = 0;
-        uint32_t shader = 0;
-        uint32_t texCount = 0;
-        uint32_t textures[15] = {0};
-
-        /// Copies the element and vertex array names, offsets, etc. from the Model.
-        //void FillFromModel(Model* mdl, uint32_t eboIndex);
-
-        /// Assembles a key for sorting
-        uint64_t CalcSortKey(const glm::vec3& cameraPosition){
-            uint64_t sortkey = 0;
-            sortkey = flags & FLAG_TRANSPARENT ? 1 : 0;
-            sortkey = sortkey << 60;
-            sortkey = sortkey | (((uint64_t)layer) << 61);    // 3 bits for the layer number
-            sortkey = sortkey | (((uint64_t)shader) << 48);   // 12 bits for the shader
-            sortkey = sortkey | (((uint64_t)vao) << 32);      // 16 bits or the vertex array number
-            // TODO: reverse the distance if FLAG_REVERSE_SORT is set
-            // also i think that the bitmask for the distance thing is incorrect
-            sortkey = sortkey | (((uint64_t)(glm::distance(cameraPosition, location) * 3000000.0f)) & 0x00000000FFFFFFFF); // 32 bits for the distance
-            return sortkey;
-        }
-    };
-}
-
-#endif //RENDERER_H
+#endif // RENDER_RENDERER_H

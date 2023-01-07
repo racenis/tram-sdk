@@ -44,11 +44,6 @@ namespace Core::Render {
     extern Pool<Pose> poseList;
 
     class Animation : public Resource {
-    protected:
-        // TODO: move these static variables into ARMATURE.CPP
-        static StackPool<uint8_t> animationpool;
-
-        static std::unordered_map<uint64_t, NameCount*> animationlist;
     public:
         Animation(name_t name) : Resource(name) {}
 

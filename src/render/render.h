@@ -1,8 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// RENDER.H -- Simplified rendering interface
-// Rendering interface on the level of model, material, sprite abstractions.
 
 #ifndef RENDER_H
 #define RENDER_H
@@ -22,23 +19,17 @@ namespace Core::Render {
     extern vec3 SUN_DIRECTION;
     extern vec3 SUN_COLOR;
     extern vec3 AMBIENT_COLOR;
-    
-    // shouldn't these be in ui.h?
-    extern float CAMERA_PITCH;
-    extern float CAMERA_YAW;
 
-    // maybe make these not be public?
     extern float SCREEN_WIDTH;
     extern float SCREEN_HEIGHT;
 
     extern bool THIRD_PERSON;
 
-    // this should be yeeted
-    extern float time_of_day;
-
+    // these are for the OpenGL renderer only.
+    // when more renderers will be added, we'll
+    // probably switch these from int to void*
     typedef uint32_t vertexhandle_t;
     typedef uint32_t texturehandle_t;
-    // this is just a placeholder (or is it?)
     struct DrawListEntryHandle {
         void* draw_list_entries[6] = { nullptr };
     };
@@ -150,15 +141,15 @@ namespace Core::Render {
             uint16_t offset_y;
             uint16_t width;
             uint16_t height;
+            uint16_t drop;
+            uint16_t border;
             float scale;
-            float length;
+            float length;       // idk what this is supposed to be
         };
         
         std::vector<Frame> frames;
     protected:
         Material* material;
-        
-        static std::unordered_map<uint64_t, Sprite*> List;
     public:
         Sprite (){}
         Sprite(uint64_t name) : Resource(name) {}
@@ -176,7 +167,6 @@ namespace Core::Render {
         static Sprite* Find(name_t name);
     };
 
-    // TODO: move into opengl-specific code
     const uint32_t MAX_MATERIALS_PER_MODEL = 15;
     
     const vec3 COLOR_WHITE  (1.0f, 1.0f, 1.0f);
@@ -189,7 +179,6 @@ namespace Core::Render {
     const vec3 COLOR_BLACK  (0.0f, 0.0f, 0.0f);
 
     const vec3 COLOR_GRAY   (0.3f, 0.3f, 0.3f);
-
 
     extern Material FONT_REGULAR;  // futura knock-off
     extern Material FONT_TITLE;    // helvetica

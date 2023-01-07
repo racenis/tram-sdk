@@ -26,7 +26,7 @@ namespace Core {
             using enum Core::ControllerComponent::ActionModifier;
 
             if (event.type == Event::CURSORPOS) {
-                controller->SetDirection(glm::quat(glm::vec3(0.0f, -glm::radians(Render::CAMERA_YAW), 0.0f)));
+                controller->SetDirection(glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f)));
                 return;
             }
 

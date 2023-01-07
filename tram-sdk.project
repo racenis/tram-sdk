@@ -95,14 +95,17 @@
       <File Name="src/physics/actions.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
+      <File Name="src/render/renderer.cpp"/>
+      <VirtualDirectory Name="opengl">
+        <File Name="src/render/opengl/renderer.h"/>
+        <File Name="src/render/opengl/shader.cpp"/>
+        <File Name="src/render/opengl/renderer.cpp"/>
+      </VirtualDirectory>
       <File Name="src/render/render.h"/>
       <File Name="src/render/armature.h"/>
       <File Name="src/render/sprite.cpp"/>
-      <File Name="src/render/opengl_shader.cpp"/>
       <File Name="src/render/render.cpp"/>
-      <File Name="src/render/opengl_renderer.cpp"/>
       <File Name="src/render/renderer.h"/>
-      <File Name="src/render/armaturecomponent.cpp"/>
       <File Name="src/render/render_misc.cpp"/>
       <File Name="src/render/armature.cpp"/>
       <File Name="src/render/model.cpp"/>

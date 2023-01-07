@@ -26,6 +26,9 @@ namespace Core::UI {
     InputState INPUT_STATE = STATE_DEFAULT;
 
     GLFWwindow* WINDOW;
+    
+    float CAMERA_PITCH = 0.0f;
+    float CAMERA_YAW = -90.0f;
 
     GLFWcursor* cursors[4] = {nullptr};
 

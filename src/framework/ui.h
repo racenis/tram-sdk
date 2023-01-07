@@ -193,6 +193,9 @@ namespace Core::UI {
     extern FontCharInfo fontinfo[4][256];
     extern GlyphCharInfo glyphinfo[4][256];
     
+    extern float CAMERA_PITCH;
+    extern float CAMERA_YAW;
+    
     extern bool escape_menu_open;
     extern bool debug_menu_open;
 

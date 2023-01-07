@@ -147,7 +147,7 @@ int main() {
         }
         
         //time_of_day += 0.001f;
-        SetSun(time_of_day); // this sets the ambient lighting
+        SetSun(0.8f); // this sets the ambient lighting
         
         static int tick = 0;
         tick++;

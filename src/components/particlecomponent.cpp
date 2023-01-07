@@ -12,22 +12,22 @@ namespace Core {
     ParticleComponent::~ParticleComponent(){
         is_ready = true;
 
-        OpenGL::RemoveDrawListEntry(draw_list_entry);
+        RemoveDrawListEntry(draw_list_entry);
     };
 
     void ParticleComponent::Start(){
         if(is_ready) return;
 
-        OpenGL::CreateVertexArray(SPRITE_VERTEX_DEFINITION, vertex_buffer, vertex_array);
+        CreateVertexArray(SPRITE_VERTEX_DEFINITION, vertex_buffer, vertex_array);
 
         auto texture_handle = sprite->GetMaterial()->GetTexture();
         
-        draw_list_entry = OpenGL::InsertDrawListEntry();
-        OpenGL::SetDrawListVertexArray(draw_list_entry, vertex_array);
-        OpenGL::SetDrawListElements(draw_list_entry, 0, 6);
-        OpenGL::SetFlags(draw_list_entry, FLAG_RENDER);
-        OpenGL::SetDrawListTextures(draw_list_entry, 1, &texture_handle);
-        OpenGL::SetDrawListShader(draw_list_entry, Model::SPRITE_VERTEX, Material::TEXTURE_ALPHA);
+        draw_list_entry = InsertDrawListEntry();
+        SetDrawListVertexArray(draw_list_entry, vertex_array);
+        SetDrawListElements(draw_list_entry, 0, 6);
+        SetFlags(draw_list_entry, FLAG_RENDER);
+        SetDrawListTextures(draw_list_entry, 1, &texture_handle);
+        SetDrawListShader(draw_list_entry, Model::SPRITE_VERTEX, Material::TEXTURE_ALPHA);
         
         is_ready = true;
         UpdateRenderListObject();
@@ -120,11 +120,11 @@ namespace Core {
             vertices.push_back(bottom_right);
         }
         
-        OpenGL::UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
-        OpenGL::SetDrawListElements(draw_list_entry, 0, /*6 * */vertices.size());
+        UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+        SetDrawListElements(draw_list_entry, 0, /*6 * */vertices.size());
         
         
-        OpenGL::SetLocation(draw_list_entry, location);
+        SetLocation(draw_list_entry, location);
     }
     
 }
