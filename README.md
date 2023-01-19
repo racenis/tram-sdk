@@ -43,11 +43,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 #### Version 0.0.4
 - Switch out all of the std::cout's to Log's
-- Finish writing the report
-	- Test performance of the engine
-	- Finish the platform/file.cpp implementation
-	- Switch all file loading to file.h abstraction
-	- Test performance again
 - Finish the Stats system
 - Switch namespace Core to tram
 - Move language stuff out of the framework/etc.h/etc.cpp

@@ -12,6 +12,8 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
+      <File Name="src/audio/source.cpp"/>
+      <File Name="src/audio/source.h"/>
       <File Name="src/audio/audio.h"/>
       <File Name="src/audio/audio.cpp"/>
     </VirtualDirectory>

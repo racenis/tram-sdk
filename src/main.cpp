@@ -19,6 +19,9 @@
 
 #include <framework/gui.h>
 
+#include <framework/system.h>
+#include <framework/logging.h>
+
 #include <glfw3.h>
 
 #include <entities/crate.h>
@@ -166,12 +169,94 @@ int main() {
         // this makes the mongus model bob up and down
         monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
         
-        SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
-        SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
+        //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
+        //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
         
         GUI::Begin();
         Ext::Menu::DebugMenu();
         Ext::Menu::EscapeMenu();
+        
+        
+        /*
+        GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);
+        GUI::Frame(Core::GUI::FRAME_TOP, 128.0f);
+        GUI::FillFrame(0.0f, 0.0f, 256.0f, 64.0f, Render::COLOR_WHITE, 3);
+        
+        static bool helptext = false;
+        if(GUI::SmallButton(GUI::BUTTON_QUESTION)) helptext = !helptext;
+        if(helptext) GUI::Text("Amogus!", 1);
+        
+        GUI::Frame(Core::GUI::FRAME_BOTTOM, 20.0f);
+        
+        static float pad = 650.0f; pad -= 2.0f;
+        if (pad < -170.0f) pad = 650.0f;
+        GUI::GlyphText("KAD BUUS EEST", 2, pad, 0.0f, 2.0f, Render::COLOR_RED);
+        
+        GUI::EndFrame();
+        GUI::EndFrame();
+        GUI::Frame(Core::GUI::FRAME_BOTTOM, 480.0f - 128.0f);
+        GUI::Frame(Core::GUI::FRAME_LEFT, 150.0f);
+        GUI::FillFrame(104.0f, 108.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
+    
+        GUI::EndFrame();
+        GUI::Frame(Core::GUI::FRAME_RIGHT, 640.0f - 150.0f);
+        GUI::FillFrame(104.0f, 88.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
+        
+        GUI::FrameBorder();
+        static float scrll = 0.0f, heigh = 0.0f;
+        GUI::ScrollBar(scrll, heigh);
+
+        
+        
+        static char text_box[25] = "izmainaamais teksts!";
+        static uint32_t text_colo = 0;
+        static uint32_t text_publ = 0;
+        static char text_disp[25] = "izmainaamais teksts!";
+        static char text_caps[25] = "IZMAINAAMAIS TEKSTS!";
+        static bool do_caps = false;
+        if(GUI::Button("PUBIBEET")){
+            text_publ = text_colo;
+            for(int i = 0; text_box[i-1] != '\0' || i == 0; i++){
+                text_disp[i] = text_box[i];
+                text_caps[i] = toupper(text_box[i]);
+            }
+        }
+        GUI::TextBox(text_box, sizeof(text_box));
+        char const* tixs[] = { "BALTS", "ROZAA", "rieksti!"};
+        GUI::DropdownBox(tixs, 3, text_colo); GUI::FrameBreakLine();
+        
+        GUI::CheckBox(do_caps); GUI::Text("lielie burti", 1); GUI::FrameBreakLine();
+        
+        static uint32_t orentaation = 0;
+        
+        GUI::RadioButton(orentaation, 0);GUI::Text("kreisi", 1);GUI::FrameBreakLine();
+        GUI::RadioButton(orentaation, 1);GUI::Text("centrs", 1);GUI::FrameBreakLine();
+        GUI::RadioButton(orentaation, 2);GUI::Text("labi", 1);;;GUI::FrameBreakLine();
+        GUI::RadioButton(orentaation, 3);GUI::Text("slikti", 1);GUI::FrameBreakLine();
+        
+        
+        char* disptext = do_caps ? text_caps : text_disp;
+        if (text_publ == 0) {
+            GUI::Text(disptext, 1, (GUI::orientation)orentaation, Render::COLOR_WHITE);
+        } else if (text_publ == 1) {
+            GUI::Text(disptext, 1, (GUI::orientation)orentaation, Render::COLOR_PINK);
+        } else {
+            GUI::Text(disptext, 1, (GUI::orientation)orentaation, Render::COLOR_CYAN);
+        }
+        
+        static bool give_text = false;
+        GUI::FrameBreakLine();
+        GUI::CheckBox(give_text); GUI::Text("dot tekstu dibenaa", 1); GUI::FrameBreakLine();
+        
+        if(give_text) {
+            for (int i = 0; i < 20; i++) GUI::FrameBreakLine();
+            GUI::Text("es esmu teksts dibenaa", 2); GUI::FrameBreakLine();
+        }*/
+        
+        GUI::EndFrame();
+        
+        
+        
         GUI::End();
         
         Audio::Update();
@@ -198,18 +283,9 @@ int main() {
         UI::EndFrame();
     }
 
-    std::cout << "endframe 1" << std::endl;
-
     Async::Yeet();
-    
-    std::cout << "endframe 2" << std::endl;
-
     Audio::Uninit();
-    
-    std::cout << "endframe 3" << std::endl;
     UI::Uninit();
-    
-    std::cout << "endframe 4" << std::endl;
 }
 
 #endif

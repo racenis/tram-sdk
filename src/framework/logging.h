@@ -36,33 +36,47 @@ namespace Core {
         }
         
         void concat_fmt (std::string_view& str);
-        void flush (int system);
+        void flush (int severity, int system);
         
         
-        inline void log (int system, std::string_view& format) {
+        inline void log (int severity, int system, std::string_view& format) {
             concat_fmt(format);
-            flush(system);
+            flush(severity, system);
         }
 
         template <typename T, typename... Args>
-        void log (int system, std::string_view& format, T value, Args&&... args) {
+        void log (int severity, int system, std::string_view& format, T value, Args&&... args) {
             concat_fmt(format);
             concat<T>(value);
             
-            log(system, format, args...);
+            log(severity, system, format, args...);
         }
+    }
+    
+    enum Severity {
+        SEVERITY_DEFAULT,
+        SEVERITY_CRITICAL_ERROR,
+        SEVERITY_ERROR,
+        SEVERITY_WARNING,
+        SEVERITY_INFO
+    };
+    
+    template <typename... Args>
+    void Log (int severity, int system, const std::string_view& format, Args&&... args) {
+        std::string_view format_view = format;
+        implementation::log (severity, system, format_view, args...);
     }
     
     template <typename... Args>
     void Log (int system, const std::string_view& format, Args&&... args) {
         std::string_view format_view = format;
-        implementation::log (system, format_view, args...);
+        implementation::log (0, system, format_view, args...);
     }
     
     template <typename... Args>
     void Log (const std::string_view& format, Args&&... args) {
         std::string_view format_view = format;
-        implementation::log (0, format_view, args...);
+        implementation::log (0, 6, format_view, args...);
     }
 }
 

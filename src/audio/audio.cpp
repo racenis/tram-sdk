@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <stb_vorbis.c>
 #include <alc.h>
 #include <al.h>
@@ -10,6 +13,7 @@
 #include <framework/system.h>
 #include <framework/logging.h>
 #include <audio/audio.h>
+#include <audio/source.h>
 #include <components/audiocomponent.h>
 #include <unordered_map>
 
@@ -39,14 +43,14 @@ namespace Core::Audio {
         assert(System::IsInitialized(System::SYSTEM_UI));
         
         sound_device = alcOpenDevice(nullptr);
-        if (!sound_device) Log (System::SYSTEM_AUDIO, "Audio device didn't open!");
+        if (!sound_device) Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio device didn't open!");
         sound_context = alcCreateContext(sound_device, nullptr);
-        if (!sound_context) Log (System::SYSTEM_AUDIO, "Audio context didn't create!");
-        if (!alcMakeContextCurrent(sound_context)) Log (System::SYSTEM_AUDIO, "Audio context didn't get currented!");
+        if (!sound_context) Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio context didn't create!");
+        if (!alcMakeContextCurrent(sound_context)) Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio context didn't get currented!");
         const char* device_name = nullptr;
         if (alcIsExtensionPresent(sound_device, "ALC_ENUMERATE_ALL_EXT")) device_name = alcGetString(sound_device, ALC_ALL_DEVICES_SPECIFIER);
         if (!device_name || alcGetError(sound_device) != ALC_NO_ERROR) device_name = alcGetString(sound_device, ALC_DEVICE_SPECIFIER);
-        Log (System::SYSTEM_AUDIO, "{}", device_name);
+        Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "{}", device_name);
         
         System::SetInitialized(System::SYSTEM_AUDIO, true);
     }
@@ -77,14 +81,15 @@ namespace Core::Audio {
     void Sound::LoadFromDisk() {
         sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + std::string(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
         
-        printf("data_len: %d, channels: %d, sample_rate: %d, audio: %lld\n", sound_length, channels, sample_rate, (long long)sound_data);
+        Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "Bytelength: {} Channels: {} SampleRate: {} AudioPtr: {}", sound_length, channels, sample_rate, (long long)sound_data);
         
         if (sound_length < 0) {
-            std::cout << "There was an error loading the sound " << name << std::endl;
+            Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
         } else {
             static const int32_t buffer_size = 64 * 1024;
             sound_buffer_count = (sound_length + buffer_size - 1) / buffer_size;
-            std::cout << "generating " << sound_buffer_count << "buffers" << std::endl;
+            
+            Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "Generating {} buffers", sound_buffer_count);
             
             alGenBuffers(sound_buffer_count, sound_buffers);
 
@@ -118,7 +123,7 @@ namespace Core::Audio {
         if (sound != sound_map.end()) {
             return sound->second;
         } else {
-            std::cout << "Can't find the sound " << name << ", aborting." << std::endl;
+            Log (SEVERITY_CRITICAL_ERROR, System::SYSTEM_AUDIO, "Can't find the sound {} aborting.", name);
             abort();
         }
     }

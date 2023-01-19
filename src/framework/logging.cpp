@@ -1,4 +1,5 @@
 #include <framework/logging.h>
+#include <framework/system.h>
 #include <cstring>
 #include <charconv>
 #include <iostream>
@@ -18,8 +19,25 @@ namespace Core::implementation {
         str.remove_prefix(close_bracket + 1);
     }
     
-    void flush (int system) {
-        std::cout << "[" << system << "] " << buffer << std::endl;
+    void flush (int severity, int system) {
+        const char* severity_text;
+        
+        switch (severity) {
+            case 0:     severity_text = "[    ]";   break;
+            case 1:     severity_text = "[CRIT]";   break;
+            case 2:     severity_text = "[ERRR]";   break;
+            case 3:     severity_text = "[WARN]";   break;
+            case 4:     severity_text = "[INFO]";   break;
+            default:    severity_text = "[    ]";   break;
+        }
+        
+        const char* system_text = system == 6 ? nullptr : System::GetShortName(system);
+        
+        if (system_text) {
+            std::cout << severity_text << ' ' << '[' << system_text << ']' << ' ';
+        }
+        
+        std::cout << buffer << std::endl;
         buffer[0] = '\0';
     }
     

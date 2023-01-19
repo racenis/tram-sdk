@@ -9,11 +9,13 @@
 
 #include <fstream>
 
+template <> Core::Pool<Core::Render::Animation> Core::PoolProxy<Core::Render::Animation>::pool("animation pool", 50, false);
+
 namespace Core::Render {
     std::unordered_map<uint64_t, NameCount*> ANIMATION_LIST;
     StackPool<uint8_t> ANIMATION_POOL("animation keyframe pool", 50000);
     Pool<Pose> poseList("pose list", 100, true);
-    template <> Pool<Animation> PoolProxy<Animation>::pool("animation pool", 50, false);
+    
 
     void Animation::LoadFromDisk(){
         using namespace Render;

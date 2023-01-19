@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #ifndef AUDIO_AUDIO_H
 #define AUDIO_AUDIO_H
 
@@ -7,8 +10,8 @@
 
 
 namespace Core::Audio {
-    //extern glm::vec3 LISTENER_POSITION;
-    //extern glm::vec3 LISTENER_ORIENTATION[2];
+    typedef uint32_t audiosource_t;
+    
     const size_t SOUND_BUFFERS_PER_SOUND = 10;
     
     class Sound : public Resource {
