@@ -22,6 +22,9 @@ compiler = config["Make"]["compiler"]
 linker = config["Make"]["linker"]
 archiver = config["Make"]["archiver"]
 
+deleter = "del" if is_on_windows else "rm"
+binaries = "libraries/binaries/win64/" if is_on_windows else "libraries/binaries/linux64/"
+
 def print_header():
 	print("TRAM SDK Makefile generator v0.0.4")
 
@@ -52,13 +55,65 @@ def generate_makefile():
 		sys.exit("Can't find the src directory!")
 		
 	print("Generating makefile...")
-
+	
+	units = []
+	
+	for root, _, files in os.walk(project_path + "src/"):
+		for name in files:
+			filename = os.path.join(root, name).replace('\\', '/')
+			
+			append = filename.endswith(".cpp")
+			
+			if is_library and filename == "src/main.cpp":
+				append = False
+				
+			if append:
+				units.append(filename)
+	
+	def objectify(unit):
+		unit = unit.replace('/', '_')
+		return unit[:-4]
+	
+	for unit in units:
+		makefile += objectify(unit) + ".o: " + unit + "\n"
+		makefile += "\t" + compiler + " -c -O0 -std=c++20 -Ilibraries -I./src " + unit
+		makefile += " -o " + objectify(unit) + ".o\n\n"
+	
+	makefile += "clean:\n"
+	for unit in units:
+		makefile += "\t" + deleter + " " + objectify(unit) + ".o\n"	
+	makefile += "\n"
+		
+	if is_library:
+		makefile += "library: "
+		for unit in units:
+			makefile += objectify(unit) + ".o "
+		makefile += "\n\t" + archiver + " -crf libtramsdk.a "
+		
+		for unit in units:
+			makefile += objectify(unit) + ".o "
+		
+		makefile += "\n"
+		
+		#makefile += "libraryfull: library\n"
+		#makefile += "\tar -crf tramsdkfull.a tramsdk.a "
+		#makefile += binaries + "libBulletSoftBody.a "
+		#makefile += binaries + "libBulletDynamics.a "
+		#makefile += binaries + "libBulletCollision.a "
+		#makefile += binaries + "libLinearMath.a "
+		#makefile += binaries + "libglfw3.a "
+		#makefile += binaries + "libOpenAL32.a\n"
+	
+	with open(project_path + "Makefile", "w") as makefile_file:
+		makefile_file.write(makefile)
+	
+	print("ok.")
 	
 mode = sys.argv[1] if len(sys.argv) > 1 else -1
 
 if mode == "config":
 	print_config()
-if mode == "generate":
+elif mode == "generate":
 	generate_makefile()
 else:
 	print_help()
