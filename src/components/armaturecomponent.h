@@ -7,6 +7,7 @@
 #include <framework/core.h>
 #include <framework/entitycomponent.h>
 #include <render/render.h>
+#include <render/model.h>
 
 namespace Core {
 class ArmatureComponent : public EntityComponent {

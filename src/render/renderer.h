@@ -7,6 +7,7 @@
 #include <templates/octree.h>
 
 #include <render/render.h>
+#include <render/model.h>
 
 namespace Core::Render {
     enum renderflags: uint32_t {

@@ -5,6 +5,7 @@
 #define EXTENSIONS_MENU_MENU_H
 
 namespace Core::Ext::Menu {
+    void Init();
     void DebugMenu();
     void EscapeMenu();
 }

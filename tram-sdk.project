@@ -96,6 +96,9 @@
       <File Name="src/physics/actions.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
+      <File Name="src/render/sprite.h"/>
+      <File Name="src/render/material.h"/>
+      <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
         <File Name="src/render/opengl/renderer.h"/>

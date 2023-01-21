@@ -34,139 +34,6 @@ namespace Core::Render {
         void* draw_list_entries[6] = { nullptr };
     };
 
-    class Material : public Resource {
-    public:
-        enum Type {
-            TEXTURE,
-            TEXTURE_ALPHA,
-            TEXTURE_LIGHTMAP,
-            TEXTURE_MSDF,
-            TEXTURE_GLYPH,
-            TEXTURE_WATER,
-            FLAT_COLOR
-        };
-    protected:
-        texturehandle_t texture = 0;
-        
-        Type type = TEXTURE;
-        uint32_t width = 0;
-        uint32_t height = 0;
-        uint8_t channels = 0;
-        uint8_t* textureData = nullptr;
-        size_t approx_vram_usage = 0;
-
-        static Material* error_material;
-    public:
-        Material (){}
-        Material(name_t mName, Material::Type mType) {
-            name = mName;
-            type = mType;
-            status = UNLOADED;
-        }
-        inline texturehandle_t GetTexture() const { return texture; };
-        inline uint32_t GetWidth() const {return width;};
-        inline uint32_t GetHeight() const {return height;};
-        inline Material::Type GetType() const {return type;};
-        bool Load(){
-            LoadFromDisk();
-            LoadFromMemory();
-            return true;
-        }
-        bool Unload();
-        void LoadFromDisk();
-        void LoadFromMemory();
-        static Material* Find (name_t name);
-        static Material* Make (name_t name, Material::Type type);
-        static void SetErrorMaterial(Material* mat) { error_material = mat; mat->Load(); }
-        static void LoadMaterialInfo(const char* filename);
-        friend class Sprite;
-    };
-
-    struct ModelData{};
-
-    class Model : public Resource {
-    public:
-        enum VertexFormat {
-            STATIC_VERTEX,
-            DYNAMIC_VERTEX,
-            SPRITE_VERTEX,
-            LINE_VERTEX
-        };
-        
-        struct ElementRange {
-            uint32_t element_offset = 0;
-            uint32_t element_length = 0;
-            uint32_t material_count = 0;
-            Material::Type material_type;
-            uint32_t materials[15] = { 0 };
-        };
-        
-        VertexFormat vertex_format = STATIC_VERTEX;
-        
-        vertexhandle_t vertex_buffer_handle = 0;
-        vertexhandle_t element_buffer_handle = 0;
-        vertexhandle_t vertex_array_handle = 0;
-        
-        std::vector<ElementRange> element_ranges;
-        
-        std::vector<Material*> materials;
-        
-    protected:
-        std::vector<Bone> armature;
-        ModelData* mData = nullptr;
-        size_t approx_vram_usage = 0;
-
-        static Model* error_model;
-    public:
-        Model (name_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
-
-        bool Load(){
-            LoadFromDisk();
-            LoadFromMemory();
-            return true;
-        };
-        bool Unload();
-        void LoadFromDisk();
-        void LoadFromMemory();
-        size_t GetArmatureSize() { return armature.size(); }
-        Bone* GetArmature() { return &armature.front(); }
-        static Model* Find(name_t name);
-        static void SetErrorModel(Model* model) { error_model = model; model->Load(); }
-    };
-
-    class Sprite : public Resource {
-    public:
-        struct Frame {
-            uint16_t offset_x;
-            uint16_t offset_y;
-            uint16_t width;
-            uint16_t height;
-            uint16_t drop;
-            uint16_t border;
-            float scale;
-            float length;       // idk what this is supposed to be
-        };
-        
-        std::vector<Frame> frames;
-    protected:
-        Material* material = nullptr;
-    public:
-        Sprite (){}
-        Sprite(UID name) : Resource(name) {}
-        inline Material* GetMaterial () const { return material; }
-        inline void SetMaterial (Material* mat) { material = mat; }
-        bool Load(){
-            LoadFromDisk();
-            LoadFromMemory();
-            return true;
-        }
-        bool Unload();
-        void AutogenTiledFrames(uint16_t frame_offset_x, uint16_t frame_offset_y, uint16_t frame_width, uint16_t frame_height, uint16_t frames_per_row, uint16_t frame_count, float scale, float length);
-        void LoadFromDisk();
-        void LoadFromMemory();
-        static Sprite* Find(name_t name);
-    };
-
     const uint32_t MAX_MATERIALS_PER_MODEL = 15;
     
     const vec3 COLOR_WHITE  (1.0f, 1.0f, 1.0f);
@@ -180,13 +47,13 @@ namespace Core::Render {
 
     const vec3 COLOR_GRAY   (0.3f, 0.3f, 0.3f);
 
-    extern Material FONT_REGULAR;  // futura knock-off
-    extern Material FONT_TITLE;    // helvetica
-    extern Material FONT_SYMBOLS;  // ornamentation and other non-text glyphs
-    extern Material GLYPH_GUI;
-    extern Material GLYPH_TEXT;
-    extern Material GLYPH_TEXT_BOLD;
-    extern Material GLYPH_HEADERS;
+    //extern Material FONT_REGULAR;  // futura knock-off
+    //extern Material FONT_TITLE;    // helvetica
+    //extern Material FONT_SYMBOLS;  // ornamentation and other non-text glyphs
+    //extern Material GLYPH_GUI;
+    //extern Material GLYPH_TEXT;
+    //extern Material GLYPH_TEXT_BOLD;
+    //extern Material GLYPH_HEADERS;
 
     extern float FRAME_LIMIT;
 

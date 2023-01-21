@@ -5,6 +5,7 @@
 #define COMPONENTS_PARTICLECOMPONENT_H
 
 #include <render/render.h>
+#include <render/sprite.h>
 
 namespace Core {
     class ParticleComponent : public EntityComponent {

@@ -17,7 +17,7 @@
 #include <framework/core.h>
 #include <framework/stats.h>
 
-#include <render/render.h>
+#include <render/material.h>
 #include <render/renderer.h>
 
 #include <templates/hashmap.h>

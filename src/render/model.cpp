@@ -4,7 +4,7 @@
 #include <framework/core.h>
 #include <framework/stats.h>
 
-#include <render/render.h>
+#include <render/model.h>
 #include <render/renderer.h>
 
 #include <framework/async.h>

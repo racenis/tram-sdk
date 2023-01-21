@@ -7,10 +7,26 @@
 #include <physics/physics.h>
 #include <render/render.h>
 
+#include <framework/system.h>
 
 using namespace Core::GUI;
 
 namespace Core::Ext::Menu {
+    font_t FONT_SYMBOL = 0;
+    font_t FONT_TEXT = 0;
+    font_t FONT_TEXT_BOLD = 0;
+    font_t FONT_HEADER = 0;
+    
+    uint32_t MENU_SYSTEM = -1;
+        
+    void Init() {
+        assert(System::IsInitialized(System::SYSTEM_GUI) && "GUI system needs to be initialized first!");
+        assert(MENU_SYSTEM == -1 && "Menu system is already initialized!");
+        
+        MENU_SYSTEM = System::Register("Default Menus", "MENU");
+        System::SetInitialized(MENU_SYSTEM, true);
+    }
+    
     void DebugMenu() {
         static bool debugdraw_trans = false;
         static bool debugdraw_paths = false;

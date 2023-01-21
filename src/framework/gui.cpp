@@ -11,6 +11,7 @@
 #include <framework/logging.h>
 
 #include <render/renderer.h>
+#include <render/sprite.h>
 
 namespace Core::GUI {
     struct FrameObject {

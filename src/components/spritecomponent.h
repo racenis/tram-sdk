@@ -5,6 +5,7 @@
 #define COMPONENTS_SPRITECOMPONENT_H
 
 #include <render/render.h>
+#include <render/sprite.h>
 
 namespace Core {
     class SpriteComponent : public EntityComponent {
