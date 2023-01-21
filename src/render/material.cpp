@@ -31,6 +31,7 @@ Material* Material::error_material = nullptr;
 Hashmap<Material*> MATERIAL_LIST("material name list", 500);
 template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
 
+/// Loads a Material definition file.
 void Material::LoadMaterialInfo(const char* filename){
     using namespace Core::Render;
 
@@ -58,6 +59,8 @@ void Material::LoadMaterialInfo(const char* filename){
             mattype = Material::TEXTURE_LIGHTMAP;
         } else if(type == "msdf"){
             mattype = Material::TEXTURE_MSDF;
+        } else if(type == "glyph"){
+            mattype = Material::TEXTURE_GLYPH;
         } else if(type == "water"){
             mattype = Material::TEXTURE_WATER;
         } else {
@@ -70,6 +73,26 @@ void Material::LoadMaterialInfo(const char* filename){
     file.close();
 }
 
+/// Creates a material.
+/// If a Material already exists with that name, then the existing Material is returned.
+/// @return Always returns a pointer to a Material.
+Material* Material::Make (name_t name, Material::Type type) {
+    Material* material = MATERIAL_LIST.Find(name);
+    
+    if (!material) {
+        material = PoolProxy<Material>::New(name, type);
+        MATERIAL_LIST.Insert(UID(name), material);
+    }
+    
+    return material;
+}
+
+/// Finds a Material.
+/// Finds a Material by its associated name. If Material with that names does not
+/// exist, then it is created (with the TEXTURE_LIGHTMAP type). In addition, for
+/// a Material to be found, it must have been created with the LoadMaterialInfo(),
+/// Make() or Find() methods.
+/// @return Always returns a pointer to a Material.
 Material* Material::Find(name_t name){
     // APPARENTLY:
     // "something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()"
@@ -127,7 +150,7 @@ void Material::LoadFromDisk(){
         stbi_image_free(loadtexture);
 
     } else {
-        std::cout << "Texture " << name << " couldn't be loaded!" << std::endl;
+        std::cout << "Texture " << name << " (" << path << ") couldn't be loaded!" << std::endl;
 
         // copy the error texture
         texture = error_material->texture;

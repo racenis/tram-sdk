@@ -57,7 +57,6 @@ namespace Core::Render {
 
         static Material* error_material;
     public:
-
         Material (){}
         Material(name_t mName, Material::Type mType) {
             name = mName;
@@ -76,7 +75,8 @@ namespace Core::Render {
         bool Unload();
         void LoadFromDisk();
         void LoadFromMemory();
-        static Material* Find(name_t name);
+        static Material* Find (name_t name);
+        static Material* Make (name_t name, Material::Type type);
         static void SetErrorMaterial(Material* mat) { error_material = mat; mat->Load(); }
         static void LoadMaterialInfo(const char* filename);
         friend class Sprite;
@@ -149,7 +149,7 @@ namespace Core::Render {
         
         std::vector<Frame> frames;
     protected:
-        Material* material;
+        Material* material = nullptr;
     public:
         Sprite (){}
         Sprite(UID name) : Resource(name) {}

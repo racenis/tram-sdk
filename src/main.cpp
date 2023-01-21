@@ -57,6 +57,7 @@ int main() {
     Render::Init();         // render init must always come after the ui inited
     Async::Init();          // async init must always come after render init
     Audio::Init();
+    GUI::Init();
 
     // any kind of material or model loading must happen after both ui and render are inited
     Material::SetErrorMaterial(PoolProxy<Material>::New(UID("defaulttexture"), Material::TEXTURE));
@@ -72,6 +73,28 @@ int main() {
     PoolProxy<Animation>::New(UID("turtle"));
     PoolProxy<Animation>::New(UID("bingus_idle"));
     Animation::LoadAll();
+
+
+    Material::Make(UID("font_symbols"),     Material::TEXTURE_GLYPH)->Load();
+    Material::Make(UID("font_text"),        Material::TEXTURE_GLYPH)->Load();
+    Material::Make(UID("font_text_bold"),   Material::TEXTURE_GLYPH)->Load();
+    Material::Make(UID("font_headers"),     Material::TEXTURE_GLYPH)->Load();
+
+    Sprite* font_symbols =      Sprite::Find(UID("font_symbols"));
+    Sprite* font_text =         Sprite::Find(UID("font_text"));
+    Sprite* font_text_bold =    Sprite::Find(UID("font_text_bold"));
+    Sprite* font_headers =      Sprite::Find(UID("font_headers"));
+    
+    font_symbols->Load();
+    font_text->Load();
+    font_text_bold->Load();
+    font_headers->Load();
+    
+    GUI::RegisterFont(font_symbols);
+    GUI::RegisterFont(font_text);
+    GUI::RegisterFont(font_text_bold);
+    GUI::RegisterFont(font_headers);
+
 
     // loading the demo level
     auto demo = PoolProxy<WorldCell>::New();
@@ -117,7 +140,7 @@ int main() {
     std::cout << "DCIKS" << std::endl;
     
     auto tolet_sprite = new Sprite(UID("poland"));
-    tolet_sprite->SetMaterial(Material::Find(UID("poland")));
+    //tolet_sprite->SetMaterial(Material::Find(UID("poland")));
     //tolet_sprite->AutogenTiledFrames(0, 0, 40, 40, 6, 24, 15.0f, 1.0f);
     
     auto tolet_spinner = PoolProxy<SpriteComponent>::New();
@@ -258,6 +281,7 @@ int main() {
         
         
         GUI::End();
+        GUI::Update();
         
         Audio::Update();
         

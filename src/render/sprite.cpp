@@ -36,10 +36,6 @@ void Sprite::LoadFromMemory() {
 }
 
 void Sprite::LoadFromDisk() {
-    assert(material);
-    material->AddRef();
-    Async::ForceLoadResource(material);
-    
     if (frames.size() || !name) {
         status = LOADED;
         Log("Already loaded!");
@@ -57,14 +53,14 @@ void Sprite::LoadFromDisk() {
     std::getline(file, str);
     std::stringstream wrd (str);
     std::string type;
+    std::string matname;
     
     wrd >> type;
+    wrd >> matname;
     
     if (type != "SPRv1") {
         Log("Incorrect sprite header \"{}\"", str);
     }
-
-    Log ("Sprite file type {}", type);
     
     while (std::getline(file, str)) {
         size_t first_nospace = str.find_first_not_of(" \t");
@@ -84,8 +80,19 @@ void Sprite::LoadFromDisk() {
         
         frames.push_back(fr);
         
-        Log("Got line: {}", str);
+        //Log("Got line: {}", str);
     }
+    
+    Log ("Sprite file type {} material {} frames {}", type, matname, frames.size());
+    
+    if (!material) {
+        material = Material::Find(UID(matname));
+    }
+    
+    Log ("Material {} status {}", material->GetName(), (int)material->GetStatus());
+    material->AddRef();
+    Async::ForceLoadResource(material);
+    Log ("Material {} status {}", material->GetName(), (int)material->GetStatus());
     
     status = LOADED;
 }

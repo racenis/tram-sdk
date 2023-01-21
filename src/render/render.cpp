@@ -78,10 +78,10 @@ namespace Core::Render {
         FONT_REGULAR.Load();
         FONT_TITLE.Load();
         FONT_SYMBOLS.Load();
-        GLYPH_GUI.Load();
-        GLYPH_TEXT.Load();
-        GLYPH_TEXT_BOLD.Load();
-        GLYPH_HEADERS.Load();
+        //GLYPH_GUI.Load();
+        //GLYPH_TEXT.Load();
+        //GLYPH_TEXT_BOLD.Load();
+       // GLYPH_HEADERS.Load();
         
         // this is pain in my assholes
         

@@ -46,10 +46,10 @@ namespace Core::GUI {
     /// Performs initialization of the GUI system.
     /// Render system must be initialized first.
     void Init() {
-        // TODO: add a check for other systems
-
+        assert(!System::IsInitialized(System::SYSTEM_GUI) && "GUI system already initialized!");
+        assert(System::IsInitialized(System::SYSTEM_RENDER) && "Need to initialize Render system first!");
         
-        Log (System::SYSTEM_GUI, SEVERITY_INFO, "Initializing GUI system.");
+        Log (SEVERITY_INFO, System::SYSTEM_GUI, "Initializing GUI system.");
         
         using namespace Core::Render;
         
@@ -58,6 +58,8 @@ namespace Core::GUI {
         SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
         SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);
         SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+        
+        System::SetInitialized(System::SYSTEM_GUI, true);
     }
     
     /// Submits registered fonts to the renderer.
@@ -73,8 +75,8 @@ namespace Core::GUI {
             
             glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetTexture();
             
-            if (fonts[i]->GetStatus() != Resource::LOADED) {
-                Log (System::SYSTEM_GUI, SEVERITY_INFO, "Font {} is not loaded!", font_count);
+            if (fonts[i]->GetStatus() != Resource::READY) {
+                Log (SEVERITY_ERROR, System::SYSTEM_GUI, "Font {} is not loaded!", i);
             }
         }
         
@@ -191,22 +193,23 @@ namespace Core::GUI {
                 float off = (y + h) - t.height;
                 n_h -= off; //n_tex_h -= off;
             }
-            Render::SetGlyph(n_x + t.offset_x, n_y + t.offset_y, n_w, n_h, n_tex_x, n_tex_y, n_w, n_h, color, tex);
+            SetGlyph(n_x + t.offset_x, n_y + t.offset_y, n_w, n_h, n_tex_x, n_tex_y, n_w, n_h, color, tex);
             return;
         }
         
         // send off to rendering
-        Render::SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, w, h, color, tex);
+        SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, w, h, color, tex);
     }
     
     void GlyphNoclip(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
         auto& t = FrameStack.top();
-        Render::SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, tex_w, tex_h, color, tex);
+        SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, tex_w, tex_h, color, tex);
     }
     
     void Glyph(const uint32_t& symbol, const float& x, const float& y) {
-        auto& f = UI::glyphinfo[0][symbol]; // yeah, this will have to go
-        Glyph(x, y, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, 0);
+        //auto& f = UI::glyphinfo[0][symbol]; // yeah, this will have to go
+        auto& f = fonts[0]->frames[symbol];
+        Glyph(x, y, f.width, f.height, f.offset_x, f.offset_y, Render::COLOR_WHITE, 0);
     }
     
     void Begin() {
