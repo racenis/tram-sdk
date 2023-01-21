@@ -116,9 +116,9 @@ int main() {
     
     std::cout << "DCIKS" << std::endl;
     
-    auto tolet_sprite = new Sprite;
+    auto tolet_sprite = new Sprite(UID("poland"));
     tolet_sprite->SetMaterial(Material::Find(UID("poland")));
-    tolet_sprite->AutogenTiledFrames(0, 0, 40, 40, 6, 24, 15.0f, 1.0f);
+    //tolet_sprite->AutogenTiledFrames(0, 0, 40, 40, 6, 24, 15.0f, 1.0f);
     
     auto tolet_spinner = PoolProxy<SpriteComponent>::New();
     tolet_spinner->SetSprite(tolet_sprite);

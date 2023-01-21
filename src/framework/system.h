@@ -10,6 +10,7 @@ namespace Core::System {
     enum System : uint32_t {
         SYSTEM_CORE,
         SYSTEM_UI,
+        SYSTEM_GUI,
         SYSTEM_ASYNC,
         SYSTEM_RENDER,
         SYSTEM_PHYSICS,

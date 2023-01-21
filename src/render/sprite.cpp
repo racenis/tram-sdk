@@ -6,6 +6,11 @@
 
 #include <framework/async.h>
 
+#include <framework/logging.h>
+
+#include <fstream>
+#include <sstream>
+
 using namespace Core;
 using namespace Core::Render;
 
@@ -34,6 +39,54 @@ void Sprite::LoadFromDisk() {
     assert(material);
     material->AddRef();
     Async::ForceLoadResource(material);
+    
+    if (frames.size() || !name) {
+        status = LOADED;
+        Log("Already loaded!");
+        return;
+    }
+    
+    std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
+    std::ifstream file (filename);
+    std::string str; 
+    
+    if (!file.is_open()) {
+        Log("File not found: {}", filename);
+    }
+    
+    std::getline(file, str);
+    std::stringstream wrd (str);
+    std::string type;
+    
+    wrd >> type;
+    
+    if (type != "SPRv1") {
+        Log("Incorrect sprite header \"{}\"", str);
+    }
+
+    Log ("Sprite file type {}", type);
+    
+    while (std::getline(file, str)) {
+        size_t first_nospace = str.find_first_not_of(" \t");
+        if(first_nospace == std::string::npos || str[first_nospace] == '#') continue;
+        std::stringstream wrd (str);
+        
+        Frame fr;
+        
+        wrd >> fr.offset_x;
+        wrd >> fr.offset_y;
+        wrd >> fr.width;
+        wrd >> fr.height;
+        wrd >> fr.drop;
+        wrd >> fr.border;
+        wrd >> fr.scale;
+        wrd >> fr.length; 
+        
+        frames.push_back(fr);
+        
+        Log("Got line: {}", str);
+    }
+    
     status = LOADED;
 }
 

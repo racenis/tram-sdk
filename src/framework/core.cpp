@@ -38,6 +38,7 @@ namespace Core {
         // is in the same order as the System::System enumeration.
         System::Register("Core", "CORE");
         System::Register("User Interface", "UI");
+        System::Register("Graphical User Interface", "GUI");
         System::Register("Async", "ASYNC");
         System::Register("Rendering", "RENDER");
         System::Register("Physics", "PHYSICS");

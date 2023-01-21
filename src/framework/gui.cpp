@@ -7,6 +7,11 @@
 
 #include <framework/gui.h>
 
+#include <framework/system.h>
+#include <framework/logging.h>
+
+#include <render/renderer.h>
+
 namespace Core::GUI {
     struct FrameObject {
         float offset_x;
@@ -30,8 +35,139 @@ namespace Core::GUI {
     uint32_t current_text_len = 0;
     char const** current_dropdown = nullptr;
     
-    void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex) {
+    Render::Sprite* fonts [16] = {nullptr};
+    
+    uint32_t glyphvertices_vertex_array = 0;
+    uint32_t glyphvertices_vertex_buffer = 0;
+    Render::DrawListEntryHandle glyphvertices_entry;
+    
+    std::vector<Render::SpriteVertex> glyphvertices;
+    
+    /// Performs initialization of the GUI system.
+    /// Render system must be initialized first.
+    void Init() {
+        // TODO: add a check for other systems
+
+        
+        Log (System::SYSTEM_GUI, SEVERITY_INFO, "Initializing GUI system.");
+        
+        using namespace Core::Render;
+        
+        CreateVertexArray(SPRITE_VERTEX_DEFINITION, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
+        glyphvertices_entry = InsertDrawListEntry();
+        SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
+        SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);
+        SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+    }
+    
+    /// Submits registered fonts to the renderer.
+    void UpdateDrawListFonts () {
+        uint32_t glyphvertices_textures[16];
+        font_t font_count = 0;
+        
+        for (font_t i = 0; i < 16; i++) {
+            if (!fonts[i]) {
+                font_count = i;
+                break;
+            }
+            
+            glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetTexture();
+            
+            if (fonts[i]->GetStatus() != Resource::LOADED) {
+                Log (System::SYSTEM_GUI, SEVERITY_INFO, "Font {} is not loaded!", font_count);
+            }
+        }
+        
+        using namespace Core::Render;
+        
+        SetDrawListTextures(glyphvertices_entry, font_count, glyphvertices_textures);
+    }
+    
+    /// Submits all of the glyphs for rendering.
+    void Update () {
+        using namespace Core::Render;
+        UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
+        SetDrawListElements(glyphvertices_entry, 0, glyphvertices.size());
+        glyphvertices.clear();
+    }
+    
+    /// Registers a font.
+    /// @return     Font handle that can be used with all of the GUI widget functions.
+    font_t RegisterFont (Render::Sprite* sprite) {
+        if (!System::IsInitialized (System::SYSTEM_GUI)) {
+            Log (System::SYSTEM_GUI, SEVERITY_ERROR, "GUI is not initialized, font {} was not registered!", sprite->GetName());
+            return -1;
+        }
+        
+        for (font_t i = 0; i < 16; i++) {
+            if (fonts[i] == sprite) return i;
+        }
+        
+        for (font_t i = 0; i < 16; i++) {
+            if (fonts[i] == nullptr) {
+                fonts[i] = sprite;
+                sprite->AddRef();
+                UpdateDrawListFonts();
+                
+                return i;
+            }
+        }
+        
+        Log(System::SYSTEM_GUI, SEVERITY_ERROR, "Ran out of font slots, font {} was not registered!", sprite->GetName());
+        
+        return -1;
+    }
+    
+    /// Adds a glyph to rendering list.
+    /// Triangularizes a glyph from its params and then it get sent off to
+    /// rendering via the glyph rendering list.
+    void SetGlyph (float x, float y, float w, float h, float tex_x, float tex_y, float tex_w, float tex_h, const glm::vec3& color, font_t font) {
+        Render::SpriteVertex tleft;   // top left
+        Render::SpriteVertex tright;  // top right
+        Render::SpriteVertex bleft;   // bottom left
+        Render::SpriteVertex bright;  // bottom right
+
+        tleft.co.x = x;
+        tleft.co.y = y;
+        tleft.texco.x = tex_x;
+        tleft.texco.y = tex_y;
+        
+        tright.co.x = x + w;
+        tright.co.y = y;
+        tright.texco.x = tex_x + tex_w;
+        tright.texco.y = tex_y;
+        
+        bleft.co.x = x;
+        bleft.co.y = y + h;
+        bleft.texco.x = tex_x;
+        bleft.texco.y = tex_y + tex_h;
+        
+        bright.co.x = x + w;
+        bright.co.y = y + h;
+        bright.texco.x = tex_x + tex_w;
+        bright.texco.y = tex_y + tex_h;
+        
+        tleft.color = color;
+        tleft.texture = font;
+        tright.color = color;
+        tright.texture = font;
+        bleft.color = color;
+        bleft.texture = font;
+        bright.color = color;
+        bright.texture = font;
+
+        glyphvertices.push_back(bleft);
+        glyphvertices.push_back(bright);
+        glyphvertices.push_back(tleft);
+        glyphvertices.push_back(bright);
+        glyphvertices.push_back(tright);
+        glyphvertices.push_back(tleft);
+    }
+    
+    void Glyph (const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex) {
         auto& t = FrameStack.top();
+        
+        // check if glyph needs to be clipped
         if (x < 0.0f || y < 0.0f || x + w > t.width || y + h > t.height) {
             if (x + w < 0.0f || y + h < 0.0f || x > t.width || y > t.height) {
                 return;
@@ -58,6 +194,8 @@ namespace Core::GUI {
             Render::SetGlyph(n_x + t.offset_x, n_y + t.offset_y, n_w, n_h, n_tex_x, n_tex_y, n_w, n_h, color, tex);
             return;
         }
+        
+        // send off to rendering
         Render::SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, w, h, color, tex);
     }
     
@@ -67,7 +205,7 @@ namespace Core::GUI {
     }
     
     void Glyph(const uint32_t& symbol, const float& x, const float& y) {
-        auto& f = UI::glyphinfo[0][symbol];
+        auto& f = UI::glyphinfo[0][symbol]; // yeah, this will have to go
         Glyph(x, y, f.w, f.h, f.x, f.y, Render::COLOR_WHITE, 0);
     }
     

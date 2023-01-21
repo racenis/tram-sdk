@@ -6,6 +6,10 @@
 
 #include <framework/ui.h>
 
+namespace Core::Render {
+    class Sprite;
+}
+
 namespace Core::GUI {
     typedef uint32_t font_t;
     
@@ -58,6 +62,10 @@ namespace Core::GUI {
         SCROLL_TRACK = 89,
         SCROLL_BAR = 90,
     };
+    
+    void Init();
+    void Update();
+    font_t RegisterFont(Render::Sprite* sprite);
     
     void Begin();
     void End();

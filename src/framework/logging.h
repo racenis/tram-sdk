@@ -11,10 +11,11 @@
 namespace Core {
     namespace implementation {
         template <typename T> void concat (const T& value) {
-            concat<const char*> ("UNDEFINED");
+            concat<const char*> ("LOGGER_UNDEFINED_TYPE");
         }
         
         template <> void concat (const std::string_view& value);
+        template <> void concat (const std::string& value);
         template <> void concat (const char* const& value);
         template <> void concat (const UID& value);
         

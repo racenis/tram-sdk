@@ -45,6 +45,10 @@ namespace Core::implementation {
         strncat(buffer, value.data(), value.size());
     }
     
+    template <> void concat (const std::string& value) {
+        strncat(buffer, value.data(), value.size());
+    }
+    
     template <> void concat (const char* const& value) {
         strcat(buffer, value);
     }

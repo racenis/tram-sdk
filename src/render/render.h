@@ -152,7 +152,7 @@ namespace Core::Render {
         Material* material;
     public:
         Sprite (){}
-        Sprite(uint64_t name) : Resource(name) {}
+        Sprite(UID name) : Resource(name) {}
         inline Material* GetMaterial () const { return material; }
         inline void SetMaterial (Material* mat) { material = mat; }
         bool Load(){
