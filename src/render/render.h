@@ -47,14 +47,6 @@ namespace Core::Render {
 
     const vec3 COLOR_GRAY   (0.3f, 0.3f, 0.3f);
 
-    //extern Material FONT_REGULAR;  // futura knock-off
-    //extern Material FONT_TITLE;    // helvetica
-    //extern Material FONT_SYMBOLS;  // ornamentation and other non-text glyphs
-    //extern Material GLYPH_GUI;
-    //extern Material GLYPH_TEXT;
-    //extern Material GLYPH_TEXT_BOLD;
-    //extern Material GLYPH_HEADERS;
-
     extern float FRAME_LIMIT;
 
     void Init();
@@ -66,8 +58,6 @@ namespace Core::Render {
 
     void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color);
     void AddLineMarker(const glm::vec3& location, const glm::vec3& color);
-    void SetGlyph(float x, float y, float tex_x, float tex_y, float width, float height, float scale_x, float scale_y, float thickness, uint32_t texture, const glm::vec3& color);
-    void SetGlyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex);
 }
 
 #endif // RENDER_H

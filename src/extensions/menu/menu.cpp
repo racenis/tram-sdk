@@ -21,7 +21,7 @@ namespace Core::Ext::Menu {
         
     void Init() {
         assert(System::IsInitialized(System::SYSTEM_GUI) && "GUI system needs to be initialized first!");
-        assert(MENU_SYSTEM == -1 && "Menu system is already initialized!");
+        assert(MENU_SYSTEM == -1u && "Menu system is already initialized!");
         
         MENU_SYSTEM = System::Register("Default Menus", "MENU");
         System::SetInitialized(MENU_SYSTEM, true);

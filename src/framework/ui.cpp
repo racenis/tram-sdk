@@ -35,11 +35,6 @@ namespace Core::UI {
     bool escape_menu_open = false;
     bool debug_menu_open = false;
 
-    // TODO: fix this
-    FontCharInfo fontinfo[4][256] = {0.0f};
-    GlyphCharInfo glyphinfo[4][256] = {0.0f};
-    FontCharInfo* fontinfo_f = (FontCharInfo*)fontinfo;
-
     bool ismouse_left = false;
     bool isnotmouse_left = false;
     bool wasmouse_left = false;
@@ -144,18 +139,11 @@ namespace Core::UI {
         glfwSetWindowSizeLimits(WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
         glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        //glfwSetInputMode(WINDOW, GLFW_STICKY_KEYS, GLFW_TRUE);
 
 
         cursors[CURSOR_DEFAULT] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
         cursors[CURSOR_TEXT] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
         cursors[CURSOR_CLICK] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-        
-        LoadFontInfo("data/jost.info", 0);
-        LoadFontInfo("data/inter.info", 1);
-        LoadGlyphInfo("data/glyph.info", 0);
-        LoadGlyphInfo("data/glyph_text.info", 1);
-        LoadGlyphInfo("data/glyph_text_bold.info", 2);
         
         System::SetInitialized(System::SYSTEM_UI, true);
     }
@@ -285,196 +273,7 @@ namespace Core::UI {
         }
     }
 
-    void LoadFontInfo(const char* filename, size_t fontIndex){
-        std::ifstream file;
-        file.open(filename);
-        while(file){
-            uint32_t index;
-            float left, right, top, bottom, drop;
-            file >> index;
-            file >> left;
-            file >> bottom;
-            file >> right;
-            file >> top;
-            file >> drop;
-
-            fontinfo[fontIndex][index].left = left;
-            fontinfo[fontIndex][index].bottom = 256.0f - top;
-            fontinfo[fontIndex][index].right = right - left;
-            fontinfo[fontIndex][index].top = top - bottom;
-            fontinfo[fontIndex][index].drop = drop;
-        }
-        file.close();
-    }
-    
-    void LoadGlyphInfo(const char* filename, size_t fontIndex){
-        std::ifstream file;
-        file.open(filename);
-        while(file){
-            uint32_t index;
-            float x, y, w, h, drop;
-            file >> index;
-            file >> x;
-            file >> y;
-            file >> w;
-            file >> h;
-            file >> drop;
-
-            glyphinfo[fontIndex][index].x = x;
-            glyphinfo[fontIndex][index].y = y;
-            glyphinfo[fontIndex][index].w = w;
-            glyphinfo[fontIndex][index].h = h;
-            glyphinfo[fontIndex][index].drop = drop;
-        }
-        file.close();
-    }
-
-    void SetText(const char* text, uint32_t x, uint32_t y, float scale, float width, bool justify, bool stretch, uint32_t font, const glm::vec3& color){
-        const float CHAR_W = 16.0f;     // the width & height for the characters in ui coordinates
-        const float CHAR_H = CHAR_W;    // don't touch these (unless you plan on re-generating all of the ui textures)
-        const float MIN_SPACE = 4.0f;   // a space will never be smaller than this.
-
-        float line_offset = y;
-        float line_width = 0.0f;
-        float line_scale_w = scale;
-        float line_space_w = 0.0f;
-        size_t line_spaces = 0;
-        bool line_ready = false;
-
-        float thickness = 1.0f;
-
-        uint8_t line [400]; // set the length to whatever, but 200 probably will be enough for any line
-
-        bool break_lines;       // break lines when exceeding width
-        break_lines = (width != 0.0f && !stretch) || (stretch && justify);
-
-        uint8_t* c = (uint8_t*)text;
-        uint8_t* l = line;
-
-        // what happens if the *c == 0? return function?
-        // TODO:  check
-
-        while (1){
-            if (*c == ' '){
-                line_width += MIN_SPACE * scale;
-                line_spaces++;
-                c++;
-                *l = ' ';
-                l++;
-                continue;
-            } else if (*c == '%'){
-                // special commands
-                c++;
-
-                if(*c == '&' && false){ // && false to disable the code
-                    /*
-                    // getting a value
-                    char name[100];
-                    size_t len = 0;
-
-                    c++;
-                    while (*c != ' ' && *c != '\t' && *c != '\0'){
-                        name[len] = *c;
-                        len++;
-                        c++;
-                    }
-
-                    name[len] = '\0';
-
-                    ParserValue* pval = FindValuePtr(UID(name));
-
-                    if(pval){
-                        pval->GetValue((char*)l);
-                        while(*l != '\0') l++;
-                    }*/
-                } else {
-                    c--;
-                }
-            }
-
-            *l = *c;
-            line_width += fontinfo[font][*l].right * scale;
-
-            c++;
-            l++;
-
-            if(break_lines && line_width > width){
-                // go back to last space (if there is one)
-                if(line_spaces > 0){
-                    while (*c != ' ') c--;
-                    while (*l != ' '){
-                        line_width -= fontinfo[font][*l].right * scale;
-                        l--;
-                    }
-                    *l = 0;              // mark the end of line
-                    line_ready = true;
-                }
-            }
-
-
-
-            if(line_ready || *c == 0){
-                *l = 0;
-                l = line;
-
-                if(justify && stretch){
-                    line_space_w = MIN_SPACE;
-                    line_width = x + ((width - line_width) / 2);
-                    line_scale_w = scale;
-                } else if (justify){
-                    line_width = line_width - (MIN_SPACE * line_spaces);
-                    line_space_w = (width - line_width) / line_spaces;
-                    line_width = x;
-                    line_scale_w = scale;
-                } else if (stretch){
-                    line_scale_w = width / line_width * scale;
-                    line_space_w = MIN_SPACE * line_scale_w;
-                    line_width = x;
-                } else {
-                    line_scale_w = scale;
-                    line_space_w = MIN_SPACE;
-                    line_width = x;
-                }
-
-                while (*l != 0){
-                    if (*l == ' '){
-                        line_width += line_space_w;
-                        l++;
-                        continue;
-                    } else if (*l == '%'){
-                        l++;
-                        if (*l == 'b'){
-                            thickness = 1.0f + 0.5f * scale;
-                            l++;
-                        } else if (*l == 'r') {
-                            thickness = 1.0f;
-                            l++;
-                        } else l--;
-                    }
-                    SetGlyph(line_width, line_offset + ((16.0f - fontinfo[font][*l].top - fontinfo[font][*l].drop) * scale), fontinfo[font][*l].left, fontinfo[font][*l].bottom, fontinfo[font][*l].right, fontinfo[font][*l].top, line_scale_w, scale, thickness, font, color);
-                    line_width += fontinfo[font][*l].right * line_scale_w;
-                    l++;
-                }
-
-                if(*c == 0) return;
-
-                //reset
-
-
-                l = line;
-                line_width = 0.0f;
-                line_offset += CHAR_H * scale * 1.5f;
-                line_spaces = 0;
-                line_space_w = 0.0f;
-                line_scale_w = scale;
-                line_ready = false;
-            }
-
-
-        }
-
-    }
-
+    // TODO: move this to GUI
     void SetDebugText(const char* text, const glm::vec3& location, const glm::vec3& color){
         //glm::vec3 screen_pos = glm::project(location, Render::matrices.view, Render::matrices.projection, glm::vec4 (0.0f, 0.0f, 640.0f, 480.0f));
         //Core::UI::SetText(text, screen_pos.x-100.0f, 480.0f + 25.0f - screen_pos.y, 0.7f, 200.0f, 1, 1, 1, color);

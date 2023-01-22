@@ -174,21 +174,10 @@ namespace Core::UI {
         CURSOR_CLICK
     };
     
-    struct FontCharInfo {
-        float left, bottom, right, top, drop;
-    };
-    
-    struct GlyphCharInfo {
-        float x, y, w, h, drop;
-    };
-
     extern InputState INPUT_STATE;
 
     extern GLFWwindow* WINDOW;
     extern name_t WINDOW_TITLE;
-
-    extern FontCharInfo fontinfo[4][256];
-    extern GlyphCharInfo glyphinfo[4][256];
     
     extern float CAMERA_PITCH;
     extern float CAMERA_YAW;
@@ -215,11 +204,6 @@ namespace Core::UI {
     double GetTime();
     void BindKeyboardKey (KeyboardKey key, KeyBinding binding);
 
-    // TODO: yeet these
-    void LoadFontInfo(const char* filename, size_t fontIndex);
-    void LoadGlyphInfo(const char* filename, size_t fontIndex);
-    void SetText(const char* text, uint32_t x, uint32_t y, float scale, float width, bool justify, bool stretch, uint32_t font, const vec3& color);
-    void SetDebugText(const char* text, const vec3& location, const vec3& color);
 }
 
 

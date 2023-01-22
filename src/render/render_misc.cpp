@@ -94,12 +94,9 @@ namespace Core::Render {
         SUN_DIRECTION = glm::normalize(glm::mix(suns[t].sundir, suns[nt].sundir, mixf));
         SUN_COLOR = glm::mix(suns[t].suncolor, suns[nt].suncolor, mixf) / 256.0f*1.2f;
         AMBIENT_COLOR = glm::mix(suns[t].ambientcolor, suns[nt].ambientcolor, mixf) / 256.0f*1.2f;
-
-        //Render::modelMatrices.sunDirection = glm::vec4(sundir.x, sundir.y, sundir.z, 1.0f);
-        //Render::modelMatrices.sunColor = glm::vec4(suncolor.x, suncolor.y, suncolor.z, 1.0f);
-        //Render::modelMatrices.ambientColor = glm::vec4(ambientcolor.x, ambientcolor.y, ambientcolor.z, 1.0f);
     }
     
+    // TODO: make this function less poopy
     void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color){
         LineVertex vert;
 
@@ -120,105 +117,5 @@ namespace Core::Render {
         vert.color[2] = color[2];
 
         colorlines.push_back(vert);
-    }
-    
-    void SetGlyph(float x, float y, float tex_x, float tex_y, float width, float height, float scale_x, float scale_y, float thickness, uint32_t texture, const glm::vec3& color){
-        SpriteVertex tleft;   // top left
-        SpriteVertex tright;  // top right
-        SpriteVertex bleft;   // bottom left
-        SpriteVertex bright;  // bottom right
-
-        thickness = thickness - 1.0f;
-
-        glm::vec2 scale;
-        scale.x = scale_x * 2;
-        scale.y = scale_y * 2;
-
-        tleft.co.x = x;
-        tleft.co.y = y;
-        tleft.texco.x = tex_x;
-        tleft.texco.y = tex_y;
-
-        tright.co.x = x + width * scale_x;
-        tright.co.y = y;
-        tright.texco.x = tex_x + width;
-        tright.texco.y = tex_y;
-
-        bleft.co.x = x;
-        bleft.co.y = y + height * scale_y;
-        bleft.texco.x = tex_x;
-        bleft.texco.y = tex_y + height;
-
-        bright.co.x = x + width * scale_x;
-        bright.co.y = y + height * scale_y;
-        bright.texco.x = tex_x + width;
-        bright.texco.y = tex_y + height;
-
-        tleft.color = color;
-        tleft.voffset = scale;
-        tleft.texture = texture;
-        tleft.verticality = thickness;
-        tright.color = color;
-        tright.voffset = scale;
-        tright.texture = texture;
-        tright.verticality = thickness;
-        bleft.color = color;
-        bleft.voffset = scale;
-        bleft.texture = texture;
-        bleft.verticality = thickness;
-        bright.color = color;
-        bright.voffset = scale;
-        bright.texture = texture;
-        bright.verticality = thickness;
-
-        textvertices.push_back(bleft);
-        textvertices.push_back(bright);
-        textvertices.push_back(tleft);
-        textvertices.push_back(bright);
-        textvertices.push_back(tright);
-        textvertices.push_back(tleft);
-    }
-    
-    void SetGlyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex){
-        SpriteVertex tleft;   // top left
-        SpriteVertex tright;  // top right
-        SpriteVertex bleft;   // bottom left
-        SpriteVertex bright;  // bottom right
-
-        tleft.co.x = x;
-        tleft.co.y = y;
-        tleft.texco.x = tex_x;
-        tleft.texco.y = tex_y;
-        
-        tright.co.x = x + w;
-        tright.co.y = y;
-        tright.texco.x = tex_x + tex_w;
-        tright.texco.y = tex_y;
-        
-        bleft.co.x = x;
-        bleft.co.y = y + h;
-        bleft.texco.x = tex_x;
-        bleft.texco.y = tex_y + tex_h;
-        
-        bright.co.x = x + w;
-        bright.co.y = y + h;
-        bright.texco.x = tex_x + tex_w;
-        bright.texco.y = tex_y + tex_h;
-        
-        tleft.color = color;
-        tleft.texture = tex;
-        tright.color = color;
-        tright.texture = tex;
-        bleft.color = color;
-        bleft.texture = tex;
-        bright.color = color;
-        bright.texture = tex;
-
-        glyphvertices.push_back(bleft);
-        glyphvertices.push_back(bright);
-        glyphvertices.push_back(tleft);
-        glyphvertices.push_back(bright);
-        glyphvertices.push_back(tright);
-        glyphvertices.push_back(tleft);
     }
 }
