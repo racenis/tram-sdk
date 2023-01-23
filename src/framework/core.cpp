@@ -19,6 +19,10 @@ namespace Core {
     /// Time since program started, in seconds.
     /// Updated every time the UI::Update() is called. Should be once a frame.
     float TIME = 0.0f;
+    
+    /// Count of screen updates.
+    /// Incremented by one every time the UI::Update() is called. Should be once a frame.
+    uint32_t TICK = 0;
 
     /// Generates a unique ID number.
     uint64_t GenerateID () {

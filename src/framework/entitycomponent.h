@@ -6,8 +6,9 @@
 
 #include <templates/pool.h>
 
+#include <framework/core.h>
 #include <framework/async.h>
-#include <framework/etc.h>
+
 
 namespace Core {
     class Event;

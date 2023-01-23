@@ -14,6 +14,7 @@
 #include <framework/worldcell.h>
 #include <framework/event.h>
 #include <framework/message.h>
+#include <framework/language.h>
 #include <physics/physics.h>
 #include <audio/audio.h>
 
@@ -60,8 +61,11 @@ int main() {
     GUI::Init();
 
     // any kind of material or model loading must happen after both ui and render are inited
+    // TODO: move these into Render::Init()
     Material::SetErrorMaterial(PoolProxy<Material>::New(UID("defaulttexture"), Material::TEXTURE));
     Model::SetErrorModel(PoolProxy<Model>::New(UID("errorstatic")));
+
+    Ext::Menu::Init();
 
     // load all of the language strings
     LoadText("data/lv.lang");
@@ -75,25 +79,7 @@ int main() {
     Animation::LoadAll();
 
 
-    Material::Make(UID("font_symbols"),     Material::TEXTURE_GLYPH)->Load();
-    Material::Make(UID("font_text"),        Material::TEXTURE_GLYPH)->Load();
-    Material::Make(UID("font_text_bold"),   Material::TEXTURE_GLYPH)->Load();
-    Material::Make(UID("font_headers"),     Material::TEXTURE_GLYPH)->Load();
 
-    Sprite* font_symbols =      Sprite::Find(UID("font_symbols"));
-    Sprite* font_text =         Sprite::Find(UID("font_text"));
-    Sprite* font_text_bold =    Sprite::Find(UID("font_text_bold"));
-    Sprite* font_headers =      Sprite::Find(UID("font_headers"));
-    
-    font_symbols->Load();
-    font_text->Load();
-    font_text_bold->Load();
-    font_headers->Load();
-    
-    GUI::RegisterFont(font_symbols);
-    GUI::RegisterFont(font_text);
-    GUI::RegisterFont(font_text_bold);
-    GUI::RegisterFont(font_headers);
 
 
     // loading the demo level
@@ -199,6 +185,11 @@ int main() {
         Ext::Menu::DebugMenu();
         Ext::Menu::EscapeMenu();
         
+        std::string tickstr = std::to_string(TICK);
+        std::string tickstr2 = std::to_string(TIME);
+        
+        GUI::Text(tickstr.c_str(), 2, Core::GUI::TEXT_CENTER); GUI::FrameBreakLine();
+        GUI::Text(tickstr2.c_str(), 2, Core::GUI::TEXT_CENTER);
         
         /*
         GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);
@@ -274,10 +265,10 @@ int main() {
         if(give_text) {
             for (int i = 0; i < 20; i++) GUI::FrameBreakLine();
             GUI::Text("es esmu teksts dibenaa", 2); GUI::FrameBreakLine();
-        }*/
+        }
         
         GUI::EndFrame();
-        
+        */
         
         
         GUI::End();

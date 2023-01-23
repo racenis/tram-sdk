@@ -10,6 +10,7 @@ class GLFWwindow;
 class GLFWcursor;
 
 namespace Core::UI {
+    // TODO: make this list a bit less unreadable
     enum KeyboardKey : uint16_t {
         KEY_SPACE,
         KEY_APOSTROPHE,
@@ -130,7 +131,18 @@ namespace Core::UI {
         KEY_RIGHT_CONTROL,
         KEY_RIGHT_ALT,
         KEY_RIGHT_SUPER,
-        KEY_MENU
+        KEY_MENU,
+        KEY_RIGHTMOUSE,
+        KEY_LEFTMOUSE,
+        KEY_MIDDLEMOUSE,
+        KEY_LASTKEY
+    };
+    
+    enum KeyboardAxis : uint16_t {
+        KEY_MOUSE_X,
+        KEY_MOUSE_Y,
+        KEY_MOUSE_SCROLL,
+        KEY_LASTAXIS
     };
     
     enum InputState {
@@ -182,16 +194,6 @@ namespace Core::UI {
     extern float CAMERA_PITCH;
     extern float CAMERA_YAW;
     
-    extern bool escape_menu_open;
-    extern bool debug_menu_open;
-
-    extern bool ismouse_left;
-    extern bool isnotmouse_left;
-    extern bool wasmouse_left;
-    extern float mouse_scroll;
-
-    extern float cur_x, cur_y;
-    
     const float CAMERA_SENSITIVITY = 0.1f;
     const float CAMERA_SPEED = 0.1f;
 
@@ -204,6 +206,8 @@ namespace Core::UI {
     double GetTime();
     void BindKeyboardKey (KeyboardKey key, KeyBinding binding);
 
+    bool PollKeyboardKey (KeyboardKey key);
+    float PollKeyboardAxis (KeyboardAxis key);
 }
 
 

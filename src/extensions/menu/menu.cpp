@@ -6,10 +6,13 @@
 
 #include <physics/physics.h>
 #include <render/render.h>
+#include <render/sprite.h>
+#include <render/material.h>
 
 #include <framework/system.h>
 
 using namespace Core::GUI;
+using namespace Core::Render;
 
 namespace Core::Ext::Menu {
     font_t FONT_SYMBOL = 0;
@@ -18,10 +21,48 @@ namespace Core::Ext::Menu {
     font_t FONT_HEADER = 0;
     
     uint32_t MENU_SYSTEM = -1;
-        
+    
+    bool escape_menu_open = false;
+    bool debug_menu_open = false;
+    
+    void ToggleMenuState() { UI::INPUT_STATE = (UI::INPUT_STATE == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT; }
+    
+    void EscapeMenuKeyboard () { 
+        ToggleMenuState();
+        escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : escape_menu_open = true;
+    }
+    
+    void DebugMenuKeyboard () {
+        ToggleMenuState();
+        escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : debug_menu_open = true;
+    }
+    
     void Init() {
         assert(System::IsInitialized(System::SYSTEM_GUI) && "GUI system needs to be initialized first!");
         assert(MENU_SYSTEM == -1u && "Menu system is already initialized!");
+        
+        Material::Make(UID("font_symbols"),     Material::TEXTURE_GLYPH)->Load();
+        Material::Make(UID("font_text"),        Material::TEXTURE_GLYPH)->Load();
+        Material::Make(UID("font_text_bold"),   Material::TEXTURE_GLYPH)->Load();
+        Material::Make(UID("font_headers"),     Material::TEXTURE_GLYPH)->Load();
+
+        Sprite* font_symbols =      Sprite::Find(UID("font_symbols"));
+        Sprite* font_text =         Sprite::Find(UID("font_text"));
+        Sprite* font_text_bold =    Sprite::Find(UID("font_text_bold"));
+        Sprite* font_headers =      Sprite::Find(UID("font_headers"));
+
+        font_symbols->Load();
+        font_text->Load();
+        font_text_bold->Load();
+        font_headers->Load();
+
+        GUI::RegisterFont(font_symbols);
+        GUI::RegisterFont(font_text);
+        GUI::RegisterFont(font_text_bold);
+        GUI::RegisterFont(font_headers);
+        
+        UI::BindKeyboardKey(UI::KEY_ESCAPE, UI::KeyBinding {.type = UI::KeyBinding::SPECIAL_OPTION, .special_option = EscapeMenuKeyboard});
+        UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, UI::KeyBinding {.type = UI::KeyBinding::SPECIAL_OPTION, .special_option = DebugMenuKeyboard});
         
         MENU_SYSTEM = System::Register("Default Menus", "MENU");
         System::SetInitialized(MENU_SYSTEM, true);
@@ -48,7 +89,7 @@ namespace Core::Ext::Menu {
             GUI::Text(fpsinfobuffer, 2); GUI::FrameBreakLine();
         }
         
-        if (!UI::debug_menu_open) return;
+        if (!debug_menu_open) return;
         
         static bool worldcell_menu_open = false;
         static bool debugdraw_menu_open = false;
@@ -140,7 +181,7 @@ namespace Core::Ext::Menu {
     }
     
     void EscapeMenu() {
-        if (!UI::escape_menu_open) return;
+        if (!escape_menu_open) return;
         
         Frame(FRAME_TOP, 20);
         

@@ -32,33 +32,20 @@ namespace Core::UI {
 
     GLFWcursor* cursors[4] = {nullptr};
 
-    bool escape_menu_open = false;
-    bool debug_menu_open = false;
+    bool keyboard_keys_values[KEY_LASTKEY] = {false};
+    float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
 
-    bool ismouse_left = false;
-    bool isnotmouse_left = false;
-    bool wasmouse_left = false;
-    float mouse_scroll = 0.0f;
-
-    float cur_x, cur_y;
-
-    double cursorx = 0.0f, cursory = 0.0f;
     float cursorchangex = 0.0f, cursorchangey = 0.0f;
     double cursorx_last = 0.0f, cursory_last = 0.0f;
     
     char* input_text = nullptr;
     uint32_t input_text_len = 0;
 
-    // these accumulate the codes from the keypress callback events 
-    uint16_t keys_down = 0;
-    uint16_t keys_up = 0;
-    uint16_t keys_pressed = 0;
-
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+    void MouseKeyCallback(GLFWwindow* window, int button, int action, int mods);
     void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
     void CharacterBackspaceCallback();
-    
-    void ToggleMenu() { INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_MENU_OPEN : STATE_DEFAULT; }
 
     std::unordered_map<KeyboardKey, KeyBinding> KeyActionBindings = {
         {KEY_W, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_FORWARD}},
@@ -70,10 +57,7 @@ namespace Core::UI {
         {KEY_E, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_ACTIVATE}},
 
         {KEY_F5, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
-        //{KEY_F4, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ DRAW_PHYSICS_DEBUG = !DRAW_PHYSICS_DEBUG; }}},
         {KEY_F9, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_FLYING : STATE_DEFAULT; }}},
-        {KEY_ESCAPE, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ ToggleMenu(); escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : escape_menu_open = true; }}},
-        {KEY_GRAVE_ACCENT, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ ToggleMenu(); escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : debug_menu_open = true; }}},
         {KEY_BACKSPACE, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ CharacterBackspaceCallback(); }}}
     };
 
@@ -125,12 +109,12 @@ namespace Core::UI {
 
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
             glViewport(0, 0, width, height);
-            //SCREEN_WIDTH = width;
-            //SCREEN_HEIGHT = height;
             Render::ScreenSize(width, height);
         });
 
         glfwSetKeyCallback(WINDOW, KeyCallback);
+        glfwSetCursorPosCallback(WINDOW, MouseCallback);
+        glfwSetMouseButtonCallback(WINDOW, MouseKeyCallback);
         glfwSetScrollCallback(WINDOW, ScrollCallback);
 
         glEnable(GL_DEPTH_TEST);
@@ -169,34 +153,22 @@ namespace Core::UI {
                 CAMERA_POSITION += CAMERA_ROTATION * DIRECTION_SIDE * CAMERA_SPEED;
         }
 
-        bool mouse_status_left =  glfwGetMouseButton(WINDOW, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-        ismouse_left = !wasmouse_left && mouse_status_left;
-        isnotmouse_left = wasmouse_left && !mouse_status_left;
-        wasmouse_left = mouse_status_left;
-
-        // generate cursor change position event
-        glfwGetCursorPos(WINDOW, &cursorx, &cursory);
-        if (INPUT_STATE == STATE_DEFAULT && (cursorx != cursorx_last || cursory != cursory_last)) {
-            Event mousse = {Event::CURSORPOS, 0xFFFF, 0, nullptr};
-            Event::Post(mousse);
-        }
-
+        
         // update camera rotation
+        // TODO: move this into somewhere else
         if (INPUT_STATE != STATE_MENU_OPEN) {
-            cursorchangex = cursorx - cursorx_last;
-            cursorchangey = cursory - cursory_last;
-            cursorx_last = cursorx;
-            cursory_last = cursory;
+            cursorchangex = keyboard_axis_values[KEY_MOUSE_X] - cursorx_last;
+            cursorchangey = keyboard_axis_values[KEY_MOUSE_Y] - cursory_last;
+            cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
+            cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
 
             CAMERA_YAW += cursorchangex * CAMERA_SENSITIVITY;
             CAMERA_PITCH += cursorchangey * CAMERA_SENSITIVITY;
             CAMERA_PITCH = CAMERA_PITCH > 90.0f ? 90.0f : CAMERA_PITCH < -90.0f ? -90.0f : CAMERA_PITCH;
         }
 
+        // why is this in here???
         CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
-
-        cur_x = cursorx;
-        cur_y = cursory;
 
         static InputState input_state_last = STATE_DEFAULT;
         if (input_state_last != STATE_MENU_OPEN && INPUT_STATE == STATE_MENU_OPEN) {
@@ -219,6 +191,12 @@ namespace Core::UI {
         } else if (binding.type == KeyBinding::SPECIAL_OPTION && action == GLFW_PRESS) {
             binding.special_option();
         }
+        
+        if (action == GLFW_PRESS) {
+            keyboard_keys_values[glfw_key_to_keyboardkey(key)] = true;
+        } else if (action == GLFW_RELEASE) {
+            keyboard_keys_values[glfw_key_to_keyboardkey(key)] = false;
+        }
     }
     
     void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
@@ -237,8 +215,24 @@ namespace Core::UI {
         }
     }
     
+    /// Callback for mouse pointer/cursor movement.
+    void MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+        keyboard_axis_values[KEY_MOUSE_X] = xpos;
+        keyboard_axis_values[KEY_MOUSE_Y] = ypos;
+        
+        if (INPUT_STATE == STATE_DEFAULT) {
+            Event::Post({Event::CURSORPOS, 0xFFFF, 0, nullptr});
+        }
+    }
+    
+    /// Callback for mouse button presses/clicks.
+    void MouseKeyCallback(GLFWwindow* window, int button, int action, int mods) {
+        KeyCallback(window, button, button, action, mods);
+    }
+    
+    /// Callback for mouse scrollwheel scrolling.
     void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-        mouse_scroll = yoffset;
+        keyboard_axis_values[KEY_MOUSE_SCROLL] = yoffset;
     }
 
     
@@ -252,8 +246,9 @@ namespace Core::UI {
     }
 
     void EndFrame(){
-
-        mouse_scroll = 0.0f;
+        keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
+        
+        TICK++;
         
         glfwSwapBuffers(WINDOW);
         glfwPollEvents();
@@ -272,16 +267,25 @@ namespace Core::UI {
             glfwSetCursor(WINDOW, cursors[cursor]);
         }
     }
-
-    // TODO: move this to GUI
-    void SetDebugText(const char* text, const glm::vec3& location, const glm::vec3& color){
-        //glm::vec3 screen_pos = glm::project(location, Render::matrices.view, Render::matrices.projection, glm::vec4 (0.0f, 0.0f, 640.0f, 480.0f));
-        //Core::UI::SetText(text, screen_pos.x-100.0f, 480.0f + 25.0f - screen_pos.y, 0.7f, 200.0f, 1, 1, 1, color);
+    
+    /// Checks the state of a key for the current frame.
+    /// @return True, if key is pressed, false otherwise.
+    bool PollKeyboardKey (KeyboardKey key) {
+        return keyboard_keys_values[key];
     }
     
+    /// Checks the state of an axis for the current frame.
+    /// @return Value of the axis.
+    float PollKeyboardAxis (KeyboardAxis key) {
+        return keyboard_axis_values[key];
+    }
     
+    /// Maps a glfw keycode to a KeyboardKey.
     KeyboardKey glfw_key_to_keyboardkey (int keycode) {
         switch (keycode) {
+            case GLFW_MOUSE_BUTTON_LEFT:    return KEY_LEFTMOUSE;
+            case GLFW_MOUSE_BUTTON_RIGHT:   return KEY_RIGHTMOUSE;
+            case GLFW_MOUSE_BUTTON_MIDDLE:  return KEY_MIDDLEMOUSE;
             case GLFW_KEY_SPACE:            return KEY_SPACE;
             case GLFW_KEY_APOSTROPHE:       return KEY_APOSTROPHE;
             case GLFW_KEY_COMMA:            return KEY_COMMA;

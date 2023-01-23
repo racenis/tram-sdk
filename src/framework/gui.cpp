@@ -30,6 +30,13 @@ namespace Core::GUI {
     
     UI::CursorType cursor;
     
+    float cursor_x = 0.0f;
+    float cursor_y = 0.0f;
+    bool is_mouse_left = false;
+    bool is_not_mouse_left = false;
+    bool was_mouse_left = false;
+    
+    
     Stack<FrameObject> FrameStack ("GUI Frame stack", 100);
     
     char* current_text = nullptr;
@@ -217,7 +224,18 @@ namespace Core::GUI {
         // reset the frames
         FrameStack.Reset();
         *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT, 0.0f, 0.0f};
+        
+        // reset the cursor
         cursor = UI::CURSOR_DEFAULT;
+        
+        // poll mouse status
+        cursor_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
+        cursor_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
+        
+        bool mouse_status_left = UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
+        is_mouse_left = !was_mouse_left && mouse_status_left;
+        is_not_mouse_left = was_mouse_left && !mouse_status_left;
+        was_mouse_left = mouse_status_left;
     }
     
     
@@ -231,14 +249,14 @@ namespace Core::GUI {
         static char* last_text = current_text;
         if (last_text != current_text) {
             UI::SetTextInput(current_text, current_text_len);
-        } else if (current_text && UI::ismouse_left) { 
+        } else if (current_text && is_mouse_left) { 
             current_text = nullptr;
             UI::SetTextInput(current_text, current_text_len);
         } last_text = current_text;
         
         // reset dropdowns on click
         static char const** last_dropdown = nullptr;
-        if (UI::ismouse_left && last_dropdown == current_dropdown) current_dropdown = nullptr;
+        if (is_mouse_left && last_dropdown == current_dropdown) current_dropdown = nullptr;
         last_dropdown = current_dropdown;
     }
     
@@ -286,7 +304,7 @@ namespace Core::GUI {
     inline bool IsCursored (float x, float y, float w, float h) {
         float n_x = FrameStack.top().offset_x + x;
         float n_y = FrameStack.top().offset_y + y;
-        return UI::cur_x > n_x && UI::cur_y > n_y && UI::cur_x < n_x + w && UI::cur_y < n_y + h;
+        return cursor_x > n_x && cursor_y > n_y && cursor_x < n_x + w && cursor_y < n_y + h;
     }
     
     void ScrollBar(float& scroll, float& height) {
@@ -315,30 +333,30 @@ namespace Core::GUI {
         if (height > f.height) {
             if (IsCursored(x, y, tb.width, tb.height)) {
                 cursor = UI::CURSOR_CLICK;
-                if (UI::wasmouse_left) {
+                if (was_mouse_left) {
                     Glyph(BUTTON_UP + PRESSED, x, y);
                 } else {
                     Glyph(BUTTON_UP + SELECTED, x, y);
                 }
-                if (UI::isnotmouse_left) scroll -= 8.0f;
+                if (is_not_mouse_left) scroll -= 8.0f;
             } else {
                 Glyph(BUTTON_UP, x, y);
             }
             
             if (IsCursored(x, y+h-bb.height, bb.width, bb.height)) {
                 cursor = UI::CURSOR_CLICK;
-                if (UI::wasmouse_left) {
+                if (was_mouse_left) {
                     Glyph(BUTTON_DOWN + PRESSED, x, y+h-bb.height);
                 } else {
                     Glyph(BUTTON_DOWN + SELECTED, x, y+h-bb.height);
                 }
-                if (UI::isnotmouse_left) scroll += 8.0f;
+                if (is_not_mouse_left) scroll += 8.0f;
             } else {
                 Glyph(BUTTON_DOWN, x, y+h-bb.height);
             }
             
-            if (IsCursored(0.0f, 0.0f, f.width, f.height) && UI::mouse_scroll) {
-                scroll += UI::mouse_scroll * -8.0f;
+            if (IsCursored(0.0f, 0.0f, f.width, f.height) && UI::PollKeyboardAxis(UI::KEY_MOUSE_SCROLL)) {
+                scroll += UI::PollKeyboardAxis(UI::KEY_MOUSE_SCROLL) * -8.0f;
             }
             
             if (scroll < 0.0f) scroll = 0.0f;
@@ -396,13 +414,13 @@ namespace Core::GUI {
         if (IsCursored(x, y, f.width, f.height)) {
             cursor = UI::CURSOR_CLICK;
             
-            if (UI::wasmouse_left){
+            if (was_mouse_left){
                 Glyph(glyph + PRESSED, x, y);
             } else {
                 Glyph(glyph + SELECTED, x, y);
             }
             
-            isclick = UI::isnotmouse_left;
+            isclick = is_not_mouse_left;
         } else {
             Glyph(glyph, x, y);
         }
@@ -420,7 +438,7 @@ namespace Core::GUI {
         if (IsCursored(x, y, f.width, f.height)) {
             cursor = UI::CURSOR_CLICK;
             
-            if (UI::isnotmouse_left) check = !check;
+            if (is_not_mouse_left) check = !check;
         }
         
         if (check) {
@@ -441,7 +459,7 @@ namespace Core::GUI {
         if (IsCursored(x, y, f.width, f.height)) {
             cursor = UI::CURSOR_CLICK;
             
-            if (UI::isnotmouse_left) val = this_val;
+            if (is_not_mouse_left) val = this_val;
         }
         
         if (val == this_val) {
@@ -544,13 +562,13 @@ namespace Core::GUI {
         if (IsCursored(x, y, total_w, l.height)) {
             cursor = UI::CURSOR_CLICK;
             
-            if (UI::wasmouse_left){
+            if (was_mouse_left){
                 mode = PRESSED;
             } else {
                 mode = SELECTED;
             }
             
-            isclick = UI::isnotmouse_left;
+            isclick = is_not_mouse_left;
         }
         
         Glyph(BUTTON_TEXT + LEFT + mode, x, y);
@@ -588,7 +606,7 @@ namespace Core::GUI {
         if (IsCursored(x, y, total_w, l.height)) {
             cursor = UI::CURSOR_CLICK;
             
-            if (UI::ismouse_left){
+            if (is_mouse_left){
                 current_text = text;
                 current_text_len = max_len;
             }
@@ -627,7 +645,7 @@ namespace Core::GUI {
         if (IsCursored(x, y, total_w, r.height)) {
             cursor = UI::CURSOR_CLICK;
             
-            if (UI::ismouse_left) {
+            if (is_mouse_left) {
                 current_dropdown = texts;
             }
             
@@ -678,7 +696,7 @@ namespace Core::GUI {
                 GlyphText(texts[i], text_end, 1, x+5.0f , b_y - 4.0f + i*16.0f, pred_sp < total_w ? SPACE_WIDTH : total_w - pred_sp / text_sp);
                 if (IsCursored(x, b_y + i*16.0f, total_w, 16.0f)) {
                     cursor = UI::CURSOR_CLICK;
-                    if (UI::ismouse_left) selected = i;
+                    if (is_mouse_left) selected = i;
                 }
             }
             
