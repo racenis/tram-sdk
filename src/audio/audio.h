@@ -12,12 +12,12 @@
 namespace Core::Audio {
     typedef uint32_t audiosource_t;
     
-    const size_t SOUND_BUFFERS_PER_SOUND = 10;
+    const size_t SOUND_BUFFERS_PER_SOUND = 30;
     
     class Sound : public Resource {
     public:
         int32_t sound_buffer_count = 0;
-        uint32_t sound_buffers[SOUND_BUFFERS_PER_SOUND] = {0};
+        uint32_t sound_buffers[SOUND_BUFFERS_PER_SOUND] = {0}; // honestly, I think that this should be heap-allocated
         int32_t channels = 0;
         int32_t sample_rate = 0;
         int32_t sound_length = 0;

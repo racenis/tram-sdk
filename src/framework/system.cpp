@@ -6,6 +6,7 @@ namespace Core::System {
         char const* name;
         char const* short_name;
         bool is_initialized;
+        bool is_updated;
     };
 
     std::vector<SystemInfo> ALL_SYSTEMS;
@@ -25,17 +26,17 @@ namespace Core::System {
         return last_issued_ID++;
     }
 
-    /// Retrieves the full name of the system.
+    /// Retrieves the full name of a system.
     char const* GetName (uint32_t system) {
         return ALL_SYSTEMS[system].name;
     }
 
-    /// Retrieves the short name of the system.
+    /// Retrieves the short name of a system.
     char const* GetShortName (uint32_t system) {
         return ALL_SYSTEMS[system].short_name;
     }
     
-    /// Sets the initialization status of the system.
+    /// Sets the initialization status of a system.
     void SetInitialized (uint32_t system, bool is_initialized) {
         ALL_SYSTEMS[system].is_initialized = is_initialized;
     }
@@ -43,5 +44,20 @@ namespace Core::System {
     /// Checks if a system is initialized.
     bool IsInitialized (uint32_t system) {
         return ALL_SYSTEMS[system].is_initialized;
+    }
+    
+    /// Sets the update status of a system.
+    void SetUpdated (uint32_t system, bool is_updated) {
+        ALL_SYSTEMS[system].is_updated = is_updated;
+    }
+    
+    /// Checks if a system is updated.
+    bool IsUpdated (uint32_t system) {
+        return ALL_SYSTEMS[system].is_updated;
+    }
+    
+    /// Returns the total count of registered systems.
+    system_t GetSystemCount () {
+        return ALL_SYSTEMS.size();
     }
 }

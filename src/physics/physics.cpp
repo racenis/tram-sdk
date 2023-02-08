@@ -29,18 +29,6 @@ namespace Core::Physics {
         USERINDEX_TRIGGERCOMPONENT = 2,
     };
 
-    CollisionModel* CollisionModel::Find(name_t modelName){
-        std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName.key);
-        CollisionModel* model;
-        if(ff == List.end()){
-            model = new CollisionModel(modelName);
-            List[modelName.key] = model;
-        } else {
-            model = ff->second;
-        }
-        return model;
-    }
-
     void StepPhysics(float time){
         dynamicsWorld->stepSimulation(time, 1);
         if (DRAW_PHYSICS_DEBUG) dynamicsWorld->debugDrawWorld();
@@ -141,7 +129,7 @@ namespace Core::Physics {
     
 
     void PathAction::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTimeStep){
-            physcomp->UpdatePath();
+        //physcomp->UpdatePath();
     }
 
     PhysicsComponent* Raycast(const glm::vec3& from, const glm::vec3& to){
@@ -162,9 +150,21 @@ namespace Core::Physics {
 
 
 
-
-
-
+    CollisionShape CollisionShape::Sphere (float radius) {
+        return {SHAPE_SPHERE, vec3(radius, 0.0f, 0.0f)};
+    }
+    
+    CollisionShape CollisionShape::Cylinder (float radius, float height) {
+        return {SHAPE_CYLINDER, vec3(radius, height, radius)};
+    }
+    
+    CollisionShape CollisionShape::Capsule (float radius, float height) {
+        return {SHAPE_CAPSULE, vec3(radius, height, 0.0f)};
+    }
+    
+    CollisionShape CollisionShape::Box (vec3 dimensions) {
+        return {SHAPE_BOX, dimensions};
+    }
 
 }
 
@@ -179,10 +179,10 @@ namespace Core {
             shape = (btCollisionShape*)model->GetPtr();
 
 
-        if(bone == 0)
-            motionState = new EntMotionState(parent, off_set);
-            else
-                motionState = new ArmMotionState(bone, armature, off_set, parent, this);
+        //if(bone == 0)
+        motionState = new EntMotionState(parent, off_set);
+        //else
+        //    motionState = new ArmMotionState(bone, armature, off_set, parent, this);
 
         btScalar bmass = mass;
         btVector3 inertia(0.0f, 0.0f, 0.0f);
@@ -202,19 +202,16 @@ namespace Core {
         //return true;
     }
     PhysicsComponent::~PhysicsComponent(){
-        if (pathConstraint) dynamicsWorld->removeConstraint(pathConstraint);
-        if (glueConstraint) dynamicsWorld->removeConstraint(glueConstraint);
-        if (hingeConstraint) dynamicsWorld->removeConstraint(hingeConstraint);
-
         dynamicsWorld->removeRigidBody(rigidBody);
         delete rigidBody;
         delete motionState;
     };
 
 
-void PhysicsComponent::SetShapeCapsule(float thickness, float length){
+    void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         shape = new btCapsuleShape(thickness, length); // this will leak the memory, but it's ok
     };
+    
     void PhysicsComponent::GetAABB(glm::vec3& aabb_min, glm::vec3& aabb_max){
         btVector3 b_min, b_max;
         rigidBody->getAabb(b_min, b_max);
@@ -227,12 +224,15 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         aabb_max.y = b_max.getY();
         aabb_max.z = b_max.getZ();
     }
-    void PhysicsComponent::SetMass(float nMass){mass = nMass;};
+    
+    void PhysicsComponent::SetMass(float nMass){mass = nMass;}
+    
     void PhysicsComponent::Push (const glm::vec3& direction){
         if(rigidBody == nullptr) return;
         rigidBody->activate();
         rigidBody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
-    };
+    }
+    
     void PhysicsComponent::PushLocal (const glm::vec3& direction){
         if(rigidBody == nullptr) return;
 
@@ -244,79 +244,54 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
 
         rigidBody->activate();
         rigidBody->applyCentralImpulse(btVector3(p_dir.x, p_dir.y, p_dir.z));
-    };
-    void PhysicsComponent::PushRotate(const glm::vec3& direction){
-        rigidBody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
     }
+    
     void PhysicsComponent::SetCollisionMask(uint32_t flags){
         collisionMask = flags;
         if(is_ready){
             dynamicsWorld->removeRigidBody(rigidBody);
             dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
         }
-    };
+    }
+    
     void PhysicsComponent::SetCollisionGroup(uint32_t flags){
         collisionGroup = flags;
         if(is_ready){
             dynamicsWorld->removeRigidBody(rigidBody);
             dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
         }
-    };
-    void PhysicsComponent::PutToSleep(){
-        rigidBody->setActivationState(0);
     }
-    void PhysicsComponent::SetStartAsleep(){
-        should_asleep = true;
+    
+
+    void PhysicsComponent::SetSleep(bool sleep) {
+        if (sleep) {
+            if (rigidBody) rigidBody->setActivationState(0);
+            should_asleep = true;
+        } else {
+            if (rigidBody) rigidBody->activate();
+            should_asleep = false;
+        }
     }
+    
+    
     void PhysicsComponent::DisableDebugDrawing(){
         rigidBody->setCollisionFlags(btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
     }
-    void PhysicsComponent::SetHingeConstraint(PhysicsComponent* other_component, glm::vec3 axis, glm::vec3 point_this, glm::vec3 point_other){
-        btVector3 b_axis(axis.x, axis.y, axis.z);
-        btVector3 b_this(point_this.x, point_this.y, point_this.z);
-        btVector3 b_other(point_other.x, point_other.y, point_other.z);
-
-        hingeConstraint = new btHingeConstraint(*other_component->rigidBody, *rigidBody, b_other, b_this, b_axis, b_axis);
-        dynamicsWorld->addConstraint(hingeConstraint);
-    };
-    void PhysicsComponent::UnsetHingeConstraint(){
-        dynamicsWorld->removeConstraint(hingeConstraint);
-        delete hingeConstraint;
-        hingeConstraint = nullptr;
-    }
-    void PhysicsComponent::SetHingeAxis(const glm::vec3& axis){
-        btVector3 aaa(axis.x, axis.y, axis.z);
-        hingeConstraint->setAxis(aaa);
-    }
-    
-    void PhysicsComponent::SetRotation(const glm::quat& rotation) {
-        assert(motionState);
-        UpdateRotation(rotation);
-        btTransform trans = rigidBody->getWorldTransform();
-        motionState->setWorldTransform(trans);
-    }
-    
-    void PhysicsComponent::SetLocation(const glm::vec3& location) {
-        assert(motionState);
-        UpdateLocation(location);
-        btTransform trans = rigidBody->getWorldTransform();
-        motionState->setWorldTransform(trans);
-    }
-    
-    void PhysicsComponent::UpdateRotation(const glm::quat& rotation) {
-        assert(rigidBody);
-        btTransform trans = rigidBody->getWorldTransform();
-        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-        rigidBody->setWorldTransform(trans);
-    }
-    
-    void PhysicsComponent::UpdateLocation(const glm::vec3& location) {
+  
+    void PhysicsComponent::SetLocation (const glm::vec3& location) {
         assert(rigidBody);
         btTransform trans = rigidBody->getWorldTransform();
         trans.setOrigin(btVector3 (location.x, location.y, location.z));
         rigidBody->setWorldTransform(trans);
     }
     
+    void PhysicsComponent::SetRotation (const glm::quat& rotation) {
+        assert(rigidBody);
+        btTransform trans = rigidBody->getWorldTransform();
+        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+        rigidBody->setWorldTransform(trans);
+    }
+        
     
     void PhysicsComponent::SetLocalRotation(const glm::quat& rotation){
         glm::quat parent_rotation;
@@ -327,202 +302,48 @@ void PhysicsComponent::SetShapeCapsule(float thickness, float length){
         btTransform trans = rigidBody->getWorldTransform();
         trans.setRotation(btQuaternion (final_rotation.x, final_rotation.y, final_rotation.z, final_rotation.w));
         rigidBody->setWorldTransform(trans);
-    }
-    void PhysicsComponent::SetOffset(const glm::vec3& offset){
-        off_set = offset;
-    };
-    void PhysicsComponent::EnableRotation(){
+    }    
+    
+    void PhysicsComponent::EnableRotation () {
         rigidBody->setAngularFactor(1.0f);
-    };
-    void PhysicsComponent::DisableRotation(){
+    }
+    
+    void PhysicsComponent::DisableRotation () {
         rigidBody->setAngularFactor(0.0f);
-    };
-    void PhysicsComponent::EnableMovement(){
+    }
+    
+    void PhysicsComponent::EnableMovement () {
         rigidBody->setLinearFactor(btVector3(1.0f, 1.0f, 1.0f));
-    };
-    void PhysicsComponent::DisableMovement(){
+    }
+    
+    void PhysicsComponent::DisableMovement () {
         rigidBody->setLinearFactor(btVector3(0.0f, 0.0f, 0.0f));
-    };
-    void PhysicsComponent::SetFriction(float f){
-        if(rigidBody != nullptr) rigidBody->setFriction(f);
-    };
-    void PhysicsComponent::SetDamping(float f){
-        if(rigidBody != nullptr) rigidBody->setDamping(f, 0.0f);
-    };
-    void PhysicsComponent::SetRestitution(float f){
-        if(rigidBody != nullptr) rigidBody->setRestitution(f);
-    };
-    void PhysicsComponent::SetVelocity(glm::vec3& v){
-        if(rigidBody == nullptr) return;
-        rigidBody->activate();
-        rigidBody->setLinearVelocity(btVector3(v.x, v.y, v.z));
     }
-    void PhysicsComponent::SetLinearFactor(float f){
-        rigidBody->setLinearFactor(btVector3(f, f, f));
-    }
-    void PhysicsComponent::DisableActivation(){
-        rigidBody->setActivationState(DISABLE_DEACTIVATION);
-    }
-    void PhysicsComponent::EnableActivation(){
-        rigidBody->setActivationState(WANTS_DEACTIVATION);
-    }
-    float PhysicsComponent::GetVelocity(){
-        if(rigidBody == nullptr) return 0.0f;
-        return rigidBody->getLinearVelocity().length();
-    }
-    void PhysicsComponent::SetPath(){
-        /*
-        btTransform trans = rigidBody->getWorldTransform();
-        btVector3 location = trans.getOrigin();
 
-
-        // TODO: change this to a better search
-
-        glm::vec3 current_loc = glm::vec3(location.getX(), location.getY(), location.getZ());
-        next_path = pathNodePool.begin();
-
-        for (PathNode* i = pathNodePool.begin(); i < pathNodePool.end(); i++){
-            if(glm::distance(i->coords, current_loc) < glm::distance(next_path->coords,  current_loc))
-                next_path = i;
+    
+    void PhysicsComponent::SetActivation (bool activation) {
+        if (activation) {
+            rigidBody->setActivationState(DISABLE_DEACTIVATION);
+        } else {
+            rigidBody->setActivationState(WANTS_DEACTIVATION);
         }
-
-        prev_path = next_path->next[0];
-
-
-        glm::vec3 loc = current_loc;
-        ProjectLine(loc, next_path->coords, prev_path->coords);
-
-        loc.y = loc.y + 0.5f;
-
-        UpdatePathRotate(loc);
-
-
-
-        action = new PathAction(this);
-        dynamicsWorld->addAction(action);
-*/
-
     }
-    void PhysicsComponent::UpdatePath(){
-        /*
-        if(prev_path != nullptr && next_path != nullptr){
-            btTransform trans = rigidBody->getWorldTransform();
-            btVector3 location = trans.getOrigin();
-            glm::vec3 loc = glm::vec3(location.getX(), location.getY(), location.getZ());
-            glm::vec3 colorvec = Render::COLOR_CYAN;
-
-            bool re_rot = false;
-
-            if(glm::dot(loc - prev_path->coords, next_path->coords - prev_path->coords) < 0){
-                PathNode* path_candidate = nullptr;
-
-                for (size_t i = 0; i < 3; i++){
-                    if(!prev_path->next[i] || prev_path->next[i] == next_path) continue;
-                    path_candidate = prev_path->next[i];
-                    if(prev_path->next[i]->type == path_pref) break;
-                }
-
-                if(path_candidate){
-                    next_path = prev_path;
-                    prev_path = path_candidate;
-                    loc = next_path->coords + glm::vec3(0.0f, 0.5f, 0.0f);
-                    re_rot = true;
-                }
-
-
-            } else if (glm::dot(loc - next_path->coords, prev_path->coords - next_path->coords) < 0){
-                PathNode* path_candidate = nullptr;
-
-                for (size_t i = 0; i < 3; i++){
-                    if(!next_path->next[i] || next_path->next[i] == prev_path) continue;
-                    path_candidate = next_path->next[i];
-                    if(next_path->next[i]->type == path_pref) break;
-                }
-
-                if(path_candidate){
-                    prev_path = next_path;
-                    next_path = path_candidate;
-                    loc = prev_path->coords + glm::vec3(0.0f, 0.5f, 0.0f);
-                    re_rot = true;
-                }
-            }
-
-            if(re_rot){
-                dynamicsWorld->removeConstraint(pathConstraint);
-                delete pathConstraint;
-
-                UpdatePathRotate(loc);
-            }
-
-
-            if(Render::DRAW_PATH_DEBUG){
-                Core::Render::AddLine(glm::vec3(location.getX(), location.getY() + 0.25f, location.getZ()), glm::vec3(location.getX(), location.getY(), location.getZ()), colorvec);
-                Core::Render::AddLine(glm::vec3(location.getX(), location.getY() + 0.25f, location.getZ()), prev_path->coords, colorvec);
-                Core::Render::AddLine(glm::vec3(location.getX(), location.getY() + 0.25f, location.getZ()), next_path->coords, colorvec);
-
-                Core::Render::AddLine(p_start, p_found, Render::COLOR_WHITE);
-                Core::Render::AddLineMarker(p_start, Render::COLOR_RED);
-                Core::Render::AddLineMarker(p_found, Render::COLOR_GREEN);
-            }
-        }*/
+        
+    void PhysicsComponent::SetVelocity (const vec3& velocity){
+        if (velocity.x != 0.0f &&
+            velocity.y != 0.0f &&
+            velocity.z != 0.0f
+        ) {
+            rigidBody->activate();
+        }
+        
+        rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
     }
 
-    void PhysicsComponent::UpdatePathRotate(const glm::vec3& loc){
-        /*
-        btTransform trans;
-        trans = rigidBody->getWorldTransform();
-
-        glm::quat rot;
-        glm::quat new_rot;
-        QuatLookAt(rot, glm::vec3(0.0f, 0.0f, 1.0f), next_path->coords - prev_path->coords);
-        QuatLookAt(new_rot, rot * glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        new_rot = new_rot * rot;
-
-        trans.setRotation(btQuaternion(new_rot.x, new_rot.y, new_rot.z, new_rot.w));
-        trans.setOrigin(btVector3(loc.x, loc.y, loc.z));
-
-        rigidBody->setWorldTransform(trans);
-
-
-        btTransform frameInB;
-        frameInB.setIdentity();
-        frameInB.setOrigin(btVector3(0.0f, 0.0f, 0.0f));
-        frameInB.setRotation(btQuaternion(0.0f, 0.0f, 0.0f));
-        pathConstraint = new btGeneric6DofConstraint(*rigidBody, frameInB, false);
-        pathConstraint->setAngularLowerLimit(btVector3(0.0f, 0.0f, 0.0f));
-        pathConstraint->setAngularUpperLimit(btVector3(0.0f, 0.0f, 0.0f));
-        pathConstraint->setLinearLowerLimit(btVector3(0.0f, 0.0f, 1.0f));
-        pathConstraint->setLinearUpperLimit(btVector3(0.0f, 0.0f, 0.0f));
-        dynamicsWorld->addConstraint(pathConstraint);
-         * */
+    vec3 PhysicsComponent::GetVelocity () {
+        auto velocity = rigidBody->getLinearVelocity();
+        return vec3 (velocity.getX(), velocity.getY(), velocity.getZ());
     }
-
-    void PhysicsComponent::Glue(PhysicsComponent* comp){
-        btTransform trans1 = comp->rigidBody->getWorldTransform();
-        btTransform trans2 = rigidBody->getWorldTransform();
-        btVector3 origin1 = (trans1.inverse() * trans2).getOrigin();
-        btVector3 origin2 = btVector3(0.0f, 0.0f, 0.0f);
-
-        glueConstraint = new btPoint2PointConstraint(*(comp->rigidBody), *rigidBody, origin1, origin2);
-
-        dynamicsWorld->addConstraint(glueConstraint);
-    }
-
-    void PhysicsComponent::Unglue(){
-        dynamicsWorld->removeConstraint(glueConstraint);
-
-        delete glueConstraint;
-        glueConstraint = nullptr;
-    }
-
-
-
-
-
-
-
-
 
     
     void TriggerComponent::Start(){

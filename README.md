@@ -42,7 +42,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 #### Version 0.0.4
-- Yeet debug menus from ui.h
+- ~~Yeet debug menus from ui.h~~
+- Put TIME etc. in core.h to functions
 - Switch out all of the std::cout's to Log's
 - Finish the Stats system
 - Switch namespace Core to tram
@@ -50,20 +51,20 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - ~~Make system reject register above 64 systems~~ ?? why
 - Finish file writer
 - ~~Rewrite render sort key generator to use bitfields~~ hmm no thanks
-- Add input polling functions to UI
+- ~~Add input polling functions to UI~~
 - Render/Armature component linking
-- Add a severity_t to logging and also a system_t
+- ~~Add a severity_t to logging and also a system_t~~
 - Switch the AudioComponent to using audio/source.h
 - Rename location to position everywhere
 - Add uninit functions to all systems.
 	- Add checks for them also.
 	- Uniniting Core checks if everything else is also uninited
-- Make a makefile generator.
+- ~~Make a makefile generator.~~
 - Check the documentation of OpenAL for things that could be added to the audio abstraction layer.
 - Figure out better serialization.
 - Think of new glyphs.
 	- Draw new glyphs.
-- Add a global frame counter.
+- ~~Add a global frame counter.~~
 - Add some more asserts to the GUI system.
 - Figure out how to do resources that are generated, not loaded.
 - Finish the file abstraction.
@@ -73,7 +74,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 #### Version 0.0.5
 - ~~Sprites~~
 	- ~~Add option to load frames from disk~~
-- ~~Fonts/glyphs ~~
+- ~~Fonts/glyphs~~
 	- ~~Add an option to register custom fonts~~
 	- ~~Add a typedef font_t~~
 	- ~~Function font_t RegisterFont (type regular/msdf, font_t)~~

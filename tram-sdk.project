@@ -89,6 +89,10 @@
       <File Name="src/platform/file.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="physics">
+      <VirtualDirectory Name="bullet">
+        <File Name="src/physics/bullet/bullet.cpp"/>
+        <File Name="src/physics/bullet/bullet.h"/>
+      </VirtualDirectory>
       <File Name="src/physics/physics.h"/>
       <File Name="src/physics/physics.cpp"/>
       <File Name="src/physics/collisionmodel.cpp"/>
@@ -230,4 +234,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -7,6 +7,7 @@
 #include <cstdint>
 
 namespace Core::System {
+    typedef uint32_t system_t;
     enum System : uint32_t {
         SYSTEM_CORE,
         SYSTEM_UI,
@@ -22,8 +23,11 @@ namespace Core::System {
     uint32_t Register (char const* name, char const* short_name);
     void SetInitialized (uint32_t system, bool is_initialized);
     bool IsInitialized (uint32_t system);
+    void SetUpdated (uint32_t system, bool is_updated);
+    bool IsUpdated (uint32_t system);
     char const* GetName (uint32_t system);
     char const* GetShortName (uint32_t system);
+    system_t GetSystemCount ();
 }
 
 #endif // FRAMEWORK_SYSTEM_H

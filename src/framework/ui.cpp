@@ -137,8 +137,6 @@ namespace Core::UI {
     }
 
     void Update(){
-        TIME = glfwGetTime();
-
         if(glfwGetKey(WINDOW, GLFW_KEY_F1) == GLFW_PRESS) glfwSetWindowShouldClose(WINDOW, true);
         EXIT = glfwWindowShouldClose(WINDOW);
 
@@ -247,8 +245,6 @@ namespace Core::UI {
 
     void EndFrame(){
         keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
-        
-        TICK++;
         
         glfwSwapBuffers(WINDOW);
         glfwPollEvents();

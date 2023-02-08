@@ -23,7 +23,7 @@ void Player::Load(){
     physicscomponent->SetShapeCapsule(0.5f, 0.85f);
     physicscomponent->SetMass(85.0f);
     physicscomponent->SetCollisionGroup(Physics::COLL_PLAYER);
-    physicscomponent->SetStartAsleep();
+    physicscomponent->SetSleep(true);
 
     controllercomponent = PoolProxy<ControllerComponent>::New();
     controllercomponent->SetPhysicsComponent(physicscomponent);
@@ -63,13 +63,13 @@ void Player::SetParameters() {
     if (!isloaded) return;
     UpdateParameters();
     physicscomponent->SetLocation(location);
-    physicscomponent->UpdateRotation(rotation);
+    physicscomponent->SetRotation(rotation);
     // actually we should add a SetUpdate() to the player component and call that
     // TODO: fix
 }
 
 void Player::MessageHandler(Message& msg){
-    if(msg.type == Message::GET_IN){
+    /*if(msg.type == Message::GET_IN){
         plomp->IgnoreMove();
         plomp->SetVehicle(msg.senderID);
         physicscomponent->Glue((PhysicsComponent*)msg.data);
@@ -84,6 +84,6 @@ void Player::MessageHandler(Message& msg){
         physicscomponent->SetCollisionGroup(Physics::COLL_PLAYER);
         // TODO: add some sort of freeze/keep upright method to the physics component
         //physicscomponent->DisableRotation();
-    }
+    }*/
 }
 }

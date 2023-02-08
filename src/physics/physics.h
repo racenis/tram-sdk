@@ -10,6 +10,7 @@
 
 #include <unordered_map>
 
+// TODO: check which ones of these can be yeeted
 class btCollisionShape;
 class btMotionState;
 class btRigidBody;
@@ -20,6 +21,7 @@ class btActionInterface;
 class btRaycastVehicle;
 class btCompoundShape;
 class btCollisionObject;
+class btConvexShape;
 
 namespace Core {
     class PhysicsComponent;
@@ -32,7 +34,7 @@ namespace Core::Physics {
     
     extern bool DRAW_PHYSICS_DEBUG;
 
-    enum CollisionGroup { // TODO: specify the underlying type for this enum (i think it's uint32_t)
+    enum CollisionGroup : uint32_t {
         COLL_WORLDOBJ = 2,   /// StaticWorldObject's, etc.
         COLL_DYNAMICOBJ = 4, /// Crates
         COLL_VEHICLE = 8,    /// Trams & busses
@@ -41,8 +43,15 @@ namespace Core::Physics {
         COLL_BINGUS = 64,    /// Binguses
         COLL_FLOPPA = 128    /// Floppas
     };
+    
+    enum Shape : uint32_t {
+        SHAPE_SPHERE,
+        SHAPE_CYLINDER,
+        SHAPE_CAPSULE,
+        SHAPE_BOX
+    };
 
-    class CollisionModel : public Resource{
+    class CollisionModel : public Resource {
     public:
         CollisionModel(){}
         CollisionModel(name_t mName){
@@ -56,12 +65,19 @@ namespace Core::Physics {
 
         static CollisionModel* Find(name_t modelName);
     protected:
-        // TODO: change this to the actual type
-        btCompoundShape* model = nullptr;  /// Pointer to the physics library's collision shape.
+        btCompoundShape* model = nullptr;
         static std::unordered_map<uint64_t, CollisionModel*> List;
     };
 
-
+    struct CollisionShape {
+        static CollisionShape Sphere (float radius);
+        static CollisionShape Cylinder (float radius, float height);
+        static CollisionShape Capsule (float radius, float height);
+        static CollisionShape Box (vec3 dimensions);
+        
+        Shape type;
+        vec3 dimensions;
+    };
 
     PhysicsComponent* Raycast(const glm::vec3& from, const glm::vec3& to);
 

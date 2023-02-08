@@ -17,6 +17,7 @@
 #include <components/audiocomponent.h>
 #include <unordered_map>
 
+template <> Core::Pool<Core::Audio::Sound> Core::PoolProxy<Core::Audio::Sound>::pool("sound pool", 100, false);
 namespace Core::Audio {
     struct SoundSource {
         uint32_t source_name;
@@ -94,13 +95,13 @@ namespace Core::Audio {
             alGenBuffers(sound_buffer_count, sound_buffers);
 
             int32_t format;
-            if(channels == 1)
-                format = AL_FORMAT_MONO16;
-            else if(channels == 2)
-                format = AL_FORMAT_STEREO16;
-            else
-                assert(false && "Invalid channel format");
             
+            switch (channels) {
+                case 1: format = AL_FORMAT_MONO16;      break;
+                case 2: format = AL_FORMAT_STEREO16;    break;
+                default: assert(false && "Invalid channel format"); break;
+            }
+
             for (int32_t i = 0; i < sound_buffer_count; i++) {
                 alBufferData (sound_buffers[i], format, sound_data + (buffer_size * i), (i + 1 == sound_buffer_count ? sound_length - (buffer_size * (sound_buffer_count - 1)) : buffer_size) * sizeof(int16_t), sample_rate);
             }
@@ -123,8 +124,11 @@ namespace Core::Audio {
         if (sound != sound_map.end()) {
             return sound->second;
         } else {
-            Log (SEVERITY_CRITICAL_ERROR, System::SYSTEM_AUDIO, "Can't find the sound {} aborting.", name);
-            abort();
+            auto sound = PoolProxy<Sound>::New(name);
+            sound_map [name.key] = sound;
+            return sound;
+            //Log (SEVERITY_CRITICAL_ERROR, System::SYSTEM_AUDIO, "Can't find the sound {} aborting.", name);
+            //abort();
         }
     }
     

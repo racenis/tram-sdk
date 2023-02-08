@@ -37,14 +37,14 @@ namespace Core {
 
             fwd = fwd* 2.0f;
 
-            if(physcomp->GetVelocity() < 3.0f)physcomp->Push(fwd);
+            if(glm::length(physcomp->GetVelocity()) < 3.0f)physcomp->Push(fwd);
             action_updated = false;
         }
         
         if(current_action == ACTION_WALK){
             // TODO: fix IsInAir() and then uncomment line below
             float spee = 70.0f;//IsInAir() ?  25.0f : 70.0f;
-            float velocity = physcomp->GetVelocity();
+            float velocity = glm::length(physcomp->GetVelocity());
 
             if(velocity > 4.0f) spee *= 1 / ((velocity * 5) + 1);
             

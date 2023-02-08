@@ -44,8 +44,8 @@ namespace Core {
     void Crate::SetParameters() {
         if (!isloaded) return;
         UpdateParameters();
-        physicscomponent->UpdateLocation(location);
-        physicscomponent->UpdateRotation(rotation);
+        physicscomponent->SetLocation(location);
+        physicscomponent->SetRotation(rotation);
     }
 
     void Crate::Load(){
@@ -60,7 +60,7 @@ namespace Core {
         physicscomponent->SetParent(this);
         physicscomponent->SetModel(serializeddata->collmodel);
         physicscomponent->SetMass(68.9f);
-        physicscomponent->SetStartAsleep();
+        physicscomponent->SetSleep(true);
         
 
         //delete serialized_data;

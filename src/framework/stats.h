@@ -18,8 +18,10 @@ namespace Core::Stats {
     void Remove (Resource resource, size_t ammount);
     
     void Collate ();
-    float GetStat (uint32_t system);
-    float GetStat (Resource resource);
+    
+    double GetStat (uint32_t system);
+    double GetStatUncollated (uint32_t system);
+    double GetStatUncollated (Resource resource);
 }
 
 #endif // FRAMEWORK_STATS_H

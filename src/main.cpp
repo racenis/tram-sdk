@@ -35,7 +35,7 @@
 
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
-//#include <components/audiocomponent.h>
+#include <components/audiocomponent.h>
 
 #include <components/controllercomponent.h>
 
@@ -94,7 +94,12 @@ int main() {
     player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
     player.Load();
 
-
+    // create the createdwdww model
+    RenderComponent* binguser = PoolProxy<RenderComponent>::New();
+    binguser->SetModel(UID("bingus"));
+    binguser->Init();
+    binguser->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    binguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create the mongus model
     RenderComponent* monguser = PoolProxy<RenderComponent>::New();
@@ -131,24 +136,30 @@ int main() {
     
     auto tolet_spinner = PoolProxy<SpriteComponent>::New();
     tolet_spinner->SetSprite(tolet_sprite);
-    tolet_spinner->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
+    tolet_spinner->UpdateLocation(glm::vec3(3.0f, 1.2f, -1.0f));
     tolet_spinner->Init();
     tolet_spinner->Play();
     
     auto tolet_emitter = PoolProxy<ParticleComponent>::New();
     tolet_emitter->SetSprite(tolet_sprite);
-    tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -2.0f));
+    tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -7.0f));
     tolet_emitter->Init();
     
-    //auto derp_player = PoolProxy<AudioComponent>::New();
-    //derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
-    //derp_player->SetSound(&derp);
-    //derp_player->SetRepeating(true);
-    //derp_player->Init();
+    auto derp = Audio::Sound::Find(UID("apelsin"));
+    derp->Load();
+    
+    auto derp_player = PoolProxy<AudioComponent>::New();
+    derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    derp_player->SetSound(derp);
+    derp_player->SetRepeating(true);
+    derp_player->Init();
+    
+    derp_player->Play();
     
     //auto crate_ent = Entity::Find(UID("estijs"));
     
     while(!EXIT){
+        Core::Update();
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
@@ -166,17 +177,31 @@ int main() {
         static int tick = 0;
         tick++;
         
+        if (tick % 4 == 0) {
+            auto aaa = Entity::FindByName(UID("muca"));
+            derp_player->UpdateLocation(aaa->GetLocation());
+        }
         
         if (tick == 300) {
+            //auto aaa = Entity::FindByName(UID("estijs"));
+            //delete aaa;
+        }
+        
+        if (tick > 300 && tick % 100 == 0) {
             auto aaa = Entity::FindByName(UID("estijs"));
-            delete aaa;
+            aaa->SetLocation(player.GetLocation() + vec3(0.0f, 5.0f, 0.0f));
         }
         
         // this will make the light spin
-        lit->UpdateLocation(glm::vec3(cos(((float)tick) / 60.0f) * 5.0f, 0.01 ,sin(((float)tick) / 60.0f) * 5.0f));
+        vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
+        quat litrot;
+        QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
+        binguser->UpdateLocation(litloc);
+        binguser->UpdateRotation(litrot);
+        lit->UpdateLocation(litloc);
         
         // this makes the mongus model bob up and down
-        monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.1f, 0.0f));
+        monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
         
         //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
         //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
@@ -185,8 +210,8 @@ int main() {
         Ext::Menu::DebugMenu();
         Ext::Menu::EscapeMenu();
         
-        std::string tickstr = std::to_string(TICK);
-        std::string tickstr2 = std::to_string(TIME);
+        std::string tickstr = std::to_string(GetTick());
+        std::string tickstr2 = std::to_string(GetTickTime());
         
         GUI::Text(tickstr.c_str(), 2, Core::GUI::TEXT_CENTER); GUI::FrameBreakLine();
         GUI::Text(tickstr2.c_str(), 2, Core::GUI::TEXT_CENTER);
@@ -267,8 +292,8 @@ int main() {
             GUI::Text("es esmu teksts dibenaa", 2); GUI::FrameBreakLine();
         }
         
-        GUI::EndFrame();
-        */
+        GUI::EndFrame();*/
+        
         
         
         GUI::End();

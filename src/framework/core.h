@@ -10,15 +10,15 @@ namespace Core {
     typedef uint64_t id_t;
     
     extern bool EXIT;
-    extern float TIME;
-    extern uint32_t TICK;
-        
     extern char const* ENGINE_VERSION;
     
-    
     void Init();
+    void Update();
     
     id_t GenerateID();
+    
+    uint32_t GetTick();
+    float GetTickTime();
 }
 
 #endif // FRAMEWORK_CORE_H

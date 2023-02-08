@@ -115,7 +115,7 @@ namespace Core::Render::OpenGL {
         glClearColor(255.0f/255.0f, 182.0f/255.0f, 193.0f/255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        modelMatrices.time = TIME;
+        modelMatrices.time = GetTickTime();
         modelMatrices.sunDirection = glm::vec4(SUN_DIRECTION, 1.0f);
         modelMatrices.sunColor = glm::vec4(SUN_COLOR, 1.0f);
         modelMatrices.ambientColor = glm::vec4(AMBIENT_COLOR, 1.0f);

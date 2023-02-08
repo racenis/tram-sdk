@@ -30,8 +30,8 @@ namespace Core {
         if(isloaded){
             rendercomponent->UpdateLocation(location);
             rendercomponent->UpdateRotation(rotation);
-            physicscomponent->UpdateLocation(location);
-            physicscomponent->UpdateRotation(rotation);
+            physicscomponent->SetLocation(location);
+            physicscomponent->SetRotation(rotation);
         }
     }
 

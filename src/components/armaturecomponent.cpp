@@ -181,7 +181,7 @@ namespace Core {
             
             // increase the frames of the animation
             auto& anim = anim_info[i];
-            float frames_since_update = (TIME - last_update) * 24.0f;
+            float frames_since_update = (GetTickTime() - last_update) * 24.0f;
             if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
             
             // find the first keyframe header
@@ -263,7 +263,7 @@ namespace Core {
             }
         }
 
-        last_update = TIME;
+        last_update = GetTickTime();
         
         // convert mixed keyframes to pose matrices
         for(uint64_t i = 0; i < armature_bone_count; i++){
