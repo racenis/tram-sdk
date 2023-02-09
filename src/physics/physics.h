@@ -7,6 +7,8 @@
 #include <framework/core.h>
 #include <framework/math.h>
 
+#include <vector>
+
 namespace Core {
     class PhysicsComponent;  
 }
@@ -27,14 +29,12 @@ namespace Core::Physics {
         COLL_FLOPPA = 128    /// Floppas
     };
     
-    enum Shape : uint32_t {
-        SHAPE_SPHERE,
-        SHAPE_CYLINDER,
-        SHAPE_CAPSULE,
-        SHAPE_BOX
+    struct Collision {
+        PhysicsComponent* collider;
+        vec3 point;
     };
 
-    PhysicsComponent* Raycast(const vec3& from, const vec3& to);
+    PhysicsComponent* Raycast (const vec3& from, const vec3& to);
 
 }
 

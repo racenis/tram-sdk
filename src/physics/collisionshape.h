@@ -4,9 +4,16 @@
 #ifndef PHYSICS_COLLISIONSHAPE_H
 #define PHYSICS_COLLISIONSHAPE_H
 
-#include <physics/physics.h>
+#include <framework/math.h>
 
 namespace Core::Physics {
+    enum Shape : uint32_t {
+        SHAPE_SPHERE,
+        SHAPE_CYLINDER,
+        SHAPE_CAPSULE,
+        SHAPE_BOX
+    };
+    
     struct CollisionShape {
         Shape type;
         vec3 dimensions;
@@ -18,15 +25,15 @@ namespace Core::Physics {
     };
     
     CollisionShape CollisionShape::Sphere (float radius) {
-        return {SHAPE_SPHERE, vec3(radius, 0.0f, 0.0f)};
+        return {SHAPE_SPHERE, {radius, 0.0f, 0.0f}};
     }
     
     CollisionShape CollisionShape::Cylinder (float radius, float height) {
-        return {SHAPE_CYLINDER, vec3(radius, height, radius)};
+        return {SHAPE_CYLINDER, {radius, height, radius}};
     }
     
     CollisionShape CollisionShape::Capsule (float radius, float height) {
-        return {SHAPE_CAPSULE, vec3(radius, height, 0.0f)};
+        return {SHAPE_CAPSULE, {radius, height, 0.0f}};
     }
     
     CollisionShape CollisionShape::Box (vec3 dimensions) {

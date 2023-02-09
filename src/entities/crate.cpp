@@ -11,6 +11,8 @@
 #include <components/physicscomponent.h>
 
 namespace Core {
+    using namespace Core::Physics;
+    
     Crate::Crate(std::string_view& str) : Entity(str) {
         std::cout << "Crate constructor." << std::endl;
         //Entity::SetParameters(str);
@@ -58,6 +60,7 @@ namespace Core {
         rendercomponent->SetPose(nullptr);
 
         physicscomponent->SetParent(this);
+        physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);
         physicscomponent->SetModel(serializeddata->collmodel);
         physicscomponent->SetMass(68.9f);
         physicscomponent->SetSleep(true);

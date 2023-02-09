@@ -58,6 +58,8 @@ namespace Core::Physics {
         dynamicsWorld->stepSimulation(1.0f/60.0f, 0);
         
         // process the triggers
+        for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
+        
         int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
         for (int i = 0; i < numManifolds; i++)
         {
@@ -70,7 +72,11 @@ namespace Core::Physics {
                 contactManifold->getNumContacts()) {
                 assert(obA->getUserPointer());
                 assert(obB->getUserPointer());
-                ((TriggerComponent*)obA->getUserPointer())->Collision((PhysicsComponent*)obB->getUserPointer());
+                auto& contact = contactManifold->getContactPoint(0).getPositionWorldOnA();
+                ((TriggerComponent*) obA->getUserPointer())->Collision({
+                    (PhysicsComponent*) obB->getUserPointer(),
+                    {contact.getX(), contact.getY(), contact.getZ()}
+                });
             }
             
             if (obA->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
@@ -78,11 +84,13 @@ namespace Core::Physics {
                 contactManifold->getNumContacts()) {
                 assert(obA->getUserPointer());
                 assert(obB->getUserPointer());
-                ((TriggerComponent*)obB->getUserPointer())->Collision((PhysicsComponent*)obA->getUserPointer());
+                auto& contact = contactManifold->getContactPoint(0).getPositionWorldOnB();
+                ((TriggerComponent*) obB->getUserPointer())->Collision({
+                    (PhysicsComponent*) obA->getUserPointer(),
+                    {contact.getX(), contact.getY(), contact.getZ()}
+                });
             }
         }
-        
-        for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
     }
     
     void DrawDebug() {

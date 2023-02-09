@@ -39,6 +39,9 @@ namespace Core {
 
         void SetCollisionMask(uint32_t flags);
         void SetCollisionGroup(uint32_t flags);
+        
+        uint32_t GetCollisionMask() { return collisionMask; }
+        uint32_t GetCollisionGroup() { return collisionGroup; }
 
         void DisableDebugDrawing();
 
