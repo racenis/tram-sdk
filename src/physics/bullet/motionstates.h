@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef PHYSICS_MOTIONSTATES_H
-#define PHYSICS_MOTIONSTATES_H
+#ifndef PHYSICS_BULLET_MOTIONSTATES_H
+#define PHYSICS_BULLET_MOTIONSTATES_H
 
 #include <btBulletDynamicsCommon.h>
 
@@ -174,4 +174,4 @@ namespace Core::Physics {
     
 }
 
-#endif // PHYSICS_MOTIONSTATES_H
+#endif // PHYSICS_BULLET_MOTIONSTATES_H

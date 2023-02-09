@@ -6,32 +6,15 @@
 
 #include <framework/core.h>
 #include <framework/math.h>
-#include <framework/resource.h>
-
-#include <unordered_map>
-
-// TODO: check which ones of these can be yeeted
-class btCollisionShape;
-class btMotionState;
-class btRigidBody;
-class btGeneric6DofConstraint;
-class btPoint2PointConstraint;
-class btHingeConstraint;
-class btActionInterface;
-class btRaycastVehicle;
-class btCompoundShape;
-class btCollisionObject;
-class btConvexShape;
 
 namespace Core {
-    class PhysicsComponent;
-    class ArmatureComponent;    
+    class PhysicsComponent;  
 }
 
 namespace Core::Physics {
-    void InitPhysics();
-    void StepPhysics(float time);
-    
+    void Init();
+    void Update();
+        
     extern bool DRAW_PHYSICS_DEBUG;
 
     enum CollisionGroup : uint32_t {
@@ -51,42 +34,12 @@ namespace Core::Physics {
         SHAPE_BOX
     };
 
-    class CollisionModel : public Resource {
-    public:
-        CollisionModel(){}
-        CollisionModel(name_t mName){
-            name = mName;
-            status = UNLOADED;
-        }
-
-        void LoadFromDisk();
-        void LoadFromMemory(){}
-        inline void* GetPtr(){return model;}
-
-        static CollisionModel* Find(name_t modelName);
-    protected:
-        btCompoundShape* model = nullptr;
-        static std::unordered_map<uint64_t, CollisionModel*> List;
-    };
-
-    struct CollisionShape {
-        static CollisionShape Sphere (float radius);
-        static CollisionShape Cylinder (float radius, float height);
-        static CollisionShape Capsule (float radius, float height);
-        static CollisionShape Box (vec3 dimensions);
-        
-        Shape type;
-        vec3 dimensions;
-    };
-
-    PhysicsComponent* Raycast(const glm::vec3& from, const glm::vec3& to);
-
-
+    PhysicsComponent* Raycast(const vec3& from, const vec3& to);
 
 }
 
+#ifdef BENIGONIS
 namespace Core {
-    #ifdef BENIGONIS
     class BusComponent : public EntityComponent {
     public:
         void EventHandler(Event &event);
@@ -134,6 +87,6 @@ namespace Core {
         bool is_controlled = false;
 
     };
-    #endif // BENIGONIS
 }
+#endif // BENIGONIS
 #endif // PHYSICS_PHYSICS_H

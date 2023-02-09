@@ -54,7 +54,7 @@ int main() {
 
     Core::Init();           // core init should always be first
     UI::Init();
-    Physics::InitPhysics(); // optional, but needed for StaticWorldObject, Crate and Player entities
+    Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities
     Render::Init();         // render init must always come after the ui inited
     Async::Init();          // async init must always come after render init
     Audio::Init();
@@ -313,9 +313,7 @@ int main() {
         
         ControllerComponent::UpdateAll();
 
-        // updates the physics world
-        float phys_step = 1.0f / 60.0f;
-        Physics::StepPhysics(phys_step);
+        Physics::Update();
 
         Render::UpdateArmatures();
         Render::Render();

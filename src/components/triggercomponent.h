@@ -12,6 +12,9 @@
 // TODO: add adding a location
 // TODO: add properly loading the model
 
+class btCollisionShape;
+class btCollisionObject;
+
 namespace Core {
     class TriggerComponent : public EntityComponent {
     public:

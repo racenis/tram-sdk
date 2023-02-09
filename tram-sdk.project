@@ -18,6 +18,8 @@
       <File Name="src/audio/audio.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="components">
+      <File Name="src/components/triggercomponent.cpp"/>
+      <File Name="src/components/physicscomponent.cpp"/>
       <File Name="src/components/triggercomponent.h"/>
       <File Name="src/components/templatecomponent.h"/>
       <File Name="src/components/spritecomponent.h"/>
@@ -89,15 +91,18 @@
       <File Name="src/platform/file.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="physics">
+      <File Name="src/physics/collisionshape.h"/>
+      <File Name="src/physics/collisionmodel.h"/>
       <VirtualDirectory Name="bullet">
+        <File Name="src/physics/bullet/debugdrawer.h"/>
+        <File Name="src/physics/bullet/motionstates.h"/>
+        <File Name="src/physics/bullet/actions.h"/>
         <File Name="src/physics/bullet/bullet.cpp"/>
         <File Name="src/physics/bullet/bullet.h"/>
       </VirtualDirectory>
       <File Name="src/physics/physics.h"/>
       <File Name="src/physics/physics.cpp"/>
       <File Name="src/physics/collisionmodel.cpp"/>
-      <File Name="src/physics/motionstates.h"/>
-      <File Name="src/physics/actions.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <File Name="src/render/sprite.h"/>

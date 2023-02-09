@@ -5,6 +5,13 @@
 #define COMPONENTS_PHYSICSCOMPONENT_H
 
 #include <physics/physics.h>
+#include <physics/collisionmodel.h>
+#include <physics/collisionshape.h>
+
+class btCollisionShape;
+class btMotionState;
+class btRigidBody;
+class btActionInterface;
 
 namespace Core {
     class PhysicsComponent : public EntityComponent {
@@ -24,7 +31,7 @@ namespace Core {
         };
 
         void SetMass(float nMass);
-        void SetShapeCapsule(float thickness, float length);
+        void SetShape(Physics::CollisionShape shape);
         void GetAABB(glm::vec3& aabb_min, glm::vec3& aabb_max);
 
         void Push (const glm::vec3& direction);

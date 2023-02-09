@@ -3,15 +3,18 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <physics/physics.h>
+#include <physics/collisionmodel.h>
 #include <fstream>
 
 namespace Core::Physics {
+    std::unordered_map<uint64_t, CollisionModel*> COLLISION_MODELS;
+    
     CollisionModel* CollisionModel::Find(name_t modelName){
-        std::unordered_map<uint64_t, CollisionModel*>::iterator ff = List.find(modelName.key);
+        std::unordered_map<uint64_t, CollisionModel*>::iterator ff = COLLISION_MODELS.find(modelName.key);
         CollisionModel* model;
-        if(ff == List.end()){
+        if(ff == COLLISION_MODELS.end()){
             model = new CollisionModel(modelName);
-            List[modelName.key] = model;
+            COLLISION_MODELS[modelName.key] = model;
         } else {
             model = ff->second;
         }

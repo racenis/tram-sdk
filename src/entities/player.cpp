@@ -20,7 +20,7 @@ Player::Player(){
 void Player::Load(){
     physicscomponent = PoolProxy<PhysicsComponent>::New();
     physicscomponent->SetParent(this);
-    physicscomponent->SetShapeCapsule(0.5f, 0.85f);
+    physicscomponent->SetShape(Physics::CollisionShape::Capsule(0.5f, 0.85f));
     physicscomponent->SetMass(85.0f);
     physicscomponent->SetCollisionGroup(Physics::COLL_PLAYER);
     physicscomponent->SetSleep(true);
