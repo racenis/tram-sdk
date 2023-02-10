@@ -44,6 +44,7 @@ namespace Core {
         uint32_t GetCollisionGroup() { return collisionGroup; }
 
         void DisableDebugDrawing();
+        void SetKinematic();
 
         void SetSleep(bool sleep);
         
@@ -77,6 +78,8 @@ namespace Core {
         
         uint32_t collisionMask = -1;
         uint32_t collisionGroup = 1;
+        
+        uint32_t collisionFlags = 0;
 
         btActionInterface* action = nullptr;
     };

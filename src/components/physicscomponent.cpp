@@ -28,6 +28,7 @@ namespace Core {
         dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
         rigidBody->setUserPointer(this);
         rigidBody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
+        rigidBody->setCollisionFlags(collisionFlags);
 
         if(should_asleep) rigidBody->setActivationState(0);
 
@@ -109,7 +110,19 @@ namespace Core {
     
     
     void PhysicsComponent::DisableDebugDrawing(){
-        rigidBody->setCollisionFlags(btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT);
+        collisionFlags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+        
+        if (is_ready) {
+            rigidBody->setCollisionFlags(collisionFlags);
+        }
+    }
+    
+    void PhysicsComponent::SetKinematic(){
+        collisionFlags |= btCollisionObject::CF_KINEMATIC_OBJECT;
+        
+        if (is_ready) {
+            rigidBody->setCollisionFlags(collisionFlags);
+        }
     }
   
     void PhysicsComponent::SetLocation (const glm::vec3& location) {

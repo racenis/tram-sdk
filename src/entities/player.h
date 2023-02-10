@@ -12,6 +12,7 @@ namespace Core {
     class PlayerComponent;
     class ControllerComponent;
     class PhysicsComponent;
+    class TriggerComponent;
     
     class Player : public Entity {
     public:
@@ -28,6 +29,7 @@ namespace Core {
         PlayerComponent* plomp;
         ControllerComponent* controllercomponent;
         PhysicsComponent* physicscomponent;
+        TriggerComponent* triggercomponent;
     };
 }
 

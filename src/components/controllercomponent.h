@@ -9,6 +9,7 @@
 
 // TODO: refactor so that this include can be replaced with forward declaration
 #include <components/armaturecomponent.h>
+#include <components/triggercomponent.h>
 
 namespace Core {
     class PhysicsComponent;
@@ -64,8 +65,9 @@ namespace Core {
         void SetAnimation(Action action, uint64_t animationName){animations[action] = animationName;}
         void SetPhysicsComponent(PhysicsComponent* comp){physcomp = comp;};
         void SetArmatureComponent(ArmatureComponent* comp){armcomp = comp;};
-        void SetDirection(glm::vec3& dir){direction = dir;};
-        void SetDirection(const glm::quat& dir);
+        void SetTriggerComponent(TriggerComponent* comp){triggercomp = comp;};
+        //void SetDirection(glm::vec3& dir){direction = dir;};
+        //void SetDirection(const glm::quat& dir);
         
         // maybe create a unified function that updates all of the core components?
         static void UpdateAll() {
@@ -93,8 +95,10 @@ namespace Core {
         }
         PhysicsComponent* physcomp = nullptr;
         ArmatureComponent* armcomp = nullptr;
-        glm::vec3 direction = glm::vec3(0.0f);
-        glm::quat rot_direction = glm::vec3(0.0f, 0.0f, 0.0f);
+        TriggerComponent* triggercomp = nullptr;
+        //glm::vec3 direction = glm::vec3(0.0f);
+        //glm::quat rot_direction = glm::vec3(0.0f, 0.0f, 0.0f);
+        vec3 velocity = vec3 (0.0f, 0.0f, 0.0f);
         uint64_t animations[30] = {0};
         uint64_t animplaying = 0;
         

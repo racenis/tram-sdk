@@ -32,6 +32,7 @@ namespace Core::Physics {
     struct Collision {
         PhysicsComponent* collider;
         vec3 point;
+        vec3 normal;
     };
 
     PhysicsComponent* Raycast (const vec3& from, const vec3& to);

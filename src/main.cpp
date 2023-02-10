@@ -159,14 +159,7 @@ int main() {
     //derp_player->Play();
     
     
-    auto trigga = PoolProxy<TriggerComponent>::New();
-    trigga->SetCollisionGroup(Physics::COLL_DYNAMICOBJ);
-    trigga->SetCollisionMask(Physics::COLL_DYNAMICOBJ);
-    //trigga->SetCollisionGroup(0);
-    //trigga->SetCollisionMask(0);
-    trigga->SetShape(Physics::CollisionShape::Box({1.0f, 1.0f, 1.0f}));
-    trigga->SetLocation({0.0f, 1.0f, 0.0f});
-    trigga->Start();
+
     
     //auto crate_ent = Entity::Find(UID("estijs"));
     
@@ -204,8 +197,8 @@ int main() {
         //    aaa->SetLocation(player.GetLocation() + vec3(0.0f, 5.0f, 0.0f));
         //}
         
-        trigga->SetRotation(player.GetRotation());
-        trigga->SetLocation(player.GetLocation() + (player.GetRotation() * vec3(0.0f, 0.0f, -2.0f)));
+        //trigga->SetRotation(player.GetRotation());
+        //trigga->SetLocation(player.GetLocation() + (player.GetRotation() * vec3(0.0f, 0.0f, -2.0f)));
         
         // this will make the light spin
         vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
@@ -227,18 +220,18 @@ int main() {
         
         std::string tickstr = std::to_string(GetTick());
         std::string tickstr2 = std::to_string(GetTickTime());
-        std::string tickstr3 = std::to_string(trigga->Poll().size());
+        //std::string tickstr3 = std::to_string(trigga->Poll().size());
         
         GUI::Text(tickstr.c_str(), 2, Core::GUI::TEXT_CENTER); GUI::FrameBreakLine();
         GUI::Text(tickstr2.c_str(), 2, Core::GUI::TEXT_CENTER); GUI::FrameBreakLine();
-        GUI::Text(tickstr3.c_str(), 2, Core::GUI::TEXT_CENTER);
+        //GUI::Text(tickstr3.c_str(), 2, Core::GUI::TEXT_CENTER);
         
-        {
-            auto p = trigga->Poll();
-            for (auto& t : p) {
-                Render::AddLineMarker(t.point, Render::COLOR_CYAN);
-            }
-        }
+        //{
+        //    auto p = trigga->Poll();
+        //    for (auto& t : p) {
+        //        Render::AddLineMarker(t.point, Render::COLOR_CYAN);
+        //    }
+        //}
         
         /*
         GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);

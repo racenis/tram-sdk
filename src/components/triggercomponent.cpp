@@ -149,9 +149,11 @@ namespace Core {
                 assert(ob0->getUserPointer());
                 assert(ob1->getUserPointer());
                 auto& contact = cp.getPositionWorldOnA();
+                auto& normal = cp.m_normalWorldOnB;
                 collisions.push_back({
                     (PhysicsComponent*) ob1->getUserPointer(),
-                    {contact.getX(), contact.getY(), contact.getZ()}
+                    {contact.getX(), contact.getY(), contact.getZ()},
+                    {-normal.getX(), normal.getY(), normal.getZ()}
                 });
             }
             
@@ -162,9 +164,11 @@ namespace Core {
                 assert(ob0->getUserPointer());
                 assert(ob1->getUserPointer());
                 auto& contact = cp.getPositionWorldOnB();
+                auto& normal = cp.m_normalWorldOnB;
                 collisions.push_back({
                     (PhysicsComponent*) ob0->getUserPointer(),
-                    {contact.getX(), contact.getY(), contact.getZ()}
+                    {contact.getX(), contact.getY(), contact.getZ()},
+                    {normal.getX(), normal.getY(), normal.getZ()}
                 });
             }
             
