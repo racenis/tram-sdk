@@ -10,6 +10,12 @@
 namespace Core {
     class ParticleComponent : public EntityComponent {
     public:
+        struct Particle {
+            glm::vec3 coords;
+            glm::vec3 velocity;
+            uint32_t age;
+        };
+        
         ParticleComponent() : sprite(this){}
         ~ParticleComponent();
         inline name_t GetSprite(){return sprite->GetName();}
@@ -30,6 +36,8 @@ namespace Core {
         }
 
         void EventHandler(Event &event){return;}
+        
+        void EmitParticle (const Particle& particle);
 
         // put these behind getter/setter methods, maybe?
         uint32_t emission_rate = 1;
@@ -37,12 +45,8 @@ namespace Core {
         glm::vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
         glm::vec3 initial_velocity = glm::vec3(0.0f, 0.15f, 0.0f);
         float initial_velocity_randomness = 0.1f;
+    
     protected:
-        struct Particle {
-            glm::vec3 coords;
-            glm::vec3 velocity;
-            uint32_t age;
-        };
         
         std::vector<Particle> particles;
         

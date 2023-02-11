@@ -105,7 +105,7 @@ namespace Core::Render {
     };
 
     static const VertexDefinition SPRITE_VERTEX_DEFINITION = {
-        {VertexProperty::POSITION_VECTOR,       VertexProperty::FLOAT32, 2, sizeof(SpriteVertex), 0},
+        {VertexProperty::POSITION_VECTOR,       VertexProperty::FLOAT32, 3, sizeof(SpriteVertex), 0},
         {VertexProperty::TEXTURE_COORDINATE,    VertexProperty::FLOAT32, 2, sizeof(SpriteVertex), offsetof(SpriteVertex, texco)},
         {VertexProperty::COLOR_VECTOR,          VertexProperty::FLOAT32, 3, sizeof(SpriteVertex), offsetof(SpriteVertex, color)},
         

@@ -202,6 +202,10 @@ int main() {
             //delete aaa;
         }
         
+        if (UI::PollKeyboardKey(UI::KEY_Y)) {
+            tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
+        }
+        
         //if (tick > 300 && tick % 100 == 0) {
         //    auto aaa = Entity::FindByName(UID("estijs"));
         //    aaa->SetLocation(player.GetLocation() + vec3(0.0f, 5.0f, 0.0f));

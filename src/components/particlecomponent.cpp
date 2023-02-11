@@ -12,6 +12,10 @@ namespace Core {
 
         RemoveDrawListEntry(draw_list_entry);
     };
+    
+    void ParticleComponent::EmitParticle (const Particle& particle) {
+        particles.push_back(particle);
+    }
 
     void ParticleComponent::Start(){
         if(is_ready) return;
@@ -46,17 +50,20 @@ namespace Core {
             }
         }
         
-        glm::vec3 random_vec;
-        static int tick = 0;
-        tick++; srand(tick*6217);
-        random_vec.x = 0.5f - ((float)rand()/(float)RAND_MAX);
-        tick++; srand(tick*6217);
-        random_vec.y = 0.5f - ((float)rand()/(float)RAND_MAX);
-        tick++; srand(tick*6217);
-        random_vec.z = 0.5f - ((float)rand()/(float)RAND_MAX);
-        
-        glm::vec3 velocity = initial_velocity + (random_vec*initial_velocity_randomness);
-        particles.push_back(Particle {velocity, velocity, 0});
+        for (uint32_t i = 0; i < emission_rate; i++) {
+            glm::vec3 random_vec;
+            static int tick = 0;
+            tick++; srand(tick*6217);
+            random_vec.x = 0.5f - ((float)rand()/(float)RAND_MAX);
+            tick++; srand(tick*6217);
+            random_vec.y = 0.5f - ((float)rand()/(float)RAND_MAX);
+            tick++; srand(tick*6217);
+            random_vec.z = 0.5f - ((float)rand()/(float)RAND_MAX);
+            
+            glm::vec3 velocity = initial_velocity + (random_vec*initial_velocity_randomness);
+            particles.push_back(Particle {velocity, velocity, 0});
+        }
+
         
         UpdateRenderListObject();
     }

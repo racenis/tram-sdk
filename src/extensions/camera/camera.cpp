@@ -57,6 +57,12 @@ namespace Core::Ext::Camera {
     }
 
     void Camera::Update () {
+        if (UI::INPUT_STATE == UI::STATE_FLYING ||
+            UI::INPUT_STATE == UI::STATE_MENU_OPEN
+        ) {
+            return;
+        }
+        
         // move tilt towards tilt goal
         if (abs(tilt_goal - tilt) <= TILT_SPEED && abs(tilt_goal) <= TILT_SPEED) {
             tilt = 0.0f;

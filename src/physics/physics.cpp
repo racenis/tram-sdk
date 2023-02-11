@@ -35,9 +35,9 @@ namespace Core::Physics {
     
     /// Performs a raycast.
     /// Performs a raycast from from to to.
-    /// @return Pointer to the closest PhysicsComponent. If the ray doesn't hit
-    ///         hit anything, then a nullptr.
-    PhysicsComponent* Raycast(const glm::vec3& from, const glm::vec3& to){
+    /// @return Collision struct. If there was nothing found, then the pointer
+    ///         in the struct will be set to nullptr.
+    Collision Raycast (const glm::vec3& from, const glm::vec3& to) {
         btVector3 bto, bfrom;
 
         bto.setValue(to.x, to.y, to.z);
@@ -47,10 +47,20 @@ namespace Core::Physics {
 
         dynamicsWorld->rayTest(bfrom, bto, callback);
 
-        if (callback.hasHit())
-            return (PhysicsComponent*)callback.m_collisionObject->getUserPointer();
-        else
-            return nullptr;
+        if (callback.hasHit() && callback.m_collisionObject->getUserIndex() == USERINDEX_PHYSICSCOMPONENT) {
+            auto& point = callback.m_hitPointWorld;
+            auto& normal = callback.m_hitNormalWorld;
+            
+            return {
+                (PhysicsComponent*) callback.m_collisionObject->getUserPointer(),
+                vec3 (point.getX(), point.getY(), point.getZ()),
+                vec3 (normal.getX(), normal.getY(), normal.getZ())
+            };
+        } else {
+            return {
+                nullptr, vec3 (0.0f, 0.0f, 0.0f), vec3 (0.0f, 0.0f, 0.0f)
+            };
+        }
     }
     
     struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
@@ -77,6 +87,7 @@ namespace Core::Physics {
         uint32_t collision_mask;
     };
 
+    /// I have no idea if this function works.
     std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask) {
         auto shape_ptr = CollisionShapeToConvexShape(shape);
         btTransform bto, bfrom;

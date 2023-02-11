@@ -184,7 +184,7 @@ namespace Core {
 
         location += glm::vec3(0.0f, 0.775f, 0.0f); // stinky hack
 
-        PhysicsComponent* activatable = Physics::Raycast(location, location + direction * 3.0f);
+        PhysicsComponent* activatable = Physics::Raycast(location, location + direction * 3.0f).collider;
         std::cout << activatable << std::endl;
         if (activatable){
             Message msg;
