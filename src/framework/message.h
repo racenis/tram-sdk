@@ -6,33 +6,30 @@
 
 #include <cstdint>
 
-#include <templates/queue.h>
-
 namespace Core {
     typedef uint64_t message_t;
     typedef uint64_t id_t;
 
     struct Message {
-        enum Type : uint64_t {
+        enum Type : message_t {
             PING,
             HELLO,
             ACTIVATE,
             GET_IN,
             GET_OUT,
+            KILL,
             LAST_MESSAGE
         };
 
-        // make this const ref
-        static void Send (Message &message);
-        static void Dispatch();
+        static message_t Register ();
+        static void Send (const Message &message);
+        static void Send (const Message &message, uint32_t when);
+        static void Dispatch ();
 
         message_t type;
-        id_t receiverID;
-        id_t senderID;
+        id_t receiver;
+        id_t sender;
         void* data = nullptr;
-
-        // TODO: make this not visible
-        static Queue<Message> queue;
     };
 }
 

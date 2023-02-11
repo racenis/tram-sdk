@@ -190,8 +190,8 @@ namespace Core {
             Message msg;
 
             msg.type = Message::ACTIVATE;
-            msg.receiverID = activatable->GetParent()->GetID();
-            msg.senderID = physcomp->GetParent()->GetID();
+            msg.receiver = activatable->GetParent()->GetID();
+            msg.sender = physcomp->GetParent()->GetID();
 
             Message::Send(msg);
         }

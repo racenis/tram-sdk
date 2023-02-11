@@ -167,8 +167,6 @@ int main() {
     derp_player->Init();
     
     //derp_player->Play();
-    
-    
 
     
     //auto crate_ent = Entity::Find(UID("estijs"));

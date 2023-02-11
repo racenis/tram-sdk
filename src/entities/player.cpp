@@ -81,7 +81,10 @@ void Player::SetParameters() {
     // TODO: fix
 }
 
-void Player::MessageHandler(Message& msg){
+void Player::MessageHandler(Message& msg) {
+    if (msg.type == Message::PING) {
+        Log ("Player was pinged with {}!", (long long) msg.data);
+    }
     /*if(msg.type == Message::GET_IN){
         plomp->IgnoreMove();
         plomp->SetVehicle(msg.senderID);
