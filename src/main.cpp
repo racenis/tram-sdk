@@ -42,6 +42,7 @@
 #include <components/triggercomponent.h>
 
 #include <extensions/menu/menu.h>
+#include <extensions/camera/camera.h>
 
 using namespace Core;
 using namespace Core::Render;
@@ -68,6 +69,7 @@ int main() {
     Model::SetErrorModel(PoolProxy<Model>::New(UID("errorstatic")));
 
     Ext::Menu::Init();
+    Ext::Camera::Init();
 
     // load all of the language strings
     LoadText("data/lv.lang");
@@ -95,6 +97,14 @@ int main() {
     Player player;
     player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
     player.Load();
+    
+    Ext::Camera::Camera camera;
+    camera.SetMouselook(true);
+    camera.SetRotateFollowing(true);
+    camera.SetFollowingOffset({0.0f, 0.5f, 0.0f});
+    camera.SetFollowing(&player);
+    
+    Ext::Camera::SetCamera(&camera);
 
     // create the createdwdww model
     RenderComponent* binguser = PoolProxy<RenderComponent>::New();
@@ -168,12 +178,12 @@ int main() {
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
-            glm::vec3 player_head;
-            player.GetLocation(player_head);
-            player_head += glm::vec3(0.0f, 0.5f, 0.0f);
-            Render::CAMERA_POSITION = player_head;
-            Audio::SetListenerPosition(player_head);
-            Audio::SetListenerOrientation(Render::CAMERA_ROTATION);
+            //glm::vec3 player_head;
+            //player.GetLocation(player_head);
+            //player_head += glm::vec3(0.0f, 0.5f, 0.0f);
+            //Render::CAMERA_POSITION = player_head;
+            //Audio::SetListenerPosition(player_head);
+            //Audio::SetListenerOrientation(Render::CAMERA_ROTATION);
         }
         
         //time_of_day += 0.001f;
@@ -213,6 +223,23 @@ int main() {
         
         //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
         //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
+        
+        if (UI::PollKeyboardKey(UI::KEY_A)) {
+            camera.SetTilt(0.1f);
+        } else if (UI::PollKeyboardKey(UI::KEY_D)) {
+            camera.SetTilt(-0.1f);
+        } else {
+            camera.SetTilt(0.0f);
+        }
+        
+        if (UI::PollKeyboardKey(UI::KEY_W) || UI::PollKeyboardKey(UI::KEY_S) ||
+            UI::PollKeyboardKey(UI::KEY_A) || UI::PollKeyboardKey(UI::KEY_D)) {
+            camera.SetBobbing(1.0f);
+        } else {
+            camera.SetBobbing(0.0f);
+        }
+        
+        Ext::Camera::Update();
         
         GUI::Begin();
         Ext::Menu::DebugMenu();

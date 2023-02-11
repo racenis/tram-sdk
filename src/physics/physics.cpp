@@ -52,8 +52,46 @@ namespace Core::Physics {
         else
             return nullptr;
     }
+    
+    struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
+        ShapecastCallback(std::vector<Physics::Collision>& collisions, uint32_t collision_mask)
+            : collisions(collisions), collision_mask(collision_mask) {}
+        btScalar addSingleResult (btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace) {
+            const btCollisionObject* ob = convexResult.m_hitCollisionObject;
+            
+            if (ob->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
+                ((TriggerComponent*)ob->getUserPointer())->GetCollisionGroup() & collision_mask) {
+                assert(ob->getUserPointer());
+                auto& contact = convexResult.m_hitPointLocal;
+                auto& normal = convexResult.m_hitNormalLocal;
+                collisions.push_back({
+                    (PhysicsComponent*) ob->getUserPointer(),
+                    {contact.getX(), contact.getY(), contact.getZ()},
+                    {-normal.getX(), normal.getY(), normal.getZ()}
+                });
+            }
+            
+            return 1; // tbh idk what this method is supposed to return
+        }
+        std::vector<Physics::Collision>& collisions;
+        uint32_t collision_mask;
+    };
 
+    std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask) {
+        auto shape_ptr = CollisionShapeToConvexShape(shape);
+        btTransform bto, bfrom;
+        std::vector<Collision> collisions;
+        
+        ShapecastCallback callback (collisions, collision_mask);
 
+        bto.setIdentity();
+        bto.setOrigin({to.x, to.y, to.z});
+        bfrom.setIdentity();
+        bfrom.setOrigin({from.x, from.y, from.z});
+        
+        dynamicsWorld->convexSweepTest(shape_ptr, bfrom, bto, callback);
+        return collisions;
+    }
 
 
 }

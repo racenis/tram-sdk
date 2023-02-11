@@ -23,9 +23,9 @@ namespace Core {
 
             if (event.type == Event::CURSORPOS) {
                 //controller->SetDirection(glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f)));
-                auto p_pos = parent->GetLocation();
-                auto p_rot = glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f));
-                parent->UpdateTransform(p_pos, p_rot);
+                //auto p_pos = parent->GetLocation();
+                //auto p_rot = glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f));
+                //parent->UpdateTransform(p_pos, p_rot);
                 return;
             }
 

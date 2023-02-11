@@ -34,8 +34,12 @@ namespace Core::Physics {
         vec3 point;
         vec3 normal;
     };
+    
+    class CollisionShape;
 
     PhysicsComponent* Raycast (const vec3& from, const vec3& to);
+    
+    std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask = -1);
 
 }
 

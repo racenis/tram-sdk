@@ -149,12 +149,7 @@ namespace Core::UI {
                 CAMERA_POSITION -= CAMERA_ROTATION * DIRECTION_SIDE * CAMERA_SPEED;
             if (glfwGetKey(WINDOW, GLFW_KEY_D) == GLFW_PRESS)
                 CAMERA_POSITION += CAMERA_ROTATION * DIRECTION_SIDE * CAMERA_SPEED;
-        }
-
-        
-        // update camera rotation
-        // TODO: move this into somewhere else
-        if (INPUT_STATE != STATE_MENU_OPEN) {
+                
             cursorchangex = keyboard_axis_values[KEY_MOUSE_X] - cursorx_last;
             cursorchangey = keyboard_axis_values[KEY_MOUSE_Y] - cursory_last;
             cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
@@ -163,10 +158,15 @@ namespace Core::UI {
             CAMERA_YAW += cursorchangex * CAMERA_SENSITIVITY;
             CAMERA_PITCH += cursorchangey * CAMERA_SENSITIVITY;
             CAMERA_PITCH = CAMERA_PITCH > 90.0f ? 90.0f : CAMERA_PITCH < -90.0f ? -90.0f : CAMERA_PITCH;
+            CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
         }
 
-        // why is this in here???
-        CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
+        
+        // update camera rotation
+        // TODO: move this into somewhere else
+        if (INPUT_STATE != STATE_MENU_OPEN) {
+
+        }
 
         static InputState input_state_last = STATE_DEFAULT;
         if (input_state_last != STATE_MENU_OPEN && INPUT_STATE == STATE_MENU_OPEN) {

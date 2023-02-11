@@ -5,6 +5,10 @@
   <VirtualDirectory Name="src">
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
+      <VirtualDirectory Name="camera">
+        <File Name="src/extensions/camera/camera.cpp"/>
+        <File Name="src/extensions/camera/camera.h"/>
+      </VirtualDirectory>
       <VirtualDirectory Name="scripting"/>
       <VirtualDirectory Name="menu">
         <File Name="src/extensions/menu/menu.h"/>

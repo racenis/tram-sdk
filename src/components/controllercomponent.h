@@ -56,6 +56,10 @@ namespace Core {
             action_updated = true;
         }
         
+        Action GetCurrentAction () { return current_action; }
+        ActionModifier GetCurrentActionModifier () { return current_modifier; }
+        uint32_t GetMagnitude () { return current_magnitude; }
+        
         void Update();
         
         bool IsInAir();
