@@ -95,7 +95,8 @@ int main() {
 
     // create the player entity
     Player player;
-    player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
+    //player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
+    player.SetLocation(vec3(3.0f, 4.0f, 3.0f));
     player.Load();
     
     Ext::Camera::Camera camera;

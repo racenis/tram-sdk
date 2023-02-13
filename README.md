@@ -42,6 +42,16 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 #### Version 0.0.4
+- Models with different sets of materials
+	- While doing this it would also be good to have models with more than 15 materials
+- Flat shaded color material
+- Textured material with alpha test but with flat color
+	- Instead of dropping the fragment it would make it a flat color
+- rewrite older templates
+- make sure that there are no duplications of typedefs
+- Multiple player inputs
+- Re-do serialization
+- Add a type.h
 - ~~Yeet debug menus from ui.h~~
 - Put TIME etc. in core.h to functions
 - Switch out all of the std::cout's to Log's
@@ -68,8 +78,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add some more asserts to the GUI system.
 - Figure out how to do resources that are generated, not loaded.
 - Finish the file abstraction.
-- Make a Camera system.
-	- Move relevant code from ui.cpp
+- ~~Make a Camera system.~~
+	- ~~Move relevant code from ui.cpp~~
 
 #### Version 0.0.5
 - ~~Sprites~~
@@ -82,11 +92,11 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- ~~Instead of feeding it a font index, instead feed a font_t~~
 
 #### Version 0.0.6
-- New CharacterController
-	- Switch from RigidBody to Kinetic
-- Partially rewrite the PhysicsComponent
-	- Delete unused methods
-	- Add more methods
+- ~~New CharacterController~~
+	- ~~Switch from RigidBody to Kinetic~~
+- ~~Partially rewrite the PhysicsComponent~~
+	- ~~Delete unused methods~~
+	- ~~Add more methods~~
 
 #### Version 0.0.7
 - Rewrite path following for the PhysicsComponent
@@ -94,6 +104,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Version 0.0.8
 - Add scripting
+
+#### Menu/GUI
+- Keybinding menu
+- Graphics menu
 
 
 #### For later versions

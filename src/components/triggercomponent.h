@@ -54,8 +54,8 @@ namespace Core {
         Entity* parent = nullptr;
         ResourceProxy<Physics::CollisionModel> model;
         
-        glm::vec3 location;
-        glm::quat rotation;
+        glm::vec3 location = vec3 (0.0f, 0.0f, 0.0f);
+        glm::quat rotation = vec3 (0.0f, 0.0f, 0.0f);
         
         btCollisionShape* shape = nullptr;
         btCollisionObject* trigger = nullptr;

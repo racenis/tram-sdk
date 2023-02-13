@@ -91,13 +91,13 @@ namespace Core {
             auto poll2 = triggercomp->Poll();
             poll1.insert(poll1.end(), poll2.begin(), poll2.end());
             
-            Render::AddLineMarker(poll1_origin, Render::COLOR_RED);
-            Render::AddLineMarker(poll2_origin, Render::COLOR_RED);
+            //Render::AddLineMarker(poll1_origin, Render::COLOR_RED);
+            //Render::AddLineMarker(poll2_origin, Render::COLOR_RED);
             
             boost = 1.0f;
             bool can_raise = false;
             for (auto& coll : poll1) {
-                Render::AddLineMarker(coll.point, Render::COLOR_BLUE);
+                //Render::AddLineMarker(coll.point, Render::COLOR_BLUE);
                 auto rel_point = coll.point - parent->GetLocation() + (1.85f/2.0f);
                 if (rel_point.y > 0.005f) can_raise = true;
                 if (rel_point.y > 0.4f) {
