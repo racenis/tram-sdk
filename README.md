@@ -59,11 +59,19 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make sure that there are no duplications of typedefs
 	- There are some duplications in typedefs
 	
-- Put TIME etc. in core.h to functions
-- Add a type.h
+- ~~Put TIME etc. in core.h to functions~~
+- ~~Add a type.h~~
 
 - Multiple player inputs
 - Finish file writer
+
+- Switch all uint64_t to name_t
+	- In armature.h there is a NameCount
+	- After that, also remove uint64_t constructor from name_t
+
+- Make constructors/destructors protected
+	- Some classes should only be created in Pools
+
 #### Not important
 - Switch out all of the std::cout's to Log's
 - Switch namespace Core to tram

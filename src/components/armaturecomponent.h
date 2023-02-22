@@ -47,9 +47,11 @@ class ArmatureComponent : public EntityComponent {
         
         name_t anim_playing[ANIM_COUNT] = {0};
         AnimationPlaybackInfo anim_info[ANIM_COUNT];
-    public:
+        
         ArmatureComponent() : model(this){}
         ~ArmatureComponent();
+        template <typename> friend class Pool;
+    public:
         void Init();
         void Start();
         void SetModel(name_t name) { model = Render::Model::Find(name); }

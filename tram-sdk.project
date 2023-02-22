@@ -45,6 +45,7 @@
       <File Name="src/components/aicomponent.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/type.h"/>
       <File Name="src/framework/language.cpp"/>
       <File Name="src/framework/language.h"/>
       <File Name="src/framework/math.cpp"/>

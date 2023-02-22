@@ -43,6 +43,18 @@ WorldCell* WorldCell::Find(name_t name){
     }
 }
 
+WorldCell* WorldCell::Make(name_t name){
+    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
+
+    if(ff == WORLDCELL_LIST.end()){
+        WorldCell* new_cell = PoolProxy<WorldCell>::New(name);
+        WORLDCELL_LIST[name.key] = new_cell;
+        return new_cell;
+    } else {
+        return ff->second;
+    }
+}
+
 WorldCell* WorldCell::Find (const glm::vec3& point){
     auto& cellPool = PoolProxy<WorldCell>::GetPool();
     WorldCell* ptr = cellPool.begin().ptr;

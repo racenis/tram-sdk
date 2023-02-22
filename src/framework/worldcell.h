@@ -52,7 +52,7 @@ namespace Core {
         std::vector<Navmesh*> navmeshes;
         friend void LoadCells();
     public:
-        WorldCell(){};
+        WorldCell(name_t name){ this->name = name; };
 
         bool IsLoaded() {return loaded;};
 
@@ -119,6 +119,7 @@ namespace Core {
 
         static WorldCell* Find (const glm::vec3& point);
         static WorldCell* Find (name_t name);
+        static WorldCell* Make (name_t name);
     };
 }
 

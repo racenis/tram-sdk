@@ -73,20 +73,15 @@ int main() {
     Material::LoadMaterialInfo("data/texture.list");
 
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
-    //PoolProxy<Animation>::New(UID("mongus"));
-    //PoolProxy<Animation>::New(UID("turtle"));
-    //PoolProxy<Animation>::New(UID("bingus_idle"));
-    //Animation::LoadAll();
+
 
 
 
 
 
     // loading the demo level
-    auto demo = PoolProxy<WorldCell>::New();
-    demo->SetName(UID("demo_mov"));
-    demo->LoadFromDisk();
-    //demo->Load();
+    WorldCell::Make(UID("demo_mov"))->LoadFromDisk();
+    
 
 
     // create the player entity
