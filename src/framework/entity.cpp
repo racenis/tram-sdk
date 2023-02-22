@@ -16,7 +16,6 @@ namespace Core {
     std::unordered_map<std::string, Entity* (*)(std::string_view& params)> ENTITY_CONSTRUCTORS;
     
     Entity::Entity() {
-        std::cout << "Entity base constructor." << std::endl;
         this->id = GenerateID();
         Register();
     }
@@ -44,12 +43,9 @@ namespace Core {
         
         if (!id) id = GenerateID();
         Register();
-        std::cout << "Entity base constructor: " << this->GetName() << std::endl;
     }
     
     Entity::~Entity() {
-        std::cout << "Entity base destructor: " << this->GetName() << std::endl;
-
         if (cell) cell->RemoveEntity(this);
 
         if (id) {

@@ -40,8 +40,6 @@ namespace Core::Render{
         std::vector<Bone> armature;
         ModelData* mData = nullptr;
         size_t approx_vram_usage = 0;
-
-        static Model* error_model;
     public:
         Model (name_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
 
@@ -56,7 +54,7 @@ namespace Core::Render{
         size_t GetArmatureSize() { return armature.size(); }
         Bone* GetArmature() { return &armature.front(); }
         static Model* Find(name_t name);
-        static void SetErrorModel(Model* model) { error_model = model; model->Load(); }
+        static void LoadErrorModel();
     };
 }
 

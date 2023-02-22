@@ -14,13 +14,7 @@ namespace Core {
     using namespace Core::Physics;
     
     Crate::Crate(std::string_view& str) : Entity(str) {
-        std::cout << "Crate constructor." << std::endl;
-        //Entity::SetParameters(str);
-
-        //serialized_data = new Data();
-        //auto data = (Data*) serialized_data;
         serializeddata.make();
-
         serializeddata->FromString(str);
     }
 

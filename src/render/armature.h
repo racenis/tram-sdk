@@ -47,11 +47,15 @@ namespace Core::Render {
     public:
         Animation(name_t name) : Resource(name) {}
 
-        static NameCount* Find(name_t anim_name);
-
+        //static NameCount* Find(name_t anim_name);
+        NameCount* GetPointer() { return animation_pointer; }
         void LoadFromDisk();
         void LoadFromMemory(){}
+        
+        static Animation* Find (name_t name);
         static void LoadAll();
+    private:
+        NameCount* animation_pointer;
     };
 
     void UpdateArmatures();

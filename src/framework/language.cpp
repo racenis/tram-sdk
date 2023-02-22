@@ -8,12 +8,12 @@
 #include <fstream>
 #include <unordered_map>
 
-namespace Core {
+namespace Core::Language {
     StackPool<char> stringPoolforLangs("stringpool for langs", 10000);
     std::unordered_map<uint64_t, uint64_t> langStringHashMap;
         
     // when refactoring this, it would be good idea to move these out to a language.cpp or something
-    void LoadText(const char* filename){
+    void Load (const char* filename){
         std::ifstream file;
         file.open(filename);
         while(file){
@@ -37,7 +37,7 @@ namespace Core {
         file.close();
     }
     
-    name_t FindLangStr(name_t name){
+    name_t Get (name_t name){
         std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name.key);
 
         if(ff == langStringHashMap.end()){

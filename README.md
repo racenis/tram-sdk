@@ -41,108 +41,51 @@ If you're using the microsoft's C++ compiler, then good luck.
 No code contributions accepted right now, but if you find a bug or have a suggestion, then you can open a github issue.
 
 ## To-do list
-#### Version 0.0.4
+
+#### Should do sooner
+- Re-do serialization
+- Keybinding menu
+- Graphics menu
+
+#### Should do later
 - Models with different sets of materials
 	- While doing this it would also be good to have models with more than 15 materials
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
-- rewrite older templates
-- make sure that there are no duplications of typedefs
-- Multiple player inputs
-- Re-do serialization
-- Add a type.h
-- ~~Yeet debug menus from ui.h~~
+
+- Rewrite older templates
+	- Pool template is already rewritten
+- Make sure that there are no duplications of typedefs
+	- There are some duplications in typedefs
+	
 - Put TIME etc. in core.h to functions
-- Switch out all of the std::cout's to Log's
-- Finish the Stats system
-- Switch namespace Core to tram
-- ~~Move language stuff out of the framework/etc.h/etc.cpp~~
-- ~~Make system reject register above 64 systems~~ ?? why
+- Add a type.h
+
+- Multiple player inputs
 - Finish file writer
-- ~~Rewrite render sort key generator to use bitfields~~ hmm no thanks
-- ~~Add input polling functions to UI~~
-- Render/Armature component linking
-- ~~Add a severity_t to logging and also a system_t~~
+#### Not important
+- Switch out all of the std::cout's to Log's
+- Switch namespace Core to tram
 - Switch the AudioComponent to using audio/source.h
-- Rename location to position everywhere
+- Render/Armature component linking
+
 - Add uninit functions to all systems.
 	- Add checks for them also.
 	- Uniniting Core checks if everything else is also uninited
-- ~~Make a makefile generator.~~
+
 - Check the documentation of OpenAL for things that could be added to the audio abstraction layer.
-- Figure out better serialization.
+
 - Think of new glyphs.
 	- Draw new glyphs.
-- ~~Add a global frame counter.~~
 - Add some more asserts to the GUI system.
+
 - Figure out how to do resources that are generated, not loaded.
-- Finish the file abstraction.
-- ~~Make a Camera system.~~
-	- ~~Move relevant code from ui.cpp~~
 
-#### Version 0.0.5
-- ~~Sprites~~
-	- ~~Add option to load frames from disk~~
-- ~~Fonts/glyphs~~
-	- ~~Add an option to register custom fonts~~
-	- ~~Add a typedef font_t~~
-	- ~~Function font_t RegisterFont (type regular/msdf, font_t)~~
-- ~~Switch to using sprites~~
-	- ~~Instead of feeding it a font index, instead feed a font_t~~
-
-#### Version 0.0.6
-- ~~New CharacterController~~
-	- ~~Switch from RigidBody to Kinetic~~
-- ~~Partially rewrite the PhysicsComponent~~
-	- ~~Delete unused methods~~
-	- ~~Add more methods~~
-
-#### Version 0.0.7
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
 
-#### Version 0.0.8
 - Add scripting
-
-#### Menu/GUI
-- Keybinding menu
-- Graphics menu
-
-
-#### For later versions
-- AudioComponent
-	- Some sort of real-time spatial effect system
-- Rendering
-	- Shiny stuff shader
-	- Transparency blending
-	- Deferred rendering
-	- Occlusion culling
-	- Bump and specularity maps
-- Logging redirection
-- Fix the tramway entity
-- Fix the bus entity
-- ParticleComponent
-	- Animated particles
-- Create a custom 16-bit character encoding
-- Change font rendering to use sprite system
-- Optimize the model material bucketing system
-- Make the player controller more responsive
-- Physics cached collision primitives
-- Add a proper third person camera 
-- Put LODs into files
-- Add some generic gameplay systems
-	- Tools/items
-	- Item management/inventory
-	- Dialog
-	- Cutscenes
-	- AI
-- Async job system
-- Oof
-	- Sprite
-		- Loading frames from a file
-		- Alternate [???]
-
 
 #### For very later versions
 - Vertex animation

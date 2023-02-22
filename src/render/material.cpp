@@ -27,9 +27,15 @@
 using namespace Core;
 using namespace Core::Render;
 
-Material* Material::error_material = nullptr;
+Material* ERROR_MATERIAL = nullptr;
 Hashmap<Material*> MATERIAL_LIST("material name list", 500);
 template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
+
+/// Loads the default error material.
+void Material::LoadErrorMaterial() {
+    ERROR_MATERIAL = Material::Make(UID("defaulttexture"), Material::TEXTURE);
+    ERROR_MATERIAL->Load();
+}
 
 /// Loads a Material definition file.
 void Material::LoadMaterialInfo(const char* filename){
@@ -153,7 +159,7 @@ void Material::LoadFromDisk(){
         std::cout << "Texture " << name << " (" << path << ") couldn't be loaded!" << std::endl;
 
         // copy the error texture
-        texture = error_material->texture;
+        texture = ERROR_MATERIAL->texture;
         status = READY;
         load_fail = true;
     }

@@ -27,8 +27,6 @@ namespace Core::Render {
         uint8_t channels = 0;
         uint8_t* textureData = nullptr;
         size_t approx_vram_usage = 0;
-
-        static Material* error_material;
     public:
         Material (){}
         Material(name_t mName, Material::Type mType) {
@@ -50,7 +48,7 @@ namespace Core::Render {
         void LoadFromMemory();
         static Material* Find (name_t name);
         static Material* Make (name_t name, Material::Type type);
-        static void SetErrorMaterial(Material* mat) { error_material = mat; mat->Load(); }
+        static void LoadErrorMaterial();
         static void LoadMaterialInfo(const char* filename);
         friend class Sprite;
     };

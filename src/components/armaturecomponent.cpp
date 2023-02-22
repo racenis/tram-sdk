@@ -80,10 +80,11 @@ namespace Core {
         
         for (size_t i; i < BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
         
-        anim_info[slot].animation_header = Render::Animation::Find(animation_name);
+        //anim_info[slot].animation_header = Render::Animation::Find(animation_name);
+        anim_info[slot].animation_header = Render::Animation::Find(animation_name)->GetPointer();
 
         if(anim_info[slot].animation_header == nullptr){
-            std::cout << "Animation " << animation_name << " not found!" << std::endl;
+            std::cout << "Animation " << animation_name << " not loaded!" << std::endl;
             anim_playing[slot] = 0;
             return;
         }

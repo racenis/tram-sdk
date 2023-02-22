@@ -17,10 +17,15 @@
 using namespace Core;
 using namespace Core::Render;
 
-Model* Model::error_model = nullptr;
+Model* ERROR_MODEL = nullptr;
 
 Hashmap<Model*> MODEL_LIST("model name list", 500);
 template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
+
+void Model::LoadErrorModel() {
+    ERROR_MODEL = Model::Find(UID("errorstatic"));
+    ERROR_MODEL->Load();
+}
 
 Model* Model::Find(name_t name){
     Model* model = MODEL_LIST.Find(name);
@@ -389,14 +394,14 @@ void Model::LoadFromDisk(){
     //    eboMat[i] = error_model->eboMat[i];
     //}
     
-    vertex_array_handle = error_model->vertex_array_handle;
-    vertex_buffer_handle = error_model->vertex_buffer_handle;
-    element_buffer_handle = error_model->element_buffer_handle;
+    vertex_array_handle = ERROR_MODEL->vertex_array_handle;
+    vertex_buffer_handle = ERROR_MODEL->vertex_buffer_handle;
+    element_buffer_handle = ERROR_MODEL->element_buffer_handle;
     
-    element_ranges = error_model->element_ranges;
+    element_ranges = ERROR_MODEL->element_ranges;
 
-    materials = error_model->materials;
-    armature = error_model->armature;
+    materials = ERROR_MODEL->materials;
+    armature = ERROR_MODEL->armature;
 
     status = READY;
     load_fail = true;

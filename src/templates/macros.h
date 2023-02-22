@@ -9,7 +9,10 @@
 /// This is experimental template.
 #define TRAM_SDK_REGISTER_EVENT_DATATYPE(EVENT_ID, TYPE) template <> struct Core::EventDataType<EVENT_ID> { TYPE type; };
 
-/// This will make your type have a pool to be accessable from PoolProxy.
-#define TRAM_SDK_IMPLEMENT_POOLPROXY_POOL(TYPE, NAME, SIZE) template <> Pool<TYPE> PoolProxy<TYPE>::pool (NAME, SIZE);
+/// Implements a pool.
+#define TRAM_SDK_IMPLEMENT_POOL(TYPE, NAME, SIZE) template <> Pool<TYPE> PoolProxy<TYPE>::pool (NAME, SIZE);
+
+/// Registers an entity.
+#define TRAM_SDK_REGISTER_ENTITY(NAME, TYPE) Entity::Register(#NAME, [](std::string_view& params) -> Entity* {return new TYPE(params);});
 
 #endif // TEMPLATES_MACROS_H

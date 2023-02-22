@@ -6,9 +6,9 @@
 
 #include <framework/uid.h>
 
-namespace Core {
-    name_t FindLangStr(name_t name);
-    void LoadText(const char* filename);
+namespace Core::Language {
+    name_t Get (name_t name);
+    void Load (const char* filename);
 }
 
 #endif // FRAMEWORK_LANGUAGE_H

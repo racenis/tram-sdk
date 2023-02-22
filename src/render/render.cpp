@@ -48,13 +48,15 @@ namespace Core::Render {
         OpenGL::Init();
         
         
-        // this is pain in my assholes
-        
+        // this is for rendering lines
         CreateVertexArray (LINE_VERTEX_DEFINITION, colorlines_vertex_buffer, colorlines_vertex_array);
         colorlines_entry = InsertDrawListEntry ();
         SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
         SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);
         SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
+        
+        Material::LoadErrorMaterial();
+        Model::LoadErrorModel();
         
         System::SetInitialized(System::SYSTEM_RENDER, true);
     }

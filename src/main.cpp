@@ -63,24 +63,20 @@ int main() {
     Audio::Init();
     GUI::Init();
 
-    // any kind of material or model loading must happen after both ui and render are inited
-    // TODO: move these into Render::Init()
-    Material::SetErrorMaterial(PoolProxy<Material>::New(UID("defaulttexture"), Material::TEXTURE));
-    Model::SetErrorModel(PoolProxy<Model>::New(UID("errorstatic")));
-
     Ext::Menu::Init();
     Ext::Camera::Init();
 
     // load all of the language strings
-    LoadText("data/lv.lang");
+    Language::Load("data/lv.lang");
 
     // texture info stuff
     Material::LoadMaterialInfo("data/texture.list");
 
-    PoolProxy<Animation>::New(UID("mongus"));
-    PoolProxy<Animation>::New(UID("turtle"));
-    PoolProxy<Animation>::New(UID("bingus_idle"));
-    Animation::LoadAll();
+    Animation::Find(UID("mongus-run"))->LoadFromDisk();
+    //PoolProxy<Animation>::New(UID("mongus"));
+    //PoolProxy<Animation>::New(UID("turtle"));
+    //PoolProxy<Animation>::New(UID("bingus_idle"));
+    //Animation::LoadAll();
 
 
 
@@ -132,7 +128,7 @@ int main() {
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
     monguser_armature->SetModel(UID("mongus"));
     monguser_armature->Init();
-    monguser_armature->PlayAnimation(UID("Run"), 100, 1.0f, 2.0f);
+    monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 2.0f);
     monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
 
     // link the mongus model and his animation player

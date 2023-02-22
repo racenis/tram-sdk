@@ -6,13 +6,15 @@
 
 #include <render/armature.h>
 #include <components/armaturecomponent.h>
+#include <framework/logging.h>
+#include <templates/hashmap.h>
 
 #include <fstream>
 
 template <> Core::Pool<Core::Render::Animation> Core::PoolProxy<Core::Render::Animation>::pool("animation pool", 50, false);
 
 namespace Core::Render {
-    std::unordered_map<uint64_t, NameCount*> ANIMATION_LIST;
+    Hashmap<Animation*> ANIMATION_LIST("model name list", 500);
     StackPool<uint8_t> ANIMATION_POOL("animation keyframe pool", 50000);
     Pool<Pose> poseList("pose list", 100, true);
     
@@ -32,66 +34,70 @@ namespace Core::Render {
         std::cout << "Loading animation: " << filename << std::endl;
 
         std::string noot;
-        uint64_t ac;
+        //uint64_t ac;
         uint64_t bc;
         uint64_t kc;
         uint64_t a_name;
         NameCount* nameptr;
         Keyframe* kframe;
 
+        file >> noot; // file type
+        
+        if (noot != "ANIMv1") {
+            Log ("Unrecognized header '{}' in animation {}", noot, filename);
+            return;
+        }
+        
+        file >> noot;       //name of animation as string
+        file >> bc;         //count of bones used by animation
 
-        file >> noot;       //not actually used for anything
-        file >> ac;         //count of animation entries in the file
+        nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
+        a_name = UID(noot).key;   //uint64 hash of name string
 
-        for (uint64_t i = 0; i < ac; i++){
+        nameptr->first = a_name;
+        nameptr->second = bc;
+        //ANIMATION_LIST[a_name] = nameptr;
+        this->animation_pointer = nameptr;
+
+        for (uint64_t j = 0; j < bc; j++){
             nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
-            file >> noot;       //name of animation as string
-            file >> bc;         //count of bones used by animation
-            a_name = UID(noot).key;   //uint64 hash of name string
+            file >> noot;       //name of bone as string
+            file >> kc;         //count of keyframes for the bone
+            a_name = UID(noot).key;   //uint64 hash of bone name
 
             nameptr->first = a_name;
-            nameptr->second = bc;
-            ANIMATION_LIST[a_name] = nameptr;
-
-            for (uint64_t j = 0; j < bc; j++){
-                nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
-                file >> noot;       //name of bone as string
-                file >> kc;         //count of keyframes for the bone
-                a_name = UID(noot).key;   //uint64 hash of bone name
-
-                nameptr->first = a_name;
-                nameptr->second = kc;
+            nameptr->second = kc;
 
 
-                for (uint64_t k = 0; k < kc; k++){
-                    kframe = (Keyframe*) ANIMATION_POOL.AddNew(sizeof(Keyframe));
-                    file >> kframe->frame;
-                    file >> kframe->location.x;
-                    file >> kframe->location.y;
-                    file >> kframe->location.z;
-                    file >> kframe->rotation.x;
-                    file >> kframe->rotation.y;
-                    file >> kframe->rotation.z;
-                    file >> kframe->rotation.w;
-                    file >> kframe->scale.x;
-                    file >> kframe->scale.y;
-                    file >> kframe->scale.z;
-                }
+            for (uint64_t k = 0; k < kc; k++){
+                kframe = (Keyframe*) ANIMATION_POOL.AddNew(sizeof(Keyframe));
+                file >> kframe->frame;
+                file >> kframe->location.x;
+                file >> kframe->location.y;
+                file >> kframe->location.z;
+                file >> kframe->rotation.x;
+                file >> kframe->rotation.y;
+                file >> kframe->rotation.z;
+                file >> kframe->rotation.w;
+                file >> kframe->scale.x;
+                file >> kframe->scale.y;
+                file >> kframe->scale.z;
             }
         }
+    
 
         file.close();
     }
 
-    NameCount* Animation::Find(name_t name){
-        std::unordered_map<uint64_t, NameCount*>::iterator ff = ANIMATION_LIST.find(name.key);
-
-        if(ff == ANIMATION_LIST.end()){
-            std::cout << "Can't find animation " << name << "!" << std::endl;
-            return nullptr;
-        } else {
-            return ff->second;
+    Animation* Animation::Find(name_t name){
+        Animation* animation = ANIMATION_LIST.Find(name);
+        
+        if (!animation) {
+            animation = PoolProxy<Animation>::New(name);
+            ANIMATION_LIST.Insert(UID(name), animation);
         }
+        
+        return animation;
     }    
     
     void UpdateArmatures(){

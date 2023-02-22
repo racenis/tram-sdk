@@ -59,7 +59,7 @@ void Sprite::LoadFromDisk() {
     wrd >> matname;
     
     if (type != "SPRv1") {
-        Log("Incorrect sprite header \"{}\"", str);
+        Log("Incorrect sprite header \"{}\" in file \"{}\"", str, filename);
     }
     
     while (std::getline(file, str)) {
@@ -79,20 +79,14 @@ void Sprite::LoadFromDisk() {
         wrd >> fr.length; 
         
         frames.push_back(fr);
-        
-        //Log("Got line: {}", str);
     }
-    
-    Log ("Sprite file type {} material {} frames {}", type, matname, frames.size());
     
     if (!material) {
         material = Material::Find(UID(matname));
     }
     
-    Log ("Material {} status {}", material->GetName(), (int)material->GetStatus());
     material->AddRef();
     Async::ForceLoadResource(material);
-    Log ("Material {} status {}", material->GetName(), (int)material->GetStatus());
     
     status = LOADED;
 }

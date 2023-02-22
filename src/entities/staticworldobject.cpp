@@ -13,8 +13,6 @@ namespace Core {
     using namespace Core::Physics;
 
     StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
-        std::cout << "Staticwobj constructor." << std::endl;
-
         data.make();
         data->FromString(str);
     };

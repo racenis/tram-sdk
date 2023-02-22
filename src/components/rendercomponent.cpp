@@ -9,7 +9,7 @@ namespace Core {
     
     void RenderComponent::SetModel(name_t name){
         model = Render::Model::Find(name);
-        std::cout << "SETTING MODEL: " << name << std::endl;
+        
         if (is_ready) {
             RemoveDrawListEntry(draw_list_entry);
             InsertDrawListEntry();

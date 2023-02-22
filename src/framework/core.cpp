@@ -51,6 +51,8 @@ namespace Core {
             Event::Register();
         }
         
+        assert(!System::IsInitialized(System::SYSTEM_CORE));
+        
         System::SetInitialized(System::SYSTEM_CORE, true);
         
         std::cout << ENGINE_VERSION << std::endl;
