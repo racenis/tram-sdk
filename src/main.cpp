@@ -158,7 +158,7 @@ int main() {
     derp_player->SetRepeating(true);
     derp_player->Init();
     
-    //derp_player->Play();
+    derp_player->Play();
 
     
     //auto crate_ent = Entity::Find(UID("estijs"));
@@ -347,14 +347,13 @@ int main() {
         Event::Dispatch();
         Message::Dispatch();
         
-        WorldCell::Loader::LoadCells();
+        WorldCell::Loader::Update();
         
         ControllerComponent::Update();
         ArmatureComponent::Update();
 
         Physics::Update();
 
-        //Render::UpdateArmatures();
         Render::Render();
 
         UI::EndFrame();

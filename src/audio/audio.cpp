@@ -16,6 +16,7 @@
 #include <audio/source.h>
 #include <components/audiocomponent.h>
 #include <unordered_map>
+#include <templates/hashmap.h>
 
 template <> Core::Pool<Core::Audio::Sound> Core::PoolProxy<Core::Audio::Sound>::pool("sound pool", 100, false);
 namespace Core::Audio {
@@ -26,7 +27,8 @@ namespace Core::Audio {
     };
     
     Pool<SoundSource> all_sounds("sound source pool", 100, false);
-    std::unordered_map<uint64_t, Sound*> sound_map;
+    //std::unordered_map<uint64_t, Sound*> sound_map;
+    Hashmap<Sound*> sound_map ("Sound hash map", 500);
     
     glm::vec3 LISTENER_POSITION = glm::vec3(0.0f);
     glm::vec3 LISTENER_ORIENTATION[2] = {glm::vec3(0.0f), glm::vec3(0.0f)};
@@ -63,7 +65,8 @@ namespace Core::Audio {
     
     void Uninit() {
         for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
-        for (auto it : sound_map) it.second->Unload();
+        for (auto& it : PoolProxy<Sound>::GetPool()) it.Unload();
+        //for (auto it : sound_map) it.second->Unload();
         
         alcMakeContextCurrent(nullptr);
         alcDestroyContext(sound_context);
@@ -107,7 +110,8 @@ namespace Core::Audio {
             }
             
             
-            sound_map[name.key] = this;
+            //sound_map[name.key] = this;
+            sound_map.Insert(name, this); // wait what?
         }
         
         status = READY;
@@ -119,17 +123,18 @@ namespace Core::Audio {
     }
     
     Sound* Sound::Find (name_t name) {
-        auto sound = sound_map.find(name.key);
+        //auto sound = sound_map.find(name.key);
+        auto sound = sound_map.Find(name);
         
-        if (sound != sound_map.end()) {
-            return sound->second;
-        } else {
-            auto sound = PoolProxy<Sound>::New(name);
-            sound_map [name.key] = sound;
-            return sound;
+        if (!sound) {
+            sound = PoolProxy<Sound>::New(name);
+            //sound_map [name.key] = sound;
+            sound_map.Insert(name, sound);
             //Log (SEVERITY_CRITICAL_ERROR, System::SYSTEM_AUDIO, "Can't find the sound {} aborting.", name);
             //abort();
         }
+        
+        return sound;
     }
     
 }

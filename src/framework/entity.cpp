@@ -6,13 +6,16 @@
 #include <framework/etc.h>
 #include <framework/serializeddata.h>
 
+#include <templates/hashmap.h>
+
 #include <iostream>
 #include <unordered_map>
 
 namespace Core {
     // TODO: swap all of these out for my own hashmap
     std::unordered_map<uint64_t, Entity*> ENTITY_ID_LIST;
-    std::unordered_map<uint64_t, Entity*> ENTITY_NAME_LIST;
+    //std::unordered_map<uint64_t, Entity*> ENTITY_NAME_LIST;
+    Hashmap<Entity*> ENTITY_NAME_LIST ("Entity name hashmap", 500);
     std::unordered_map<std::string, Entity* (*)(std::string_view& params)> ENTITY_CONSTRUCTORS;
     
     Entity::Entity() {
@@ -54,8 +57,11 @@ namespace Core {
         }
 
         if (name) {
-            auto name_it = ENTITY_NAME_LIST.find(name.key);
-            if (name_it != ENTITY_NAME_LIST.end()) ENTITY_NAME_LIST.erase(name_it);
+            //auto name_it = ENTITY_NAME_LIST.find(name.key);
+            //if (name_it != ENTITY_NAME_LIST.end()) ENTITY_NAME_LIST.erase(name_it);
+            if (ENTITY_NAME_LIST.Find(name)) {
+                ENTITY_NAME_LIST.Insert(name, nullptr);
+            }
         }
     }
     
@@ -84,7 +90,8 @@ namespace Core {
         }
 
         if (name) {
-            ENTITY_NAME_LIST[name.key] = this;
+            //ENTITY_NAME_LIST[name.key] = this;
+            ENTITY_NAME_LIST.Insert(name, this);
         }
     }
     
@@ -99,13 +106,15 @@ namespace Core {
     }
 
     Entity* Entity::FindByName(name_t entityName){
-        std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_NAME_LIST.find(entityName.key);
+        /*std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_NAME_LIST.find(entityName.key);
 
         if(ff == ENTITY_NAME_LIST.end()){
             return nullptr;
         } else {
             return ff->second;
-        }
+        }*/
+        
+        return ENTITY_NAME_LIST.Find(entityName);
     }
     
     Entity* MakeEntityFromString(std::string_view& entStr){

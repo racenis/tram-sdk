@@ -343,7 +343,7 @@ void Model::LoadFromDisk(){
         for(uint32_t i = 0; i < gcount; i++){
             std::string g;
             file >> g;
-            data->groups.push_back(UID(g).key);
+            data->groups.push_back(g);
         }
         file.close();
 

@@ -34,7 +34,7 @@ namespace Core {
         public:
             void SetLocation(const vec3& new_location) { location = new_location; current_cell = Find(new_location); }
             void UpdateLocation(const vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) { current_cell = n_trans; } }
-            static void LoadCells();
+            static void Update();
         private:
             vec3 location;
             WorldCell* current_cell;
@@ -50,7 +50,7 @@ namespace Core {
         std::vector<Transition*> trans_out; // this one too?
         std::vector<Path*> paths;
         std::vector<Navmesh*> navmeshes;
-        friend void LoadCells();
+        friend void Loader::Update();
     public:
         WorldCell(name_t name){ this->name = name; };
 

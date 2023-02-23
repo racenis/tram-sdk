@@ -137,7 +137,7 @@ namespace Core::Render {
     struct DynamicModelData : public ModelData {
         std::vector<DynamicModelVertex> vertices;
         std::vector<ModelIndex> indices;
-        std::vector<unsigned int> groups;
+        std::vector<UID> groups;
     };
     
     struct LightListObject {

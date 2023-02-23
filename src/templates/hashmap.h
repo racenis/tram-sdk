@@ -5,6 +5,7 @@
 #define TEMPLATES_HASHMAP_H
 
 #include <framework/core.h>
+#include <iostream> // error message
 
 namespace Core {
     template <typename T>
@@ -76,6 +77,7 @@ namespace Core {
             }
             
             if (candidate == last) {
+                std::cout << "Hashmap " << name << " overflow!" << std::endl;
                 abort();
             }
             

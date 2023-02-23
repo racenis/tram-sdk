@@ -1,12 +1,13 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <templates/pool.h>
-
 //#include <framework/core.h>
 #include <framework/worldcell.h>
 #include <framework/entity.h>
 #include <framework/navigation.h>
+
+#include <templates/pool.h>
+#include <templates/hashmap.h>
 
 #include <render/render.h>
 
@@ -17,7 +18,8 @@
 #include <set>
 
 using namespace Core;
-std::unordered_map<uint64_t, WorldCell*> WORLDCELL_LIST;
+//std::unordered_map<uint64_t, WorldCell*> WORLDCELL_LIST;
+Hashmap<WorldCell*> WORLDCELL_LIST ("Worldcell list hashmap", 500);
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
 template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
 template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcellloader pool", 10, false);
@@ -30,21 +32,24 @@ void WorldCell::SetName(name_t new_name) {
     }
     
     name = new_name;
-    WORLDCELL_LIST[name.key] = this;
+    //WORLDCELL_LIST[name.key] = this;
+    WORLDCELL_LIST.Insert(name, this);
 }
 
 WorldCell* WorldCell::Find(name_t name){
-    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
+    /*std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
 
     if(ff == WORLDCELL_LIST.end()){
         return nullptr;
     } else {
         return ff->second;
-    }
+    }*/
+    
+    return WORLDCELL_LIST.Find(name);
 }
 
 WorldCell* WorldCell::Make(name_t name){
-    std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
+    /*std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
 
     if(ff == WORLDCELL_LIST.end()){
         WorldCell* new_cell = PoolProxy<WorldCell>::New(name);
@@ -52,7 +57,16 @@ WorldCell* WorldCell::Make(name_t name){
         return new_cell;
     } else {
         return ff->second;
+    }*/
+    
+    auto cell = WORLDCELL_LIST.Find(name);
+    
+    if (!cell) {
+        cell = PoolProxy<WorldCell>::New(name);
+        WORLDCELL_LIST.Insert(name, cell);
     }
+    
+    return cell;
 }
 
 WorldCell* WorldCell::Find (const glm::vec3& point){
@@ -101,7 +115,7 @@ void WorldCell::Unload(){
     loaded = false;
 };
 
-void WorldCell::Loader::LoadCells() {
+void WorldCell::Loader::Update() {
     std::set<WorldCell*> active_cells;
     auto& loader_pool = PoolProxy<Loader>::GetPool();
     auto& cell_pool = PoolProxy<WorldCell>::GetPool();

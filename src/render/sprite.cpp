@@ -5,8 +5,9 @@
 #include <render/renderer.h>
 
 #include <framework/async.h>
-
 #include <framework/logging.h>
+
+#include <templates/hashmap.h>
 
 #include <fstream>
 #include <sstream>
@@ -14,10 +15,11 @@
 using namespace Core;
 using namespace Core::Render;
 
-std::unordered_map<uint64_t, Sprite*> SPRITE_LIST;
+//std::unordered_map<uint64_t, Sprite*> SPRITE_LIST;
+Hashmap<Sprite*> SPRITE_LIST ("SPRITE_LIST", 500);
 
 Sprite* Sprite::Find(name_t name){
-    std::unordered_map<uint64_t, Sprite*>::iterator ff = SPRITE_LIST.find(name.key);
+    /*std::unordered_map<uint64_t, Sprite*>::iterator ff = SPRITE_LIST.find(name.key);
     Sprite* sprite;
 
     if (ff == SPRITE_LIST.end()) {
@@ -25,6 +27,13 @@ Sprite* Sprite::Find(name_t name){
         SPRITE_LIST[name.key] = sprite;
     } else {
         sprite = ff->second;
+    }*/
+    
+    auto sprite = SPRITE_LIST.Find(name);
+    
+    if (!sprite) {
+        sprite = new Sprite (name);
+        SPRITE_LIST.Insert(name, sprite);
     }
 
     return sprite;

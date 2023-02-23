@@ -37,7 +37,8 @@ namespace Core::Render {
         //uint64_t ac;
         uint64_t bc;
         uint64_t kc;
-        uint64_t a_name;
+        //uint64_t a_name;
+        UID a_name;
         NameCount* nameptr;
         Keyframe* kframe;
 
@@ -52,7 +53,7 @@ namespace Core::Render {
         file >> bc;         //count of bones used by animation
 
         nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
-        a_name = UID(noot).key;   //uint64 hash of name string
+        a_name = noot;   //uint64 hash of name string
 
         nameptr->first = a_name;
         nameptr->second = bc;
@@ -63,7 +64,7 @@ namespace Core::Render {
             nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
             file >> noot;       //name of bone as string
             file >> kc;         //count of keyframes for the bone
-            a_name = UID(noot).key;   //uint64 hash of bone name
+            a_name = noot;   //uint64 hash of bone name
 
             nameptr->first = a_name;
             nameptr->second = kc;

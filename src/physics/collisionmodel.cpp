@@ -4,12 +4,15 @@
 #include <btBulletDynamicsCommon.h>
 #include <physics/physics.h>
 #include <physics/collisionmodel.h>
+#include <templates/hashmap.h>
 #include <fstream>
 
 namespace Core::Physics {
-    std::unordered_map<uint64_t, CollisionModel*> COLLISION_MODELS;
+    //std::unordered_map<uint64_t, CollisionModel*> COLLISION_MODELS;
+    Hashmap<CollisionModel*> COLLISION_MODELS ("Collision MODEL HASHMAP", 500);
     
-    CollisionModel* CollisionModel::Find(name_t modelName){
+    CollisionModel* CollisionModel::Find(name_t modelName) {
+        /*
         std::unordered_map<uint64_t, CollisionModel*>::iterator ff = COLLISION_MODELS.find(modelName.key);
         CollisionModel* model;
         if(ff == COLLISION_MODELS.end()){
@@ -18,6 +21,16 @@ namespace Core::Physics {
         } else {
             model = ff->second;
         }
+        return model;
+         */
+        
+        auto model = COLLISION_MODELS.Find(modelName);
+        
+        if (!model) {
+            model = new CollisionModel(modelName);
+            COLLISION_MODELS.Insert(modelName, model);
+        }
+        
         return model;
     }
     

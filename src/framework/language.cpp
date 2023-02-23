@@ -3,6 +3,9 @@
 #include <templates/stackpool.h>
 
 #include <framework/templates.h>
+
+#include <templates/hashmap.h>
+
 #include <cstring>
 
 #include <fstream>
@@ -10,7 +13,8 @@
 
 namespace Core::Language {
     StackPool<char> stringPoolforLangs("stringpool for langs", 10000);
-    std::unordered_map<uint64_t, uint64_t> langStringHashMap;
+    //std::unordered_map<uint64_t, uint64_t> langStringHashMap;
+    Hashmap<uint64_t> LANGUAGE_STRING_MAP ("Hashmap for language strings", 500);
         
     // when refactoring this, it would be good idea to move these out to a language.cpp or something
     void Load (const char* filename){
@@ -31,19 +35,21 @@ namespace Core::Language {
 
             strcpy(tbr, langstr.c_str());
 
-            langStringHashMap[strkey.key] = langkey;
+            //langStringHashMap[strkey.key] = langkey;
+            LANGUAGE_STRING_MAP.Insert(strkey, langkey);
 
         }
         file.close();
     }
     
     name_t Get (name_t name){
-        std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name.key);
+        /*std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name.key);
 
         if(ff == langStringHashMap.end()){
             return 0;
         } else {
             return ff->second;
-        }
+        }*/
+        return LANGUAGE_STRING_MAP.Find(name);
     }
 }
