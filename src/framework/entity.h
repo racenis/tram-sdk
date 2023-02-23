@@ -77,8 +77,8 @@ namespace Core {
         static Entity* FindByName (name_t entityName);
     protected:
         uint64_t id = 0;
-        name_t name = 0;
-        name_t action = 0;
+        name_t name;
+        name_t action;
 
         bool isloaded = false;
         bool auto_load = true;

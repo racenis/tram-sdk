@@ -7,7 +7,7 @@
 #include <framework/uid.h>
 
 namespace Core::Language {
-    name_t Get (name_t name);
+    const char* Get (name_t name);
     void Load (const char* filename);
 }
 

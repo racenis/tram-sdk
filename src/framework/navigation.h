@@ -38,7 +38,7 @@ namespace Core {
             };
         };
         
-        name_t name = 0;
+        name_t name;
         std::vector<Node> nodes;
     };
     
@@ -51,7 +51,7 @@ namespace Core {
             glm::vec3 location;
         };
         
-        name_t name = 0;
+        name_t name;
         std::vector<Node> nodes;
         static Octree<Node*> all_nodes;
     };

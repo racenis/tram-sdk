@@ -91,7 +91,7 @@ namespace Core::Physics {
     /// Used to interface the physics library with the rest of the system.
     class ArmMotionState : public btMotionState {
     public:
-        ArmMotionState(uint64_t boneName, ArmatureComponent* armature, glm::vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
+        ArmMotionState(UID boneName, ArmatureComponent* armature, glm::vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
             ent = entity;
             arm = armature;
             offset = bindPos;
@@ -169,7 +169,7 @@ namespace Core::Physics {
         ArmatureComponent* arm;
         Entity* ent;
         glm::vec3 offset;
-        uint64_t bone;
+        UID bone;
     };
     
 }

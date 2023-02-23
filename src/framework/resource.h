@@ -21,7 +21,7 @@ namespace Core {
         };
     protected:
         Status status = UNLOADED;
-        name_t name = 0;
+        name_t name;
         bool load_fail = false;
         size_t references = 0;
     public:

@@ -45,7 +45,7 @@ class ArmatureComponent : public EntityComponent {
         size_t armature_bone_count = 0;
         uint32_t armature_bone_parents[BONE_COUNT] = {-1ul};
         
-        name_t anim_playing[ANIM_COUNT] = {0};
+        name_t anim_playing[ANIM_COUNT];
         AnimationPlaybackInfo anim_info[ANIM_COUNT];
         
         ArmatureComponent() : model(this){}

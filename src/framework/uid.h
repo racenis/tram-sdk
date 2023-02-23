@@ -10,8 +10,7 @@ namespace Core {
     struct UID {
         UID() {}
         UID(const std::string& value);
-        UID(const char*& value);
-        UID(const uint64_t& value);
+        UID(const char* value);
         ~UID() { }
         UID(const UID& value) { *this = value; }
         UID& operator=(const UID& value) {

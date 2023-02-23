@@ -19,7 +19,12 @@ namespace Core {
     }
     
     // TODO: optimize this
-    UID::UID(const char*& value) {
+    UID::UID(const char* value) {
+        if (!value) {
+            char b = *value;
+            b++;
+        }
+        
         std::string name = value;
         std::unordered_map<std::string, uint64_t>::iterator ff = stringHashMap.find(name);
         if(ff == stringHashMap.end()){
@@ -36,10 +41,6 @@ namespace Core {
         }
     }
 
-    UID::UID(const uint64_t& value) {
-        this->key = value;
-    }
-    
     UID::operator std::string() const {
         return stringPool.begin() + key;
     }

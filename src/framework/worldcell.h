@@ -24,7 +24,7 @@ namespace Core {
             void SetInto(WorldCell* new_into) { into = new_into; }
             WorldCell* GetInto() { return into; }
         protected:
-            name_t name = 0;
+            name_t name;
             WorldCell* into;
             std::vector<vec3> points;
             std::vector<vec4> planes;
@@ -40,7 +40,7 @@ namespace Core {
             WorldCell* current_cell;
         };
     protected:
-        name_t name = 0;
+        name_t name;
         bool interior = false;
         bool interiorLights = false;    // why is this in camelCase
         bool loaded = false;

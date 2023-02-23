@@ -48,6 +48,10 @@ using namespace Core;
 using namespace Core::Render;
 using namespace Core::UI;
 
+void UIDFunc(UID thing) {
+    Log ("//////// {}", thing);
+}
+
 int main() {
     //std::cout << std::filesystem::current_path() << std::endl;
 
@@ -76,7 +80,10 @@ int main() {
 
 
 
-
+    //UID bepitong;
+    
+    
+    UIDFunc("bepito");
 
 
     // loading the demo level

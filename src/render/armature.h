@@ -23,7 +23,7 @@ namespace Core::Render {
     const size_t BONE_COUNT = 30;
 
     struct Bone {
-        name_t name = 0;
+        name_t name;
         uint32_t parentIndex = -1;  // why is this name using pascalCase
         vec3 head = vec3(1.0f);
         vec3 tail = vec3(1.0f);
