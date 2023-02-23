@@ -8,20 +8,31 @@
 #include <components/physicscomponent.h>
 
 namespace Core {
-    void ControllerComponent::Move(glm::vec3& direction){
-        if(physcomp == nullptr) return;
-        glm::vec3 vel = direction * 7.0f;
-        physcomp->Push(vel);
-    };
-    void ControllerComponent::GetLocation(glm::vec3& location){
-        physcomp->GetParent()->GetLocation(location);
+    
+    /// Sets the controllers action.
+    /// When updated, the controller will start performing the action
+    /// that it is set to.
+    void ControllerComponent::Act (Action action, ActionModifier modifier, uint32_t magnitude) {
+        current_action = action;
+        current_modifier = modifier;
+        current_magnitude = magnitude;
+        action_updated = true;
     }
-    //void ControllerComponent::SetDirection(const glm::quat& dir) {
-    //    physcomp->SetRotation(dir);
-    //}
+    
+    /// Updates the ControllerComponents.
+    /// Updates all of the ControllerComponents. Should be called once per
+    /// update cycle.
     void ControllerComponent::Update() {
-        if(!physcomp) return;
-       
+        for (auto& component : PoolProxy<ControllerComponent>::GetPool()) component.Perform();
+    }
+    
+    /// Performs the action.
+    /// Performs the action that is setted with Act() method.
+    void ControllerComponent::Perform() {
+        assert(physcomp);
+        assert(triggercomp);
+        assert(parent);
+        
         float boost = 0.0f;
  
         // check if character is in the air
@@ -34,12 +45,11 @@ namespace Core {
         }
         
         if(current_action == ACTION_IDLE){
-            if (action_updated) PlayOnce(ACTION_IDLE);
-            //action_updated = false;
+            //if (action_updated) PlayOnce(ACTION_IDLE);
         }
         
         if(current_action == ACTION_LIVESEY){
-            if (action_updated) Play (ACTION_LIVESEY);
+            //if (action_updated) Play (ACTION_LIVESEY);
             glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
             glm::quat objrotation;
             physcomp->GetParent()->GetRotation(objrotation);
@@ -159,42 +169,6 @@ namespace Core {
         
         parent->UpdateTransform(p_loc, p_rot);
 
-    }
-
-    bool ControllerComponent::IsInAir(){
-        //glm::vec3 f, u, h, c;
-
-        //if(!physcomp) return false;
-        //physcomp->GetParent()->GetLocation(f);
-        //physcomp->GetParent()->GetLocation(u);
-        //physcomp->GetAABB(h, c);
-        //u.y = u.y - 0.2f - ((c.y - h.y) / 2.0f);
-
-        //bool inAir = !Physics::Raycast(f, u);
-        //return inAir;
-        return false;
-    }
-
-    void ControllerComponent::ActivateInFront(){
-        //std::cout << direction.x << " " << direction.y << " " << direction.z << std::endl;
-
-        glm::vec3 direction;
-        glm::vec3 location;
-        physcomp->GetParent()->GetLocation(location);
-
-        location += glm::vec3(0.0f, 0.775f, 0.0f); // stinky hack
-
-        PhysicsComponent* activatable = Physics::Raycast(location, location + direction * 3.0f).collider;
-        std::cout << activatable << std::endl;
-        if (activatable){
-            Message msg;
-
-            msg.type = Message::ACTIVATE;
-            msg.receiver = activatable->GetParent()->GetID();
-            msg.sender = physcomp->GetParent()->GetID();
-
-            Message::Send(msg);
-        }
     }
 }
 

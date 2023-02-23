@@ -89,7 +89,7 @@ namespace Core::Render {
         file.close();
     }
 
-    Animation* Animation::Find(name_t name){
+    Animation* Animation::Find (name_t name) {
         Animation* animation = ANIMATION_LIST.Find(name);
         
         if (!animation) {
@@ -98,21 +98,6 @@ namespace Core::Render {
         }
         
         return animation;
-    }    
-    
-    void UpdateArmatures(){
-        ArmatureComponent* armobj = PoolProxy<ArmatureComponent>::GetPool().GetFirst();
-        ArmatureComponent* armlast = PoolProxy<ArmatureComponent>::GetPool().GetLast();
-        for(;armobj < armlast; armobj++){
-            if(*((uint64_t*)armobj) == 0)
-                continue;
-            else
-                armobj->Update();
-        }
-    }
-    
-    void Animation::LoadAll() {
-        for (auto& anim : PoolProxy<Animation>::GetPool()) anim.LoadFromDisk();
     }
 }
 

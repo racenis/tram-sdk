@@ -349,11 +349,12 @@ int main() {
         
         WorldCell::Loader::LoadCells();
         
-        ControllerComponent::UpdateAll();
+        ControllerComponent::Update();
+        ArmatureComponent::Update();
 
         Physics::Update();
 
-        Render::UpdateArmatures();
+        //Render::UpdateArmatures();
         Render::Render();
 
         UI::EndFrame();

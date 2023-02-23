@@ -162,7 +162,13 @@ namespace Core {
         }
     }
     
-    void ArmatureComponent::SetFrameAnimation(name_t animation_name, float frame) {
+    /// Updates all of the armatures.
+    /// Calls the Refresh() method on all of the animations.
+    void ArmatureComponent::Update() {
+        for (auto& comp : PoolProxy<ArmatureComponent>::GetPool()) comp.Refresh();
+    }
+    
+    void ArmatureComponent::SetFrameAnimation (name_t animation_name, float frame) {
         for (size_t i = 0; i < ANIM_COUNT; i++){
             if(anim_playing[i] == animation_name){
                 anim_info[i].frame = frame;
@@ -171,7 +177,9 @@ namespace Core {
         }
     }
     
-    void ArmatureComponent::Update(){
+    /// Updates an armature.
+    /// Pushes animations forward and regenerates matrices.
+    void ArmatureComponent::Refresh(){
         if (!is_ready) return;
         Render::Keyframe anim_mixed[BONE_COUNT];
         for (uint64_t i = 0; i < armature_bone_count; i++) anim_mixed[i] = base_pose[i];

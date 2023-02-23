@@ -65,8 +65,9 @@ class ArmatureComponent : public EntityComponent {
         void PauseAnimation(name_t animation_name, bool pause);
         void FadeAnimation(name_t animation_name, bool fade_in, float fade_speed);
         void SetFrameAnimation(name_t animation_name, float frame);
-        void Update();
+        void Refresh();
         void EventHandler(Event &event){ return; }
+        static void Update();
     };
 }
 

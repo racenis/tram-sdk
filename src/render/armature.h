@@ -58,8 +58,6 @@ namespace Core::Render {
         NameCount* animation_pointer;
     };
 
-    void UpdateArmatures();
-
 }
 
 #endif // ARMATURE_H
