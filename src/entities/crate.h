@@ -46,23 +46,15 @@ namespace Core {
                 collmodel.FromString(str);
             }
             
-            name_t GetEditorModel() {
-                return model;
-            }
-            
-            std::vector<FieldInfo> GetEditorFieldInfo() {
+            std::vector<FieldInfo> GetFieldInfo() {
                 return std::vector<FieldInfo> {
-                     { FieldInfo::FIELD_NAME, "Model", "model", &model },
-                     { FieldInfo::FIELD_NAME, "CollisionMdl", "collision-model", &collmodel },
+                     { FieldInfo::FIELD_MODELNAME, "model" },
+                     { FieldInfo::FIELD_STRING, "collision-model" },
                 };
             }
             
-            char const* GetDataName() {
+            char const* GetType() {
                 return "crate";
-            }
-            
-            char const* GetEditorName() {
-                return "Crate";
             }
         };
     protected:

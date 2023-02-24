@@ -21,13 +21,6 @@ namespace Core {
         void Unload();
         void Serialize();
         void MessageHandler(Message& msg);
-    
-        struct DataOLD {
-            void* padding = nullptr;
-            uint64_t model;
-            uint64_t model_lod;
-            uint64_t lightmap;
-        };
 
         class Data: public SerializedEntityData {
         public:
@@ -44,23 +37,15 @@ namespace Core {
                 lightmap.FromString(str);
             }
             
-            name_t GetEditorModel() {
-                return model;
-            }
-            
-            std::vector<FieldInfo> GetEditorFieldInfo() {
+            std::vector<FieldInfo> GetFieldInfo() {
                 return std::vector<FieldInfo> {
-                     { FieldInfo::FIELD_NAME, "Model", "model", &model },
-                     { FieldInfo::FIELD_NAME, "Lightmap", "lightmap", &lightmap },
+                     { FieldInfo::FIELD_MODELNAME, "model", },
+                     { FieldInfo::FIELD_STRING, "lightmap", },
                 };
             }
             
-            char const* GetDataName() {
+            char const* GetType() {
                 return "staticwobj";
-            }
-            
-            char const* GetEditorName() {
-                return "Staticworldobject";
             }
         };
     protected:

@@ -42,25 +42,17 @@ namespace Core {
                 distance.FromString(str);
             }
             
-            name_t GetEditorModel() {
-                return UID("mongus");
-            }
-            
-            std::vector<FieldInfo> GetEditorFieldInfo() {
+            std::vector<FieldInfo> GetFieldInfo() {
                 return std::vector<FieldInfo> {
-                     { FieldInfo::FIELD_FLOAT, "Color R", "color-r", &color_r },
-                     { FieldInfo::FIELD_FLOAT, "Color G", "color-g", &color_g },
-                     { FieldInfo::FIELD_FLOAT, "Color B", "color-b", &color_b },
-                     { FieldInfo::FIELD_FLOAT, "Distance", "distance", &distance },
+                     { FieldInfo::FIELD_FLOAT, "color-r" },
+                     { FieldInfo::FIELD_FLOAT, "color-g" },
+                     { FieldInfo::FIELD_FLOAT, "color-b" },
+                     { FieldInfo::FIELD_FLOAT, "distance" },
                 };
             }
             
-            char const* GetDataName() {
+            char const* GetType() {
                 return "lamp";
-            }
-            
-            char const* GetEditorName() {
-                return "Lamp";
             }
         };
     protected:

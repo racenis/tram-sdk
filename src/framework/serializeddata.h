@@ -10,8 +10,10 @@
 #include <framework/uid.h>
 
 namespace Core {
+    /// Tightly packed, binary entity data.
     class SerializedEntityData {
     public:
+        /// Segment of binary entity data.
         template <typename T>
         class Field {
         public:
@@ -20,31 +22,52 @@ namespace Core {
             Field(const T& other) { var = other; }
             Field() = default;
 
+            /// Converts a field to a string.
+            /// Used for serialization to disk.
             void ToString(std::string& str) { assert(false); }
+            
+            /// Converts a field to binary.
+            /// Used for deserialization from disk.
             T& FromString(std::string_view& str) { assert(false); }
         private:
             T var;
         };
+        
+        /// Field meta-data for the editor program.
         struct FieldInfo {
+            /// Determines representation and semantics of a field.
+            /// See framework/type.h for more information.
             enum Type {
-                FIELD_UINT64,
-                FIELD_FLOAT,
-                FIELD_NAME
+                FIELD_INT,      //< Default integer.
+                FIELD_UINT,     //< Default unsigned integer.
+                FIELD_FLOAT,    //< Default floating point.
+                FIELD_STRING,   //< Default string.
+                FIELD_MODELNAME //< Default string that represents the name of a Model.
             } type;
-            char const* display_name;
-            char const* data_name;
-            void* field;
+            
+            /// Name of the field.
+            char const* name;
         };
+        
+        /// Converts all of the fields to a string.
+        /// Used for serialization to disk.
+        virtual void ToString(std::string& str) = 0;
+        
+        /// Converts all of the fields to binary.
+        /// Used for deserialization from disk.
+        virtual void FromString(std::string_view& str) = 0;
+        
+        /// Returns field meta-data for the editor.
+        virtual std::vector<FieldInfo> GetFieldInfo() = 0;
+        
+        /// Returns the name of the Entity type.
+        virtual char const* GetType() = 0;
+        
         SerializedEntityData() = default;
         virtual ~SerializedEntityData() = default;
-        virtual void ToString(std::string& str) = 0;
-        virtual void FromString(std::string_view& str) = 0;
-        virtual name_t GetEditorModel() = 0;
-        virtual std::vector<FieldInfo> GetEditorFieldInfo() = 0;
-        virtual char const* GetEditorName() = 0;
-        virtual char const* GetDataName() = 0;
     };
     
+    /// Smart pointer to a SerializedEntityData.
     template <typename T>
     class SerializedData {
     public:
@@ -60,6 +83,7 @@ namespace Core {
         T* ptr = nullptr;
     };
 
+    // UINT TYPE
     template <>
     inline uint64_t& SerializedEntityData::Field<uint64_t>::FromString(std::string_view &str) {
         char* f_end;
