@@ -11,7 +11,7 @@ namespace Core {
     template <typename T>
     class Hashmap {
     protected:
-        typedef std::pair<UID, T> PAIR;
+        typedef std::pair<uint64_t, T> PAIR;
         const size_t padding = 10;
 
         std::string name;
@@ -35,7 +35,11 @@ namespace Core {
         }
         
         T Find (UID key) {
-            uint64_t hash = key.key % max_size;
+            return Find(key.key);
+        }
+        
+        T Find (uint64_t key) {
+            uint64_t hash = key % max_size;
             
             PAIR* candidate = first + hash;
             
@@ -55,11 +59,15 @@ namespace Core {
         }
         
         void Insert (UID key, T value) {
+            Insert(key.key, value);
+        }
+        
+        void Insert (uint64_t key, T value) {
             if(size == max_size){
                 std::cout << "Hashmap " << name << " density reached!" << std::endl;
             }
             
-            uint64_t hash = key.key % max_size;
+            uint64_t hash = key % max_size;
             
             PAIR* candidate = first + hash;
             

@@ -13,10 +13,11 @@
 
 namespace Core {
     // TODO: swap all of these out for my own hashmap
-    std::unordered_map<uint64_t, Entity*> ENTITY_ID_LIST;
+    //std::unordered_map<uint64_t, Entity*> ENTITY_ID_LIST;
+    Hashmap<Entity*> ENTITY_ID_LIST ("Entity ID hashmap", 500);
     //std::unordered_map<uint64_t, Entity*> ENTITY_NAME_LIST;
     Hashmap<Entity*> ENTITY_NAME_LIST ("Entity name hashmap", 500);
-    std::unordered_map<std::string, Entity* (*)(std::string_view& params)> ENTITY_CONSTRUCTORS;
+    std::unordered_map<std::string, Entity* (*)(std::string_view& params)> ENTITY_CONSTRUCTORS; //  !!!!
     
     Entity::Entity() {
         this->id = GenerateID();
@@ -52,8 +53,11 @@ namespace Core {
         if (cell) cell->RemoveEntity(this);
 
         if (id) {
-            auto id_it = ENTITY_ID_LIST.find(id);
-            if (id_it != ENTITY_ID_LIST.end()) ENTITY_ID_LIST.erase(id_it);
+            //auto id_it = ENTITY_ID_LIST.find(id);
+            //if (id_it != ENTITY_ID_LIST.end()) ENTITY_ID_LIST.erase(id_it);
+            if (ENTITY_ID_LIST.Find(id)) {
+                ENTITY_ID_LIST.Insert(id, nullptr);
+            }
         }
 
         if (name) {
@@ -86,7 +90,8 @@ namespace Core {
 
     void Entity::Register(){
         if (id) {
-            ENTITY_ID_LIST[id] = this;
+            //ENTITY_ID_LIST[id] = this;
+            ENTITY_ID_LIST.Insert(id, this);
         }
 
         if (name) {
@@ -96,13 +101,15 @@ namespace Core {
     }
     
     Entity* Entity::FindByID (uint64_t entityID){
-        std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_ID_LIST.find(entityID);
+        /*std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_ID_LIST.find(entityID);
 
         if(ff == ENTITY_ID_LIST.end()){
             return nullptr;
         } else {
             return ff->second;
-        }
+        }*/
+        
+        return ENTITY_ID_LIST.Find(entityID);
     }
 
     Entity* Entity::FindByName(name_t entityName){
