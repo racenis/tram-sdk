@@ -35,7 +35,7 @@ namespace Core {
         }
         
         ~DiskFile() {
-            if (is_open() && mode == MODE_READ) {
+            if (is_open() && mode == MODE_WRITE) {
                 fwrite(byte_buffer.data(), byte_buffer.size(), 1, file_handle);
             }
             
@@ -117,14 +117,17 @@ namespace Core {
         template <typename T>
         T read_impl() {
             T val;
-            std::from_chars(iterator, file_end, val);
+            iterator += std::from_chars(iterator, file_end, val).ptr - iterator;
+            while (isspace(*iterator) && iterator < file_end) iterator++;
             return val;
         }
         
     public:
         TextParser(char const* filename, FileAccessMode mode) : file(filename, mode) {
-            iterator = file.read();
-            file_end = file.read() + file.length();
+            if (mode == MODE_READ) {
+                iterator = file.read();
+                file_end = file.read() + file.length();
+            }
         }
         
         bool is_open() { return file.is_open(); }

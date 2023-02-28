@@ -59,7 +59,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- There are some duplications in typedefs
 
 - Multiple player inputs
-- Finish file writer
 
 - Make constructors/destructors protected
 	- Some classes should only be created in Pools
@@ -67,6 +66,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Move GetTime() out of UI
 
 - SetScreenSize() causes a segfault
+
+- Add more types to file reader/writer
+	- String
+	- UID
 
 #### Not important
 - Switch out all of the std::cout's to Log's

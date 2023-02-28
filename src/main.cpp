@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define NEKADEEE
+//#define NEKADEEE
 
 #ifdef NEKADEEE
 
@@ -383,7 +383,6 @@ using namespace Core;
 
 #include <templates/macros.h>
 
-TRAM_SDK_REGISTER_EVENT_DATATYPE(Event::KEYDOWN, float)
 
 int main() {
     Core::Init();
@@ -391,16 +390,15 @@ int main() {
     std::cout << Core::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
     
-    uint32_t NEW_SYSTEM = System::Register("Legonis", "LEGON");
-    Log("System with ID {} is called {}, or {} for short.", NEW_SYSTEM, System::GetName(NEW_SYSTEM), System::GetShortName(NEW_SYSTEM));
+    {
+        File file ("bepito.bepis", MODE_READ);
+        
+        for (int i = 0; i < 4; i++) {
+            std::cout << file.read_float64() << std::endl;
+        }
+    }
     
-    //Log("Float version: {}, whereas Int version is: {}. Fascinating!", RetrieveData<float>(Event::KEYUP), RetrieveData<int>(Event::KEYDOWN));
-    Event vevent {
-        .type = Event::KEYDOWN,
-        .data = new float(420)
-    };
-    
-    Log("This my log: {}", Event::RetrieveData<Event::KEYDOWN>(vevent));
+    std::cout << "K THX BYE!" << std::endl;
 }
 
 #endif
