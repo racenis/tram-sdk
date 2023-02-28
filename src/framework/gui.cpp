@@ -11,6 +11,7 @@
 #include <framework/logging.h>
 
 #include <render/renderer.h>
+#include <render/vertices.h>
 #include <render/sprite.h>
 
 namespace Core::GUI {
@@ -61,7 +62,7 @@ namespace Core::GUI {
         
         using namespace Core::Render;
         
-        CreateVertexArray(SPRITE_VERTEX_DEFINITION, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
+        CreateVertexArray(VERTEX_DEFINITION<SpriteVertex>, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
         glyphvertices_entry = InsertDrawListEntry();
         SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
         SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);

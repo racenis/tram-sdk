@@ -5,9 +5,13 @@
 #include <framework/event.h>
 #include <framework/system.h>
 #include <framework/uid.h>
+
+#ifndef ENGINE_EDITOR_MODE
 #include <framework/ui.h>
+#endif
 
 #include <iostream>
+#include <cassert>
 
 namespace Core {
     /// Engine version string.
@@ -61,7 +65,10 @@ namespace Core {
     /// Updates the core system.
     /// @note This should be called only once per update cycle.
     void Update () {
+        #ifndef ENGINE_EDITOR_MODE
         TIME = UI::GetTime();
+        #endif
+        
         TICK++;
         
         for (System::system_t i = 0; i < System::GetSystemCount(); i++) {

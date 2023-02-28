@@ -43,7 +43,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 
 #### Should do sooner
-- Re-do serialization
 - Keybinding menu
 - Graphics menu
 
@@ -58,19 +57,16 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Pool template is already rewritten
 - Make sure that there are no duplications of typedefs
 	- There are some duplications in typedefs
-	
-- ~~Put TIME etc. in core.h to functions~~
-- ~~Add a type.h~~
 
 - Multiple player inputs
 - Finish file writer
 
-- Switch all uint64_t to name_t
-	- In armature.h there is a NameCount
-	- After that, also remove uint64_t constructor from name_t
-
 - Make constructors/destructors protected
 	- Some classes should only be created in Pools
+	
+- Move GetTime() out of UI
+
+- SetScreenSize() causes a segfault
 
 #### Not important
 - Switch out all of the std::cout's to Log's
@@ -81,8 +77,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add uninit functions to all systems.
 	- Add checks for them also.
 	- Uniniting Core checks if everything else is also uninited
-
-- Check the documentation of OpenAL for things that could be added to the audio abstraction layer.
 
 - Think of new glyphs.
 	- Draw new glyphs.

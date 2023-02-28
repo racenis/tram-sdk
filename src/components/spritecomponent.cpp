@@ -2,6 +2,7 @@
 // All rights reserved.
 
 #include <render/renderer.h>
+#include <render/vertices.h>
 #include <components/spritecomponent.h>
 
 namespace Core {
@@ -16,7 +17,7 @@ namespace Core {
     void SpriteComponent::Start(){
         assert(!is_ready);
 
-        CreateVertexArray(SPRITE_VERTEX_DEFINITION, vertex_buffer, vertex_array);
+        CreateVertexArray(VERTEX_DEFINITION<SpriteVertex>, vertex_buffer, vertex_array);
         
         auto texture_handle = sprite->GetMaterial()->GetTexture();
         

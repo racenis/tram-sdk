@@ -29,7 +29,7 @@ namespace Core::Language {
             std::getline(file, langstr);
 
             name_t strkey = UID(strid);
-            uint64_t langkey = stringPoolforLangs.GetSize();
+            //uint64_t langkey = stringPoolforLangs.GetSize();
 
             char* tbr = stringPoolforLangs.AddNew(langstr.length() + 1);
 

@@ -4,6 +4,7 @@
 #include <framework/core.h>
 #include <render/render.h>
 #include <render/renderer.h>
+#include <render/vertices.h>
 
 namespace Core::Render {
     void AddLineMarker(const glm::vec3& location, const glm::vec3& color){

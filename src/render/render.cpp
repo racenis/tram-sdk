@@ -5,6 +5,7 @@
 #include <framework/system.h>
 #include <render/render.h>
 #include <render/renderer.h>
+#include <render/vertices.h>
 #include <components/rendercomponent.h>
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
@@ -49,7 +50,7 @@ namespace Core::Render {
         
         
         // this is for rendering lines
-        CreateVertexArray (LINE_VERTEX_DEFINITION, colorlines_vertex_buffer, colorlines_vertex_array);
+        CreateVertexArray (VERTEX_DEFINITION<LineVertex>, colorlines_vertex_buffer, colorlines_vertex_array);
         colorlines_entry = InsertDrawListEntry ();
         SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
         SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);

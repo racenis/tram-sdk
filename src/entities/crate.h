@@ -24,12 +24,6 @@ namespace Core {
         void Serialize();
         void MessageHandler(Message& msg);
         void Testingolingo();
-    
-        struct DataOLD {
-            void* padding = nullptr;
-            uint64_t model;
-            uint64_t collmodel;
-        };
 
         class Data: public SerializedEntityData {
         public:

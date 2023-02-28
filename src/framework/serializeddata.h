@@ -83,6 +83,20 @@ namespace Core {
         T* ptr = nullptr;
     };
 
+    // INT TYPE
+    template <>
+    inline int64_t& SerializedEntityData::Field<int64_t>::FromString(std::string_view &str) {
+        char* f_end;
+        var = std::strtod(str.data(), &f_end);
+        str.remove_prefix(f_end - str.data());
+        return var;
+    }
+    
+    template <>
+    inline void SerializedEntityData::Field<int64_t>::ToString(std::string& str) {
+        str += " "; str += std::to_string(var);
+    }
+
     // UINT TYPE
     template <>
     inline uint64_t& SerializedEntityData::Field<uint64_t>::FromString(std::string_view &str) {

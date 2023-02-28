@@ -6,6 +6,7 @@
 
 #include <render/model.h>
 #include <render/renderer.h>
+#include <render/vertices.h>
 
 #include <framework/async.h>
 
@@ -45,7 +46,7 @@ void Model::LoadFromMemory(){
         StaticModelData* data = (StaticModelData*)mData;
 
         CreateIndexedVertexArray(
-            STATIC_MODEL_VERTEX_DEFINITION,
+            VERTEX_DEFINITION<StaticModelVertex>,
             vertex_buffer_handle,
             element_buffer_handle,
             vertex_array_handle, 
@@ -70,7 +71,7 @@ void Model::LoadFromMemory(){
         DynamicModelData* data = (DynamicModelData*)mData;
 
         CreateIndexedVertexArray(
-            DYNAMIC_MODEL_VERTEX_DEFINITION,
+            VERTEX_DEFINITION<DynamicModelVertex>,
             vertex_buffer_handle,
             element_buffer_handle,
             vertex_array_handle, 

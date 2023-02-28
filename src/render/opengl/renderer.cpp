@@ -70,27 +70,29 @@ namespace Core::Render::OpenGL {
     
 
         
-    void Init(){
-        Render::InsertDrawListEntry = OpenGL::InsertDrawListEntry;
-        Render::InsertDrawListEntryFromModel = OpenGL::InsertDrawListEntryFromModel;
-        Render::GetFlags = OpenGL::GetFlags;
-        Render::SetFlags = OpenGL::SetFlags;
-        Render::SetPose = OpenGL::SetPose;
-        Render::SetLightmap = OpenGL::SetLightmap;
-        Render::SetLights = OpenGL::SetLights;
-        Render::SetLocation = OpenGL::SetLocation;
-        Render::SetRotation = OpenGL::SetRotation;
-        Render::SetDrawListVertexArray = OpenGL::SetDrawListVertexArray;
-        Render::SetDrawListElements = OpenGL::SetDrawListElements;
-        Render::SetDrawListShader = OpenGL::SetDrawListShader;
-        Render::SetDrawListTextures = OpenGL::SetDrawListTextures;
-        Render::RemoveDrawListEntry = OpenGL::RemoveDrawListEntry;
-        Render::CreateTexture = OpenGL::CreateTexture;
-        Render::CreateIndexedVertexArray = OpenGL::CreateIndexedVertexArray;
-        Render::CreateVertexArray = OpenGL::CreateVertexArray;
-        Render::UpdateVertexArray = OpenGL::UpdateVertexArray;
-        Render::RenderFrame = OpenGL::RenderFrame;
-        
+    void Init() {
+        Render::RENDERER = Render::RendererAPI {
+            .InsertDrawListEntry = OpenGL::InsertDrawListEntry,
+            .InsertDrawListEntryFromModel = OpenGL::InsertDrawListEntryFromModel,
+            .SetScreenSize = OpenGL::SetScreenSize,
+            .GetFlags = OpenGL::GetFlags,
+            .SetFlags = OpenGL::SetFlags,
+            .SetPose = OpenGL::SetPose,
+            .SetLightmap = OpenGL::SetLightmap,
+            .SetLights = OpenGL::SetLights,
+            .SetLocation = OpenGL::SetLocation,
+            .SetRotation = OpenGL::SetRotation,
+            .SetDrawListVertexArray = OpenGL::SetDrawListVertexArray,
+            .SetDrawListElements = OpenGL::SetDrawListElements,
+            .SetDrawListShader = OpenGL::SetDrawListShader,
+            .SetDrawListTextures = OpenGL::SetDrawListTextures,
+            .RemoveDrawListEntry = OpenGL::RemoveDrawListEntry,
+            .CreateTexture = OpenGL::CreateTexture,
+            .CreateIndexedVertexArray = OpenGL::CreateIndexedVertexArray,
+            .CreateVertexArray = OpenGL::CreateVertexArray,
+            .UpdateVertexArray = OpenGL::UpdateVertexArray,
+            .RenderFrame = OpenGL::RenderFrame
+        };
         
         CompileShaders();
 
@@ -362,7 +364,7 @@ namespace Core::Render::OpenGL {
         glBindVertexArray(vertex_array_handle);
 
         for (size_t i = 0; i < vertex_format.size(); i++) {
-            uint32_t opengl_type = vertex_format[i].type == VertexProperty::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+            uint32_t opengl_type = vertex_format[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
             
             if (opengl_type == GL_FLOAT) {
                 glVertexAttribPointer(i, vertex_format[i].size, opengl_type, GL_FALSE, vertex_format[i].stride, (void*)vertex_format[i].offset);
@@ -390,7 +392,7 @@ namespace Core::Render::OpenGL {
         glBindVertexArray(vertex_array_handle);
 
         for (size_t i = 0; i < vertex_format.size(); i++) {
-            uint32_t opengl_type = vertex_format[i].type == VertexProperty::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+            uint32_t opengl_type = vertex_format[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
             
             if (opengl_type == GL_FLOAT) {
                 glVertexAttribPointer(i, vertex_format[i].size, opengl_type, GL_FALSE, vertex_format[i].stride, (void*)vertex_format[i].offset);
