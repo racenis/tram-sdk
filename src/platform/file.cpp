@@ -3,56 +3,78 @@
 #include <cstring>
 #include <cassert>
 #include <iostream>
+#include <vector>
 
 namespace Core {
+    /// Reads a file from filesystem.
+    /// When created in read mode, it will try to read all of the file into a
+    /// buffer. This buffer can be accessed with read() and length() methods.
+    /// When created in write mode, it will try to open a file for writing. It
+    /// then is possible to write to the file with write() method.
     class DiskFile {
     public:
-        DiskFile(char const* filename, FileAccessMode mode) : mode(mode) {
-            // [ open the file here ]
+        DiskFile (char const* filename, FileAccessMode mode) : mode(mode) {
+            switch (mode) {
+                case MODE_READ:     file_handle = fopen(filename, "rb"); break;
+                case MODE_WRITE:    file_handle = fopen(filename, "wb"); break;
+            }
             
-            // since this is a mock, we're assuming that it did, in fact, open
-            file_open = true;
+            if (is_open()) {
+                std::cout << "Opened file: " << filename << std::endl;
+            } else {
+                std::cout << "Failed to open file: " << filename << std::endl;
+            }
             
-            std::cout << "Opened file: " << filename << std::endl;
+            if (is_open() && mode == MODE_READ) {
+                fseek(file_handle, 0, SEEK_END);
+                size_t file_size = ftell(file_handle);
+                fseek(file_handle, 0, SEEK_SET);
+                byte_buffer.resize(file_size);
+                std::cout << "Read " << fread(byte_buffer.data(), file_size, 1, file_handle) << " from " << filename << std::endl;
+            }
         }
         
         ~DiskFile() {
-            if (file_open) {
-                // [ close the file ]
+            if (is_open() && mode == MODE_READ) {
+                fwrite(byte_buffer.data(), byte_buffer.size(), 1, file_handle);
+            }
+            
+            if (is_open()) {
+                fclose(file_handle);
+                file_handle = nullptr;
                 std::cout << "Closed file!" << std::endl;
             }
         }
         
-        bool is_open() { return file_open; }
+        /// Returns true if file has been successfully opened.
+        bool is_open() { return file_handle != nullptr; }
         
-        void write(void* data, size_t length) {
+        /// Writes data to file.
+        void write (char* data, size_t length) {
             assert (mode == MODE_WRITE);
-            assert (file_open);
+            assert (is_open());
             
-            // for mocking purposes only
-            char buffer[500];
-            char* ptr = buffer;
-            
-            for (size_t i = 0; i < length; i++, ptr++) {
-                *ptr = *((char*)data + i);
-            }
-            
-            *ptr = '\0';
-            
-            std::cout << "Wrote to file: " << buffer << std::endl;
+            size_t last_data = byte_buffer.size();
+            byte_buffer.resize(byte_buffer.size() + length);
+            mempcpy(byte_buffer.data() + last_data, data, length);
         }
         
-        void read(void* data, size_t length) {
+        /// Returns pointer to data pointer.
+        char* read () {
             assert (mode == MODE_READ);
-            assert (file_open);
+            assert (is_open());
             
-            // for mocking purposes only
-            strncpy((char*)data, "420", length);
-            std::cout << "Read from file: " << (char*)data << std::endl;
+            return byte_buffer.data();
         }
         
-        bool file_open = false;
-        void* filehandle;
+        /// Returns the size of a file that has been read.
+        size_t length () {
+            return byte_buffer.size();
+        }
+        
+    private:
+        std::vector<char> byte_buffer;
+        FILE* file_handle = nullptr;
         FileAccessMode mode;
     };
     
@@ -94,17 +116,15 @@ namespace Core {
         
         template <typename T>
         T read_impl() {
-            char buffer[10];
-            file.read(buffer, 9);
-            buffer[9] = '\0';
             T val;
-            std::from_chars(buffer, buffer+8, val);
+            std::from_chars(iterator, file_end, val);
             return val;
         }
         
     public:
         TextParser(char const* filename, FileAccessMode mode) : file(filename, mode) {
-            
+            iterator = file.read();
+            file_end = file.read() + file.length();
         }
         
         bool is_open() { return file.is_open(); }
@@ -120,6 +140,9 @@ namespace Core {
         double read_float64() { return read_impl<double>(); }
         
         FileAccesser file;
+        
+        char* iterator = nullptr;
+        char* file_end = nullptr;
     };
     
     
