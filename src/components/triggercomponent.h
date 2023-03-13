@@ -33,6 +33,7 @@ namespace Core {
         void SetParent(Entity* newparent){ parent = newparent; }
 
         void SetActivationCallback(void (*activation_callback)(TriggerComponent*)) { this->activation_callback = activation_callback; }
+        void SetDectivationCallback(void (*deactivation_callback)(TriggerComponent*)) { this->deactivation_callback = deactivation_callback; }
         void SetFilterCallback(bool (*filter_callback)(TriggerComponent*, PhysicsComponent*)) { this->filter_callback = filter_callback; }
 
         void SetCollisionMask(uint32_t flags);
@@ -61,6 +62,7 @@ namespace Core {
         btCollisionObject* trigger = nullptr;
         
         void (*activation_callback)(TriggerComponent*) = nullptr;
+        void (*deactivation_callback)(TriggerComponent*) = nullptr;
         bool (*filter_callback)(TriggerComponent*, PhysicsComponent*) = nullptr;
         
         uint32_t collisionMask = -1;

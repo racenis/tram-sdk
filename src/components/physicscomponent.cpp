@@ -117,6 +117,7 @@ namespace Core {
         }
     }
     
+    /// @note SetActivation to true, otherwise will not follow!
     void PhysicsComponent::SetKinematic(){
         collisionFlags |= btCollisionObject::CF_KINEMATIC_OBJECT;
         

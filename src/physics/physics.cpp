@@ -37,14 +37,16 @@ namespace Core::Physics {
     /// Performs a raycast from from to to.
     /// @return Collision struct. If there was nothing found, then the pointer
     ///         in the struct will be set to nullptr.
-    Collision Raycast (const glm::vec3& from, const glm::vec3& to) {
+    Collision Raycast (const glm::vec3& from, const glm::vec3& to, uint32_t collision_mask) {
         btVector3 bto, bfrom;
 
         bto.setValue(to.x, to.y, to.z);
         bfrom.setValue(from.x, from.y, from.z);
 
-        btCollisionWorld::ClosestRayResultCallback callback(bfrom, bto);
+        btCollisionWorld::ClosestRayResultCallback callback (bfrom, bto);
 
+        callback.m_collisionFilterMask = collision_mask;
+        
         dynamicsWorld->rayTest(bfrom, bto, callback);
 
         if (callback.hasHit() && callback.m_collisionObject->getUserIndex() == USERINDEX_PHYSICSCOMPONENT) {

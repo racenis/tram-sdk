@@ -25,7 +25,6 @@ namespace Core {
         transform.setRotation(rotation_quat);
         
         trigger = new btCollisionObject();
-        //trigger->setCollisionShape(new btBoxShape(btVector3(btScalar(0.99f),btScalar(0.99f),btScalar(0.99f))));
         trigger->setCollisionShape(shape);
         trigger->setWorldTransform(transform);
         trigger->setUserPointer(this);
@@ -34,33 +33,7 @@ namespace Core {
         
         dynamicsWorld->addCollisionObject(trigger, collisionGroup, collisionMask);
         
-        
-        //dynamicsWorld->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-
-	
-        /*
-        if(bone == 0)
-            motionState = new EntMotionState(parent, off_set);
-            else
-                motionState = new ArmMotionState(bone, armature, off_set, parent, this);
-
-        btScalar bmass = mass;
-        btVector3 inertia(0.0f, 0.0f, 0.0f);
-        shape->calculateLocalInertia(bmass, inertia);
-        btRigidBody::btRigidBodyConstructionInfo rigidBodyConstructionInfo(bmass, motionState, shape, inertia);
-
-        rigidBody = new btRigidBody(rigidBodyConstructionInfo);
-
-        dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
-        rigidBody->setUserPointer(this);
-
-        if(should_asleep) rigidBody->setActivationState(0);
-        */
-        
-
         is_ready = true;
-
-        //return true;
     }
     
     TriggerComponent::~TriggerComponent(){
@@ -121,6 +94,8 @@ namespace Core {
     }
     
     void TriggerComponent::ResetCollisions() {
+        if (!is_collided && was_collided && deactivation_callback) deactivation_callback(this);
+        
         was_collided = is_collided;
         is_collided = false;
     }

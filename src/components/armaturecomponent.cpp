@@ -123,7 +123,7 @@ namespace Core {
     void ArmatureComponent::StopAnimation(name_t animation_name){
         for (size_t i = 0; i < ANIM_COUNT; i++){
             if(anim_playing[i] == animation_name){
-                anim_playing[i] = 0;
+                anim_playing[i] = UID();
                 // TODO: reset all of the keyframe pointers
                 
                 if (anim_finish_callback) anim_finish_callback(this, animation_name);

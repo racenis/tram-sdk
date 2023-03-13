@@ -89,7 +89,7 @@ def generate_makefile():
 	
 	for unit in units:
 		makefile += objectify(unit) + ".o: " + unit + "\n"
-		makefile += "\t" + compiler + " -c -O0 -std=c++20 -Ilibraries -I./src " + unit
+		makefile += "\t" + compiler + " -c -g -O0 -std=c++20 -Ilibraries -I./src " + unit
 		makefile += " -o " + objectify(unit) + ".o\n\n"
 	
 	makefile += "clean:\n"

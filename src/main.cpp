@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-//#define NEKADEEE
+#define NEKADEEE
 
 #ifdef NEKADEEE
 
@@ -78,8 +78,6 @@ int main() {
 
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
 
-
-
     //UID bepitong;
     
     
@@ -130,8 +128,8 @@ int main() {
     ArmatureComponent* monguser_armature = PoolProxy<ArmatureComponent>::New();
     monguser_armature->SetModel(UID("mongus"));
     monguser_armature->Init();
-    monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 2.0f);
-    monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
+    monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 1.0f);
+    //monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
 
     // link the mongus model and his animation player
     monguser->SetPose(monguser_armature->GetPosePtr());
@@ -165,7 +163,7 @@ int main() {
     derp_player->SetRepeating(true);
     derp_player->Init();
     
-    derp_player->Play();
+    //derp_player->Play();
 
     
     //auto crate_ent = Entity::Find(UID("estijs"));
@@ -197,10 +195,23 @@ int main() {
         if (tick == 300) {
             //auto aaa = Entity::FindByName(UID("estijs"));
             //delete aaa;
+            monguser_armature->StopAnimation("mongus-run");
         }
         
         if (UI::PollKeyboardKey(UI::KEY_Y)) {
             tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
+        }
+        
+        vec3 cast_from = player.GetLocation() + vec3(0.0f, 1.7f, 0.0f);
+        vec3 cast_to = cast_from + (CAMERA_ROTATION * DIRECTION_FORWARD * 10.0f);
+        
+        auto ray_all = Physics::Raycast(cast_from, cast_to);
+        auto ray_world = Physics::Raycast(cast_from, cast_to, Physics::COLL_WORLDOBJ);
+        
+        if (ray_world.collider) {
+            AddLineMarker(ray_world.point, COLOR_PINK);
+        } else if (ray_all.collider) {
+            AddLineMarker(ray_all.point, COLOR_GREEN);
         }
         
         //if (tick > 300 && tick % 100 == 0) {

@@ -131,6 +131,8 @@
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
+      <File Name="src/entities/marker.h"/>
+      <File Name="src/entities/marker.cpp"/>
       <File Name="src/entities/entities.h"/>
       <File Name="src/entities/crate.h"/>
       <File Name="src/entities/lamp.h"/>

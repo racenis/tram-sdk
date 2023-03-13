@@ -4,6 +4,8 @@
 #ifndef FRAMEWORK_ASYNC_H
 #define FRAMEWORK_ASYNC_H
 
+#include <cmath>
+
 namespace Core {
     class EntityComponent;
     class Resource;
@@ -16,6 +18,7 @@ namespace Core::Async {
     void Yeet();
     void ResourceLoader2ndStage();
     void FinishResource();
+    size_t GetWaitingResources();
 }
 
 #endif // FRAMEWORK_ASYNC_H

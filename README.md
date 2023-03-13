@@ -42,9 +42,27 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 
+#### Should do soonest
+- Add a thing that lets you see how many things are in the loader queues
+- Add a deactivation callback to triggers
+
 #### Should do sooner
 - Keybinding menu
 - Graphics menu
+- Add a prefix to all header guards
+- Add screen clear color to render
+- Add font definitions to Ext::Menu
+- Add a better way to register entities
+	- Could be a static method 'REGISTER' for each entity type
+- Rewrite MaterialInfo
+	- Automatically add .list extension to filename
+	- Automatically add /data/ directory prefix to filename
+	- Add a header
+- Put all cells in a seperate directory
+	- Like it is done with sprites, models, animations, etc.
+- Replace header in worldcell files
+	- Should be like in model/animation/etc. files
+
 
 #### Should do later
 - Models with different sets of materials
@@ -52,21 +70,15 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
-
 - Rewrite older templates
 	- Pool template is already rewritten
 - Make sure that there are no duplications of typedefs
 	- There are some duplications in typedefs
-
 - Multiple player inputs
-
 - Make constructors/destructors protected
 	- Some classes should only be created in Pools
-	
 - Move GetTime() out of UI
-
 - SetScreenSize() causes a segfault
-
 - Add more types to file reader/writer
 	- String
 	- UID
@@ -76,20 +88,15 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Switch namespace Core to tram
 - Switch the AudioComponent to using audio/source.h
 - Render/Armature component linking
-
 - Add uninit functions to all systems.
 	- Add checks for them also.
 	- Uniniting Core checks if everything else is also uninited
-
 - Think of new glyphs.
 	- Draw new glyphs.
 - Add some more asserts to the GUI system.
-
 - Figure out how to do resources that are generated, not loaded.
-
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
-
 - Add scripting
 
 #### For very later versions

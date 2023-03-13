@@ -173,4 +173,19 @@ namespace Core::Async {
         
         System::SetInitialized(System::SYSTEM_ASYNC, false);
     }
+    
+    /// Returns number of resources in queues.
+    size_t GetWaitingResources() {
+        size_t sum = 0;
+        resourceRequestQueue.Lock();
+        resourceRequestQueue2ndStage.Lock();
+        finishedResourceRequestQueue.Lock();
+        sum += resourceRequestQueue.GetLength();
+        sum += resourceRequestQueue2ndStage.GetLength();
+        sum += finishedResourceRequestQueue.GetLength();
+        resourceRequestQueue.Unlock();
+        resourceRequestQueue2ndStage.Unlock();
+        finishedResourceRequestQueue.Unlock();
+        return sum;
+    }
 }
