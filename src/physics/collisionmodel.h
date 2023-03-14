@@ -20,7 +20,7 @@ namespace Core::Physics {
 
         void LoadFromDisk();
         void LoadFromMemory(){}
-        inline btCompoundShape* GetPtr() {return model;}
+        inline btCompoundShape* GetShape () { return model; }
 
         static CollisionModel* Find(name_t modelName);
     protected:

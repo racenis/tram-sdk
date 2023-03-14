@@ -97,7 +97,7 @@ namespace Core {
     void Crate::Testingolingo() {
         assert(isloaded);
         assert(physicscomponent);
-        physicscomponent->DisableRotation();
+        physicscomponent->SetAngularFactor({0.0f, 0.0f, 0.0f});
         physicscomponent->SetRotation(glm::vec3(0.0f, 0.785f, 0.0f));
     }
 }

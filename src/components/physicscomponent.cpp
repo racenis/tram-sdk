@@ -9,187 +9,235 @@ namespace Core {
     template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
     
     void PhysicsComponent::Start(){
-        if (model.get())
-            shape = (btCollisionShape*)model->GetPtr();
+        if (collision_model.get()) {
+            collision_shape = collision_model->GetShape();
+        }
 
+        motion_state = new EntMotionState(parent, rigidbody_offset);
 
-        //if(bone == 0)
-        motionState = new EntMotionState(parent, off_set);
-        //else
-        //    motionState = new ArmMotionState(bone, armature, off_set, parent, this);
+        btScalar bullet_mass = rigidbody_mass;
+        btVector3 bullet_inertia (0.0f, 0.0f, 0.0f);
+        collision_shape->calculateLocalInertia(bullet_mass, bullet_inertia);
+        btRigidBody::btRigidBodyConstructionInfo bullet_construction_info (bullet_mass, motion_state, collision_shape, bullet_inertia);
 
-        btScalar bmass = mass;
-        btVector3 inertia(0.0f, 0.0f, 0.0f);
-        shape->calculateLocalInertia(bmass, inertia);
-        btRigidBody::btRigidBodyConstructionInfo rigidBodyConstructionInfo(bmass, motionState, shape, inertia);
+        rigidbody = new btRigidBody (bullet_construction_info);
 
-        rigidBody = new btRigidBody(rigidBodyConstructionInfo);
+        dynamicsWorld->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        
+        rigidbody->setUserPointer(this);
+        rigidbody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
+        rigidbody->setCollisionFlags(rigidbody_collision_flags);
 
-        dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
-        rigidBody->setUserPointer(this);
-        rigidBody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
-        rigidBody->setCollisionFlags(collisionFlags);
-
-        if(should_asleep) rigidBody->setActivationState(0);
+        if (rigidbody_should_sleep) rigidbody->setActivationState(0);
 
         is_ready = true;
-
-        //return true;
     }
+    
     PhysicsComponent::~PhysicsComponent(){
-        dynamicsWorld->removeRigidBody(rigidBody);
-        delete rigidBody;
-        delete motionState;
-    };
+        dynamicsWorld->removeRigidBody(rigidbody);
+        
+        delete rigidbody;
+        delete motion_state;
+    }
 
-
-    void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
-        this->shape = CollisionShapeToConvexShape(shape);
+    /// Returns the name of the collision model.
+    name_t PhysicsComponent::GetModel () {
+        return collision_model ? collision_model->GetName() : UID();
     }
     
-    void PhysicsComponent::GetAABB(glm::vec3& aabb_min, glm::vec3& aabb_max){
-        btVector3 b_min, b_max;
-        rigidBody->getAabb(b_min, b_max);
+    /// Sets the collision model.
+    void PhysicsComponent::SetModel (name_t model) {
+        collision_model = Physics::CollisionModel::Find(model);
+    }
 
-        aabb_min.x = b_min.getX();
-        aabb_min.y = b_min.getY();
-        aabb_min.z = b_min.getZ();
-
-        aabb_max.x = b_max.getX();
-        aabb_max.y = b_max.getY();
-        aabb_max.z = b_max.getZ();
+    /// Returns the collision mask.
+    /// See SetCollisionMask() for more information.
+    uint32_t PhysicsComponent::GetCollisionMask() {
+        return rigidbody_collision_mask;
     }
     
-    void PhysicsComponent::SetMass(float nMass){mass = nMass;}
+    /// Returns the collision group.
+    /// See SetCollisionGroup() for more information.
+    uint32_t PhysicsComponent::GetCollisionGroup() {
+        return rigidbody_collision_group;
+    }
     
+    /// Sets the collision mask of the physics object.
+    /// Collision mask is a bitmask. A physics object will only collide with
+    /// an another object if their collision group and collision mask bitmasks
+    /// have at least one bit in common, i.e. they will be bitwise and'ed
+    /// together.
+    void PhysicsComponent::SetCollisionMask (uint32_t flags) {
+        rigidbody_collision_mask = flags;
+        
+        if (is_ready) {
+            dynamicsWorld->removeRigidBody(rigidbody);
+            dynamicsWorld->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        }
+    }
+    
+    /// Sets the collision group of the physics object.
+    /// Collision group is a bitmask. A physics object will only collide with
+    /// an another object if their collision group and collision mask bitmasks
+    /// have at least one bit in common, i.e. they will be bitwise and'ed
+    /// together.
+    void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
+        rigidbody_collision_group = flags;
+        if (is_ready) {
+            dynamicsWorld->removeRigidBody(rigidbody);
+            dynamicsWorld->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        }
+    }
+
+    /// Sets the collision shape of the physics object.
+    void PhysicsComponent::SetShape (Physics::CollisionShape shape) {
+        collision_shape = CollisionShapeToConvexShape(shape);
+    }
+    
+    /// Sets the mass of the physics object.
+    /// Mass specified in kilograms. If the mass is set to 0, then it's assumed
+    /// to be infinite, and the object will become static and immovable.
+    /// @note Has no effect after the PhysicsComponent is loaded.
+    void PhysicsComponent::SetMass(float mass) {
+        if (mass == 0) {
+            rigidbody_collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
+        }
+        
+        rigidbody_mass = mass;
+    }
+    
+    /// Pushes the physics object.
+    /// I have no idea what the units are. Direction of direction is the
+    /// direction into which the object will be pushed and the length of
+    /// the vector is the force of the push.
     void PhysicsComponent::Push (const glm::vec3& direction){
-        if(rigidBody == nullptr) return;
-        rigidBody->activate();
-        rigidBody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
+        if (!is_ready) return;
+        
+        rigidbody->activate(); // force awake, sleeping objects won't move
+        rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
     }
     
-    void PhysicsComponent::PushLocal (const glm::vec3& direction){
-        if(rigidBody == nullptr) return;
-
-        btTransform trans = rigidBody->getWorldTransform();
-        btQuaternion rot_bt = trans.getRotation();
-        glm::quat rot(rot_bt.getX(), rot_bt.getY(), rot_bt.getZ(), rot_bt.getW());
-
-        glm::vec3 p_dir = rot * direction;
-
-        rigidBody->activate();
-        rigidBody->applyCentralImpulse(btVector3(p_dir.x, p_dir.y, p_dir.z));
-    }
-    
-    void PhysicsComponent::SetCollisionMask(uint32_t flags){
-        collisionMask = flags;
-        if(is_ready){
-            dynamicsWorld->removeRigidBody(rigidBody);
-            dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+    /// Sets the sleep state of the physics object.
+    /// If set to true, then the physics object will be put to sleep, otherwise
+    /// it will be awakened. By default they start asleep.
+    void PhysicsComponent::SetSleep (bool sleep) {
+        if (is_ready && sleep) {
+            rigidbody->setActivationState(0);
         }
-    }
-    
-    void PhysicsComponent::SetCollisionGroup(uint32_t flags){
-        collisionGroup = flags;
-        if(is_ready){
-            dynamicsWorld->removeRigidBody(rigidBody);
-            dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+        
+        if (is_ready && !sleep) {
+            rigidbody->activate();
         }
+        
+        rigidbody_should_sleep = sleep;
     }
     
-
-    void PhysicsComponent::SetSleep(bool sleep) {
-        if (sleep) {
-            if (rigidBody) rigidBody->setActivationState(0);
-            should_asleep = true;
+    /// Sets the debug drawing of a physics object.
+    /// Set to false, if you don't want the physics object to show up when
+    /// drawing physics debug.
+    void PhysicsComponent::SetDebugDrawing (bool drawing) {
+        if (drawing) {
+            rigidbody_collision_flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
         } else {
-            if (rigidBody) rigidBody->activate();
-            should_asleep = false;
+            rigidbody_collision_flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
         }
-    }
-    
-    
-    void PhysicsComponent::DisableDebugDrawing(){
-        collisionFlags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
         
         if (is_ready) {
-            rigidBody->setCollisionFlags(collisionFlags);
+            rigidbody->setCollisionFlags(rigidbody_collision_flags);
         }
     }
     
+    /// Sets the physics object to kinematic.
+    /// If set to kinematic, then the physics object will poll its parent entity
+    /// for its position, instead of simulated and pushing its position into its
+    /// parent entity.
     /// @note SetActivation to true, otherwise will not follow!
-    void PhysicsComponent::SetKinematic(){
-        collisionFlags |= btCollisionObject::CF_KINEMATIC_OBJECT;
+    void PhysicsComponent::SetKinematic (bool kinematic) {
+        if (kinematic) {
+            rigidbody_collision_flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
+        } else {
+            rigidbody_collision_flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
+        }
         
         if (is_ready) {
-            rigidBody->setCollisionFlags(collisionFlags);
+            rigidbody->setCollisionFlags(rigidbody_collision_flags);
         }
     }
-  
+    
+    /// Sets the position of the physics object.
     void PhysicsComponent::SetLocation (const glm::vec3& location) {
-        assert(rigidBody);
-        btTransform trans = rigidBody->getWorldTransform();
+        btTransform trans = rigidbody->getWorldTransform();
         trans.setOrigin(btVector3 (location.x, location.y, location.z));
-        rigidBody->setWorldTransform(trans);
+        rigidbody->setWorldTransform(trans);
     }
     
+    /// Sets the rotation of the physics object.
     void PhysicsComponent::SetRotation (const glm::quat& rotation) {
-        assert(rigidBody);
-        btTransform trans = rigidBody->getWorldTransform();
+        btTransform trans = rigidbody->getWorldTransform();
         trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-        rigidBody->setWorldTransform(trans);
+        rigidbody->setWorldTransform(trans);
     }
+    
+    /// Sets the angular factor of the physics object.
+    /// Changes how much the object will rotate around the x, y, z axes. Can be
+    /// used to restrict rotation around certain axes.
+    void PhysicsComponent::SetAngularFactor (const glm::vec3& factor) {
+        rigidbody_angular_factor = factor;
         
-    
-    void PhysicsComponent::SetLocalRotation(const glm::quat& rotation){
-        glm::quat parent_rotation;
-        parent->GetRotation(parent_rotation);
-
-        glm::quat final_rotation = parent_rotation * rotation;
-
-        btTransform trans = rigidBody->getWorldTransform();
-        trans.setRotation(btQuaternion (final_rotation.x, final_rotation.y, final_rotation.z, final_rotation.w));
-        rigidBody->setWorldTransform(trans);
-    }    
-    
-    void PhysicsComponent::EnableRotation () {
-        rigidBody->setAngularFactor(1.0f);
-    }
-    
-    void PhysicsComponent::DisableRotation () {
-        rigidBody->setAngularFactor(0.0f);
-    }
-    
-    void PhysicsComponent::EnableMovement () {
-        rigidBody->setLinearFactor(btVector3(1.0f, 1.0f, 1.0f));
-    }
-    
-    void PhysicsComponent::DisableMovement () {
-        rigidBody->setLinearFactor(btVector3(0.0f, 0.0f, 0.0f));
-    }
-
-    
-    void PhysicsComponent::SetActivation (bool activation) {
-        if (activation) {
-            rigidBody->setActivationState(DISABLE_DEACTIVATION);
-        } else {
-            rigidBody->setActivationState(WANTS_DEACTIVATION);
+        if (is_ready) {
+            rigidbody->setAngularFactor({factor.x, factor.y, factor.z});
         }
     }
+    
+    /// Sets the angular factor of the physics object.
+    /// Changes how much the object will move along the x, y, z axes. Can be
+    /// used to restrict movement along certain axes.
+    void PhysicsComponent::SetLinearFactor (const glm::vec3& factor) {
+        rigidbody_linear_factor = factor;
         
+        if (is_ready) {
+            rigidbody->setLinearFactor({factor.x, factor.y, factor.z});
+        }
+    }
+    
+    /// Sets the activation of the physics object.
+    /// Set it to true, if you don't want the object to ever fall asleep. Set it
+    /// to false, if you want it to fall asleep when it stops moving.
+    void PhysicsComponent::SetActivation (bool activation) {
+        if (is_ready && activation) {
+            rigidbody->setActivationState(DISABLE_DEACTIVATION);
+        }
+
+        if (is_ready && !activation) {
+            rigidbody->setActivationState(WANTS_DEACTIVATION);
+        }
+        
+        rigidbody_should_awake = activation;
+    }
+    
+    /// Sets the velocity of the physics object.
+    /// Only works if is component is loaded.
     void PhysicsComponent::SetVelocity (const vec3& velocity){
+        if (!is_ready) return;
+        
         if (velocity.x != 0.0f &&
             velocity.y != 0.0f &&
             velocity.z != 0.0f
         ) {
-            rigidBody->activate();
+            rigidbody->activate();
         }
         
-        rigidBody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+        rigidbody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
     }
 
+    /// Returns the velocity of the physics object.
+    /// Always returns zero velocity if component is not loaded.
     vec3 PhysicsComponent::GetVelocity () {
-        auto velocity = rigidBody->getLinearVelocity();
-        return vec3 (velocity.getX(), velocity.getY(), velocity.getZ());
+        if (is_ready) {
+            auto velocity = rigidbody->getLinearVelocity();
+            return {velocity.getX(), velocity.getY(), velocity.getZ()};
+        } else {
+            return {0.0f, 0.0f, 0.0f};
+        }
     }
 }

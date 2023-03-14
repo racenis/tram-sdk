@@ -25,7 +25,7 @@ void Player::Load(){
     physicscomponent->SetMass(85.0f);
     physicscomponent->SetCollisionGroup(Physics::COLL_PLAYER);
     //physicscomponent->SetSleep(true);
-    physicscomponent->SetKinematic();
+    physicscomponent->SetKinematic(true);
     
     triggercomponent = PoolProxy<TriggerComponent>::New();
     triggercomponent->SetCollisionGroup(Physics::COLL_WORLDOBJ);

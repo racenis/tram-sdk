@@ -7,8 +7,8 @@ namespace Core {
     template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
     
     void TriggerComponent::Start(){
-        if (!shape && model.get()) {
-            shape = (btCollisionShape*) model->GetPtr();
+        if (!shape && model) {
+            shape = (btCollisionShape*) model->GetShape();
         }
         
         assert(shape);
