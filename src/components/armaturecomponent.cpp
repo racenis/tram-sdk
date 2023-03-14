@@ -57,7 +57,7 @@ namespace Core {
         for (slot = 0; slot < ANIM_COUNT; slot++) {
             // maybe reset the animation if its already playing, instead of just returning?
             if (anim_playing[slot] == animation_name) return;
-            if (anim_playing[slot] == 0) break;
+            if (anim_playing[slot] == UID()) break;
         }
         
         // maybe log an error if all animation slots taken?
@@ -186,7 +186,7 @@ namespace Core {
         
         // increment animations' frames and check if they have stopped/repeated
         for (size_t i = 0; i < ANIM_COUNT; i++) {
-            if(anim_playing[i] == 0) continue;
+            if(anim_playing[i] == UID()) continue;
             
             // increase the frames of the animation
             auto& anim = anim_info[i];
@@ -230,7 +230,7 @@ namespace Core {
         
         // mix together keyframes
         for (size_t i = 0; i < ANIM_COUNT; i++){
-            if(anim_playing[i] == 0) continue;
+            if(anim_playing[i] == UID()) continue;
             
 
             

@@ -141,7 +141,7 @@ void WorldCell::Loader::Update() {
 }
 
 void WorldCell::LoadFromDisk(){
-    char path[100] = "data/";
+    char path[100] = "data/worldcells/";
     strcat(path, name);
     strcat(path, ".cell");
     std::ifstream file;
@@ -151,6 +151,19 @@ void WorldCell::LoadFromDisk(){
     std::cout << "Loading worldcell: " << name << std::endl;
 
     std::string line;
+
+    file >> line;
+    
+    if (line != "CELLv1") {
+        std::cout << "Cell file format error: " << path << std::endl;
+        return;
+    }
+    
+    file >> line; // cell name
+    file >> line; // cell interior flag
+    file >> line; // cell lighting flag
+
+    std::getline(file, line); // skip the rest of the line
 
     while (std::getline(file, line)){
         size_t firstchar = line.find_first_not_of(" \t");

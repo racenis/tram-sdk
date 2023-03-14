@@ -52,6 +52,7 @@ namespace Core::Render {
     void Init();
     void Render();
     void ScreenSize(float width, float height);
+    //void SetScreenClear(vec3 clear_color, bool clear);
     void Project(const glm::vec3& point, glm::vec3& result);
 
     void SetSun(float timeOfDay);

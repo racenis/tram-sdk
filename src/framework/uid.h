@@ -22,10 +22,6 @@ namespace Core {
             return key == other.key;
         }
         
-        bool operator==(const uint64_t& other) const {
-            return key == other;
-        }
-        
         explicit operator bool() { return key; }
         
         operator std::string() const;

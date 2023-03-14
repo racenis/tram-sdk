@@ -76,11 +76,15 @@ namespace Core::Render {
         RenderFrame();
     }
     
-    void ScreenSize(float width, float height) {
+    void ScreenSize (float width, float height) {
         SCREEN_WIDTH = width;
         SCREEN_HEIGHT = height;
         SetScreenSize(width, height);
     }
+    
+    //void SetScreenClear (vec3 clear_color, bool clear) {
+    //    
+    //}
 }
 
 

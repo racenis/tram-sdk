@@ -83,6 +83,7 @@ namespace Core::Render {
         DrawListEntryHandle (*InsertDrawListEntryFromModel) (Model* model) = nullptr;
         
         void (*SetScreenSize) (float width, float height) = nullptr;
+        void (*SetScreenClear) (vec3, bool) = nullptr;
         
         uint32_t (*GetFlags) (DrawListEntryHandle entry) = nullptr;
         void (*SetFlags) (DrawListEntryHandle entry, uint32_t flags) = nullptr;
@@ -212,6 +213,13 @@ namespace Core::Render {
     /// Sets the rendering image size.
     inline void SetScreenSize (float width, float height) {
         return RENDERER.SetScreenSize(width, height);
+    }
+    
+    /// Sets the screen clearing behavior.
+    /// If clear is set to true, then screen will be cleared with clear_color
+    /// before rendering each frame.
+    inline void SetScreenClear (vec3 clear_color, bool clear) {
+        return RENDERER.SetScreenClear(clear_color, clear);
     }
 }
 

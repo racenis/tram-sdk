@@ -17,6 +17,8 @@
 #include <framework/core.h>
 #include <framework/stats.h>
 
+#include <framework/file.h>
+
 #include <render/material.h>
 #include <render/renderer.h>
 
@@ -40,43 +42,50 @@ void Material::LoadErrorMaterial() {
 /// Loads a Material definition file.
 void Material::LoadMaterialInfo(const char* filename){
     using namespace Core::Render;
+    
+    char path [100] = "data/";
+    strcat (path, filename);
+    strcat (path, ".list");
 
-    std::ifstream file;
-    file.open(filename);
+    File file (path, MODE_READ);
     
     if (!file.is_open()) {
-        std::cout << "Can't open texture info file '" << filename << "'" << std::endl;
+        std::cout << "Can't open texture info file '" << path << "'" << std::endl;
         abort();
     }
     
-    // TODO: make file parsing more efficient
-    while(file){
-        Material::Type mattype;
-        std::string name;
-        std::string type;
-
-        file >> name;
-        file >> type;
-        if(type == "flat"){
-            mattype = Material::TEXTURE;
-        } else if(type == "alpha"){
-            mattype = Material::TEXTURE_ALPHA;
-        } else if(type == "lightmap"){
-            mattype = Material::TEXTURE_LIGHTMAP;
-        } else if(type == "msdf"){
-            mattype = Material::TEXTURE_MSDF;
-        } else if(type == "glyph"){
-            mattype = Material::TEXTURE_GLYPH;
-        } else if(type == "water"){
-            mattype = Material::TEXTURE_WATER;
-        } else {
-            std::cout << "Error material list material: " << name << std::endl;
-        }
-
-        MATERIAL_LIST.Insert(UID(name), PoolProxy<Material>::New(UID(name), mattype));
+    name_t file_type = file.read_name();
+    
+    if (file_type != UID("MATv1")) {
+        std::cout << "Invalid material file type " << path << std::endl;
+        abort();
     }
     
-    file.close();
+    while(file.is_continue()){
+        Material::Type mat_type;
+
+        name_t mat_name = file.read_name();
+        name_t mat_type_name = file.read_name();
+
+        if(mat_type_name == UID("flat")){
+            mat_type = Material::TEXTURE;
+        } else if(mat_type_name == UID("alpha")){
+            mat_type = Material::TEXTURE_ALPHA;
+        } else if(mat_type_name == UID("lightmap")){
+            mat_type = Material::TEXTURE_LIGHTMAP;
+        } else if(mat_type_name == UID("msdf")){
+            mat_type = Material::TEXTURE_MSDF;
+        } else if(mat_type_name == UID("glyph")){
+            mat_type = Material::TEXTURE_GLYPH;
+        } else if(mat_type_name == UID("water")){
+            mat_type = Material::TEXTURE_WATER;
+        } else {
+            std::cout << "Error material list material: " << mat_name << std::endl;
+            continue;
+        }
+
+        MATERIAL_LIST.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type));
+    }
 }
 
 /// Creates a material.

@@ -6,11 +6,6 @@
 #include <vector>
 
 namespace Core {
-    /// Reads a file from filesystem.
-    /// When created in read mode, it will try to read all of the file into a
-    /// buffer. This buffer can be accessed with read() and length() methods.
-    /// When created in write mode, it will try to open a file for writing. It
-    /// then is possible to write to the file with write() method.
     class DiskFile {
     public:
         DiskFile (char const* filename, FileAccessMode mode) : mode(mode) {
@@ -50,7 +45,7 @@ namespace Core {
         bool is_open() { return file_handle != nullptr; }
         
         /// Writes data to file.
-        void write (char* data, size_t length) {
+        void write (const char* data, size_t length) {
             assert (mode == MODE_WRITE);
             assert (is_open());
             
@@ -91,13 +86,18 @@ namespace Core {
         virtual void write_uint(uint64_t value, Length len) = 0;
         virtual void write_float32(float value) = 0;
         virtual void write_float64(double value) = 0;
+        virtual void write_name(name_t value) = 0;
+        /*virtual void write_string(const char* value) = 0;*/
         
         virtual int64_t read_int() = 0;
         virtual uint64_t read_uint() = 0;
         virtual float read_float32() = 0;
         virtual double read_float64() = 0;
+        virtual name_t read_name() = 0;
+        /*virtual std::string_view read_string() = 0;*/
         
         virtual bool is_open() = 0;
+        virtual bool is_continue() = 0;
         
         virtual ~FileParser() = default;
     };
@@ -131,6 +131,7 @@ namespace Core {
         }
         
         bool is_open() { return file.is_open(); }
+        bool is_continue() { char* it = iterator; while (it < file_end) if (!isspace(*it++)) return true; return false; }
         
         void write_int(int64_t value, Length len) { write_impl<int64_t>(value, len); }
         void write_uint(uint64_t value, Length len) { write_impl<uint64_t>(value, len); }
@@ -141,6 +142,22 @@ namespace Core {
         uint64_t read_uint() { return read_impl<uint64_t>(); }
         float read_float32() { return read_impl<float>(); }
         double read_float64() { return read_impl<double>(); }
+        
+        void write_name(name_t value) { file.write(value, strlen(value) + 1); }
+        name_t read_name() {
+            // skip whitespace
+            while (isspace(*iterator)) {
+                iterator++;
+            }
+            
+            char buffer[200];
+            char* buf_it = buffer;
+            while (!isspace(*iterator) && iterator < file_end) {
+                *buf_it++ = *iterator++;
+            }
+            *buf_it = '\0';
+            return UID(buffer);
+        }
         
         FileAccesser file;
         
@@ -158,6 +175,7 @@ namespace Core {
     }
     
     bool File::is_open() { return parser->is_open(); }
+    bool File::is_continue() { return parser->is_continue(); }
     
     void File::write_int8(int8_t value) { parser->write_int(value, LENGTH_8); }
     void File::write_int16(int16_t value) { parser->write_int(value, LENGTH_16); }
@@ -172,6 +190,9 @@ namespace Core {
     void File::write_float32(float value) { parser->write_float32(value); }
     void File::write_float64(double value) { parser->write_float64(value); }
     
+    void File::write_name(name_t value) { parser->write_name(value); }
+    void File::write_string(const char* value) {}
+    
     int8_t File::read_int8() { return parser->read_int(); }
     int16_t File::read_int16() { return parser->read_int(); }
     int32_t File::read_int32() { return parser->read_int(); }
@@ -185,5 +206,6 @@ namespace Core {
     float File::read_float32() { return parser->read_float32(); }
     double File::read_float64() { return parser->read_float64(); }
 
-
+    name_t File::read_name() { return parser->read_name(); }
+    std::string_view File::read_string() { return std::string_view(); }
 }

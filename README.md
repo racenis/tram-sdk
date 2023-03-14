@@ -42,27 +42,27 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 
-#### Should do soonest
-- Add a thing that lets you see how many things are in the loader queues
-- Add a deactivation callback to triggers
-
 #### Should do sooner
 - Keybinding menu
 - Graphics menu
+
+- Put Renderer into its own Renderer namespace
 - Add a prefix to all header guards
-- Add screen clear color to render
+- ~~Add screen clear color to render~~
 - Add font definitions to Ext::Menu
 - Add a better way to register entities
 	- Could be a static method 'REGISTER' for each entity type
-- Rewrite MaterialInfo
-	- Automatically add .list extension to filename
-	- Automatically add /data/ directory prefix to filename
-	- Add a header
-- Put all cells in a seperate directory
-	- Like it is done with sprites, models, animations, etc.
-- Replace header in worldcell files
-	- Should be like in model/animation/etc. files
-
+- ~~Rewrite MaterialInfo~~
+	- ~~Automatically add .list extension to filename~~
+	- ~~Automatically add /data/ directory prefix to filename~~
+	- ~~Add a header~~
+- ~~Put all cells in a seperate directory~~
+	- ~~Like it is done with sprites, models, animations, etc.~~
+- ~~Replace header in worldcell files~~
+	- ~~Should be like in model/animation/etc. files~~
+	- ~~Also do so for tram-editor~~
+- Move file.h into platform
+	
 
 #### Should do later
 - Models with different sets of materials
@@ -82,6 +82,13 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add more types to file reader/writer
 	- String
 	- UID
+- PhysicsComponents can live without Entity parents.
+	- Add an option to not create a MotionState
+	- Add a callback function for updating
+
+- Replace Bezier curves with Catmull-Roms
+- Rewrite insides of file abstraction
+	- Also add stuff for comment filtering
 
 #### Not important
 - Switch out all of the std::cout's to Log's

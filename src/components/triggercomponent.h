@@ -11,10 +11,6 @@
 
 #include <vector>
 
-// TODO: add adding a location
-// TODO: add properly loading the model
-// TODO: add adding a collison shape
-
 class btCollisionShape;
 class btCollisionObject;
 
@@ -66,7 +62,7 @@ namespace Core {
         bool (*filter_callback)(TriggerComponent*, PhysicsComponent*) = nullptr;
         
         uint32_t collisionMask = -1;
-        uint32_t collisionGroup = 1;
+        uint32_t collisionGroup = -1;
 
         bool is_collided = false;
         bool was_collided = false;

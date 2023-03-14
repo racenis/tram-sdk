@@ -41,6 +41,9 @@ namespace Core::Render::OpenGL {
     uint32_t light_uniform_buffer;
     uint32_t bone_uniform_buffer;
     
+    vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
+    bool clear_screen = true;
+    
     
     uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
         uint32_t handle;
@@ -68,13 +71,17 @@ namespace Core::Render::OpenGL {
         matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
     }
     
-
+    void SetScreenClear (vec3 clear_color, bool clear) {
+        clear_screen = clear;
+        screen_clear_color = clear_color;
+    }
         
     void Init() {
         Render::RENDERER = Render::RendererAPI {
             .InsertDrawListEntry = OpenGL::InsertDrawListEntry,
             .InsertDrawListEntryFromModel = OpenGL::InsertDrawListEntryFromModel,
             .SetScreenSize = OpenGL::SetScreenSize,
+            .SetScreenClear = OpenGL::SetScreenClear,
             .GetFlags = OpenGL::GetFlags,
             .SetFlags = OpenGL::SetFlags,
             .SetPose = OpenGL::SetPose,
@@ -113,10 +120,13 @@ namespace Core::Render::OpenGL {
     }
     
     void RenderFrame() {
-        //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClearColor(255.0f/255.0f, 182.0f/255.0f, 193.0f/255.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        if (clear_screen) {
+            glClearColor(screen_clear_color.x, screen_clear_color.y, screen_clear_color.z, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        } else {
+            glClear(GL_DEPTH_BUFFER_BIT);
+        }
+        
         modelMatrices.time = GetTickTime();
         modelMatrices.sunDirection = glm::vec4(SUN_DIRECTION, 1.0f);
         modelMatrices.sunColor = glm::vec4(SUN_COLOR, 1.0f);

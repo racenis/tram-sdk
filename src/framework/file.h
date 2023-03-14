@@ -7,6 +7,7 @@
 #include <string>
 
 #include <framework/core.h>
+#include <framework/uid.h>
 
 namespace Core {
     enum FileAccessMode {
@@ -22,7 +23,7 @@ namespace Core {
         ~File();
         
         bool is_open();
-        
+        bool is_continue();
                 
         void write_int8(int8_t value);
         void write_int16(int16_t value);
@@ -37,7 +38,8 @@ namespace Core {
         void write_float32(float value);
         void write_float64(double value);
         
-
+        void write_name(name_t value);
+        void write_string(const char* value);
         
         int8_t read_int8();
         int16_t read_int16();
@@ -51,6 +53,9 @@ namespace Core {
         
         float read_float32();
         double read_float64();
+        
+        name_t read_name();
+        std::string_view read_string();
         
         std::string name;
         FileParser* parser;

@@ -44,6 +44,8 @@
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>
 
+#include <render/renderer.h>
+
 using namespace Core;
 using namespace Core::Render;
 using namespace Core::UI;
@@ -74,7 +76,7 @@ int main() {
     Language::Load("data/lv.lang");
 
     // texture info stuff
-    Material::LoadMaterialInfo("data/texture.list");
+    Material::LoadMaterialInfo("texture");
 
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
 
@@ -83,6 +85,8 @@ int main() {
     
     UIDFunc("bepito");
 
+
+    Render::SetScreenClear({0.0f, 0.0f, 0.0f}, false);
 
     // loading the demo level
     WorldCell::Make(UID("demo_mov"))->LoadFromDisk();
