@@ -6,7 +6,7 @@
 
 #include <audio/audio.h>
 
-namespace Core::Audio {
+namespace tram::Audio {
     audiosource_t MakeAudioSource();
     
     void SetAudioSourcePitch (audiosource_t source, float pitch);

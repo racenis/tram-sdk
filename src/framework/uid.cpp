@@ -9,7 +9,7 @@
 // TODO: yeet this
 #include <unordered_map>
 
-namespace Core {
+namespace tram {
     StackPool<char> stringPool("stringpool", 10000);
     std::unordered_map<std::string, uint64_t> stringHashMap;
     

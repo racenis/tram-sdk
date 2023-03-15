@@ -18,8 +18,8 @@
 #include <unordered_map>
 #include <templates/hashmap.h>
 
-template <> Core::Pool<Core::Audio::Sound> Core::PoolProxy<Core::Audio::Sound>::pool("sound pool", 100, false);
-namespace Core::Audio {
+template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("sound pool", 100, false);
+namespace tram::Audio {
     struct SoundSource {
         uint32_t source_name;
         
@@ -139,8 +139,8 @@ namespace Core::Audio {
     
 }
 
-namespace Core {
-    using namespace Core::Audio;
+namespace tram {
+    using namespace tram::Audio;
     
     template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("audio component pool", 150);
     

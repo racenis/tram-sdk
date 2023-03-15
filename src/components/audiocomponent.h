@@ -1,18 +1,16 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// AUDIOCOMPONENT.H -- Sound player component
 
 #ifndef COMPONENTS_AUDIOCOMPONENT_H
 #define COMPONENTS_AUDIOCOMPONENT_H
 
 #include <audio/audio.h>
 
-namespace Core::Audio {
+namespace tram::Audio {
     struct SoundSource;
 }
 
-namespace Core {
+namespace tram {
     
     class AudioComponent : public EntityComponent {
     public:

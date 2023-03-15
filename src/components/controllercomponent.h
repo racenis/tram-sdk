@@ -11,7 +11,7 @@
 #include <components/armaturecomponent.h>
 #include <components/triggercomponent.h>
 
-namespace Core {
+namespace tram {
     class PhysicsComponent;
     //class ArmatureComponent;
     

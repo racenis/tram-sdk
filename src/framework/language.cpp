@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/language.h>
 
 #include <templates/stackpool.h>
@@ -11,7 +14,7 @@
 #include <fstream>
 #include <unordered_map>
 
-namespace Core::Language {
+namespace tram::Language {
     StackPool<char> stringPoolforLangs("stringpool for langs", 10000);
     //std::unordered_map<uint64_t, uint64_t> langStringHashMap;
     Hashmap<const char*> LANGUAGE_STRING_MAP ("Hashmap for language strings", 500);

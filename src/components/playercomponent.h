@@ -13,13 +13,13 @@
 
 #include <framework/logging.h>
 
-namespace Core {
+namespace tram {
     class PlayerComponent : public EntityComponent {
     public:
         void EventHandler(Event &event){
-            using namespace Core::UI;
-            using enum Core::ControllerComponent::Action;
-            using enum Core::ControllerComponent::ActionModifier;
+            using namespace tram::UI;
+            using enum tram::ControllerComponent::Action;
+            using enum tram::ControllerComponent::ActionModifier;
 
             if (event.type == Event::CURSORPOS) {
                 //controller->SetDirection(glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f)));

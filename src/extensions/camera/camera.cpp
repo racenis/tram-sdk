@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <extensions/camera/camera.h>
 #include <framework/system.h>
 #include <framework/entity.h>
@@ -5,7 +8,7 @@
 #include <render/render.h>
 #include <audio/audio.h>
 
-namespace Core::Ext::Camera {
+namespace tram::Ext::Camera {
     uint32_t CAMERA_SYSTEM = -1u;
     Camera* selected_camera = nullptr;
     

@@ -8,7 +8,7 @@
 #include <framework/event.h>
 #include <framework/entitycomponent.h>
 
-namespace Core {
+namespace tram {
     struct ListenerInfo {
         enum ListenerType {
             LISTENER_COMPONENT,

@@ -6,7 +6,7 @@
 #include <render/renderer.h>
 #include <render/vertices.h>
 
-namespace Core::Render {
+namespace tram::Render {
     void AddLineMarker(const glm::vec3& location, const glm::vec3& color){
         AddLine(location + glm::vec3(-1.0f, 0.0f, 0.0f), location + glm::vec3(1.0f, 0.0f, 0.0f), color);
         AddLine(location + glm::vec3(0.0f, -1.0f, 0.0f), location + glm::vec3(0.0f, 1.0f, 0.0f), color);

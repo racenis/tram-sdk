@@ -17,7 +17,7 @@
 
 #include <set>
 
-using namespace Core;
+using namespace tram;
 //std::unordered_map<uint64_t, WorldCell*> WORLDCELL_LIST;
 Hashmap<WorldCell*> WORLDCELL_LIST ("Worldcell list hashmap", 500);
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);

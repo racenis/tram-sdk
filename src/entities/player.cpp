@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// PLAYER.CPP -- Player entity.
 
 #include <entities/player.h>
 
@@ -12,7 +10,7 @@
 #include <components/physicscomponent.h>
 #include <components/triggercomponent.h>
 
-namespace Core {
+namespace tram {
 Player::Player(){
     plomp = PoolProxy<PlayerComponent>::New();
     name = UID("player");

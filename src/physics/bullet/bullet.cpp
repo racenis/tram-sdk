@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <physics/bullet/bullet.h>
 #include <physics/bullet/debugdrawer.h>
 
@@ -5,7 +8,7 @@
 
 #include <btBulletDynamicsCommon.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     btBroadphaseInterface* broadphaseInterface = nullptr;
     btDefaultCollisionConfiguration* collisionConfiguration = nullptr;
     btCollisionDispatcher* collisionDispatcher = nullptr;

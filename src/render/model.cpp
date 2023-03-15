@@ -15,8 +15,9 @@
 
 #include <templates/hashmap.h>
 
-using namespace Core;
-using namespace Core::Render;
+using namespace tram;
+using namespace tram::Render;
+using namespace tram::Render;
 
 Model* ERROR_MODEL = nullptr;
 

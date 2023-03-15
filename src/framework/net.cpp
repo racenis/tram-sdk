@@ -4,7 +4,7 @@
 #include <framework/core.h>
 #include <framework/net.h>
 
-namespace Core::Net {
+namespace tram::Net {
     //void (*pushfuncs[50])(const Command& c);
 
     /*void SubmitCommand(const Command& c){

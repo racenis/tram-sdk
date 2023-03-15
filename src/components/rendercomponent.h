@@ -6,7 +6,7 @@
 
 #include <render/model.h>
 
-namespace Core {
+namespace tram {
     class RenderComponent : public EntityComponent {
     public:
         RenderComponent() : model(this), lightmap(this){}

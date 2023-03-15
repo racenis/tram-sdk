@@ -11,7 +11,7 @@
 
 #include <thread>
 
-namespace Core::Async {
+namespace tram::Async {
     std::thread resource_loader_thread;
     bool loaders_should_stop = false;
 

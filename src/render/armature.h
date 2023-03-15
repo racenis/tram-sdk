@@ -1,8 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ARMATURE.H -- Animation stuff
-// Animation bone, keyframe, animation resource object definitions.
 
 #ifndef ARMATURE_H
 #define ARMATURE_H
@@ -18,7 +15,7 @@
 
 #include <framework/math.h>
 
-namespace Core::Render {
+namespace tram::Render {
     typedef std::pair<name_t, uint64_t> NameCount; // animation header
     const size_t BONE_COUNT = 30;
 

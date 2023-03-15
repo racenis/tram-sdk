@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 
-namespace Core {
+namespace tram {
     template <typename T>
     class Stack{
     protected:

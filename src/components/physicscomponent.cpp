@@ -1,11 +1,14 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <components/physicscomponent.h>
 #include <physics/bullet/bullet.h>
 
 #include <physics/bullet/motionstates.h>
 
-using namespace Core::Physics;
+using namespace tram::Physics;
 
-namespace Core {
+namespace tram {
     template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
     
     void PhysicsComponent::Start(){
@@ -29,6 +32,7 @@ namespace Core {
         rigidbody->setCollisionFlags(rigidbody_collision_flags);
 
         if (rigidbody_should_sleep) rigidbody->setActivationState(0);
+        if (rigidbody_should_awake) rigidbody->setActivationState(DISABLE_DEACTIVATION);
 
         is_ready = true;
     }

@@ -8,7 +8,7 @@
 
 #include <render/armature.h>
 
-namespace Core::Render {
+namespace tram::Render {
     class Model;
 
     extern bool DRAW_RENDER_DEBUG;

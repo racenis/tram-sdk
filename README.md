@@ -46,12 +46,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Keybinding menu
 - Graphics menu
 
-- Put Renderer into its own Renderer namespace
-- Add a prefix to all header guards
+- Add some sort of a memory pool for Messages and Events
 - ~~Add screen clear color to render~~
-- Add font definitions to Ext::Menu
-- Add a better way to register entities
-	- Could be a static method 'REGISTER' for each entity type
+- ~~Add font definitions to Ext::Menu~~
 - ~~Rewrite MaterialInfo~~
 	- ~~Automatically add .list extension to filename~~
 	- ~~Automatically add /data/ directory prefix to filename~~
@@ -61,7 +58,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - ~~Replace header in worldcell files~~
 	- ~~Should be like in model/animation/etc. files~~
 	- ~~Also do so for tram-editor~~
-- Move file.h into platform
+
 	
 
 #### Should do later
@@ -78,10 +75,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make constructors/destructors protected
 	- Some classes should only be created in Pools
 - Move GetTime() out of UI
-- SetScreenSize() causes a segfault
+- ~~SetScreenSize() causes a segfault~~
 - Add more types to file reader/writer
-	- String
-	- UID
+	- ~~String~~
+	- ~~UID~~
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- Add a callback function for updating
@@ -92,7 +89,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Not important
 - Switch out all of the std::cout's to Log's
-- Switch namespace Core to tram
+- ~~Switch namespace Core to tram~~
 - Switch the AudioComponent to using audio/source.h
 - Render/Armature component linking
 - Add uninit functions to all systems.
@@ -105,6 +102,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
 - Add scripting
+- Add a prefix to all header guards
+- Add a better way to register entities
+	- Could be a static method 'REGISTER' for each entity type
+- Move file.h into platform
 
 #### For very later versions
 - Vertex animation

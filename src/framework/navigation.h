@@ -9,7 +9,7 @@
 #include <framework/core.h>
 #include <framework/uid.h>
 
-namespace Core {
+namespace tram {
     extern bool DRAW_PATH_DEBUG;
     
     struct Path {

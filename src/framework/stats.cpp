@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/stats.h>
 
 #ifndef ENGINE_EDITOR_MODE
@@ -6,7 +9,7 @@
 
 #include <vector>
 
-namespace Core::Stats {    
+namespace tram::Stats {    
     struct SystemStat {
         double time_started = -1.0f;        //< time when system was started, -1.0f if hasn't started
         double time_spent = 0.0f;           //< total time spent since last collation

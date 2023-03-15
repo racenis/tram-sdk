@@ -12,9 +12,10 @@
 
 #include <render/opengl/renderer.h>
 
-using namespace Core;
+using namespace tram;
+using namespace tram::Render;
 
-namespace Core::Render {
+namespace tram::Render {
     glm::vec3 CAMERA_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::quat CAMERA_ROTATION = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 

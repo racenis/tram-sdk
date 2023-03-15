@@ -12,7 +12,7 @@
 #include <components/physicscomponent.h>
 #include <components/armaturecomponent.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     
     class EntMotionState : public btMotionState {
     public:

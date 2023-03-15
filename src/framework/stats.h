@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace Core::Stats {
+namespace tram::Stats {
     enum Resource : uint32_t {
         RESOURCE_VRAM
     };

@@ -4,7 +4,7 @@
 #ifndef FRAMEWORK_NET_H
 #define FRAMEWORK_NET_H
 
-namespace Core::Net {
+namespace tram::Net {
 
     //void SubmitCommand(const Command& c);
 

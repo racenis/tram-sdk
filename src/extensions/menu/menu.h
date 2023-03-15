@@ -4,10 +4,17 @@
 #ifndef EXTENSIONS_MENU_MENU_H
 #define EXTENSIONS_MENU_MENU_H
 
-namespace Core::Ext::Menu {
+#include <framework/gui.h>
+
+namespace tram::Ext::Menu {
     void Init();
     void DebugMenu();
     void EscapeMenu();
+    
+    extern GUI::font_t FONT_SYMBOL;
+    extern GUI::font_t FONT_TEXT;
+    extern GUI::font_t FONT_TEXT_BOLD;
+    extern GUI::font_t FONT_HEADER;
 }
 
 #endif

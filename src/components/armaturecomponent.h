@@ -9,7 +9,7 @@
 #include <render/render.h>
 #include <render/model.h>
 
-namespace Core {
+namespace tram {
 class ArmatureComponent : public EntityComponent {
     protected:
         static const size_t BONE_COUNT = 30;

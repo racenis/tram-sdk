@@ -6,7 +6,7 @@
 
 #include <framework/uid.h>
 
-namespace Core::Language {
+namespace tram::Language {
     const char* Get (name_t name);
     void Load (const char* filename);
 }

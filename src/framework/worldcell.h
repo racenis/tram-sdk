@@ -9,7 +9,7 @@
 #include <framework/uid.h>
 #include <framework/math.h>
 
-namespace Core {
+namespace tram {
     class Entity;
     class Path;
     class Navmesh;

@@ -1,10 +1,13 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/logging.h>
 #include <framework/system.h>
 #include <cstring>
 #include <charconv>
 #include <iostream>
 
-namespace Core::implementation {
+namespace tram::implementation {
     char buffer[500] = {'\0'}; // yes.. haha .. YES!!
     
     void concat_fmt (std::string_view& str) {

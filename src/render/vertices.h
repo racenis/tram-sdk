@@ -6,7 +6,7 @@
 
 #include <render/renderer.h>
 
-namespace Core::Render {
+namespace tram::Render {
     template <typename T> VertexDefinition VERTEX_DEFINITION;
     
     struct StaticModelVertex {

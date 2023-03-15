@@ -3,7 +3,7 @@
 
 #include <framework/math.h>
 
-namespace Core {
+namespace tram {
     void QuatLookAt(glm::quat& quaternion, const glm::vec3& from, const glm::vec3& to){
         const glm::vec3 start = normalize(from);
         const glm::vec3 desu = normalize(to);

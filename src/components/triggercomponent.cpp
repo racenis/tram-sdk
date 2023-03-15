@@ -1,9 +1,12 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <components/triggercomponent.h>
 #include <physics/bullet/bullet.h>
 
-using namespace Core::Physics;
+using namespace tram::Physics;
 
-namespace Core {
+namespace tram {
     template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
     
     void TriggerComponent::Start(){

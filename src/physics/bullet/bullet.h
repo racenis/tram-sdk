@@ -9,7 +9,7 @@
 
 #include <btBulletDynamicsCommon.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     enum UserIndex : int {
         USERINDEX_PHYSICSCOMPONENT = 1,
         USERINDEX_TRIGGERCOMPONENT = 2,

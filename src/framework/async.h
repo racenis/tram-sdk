@@ -6,12 +6,12 @@
 
 #include <cmath>
 
-namespace Core {
+namespace tram {
     class EntityComponent;
     class Resource;
 }
 
-namespace Core::Async {
+namespace tram::Async {
     void RequestResource (EntityComponent* requester, Resource* requested_resource);
     void ForceLoadResource(Resource* res);
     void Init();

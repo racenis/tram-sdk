@@ -1,13 +1,11 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// LAMP.CPP -- Lamp entity.
 
 #include <framework/core.h>
 #include <entities/lamp.h>
 #include <components/lightcomponent.h>
 
-namespace Core {
+namespace tram {
     Lamp::Lamp(std::string_view& str) : Entity (str) {
         data.make();
         data->FromString(str);

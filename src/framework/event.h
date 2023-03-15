@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace Core {
+namespace tram {
     typedef uint16_t event_t;
     typedef uint64_t id_t;
     typedef uint64_t listener_t;

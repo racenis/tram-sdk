@@ -9,7 +9,7 @@
 #include <framework/resource.h>
 
 
-namespace Core::Audio {
+namespace tram::Audio {
     typedef uint32_t audiosource_t;
     
     const size_t SOUND_BUFFERS_PER_SOUND = 30;

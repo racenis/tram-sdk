@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/message.h>
 #include <framework/entity.h>
 
@@ -6,7 +9,7 @@
 
 #include <queue>
 
-namespace Core {
+namespace tram {
     Queue<Message> MESSAGE_QUEUE ("message queue", 500);
     Pool<Message> MESSAGE_POOL ("message pool", 250);
     

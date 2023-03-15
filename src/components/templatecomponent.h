@@ -6,7 +6,7 @@
 
 #include <framework/entitycomponent.h>
 
-namespace Core {
+namespace tram {
     
     class TemplateComponent : public EntityComponent {
     public:

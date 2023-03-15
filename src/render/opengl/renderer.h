@@ -6,7 +6,7 @@
 
 #include <render/renderer.h>
 
-namespace Core::Render::OpenGL {
+namespace tram::Render::OpenGL {
     void Init();
 
     void Render();

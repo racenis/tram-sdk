@@ -1,15 +1,15 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RENDER_RENDERER_H
-#define RENDER_RENDERER_H
+#ifndef TRAM_SDK_RENDER_RENDERER_H
+#define TRAM_SDK_RENDER_RENDERER_H
 
 #include <templates/octree.h>
 
 #include <render/render.h>
 #include <render/model.h>
 
-namespace Core::Render {
+namespace tram::Render {
     /// Flags for DrawListObjects.
     enum renderflags: uint32_t {
         FLAG_NO_RENDER = 0,         //< Object is not rendered.
@@ -223,4 +223,4 @@ namespace Core::Render {
     }
 }
 
-#endif // RENDER_RENDERER_H
+#endif // TRAM_SDK_RENDER_RENDERER_H

@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// STATICWORLDOBJECT.CPP -- Static world object entity.
 
 #include <framework/worldcell.h>
 
@@ -9,8 +7,8 @@
 #include <components/rendercomponent.h>
 #include <components/physicscomponent.h>
 
-namespace Core {
-    using namespace Core::Physics;
+namespace tram {
+    using namespace tram::Physics;
 
     StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
         data.make();

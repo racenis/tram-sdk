@@ -42,7 +42,6 @@
       <File Name="src/components/audiocomponent.h"/>
       <File Name="src/components/armaturecomponent.h"/>
       <File Name="src/components/armaturecomponent.cpp"/>
-      <File Name="src/components/aicomponent.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
       <File Name="src/framework/type.h"/>

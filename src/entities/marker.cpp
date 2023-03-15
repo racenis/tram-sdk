@@ -1,6 +1,9 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <entities/marker.h>
 
-namespace Core {
+namespace tram {
     
 Marker::Marker(std::string_view& str) : Entity(str) {}
 

@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace Core::System {
+namespace tram::System {
     typedef uint32_t system_t;
     enum System : uint32_t {
         SYSTEM_CORE,

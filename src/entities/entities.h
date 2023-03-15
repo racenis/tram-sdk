@@ -4,7 +4,7 @@
 #ifndef ENTITIES_ENTITIES_H
 #define ENTITIES_ENTITIES_H
 
-namespace Core {
+namespace tram {
     // TODO: factor out all of these
 
     // the mongus, bus and tram entities are a bit broken

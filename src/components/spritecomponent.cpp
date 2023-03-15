@@ -5,8 +5,8 @@
 #include <render/vertices.h>
 #include <components/spritecomponent.h>
 
-namespace Core {
-    using namespace Core::Render;
+namespace tram {
+    using namespace tram::Render;
     
     SpriteComponent::~SpriteComponent(){
         is_ready = false;

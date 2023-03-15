@@ -6,11 +6,11 @@
 
 #include <framework/ui.h>
 
-namespace Core::Render {
+namespace tram::Render {
     class Sprite;
 }
 
-namespace Core::GUI {
+namespace tram::GUI {
     typedef uint32_t font_t;
     
     enum orientation:uint32_t {

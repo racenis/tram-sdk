@@ -11,7 +11,7 @@
 
 #include <render/opengl/renderer.h>
 
-namespace Core::Render::OpenGL {
+namespace tram::Render::OpenGL {
     std::vector<std::tuple<Model::VertexFormat, Material::Type, uint32_t>> compiled_shaders;
     
     void StoreShaderForLater (Model::VertexFormat vertex_format, Material::Type material_type, uint32_t shader) {

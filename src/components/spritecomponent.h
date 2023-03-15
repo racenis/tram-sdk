@@ -7,7 +7,7 @@
 #include <render/render.h>
 #include <render/sprite.h>
 
-namespace Core {
+namespace tram {
     class SpriteComponent : public EntityComponent {
     public:
         SpriteComponent() : sprite(this){}

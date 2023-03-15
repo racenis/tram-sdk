@@ -6,12 +6,9 @@
 
 #include <render/renderer.h>
 
-// TODO:
-// - put the lights behind an abstraction? maybe? in the renderer.h?
-// - move the implementations of methods into a seperate lightcomponent.cpp file
-
-namespace Core {
-  class LightComponent : public EntityComponent {
+namespace tram {
+    
+    class LightComponent : public EntityComponent {
     protected:
         Render::LightListObject* lightLObj = nullptr;
         glm::vec3 location;

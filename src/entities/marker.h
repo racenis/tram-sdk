@@ -1,7 +1,10 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/entity.h>
 #include <framework/serializeddata.h>
 
-namespace Core {
+namespace tram {
     
 class Marker : public Entity {
 public:

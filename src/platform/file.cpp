@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-namespace Core {
+namespace tram {
     class DiskFile {
     public:
         DiskFile (char const* filename, FileAccessMode mode) : mode(mode) {

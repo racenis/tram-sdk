@@ -13,7 +13,7 @@
 #include <iostream>
 #include <cassert>
 
-namespace Core {
+namespace tram {
     /// Engine version string.
     /// If you fork the engine, you should probably change this.
     char const* ENGINE_VERSION = "Tramway SDK v0.0.4-alpha";

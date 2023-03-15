@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace Core {
+namespace tram {
     struct UID {
         UID() {}
         UID(const std::string& value);

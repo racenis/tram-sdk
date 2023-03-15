@@ -9,7 +9,7 @@
 
 class btCompoundShape;
 
-namespace Core::Physics {
+namespace tram::Physics {
     class CollisionModel : public Resource {
     public:
         CollisionModel(){}

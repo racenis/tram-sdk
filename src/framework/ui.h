@@ -9,7 +9,7 @@
 class GLFWwindow;
 class GLFWcursor;
 
-namespace Core::UI {
+namespace tram::UI {
     // TODO: make this list a bit less unreadable
     enum KeyboardKey : uint16_t {
         KEY_SPACE,

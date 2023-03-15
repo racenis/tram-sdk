@@ -8,7 +8,7 @@
 #include <framework/entitycomponent.h>
 #include <framework/serializeddata.h>
 
-namespace Core {
+namespace tram {
     class PlayerComponent;
     class ControllerComponent;
     class PhysicsComponent;

@@ -1,7 +1,10 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <framework/system.h>
 #include <vector>
 
-namespace Core::System {
+namespace tram::System {
     struct SystemInfo {
         char const* name;
         char const* short_name;

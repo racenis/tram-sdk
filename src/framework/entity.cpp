@@ -11,7 +11,7 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace Core {
+namespace tram {
     // TODO: swap all of these out for my own hashmap
     //std::unordered_map<uint64_t, Entity*> ENTITY_ID_LIST;
     Hashmap<Entity*> ENTITY_ID_LIST ("Entity ID hashmap", 500);

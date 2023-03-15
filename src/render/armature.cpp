@@ -1,8 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// ARMATURE.CPP -- animation code.
-// Implementation of animation loading and finding.
 
 #include <render/armature.h>
 #include <components/armaturecomponent.h>
@@ -11,9 +8,9 @@
 
 #include <fstream>
 
-template <> Core::Pool<Core::Render::Animation> Core::PoolProxy<Core::Render::Animation>::pool("animation pool", 50, false);
+template <> tram::Pool<tram::Render::Animation> tram::PoolProxy<tram::Render::Animation>::pool("animation pool", 50, false);
 
-namespace Core::Render {
+namespace tram::Render {
     Hashmap<Animation*> ANIMATION_LIST("model name list", 500);
     StackPool<uint8_t> ANIMATION_POOL("animation keyframe pool", 50000);
     Pool<Pose> poseList("pose list", 100, true);

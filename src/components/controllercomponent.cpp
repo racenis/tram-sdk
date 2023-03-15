@@ -7,7 +7,7 @@
 #include <components/controllercomponent.h>
 #include <components/physicscomponent.h>
 
-namespace Core {
+namespace tram {
     
     /// Sets the controllers action.
     /// When updated, the controller will start performing the action

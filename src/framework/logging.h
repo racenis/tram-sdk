@@ -8,7 +8,7 @@
 #include <framework/uid.h>
 #include <concepts>
 
-namespace Core {
+namespace tram {
     namespace implementation {
         template <typename T> void concat (const T& value) {
             concat<const char*> ("LOGGER_UNDEFINED_TYPE");

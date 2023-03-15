@@ -4,7 +4,7 @@
 #include <framework/navigation.h>
 #include <render/render.h>
 
-using namespace Core;
+using namespace tram;
 template <> Pool<Path> PoolProxy<Path>::pool ("path pool", 50, false);
 template <> Pool<Navmesh> PoolProxy<Navmesh>::pool ("navmesh pool", 50, false);
 template <> Pool<NavigationPlan> PoolProxy<NavigationPlan>::pool("navigation plan pool", 100);

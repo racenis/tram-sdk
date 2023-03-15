@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-namespace Core {
+namespace tram {
     typedef glm::vec3 vec3;
     typedef glm::quat quat;
     typedef glm::mat4 mat4;

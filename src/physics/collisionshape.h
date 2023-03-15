@@ -6,7 +6,7 @@
 
 #include <framework/math.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     enum Shape : uint32_t {
         SHAPE_SPHERE,
         SHAPE_CYLINDER,

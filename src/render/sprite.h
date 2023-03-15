@@ -6,7 +6,7 @@
 
 #include <render/render.h>
 
-namespace Core::Render {
+namespace tram::Render {
     class Material;
     class Sprite : public Resource {
     public:

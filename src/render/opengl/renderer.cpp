@@ -1,3 +1,6 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #include <render/opengl/renderer.h>
 
 // too too
@@ -6,7 +9,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace Core::Render::OpenGL {
+namespace tram::Render::OpenGL {
     Pool<DrawListEntry> draw_list("render list", 500, false);
     
     struct ShaderUniformMatrices {
@@ -425,7 +428,7 @@ namespace Core::Render::OpenGL {
 }
 
 // why is this implemented in here
-    void Core::Render::Project(const glm::vec3& point, glm::vec3& result) {
+    void tram::Render::Project(const glm::vec3& point, glm::vec3& result) {
         result = glm::project(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT));
         result.y = Render::SCREEN_HEIGHT - result.y;
     }

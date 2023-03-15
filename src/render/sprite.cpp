@@ -12,8 +12,8 @@
 #include <fstream>
 #include <sstream>
 
-using namespace Core;
-using namespace Core::Render;
+using namespace tram;
+using namespace tram::Render;
 
 //std::unordered_map<uint64_t, Sprite*> SPRITE_LIST;
 Hashmap<Sprite*> SPRITE_LIST ("SPRITE_LIST", 500);

@@ -9,7 +9,7 @@
 
 #include <framework/uid.h>
 
-namespace Core {
+namespace tram {
     /// Tightly packed, binary entity data.
     class SerializedEntityData {
     public:

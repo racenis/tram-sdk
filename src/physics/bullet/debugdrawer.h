@@ -7,7 +7,7 @@
 #include <physics/bullet/bullet.h>
 #include <framework/gui.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     class PhysicsDebugDraw : public btIDebugDraw{
     public:
 
@@ -18,7 +18,7 @@ namespace Core::Physics {
         void reportErrorWarning(const char* warningString) {std::cout << warningString << std::endl;};
 
         void draw3dText(const btVector3& location, const char* textString) {
-            Core::GUI::DebugText(textString, glm::vec3(location.getX(), location.getY(), location.getZ()), Render::COLOR_WHITE);
+            tram::GUI::DebugText(textString, glm::vec3(location.getX(), location.getY(), location.getZ()), Render::COLOR_WHITE);
         };
 
         void setDebugMode(int debugMode) {};
@@ -40,7 +40,7 @@ namespace Core::Physics {
             c.x = color.getX();
             c.y = color.getY();
             c.z = color.getZ();
-            Core::Render::AddLine(f, t, c);
+            tram::Render::AddLine(f, t, c);
         }
     };
 }

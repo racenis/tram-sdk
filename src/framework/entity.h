@@ -8,7 +8,7 @@
 #include <framework/core.h>
 #include <framework/math.h>
 
-namespace Core {
+namespace tram {
     class WorldCell;
     class Message;
     

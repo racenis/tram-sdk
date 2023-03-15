@@ -8,7 +8,7 @@
 #include <iostream>
 #include <atomic>
 
-namespace Core {
+namespace tram {
     template <typename T>
     class Queue{
     protected:

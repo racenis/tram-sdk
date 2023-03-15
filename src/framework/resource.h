@@ -7,7 +7,7 @@
 #include <framework/uid.h>
 #include <framework/entitycomponent.h>
 
-namespace Core {
+namespace tram {
     class Resource  {
     public:
         enum Status {

@@ -5,8 +5,8 @@
 #include <render/vertices.h>
 #include <components/particlecomponent.h>
 
-namespace Core {
-    using namespace Core::Render;
+namespace tram {
+    using namespace tram::Render;
     
     ParticleComponent::~ParticleComponent(){
         is_ready = true;

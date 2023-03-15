@@ -9,7 +9,7 @@
 #include <framework/core.h>
 #include <framework/uid.h>
 
-namespace Core {
+namespace tram {
     enum FileAccessMode {
         MODE_READ,
         MODE_WRITE

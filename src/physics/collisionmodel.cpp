@@ -7,7 +7,7 @@
 #include <templates/hashmap.h>
 #include <fstream>
 
-namespace Core::Physics {
+namespace tram::Physics {
     //std::unordered_map<uint64_t, CollisionModel*> COLLISION_MODELS;
     Hashmap<CollisionModel*> COLLISION_MODELS ("Collision MODEL HASHMAP", 500);
     

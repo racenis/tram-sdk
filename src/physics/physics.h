@@ -9,11 +9,11 @@
 
 #include <vector>
 
-namespace Core {
+namespace tram {
     class PhysicsComponent;  
 }
 
-namespace Core::Physics {
+namespace tram::Physics {
     void Init();
     void Update();
         
@@ -44,7 +44,7 @@ namespace Core::Physics {
 }
 
 #ifdef BENIGONIS
-namespace Core {
+namespace tram {
     class BusComponent : public EntityComponent {
     public:
         void EventHandler(Event &event);

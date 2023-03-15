@@ -13,7 +13,7 @@
 #include <ui.h>
 
 
-namespace Core {
+namespace tram {
     class PhysicsComponent;
 
 

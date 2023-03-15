@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 
-namespace Core {
+namespace tram {
      template <typename T>
     class Octree {
         // TODO: actually implement the octree

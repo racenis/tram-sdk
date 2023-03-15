@@ -10,7 +10,7 @@
 
 #include <audio/source.h>
 
-namespace Core::Audio {
+namespace tram::Audio {
     /// Creates an audio source.
     /// @return A new audio source handle.
     audiosource_t MakeAudioSource() {

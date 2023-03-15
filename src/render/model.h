@@ -6,7 +6,7 @@
 
 #include <render/material.h>
 
-namespace Core::Render{
+namespace tram::Render{
     struct ModelData{};
 
     class Model : public Resource {

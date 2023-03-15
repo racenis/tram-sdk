@@ -4,7 +4,7 @@
 #ifndef FRAMEWORK_TYPES_H
 #define FRAMEWORK_TYPES_H
 
-namespace Core {
+namespace tram {
     
     /// Type enumeration for serialization, etc.
     

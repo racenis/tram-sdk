@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// GUI.CPP -- graphical user interface implementation.
 
 #include <templates/stack.h>
 
@@ -14,7 +12,7 @@
 #include <render/vertices.h>
 #include <render/sprite.h>
 
-namespace Core::GUI {
+namespace tram::GUI {
     struct FrameObject {
         float offset_x;
         float offset_y;
@@ -60,7 +58,7 @@ namespace Core::GUI {
         
         Log (SEVERITY_INFO, System::SYSTEM_GUI, "Initializing GUI system.");
         
-        using namespace Core::Render;
+        using namespace tram::Render;
         
         CreateVertexArray(VERTEX_DEFINITION<SpriteVertex>, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
         glyphvertices_entry = InsertDrawListEntry();
@@ -89,14 +87,14 @@ namespace Core::GUI {
             }
         }
         
-        using namespace Core::Render;
+        using namespace tram::Render;
         
         SetDrawListTextures(glyphvertices_entry, font_count, glyphvertices_textures);
     }
     
     /// Submits all of the glyphs for rendering.
     void Update () {
-        using namespace Core::Render;
+        using namespace tram::Render;
         UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
         SetDrawListElements(glyphvertices_entry, 0, glyphvertices.size());
         glyphvertices.clear();

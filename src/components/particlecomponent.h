@@ -7,7 +7,7 @@
 #include <render/render.h>
 #include <render/sprite.h>
 
-namespace Core {
+namespace tram {
     class ParticleComponent : public EntityComponent {
     public:
         struct Particle {

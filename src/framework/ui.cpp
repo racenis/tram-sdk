@@ -1,8 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// UI.CPP -- User interface stuff
-// Window opening, opengl context creation and user inputs.
 
 #include <framework/core.h>
 #include <framework/event.h>
@@ -18,9 +15,9 @@
 //#include <glad_gles3.h>
 #include <glfw3.h>
 
-using namespace Core::Render;
+using namespace tram::Render;
 
-namespace Core::UI {
+namespace tram::UI {
     KeyboardKey glfw_key_to_keyboardkey (int keycode);
     
     InputState INPUT_STATE = STATE_DEFAULT;

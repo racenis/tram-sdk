@@ -7,7 +7,7 @@
 #include <framework/core.h>
 #include <iostream> // error message
 
-namespace Core {
+namespace tram {
     template <typename T>
     class Hashmap {
     protected:

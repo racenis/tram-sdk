@@ -9,7 +9,7 @@
 #include <components/spritecomponent.h>
 #include <components/particlecomponent.h>
 
-namespace Core {
+namespace tram {
     // TOOD: move all of these pool inits into the where the respective components are implemented or something?
     template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("render component pool", 250, false);
     template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("light component pool", 250, false);

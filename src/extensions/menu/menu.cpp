@@ -11,14 +11,14 @@
 
 #include <framework/system.h>
 
-using namespace Core::GUI;
-using namespace Core::Render;
+using namespace tram::GUI;
+using namespace tram::Render;
 
-namespace Core::Ext::Menu {
-    font_t FONT_SYMBOL = 0;
-    font_t FONT_TEXT = 0;
-    font_t FONT_TEXT_BOLD = 0;
-    font_t FONT_HEADER = 0;
+namespace tram::Ext::Menu {
+    font_t FONT_SYMBOL = 0;     //< Font that contains sprites for GUI widgets.
+    font_t FONT_TEXT = 0;       //< Basic sans-serif font.
+    font_t FONT_TEXT_BOLD = 0;  //< Basic bold sans-serif font.
+    font_t FONT_HEADER = 0;     //< Font that contains some image headers.
     
     uint32_t MENU_SYSTEM = -1;
     

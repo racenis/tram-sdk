@@ -1,7 +1,5 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
-//
-// TRIGGERCOMPONENT.H -- Trigger component [kinda works]
 
 #ifndef COMPONENTS_TRIGGERCOMPONENT_H
 #define COMPONENTS_TRIGGERCOMPONENT_H
@@ -14,7 +12,7 @@
 class btCollisionShape;
 class btCollisionObject;
 
-namespace Core {
+namespace tram {
     class TriggerComponent : public EntityComponent {
     public:
         TriggerComponent() : model(this){}

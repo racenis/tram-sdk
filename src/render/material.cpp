@@ -26,8 +26,9 @@
 
 #include <fstream>
 
-using namespace Core;
-using namespace Core::Render;
+using namespace tram;
+using namespace tram::Render;
+using namespace tram::Render;
 
 Material* ERROR_MATERIAL = nullptr;
 Hashmap<Material*> MATERIAL_LIST("material name list", 500);
@@ -41,7 +42,7 @@ void Material::LoadErrorMaterial() {
 
 /// Loads a Material definition file.
 void Material::LoadMaterialInfo(const char* filename){
-    using namespace Core::Render;
+    using namespace tram::Render;
     
     char path [100] = "data/";
     strcat (path, filename);

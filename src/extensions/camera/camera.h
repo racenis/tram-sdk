@@ -6,11 +6,11 @@
 
 #include <framework/math.h>
 
-namespace Core {
+namespace tram {
     class Entity;
 }
 
-namespace Core::Ext::Camera {
+namespace tram::Ext::Camera {
     class Camera {
     public:
         void Update ();

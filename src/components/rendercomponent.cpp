@@ -4,8 +4,8 @@
 #include <render/renderer.h>
 #include <components/rendercomponent.h>
 
-namespace Core {
-    using namespace Core::Render;
+namespace tram {
+    using namespace tram::Render;
     
     void RenderComponent::SetModel(name_t name){
         model = Render::Model::Find(name);

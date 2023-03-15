@@ -11,7 +11,7 @@
 
 #include <framework/system.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     /// Option for drawing physics debug lines.
     /// Set to true if you want to see physics debug lines. False if not.
     bool DRAW_PHYSICS_DEBUG = false;
@@ -111,7 +111,7 @@ namespace Core::Physics {
 
 
 #ifdef BENIGONIS
-namespace Core {
+namespace tram {
     // TODO: OKEY, the next thing will be needed to be brapped out of here to buscomponent.cpp
     void BusComponent::EventHandler(Event &event){
         if(event.type == Event::KEYDOWN){

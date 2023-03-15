@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cassert>
 
-namespace Core {
+namespace tram {
     template <typename T>
     class Pool {
     protected:

@@ -7,7 +7,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <components/physicscomponent.h>
 
-namespace Core::Physics {
+namespace tram::Physics {
     class PathAction : public btActionInterface {
     public:
 

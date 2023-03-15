@@ -46,9 +46,9 @@
 
 #include <render/renderer.h>
 
-using namespace Core;
-using namespace Core::Render;
-using namespace Core::UI;
+using namespace tram;
+using namespace tram::Render;
+using namespace tram::UI;
 
 void UIDFunc(UID thing) {
     Log ("//////// {}", thing);
@@ -61,7 +61,7 @@ int main() {
     Entity::Register("staticwobj", [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
     Entity::Register("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
 
-    Core::Init();           // core init should always be first
+    tram::Init();           // core init should always be first
     UI::Init();
     Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities
     Render::Init();         // render init must always come after the ui inited
@@ -173,7 +173,7 @@ int main() {
     //auto crate_ent = Entity::Find(UID("estijs"));
     
     while(!EXIT){
-        Core::Update();
+        tram::Update();
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
@@ -265,9 +265,9 @@ int main() {
         std::string tickstr2 = std::to_string(GetTickTime());
         //std::string tickstr3 = std::to_string(trigga->Poll().size());
         
-        GUI::Text(tickstr.c_str(), 2, Core::GUI::TEXT_CENTER); GUI::FrameBreakLine();
-        GUI::Text(tickstr2.c_str(), 2, Core::GUI::TEXT_CENTER); GUI::FrameBreakLine();
-        //GUI::Text(tickstr3.c_str(), 2, Core::GUI::TEXT_CENTER);
+        GUI::Text(tickstr.c_str(), 2, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
+        GUI::Text(tickstr2.c_str(), 2, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
+        //GUI::Text(tickstr3.c_str(), 2, tram::GUI::TEXT_CENTER);
         
         //{
         //    auto p = trigga->Poll();
@@ -277,15 +277,15 @@ int main() {
         //}
         
         /*
-        GUI::Frame(Core::GUI::FRAME_CENTER, 640.0f, 480.0);
-        GUI::Frame(Core::GUI::FRAME_TOP, 128.0f);
+        GUI::Frame(tram::GUI::FRAME_CENTER, 640.0f, 480.0);
+        GUI::Frame(tram::GUI::FRAME_TOP, 128.0f);
         GUI::FillFrame(0.0f, 0.0f, 256.0f, 64.0f, Render::COLOR_WHITE, 3);
         
         static bool helptext = false;
         if(GUI::SmallButton(GUI::BUTTON_QUESTION)) helptext = !helptext;
         if(helptext) GUI::Text("Amogus!", 1);
         
-        GUI::Frame(Core::GUI::FRAME_BOTTOM, 20.0f);
+        GUI::Frame(tram::GUI::FRAME_BOTTOM, 20.0f);
         
         static float pad = 650.0f; pad -= 2.0f;
         if (pad < -170.0f) pad = 650.0f;
@@ -293,12 +293,12 @@ int main() {
         
         GUI::EndFrame();
         GUI::EndFrame();
-        GUI::Frame(Core::GUI::FRAME_BOTTOM, 480.0f - 128.0f);
-        GUI::Frame(Core::GUI::FRAME_LEFT, 150.0f);
+        GUI::Frame(tram::GUI::FRAME_BOTTOM, 480.0f - 128.0f);
+        GUI::Frame(tram::GUI::FRAME_LEFT, 150.0f);
         GUI::FillFrame(104.0f, 108.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
     
         GUI::EndFrame();
-        GUI::Frame(Core::GUI::FRAME_RIGHT, 640.0f - 150.0f);
+        GUI::Frame(tram::GUI::FRAME_RIGHT, 640.0f - 150.0f);
         GUI::FillFrame(104.0f, 88.0f, 12.0f, 12.0f, Render::COLOR_WHITE, 0);
         
         GUI::FrameBorder();
@@ -394,15 +394,15 @@ int main() {
 
 #include <framework/logging.h>
 
-using namespace Core;
+using namespace tram;
 
 #include <templates/macros.h>
 
 
 int main() {
-    Core::Init();
+    tram::Init();
     
-    std::cout << Core::ENGINE_VERSION << std::endl;
+    std::cout << tram::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
     
     {

@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace Core {
+namespace tram {
     typedef uint64_t id_t;
     
     extern bool EXIT;

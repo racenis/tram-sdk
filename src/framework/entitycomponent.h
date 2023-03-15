@@ -10,7 +10,7 @@
 #include <framework/async.h>
 
 
-namespace Core {
+namespace tram {
     class Event;
     class Entity;
     

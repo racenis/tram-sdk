@@ -13,7 +13,7 @@ class btMotionState;
 class btRigidBody;
 class btActionInterface;
 
-namespace Core {
+namespace tram {
     class PhysicsComponent : public EntityComponent {
     public:
         PhysicsComponent() : collision_model (this) {}
