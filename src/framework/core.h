@@ -12,13 +12,15 @@ namespace tram {
     extern bool EXIT;
     extern char const* ENGINE_VERSION;
     
-    void Init();
-    void Update();
-    
     id_t GenerateID();
     
     uint32_t GetTick();
     float GetTickTime();
+    
+    namespace Core {
+        void Init();
+        void Update();
+    }
 }
 
 #endif // FRAMEWORK_CORE_H

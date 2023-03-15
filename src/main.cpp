@@ -61,7 +61,7 @@ int main() {
     Entity::Register("staticwobj", [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
     Entity::Register("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
 
-    tram::Init();           // core init should always be first
+    Core::Init();           // core init should always be first
     UI::Init();
     Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities
     Render::Init();         // render init must always come after the ui inited
@@ -117,7 +117,7 @@ int main() {
     // create the mongus model
     RenderComponent* monguser = PoolProxy<RenderComponent>::New();
     monguser->SetModel(UID("mongus"));
-    monguser->SetPose(poseList.begin().ptr);
+    //monguser->SetPose(poseList.begin().ptr);
     monguser->Init();
     monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
     monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
@@ -136,7 +136,8 @@ int main() {
     //monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
 
     // link the mongus model and his animation player
-    monguser->SetPose(monguser_armature->GetPosePtr());
+    //monguser->SetPose(monguser_armature->GetPosePtr());
+    monguser->SetArmature(monguser_armature);
     
     // turn on physics drawing
     //DRAW_PHYSICS_DEBUG = true;
@@ -173,7 +174,7 @@ int main() {
     //auto crate_ent = Entity::Find(UID("estijs"));
     
     while(!EXIT){
-        tram::Update();
+        Core::Update();
         UI::Update();
 
         if (UI::INPUT_STATE == STATE_DEFAULT) {
@@ -206,7 +207,7 @@ int main() {
             tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
         }
         
-        vec3 cast_from = player.GetLocation() + vec3(0.0f, 1.7f, 0.0f);
+        vec3 cast_from = player.GetLocation() + vec3(0.0f, 0.7f, 0.0f);
         vec3 cast_to = cast_from + (CAMERA_ROTATION * DIRECTION_FORWARD * 10.0f);
         
         auto ray_all = Physics::Raycast(cast_from, cast_to);

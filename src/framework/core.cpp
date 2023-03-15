@@ -33,7 +33,7 @@ namespace tram {
     }
 
     /// Initializes the core of the framework.
-    void Init () {
+    void Core::Init () {
         // set the 0th string to 'none'
         UID none("none");
         
@@ -64,7 +64,7 @@ namespace tram {
     
     /// Updates the core system.
     /// @note This should be called only once per update cycle.
-    void Update () {
+    void Core::Update () {
         #ifndef ENGINE_EDITOR_MODE
         TIME = UI::GetTime();
         #endif

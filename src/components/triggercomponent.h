@@ -38,8 +38,6 @@ namespace tram {
         
         void SetLocation(glm::vec3 location);
         void SetRotation(glm::quat rotation);
-
-        bool IsTriggered();
         
         void Collision (const Physics::Collision& collision);
         void ResetCollisions();

@@ -32,7 +32,7 @@ namespace tram {
         if (!isloaded) return;
         rendercomponent->UpdateLocation(location);
         rendercomponent->UpdateRotation(rotation);
-        rendercomponent->SetCellParams(cell->HasInteriorLighting());
+        rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
     }
     
     void Crate::SetParameters() {
@@ -49,7 +49,7 @@ namespace tram {
         physicscomponent.make();
         
         rendercomponent->SetModel((name_t)serializeddata->model);
-        rendercomponent->SetPose(nullptr);
+        //rendercomponent->SetPose(nullptr);
 
         physicscomponent->SetParent(this);
         physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);

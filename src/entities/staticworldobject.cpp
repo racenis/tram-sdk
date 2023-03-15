@@ -35,7 +35,7 @@ namespace tram {
         rendercomponent.make();
         rendercomponent->SetModel(data->model);
         rendercomponent->SetLightmap(data->lightmap);
-        rendercomponent->SetCellParams(cell->HasInteriorLighting());
+        rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
 
         physicscomponent.make();
         physicscomponent->SetModel(data->model);

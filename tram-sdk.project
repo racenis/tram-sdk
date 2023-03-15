@@ -16,6 +16,7 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
+      <VirtualDirectory Name="openal"/>
       <File Name="src/audio/source.cpp"/>
       <File Name="src/audio/source.h"/>
       <File Name="src/audio/audio.h"/>
@@ -35,7 +36,6 @@
       <File Name="src/components/particlecomponent.h"/>
       <File Name="src/components/particlecomponent.cpp"/>
       <File Name="src/components/lightcomponent.h"/>
-      <File Name="src/components/entitycomponents.h"/>
       <File Name="src/components/entitycomponents.cpp"/>
       <File Name="src/components/controllercomponent.h"/>
       <File Name="src/components/controllercomponent.cpp"/>

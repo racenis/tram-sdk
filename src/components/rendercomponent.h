@@ -7,9 +7,11 @@
 #include <render/model.h>
 
 namespace tram {
+    class ArmatureComponent;
+    
     class RenderComponent : public EntityComponent {
     public:
-        RenderComponent() : model(this), lightmap(this){}
+        RenderComponent();
         ~RenderComponent();
         inline name_t GetModel(){return model->GetName();};
 
@@ -19,7 +21,7 @@ namespace tram {
 
         void SetLightmap(name_t name);
 
-        void SetPose(Render::Pose* newPose);
+        void SetArmature(ArmatureComponent* armature);
 
         void Start();
 
@@ -27,7 +29,7 @@ namespace tram {
 
         void UpdateRotation(glm::quat nrotation);
 
-        void SetCellParams (bool isInteriorLight);
+        void SetWorldParameters (bool interior_lighting);
 
         void EventHandler(Event &event){return;}
 
@@ -41,11 +43,10 @@ namespace tram {
 
         Render::Pose* pose = nullptr;
 
-        glm::vec3 location;
-        
-        glm::quat rotation;
+        vec3 location;
+        quat rotation;
 
-        bool isInterior = false;
+        uint32_t render_flags;
     };
 }
 

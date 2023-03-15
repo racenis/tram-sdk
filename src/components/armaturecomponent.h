@@ -56,7 +56,7 @@ class ArmatureComponent : public EntityComponent {
         void Start();
         void SetModel(name_t name) { model = Render::Model::Find(name); }
         name_t GetModel() { return model->GetName(); }
-        Render::Pose* GetPosePtr(){ return poseobj; };
+        Render::Pose* GetPose(){ return poseobj; };
         void SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe);
         void SetOnAnimationFinishCallback(void (*callback) (ArmatureComponent*, name_t)) { anim_finish_callback = callback; }
         void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);

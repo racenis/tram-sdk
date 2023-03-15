@@ -46,10 +46,14 @@ namespace tram {
         if (shape && !model.get()) delete shape;
     };
 
+    /// Sets a collision shape for the trigger.
     void TriggerComponent::SetShape(Physics::CollisionShape shape) {
         this->shape = CollisionShapeToConvexShape(shape);
     }
 
+    /// Sets a collision mask for the trigger.
+    /// This method works the same as in PhysicsComponent, see
+    /// PhysicsComponent::SetCollsionMask() for more information.
     void TriggerComponent::SetCollisionMask(uint32_t flags){
         collisionMask = flags;
         
@@ -59,6 +63,9 @@ namespace tram {
         }
     }
     
+    /// Sets a collision group for the trigger.
+    /// This method works the same as in PhysicsComponent, see
+    /// PhysicsComponent::SetCollisionGroup() for more information.
     void TriggerComponent::SetCollisionGroup(uint32_t flags){
         collisionGroup = flags;
         
@@ -68,6 +75,7 @@ namespace tram {
         }
     }
     
+    /// Sets the location of the component.
     void TriggerComponent::SetLocation (glm::vec3 location) {
         this->location = location;
         
@@ -78,6 +86,7 @@ namespace tram {
         }
     }
     
+    /// Sets the rotation of the component.
     void TriggerComponent::SetRotation (glm::quat rotation) {
         this->rotation = rotation;
         
@@ -88,6 +97,8 @@ namespace tram {
         }
     }
     
+    /// Registers a collision.
+    /// This method is called from Phyics::Update().
     void TriggerComponent::Collision (const Physics::Collision& collision) {
         if (!filter_callback || filter_callback(this, collision.collider)) {
             if (!is_collided && !was_collided && activation_callback) activation_callback(this);
@@ -96,6 +107,8 @@ namespace tram {
         }
     }
     
+    /// Resets registered collisions.
+    /// This method is called from Phyics::Update().
     void TriggerComponent::ResetCollisions() {
         if (!is_collided && was_collided && deactivation_callback) deactivation_callback(this);
         
@@ -103,12 +116,7 @@ namespace tram {
         is_collided = false;
     }
     
-    bool TriggerComponent::IsTriggered() {
-        return true;
-    }
-    
-    
-    
+    // For the Bullet physics.
     struct TriggerPollCallback : public btCollisionWorld::ContactResultCallback {
         TriggerPollCallback(std::vector<Physics::Collision>& collisions) : collisions(collisions) {}
         btScalar addSingleResult(btManifoldPoint& cp,
@@ -155,6 +163,7 @@ namespace tram {
         std::vector<Physics::Collision>& collisions;
     };
     
+    /// Checks for collisions with the trigger.
     std::vector<Physics::Collision> TriggerComponent::Poll () {
         std::vector<Physics::Collision> collisions;
         
