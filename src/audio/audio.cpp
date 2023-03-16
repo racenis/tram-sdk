@@ -1,195 +1,141 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <stb_vorbis.c>
-#include <alc.h>
-#include <al.h>
-
-// the stb_vorbis and glm use the same macroses
-#undef L
-#undef R
-#undef C
+#include <audio/audio.h>
+#include <audio/sound.h>
 
 #include <framework/system.h>
 #include <framework/logging.h>
-#include <audio/audio.h>
-#include <audio/source.h>
+
 #include <components/audiocomponent.h>
 #include <unordered_map>
-#include <templates/hashmap.h>
 
-template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("sound pool", 100, false);
+
+#include <audio/openal/openal.h>
+
+
 namespace tram::Audio {
-    struct SoundSource {
-        uint32_t source_name;
-        
-        char padding[12];
-    };
-    
-    Pool<SoundSource> all_sounds("sound source pool", 100, false);
-    //std::unordered_map<uint64_t, Sound*> sound_map;
-    Hashmap<Sound*> sound_map ("Sound hash map", 500);
-    
-    glm::vec3 LISTENER_POSITION = glm::vec3(0.0f);
-    glm::vec3 LISTENER_ORIENTATION[2] = {glm::vec3(0.0f), glm::vec3(0.0f)};
-    
-    ALCdevice* sound_device;
-    ALCcontext* sound_context;
-    
-    
-    void PlaySound(Sound* sound, const glm::vec3& location) {
-        assert(false && "PlaySound() not implemented");
-    }
-    
-    void Init() {
-        assert(System::IsInitialized(System::SYSTEM_CORE));
-        assert(System::IsInitialized(System::SYSTEM_UI));
-        
-        sound_device = alcOpenDevice(nullptr);
-        if (!sound_device) Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio device didn't open!");
-        sound_context = alcCreateContext(sound_device, nullptr);
-        if (!sound_context) Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio context didn't create!");
-        if (!alcMakeContextCurrent(sound_context)) Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio context didn't get currented!");
-        const char* device_name = nullptr;
-        if (alcIsExtensionPresent(sound_device, "ALC_ENUMERATE_ALL_EXT")) device_name = alcGetString(sound_device, ALC_ALL_DEVICES_SPECIFIER);
-        if (!device_name || alcGetError(sound_device) != ALC_NO_ERROR) device_name = alcGetString(sound_device, ALC_DEVICE_SPECIFIER);
-        Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "{}", device_name);
-        
-        System::SetInitialized(System::SYSTEM_AUDIO, true);
-    }
-    
-    void Update() {        
-        alListener3f(AL_POSITION, LISTENER_POSITION.x, LISTENER_POSITION.y, LISTENER_POSITION.z);
-        alListenerfv(AL_ORIENTATION, &LISTENER_ORIENTATION[0][0]);
-    }
-    
-    void Uninit() {
-        for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
-        for (auto& it : PoolProxy<Sound>::GetPool()) it.Unload();
-        //for (auto it : sound_map) it.second->Unload();
-        
-        alcMakeContextCurrent(nullptr);
-        alcDestroyContext(sound_context);
-        alcCloseDevice(sound_device);
-    }
-    
-    void SetListenerPosition(const glm::vec3& position) {
-        LISTENER_POSITION = position;
-    }
-    
-    void SetListenerOrientation(const glm::quat& orientation) {
-        LISTENER_ORIENTATION[0] = orientation * DIRECTION_FORWARD;
-        LISTENER_ORIENTATION[1] = DIRECTION_UP;
-    }
-    
-    void Sound::LoadFromDisk() {
-        sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + std::string(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
-        
-        Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "Bytelength: {} Channels: {} SampleRate: {} AudioPtr: {}", sound_length, channels, sample_rate, (long long)sound_data);
-        
-        if (sound_length < 0) {
-            Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
-        } else {
-            static const int32_t buffer_size = 64 * 1024;
-            sound_buffer_count = (sound_length + buffer_size - 1) / buffer_size;
-            
-            Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "Generating {} buffers", sound_buffer_count);
-            
-            alGenBuffers(sound_buffer_count, sound_buffers);
 
-            int32_t format;
-            
-            switch (channels) {
-                case 1: format = AL_FORMAT_MONO16;      break;
-                case 2: format = AL_FORMAT_STEREO16;    break;
-                default: assert(false && "Invalid channel format"); break;
-            }
+/// Starts the Audio system.
+void Init() {
+    assert(System::IsInitialized(System::SYSTEM_CORE));
+    assert(System::IsInitialized(System::SYSTEM_UI));
+    
+    OpenAL::Init();
+    
+    System::SetInitialized(System::SYSTEM_AUDIO, true);
+}
 
-            for (int32_t i = 0; i < sound_buffer_count; i++) {
-                alBufferData (sound_buffers[i], format, sound_data + (buffer_size * i), (i + 1 == sound_buffer_count ? sound_length - (buffer_size * (sound_buffer_count - 1)) : buffer_size) * sizeof(int16_t), sample_rate);
-            }
-            
-            
-            //sound_map[name.key] = this;
-            sound_map.Insert(name, this); // wait what?
-        }
-        
-        status = READY;
-    }
+/// Updates the Audio system.
+void Update() {        
+    OpenAL::Update();
+}
+
+// Stops the Audio system.
+void Uninit() {
+    for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
+    for (auto& it : PoolProxy<Sound>::GetPool()) it.Unload();
     
-    void Sound::Unload() {
-        alDeleteBuffers(sound_buffer_count, sound_buffers);
-        status = UNLOADED;
-    }
+    OpenAL::Uninit();
+}
+
+/// Sets the listener position.
+/// @param orientation  Listener position. Basically the same as camera location.
+void SetListenerPosition(const glm::vec3& position) {
+    OpenAL::SetListenerPosition(position);
+}
+
+/// Sets the listener orientation.
+/// @param orientation  Listener orientation. Basically the same as camera rotation.
+void SetListenerOrientation(const glm::quat& orientation) {
+    OpenAL::SetListenerOrientation(orientation);
+}
+
+/// Creates audio buffers from raw audio data.
+/// @param audio_data       Pointer to the raw audio data.
+/// @param length           Length of the raw audio data, in samples.
+/// @param buffer_count     Created buffer count will be stored in this variable.
+audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels, int32_t& buffer_count) {
+    return OpenAL::MakeAudioBuffer(audio_data, length, samples, channels, buffer_count);
+}
+
+void RemoveAudioBuffer(audiobuffer_t* buffer, int32_t buffer_count) {
+    OpenAL::RemoveAudioBuffer(buffer, buffer_count);
+    delete buffer;
+}
+
+/// Creates an audio source.
+/// @return A new audio source handle.
+audiosource_t MakeAudioSource() {
+    return OpenAL::MakeAudioSource();
+}
+
+/// Sets the pitch of an audio source.
+/// @param pitch    1.0f is the regular pitch. Halving the value decreases the
+///                 pitch by an octave. Doubling the value increases the pitch
+///                 by an octave.
+void SetAudioSourcePitch (audiosource_t source, float pitch) {
+    OpenAL::SetAudioSourcePitch(source, pitch);
+}
+
+/// Sets the gain of an audio source.
+/// @param gain     1.0f is the regular gain. Halving the value decreases the
+///                 gain by 6dB.
+void SetAudioSourceGain (audiosource_t source, float gain) {
+    OpenAL::SetAudioSourceGain(source, gain);
+}
+
+/// Sets the position of an audio source.
+void SetAudioSourcePosition (audiosource_t source, vec3 position) {
+    OpenAL::SetAudioSourcePosition(source, position);
+}
+
+/// Sets the velocity of an audio source.
+void SetAudioSourceVelocity (audiosource_t source, vec3 velocity) {
+    OpenAL::SetAudioSourceVelocity(source, velocity);
+}
+
+/// Sets the repetition of an audio source.
+/// @param repeating    True if the sound repeats after playing, false if
+///                     it just stops.
+void SetAudioSourceRepeating (audiosource_t source, bool repeating) {
+    OpenAL::SetAudioSourceRepeating(source, repeating);
+}
+
+/// Sets the buffers that the audio source will play.
+void SetAudioSourceBuffer(audiosource_t source, const audiobuffer_t* buffers, int32_t buffer_count) {
+    OpenAL::SetAudioSourceBuffer(source, buffers, buffer_count);
+}
+
+/// Plays an audio source.
+void PlayAudioSource (audiosource_t source) {
+    OpenAL::PlayAudioSource(source);
+}
+
+/// Pauses the audio source.
+void PauseAudioSource (audiosource_t source) {
+    OpenAL::PauseAudioSource(source);
+}
+
+/// Stops the audio source.
+void StopAudioSource (audiosource_t source) {
+    OpenAL::StopAudioSource(source);
+}
+
+/// Checks if an audio source is playing.
+/// @return True if the audio source is playing a sound, false otherwise.
+bool IsAudioSourcePlaying (audiosource_t source) {
+    return OpenAL::IsAudioSourcePlaying(source);
+}
+
+/// Deletes an audio source.
+/// If you do this, then the audio source handle will become invalid.
+/// Call MakeAudioSource() to get a new one.
+void RemoveAudioSource (audiosource_t source) {
+    OpenAL::RemoveAudioSource(source);
+}
+
     
-    Sound* Sound::Find (name_t name) {
-        //auto sound = sound_map.find(name.key);
-        auto sound = sound_map.Find(name);
-        
-        if (!sound) {
-            sound = PoolProxy<Sound>::New(name);
-            //sound_map [name.key] = sound;
-            sound_map.Insert(name, sound);
-            //Log (SEVERITY_CRITICAL_ERROR, System::SYSTEM_AUDIO, "Can't find the sound {} aborting.", name);
-            //abort();
-        }
-        
-        return sound;
-    }
     
 }
 
-namespace tram {
-    using namespace tram::Audio;
-    
-    template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("audio component pool", 150);
-    
-    AudioComponent::~AudioComponent() {
-        alDeleteSources(1, &source);
-        is_ready = false;
-    }
-    
-    void AudioComponent::Start() {        
-        alGenSources(1, &source);
-        alSourcef(source, AL_PITCH, 1);
-        alSourcef(source, AL_GAIN, 1.0f);
-        alSource3f(source, AL_POSITION, location.x, location.y, location.z);
-        alSource3f(source, AL_VELOCITY, 0, 0, 0);
-        alSourcei(source, AL_LOOPING, repeat ? AL_TRUE : AL_FALSE);
-        if (sound->sound_buffer_count == 1) {
-            alSourcei(source, AL_BUFFER, sound->sound_buffers[0]);
-        } else {
-            alSourceQueueBuffers(source, sound->sound_buffer_count, sound->sound_buffers);
-        }
-        
-        is_ready = true;
-    }
-    
-    void AudioComponent::UpdateLocation(const glm::vec3& location) {
-        if (is_ready) alSource3f(source, AL_POSITION, location.x, location.y, location.z);
-        this->location = location;
-    }
-    
-    void AudioComponent::SetRepeating(bool is_repeating) {
-        if (is_ready) alSourcei(source, AL_LOOPING, is_repeating ? AL_TRUE : AL_FALSE);
-        repeat = is_repeating;
-    }
-    
-    void AudioComponent::Play() {
-        if (is_ready) alSourcePlay(source);
-    }
-    
-    void AudioComponent::Pause() {
-        if (is_ready) alSourcePause(source);
-    }
-    
-    void AudioComponent::Stop() {
-        if (is_ready) alSourceStop(source);
-    }
-    
-    bool AudioComponent::IsPlaying() {
-        int32_t state;
-        alGetSourcei (source, AL_SOURCE_STATE, &state);
-        return state == AL_PLAYING;
-    }
-}

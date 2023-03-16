@@ -4,11 +4,10 @@
 #ifndef COMPONENTS_AUDIOCOMPONENT_H
 #define COMPONENTS_AUDIOCOMPONENT_H
 
-#include <audio/audio.h>
+#include <framework/entitycomponent.h>
+#include <framework/resource.h>
 
-namespace tram::Audio {
-    struct SoundSource;
-}
+#include <audio/sound.h>
 
 namespace tram {
     
@@ -17,8 +16,8 @@ namespace tram {
         AudioComponent() : sound(this){}
         ~AudioComponent();
         void Start();
-        void UpdateLocation(const glm::vec3& location);
-        void SetSound(Audio::Sound* sound) { this->sound = sound; }
+        void UpdateLocation(const vec3& location);
+        void SetSound(name_t name);
         void SetRepeating(bool is_repeating);
         bool IsPlaying();
         void Play();
@@ -28,8 +27,8 @@ namespace tram {
         void EventHandler(Event &event){}
     protected:
         ResourceProxy<Audio::Sound> sound;
-        uint32_t source;
-        glm::vec3 location;
+        Audio::audiosource_t source;
+        vec3 location = {0.0f, 0.0f, 0.0f};
         bool repeat = false;
     };
     

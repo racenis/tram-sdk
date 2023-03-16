@@ -16,13 +16,17 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
-      <VirtualDirectory Name="openal"/>
-      <File Name="src/audio/source.cpp"/>
-      <File Name="src/audio/source.h"/>
+      <File Name="src/audio/sound.h"/>
+      <File Name="src/audio/sound.cpp"/>
+      <VirtualDirectory Name="openal">
+        <File Name="src/audio/openal/openal.cpp"/>
+        <File Name="src/audio/openal/openal.h"/>
+      </VirtualDirectory>
       <File Name="src/audio/audio.h"/>
       <File Name="src/audio/audio.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="components">
+      <File Name="src/components/audiocomponent.cpp"/>
       <File Name="src/components/triggercomponent.cpp"/>
       <File Name="src/components/physicscomponent.cpp"/>
       <File Name="src/components/triggercomponent.h"/>

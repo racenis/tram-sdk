@@ -164,11 +164,12 @@ int main() {
     
     auto derp_player = PoolProxy<AudioComponent>::New();
     derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
-    derp_player->SetSound(derp);
+    //derp_player->SetSound(derp);
+    derp_player->SetSound("apelsin");
     derp_player->SetRepeating(true);
     derp_player->Init();
     
-    //derp_player->Play();
+    derp_player->Play();
 
     
     //auto crate_ent = Entity::Find(UID("estijs"));
