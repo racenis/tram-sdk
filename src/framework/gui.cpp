@@ -46,7 +46,7 @@ namespace tram::GUI {
     
     uint32_t glyphvertices_vertex_array = 0;
     uint32_t glyphvertices_vertex_buffer = 0;
-    Render::DrawListEntryHandle glyphvertices_entry;
+    Render::drawlistentry_t glyphvertices_entry;
     
     std::vector<Render::SpriteVertex> glyphvertices;
     
@@ -222,7 +222,7 @@ namespace tram::GUI {
     void Begin() {
         // reset the frames
         FrameStack.Reset();
-        *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT, 0.0f, 0.0f};
+        *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, UI::GetScreenWidth(), UI::GetScreenHeight(), 0.0f, 0.0f};
         
         // reset the cursor
         cursor = UI::CURSOR_DEFAULT;
@@ -291,8 +291,9 @@ namespace tram::GUI {
         *FrameStack.AddNew() = FrameObject {((size_x - width) / 2.0f) + pos_x, ((size_y - height) / 2.0f) + pos_y, width, height, 0.0f, 0.0f};
     }
     
+    // idk what this is used, maybe can be yeeted
     void Frame() {
-        *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT, 0.0f, 0.0f};
+        *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, UI::GetScreenWidth(), UI::GetScreenHeight(), 0.0f, 0.0f};
     }
     
     void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {

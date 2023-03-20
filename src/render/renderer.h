@@ -79,25 +79,28 @@ namespace tram::Render {
 
     
     struct RendererAPI {
-        DrawListEntryHandle (*InsertDrawListEntry) () = nullptr;
-        DrawListEntryHandle (*InsertDrawListEntryFromModel) (Model* model) = nullptr;
+        drawlistentry_t (*InsertDrawListEntry) () = nullptr;
+        drawlistentry_t (*InsertDrawListEntryFromModel) (Model* model) = nullptr;
+        
+        void (*SetLightingParameters) (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) = nullptr;
+        void (*SetCameraParameters) (vec3 position, quat rotation, uint32_t layer) = nullptr;
         
         void (*SetScreenSize) (float width, float height) = nullptr;
         void (*SetScreenClear) (vec3, bool) = nullptr;
         
-        uint32_t (*GetFlags) (DrawListEntryHandle entry) = nullptr;
-        void (*SetFlags) (DrawListEntryHandle entry, uint32_t flags) = nullptr;
-        void (*SetPose) (DrawListEntryHandle entry, Pose* pose) = nullptr;
-        void (*SetLightmap) (DrawListEntryHandle entry, uint32_t lightmap) = nullptr;
-        void (*SetLights) (DrawListEntryHandle entry, uint32_t* lights) = nullptr;
-        void (*SetLocation) (DrawListEntryHandle entry, glm::vec3& location) = nullptr;
-        void (*SetRotation) (DrawListEntryHandle entry, glm::quat& rotation) = nullptr;
-        void (*SetDrawListVertexArray) (DrawListEntryHandle entry, uint32_t vertex_array_handle) = nullptr;
-        void (*SetDrawListElements) (DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length) = nullptr;
-        void (*SetDrawListShader) (DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type) = nullptr;
-        void (*SetDrawListTextures) (DrawListEntryHandle entry, size_t texture_count, uint32_t* textures) = nullptr;
+        uint32_t (*GetFlags) (drawlistentry_t entry) = nullptr;
+        void (*SetFlags) (drawlistentry_t entry, uint32_t flags) = nullptr;
+        void (*SetPose) (drawlistentry_t entry, Pose* pose) = nullptr;
+        void (*SetLightmap) (drawlistentry_t entry, uint32_t lightmap) = nullptr;
+        void (*SetLights) (drawlistentry_t entry, uint32_t* lights) = nullptr;
+        void (*SetLocation) (drawlistentry_t entry, glm::vec3& location) = nullptr;
+        void (*SetRotation) (drawlistentry_t entry, glm::quat& rotation) = nullptr;
+        void (*SetDrawListVertexArray) (drawlistentry_t entry, uint32_t vertex_array_handle) = nullptr;
+        void (*SetDrawListElements) (drawlistentry_t entry, uint32_t element_offset, uint32_t element_length) = nullptr;
+        void (*SetDrawListShader) (drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type) = nullptr;
+        void (*SetDrawListTextures) (drawlistentry_t entry, size_t texture_count, uint32_t* textures) = nullptr;
 
-        void (*RemoveDrawListEntry) (DrawListEntryHandle entry) = nullptr;
+        void (*RemoveDrawListEntry) (drawlistentry_t entry) = nullptr;
 
         uint32_t (*CreateTexture) (ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) = nullptr;
 
@@ -112,76 +115,76 @@ namespace tram::Render {
     extern RendererAPI RENDERER;
     
     /// Inserts an entry into the draw list and returns a handle.
-    inline DrawListEntryHandle InsertDrawListEntry () {
+    inline drawlistentry_t InsertDrawListEntry () {
         return RENDERER.InsertDrawListEntry();
     }
     
     /// Inserts an entry into the draw list, initializes it to a model and returns a handle. 
-    inline DrawListEntryHandle InsertDrawListEntryFromModel (Model* model) {
+    inline drawlistentry_t InsertDrawListEntryFromModel (Model* model) {
         return RENDERER.InsertDrawListEntryFromModel(model);
     }
     
     /// Returns the flags of a draw list entry.
-    inline uint32_t GetFlags (DrawListEntryHandle entry) {
+    inline uint32_t GetFlags (drawlistentry_t entry) {
         return RENDERER.GetFlags(entry);
     }
     
     /// Sets the flags of a draw list entry.
     /// @param flags Bitmask constructed from Render::renderflags.
-    inline void SetFlags (DrawListEntryHandle entry, uint32_t flags) {
+    inline void SetFlags (drawlistentry_t entry, uint32_t flags) {
         return RENDERER.SetFlags(entry, flags);
     }
     
     /// Sets a pose to a draw list entry.
-    inline void SetPose (DrawListEntryHandle entry, Pose* pose) {
+    inline void SetPose (drawlistentry_t entry, Pose* pose) {
         return RENDERER.SetPose(entry, pose);
     }
     
     /// Sets a lightmap to a draw list entry.
-    inline void SetLightmap (DrawListEntryHandle entry, uint32_t lightmap) {
+    inline void SetLightmap (drawlistentry_t entry, uint32_t lightmap) {
         return RENDERER.SetLightmap(entry, lightmap);
     }
     
     /// Sets the lights for a draw list entry.
     /// @param lights Array of 4 indices into the light list.
-    inline void SetLights (DrawListEntryHandle entry, uint32_t* lights) {
+    inline void SetLights (drawlistentry_t entry, uint32_t* lights) {
         return RENDERER.SetLights(entry, lights);
     }
     
     /// Sets the location of a draw list entry.
-    inline void SetLocation (DrawListEntryHandle entry, glm::vec3& location) {
+    inline void SetLocation (drawlistentry_t entry, glm::vec3& location) {
         return RENDERER.SetLocation(entry, location);
     }
     
     /// Sets the rotation of a draw list entry.
-    inline void SetRotation (DrawListEntryHandle entry, glm::quat& rotation) {
+    inline void SetRotation (drawlistentry_t entry, glm::quat& rotation) {
         return RENDERER.SetRotation(entry, rotation);
     }
     
     /// Sets the vertex array of a draw list entry.
-    inline void SetDrawListVertexArray (DrawListEntryHandle entry, uint32_t vertex_array_handle) {
+    inline void SetDrawListVertexArray (drawlistentry_t entry, uint32_t vertex_array_handle) {
         return RENDERER.SetDrawListVertexArray(entry, vertex_array_handle);
     }
     
     /// Sets the element array of a draw list entry.
-    inline void SetDrawListElements (DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length) {
+    inline void SetDrawListElements (drawlistentry_t entry, uint32_t element_offset, uint32_t element_length) {
         return RENDERER.SetDrawListElements(entry, element_offset, element_length);
     }
     
     /// Sets the shader of a draw list entry.
-    inline void SetDrawListShader (DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type) {
+    inline void SetDrawListShader (drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type) {
         return RENDERER.SetDrawListShader(entry, vertex_format, material_type);
     }
     
     /// Sets the textures of a draw list entry.
     /// @param textures         Array of texture handles.
     /// @param texture_count    Length of the 'textures' array. Valid lengths are 0 to 16.
-    inline void SetDrawListTextures (DrawListEntryHandle entry, size_t texture_count, uint32_t* textures) {
+    inline void SetDrawListTextures (drawlistentry_t entry, size_t texture_count, uint32_t* textures) {
         return RENDERER.SetDrawListTextures(entry, texture_count, textures);
     }
     
     /// Removes an entry from the draw list.
-    inline void RemoveDrawListEntry (DrawListEntryHandle entry) {
+    inline void RemoveDrawListEntry (drawlistentry_t entry) {
         return RENDERER.RemoveDrawListEntry(entry);
     }
     

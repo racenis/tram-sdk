@@ -47,19 +47,28 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Graphics menu
 
 - Add some sort of a memory pool for Messages and Events
-- ~~Add screen clear color to render~~
-- ~~Add font definitions to Ext::Menu~~
-- ~~Rewrite MaterialInfo~~
-	- ~~Automatically add .list extension to filename~~
-	- ~~Automatically add /data/ directory prefix to filename~~
-	- ~~Add a header~~
-- ~~Put all cells in a seperate directory~~
-	- ~~Like it is done with sprites, models, animations, etc.~~
-- ~~Replace header in worldcell files~~
-	- ~~Should be like in model/animation/etc. files~~
-	- ~~Also do so for tram-editor~~
-
-	
+- Change UpdateLocation/Rotation to SetLocation/Rotation in RenderComponent
+- Make UID == operator to work with const char*
+- Add IDs to entity definitions in worldcell files
+- Allow entities without names
+- Allow enitties without IDs
+	- In that case the IDs would be generated automatically
+- Make Entity FindByName and FindByID overloads of Find
+- Make maketool statically link runtime
+- Make Raycast that returns multiple points
+- Add constraints to PhysicsComponents
+- Make the engine work without any files
+	- That means that it will run just fine without any files on the disk
+	- Default/error models/materials should be baked into source code
+		- Error model
+		- Error texture
+		- Fullbright texture
+- Move types out of material/model and into render.h
+	- Also add something to register more of them
+	- And also add something to OpenGL to be able to custom shaders
+- Make layers a bitmask
+- Yeet all opengl code from UI.cPP
+- Make all CAPITAL globals be not capital
 
 #### Should do later
 - Models with different sets of materials

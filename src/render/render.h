@@ -13,16 +13,6 @@ namespace tram::Render {
 
     extern bool DRAW_RENDER_DEBUG;
 
-    extern vec3 CAMERA_POSITION;
-    extern quat CAMERA_ROTATION;
-    
-    extern vec3 SUN_DIRECTION;
-    extern vec3 SUN_COLOR;
-    extern vec3 AMBIENT_COLOR;
-
-    extern float SCREEN_WIDTH;
-    extern float SCREEN_HEIGHT;
-
     extern bool THIRD_PERSON;
 
     // these are for the OpenGL renderer only.
@@ -30,35 +20,43 @@ namespace tram::Render {
     // probably switch these from int to void*
     typedef uint32_t vertexhandle_t;
     typedef uint32_t texturehandle_t;
-    struct DrawListEntryHandle {
+    struct drawlistentry_t {
         void* draw_list_entries[6] = { nullptr };
     };
-
-    const uint32_t MAX_MATERIALS_PER_MODEL = 15;
     
-    const vec3 COLOR_WHITE  (1.0f, 1.0f, 1.0f);
-    const vec3 COLOR_RED    (1.0f, 0.0f, 0.0f);
-    const vec3 COLOR_GREEN  (0.0f, 1.0f, 0.0f);
-    const vec3 COLOR_BLUE   (0.0f, 0.0f, 1.0f);
-    const vec3 COLOR_YELLOW (1.0f, 1.0f, 0.0f);
-    const vec3 COLOR_PINK   (1.0f, 0.0f, 1.0f);
-    const vec3 COLOR_CYAN   (0.0f, 1.0f, 1.0f);
-    const vec3 COLOR_BLACK  (0.0f, 0.0f, 0.0f);
+    typedef vec3 color_t;
+    typedef uint32_t layer_t;
+    
+    const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
+    const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);
+    const color_t COLOR_GREEN  (0.0f, 1.0f, 0.0f);
+    const color_t COLOR_BLUE   (0.0f, 0.0f, 1.0f);
+    const color_t COLOR_YELLOW (1.0f, 1.0f, 0.0f);
+    const color_t COLOR_PINK   (1.0f, 0.0f, 1.0f);
+    const color_t COLOR_CYAN   (0.0f, 1.0f, 1.0f);
+    const color_t COLOR_BLACK  (0.0f, 0.0f, 0.0f);
 
-    const vec3 COLOR_GRAY   (0.3f, 0.3f, 0.3f);
-
-    extern float FRAME_LIMIT;
+    const color_t COLOR_GRAY   (0.3f, 0.3f, 0.3f);
 
     void Init();
     void Render();
-    void ScreenSize(float width, float height);
-    //void SetScreenClear(vec3 clear_color, bool clear);
-    void Project(const glm::vec3& point, glm::vec3& result);
+
+    void Project (const glm::vec3& point, glm::vec3& result);
+
+    void SetSunDirection (vec3 direction, layer_t layer = 0);
+    void SetSunColor (color_t color, layer_t layer = 0);
+    void SetAmbientColor (color_t color, layer_t layer = 0);
+
+    void SetCameraPosition (vec3 position, layer_t layer = 0);
+    void SetCameraRotation (quat rotation, layer_t layer = 0);
+    
+    vec3 GetCameraPosition (layer_t layer = 0);
+    quat GetCameraRotation (layer_t layer = 0);
 
     void SetSun(float timeOfDay);
 
-    void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color);
-    void AddLineMarker(const glm::vec3& location, const glm::vec3& color);
+    void AddLine(const glm::vec3& from, const glm::vec3& to, const color_t& color);
+    void AddLineMarker(const glm::vec3& location, const color_t& color);
 }
 
 #endif // RENDER_H

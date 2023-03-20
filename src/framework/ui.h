@@ -201,9 +201,15 @@ namespace tram::UI {
     void Uninit();
     void Update();
     void EndFrame();
+    
+    float GetScreenWidth();
+    float GetScreenHeight();
+    
     void SetCursor(CursorType cursor);
     void SetTextInput(char* text, uint32_t len);
+    
     double GetTime();
+    
     void BindKeyboardKey (KeyboardKey key, KeyBinding binding);
 
     bool PollKeyboardKey (KeyboardKey key);

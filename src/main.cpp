@@ -209,7 +209,7 @@ int main() {
         }
         
         vec3 cast_from = player.GetLocation() + vec3(0.0f, 0.7f, 0.0f);
-        vec3 cast_to = cast_from + (CAMERA_ROTATION * DIRECTION_FORWARD * 10.0f);
+        vec3 cast_to = cast_from + (GetCameraRotation() * DIRECTION_FORWARD * 10.0f);
         
         auto ray_all = Physics::Raycast(cast_from, cast_to);
         auto ray_world = Physics::Raycast(cast_from, cast_to, Physics::COLL_WORLDOBJ);

@@ -40,7 +40,7 @@ namespace tram {
     protected:
         ResourceProxy<Render::Sprite> sprite;
     
-        Render::DrawListEntryHandle draw_list_entry;
+        Render::drawlistentry_t draw_list_entry;
         
         glm::vec3 location;
         

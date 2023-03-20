@@ -7,6 +7,7 @@
 #include <framework/system.h>
 
 #include <render/render.h>
+#include <render/renderer.h>
 
 #include <fstream>
 #include <cstring>
@@ -23,6 +24,9 @@ namespace tram::UI {
     InputState INPUT_STATE = STATE_DEFAULT;
 
     GLFWwindow* WINDOW;
+    
+    static float screen_width = 800.0f;
+    static float screen_height = 600.0f;
     
     float CAMERA_PITCH = 0.0f;
     float CAMERA_YAW = -90.0f;
@@ -82,7 +86,7 @@ namespace tram::UI {
         glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
 
         // make a window & context
-        WINDOW = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.4-alfa", nullptr, nullptr);
+        WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.4-alfa", nullptr, nullptr);
         if (WINDOW == nullptr){
             //const char* description;
             //int code = glfwGetError(&description);
@@ -99,14 +103,16 @@ namespace tram::UI {
             abort();
         }
 
-        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        if (FRAME_LIMIT) {
+        glViewport(0, 0, 800, 600);
+        if (true) {
             glfwSwapInterval(1);
         }
 
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
-            glViewport(0, 0, width, height);
-            Render::ScreenSize(width, height);
+            screen_width = width;
+            screen_height = height;
+            glViewport(0, 0, width, height); // wut
+            Render::SetScreenSize(width, height);
         });
 
         glfwSetKeyCallback(WINDOW, KeyCallback);
@@ -138,14 +144,17 @@ namespace tram::UI {
         EXIT = glfwWindowShouldClose(WINDOW);
 
         if (INPUT_STATE == STATE_FLYING){
+            vec3 camera_position = GetCameraPosition();
+            quat camera_rotation = GetCameraRotation();
+            
             if (glfwGetKey(WINDOW, GLFW_KEY_W) == GLFW_PRESS)
-                CAMERA_POSITION += CAMERA_ROTATION * DIRECTION_FORWARD * CAMERA_SPEED;
+                camera_position += camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED;
             if (glfwGetKey(WINDOW, GLFW_KEY_S) == GLFW_PRESS)
-                CAMERA_POSITION -= CAMERA_ROTATION * DIRECTION_FORWARD * CAMERA_SPEED;
+                camera_position -= camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED;
             if (glfwGetKey(WINDOW, GLFW_KEY_A) == GLFW_PRESS)
-                CAMERA_POSITION -= CAMERA_ROTATION * DIRECTION_SIDE * CAMERA_SPEED;
+                camera_position -= camera_rotation * DIRECTION_SIDE * CAMERA_SPEED;
             if (glfwGetKey(WINDOW, GLFW_KEY_D) == GLFW_PRESS)
-                CAMERA_POSITION += CAMERA_ROTATION * DIRECTION_SIDE * CAMERA_SPEED;
+                camera_position += camera_rotation * DIRECTION_SIDE * CAMERA_SPEED;
                 
             cursorchangex = keyboard_axis_values[KEY_MOUSE_X] - cursorx_last;
             cursorchangey = keyboard_axis_values[KEY_MOUSE_Y] - cursory_last;
@@ -155,7 +164,9 @@ namespace tram::UI {
             CAMERA_YAW += cursorchangex * CAMERA_SENSITIVITY;
             CAMERA_PITCH += cursorchangey * CAMERA_SENSITIVITY;
             CAMERA_PITCH = CAMERA_PITCH > 90.0f ? 90.0f : CAMERA_PITCH < -90.0f ? -90.0f : CAMERA_PITCH;
-            CAMERA_ROTATION = glm::quat(glm::vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f));
+            
+            SetCameraPosition(camera_position);
+            SetCameraRotation(quat(vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f)));
         }
 
         
@@ -249,6 +260,14 @@ namespace tram::UI {
     
     double GetTime() {
         return glfwGetTime();
+    }
+    
+    float GetScreenWidth() {
+        return screen_width;
+    }
+        
+    float GetScreenHeight() {
+        return screen_height;
     }
 
     void SetCursor(CursorType cursor){

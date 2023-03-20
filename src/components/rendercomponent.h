@@ -39,7 +39,7 @@ namespace tram {
         ResourceProxy<Render::Model> model;
         ResourceProxy<Render::Material> lightmap;
 
-        Render::DrawListEntryHandle draw_list_entry;
+        Render::drawlistentry_t draw_list_entry;
 
         Render::Pose* pose = nullptr;
 

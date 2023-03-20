@@ -19,22 +19,22 @@ namespace tram::Render::OpenGL {
     
     void SetScreenSize (float width, float height);
     
-    DrawListEntryHandle InsertDrawListEntry ();
-    DrawListEntryHandle InsertDrawListEntryFromModel (Model* model);
+    drawlistentry_t InsertDrawListEntry ();
+    drawlistentry_t InsertDrawListEntryFromModel (Model* model);
     
-    uint32_t GetFlags (DrawListEntryHandle entry);
-    void SetFlags (DrawListEntryHandle entry, uint32_t flags);
-    void SetPose (DrawListEntryHandle entry, Pose* pose);
-    void SetLightmap (DrawListEntryHandle entry, uint32_t lightmap);
-    void SetLights (DrawListEntryHandle entry, uint32_t* lights);
-    void SetLocation (DrawListEntryHandle entry, glm::vec3& location);
-    void SetRotation (DrawListEntryHandle entry, glm::quat& rotation);
-    void SetDrawListVertexArray (DrawListEntryHandle entry, uint32_t vertex_array_handle);
-    void SetDrawListElements (DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length);
-    void SetDrawListShader (DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type);
-    void SetDrawListTextures (DrawListEntryHandle entry, size_t texture_count, uint32_t* textures);
+    uint32_t GetFlags (drawlistentry_t entry);
+    void SetFlags (drawlistentry_t entry, uint32_t flags);
+    void SetPose (drawlistentry_t entry, Pose* pose);
+    void SetLightmap (drawlistentry_t entry, uint32_t lightmap);
+    void SetLights (drawlistentry_t entry, uint32_t* lights);
+    void SetLocation (drawlistentry_t entry, glm::vec3& location);
+    void SetRotation (drawlistentry_t entry, glm::quat& rotation);
+    void SetDrawListVertexArray (drawlistentry_t entry, uint32_t vertex_array_handle);
+    void SetDrawListElements (drawlistentry_t entry, uint32_t element_offset, uint32_t element_length);
+    void SetDrawListShader (drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type);
+    void SetDrawListTextures (drawlistentry_t entry, size_t texture_count, uint32_t* textures);
     
-    void RemoveDrawListEntry (DrawListEntryHandle entry);
+    void RemoveDrawListEntry (drawlistentry_t entry);
     
     uint32_t CreateTexture (ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
     

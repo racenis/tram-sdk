@@ -29,8 +29,19 @@ namespace tram::Render::OpenGL {
         float screenHeight;
     };
     
+    struct LayerParameters {
+        vec3 camera_position = {0.0f, 0.0f, 0.0f};
+        quat camera_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+        
+        vec3 sun_direction = {0.0f, 1.0f, 0.0f};
+        vec3 sun_color = {1.0f, 1.0f, 1.0f};
+        vec3 ambient_color = {0.3f, 0.3f, 0.3f};
+    };
+    
     ShaderUniformMatrices matrices;
     ShaderUniformModelMatrices modelMatrices;
+    
+    static LayerParameters LAYER [7];
     
     class ShaderBuffer {};
     
@@ -46,6 +57,11 @@ namespace tram::Render::OpenGL {
     
     vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
     bool clear_screen = true;
+    
+    static float SCREEN_WIDTH = 800.0f;
+    static float SCREEN_HEIGHT = 600.0f;
+    
+
     
     
     uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
@@ -69,9 +85,22 @@ namespace tram::Render::OpenGL {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
     
+    void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
+        LAYER[layer].sun_direction = sun_direction;
+        LAYER[layer].sun_color = sun_color;
+        LAYER[layer].ambient_color = ambient_color;
+    }
     
+    void SetCameraParameters (vec3 position, quat rotation, uint32_t layer) {
+        LAYER[layer].camera_position = position;
+        LAYER[layer].camera_rotation = rotation;
+    }
+
     void SetScreenSize(float width, float height) {
-        matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+        SCREEN_WIDTH = width;
+        SCREEN_HEIGHT = height;
+        
+        matrices.projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 1000.0f);
     }
     
     void SetScreenClear (vec3 clear_color, bool clear) {
@@ -83,6 +112,8 @@ namespace tram::Render::OpenGL {
         Render::RENDERER = Render::RendererAPI {
             .InsertDrawListEntry = OpenGL::InsertDrawListEntry,
             .InsertDrawListEntryFromModel = OpenGL::InsertDrawListEntryFromModel,
+            .SetLightingParameters = OpenGL::SetLightingParameters,
+            .SetCameraParameters = OpenGL::SetCameraParameters,
             .SetScreenSize = OpenGL::SetScreenSize,
             .SetScreenClear = OpenGL::SetScreenClear,
             .GetFlags = OpenGL::GetFlags,
@@ -122,6 +153,7 @@ namespace tram::Render::OpenGL {
         new(lightPool.begin().ptr) LightListObject;
     }
     
+    
     void RenderFrame() {
         if (clear_screen) {
             glClearColor(screen_clear_color.x, screen_clear_color.y, screen_clear_color.z, 1.0f);
@@ -131,15 +163,15 @@ namespace tram::Render::OpenGL {
         }
         
         modelMatrices.time = GetTickTime();
-        modelMatrices.sunDirection = glm::vec4(SUN_DIRECTION, 1.0f);
-        modelMatrices.sunColor = glm::vec4(SUN_COLOR, 1.0f);
-        modelMatrices.ambientColor = glm::vec4(AMBIENT_COLOR, 1.0f);
-        modelMatrices.screenWidth = SCREEN_WIDTH;
-        modelMatrices.screenHeight = SCREEN_HEIGHT;
+        modelMatrices.sunDirection =    glm::vec4(LAYER[0].sun_direction, 1.0f);
+        modelMatrices.sunColor =        glm::vec4(LAYER[0].sun_color, 1.0f);
+        modelMatrices.ambientColor =    glm::vec4(LAYER[0].ambient_color, 1.0f);
+        modelMatrices.screenWidth =     SCREEN_WIDTH;
+        modelMatrices.screenHeight =    SCREEN_HEIGHT;
         
-        matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), CAMERA_POSITION) * glm::toMat4(CAMERA_ROTATION));
+        matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
 
-        if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, CAMERA_ROTATION * glm::vec3(0.0f, 0.0f, -5.0f));
+        if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * glm::vec3(0.0f, 0.0f, -5.0f));
 
         UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
         UploadUniformBuffer(light_uniform_buffer, sizeof(LightListObject)*50, &lightPool.begin()->location);
@@ -160,7 +192,7 @@ namespace tram::Render::OpenGL {
 
             // TODO: do view culling in here
 
-            rvec.push_back(std::pair<uint64_t, DrawListEntry*>(robj->CalcSortKey(CAMERA_POSITION), robj));
+            rvec.push_back(std::pair<uint64_t, DrawListEntry*>(robj->CalcSortKey(LAYER[0].camera_position), robj));
         }
 
         sort(rvec.begin(), rvec.end());
@@ -226,15 +258,15 @@ namespace tram::Render::OpenGL {
         }
     }
     
-    DrawListEntryHandle InsertDrawListEntry() {
-        return DrawListEntryHandle { .draw_list_entries = { draw_list.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
+    drawlistentry_t InsertDrawListEntry() {
+        return drawlistentry_t { .draw_list_entries = { draw_list.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
     }
     
-    DrawListEntryHandle InsertDrawListEntryFromModel(Model* model) {
+    drawlistentry_t InsertDrawListEntryFromModel(Model* model) {
         assert(model);
         assert(model->GetStatus() == Resource::READY);
         
-        DrawListEntryHandle entries;
+        drawlistentry_t entries;
         
         for (size_t i = 0; i < model->element_ranges.size(); i++) {
             DrawListEntry* entry = draw_list.AddNew();
@@ -256,36 +288,36 @@ namespace tram::Render::OpenGL {
         return entries;
     }
     
-    void RemoveDrawListEntry(DrawListEntryHandle entry) {
+    void RemoveDrawListEntry(drawlistentry_t entry) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             draw_list.Remove((DrawListEntry*)entry.draw_list_entries[i]);
         }
     }
     
-    uint32_t GetFlags(DrawListEntryHandle entry) {
+    uint32_t GetFlags(drawlistentry_t entry) {
         assert(entry.draw_list_entries[0]);
         return ((DrawListEntry*)entry.draw_list_entries[0])->flags;
     }
     
-    void SetFlags(DrawListEntryHandle entry, uint32_t flags) {
+    void SetFlags(drawlistentry_t entry, uint32_t flags) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->flags = flags;
         }
     }
     
-    void SetPose(DrawListEntryHandle entry, Pose* pose) {
+    void SetPose(drawlistentry_t entry, Pose* pose) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->pose = pose;
         }
     }
     
-    void SetLightmap(DrawListEntryHandle entry, texturehandle_t lightmap) {
+    void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->lightmap = lightmap;
         }
     }
     
-    void SetLights(DrawListEntryHandle entry, uint32_t* lights) {
+    void SetLights(drawlistentry_t entry, uint32_t* lights) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             for (size_t k = 0; k < 4; k++) {
                 ((DrawListEntry*)entry.draw_list_entries[i])->lights[k] = lights[k];
@@ -293,32 +325,32 @@ namespace tram::Render::OpenGL {
         }
     }
     
-    void SetLocation(DrawListEntryHandle entry, glm::vec3& location) {
+    void SetLocation(drawlistentry_t entry, glm::vec3& location) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->location = location;
         }
     }
     
-    void SetRotation(DrawListEntryHandle entry, glm::quat& rotation) {
+    void SetRotation(drawlistentry_t entry, glm::quat& rotation) {
         for (size_t i = 0; i < 6 && entry.draw_list_entries[i]; i++) {
             ((DrawListEntry*)entry.draw_list_entries[i])->rotation = rotation;
         }
     }
     
-    void SetDrawListVertexArray(DrawListEntryHandle entry, vertexhandle_t vertex_array_handle) {
+    void SetDrawListVertexArray(drawlistentry_t entry, vertexhandle_t vertex_array_handle) {
         ((DrawListEntry*)entry.draw_list_entries[0])->vao = vertex_array_handle;
     }
     
-    void SetDrawListElements(DrawListEntryHandle entry, uint32_t element_offset, uint32_t element_length) {
+    void SetDrawListElements(drawlistentry_t entry, uint32_t element_offset, uint32_t element_length) {
         ((DrawListEntry*)entry.draw_list_entries[0])->eboOff = element_offset;
         ((DrawListEntry*)entry.draw_list_entries[0])->eboLen = element_length;
     }
     
-    void SetDrawListShader(DrawListEntryHandle entry, Model::VertexFormat vertex_format, Material::Type material_type) {
+    void SetDrawListShader(drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type) {
         ((DrawListEntry*)entry.draw_list_entries[0])->shader = FindShader(vertex_format, material_type);
     }
     
-    void SetDrawListTextures(DrawListEntryHandle entry, size_t texture_count, uint32_t* textures) {
+    void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, uint32_t* textures) {
         for (size_t i = 0; i < texture_count; i++) {
             ((DrawListEntry*)entry.draw_list_entries[0])->textures[i] = textures[i];
         }
@@ -429,7 +461,7 @@ namespace tram::Render::OpenGL {
 
 // why is this implemented in here
     void tram::Render::Project(const glm::vec3& point, glm::vec3& result) {
-        result = glm::project(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, Render::SCREEN_WIDTH, Render::SCREEN_HEIGHT));
-        result.y = Render::SCREEN_HEIGHT - result.y;
+        result = glm::project(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, OpenGL::SCREEN_WIDTH, OpenGL::SCREEN_HEIGHT));
+        result.y = OpenGL::SCREEN_HEIGHT - result.y;
     }
 

@@ -151,9 +151,9 @@ void Model::LoadFromDisk(){
         
         
 
-        if(mcount > MAX_MATERIALS_PER_MODEL){
+        if(mcount > 15){
             std::cout << "Too many materials in model: " << name << std::endl;
-            mcount = MAX_MATERIALS_PER_MODEL;
+            mcount = 15;
         }
 
         for(uint32_t i = 0; i < mcount; i++){
@@ -193,7 +193,7 @@ void Model::LoadFromDisk(){
 
             matType = materials[matIndex]->GetType();
 
-            if(matIndex > MAX_MATERIALS_PER_MODEL - 1) matIndex = 0;
+            if(matIndex > 15 - 1) matIndex = 0;
             vertex_buckets[matType].indices.push_back(t);
 
             data->vertices[t.tri.x].texture = matIndex;
@@ -271,9 +271,9 @@ void Model::LoadFromDisk(){
         file >> bcount;
         file >> gcount;
 
-        if(mcount > MAX_MATERIALS_PER_MODEL){
+        if(mcount > 15){
             std::cout << "Too many materials in model: " << name << std::endl;
-            mcount = MAX_MATERIALS_PER_MODEL;
+            mcount = 15;
         }
 
         for(uint32_t i = 0; i < mcount; i++){
@@ -318,7 +318,7 @@ void Model::LoadFromDisk(){
 
             matType = materials[matIndex]->GetType();
 
-            if(matIndex > MAX_MATERIALS_PER_MODEL - 1) matIndex = 0;
+            if(matIndex > 15 - 1) matIndex = 0;
             vertex_buckets[matType].indices.push_back(t);
 
             data->vertices[t.tri.x].texture = matIndex;

@@ -92,9 +92,9 @@ namespace tram::Render {
         float mixf = (timeOfDay - suns[t].time) / (suns[nt].time - suns[t].time);
 
 
-        SUN_DIRECTION = glm::normalize(glm::mix(suns[t].sundir, suns[nt].sundir, mixf));
-        SUN_COLOR = glm::mix(suns[t].suncolor, suns[nt].suncolor, mixf) / 256.0f*1.2f;
-        AMBIENT_COLOR = glm::mix(suns[t].ambientcolor, suns[nt].ambientcolor, mixf) / 256.0f*1.2f;
+        SetSunDirection(glm::normalize(glm::mix(suns[t].sundir, suns[nt].sundir, mixf)));
+        SetSunColor(glm::mix(suns[t].suncolor, suns[nt].suncolor, mixf) / 256.0f*1.2f);
+        SetAmbientColor(glm::mix(suns[t].ambientcolor, suns[nt].ambientcolor, mixf) / 256.0f*1.2f);
     }
     
     // TODO: make this function less poopy

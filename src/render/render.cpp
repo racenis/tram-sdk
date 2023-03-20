@@ -16,20 +16,20 @@ using namespace tram;
 using namespace tram::Render;
 
 namespace tram::Render {
-    glm::vec3 CAMERA_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::quat CAMERA_ROTATION = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+    
+    // cached values for the renderer
+    static vec3 CAMERA_POSITION [7] = {{0.0f, 0.0f, 0.0f}};
+    static quat CAMERA_ROTATION [7] = {{1.0f, 0.0f, 0.0f, 0.0f}};
+
+    static vec3 SUN_DIRECTION [7] = {{0.0f, 1.0f, 0.0f}};
+    static vec3 SUN_COLOR [7] = {{1.0f, 1.0f, 1.0f}};
+    static vec3 AMBIENT_COLOR [7] = {{0.0f, 0.0f, 0.0f}};
 
     float SCREEN_WIDTH = 800.0f;
     float SCREEN_HEIGHT = 600.0f;
 
     bool THIRD_PERSON = false;
     bool DRAW_RENDER_DEBUG = false;
-    
-    glm::vec3 SUN_DIRECTION = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 SUN_COLOR = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 AMBIENT_COLOR = glm::vec3(0.0f, 0.0f, 0.0f);
-
-    float FRAME_LIMIT = 60.0f;
 
     Pool<LightListObject> lightPool("lightpool", 100, true);
     Octree<uint32_t> lightTree;
@@ -37,12 +37,13 @@ namespace tram::Render {
 
     uint32_t colorlines_vertex_array = 0;
     uint32_t colorlines_vertex_buffer = 0;
-    DrawListEntryHandle colorlines_entry;
+    drawlistentry_t colorlines_entry;
     
     std::vector<LineVertex> colorlines;
 
-    
-    void Init(){
+    /// Initializes the rendering system.
+    /// @note Core and UI systems need to be initialized before initializing the render system.
+    void Init () {
         assert(System::IsInitialized(System::SYSTEM_CORE));
         assert(System::IsInitialized(System::SYSTEM_UI));
         
@@ -63,7 +64,8 @@ namespace tram::Render {
         System::SetInitialized(System::SYSTEM_RENDER, true);
     }
 
-    void Render(){
+    /// Renders a single frame.
+    void Render () {
         #ifndef ENGINE_EDITOR_MODE
         // idk if these need to be here -> after all, the armatures aren't updated in here?
         for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
@@ -77,15 +79,56 @@ namespace tram::Render {
         RenderFrame();
     }
     
-    void ScreenSize (float width, float height) {
-        SCREEN_WIDTH = width;
-        SCREEN_HEIGHT = height;
-        SetScreenSize(width, height);
+    /// Sets the sun direction.
+    /// @param direction    Normal vector pointing towards the sun.
+    /// @param layer        Rendering layer to which the sun direction will be applied.
+    void SetSunDirection (color_t direction, layer_t layer) {
+        SUN_DIRECTION [layer] = direction;
+        RENDERER.SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
     }
     
-    //void SetScreenClear (vec3 clear_color, bool clear) {
-    //    
-    //}
+    /// Sets the sun color.
+    /// @param color    Color of the sun.
+    /// @param layer    Rendering layer to which the sun color will be applied.
+    void SetSunColor (color_t color, layer_t layer) {
+        SUN_COLOR [layer] = color;
+        RENDERER.SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    }
+    
+    /// Sets the ambient color.
+    /// @param color    Ambient color.
+    /// @param layer    Rendering layer to which the ambient color will be applied.
+    void SetAmbientColor (color_t color, layer_t layer) {
+        AMBIENT_COLOR [layer] = color;
+        RENDERER.SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    }
+
+    /// Sets the camera position.
+    /// @param position Camera position.
+    /// @param layer    Rendering layer to which the camera position will be applied.
+    void SetCameraPosition (vec3 position, layer_t layer) {
+        CAMERA_POSITION [layer] = position;
+        RENDERER.SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    }
+    
+    /// Sets the camera rotation.
+    /// @param rotation Camera rotation.
+    /// @param layer    Rendering layer to which the camera rotation will be applied.
+    void SetCameraRotation (quat rotation, layer_t layer) {
+        CAMERA_ROTATION [layer] = rotation;
+        RENDERER.SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    }
+
+    /// Returns the camera position for a given layer.
+    vec3 GetCameraPosition (layer_t layer) {
+        return CAMERA_POSITION [layer];
+    }
+    
+    /// Returns the camera rotation for a given layer.
+    quat GetCameraRotation (layer_t layer) {
+        return CAMERA_ROTATION [layer];
+    }
+    
 }
 
 

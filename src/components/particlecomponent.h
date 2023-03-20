@@ -53,7 +53,7 @@ namespace tram {
         ResourceProxy<Render::Sprite> sprite;
     
         //Render::RenderListObject* robject = nullptr;
-        Render::DrawListEntryHandle draw_list_entry;
+        Render::drawlistentry_t draw_list_entry;
         
         glm::vec3 location;
         

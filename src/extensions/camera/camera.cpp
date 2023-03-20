@@ -116,8 +116,8 @@ namespace tram::Ext::Camera {
         term_loc += following_offset;
         term_loc += vec3(0.0f, 1.0f, 0.0f) * (float) sin(bob) * bobbing_distance * bobbing_weight;
         
-        Render::CAMERA_POSITION = term_loc;
-        Render::CAMERA_ROTATION = term_rot;
+        Render::SetCameraPosition(term_loc, 0);
+        Render::SetCameraRotation(term_rot, 0);
         
         Audio::SetListenerPosition(term_loc);
         Audio::SetListenerOrientation(term_rot);
