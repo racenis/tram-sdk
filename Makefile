@@ -1,11 +1,23 @@
 src_audio_audio.o: ./src/audio/audio.cpp
 	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/audio/audio.cpp -o src_audio_audio.o
 
+src_audio_sound.o: ./src/audio/sound.cpp
+	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/audio/sound.cpp -o src_audio_sound.o
+
 src_audio_source.o: ./src/audio/source.cpp
 	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/audio/source.cpp -o src_audio_source.o
 
+src_audio_openal_openal.o: ./src/audio/openal/openal.cpp
+	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/audio/openal/openal.cpp -o src_audio_openal_openal.o
+
+src_audio_openal_sound.o: ./src/audio/openal/sound.cpp
+	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/audio/openal/sound.cpp -o src_audio_openal_sound.o
+
 src_components_armaturecomponent.o: ./src/components/armaturecomponent.cpp
 	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/components/armaturecomponent.cpp -o src_components_armaturecomponent.o
+
+src_components_audiocomponent.o: ./src/components/audiocomponent.cpp
+	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/components/audiocomponent.cpp -o src_components_audiocomponent.o
 
 src_components_controllercomponent.o: ./src/components/controllercomponent.cpp
 	g++ -c -g -O0 -std=c++20 -Ilibraries -I./src ./src/components/controllercomponent.cpp -o src_components_controllercomponent.o
@@ -150,8 +162,12 @@ src_render_opengl_shader.o: ./src/render/opengl/shader.cpp
 
 clean:
 	del src_audio_audio.o
+	del src_audio_sound.o
 	del src_audio_source.o
+	del src_audio_openal_openal.o
+	del src_audio_openal_sound.o
 	del src_components_armaturecomponent.o
+	del src_components_audiocomponent.o
 	del src_components_controllercomponent.o
 	del src_components_entitycomponents.o
 	del src_components_particlecomponent.o
@@ -200,5 +216,5 @@ clean:
 	del src_render_opengl_renderer.o
 	del src_render_opengl_shader.o
 
-library: src_audio_audio.o src_audio_source.o src_components_armaturecomponent.o src_components_controllercomponent.o src_components_entitycomponents.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_bus.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_mongus.o src_entities_player.o src_entities_staticworldobject.o src_entities_tram.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_etc.o src_framework_event.o src_framework_gui.o src_framework_language.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_net.o src_framework_stats.o src_framework_system.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_render_armature.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_opengl_renderer.o src_render_opengl_shader.o 
-	ar -crf libtramsdk.a src_audio_audio.o src_audio_source.o src_components_armaturecomponent.o src_components_controllercomponent.o src_components_entitycomponents.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_bus.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_mongus.o src_entities_player.o src_entities_staticworldobject.o src_entities_tram.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_etc.o src_framework_event.o src_framework_gui.o src_framework_language.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_net.o src_framework_stats.o src_framework_system.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_render_armature.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+library: src_audio_audio.o src_audio_sound.o src_audio_source.o src_audio_openal_openal.o src_audio_openal_sound.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_entitycomponents.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_bus.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_mongus.o src_entities_player.o src_entities_staticworldobject.o src_entities_tram.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_etc.o src_framework_event.o src_framework_gui.o src_framework_language.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_net.o src_framework_stats.o src_framework_system.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_render_armature.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+	ar -crf libtramsdk.a src_audio_audio.o src_audio_sound.o src_audio_source.o src_audio_openal_openal.o src_audio_openal_sound.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_entitycomponents.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_bus.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_mongus.o src_entities_player.o src_entities_staticworldobject.o src_entities_tram.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_etc.o src_framework_event.o src_framework_gui.o src_framework_language.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_net.o src_framework_stats.o src_framework_system.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_render_armature.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_opengl_renderer.o src_render_opengl_shader.o 

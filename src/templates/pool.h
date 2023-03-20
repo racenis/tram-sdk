@@ -76,7 +76,6 @@ namespace tram {
                 lastfree = *skip2;
             } else {
                 newobj = lastfree;
-                poolSize++;
                 last++;
                 lastfree++;
                 
@@ -85,6 +84,8 @@ namespace tram {
             }
             
             new(newobj) T(std::forward<Args>(args)...);
+            
+            poolSize++;
 
             return newobj;
         };
@@ -98,11 +99,12 @@ namespace tram {
             T** nextfree = reinterpret_cast<T**>(skip);
             *nextfree = lastfree; // add pointer to previous free place
             lastfree = removeptr;
+            poolSize--;
         };
         T& operator[](size_t index) { return *(first + index); } // note that there is no checking for whether the index is valid
         T* GetFirst(){return first;};   // yeet?
         T* GetLast(){return last;};     // also yeet?
-        iterator begin(){return first;};
+        iterator begin(){auto ptr = first; while (*((uint64_t*)ptr) == 0 && ptr < last) ptr++; return ptr;};
         iterator end(){return last;};
         size_t GetSize(){return poolSize;}; // yeet too?
         size_t size(){return poolSize;};
