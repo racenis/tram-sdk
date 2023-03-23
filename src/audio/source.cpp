@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <al.h>
+#include <AL/al.h>
 
 // the stb_vorbis and glm use the same macroses
 #undef L

@@ -15,7 +15,8 @@ namespace tram {
         MODE_WRITE
     };
     
-    class FileParser;
+    class DiskFileReader;
+    class DiskFileWriter;
     
     class File {
     public:
@@ -58,8 +59,10 @@ namespace tram {
         std::string_view read_string();
         
         std::string name;
-        FileParser* parser;
         FileAccessMode mode;
+        
+        DiskFileReader* disk_reader = nullptr;
+        DiskFileWriter* disk_writer = nullptr;
     };
     
 }

@@ -4,7 +4,7 @@
 #ifndef FRAMEWORK_STATS_H
 #define FRAMEWORK_STATS_H
 
-#include <cstdint>
+#include <framework/math.h>
 
 namespace tram::Stats {
     enum Resource : uint32_t {

@@ -20,6 +20,7 @@ is_library = config["Project"]["type"] == "LIBRARY"
 compiler = config["Make"]["compiler"]
 linker = config["Make"]["linker"]
 archiver = config["Make"]["archiver"]
+tramsdk = config["Make"]["tramsdk"]
 
 modules = config["Modules"]
 
@@ -89,8 +90,12 @@ def generate_makefile():
 	
 	for unit in units:
 		makefile += objectify(unit) + ".o: " + unit + "\n"
-		makefile += "\t" + compiler + " -c -g -O0 -std=c++20 -Ilibraries -I./src " + unit
-		makefile += " -o " + objectify(unit) + ".o\n\n"
+		makefile += "\t" + compiler + " -c -g -O0 -std=c++20 -I./src"
+		if is_library:
+			makefile += " -Ilibraries"
+		if not is_library:
+			makefile += " -I" + tramsdk + "/src -I" + tramsdk + "/libraries"
+		makefile += " " + unit + " -o " + objectify(unit) + ".o\n\n"
 	
 	makefile += "clean:\n"
 	for unit in units:
@@ -122,16 +127,20 @@ def generate_makefile():
 		for unit in units:
 			makefile += objectify(unit) + ".o "
 		makefile += "\n\t" + linker + " -o " + project_name
-		makefile += " -L" + binaries + " "
+		makefile += " -L" + tramsdk + "/" + binaries + " "
+		makefile += " -L" + tramsdk + " "
+		makefile += "-static "
 		for unit in units:
 			makefile += objectify(unit) + ".o "
+		makefile += "-ltramsdk "
 		makefile += "-lBulletSoftBody "
 		makefile += "-lBulletDynamics "
 		makefile += "-lBulletCollision "
 		makefile += "-lLinearMath "
 		makefile += "-lglfw3 "
 		makefile += "-lOpenAL32 "
-		makefile += "-ltramsdk\n"
+		makefile += "-lgdi32 "
+		makefile += "-lopengl32\n"
 	
 	with open(project_path + "Makefile", "w") as makefile_file:
 		makefile_file.write(makefile)

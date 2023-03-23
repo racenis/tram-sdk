@@ -6,8 +6,11 @@
 #include <fstream>
 #include <sstream>
 
-#include <glad.h>
-//#include <glad_gles3.h>
+#ifdef __EMSCRIPTEN__
+    #include <GL/gl.h>
+#else
+    #include <glad.h>
+#endif
 
 #include <render/opengl/renderer.h>
 

@@ -100,15 +100,13 @@ void WorldCell::Unload(){
     std::cout << "Unloading cell: " << name << std::endl;
     auto entities_copy = entities;
     for (auto& it : entities_copy) {
-        if (it->IsAutoLoad()) {
-            if (it->IsPersistent()) {
-                it->Unload();
-            } else {
-                std::cout << "Yeeting " << it->GetName() << " out of existance!" << std::endl;
-                //it->Yeet();
-                delete it;
-                // TODO: actually delete the entity
-            }
+        if (!it->IsAutoLoad() || !it->IsLoaded()) continue;
+        
+        if (it->IsPersistent()) {
+            it->Unload();
+        } else {
+            std::cout << "Yeeting " << it->GetName() << " out of existance!" << std::endl;
+            delete it;
         }
     }
 

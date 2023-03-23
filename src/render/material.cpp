@@ -61,7 +61,7 @@ void Material::LoadMaterialInfo(const char* filename){
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
-    
+
     while(file.is_continue()){
         Material::Type mat_type;
 
@@ -84,6 +84,8 @@ void Material::LoadMaterialInfo(const char* filename){
             std::cout << "Error material list material: " << mat_name << std::endl;
             continue;
         }
+        
+        std::cout << mat_name << " " << mat_type_name << std::endl;
 
         MATERIAL_LIST.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type));
     }

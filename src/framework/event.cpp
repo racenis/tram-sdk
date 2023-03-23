@@ -23,6 +23,8 @@ namespace tram {
         };
 
         ListenerType type = LISTENER_COMPONENT;
+		
+		char padding[4];
     };
     
     Queue<Event> EVENT_QUEUE("event queue", 500);

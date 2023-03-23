@@ -17,7 +17,7 @@ namespace tram {
     class EntityComponent {
     public:
         EntityComponent(){ id = GenerateID(); }
-        virtual ~EntityComponent() { std::cout << "EntityComponent base destructor." << std::endl;  }
+        virtual ~EntityComponent() {}
 
         virtual void Init() {
             is_init = true;

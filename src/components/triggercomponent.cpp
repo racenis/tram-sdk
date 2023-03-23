@@ -101,7 +101,10 @@ namespace tram {
     /// This method is called from Phyics::Update().
     void TriggerComponent::Collision (const Physics::Collision& collision) {
         if (!filter_callback || filter_callback(this, collision.collider)) {
-            if (!is_collided && !was_collided && activation_callback) activation_callback(this);
+            if (!is_collided && !was_collided && activation_callback) {
+                activation_callback(this, collision);
+                this->collision = collision;
+            }
 
             is_collided = true;
         }
@@ -110,7 +113,9 @@ namespace tram {
     /// Resets registered collisions.
     /// This method is called from Phyics::Update().
     void TriggerComponent::ResetCollisions() {
-        if (!is_collided && was_collided && deactivation_callback) deactivation_callback(this);
+        if (!is_collided && was_collided && deactivation_callback) {
+            deactivation_callback(this, collision);
+        }
         
         was_collided = is_collided;
         is_collided = false;

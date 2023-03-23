@@ -26,8 +26,8 @@ namespace tram {
         void SetShape(Physics::CollisionShape shape);
         void SetParent(Entity* newparent){ parent = newparent; }
 
-        void SetActivationCallback(void (*activation_callback)(TriggerComponent*)) { this->activation_callback = activation_callback; }
-        void SetDectivationCallback(void (*deactivation_callback)(TriggerComponent*)) { this->deactivation_callback = deactivation_callback; }
+        void SetActivationCallback(void (*activation_callback)(TriggerComponent*, Physics::Collision)) { this->activation_callback = activation_callback; }
+        void SetDectivationCallback(void (*deactivation_callback)(TriggerComponent*, Physics::Collision)) { this->deactivation_callback = deactivation_callback; }
         void SetFilterCallback(bool (*filter_callback)(TriggerComponent*, PhysicsComponent*)) { this->filter_callback = filter_callback; }
 
         void SetCollisionMask(uint32_t flags);
@@ -53,8 +53,8 @@ namespace tram {
         btCollisionShape* shape = nullptr;
         btCollisionObject* trigger = nullptr;
         
-        void (*activation_callback)(TriggerComponent*) = nullptr;
-        void (*deactivation_callback)(TriggerComponent*) = nullptr;
+        void (*activation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
+        void (*deactivation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
         bool (*filter_callback)(TriggerComponent*, PhysicsComponent*) = nullptr;
         
         uint32_t collisionMask = -1;
@@ -62,6 +62,8 @@ namespace tram {
 
         bool is_collided = false;
         bool was_collided = false;
+        
+        Physics::Collision collision;
     };
 }
 

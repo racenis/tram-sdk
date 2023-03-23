@@ -3,8 +3,14 @@
 #include <framework/logging.h>
 #include <framework/system.h>
 
-#include <alc.h>
-#include <al.h>
+#ifdef __EMSCRIPTEN__
+    #include <AL/alc.h>
+    #include <AL/al.h>
+#else
+    #include <alc.h>
+    #include <al.h>
+#endif
+
 
 namespace tram::Audio::OpenAL {
 

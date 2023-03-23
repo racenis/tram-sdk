@@ -12,9 +12,15 @@
 #include <fstream>
 #include <cstring>
 
-#include <glad.h>
-//#include <glad_gles3.h>
-#include <glfw3.h>
+#ifdef __EMSCRIPTEN__
+    #include <GL/gl.h>
+    #include <GLFW/glfw3.h>
+#else
+    #include <glad.h>
+    #include <glfw3.h>
+#endif
+
+
 
 using namespace tram::Render;
 
@@ -97,11 +103,14 @@ namespace tram::UI {
 
         // bind context to this thread
         glfwMakeContextCurrent(WINDOW);
+        
+#ifndef __EMSCRIPTEN__
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         //if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)){
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();
         }
+#endif
 
         glViewport(0, 0, 800, 600);
         if (true) {

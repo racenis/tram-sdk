@@ -3,9 +3,11 @@
 
 #include <render/opengl/renderer.h>
 
-// too too
-#include <glad.c>
-//#include <glad_gles3.c>
+#ifdef __EMSCRIPTEN__
+    #include <GL/gl.h>
+#else
+    #include <glad.c>
+#endif
 
 #include <glm/gtc/type_ptr.hpp>
 

@@ -56,10 +56,10 @@ namespace tram::Ext::Menu {
         font_text_bold->Load();
         font_headers->Load();
 
-        GUI::RegisterFont(font_symbols);
-        GUI::RegisterFont(font_text);
-        GUI::RegisterFont(font_text_bold);
-        GUI::RegisterFont(font_headers);
+        FONT_SYMBOL =       GUI::RegisterFont(font_symbols);
+        FONT_TEXT =         GUI::RegisterFont(font_text);
+        FONT_TEXT_BOLD =    GUI::RegisterFont(font_text_bold);
+        FONT_HEADER =       GUI::RegisterFont(font_headers);
         
         UI::BindKeyboardKey(UI::KEY_ESCAPE, UI::KeyBinding {.type = UI::KeyBinding::SPECIAL_OPTION, .special_option = EscapeMenuKeyboard});
         UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, UI::KeyBinding {.type = UI::KeyBinding::SPECIAL_OPTION, .special_option = DebugMenuKeyboard});
