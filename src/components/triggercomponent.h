@@ -21,10 +21,8 @@ namespace tram {
         void Start();
 
         name_t GetModel(){ return model->GetName(); }
-        Entity* GetParent(){ return parent; }
         void SetModel(name_t modelName){ model = Physics::CollisionModel::Find(modelName); }
         void SetShape(Physics::CollisionShape shape);
-        void SetParent(Entity* newparent){ parent = newparent; }
 
         void SetActivationCallback(void (*activation_callback)(TriggerComponent*, Physics::Collision)) { this->activation_callback = activation_callback; }
         void SetDectivationCallback(void (*deactivation_callback)(TriggerComponent*, Physics::Collision)) { this->deactivation_callback = deactivation_callback; }
@@ -44,8 +42,10 @@ namespace tram {
         
         std::vector<Physics::Collision> Poll ();
     private:
-        Entity* parent = nullptr;
         ResourceProxy<Physics::CollisionModel> model;
+        
+        uint32_t collisionMask = -1;
+        uint32_t collisionGroup = -1;
         
         glm::vec3 location = vec3 (0.0f, 0.0f, 0.0f);
         glm::quat rotation = vec3 (0.0f, 0.0f, 0.0f);
@@ -56,9 +56,6 @@ namespace tram {
         void (*activation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
         void (*deactivation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
         bool (*filter_callback)(TriggerComponent*, PhysicsComponent*) = nullptr;
-        
-        uint32_t collisionMask = -1;
-        uint32_t collisionGroup = -1;
 
         bool is_collided = false;
         bool was_collided = false;

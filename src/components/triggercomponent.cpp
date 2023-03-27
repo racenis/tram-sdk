@@ -10,6 +10,10 @@ namespace tram {
     template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
     
     void TriggerComponent::Start(){
+        std::cout << "AAAAAAAAA " << offsetof(TriggerComponent, collisionMask) << std::endl;
+        std::cout << "AAAAAAAAB " << offsetof(TriggerComponent, collisionGroup) << std::endl;
+        
+        
         if (!shape && model) {
             shape = (btCollisionShape*) model->GetShape();
         }

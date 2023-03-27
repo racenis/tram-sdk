@@ -77,17 +77,23 @@ namespace tram::UI {
         
         // start up glfw
         glfwInit();
+
+        glfwSetErrorCallback([](int code, const char* message){
+            std::cout << "GLFW error code: " << code << " message: " << message << std::endl;
+        });
         
+#ifdef __EMSCRIPTEN__
+        // this is for opengl es 3.0
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+#else
         // this is for opengl 4.0
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-        
-        // this is for opengl es 3.0
-        //glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-        //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+#endif
 
         glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
 
@@ -97,6 +103,7 @@ namespace tram::UI {
             //const char* description;
             //int code = glfwGetError(&description);
             //std::cout << "GLFW window didn't open" << description << std::endl;
+            std::cout << "GLFW window didn't open!" << std::endl;
             glfwTerminate();
             abort();
         }
@@ -110,12 +117,13 @@ namespace tram::UI {
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();
         }
+        
+        glfwSwapInterval(1);
 #endif
-
         glViewport(0, 0, 800, 600);
-        if (true) {
-            glfwSwapInterval(1);
-        }
+
+
+        
 
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
             screen_width = width;

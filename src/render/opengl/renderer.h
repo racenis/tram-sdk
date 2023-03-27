@@ -62,6 +62,8 @@ namespace tram::Render::OpenGL {
         uint32_t shader = 0;
         uint32_t texCount = 0;
         uint32_t textures[15] = {0};
+		
+		char padding [4];
 
         /// Copies the element and vertex array names, offsets, etc. from the Model.
         //void FillFromModel(Model* mdl, uint32_t eboIndex);

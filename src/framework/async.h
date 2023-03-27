@@ -14,8 +14,9 @@ namespace tram {
 namespace tram::Async {
     void RequestResource (EntityComponent* requester, Resource* requested_resource);
     void ForceLoadResource(Resource* res);
-    void Init();
+    void Init(size_t threads);
     void Yeet();
+    void ResourceLoader1stStage();
     void ResourceLoader2ndStage();
     void FinishResource();
     size_t GetWaitingResources();

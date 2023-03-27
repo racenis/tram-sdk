@@ -64,6 +64,9 @@ void main()
 		texcolor = texture(sampler[15], vertUV);
 		break;			
 	}
-
-    fragColor = texcolor * vec4(vertColor, 1.0);
+	
+	fragColor = texcolor;
+	
+	if (fragColor.a < 0.5) discard;
+    fragColor *= vec4(vertColor, 1.0);
 }

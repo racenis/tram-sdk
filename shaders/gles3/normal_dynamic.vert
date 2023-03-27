@@ -1,4 +1,7 @@
 #version 300 es
+
+precision highp float;
+
 layout (location = 0) in vec3 Position;
 layout (location = 1) in vec3 Normal;
 layout (location = 2) in vec2 VertUV;
@@ -26,8 +29,11 @@ layout (std140) uniform ModelMatrices
 	uvec4 modellights;
 	vec3 sundir;
 	vec3 suncolor;
-	vec3 ambientcolor;
-	vec3 time;
+	vec4 ambientcolor;
+	float time;
+	float sunweight;
+	float screenwidth;
+	float screenheight;
 };
 
 layout (std140) uniform Lights
@@ -49,7 +55,7 @@ flat out uint texIndex;
 
 void main()
 {
-	vec3 lightColor = ambientcolor * time.y;
+	vec3 lightColor = vec3(ambientcolor);
 	mat4 pvm = projection * view * model;
 	vec4 bonepose1 = pvm * bone[BoneIndex.x] * vec4(Position, 1.0);
 	vec4 bonepose2 = pvm * bone[BoneIndex.y] * vec4(Position, 1.0);
@@ -64,7 +70,8 @@ void main()
 	float distance3 = length(vec3(scenelights[modellights.z].aa) - vPos);
 	float distance4 = length(vec3(scenelights[modellights.w].aa) - vPos);
 	
-	lightColor += suncolor * max(dot(nPos, normalize(sundir)), 0.0) * time.y;
+	lightColor += suncolor * max(dot(nPos, normalize(sundir)), 0.0);
+	lightColor *= sunweight;
 	
 	lightColor += vec3(scenelights[modellights.x].bb) * max(dot(nPos, normalize(vec3(scenelights[modellights.x].aa) - vPos)), 0.0) * (1.0 / (1.0 + 0.09 * distance1 + 0.032 * (distance1 * distance1)));
 	lightColor += vec3(scenelights[modellights.y].bb) * max(dot(nPos, normalize(vec3(scenelights[modellights.y].aa) - vPos)), 0.0)* (1.0 / (1.0 + 0.09 * distance2 + 0.032 * (distance2 * distance2)));

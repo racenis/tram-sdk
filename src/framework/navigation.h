@@ -60,7 +60,9 @@ namespace tram {
         glm::vec3 from;
         glm::vec3 to;
         size_t len = -1;
-        Navmesh::Node* nodes[100];
+        size_t node_len = 0;
+        Navmesh::Node* nodes;
+        char padding[4];
     };
     
     NavigationPlan* MakeNavigationPlan(const glm::vec3& from, const glm::vec3& to);

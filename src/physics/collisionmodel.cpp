@@ -37,13 +37,14 @@ namespace tram::Physics {
     void CollisionModel::LoadFromDisk(){
         std::ifstream file;
         std::string type;
-        char path[100] = "data/models/";
+        char path[200];
 
         btCollisionShape* shape;
         btTransform transf;
         btQuaternion rotat;
         btCompoundShape* cshape = new btCompoundShape();
 
+        strcpy(path, "data/models/");
         strcat(path, name);
         strcat(path, ".collmdl");
 

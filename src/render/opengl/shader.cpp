@@ -8,6 +8,7 @@
 
 #ifdef __EMSCRIPTEN__
     #include <GL/gl.h>
+	#include <GLES3/gl3.h>
 #else
     #include <glad.h>
 #endif
@@ -147,32 +148,61 @@ namespace tram::Render::OpenGL {
     }
 
     void CompileShaders(){
-        auto normal_static_vertex =          LoadVertexShader("shaders/normal_static.vert");
-        auto normal_static_fragment =        LoadFragmentShader("shaders/normal_static.frag");
-        auto normal_static_fragment_alpha =  LoadFragmentShader("shaders/normal_static_alpha.frag");
-        auto normal_dynamic_vertex =         LoadVertexShader("shaders/normal_dynamic.vert");
-        auto normal_dynamic_fragment =       LoadFragmentShader("shaders/normal_dynamic.frag");
-        auto normal_dynamic_fragment_alpha = LoadFragmentShader("shaders/normal_dynamic_alpha.frag");
-        auto normal_water_fragment =         LoadFragmentShader("shaders/normal_water.frag");
-        auto sprite_vertex =                 LoadVertexShader("shaders/normal_sprite.vert");
-        auto sprite_fragment =               LoadFragmentShader("shaders/normal_sprite.frag");
-        auto line_vertex =                   LoadVertexShader("shaders/line.vert");
-        auto line_fragment =                 LoadFragmentShader("shaders/line.frag");
-        auto text_vertex =                   LoadVertexShader("shaders/text.vert");
-        auto text_fragment =                 LoadFragmentShader("shaders/text.frag");
-        auto glyph_vertex =                  LoadVertexShader("shaders/glyph.vert");
-        auto glyph_fragment =                LoadFragmentShader("shaders/glyph.frag");
-        
+		std::cout << "loading shaders" << std::endl;
+#ifdef __EMSCRIPTEN__
+        auto normal_static_vertex =          LoadVertexShader("shaders/gles3/normal_static.vert");
+        auto normal_static_fragment =        LoadFragmentShader("shaders/gles3/normal_static.frag");
+        auto normal_static_fragment_alpha =  LoadFragmentShader("shaders/gles3/normal_static_alpha.frag");
+        auto normal_dynamic_vertex =         LoadVertexShader("shaders/gles3/normal_dynamic.vert");
+        auto normal_dynamic_fragment =       LoadFragmentShader("shaders/gles3/normal_dynamic.frag");
+        auto normal_dynamic_fragment_alpha = LoadFragmentShader("shaders/gles3/normal_dynamic_alpha.frag");
+        auto normal_water_fragment =         LoadFragmentShader("shaders/gles3/normal_water.frag");
+        auto sprite_vertex =                 LoadVertexShader("shaders/gles3/normal_sprite.vert");
+        auto sprite_fragment =               LoadFragmentShader("shaders/gles3/normal_sprite.frag");
+        auto line_vertex =                   LoadVertexShader("shaders/gles3/line.vert");
+        auto line_fragment =                 LoadFragmentShader("shaders/gles3/line.frag");
+        auto text_vertex =                   LoadVertexShader("shaders/gles3/text.vert");
+        auto text_fragment =                 LoadFragmentShader("shaders/gles3/text.frag");
+        auto glyph_vertex =                  LoadVertexShader("shaders/gles3/glyph.vert");
+        auto glyph_fragment =                LoadFragmentShader("shaders/gles3/glyph.frag");
+#else
+        auto normal_static_vertex =          LoadVertexShader("shaders/opengl3/normal_static.vert");
+        auto normal_static_fragment =        LoadFragmentShader("shaders/opengl3/normal_static.frag");
+        auto normal_static_fragment_alpha =  LoadFragmentShader("shaders/opengl3/normal_static_alpha.frag");
+        auto normal_dynamic_vertex =         LoadVertexShader("shaders/opengl3/normal_dynamic.vert");
+        auto normal_dynamic_fragment =       LoadFragmentShader("shaders/opengl3/normal_dynamic.frag");
+        auto normal_dynamic_fragment_alpha = LoadFragmentShader("shaders/opengl3/normal_dynamic_alpha.frag");
+        auto normal_water_fragment =         LoadFragmentShader("shaders/opengl3/normal_water.frag");
+        auto sprite_vertex =                 LoadVertexShader("shaders/opengl3/normal_sprite.vert");
+        auto sprite_fragment =               LoadFragmentShader("shaders/opengl3/normal_sprite.frag");
+        auto line_vertex =                   LoadVertexShader("shaders/opengl3/line.vert");
+        auto line_fragment =                 LoadFragmentShader("shaders/opengl3/line.frag");
+        auto text_vertex =                   LoadVertexShader("shaders/opengl3/text.vert");
+        auto text_fragment =                 LoadFragmentShader("shaders/opengl3/text.frag");
+        auto glyph_vertex =                  LoadVertexShader("shaders/opengl3/glyph.vert");
+        auto glyph_fragment =                LoadFragmentShader("shaders/opengl3/glyph.frag");
+#endif
+
+		std::cout << "linking 1" << std::endl;
         StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE,          LinkShader(normal_static_vertex, normal_static_fragment));
-        StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(normal_static_vertex, normal_static_fragment_alpha));
-        StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE,          LinkShader(normal_dynamic_vertex, normal_dynamic_fragment));
-        StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE_ALPHA,    LinkShader(normal_dynamic_vertex, normal_dynamic_fragment_alpha));
-        StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_WATER,    LinkShader(normal_static_vertex, normal_water_fragment));
-        StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(sprite_vertex, sprite_fragment));
-        StoreShaderForLater(Model::LINE_VERTEX,     Material::FLAT_COLOR,       LinkShader(line_vertex, line_fragment));
-        StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_MSDF,     LinkShader(text_vertex, text_fragment));
-        StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_GLYPH,    LinkShader(glyph_vertex, glyph_fragment));
+        std::cout << "linking 2" << std::endl;
+		StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(normal_static_vertex, normal_static_fragment_alpha));
+        std::cout << "linking 3" << std::endl;
+		StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE,          LinkShader(normal_dynamic_vertex, normal_dynamic_fragment));
+        std::cout << "linking 4" << std::endl;
+		StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE_ALPHA,    LinkShader(normal_dynamic_vertex, normal_dynamic_fragment_alpha));
+        std::cout << "linking 5" << std::endl;
+		StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_WATER,    LinkShader(normal_static_vertex, normal_water_fragment));
+        std::cout << "linking 6" << std::endl;
+		StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(sprite_vertex, sprite_fragment));
+        std::cout << "linking 7" << std::endl;
+		StoreShaderForLater(Model::LINE_VERTEX,     Material::FLAT_COLOR,       LinkShader(line_vertex, line_fragment));
+        std::cout << "linking 8" << std::endl;
+		StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_MSDF,     LinkShader(text_vertex, text_fragment));
+        std::cout << "linking 9" << std::endl;
+		StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_GLYPH,    LinkShader(glyph_vertex, glyph_fragment));
         
+		std::cout << "binding tex" << std::endl;
         for (auto& sh : compiled_shaders) BindTextures(std::get<2>(sh));
     }
 }

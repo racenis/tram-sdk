@@ -1,5 +1,7 @@
 #version 300 es
+
 precision highp float;
+
 out vec4 fragColor;
 
 in vec2 vertUV;
@@ -12,7 +14,7 @@ uniform sampler2D sampler[16];
 
 void main()
 {
-	vec4 t = texture(sampler[texindex], vertUV);
+	/*vec4 t = texture(sampler[texindex], vertUV);
 	vec2 c = vec2(max(min(t.r, t.g), min(max(t.r, t.g), t.b)));
 	float scale = min(cscale.x, cscale.y);
 	c.y = texture(sampler[texindex], vertUV + vec2(-2.0/256.0/scale/scale, 2.0/256.0/scale/scale)).w;
@@ -20,6 +22,7 @@ void main()
 	c.x += thick;
 	c = clamp(c + 0.5, 0.0, 1.0);
 	//if (c.x == 0 || c.y == 0) discard;
-	if (c.x == 0.0) discard;
-	fragColor = vec4(mix(vec3(0.0, 0.0, 0.0), color * 2.0, c.x), 1.0);
+	if (c.x == 0) discard;
+	fragColor = vec4(mix(vec3(0.0, 0.0, 0.0), color * 2.0, c.x), 1.0);*/
+	fragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

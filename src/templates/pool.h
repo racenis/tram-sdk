@@ -11,6 +11,7 @@
 namespace tram {
     template <typename T>
     class Pool {
+        static_assert(sizeof(T) % sizeof(uint64_t) == 0);
     protected:
         std::string poolName;
         uint64_t poolSize;
@@ -47,7 +48,6 @@ namespace tram {
             last = first;
             lastfree = first;
 
-
             if(skipFirst){
                 //new(first) T;
                 last++;
@@ -57,6 +57,7 @@ namespace tram {
             *((uint64_t*)last) = 0;
             *(((uint64_t*)last) + 1) = 0;
 
+            std::cout << "size: " << sizeof(T) << " mod: " << sizeof(T) % 8 << " type: " << typeid(T).name() << std::endl;
         };
         
         template <typename... Args>

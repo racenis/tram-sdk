@@ -10,7 +10,7 @@
 
 namespace tram {
     struct ListenerInfo {
-        enum ListenerType {
+        enum ListenerType : int64_t {
             LISTENER_COMPONENT,
             LISTENER_ENTITY,
             LISTENER_FUNCTION
@@ -23,8 +23,6 @@ namespace tram {
         };
 
         ListenerType type = LISTENER_COMPONENT;
-		
-		char padding[4];
     };
     
     Queue<Event> EVENT_QUEUE("event queue", 500);

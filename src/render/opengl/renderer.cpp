@@ -5,6 +5,7 @@
 
 #ifdef __EMSCRIPTEN__
     #include <GL/gl.h>
+	#include <GLES3/gl3.h>
 #else
     #include <glad.c>
 #endif
@@ -261,7 +262,8 @@ namespace tram::Render::OpenGL {
     }
     
     drawlistentry_t InsertDrawListEntry() {
-        return drawlistentry_t { .draw_list_entries = { draw_list.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
+        std::cout << sizeof(DrawListEntry) << std::endl;
+		return drawlistentry_t { .draw_list_entries = { draw_list.AddNew(), nullptr, nullptr, nullptr, nullptr, nullptr}};
     }
     
     drawlistentry_t InsertDrawListEntryFromModel(Model* model) {

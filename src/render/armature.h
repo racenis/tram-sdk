@@ -32,6 +32,7 @@ namespace tram::Render {
         vec3 location = vec3(0.0f);
         quat rotation = quat(1.0f, 0.0f, 0.0f, 0.0f);
         vec3 scale = vec3(1.0f);
+        char padding [4]; // for emscripten
     };
     
     struct Pose {

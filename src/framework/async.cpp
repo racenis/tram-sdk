@@ -13,6 +13,7 @@
 
 namespace tram::Async {
     std::thread resource_loader_thread;
+    size_t resource_loader_thread_count = 0;
     bool loaders_should_stop = false;
 
     struct ResourceRequest {
@@ -44,47 +45,51 @@ namespace tram::Async {
     /// Resource loading function.
     /// Should only be used by through the Async::Init() function.
     void ResourceLoader() {
-        while (!loaders_should_stop){
+        while (!loaders_should_stop) {
+            ResourceLoader1stStage();
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+    }
+    
+    /// Porcesses the first resource queue.
+    /// If you started the Async system with at least one thread, you don't
+    /// need to call this function.
+    void ResourceLoader1stStage() {
+        resourceRequestQueue.Lock();
+        ResourceRequest* req = resourceRequestQueue.GetFirstPtr();
+        resourceRequestQueue.Unlock();
 
-            resourceRequestQueue.Lock();
-            ResourceRequest* req = resourceRequestQueue.GetFirstPtr();
-            resourceRequestQueue.Unlock();
-
-            while (req){
-                if(req->requested_res->GetStatus() == Resource::UNLOADED){
-                    req->requested_res->LoadFromDisk();
-                }
-
-                if(req->requested_res->GetStatus() == Resource::READY){
-                    finishedResourceRequestQueue.Lock();
-                    ResourceRequest* f_req = finishedResourceRequestQueue.AddNew();
-                    f_req->requester = req->requester;          // TODO: change this to memcpy()
-                    f_req->requester_id = req->requester_id;
-                    f_req->requested_res = req->requested_res;
-                    finishedResourceRequestQueue.Unlock();
-                } else {
-                    resourceRequestQueue2ndStage.Lock();
-                    ResourceRequest* n_req = resourceRequestQueue2ndStage.AddNew();
-                    n_req->requester = req->requester;
-                    n_req->requester_id = req->requester_id;
-                    n_req->requested_res = req->requested_res;
-                    resourceRequestQueue2ndStage.Unlock();
-                }
-
-                resourceRequestQueue.Lock();
-                resourceRequestQueue.Remove();
-                req = resourceRequestQueue.GetFirstPtr();
-                resourceRequestQueue.Unlock();
+        while (req) {
+            if(req->requested_res->GetStatus() == Resource::UNLOADED){
+                req->requested_res->LoadFromDisk();
             }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            if(req->requested_res->GetStatus() == Resource::READY){
+                finishedResourceRequestQueue.Lock();
+                ResourceRequest* f_req = finishedResourceRequestQueue.AddNew();
+                f_req->requester = req->requester;          // TODO: change this to memcpy()
+                f_req->requester_id = req->requester_id;
+                f_req->requested_res = req->requested_res;
+                finishedResourceRequestQueue.Unlock();
+            } else {
+                resourceRequestQueue2ndStage.Lock();
+                ResourceRequest* n_req = resourceRequestQueue2ndStage.AddNew();
+                n_req->requester = req->requester;
+                n_req->requester_id = req->requester_id;
+                n_req->requested_res = req->requested_res;
+                resourceRequestQueue2ndStage.Unlock();
+            }
 
+            resourceRequestQueue.Lock();
+            resourceRequestQueue.Remove();
+            req = resourceRequestQueue.GetFirstPtr();
+            resourceRequestQueue.Unlock();
         }
     }
 
     /// Processes the second resource queue.
     /// @warning This function should only be called from the rendering thread.
-    void ResourceLoader2ndStage(){
+    void ResourceLoader2ndStage() {
         resourceRequestQueue2ndStage.Lock();
         ResourceRequest* req = resourceRequestQueue2ndStage.GetFirstPtr();
         resourceRequestQueue2ndStage.Unlock();
@@ -155,11 +160,16 @@ namespace tram::Async {
     }
 
     /// Starts the async resource loader thread.
-    void Init() {
+    /// @param Number of threads for async loading.
+    void Init(size_t threads) {
         assert(System::IsInitialized(System::SYSTEM_CORE));
         
-        loaders_should_stop = false;
-        resource_loader_thread = std::thread(ResourceLoader);
+        resource_loader_thread_count = threads;
+        
+        if (threads) {
+            loaders_should_stop = false;
+            resource_loader_thread = std::thread(ResourceLoader);
+        }
         
         System::SetInitialized(System::SYSTEM_ASYNC, true);
     }
@@ -168,8 +178,10 @@ namespace tram::Async {
     void Yeet() {
         assert(System::IsInitialized(System::SYSTEM_ASYNC));
         
-        loaders_should_stop = true;
-        resource_loader_thread.join();
+        if (resource_loader_thread_count) {
+            loaders_should_stop = true;
+            resource_loader_thread.join();
+        }
         
         System::SetInitialized(System::SYSTEM_ASYNC, false);
     }

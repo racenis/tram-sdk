@@ -203,14 +203,14 @@ void Model::LoadFromDisk(){
         
         file.close();
 
-        data->indices.reserve(tcount);
+        //data->indices.reserve(tcount);
 
         for (size_t i = 0; i < 6; i++) {
             if (vertex_buckets[i].indices.size() > 0) {
                 ElementRange range;
                 range.material_type = (Material::Type)i;
                 range.material_count = materials.size();
-                for (uint32_t k = 0; k < 16; k++) range.materials[k] = k;
+                for (uint32_t k = 0; k < 15; k++) range.materials[k] = k;
                 range.element_length = vertex_buckets[i].indices.size();
                 range.element_offset = data->indices.size();
                 
@@ -270,11 +270,17 @@ void Model::LoadFromDisk(){
         file >> mcount;
         file >> bcount;
         file >> gcount;
+        
+        
+
+        std::cout << "f1" << std::endl;
 
         if(mcount > 15){
             std::cout << "Too many materials in model: " << name << std::endl;
             mcount = 15;
         }
+
+        std::cout << "f2" << std::endl;
 
         for(uint32_t i = 0; i < mcount; i++){
             Material* mat;
@@ -286,6 +292,9 @@ void Model::LoadFromDisk(){
             materials.push_back(mat);
 
         }
+        
+        std::cout << "f3 " << vcount << " aa " << sizeof(DynamicModelVertex) * vcount << std::endl;
+        
         for(uint32_t i = 0; i < vcount; i++){
             DynamicModelVertex v;
             file >> v.co.x;
@@ -307,6 +316,9 @@ void Model::LoadFromDisk(){
             v.texture = 0;
             data->vertices.push_back(v);
         }
+        
+        std::cout << "f4" << std::endl;
+        
         for(uint32_t i = 0; i < tcount; i++){
             ModelIndex t;
             uint32_t matIndex;
@@ -325,6 +337,9 @@ void Model::LoadFromDisk(){
             data->vertices[t.tri.y].texture = matIndex;
             data->vertices[t.tri.z].texture = matIndex;
         }
+        
+        std::cout << "f5" << std::endl;
+        
         for(uint32_t i = 0; i < bcount; i++){
             Bone b;
             std::string bonename;
@@ -342,22 +357,25 @@ void Model::LoadFromDisk(){
             b.name = UID(bonename);
             armature.push_back(b);
         }
+        
+        std::cout << "f6" << std::endl;
+        
         for(uint32_t i = 0; i < gcount; i++){
             std::string g;
             file >> g;
             data->groups.push_back(g);
         }
         file.close();
+        std::cout << "f7" << std::endl;
 
-
-        data->indices.reserve(tcount);
+        //data->indices.reserve(tcount);
 
         for (size_t i = 0; i < 6; i++) {
             if (vertex_buckets[i].indices.size() > 0) {
                 ElementRange range;
                 range.material_type = (Material::Type)i;
                 range.material_count = materials.size();
-                for (uint32_t k = 0; k < 16; k++) range.materials[k] = k;
+                for (uint32_t k = 0; k < 15; k++) range.materials[k] = k;
                 range.element_length = vertex_buckets[i].indices.size();
                 range.element_offset = data->indices.size();
                 
@@ -365,6 +383,8 @@ void Model::LoadFromDisk(){
                 data->indices.insert(data->indices.end(), vertex_buckets[i].indices.begin(), vertex_buckets[i].indices.end());
             }
         }
+
+std::cout << "f" << std::endl;
 
         // push references into material
         status = LOADED;
