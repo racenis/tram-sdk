@@ -1,6 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
+#include <config.h>
+
 #include <framework/core.h>
 #include <framework/event.h>
 #include <framework/ui.h>
@@ -13,6 +15,8 @@
 #include <cstring>
 
 #ifdef __EMSCRIPTEN__
+    #include <emscripten.h>
+    #include <emscripten/html5.h>
     #include <GL/gl.h>
     #include <GLFW/glfw3.h>
 #else
@@ -64,9 +68,47 @@ namespace tram::UI {
         {KEY_E, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_ACTIVATE}},
 
         {KEY_F5, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
+        {KEY_F6, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
         {KEY_F9, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ INPUT_STATE = (INPUT_STATE == STATE_DEFAULT) ? STATE_FLYING : STATE_DEFAULT; }}},
         {KEY_BACKSPACE, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ CharacterBackspaceCallback(); }}}
     };
+    
+    void APIENTRY RenderErrorCallback (uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void*) {
+        // apparently these are spammy, or something
+        //if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
+
+        const char* source_str =    "UNKNOWN";
+        const char* type_str =      "UNKNOWN";
+        const char* severity_str =  "UNKNOWN";
+
+
+        switch (source) {
+            case GL_DEBUG_SOURCE_API_ARB:               source_str = "API";                 break;
+            case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:     source_str = "WINDOW_SYSTEM";       break;
+            case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:   source_str = "SHADER_COMPILER";     break;
+            case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:       source_str = "THIRD_PARTY";         break;
+            case GL_DEBUG_SOURCE_APPLICATION_ARB:       source_str = "APPLICATION";         break;
+            case GL_DEBUG_SOURCE_OTHER_ARB:             source_str = "OTHER";               break;
+        }
+
+        switch (type) {
+            case GL_DEBUG_TYPE_ERROR_ARB:               type_str = "ERROR";                 break;
+            case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: type_str = "DEPRECATED_BEHAVIOR";   break;
+            case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:  type_str = "UNDEFINED_BEHAVIOR";    break; 
+            case GL_DEBUG_TYPE_PORTABILITY_ARB:         type_str = "PORTABILITY";           break;
+            case GL_DEBUG_TYPE_PERFORMANCE_ARB:         type_str = "PERFORMANCE";           break;
+            case GL_DEBUG_TYPE_OTHER_ARB:               type_str = "OTHER";                 break;
+        }
+
+        switch (severity) {
+            case GL_DEBUG_SEVERITY_HIGH_ARB:            severity_str = "HIGH";              break;
+            case GL_DEBUG_SEVERITY_MEDIUM_ARB:          severity_str = "MEDIUM";            break;
+            case GL_DEBUG_SEVERITY_LOW_ARB:             severity_str = "LOW";               break;
+        }
+
+        std::cout << "RENDER ERROR: " << source_str << " " << type_str << " " << severity_str << " " << id << std::endl;
+        std::cout << message << std::endl;
+    }
 
     void BindKeyboardKey (KeyboardKey key, KeyBinding binding) {
         KeyActionBindings[key] = binding;
@@ -82,27 +124,27 @@ namespace tram::UI {
             std::cout << "GLFW error code: " << code << " message: " << message << std::endl;
         });
         
-#ifdef __EMSCRIPTEN__
-        // this is for opengl es 3.0
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-#else
-        // this is for opengl 4.0
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-#endif
+        
+        if (CURRENT_PLATFORM == PLATFORM_WEB) {
+            // this is for opengl es 3.0
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+        } else {
+            // this is for opengl 4.0
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+            
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); 
+        }
 
         glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
-
+        
         // make a window & context
         WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.4-alfa", nullptr, nullptr);
         if (WINDOW == nullptr){
-            //const char* description;
-            //int code = glfwGetError(&description);
-            //std::cout << "GLFW window didn't open" << description << std::endl;
             std::cout << "GLFW window didn't open!" << std::endl;
             glfwTerminate();
             abort();
@@ -111,19 +153,25 @@ namespace tram::UI {
         // bind context to this thread
         glfwMakeContextCurrent(WINDOW);
         
-#ifndef __EMSCRIPTEN__
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-        //if (!gladLoadGLES2Loader((GLADloadproc)glfwGetProcAddress)){
-            std::cout << "OpenGL context didn't open" << std::endl;
-            abort();
+        // random setting that we don't need on web platform
+        if (CURRENT_PLATFORM != PLATFORM_WEB) {
+            if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+                std::cout << "OpenGL context didn't open" << std::endl;
+                abort();
+            }
+
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB); 
+            glDebugMessageCallbackARB(RenderErrorCallback, nullptr);
+            glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+
+            glfwSwapInterval(1);
         }
-        
-        glfwSwapInterval(1);
-#endif
+
+        // maybe move these to render::init()
         glViewport(0, 0, 800, 600);
-
-
         
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
 
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
             screen_width = width;
@@ -137,13 +185,9 @@ namespace tram::UI {
         glfwSetMouseButtonCallback(WINDOW, MouseKeyCallback);
         glfwSetScrollCallback(WINDOW, ScrollCallback);
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-
         glfwSetWindowSizeLimits(WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
         glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 
         cursors[CURSOR_DEFAULT] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
         cursors[CURSOR_TEXT] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
@@ -186,13 +230,7 @@ namespace tram::UI {
             SetCameraRotation(quat(vec3(-glm::radians(CAMERA_PITCH), -glm::radians(CAMERA_YAW), 0.0f)));
         }
 
-        
-        // update camera rotation
-        // TODO: move this into somewhere else
-        if (INPUT_STATE != STATE_MENU_OPEN) {
-
-        }
-
+        // TODO: wrap input state changing code, so that this is not needed
         static InputState input_state_last = STATE_DEFAULT;
         if (input_state_last != STATE_MENU_OPEN && INPUT_STATE == STATE_MENU_OPEN) {
             SetCursor(CURSOR_DEFAULT);
@@ -273,6 +311,15 @@ namespace tram::UI {
         
         glfwSwapBuffers(WINDOW);
         glfwPollEvents();
+    }
+    
+    void SetWebMainLoop(void(*loop_function)(void)) {
+#ifdef TRAM_SDK_PLATFORM_WEB
+        emscripten_set_main_loop(loop_function, 0 , 0);
+#else
+        std::cout << "SetWebMainLoop() only works with web platform, aborting..." << std::endl;
+        abort();
+#endif
     }
     
     double GetTime() {

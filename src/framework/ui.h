@@ -208,6 +208,8 @@ namespace tram::UI {
     void SetCursor(CursorType cursor);
     void SetTextInput(char* text, uint32_t len);
     
+    void SetWebMainLoop(void(*loop_function)(void));
+    
     double GetTime();
     
     void BindKeyboardKey (KeyboardKey key, KeyBinding binding);

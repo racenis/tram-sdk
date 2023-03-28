@@ -7,10 +7,6 @@
 
 #ifdef NEKADEEE
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#include <emscripten/html5.h>
-#endif
 
 
 #include <framework/core.h>
@@ -435,7 +431,7 @@ int main() {
     //auto crate_ent = Entity::Find(UID("estijs"));
     
 #ifdef __EMSCRIPTEN__
-emscripten_set_main_loop(mainloop, 0 , 0);
+    UI::SetWebMainLoop(mainloop);
 #else
     while(!EXIT){
         mainloop();

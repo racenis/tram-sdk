@@ -133,7 +133,11 @@ namespace tram::Render::OpenGL {
     }
 
     void BindUniformBlock (const char* name, uint32_t binding) {
-        for (auto& sh : compiled_shaders) glUniformBlockBinding(std::get<2>(sh), glGetUniformBlockIndex(std::get<2>(sh), name), binding);
+        for (auto& sh : compiled_shaders) {
+            auto block_index = glGetUniformBlockIndex(std::get<2>(sh), name);
+            if (block_index == GL_INVALID_INDEX) continue;
+            glUniformBlockBinding(std::get<2>(sh), block_index, binding);
+        }
     }
     
     uint32_t FindShader(Model::VertexFormat format, Material::Type type){

@@ -3,6 +3,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="src/config.h"/>
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
       <VirtualDirectory Name="camera">

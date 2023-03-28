@@ -26,8 +26,9 @@ void Player::Load(){
     physicscomponent->SetKinematic(true);
     
     triggercomponent = PoolProxy<TriggerComponent>::New();
-    triggercomponent->SetCollisionGroup(Physics::COLL_WORLDOBJ);
-    triggercomponent->SetCollisionMask(Physics::COLL_WORLDOBJ);
+    //triggercomponent->SetCollisionGroup(Physics::COLL_WORLDOBJ);
+    //triggercomponent->SetCollisionMask(Physics::COLL_WORLDOBJ);
+    triggercomponent->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     triggercomponent->SetShape(Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f));
     triggercomponent->SetLocation(location);
     
