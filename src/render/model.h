@@ -38,7 +38,7 @@ namespace tram::Render{
         
     protected:
         std::vector<Bone> armature;
-        ModelData* mData = nullptr;
+        ModelData* model_data = nullptr;
         size_t approx_vram_usage = 0;
     public:
         Model (name_t mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}

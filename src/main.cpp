@@ -97,7 +97,7 @@ void mainloop() {
     if (tick == 300) {
         //auto aaa = Entity::FindByName(UID("estijs"));
         //delete aaa;
-        monguser_armature->StopAnimation("mongus-run");
+        //monguser_armature->StopAnimation("mongus-run");
     }
     
     if (UI::PollKeyboardKey(UI::KEY_Y)) {

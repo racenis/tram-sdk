@@ -73,18 +73,18 @@ namespace tram::Render {
         {VertexAttribute::COLOR_VECTOR,          VertexAttribute::FLOAT32, 3, sizeof(LineVertex), offsetof(LineVertex, color)}
     };
 
-    struct ModelIndex {
-        ivec3 tri;          //< Triangle vertex indices.
+    struct Triangle {
+        ivec3 indices;          //< Triangle vertex indices.
     };
     
     struct StaticModelData : public ModelData {
         std::vector<StaticModelVertex> vertices;
-        std::vector<ModelIndex> indices;
+        std::vector<Triangle> indices;
     };
 
     struct DynamicModelData : public ModelData {
         std::vector<DynamicModelVertex> vertices;
-        std::vector<ModelIndex> indices;
+        std::vector<Triangle> indices;
         std::vector<UID> groups;
     };
     

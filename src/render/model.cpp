@@ -3,6 +3,7 @@
 
 #include <framework/core.h>
 #include <framework/stats.h>
+#include <framework/file.h>
 
 #include <render/model.h>
 #include <render/renderer.h>
@@ -44,7 +45,7 @@ void Model::LoadFromMemory(){
     assert(status == LOADED);
     
     if (vertex_format == Model::STATIC_VERTEX){
-        StaticModelData* data = (StaticModelData*)mData;
+        StaticModelData* data = (StaticModelData*) model_data;
 
         CreateIndexedVertexArray(
             VERTEX_DEFINITION<StaticModelVertex>,
@@ -53,23 +54,22 @@ void Model::LoadFromMemory(){
             vertex_array_handle, 
             data->vertices.size() * sizeof(StaticModelVertex),
             &data->vertices[0],
-            data->indices.size() * sizeof(ModelIndex),
+            data->indices.size() * sizeof(Triangle),
             &data->indices[0]
         );
         
-        size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(StaticModelVertex));
+        size_t approx_memory = (data->indices.size() * sizeof(Triangle)) + (data->vertices.size() * sizeof(StaticModelVertex));
         approx_vram_usage += approx_memory;
-        //RESOURCE_VRAM_USAGE += approx_memory;
         Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
 
-        delete mData;
-        mData = nullptr;
+        delete model_data;
+        model_data = nullptr;
 
         status = READY;
 
         return;
     } else if (vertex_format == Model::DYNAMIC_VERTEX){
-        DynamicModelData* data = (DynamicModelData*)mData;
+        DynamicModelData* data = (DynamicModelData*) model_data;
 
         CreateIndexedVertexArray(
             VERTEX_DEFINITION<DynamicModelVertex>,
@@ -78,17 +78,17 @@ void Model::LoadFromMemory(){
             vertex_array_handle, 
             data->vertices.size() * sizeof(DynamicModelVertex),
             &data->vertices[0],
-            data->indices.size() * sizeof(ModelIndex),
+            data->indices.size() * sizeof(Triangle),
             &data->indices[0]
         );
 
-        size_t approx_memory = (data->indices.size() * sizeof(ModelIndex)) + (data->vertices.size() * sizeof(DynamicModelVertex));
+        size_t approx_memory = (data->indices.size() * sizeof(Triangle)) + (data->vertices.size() * sizeof(DynamicModelVertex));
         approx_vram_usage += approx_memory;
         //RESOURCE_VRAM_USAGE += approx_memory;
         Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
 
-        delete mData;
-        mData = nullptr;
+        delete model_data;
+        model_data = nullptr;
 
         status = READY;
 
@@ -118,114 +118,145 @@ void Model::LoadFromDisk(){
     std::ifstream file;
     char path[200];
 
-    struct VertexBucket {
-        std::vector<ModelIndex> indices;
+    struct TriangleBucket {
+        Material::Type material_type;       // material type for this bucket
+        std::vector<uint32_t> materials;    // which materials have already been added to the bucket
+        std::vector<Triangle> triangles;    // triangle indices in the bucket
     };
     
-    // index into this vector = material::type enum
-    // increase VertexBucket() count if material::type count gets increased
-    std::vector<VertexBucket> vertex_buckets {VertexBucket(), VertexBucket(), VertexBucket(), VertexBucket(), VertexBucket(), VertexBucket()};
+    // TODO: make this autoexpand, not predefined
+    std::vector<TriangleBucket> triangle_buckets {TriangleBucket(), TriangleBucket(), TriangleBucket(), TriangleBucket(), TriangleBucket(), TriangleBucket()};
     
-    
+
+    // trying to load model as a static model, text mode
     strcpy(path, "data/models/");
     strcat(path, name);
     strcat(path, ".stmdl");
 
-
-    file.open(path);
-    if (file.is_open()) {
+    if (File file (path, MODE_READ); file.is_open()) {
         vertex_format = STATIC_VERTEX;
         StaticModelData* data = new StaticModelData;
-        mData = data;
+        model_data = data;
 
         std::cout << "Loading: " << path << std::endl;
 
         assert(data);
 
-        uint32_t vcount = 0;    //number of vertices
-        uint32_t tcount = 0;    //number of triangles
-        uint32_t mcount = 0;    //number of materials
-        file >> vcount;
-        file >> tcount;
-        file >> mcount;
-        
-        
+        uint32_t vcount = file.read_uint32();   // number of vertices
+        uint32_t tcount = file.read_uint32();   // number of triangles
+        uint32_t mcount = file.read_uint32();   // number of materials
 
-        if(mcount > 15){
-            std::cout << "Too many materials in model: " << name << std::endl;
-            mcount = 15;
-        }
-
-        for(uint32_t i = 0; i < mcount; i++){
-            Material* mat;
-            std::string matName;
-            file >> matName;
-
-            mat = Material::Find(UID(matName));
-
-            materials.push_back(mat);
+        for (uint32_t i = 0; i < mcount; i++) {
+            materials.push_back(Material::Find(file.read_name()));
         }
         
-        for(uint32_t i = 0; i < vcount; i++){
-            StaticModelVertex v;
-            file >> v.co.x;
-            file >> v.co.y;
-            file >> v.co.z;
-            file >> v.normal.x;
-            file >> v.normal.y;
-            file >> v.normal.z;
-            file >> v.tex.x;
-            file >> v.tex.y;
-            file >> v.lighttex.x;
-            file >> v.lighttex.y;
-            v.texture = 0;
-            data->vertices.push_back(v);
-        }
-        
-        for(uint32_t i = 0; i < tcount; i++){
-            ModelIndex t;
-            Material::Type matType;
-            uint32_t matIndex;
-            file >> t.tri.x;
-            file >> t.tri.y;
-            file >> t.tri.z;
-            file >> matIndex;
-
-            matType = materials[matIndex]->GetType();
-
-            if(matIndex > 15 - 1) matIndex = 0;
-            vertex_buckets[matType].indices.push_back(t);
-
-            data->vertices[t.tri.x].texture = matIndex;
-            data->vertices[t.tri.y].texture = matIndex;
-            data->vertices[t.tri.z].texture = matIndex;
-        }
-        
-        file.close();
-
-        //data->indices.reserve(tcount);
-
-        for (size_t i = 0; i < 6; i++) {
-            if (vertex_buckets[i].indices.size() > 0) {
-                ElementRange range;
-                range.material_type = (Material::Type)i;
-                range.material_count = materials.size();
-                for (uint32_t k = 0; k < 15; k++) range.materials[k] = k;
-                range.element_length = vertex_buckets[i].indices.size();
-                range.element_offset = data->indices.size();
+        for (uint32_t i = 0; i < vcount; i++) {
+            data->vertices.push_back(StaticModelVertex {
+                .co = {
+                    file.read_float32(),
+                    file.read_float32(),
+                    file.read_float32()
+                },
                 
-                element_ranges.push_back(range);
-                data->indices.insert(data->indices.end(), vertex_buckets[i].indices.begin(), vertex_buckets[i].indices.end());
+                .normal = {
+                    file.read_float32(),
+                    file.read_float32(),
+                    file.read_float32()
+                },
+                
+                .tex = {
+                    file.read_float32(),
+                    file.read_float32()
+                },
+                
+                .lighttex = {
+                    file.read_float32(),
+                    file.read_float32()
+                },
+    
+                .texture = 0 // will be filled in later
+            });
+        }
+        
+        for (uint32_t i = 0; i < tcount; i++) {
+            Triangle index {
+                .indices = {
+                    file.read_uint32(),
+                    file.read_uint32(),
+                    file.read_uint32()
+                }
+            };
+            
+            uint32_t material_index = file.read_uint32();
+            Material::Type material_type = materials[material_index]->GetType();
+            
+            size_t bucket = 0;
+            
+            // try to find the bucket that contains this triangle's material
+            for (; bucket < triangle_buckets.size(); bucket++) {
+                if (triangle_buckets[bucket].material_type != material_type) continue;
+                
+                // check if material is in the bucket
+                for (size_t i = 0; i < triangle_buckets[bucket].materials.size(); i++) {
+                    if (triangle_buckets[bucket].materials[i] == material_index) {
+                        goto found_bucket;
+                    }
+                }
+                
+                // otherwise try to add it to the bucket
+                if (triangle_buckets[bucket].materials.size() < 15) {
+                    triangle_buckets[bucket].materials.push_back(material_index);
+                    goto found_bucket;
+                }
+            }            
+            
+            found_bucket:
+
+            if (bucket < triangle_buckets.size()) {
+                triangle_buckets[bucket].triangles.push_back(index);
+            } else {
+                assert(triangle_buckets.size() < 3);
+                
+                triangle_buckets.push_back(TriangleBucket {
+                    .material_type = material_type,
+                    .materials = {material_index},
+                    .triangles = {index}
+                });
             }
+
+            data->vertices[index.indices.x].texture = material_index;
+            data->vertices[index.indices.y].texture = material_index;
+            data->vertices[index.indices.z].texture = material_index;
         }
 
-        Bone rootbone;
-        rootbone.parentIndex = -1;
-        rootbone.name = UID("Root");
+        for (auto& bucket : triangle_buckets) {
+            ElementRange range {
+                .element_offset = (uint32_t) data->indices.size(),
+                .element_length = (uint32_t) bucket.triangles.size(),
+                .material_count = (uint32_t) bucket.materials.size(),
+                .material_type = bucket.material_type,
+            };
+            
+            for (size_t i = 0; i < bucket.materials.size(); i++) {
+                range.materials[i] = bucket.materials[i];
+            }
+            
+            element_ranges.push_back(range);
+            data->indices.insert(data->indices.end(), bucket.triangles.begin(), bucket.triangles.end());
+        }
+
+        Bone rootbone {
+            .name = UID("Root"),
+            .parentIndex = (uint32_t) -1,
+            .head = {0.0f, 0.0f, 0.0f},
+            .tail = {0.0f, 1.0f, 0.0f},
+            .roll = 0.0f
+        };
+
         armature.push_back(rootbone);
 
         status = LOADED;
-        //std::cout << "MODEL just got loaded with status" << status << std::endl;
+
         for (size_t i = 0; i < materials.size(); i++){
             materials[i]->AddRef();
             Async::ForceLoadResource(materials[i]);
@@ -247,7 +278,7 @@ void Model::LoadFromDisk(){
     if (file.is_open()) {
         vertex_format = DYNAMIC_VERTEX;
         DynamicModelData* data = new DynamicModelData;
-        mData = data;
+        model_data = data;
 
         std::cout << "Loading: " << path << std::endl;
 
@@ -320,22 +351,22 @@ void Model::LoadFromDisk(){
         std::cout << "f4" << std::endl;
         
         for(uint32_t i = 0; i < tcount; i++){
-            ModelIndex t;
+            Triangle t;
             uint32_t matIndex;
             Material::Type matType;
-            file >> t.tri.x;
-            file >> t.tri.y;
-            file >> t.tri.z;
+            file >> t.indices.x;
+            file >> t.indices.y;
+            file >> t.indices.z;
             file >> matIndex;
 
             matType = materials[matIndex]->GetType();
 
             if(matIndex > 15 - 1) matIndex = 0;
-            vertex_buckets[matType].indices.push_back(t);
+            triangle_buckets[matType].triangles.push_back(t);
 
-            data->vertices[t.tri.x].texture = matIndex;
-            data->vertices[t.tri.y].texture = matIndex;
-            data->vertices[t.tri.z].texture = matIndex;
+            data->vertices[t.indices.x].texture = matIndex;
+            data->vertices[t.indices.y].texture = matIndex;
+            data->vertices[t.indices.z].texture = matIndex;
         }
         
         std::cout << "f5" << std::endl;
@@ -371,16 +402,16 @@ void Model::LoadFromDisk(){
         //data->indices.reserve(tcount);
 
         for (size_t i = 0; i < 6; i++) {
-            if (vertex_buckets[i].indices.size() > 0) {
+            if (triangle_buckets[i].triangles.size() > 0) {
                 ElementRange range;
                 range.material_type = (Material::Type)i;
                 range.material_count = materials.size();
                 for (uint32_t k = 0; k < 15; k++) range.materials[k] = k;
-                range.element_length = vertex_buckets[i].indices.size();
+                range.element_length = triangle_buckets[i].triangles.size();
                 range.element_offset = data->indices.size();
                 
                 element_ranges.push_back(range);
-                data->indices.insert(data->indices.end(), vertex_buckets[i].indices.begin(), vertex_buckets[i].indices.end());
+                data->indices.insert(data->indices.end(), triangle_buckets[i].triangles.begin(), triangle_buckets[i].triangles.end());
             }
         }
 
