@@ -114,6 +114,8 @@
       <File Name="src/physics/collisionmodel.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
+      <File Name="src/render/error.cpp"/>
+      <File Name="src/render/error.h"/>
       <File Name="src/render/vertices.h"/>
       <File Name="src/render/sprite.h"/>
       <File Name="src/render/material.h"/>

@@ -21,6 +21,7 @@
 
 #include <render/material.h>
 #include <render/renderer.h>
+#include <render/error.h>
 
 #include <templates/hashmap.h>
 
@@ -123,6 +124,22 @@ Material* Material::Find(name_t name){
     return material;
 }
 
+/// Makes Material a pattern.
+/// This method does the same thing as LoadFromDisk(), but instead of loading
+/// the texture from disk, it will generate a 64x64 pixel checkerboard
+/// pattern, like the one used for errored materials.
+void Material::MakePattern(vec3 color1, vec3 color2) {
+    assert(status == UNLOADED);
+    
+    width = 64;
+    height = 64;
+    channels = 3;
+
+    textureData = MakeNewErrorTexture (color1, color2);
+
+    status = LOADED;
+}
+
 void Material::LoadFromDisk(){
     assert(status == UNLOADED);
 
@@ -168,9 +185,8 @@ void Material::LoadFromDisk(){
     } else {
         std::cout << "Texture " << name << " (" << path << ") couldn't be loaded!" << std::endl;
 
-        // copy the error texture
-        texture = ERROR_MATERIAL->texture;
-        status = READY;
+        MakePattern ({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
+        
         load_fail = true;
     }
 

@@ -9,6 +9,7 @@
 #include <render/model.h>
 #include <render/renderer.h>
 #include <render/vertices.h>
+#include <render/error.h>
 
 #include <framework/async.h>
 
@@ -466,18 +467,41 @@ void Model::LoadFromDisk(){
     //    eboMat[i] = error_model->eboMat[i];
     //}
     
-    vertex_array_handle = ERROR_MODEL->vertex_array_handle;
-    vertex_buffer_handle = ERROR_MODEL->vertex_buffer_handle;
-    element_buffer_handle = ERROR_MODEL->element_buffer_handle;
+    //vertex_array_handle = ERROR_MODEL->vertex_array_handle;
+    //vertex_buffer_handle = ERROR_MODEL->vertex_buffer_handle;
+    //element_buffer_handle = ERROR_MODEL->element_buffer_handle;
     
-    element_ranges = ERROR_MODEL->element_ranges;
+    //element_ranges = ERROR_MODEL->element_ranges;
 
-    materials = ERROR_MODEL->materials;
-    armature = ERROR_MODEL->armature;
+    //materials = ERROR_MODEL->materials;
+    //armature = ERROR_MODEL->armature;
 
-    status = READY;
+    //status = READY;
+    
+    vertex_format = STATIC_VERTEX;
+
+    auto data = MakeNewErrorModel();
+    model_data = data;
+
+    materials.push_back(Material::Find("defaulttexture"));
+
+    element_ranges.push_back(ElementRange {
+        .element_offset = 0,
+        .element_length = (uint32_t) data->indices.size(),
+        .material_count = 1,
+        .material_type = Material::TEXTURE,
+        .materials = {0}
+    });
+    
+    armature.push_back(Bone {
+        .name = UID("Root"),
+        .parentIndex = (uint32_t) -1,
+        .head = {0.0f, 0.0f, 0.0f},
+        .tail = {0.0f, 1.0f, 0.0f},
+        .roll = 0.0f
+    });
+
+    status = LOADED;
+    
     load_fail = true;
-    //AddToModelReminderQueue(this);
-
-    return;
 }

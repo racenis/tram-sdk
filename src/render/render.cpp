@@ -58,8 +58,15 @@ namespace tram::Render {
         SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);
         SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
         
-        Material::LoadErrorMaterial();
-        Model::LoadErrorModel();
+        // generating fullbright lightmap
+        Material* fullbright = Material::Make("fullbright", Material::TEXTURE_LIGHTMAP);
+        fullbright->MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
+        fullbright->LoadFromMemory();
+        
+        // generating default texture
+        Material* defaulttexture = Material::Make("defaulttexture", Material::TEXTURE);
+        defaulttexture->MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
+        defaulttexture->LoadFromMemory();
         
         System::SetInitialized(System::SYSTEM_RENDER, true);
     }

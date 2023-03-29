@@ -46,6 +46,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Keybinding menu
 - Graphics menu
 
+- Make isloaded in Entity to is_loaded
+- Yeet material types and vertex types from material and vertex classes resplectivley
+- Make single loading function load only single resource
+- Rewrite file parser for the third time
 - Add some sort of a memory pool for Messages and Events
 - Change UpdateLocation/Rotation to SetLocation/Rotation in RenderComponent
 - Make UID == operator to work with const char*
@@ -54,9 +58,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Allow enitties without IDs
 	- In that case the IDs would be generated automatically
 - Make Entity FindByName and FindByID overloads of Find
-- Make maketool statically link runtime
-- Make Raycast that returns multiple points
-- Add constraints to PhysicsComponents
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
 	- Default/error models/materials should be baked into source code
@@ -71,6 +72,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make all CAPITAL globals be not capital
 
 #### Should do later
+- Make Raycast that returns multiple points
+- Add constraints to PhysicsComponents
 - Models with different sets of materials
 	- While doing this it would also be good to have models with more than 15 materials
 - Flat shaded color material
