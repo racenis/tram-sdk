@@ -15,12 +15,12 @@ namespace tram {
         MODE_WRITE
     };
     
-    class DiskFileReader;
-    class DiskFileWriter;
+    class FileReader;
+    class FileWriter;
     
     class File {
     public:
-        File (char const* name, FileAccessMode mode);
+        File (char const* path, FileAccessMode mode);
         ~File();
         
         bool is_open();
@@ -58,11 +58,14 @@ namespace tram {
         name_t read_name();
         std::string_view read_string();
         
-        std::string name;
+        std::string path;
         FileAccessMode mode;
         
-        DiskFileReader* disk_reader = nullptr;
-        DiskFileWriter* disk_writer = nullptr;
+        const char* cursor = nullptr;
+        const char* cursor_end = nullptr;
+        
+        FileReader* disk_reader = nullptr;
+        FileWriter* disk_writer = nullptr;
     };
     
 }

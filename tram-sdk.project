@@ -49,6 +49,7 @@
       <File Name="src/components/armaturecomponent.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/file.cpp"/>
       <File Name="src/framework/type.h"/>
       <File Name="src/framework/language.cpp"/>
       <File Name="src/framework/language.h"/>
@@ -97,6 +98,8 @@
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
+      <File Name="src/platform/file.h"/>
+      <File Name="src/platform/platform.h"/>
       <File Name="src/platform/file.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="physics">
