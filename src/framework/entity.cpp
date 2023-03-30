@@ -18,12 +18,7 @@ namespace tram {
     //std::unordered_map<uint64_t, Entity*> ENTITY_NAME_LIST;
     Hashmap<Entity*> ENTITY_NAME_LIST ("Entity name hashmap", 500);
     std::unordered_map<std::string, Entity* (*)(std::string_view& params)> ENTITY_CONSTRUCTORS; //  !!!!
-    
-    Entity::Entity() {
-        this->id = GenerateID();
-        Register();
-    }
-    
+
     Entity::Entity(name_t name) {
         this->id = GenerateID();
         this->name = name;
@@ -31,6 +26,7 @@ namespace tram {
     }
     
     Entity::Entity(std::string_view& str) {
+        id = SerializedEntityData::Field<uint64_t>().FromString(str);
         name = SerializedEntityData::Field<name_t>().FromString(str);
 
         location.x = SerializedEntityData::Field<float>().FromString(str);
@@ -43,9 +39,11 @@ namespace tram {
 
         rotation = glm::quat(glm::vec3(rx, ry, rz));
 
-        action = SerializedEntityData::Field<name_t>().FromString(str);
+        if (!id) {
+            is_serializable = false;
+            id = GenerateID();
+        }
         
-        if (!id) id = GenerateID();
         Register();
     }
     

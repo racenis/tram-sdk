@@ -152,7 +152,7 @@ void WorldCell::LoadFromDisk(){
 
     file >> line;
     
-    if (line != "CELLv1") {
+    if (line != "CELLv2") {
         std::cout << "Cell file format error: " << path << std::endl;
         return;
     }

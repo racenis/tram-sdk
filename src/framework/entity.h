@@ -20,7 +20,6 @@ namespace tram {
 
         virtual void Serialize() = 0;
 
-        Entity();
         Entity(name_t name);
         Entity(std::string_view& str);
         
@@ -78,7 +77,6 @@ namespace tram {
     protected:
         uint64_t id = 0;
         name_t name;
-        name_t action;
 
         bool is_persistent = true;
         bool is_loaded = false;
@@ -86,6 +84,7 @@ namespace tram {
         bool in_interior = false;
         
         bool changed = false;
+        bool is_serializable = true;
         
         WorldCell* cell = nullptr;
         

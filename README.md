@@ -53,10 +53,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - ~~Add some sort of a memory pool for Messages and Events~~
 - ~~Change UpdateLocation/Rotation to SetLocation/Rotation in RenderComponent~~
 - ~~Make UID == operator to work with const char*~~
-- Add IDs to entity definitions in worldcell files
-- Allow entities without names
-- Allow enitties without IDs
-	- In that case the IDs would be generated automatically
+- ~~Add IDs to entity definitions in worldcell files~~
+- ~~Allow entities without names~~
+- ~~Allow enitties without IDs~~
+	- ~~In that case the IDs would be generated automatically~~
 - ~~Make Entity FindByName and FindByID overloads of Find~~
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
