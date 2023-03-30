@@ -47,7 +47,6 @@ namespace tram::Render{
         size_t GetArmatureSize() { return armature.size(); }
         Bone* GetArmature() { return &armature.front(); }
         static Model* Find(name_t name);
-        static void LoadErrorModel();
     };
 }
 

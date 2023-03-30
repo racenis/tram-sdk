@@ -47,6 +47,15 @@ namespace tram::Async {
     void ResourceLoader() {
         while (!loaders_should_stop) {
             ResourceLoader1stStage();
+            
+            resourceRequestQueue.Lock();
+            auto len = resourceRequestQueue.GetLength();
+            resourceRequestQueue.Unlock();
+            
+            if (len > 0) {
+                continue;
+            }
+            
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     }
@@ -59,7 +68,7 @@ namespace tram::Async {
         ResourceRequest* req = resourceRequestQueue.GetFirstPtr();
         resourceRequestQueue.Unlock();
 
-        while (req) {
+        if (req) {
             if(req->requested_res->GetStatus() == Resource::UNLOADED){
                 req->requested_res->LoadFromDisk();
             }
@@ -82,7 +91,6 @@ namespace tram::Async {
 
             resourceRequestQueue.Lock();
             resourceRequestQueue.Remove();
-            req = resourceRequestQueue.GetFirstPtr();
             resourceRequestQueue.Unlock();
         }
     }

@@ -13,7 +13,7 @@ namespace tram {
     
     void Lamp::UpdateParameters() {
         if (!is_loaded) return;
-        light->UpdateLocation(location);
+        light->SetLocation(location);
     }
     
     void Lamp::SetParameters() {

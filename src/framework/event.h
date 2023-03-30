@@ -32,15 +32,7 @@ namespace tram {
         static listener_t AddListener(event_t type, Entity* entity);
         static listener_t AddListener(event_t type, void (*handler)(Event& event));
         static void RemoveListener(listener_t listener_id);
-
-        /// Experimental template function.
-        /*
-        template<event_t event_type>
-        static decltype(EventDataType<event_type>().type)& RetrieveData(Event& event) {
-            assert(event_type == event.type);
-            return *((decltype(EventDataType<event_type>().type)*)event.data);
-        }
-        */
+        static void* AllocateData (size_t ammount);
 
         event_t type;
         event_t subtype;

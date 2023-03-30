@@ -17,15 +17,15 @@ namespace tram {
 
     void StaticWorldObject::UpdateParameters() {
         if(is_loaded){
-            rendercomponent->UpdateLocation(location);
-            rendercomponent->UpdateRotation(rotation);
+            rendercomponent->SetLocation(location);
+            rendercomponent->SetRotation(rotation);
         }
     }
     
     void StaticWorldObject::SetParameters() {
         if(is_loaded){
-            rendercomponent->UpdateLocation(location);
-            rendercomponent->UpdateRotation(rotation);
+            rendercomponent->SetLocation(location);
+            rendercomponent->SetRotation(rotation);
             physicscomponent->SetLocation(location);
             physicscomponent->SetRotation(rotation);
         }

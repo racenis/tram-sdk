@@ -72,11 +72,11 @@ namespace tram {
         }
     }
     
-    void RenderComponent::UpdateLocation(glm::vec3 nlocation){
+    void RenderComponent::SetLocation(glm::vec3 nlocation){
         location = nlocation;
         
         if (is_ready) {
-            SetLocation(draw_list_entry, location);
+            Render::SetLocation(draw_list_entry, location);
             
             uint32_t lights[4];
             lightTree.FindNearest(lights, location.x, location.y, location.z);
@@ -84,11 +84,11 @@ namespace tram {
         }
     }
 
-    void RenderComponent::UpdateRotation(glm::quat nrotation){
+    void RenderComponent::SetRotation(glm::quat nrotation){
         rotation = nrotation;
         
         if (is_ready) {
-            SetRotation(draw_list_entry, rotation);
+            Render::SetRotation(draw_list_entry, rotation);
         }
     }
 
@@ -107,8 +107,8 @@ namespace tram {
         Render::SetFlags(draw_list_entry, render_flags);
         //if (isInterior) SetFlags(draw_list_entry, GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
         
-        SetLocation(draw_list_entry, location);
-        SetRotation(draw_list_entry, rotation);
+        Render::SetLocation(draw_list_entry, location);
+        Render::SetRotation(draw_list_entry, rotation);
         
         uint32_t lights[4];
         lightTree.FindNearest(lights, location.x, location.y, location.z);

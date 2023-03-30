@@ -46,30 +46,29 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Keybinding menu
 - Graphics menu
 
-- Make isloaded in Entity to is_loaded
-- Yeet material types and vertex types from material and vertex classes resplectivley
-- Make single loading function load only single resource
+- ~~Make isloaded in Entity to is_loaded~~
+- ~~Yeet material types and vertex types from material and vertex classes resplectivley~~
+- ~~Make single loading function load only single resource~~
 - Rewrite file parser for the third time
-- Add some sort of a memory pool for Messages and Events
-- Change UpdateLocation/Rotation to SetLocation/Rotation in RenderComponent
-- Make UID == operator to work with const char*
+- ~~Add some sort of a memory pool for Messages and Events~~
+- ~~Change UpdateLocation/Rotation to SetLocation/Rotation in RenderComponent~~
+- ~~Make UID == operator to work with const char*~~
 - Add IDs to entity definitions in worldcell files
 - Allow entities without names
 - Allow enitties without IDs
 	- In that case the IDs would be generated automatically
-- Make Entity FindByName and FindByID overloads of Find
+- ~~Make Entity FindByName and FindByID overloads of Find~~
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
-	- Default/error models/materials should be baked into source code
-		- Error model
-		- Error texture
-		- Fullbright texture
-- Move types out of material/model and into render.h
-	- Also add something to register more of them
-	- And also add something to OpenGL to be able to custom shaders
-- Make layers a bitmask
+	- ~~Default/error models/materials should be baked into source code~~
+		- ~~Error model~~
+		- ~~Error texture~~
+		- ~~Fullbright texture~~
+- ~~Move types out of material/model and into render.h~~
 - Yeet all opengl code from UI.cPP
 - Make all CAPITAL globals be not capital
+
+
 
 #### Should do later
 - Add emscripten to maketool
@@ -119,7 +118,15 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add a prefix to all header guards
 - Add a better way to register entities
 	- Could be a static method 'REGISTER' for each entity type
-- Move file.h into platform
+- ~~Move file.h into platform~~
+- Add more rendering stuff
+	- Single drawlistthingy can be in mutliple layers
+	- Layers have different cameras
+	- Cameras can be orthogrpahics
+	- Add shear test
+	- Maybe rename camera? camera is extension and in render:: there is view
+	- Allow uploading of custom shaders
+
 
 #### For very later versions
 - Vertex animation

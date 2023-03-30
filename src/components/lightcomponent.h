@@ -23,7 +23,7 @@ namespace tram {
                 lightLObj->distance = distance;
             }
         };
-        void UpdateLocation(const glm::vec3& location){
+        void SetLocation(const glm::vec3& location){
             this->location = location;
             Update();
         };

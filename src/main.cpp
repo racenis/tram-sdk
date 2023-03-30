@@ -128,12 +128,12 @@ void mainloop() {
     vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
     quat litrot;
     QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
-    binguser->UpdateLocation(litloc);
-    binguser->UpdateRotation(litrot);
-    lit->UpdateLocation(litloc);
+    binguser->SetLocation(litloc);
+    binguser->SetRotation(litrot);
+    lit->SetLocation(litloc);
     
     // this makes the mongus model bob up and down
-    monguser->UpdateLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
+    monguser->SetLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
     
     //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
     //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
@@ -361,8 +361,8 @@ int main() {
     binguser = PoolProxy<RenderComponent>::New();
     binguser->SetModel(UID("bingus"));
     binguser->Init();
-    binguser->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
-    binguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    binguser->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    binguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     std::cout << "making monguser" << std::endl;
 
@@ -371,8 +371,8 @@ int main() {
     monguser->SetModel(UID("mongus"));
     //monguser->SetPose(poseList.begin().ptr);
     monguser->Init();
-    monguser->UpdateLocation(glm::vec3(0.0f, 10.0f, 0.0f));
-    monguser->UpdateRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    monguser->SetLocation(glm::vec3(0.0f, 10.0f, 0.0f));
+    monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
    std::cout << "making light" << std::endl; 
 

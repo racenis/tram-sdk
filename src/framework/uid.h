@@ -22,6 +22,10 @@ namespace tram {
             return key == other.key;
         }
         
+        bool operator==(const char* other) const {
+            return key == UID(other).key;
+        }
+        
         explicit operator bool() { return key; }
         
         operator std::string() const;

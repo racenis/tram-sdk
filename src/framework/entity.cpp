@@ -100,7 +100,7 @@ namespace tram {
         }
     }
     
-    Entity* Entity::FindByID (uint64_t entityID){
+    Entity* Entity::Find (uint64_t entityID){
         /*std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_ID_LIST.find(entityID);
 
         if(ff == ENTITY_ID_LIST.end()){
@@ -112,7 +112,7 @@ namespace tram {
         return ENTITY_ID_LIST.Find(entityID);
     }
 
-    Entity* Entity::FindByName(name_t entityName){
+    Entity* Entity::Find(name_t entityName){
         /*std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_NAME_LIST.find(entityName.key);
 
         if(ff == ENTITY_NAME_LIST.end()){

@@ -72,9 +72,9 @@ namespace tram {
 
         static void Register (const char* name, Entity* (*constr_func)(std::string_view& params));
 
-        static Entity* FindByID (uint64_t entityID);
+        static Entity* Find (uint64_t entityID);
 
-        static Entity* FindByName (name_t entityName);
+        static Entity* Find (name_t entityName);
     protected:
         uint64_t id = 0;
         name_t name;

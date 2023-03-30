@@ -25,9 +25,9 @@ namespace tram {
 
         void Start();
 
-        void UpdateLocation(glm::vec3 nlocation);
+        void SetLocation(glm::vec3 nlocation);
 
-        void UpdateRotation(glm::quat nrotation);
+        void SetRotation(glm::quat nrotation);
 
         void SetWorldParameters (bool interior_lighting);
 

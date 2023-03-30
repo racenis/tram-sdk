@@ -31,15 +31,8 @@ using namespace tram;
 using namespace tram::Render;
 using namespace tram::Render;
 
-Material* ERROR_MATERIAL = nullptr;
 Hashmap<Material*> MATERIAL_LIST("material name list", 500);
 template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
-
-/// Loads the default error material.
-void Material::LoadErrorMaterial() {
-    ERROR_MATERIAL = Material::Make(UID("defaulttexture"), MATERIAL_TEXTURE);
-    ERROR_MATERIAL->Load();
-}
 
 /// Loads a Material definition file.
 void Material::LoadMaterialInfo(const char* filename){

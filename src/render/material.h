@@ -39,7 +39,6 @@ namespace tram::Render {
         static Material* Find (name_t name);
         static Material* Make (name_t name, materialtype_t type);
         void MakePattern (vec3 color1, vec3 color2);
-        static void LoadErrorMaterial();
         static void LoadMaterialInfo(const char* filename);
         friend class Sprite;
     };

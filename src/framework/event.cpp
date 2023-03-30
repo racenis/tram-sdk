@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <templates/queue.h>
+#include <templates/stackpool.h>
 
 #include <framework/event.h>
 #include <framework/entitycomponent.h>
@@ -27,6 +28,7 @@ namespace tram {
     
     Queue<Event> EVENT_QUEUE("event queue", 500);
     std::vector<Pool<ListenerInfo>> LISTENER_TABLE;
+    static StackPool<char> data_pool ("event data pool", 2000);
 
     /// Registers a new event type.
     event_t Event::Register() {
@@ -102,5 +104,9 @@ namespace tram {
     /// Adds an event to the event queue.
     void Event::Post (const Event &event){
         *(EVENT_QUEUE.AddNew()) = event;
+    }
+    
+    void* Event::AllocateData (size_t ammount) {
+        return data_pool.AddNew(ammount);
     }
 }

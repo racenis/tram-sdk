@@ -25,6 +25,7 @@ namespace tram {
         static void Send (const Message &message);
         static void Send (const Message &message, uint32_t when);
         static void Dispatch ();
+        static void* AllocateData (size_t ammount);
 
         message_t type;
         id_t receiver;

@@ -22,15 +22,8 @@ using namespace tram;
 using namespace tram::Render;
 using namespace tram::Render;
 
-Model* ERROR_MODEL = nullptr;
-
 Hashmap<Model*> MODEL_LIST("model name list", 500);
 template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
-
-void Model::LoadErrorModel() {
-    ERROR_MODEL = Model::Find(UID("errorstatic"));
-    ERROR_MODEL->Load();
-}
 
 Model* Model::Find(name_t name){
     Model* model = MODEL_LIST.Find(name);

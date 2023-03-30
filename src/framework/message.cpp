@@ -6,12 +6,14 @@
 
 #include <templates/queue.h>
 #include <templates/pool.h>
+#include <templates/stackpool.h>
 
 #include <queue>
 
 namespace tram {
     Queue<Message> MESSAGE_QUEUE ("message queue", 500);
     Pool<Message> MESSAGE_POOL ("message pool", 250);
+    static StackPool<char> data_pool ("message data pool", 2000);
     
     std::priority_queue <std::pair<uint32_t, Message*>, std::vector<std::pair<uint32_t, Message*>>, std::greater<std::pair<uint32_t, Message*>>> FUTURE_MESSAGES;
     
@@ -21,14 +23,14 @@ namespace tram {
         
         while (!FUTURE_MESSAGES.empty() && FUTURE_MESSAGES.top().first < now) {
             auto message = FUTURE_MESSAGES.top().second;
-            auto receiver = Entity::FindByID(message->receiver);
+            auto receiver = Entity::Find(message->receiver);
             if (receiver) receiver->MessageHandler(*message);
             
             FUTURE_MESSAGES.pop();
         }
         
         while (Message* message = MESSAGE_QUEUE.GetFirstPtr()) {
-            Entity* receiver = Entity::FindByID(message->receiver);
+            Entity* receiver = Entity::Find(message->receiver);
             if (receiver) receiver->MessageHandler(*message);
 
             MESSAGE_QUEUE.Remove();
@@ -45,5 +47,9 @@ namespace tram {
         auto abs_when = GetTick() + when;
         
         FUTURE_MESSAGES.push({abs_when, message_copy});
+    }
+    
+    void* Message::AllocateData (size_t ammount) {
+        return data_pool.AddNew(ammount);
     }
 }

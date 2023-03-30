@@ -30,8 +30,8 @@ namespace tram {
 
     void Crate::UpdateParameters() {
         if (!is_loaded) return;
-        rendercomponent->UpdateLocation(location);
-        rendercomponent->UpdateRotation(rotation);
+        rendercomponent->SetLocation(location);
+        rendercomponent->SetRotation(rotation);
         rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
     }
     
