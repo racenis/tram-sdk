@@ -46,7 +46,7 @@ Model* Model::Find(name_t name){
 void Model::LoadFromMemory(){
     assert(status == LOADED);
     
-    if (vertex_format == Model::STATIC_VERTEX){
+    if (vertex_format == VERTEX_STATIC){
         StaticModelData* data = (StaticModelData*) model_data;
 
         CreateIndexedVertexArray(
@@ -70,7 +70,7 @@ void Model::LoadFromMemory(){
         status = READY;
 
         return;
-    } else if (vertex_format == Model::DYNAMIC_VERTEX){
+    } else if (vertex_format == VERTEX_DYNAMIC){
         DynamicModelData* data = (DynamicModelData*) model_data;
 
         CreateIndexedVertexArray(
@@ -112,7 +112,7 @@ void Model::LoadFromDisk(){
     char path[200];
 
     struct TriangleBucket {
-        Material::Type material_type;       // material type for this bucket
+        materialtype_t material_type;       // material type for this bucket
         std::vector<uint32_t> materials;    // which materials have already been added to the bucket
         std::vector<Triangle> triangles;    // triangle indices in the bucket
     };
@@ -127,7 +127,7 @@ void Model::LoadFromDisk(){
     strcat(path, ".stmdl");
 
     if (File file (path, MODE_READ); file.is_open()) {
-        vertex_format = STATIC_VERTEX;
+        vertex_format = VERTEX_STATIC;
         StaticModelData* data = new StaticModelData;
         model_data = data;
 
@@ -181,7 +181,7 @@ void Model::LoadFromDisk(){
             };
             
             uint32_t material_index = file.read_uint32();
-            Material::Type material_type = materials[material_index]->GetType();
+            materialtype_t material_type = materials[material_index]->GetType();
             
             size_t bucket = 0;
             
@@ -268,7 +268,7 @@ void Model::LoadFromDisk(){
     strcat(path, ".dymdl");
 
     if (File file (path, MODE_READ); file.is_open()) {
-        vertex_format = DYNAMIC_VERTEX;
+        vertex_format = VERTEX_DYNAMIC;
         DynamicModelData* data = new DynamicModelData;
         model_data = data;
 
@@ -349,7 +349,7 @@ void Model::LoadFromDisk(){
             };
             
             uint32_t material_index = file.read_uint32();
-            Material::Type material_type = materials[material_index]->GetType();
+            materialtype_t material_type = materials[material_index]->GetType();
             
             size_t bucket = 0;
             
@@ -478,7 +478,7 @@ void Model::LoadFromDisk(){
 
     //status = READY;
     
-    vertex_format = STATIC_VERTEX;
+    vertex_format = VERTEX_STATIC;
 
     auto data = MakeNewErrorModel();
     model_data = data;
@@ -489,7 +489,7 @@ void Model::LoadFromDisk(){
         .element_offset = 0,
         .element_length = (uint32_t) data->indices.size(),
         .material_count = 1,
-        .material_type = Material::TEXTURE,
+        .material_type = MATERIAL_TEXTURE,
         .materials = {0}
     });
     

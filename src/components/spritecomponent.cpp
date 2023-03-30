@@ -26,7 +26,7 @@ namespace tram {
         SetDrawListElements(draw_list_entry, 0, 6);
         SetFlags(draw_list_entry, FLAG_RENDER);
         SetDrawListTextures(draw_list_entry, 1, &texture_handle);
-        SetDrawListShader(draw_list_entry, Model::SPRITE_VERTEX, Material::TEXTURE_ALPHA);
+        SetDrawListShader(draw_list_entry, VERTEX_SPRITE, MATERIAL_TEXTURE_ALPHA);
 
         is_ready = true;
         UpdateRenderListObject();

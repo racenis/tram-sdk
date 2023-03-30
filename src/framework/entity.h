@@ -29,10 +29,10 @@ namespace tram {
         inline name_t GetName() const { return name; }
         inline uint64_t GetID() const { return id; }
         inline WorldCell* GetCell() { return cell; }
-        inline bool IsLoaded() const { return isloaded; }
+        inline bool IsLoaded() const { return is_loaded; }
         inline bool IsAutoLoad() const { return auto_load; }
         inline bool IsInInterior() { return in_interior; }
-        inline bool IsPersistent() { return  persistent; }
+        inline bool IsPersistent() { return is_persistent; }
         inline bool IsChanged() { return changed; }
 
         void ParametersString(std::string& str);
@@ -40,7 +40,7 @@ namespace tram {
         void virtual UpdateParameters() = 0;
         void virtual SetParameters() = 0;
         
-        inline void SetPersistent(bool persistent) { this->persistent = persistent; }
+        inline void SetPersistent(bool persistent) { this->is_persistent = persistent; }
 
         void SetLocation(const vec3& loc) { location = loc; SetParameters(); CheckTransition();}
 
@@ -80,10 +80,11 @@ namespace tram {
         name_t name;
         name_t action;
 
-        bool isloaded = false;
+        bool is_persistent = true;
+        bool is_loaded = false;
         bool auto_load = true;
         bool in_interior = false;
-        bool persistent = true;
+        
         bool changed = false;
         
         WorldCell* cell = nullptr;

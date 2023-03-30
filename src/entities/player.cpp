@@ -50,7 +50,7 @@ void Player::Load(){
     //physicscomponent->DisableRotation();
     //physicscomponent->DisableDebugDrawing();
 
-    isloaded = true;
+    is_loaded = true;
 
 }
 void Player::Unload(){
@@ -65,14 +65,14 @@ void Player::SerializeString(std::string& str){
 }
 
 void Player::UpdateParameters() {
-    if (isloaded) {
+    if (is_loaded) {
         assert(plomp);
         plomp->MoveUpdate();
     }
 }
 
 void Player::SetParameters() {
-    if (!isloaded) return;
+    if (!is_loaded) return;
     UpdateParameters();
     //physicscomponent->SetLocation(location);
     //physicscomponent->SetRotation(rotation);

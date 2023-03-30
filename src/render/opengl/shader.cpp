@@ -16,9 +16,9 @@
 #include <render/opengl/renderer.h>
 
 namespace tram::Render::OpenGL {
-    std::vector<std::tuple<Model::VertexFormat, Material::Type, uint32_t>> compiled_shaders;
+    std::vector<std::tuple<vertexformat_t, materialtype_t, uint32_t>> compiled_shaders;
     
-    void StoreShaderForLater (Model::VertexFormat vertex_format, Material::Type material_type, uint32_t shader) {
+    void StoreShaderForLater (vertexformat_t vertex_format, materialtype_t material_type, uint32_t shader) {
         compiled_shaders.push_back(std::tuple(vertex_format, material_type, shader));
     }
     
@@ -140,7 +140,7 @@ namespace tram::Render::OpenGL {
         }
     }
     
-    uint32_t FindShader(Model::VertexFormat format, Material::Type type){
+    uint32_t FindShader(vertexformat_t format, materialtype_t type){
         auto best_fit = std::get<2>(compiled_shaders[0]);
         
         for (auto& sh : compiled_shaders) {
@@ -187,26 +187,16 @@ namespace tram::Render::OpenGL {
         auto glyph_fragment =                LoadFragmentShader("shaders/opengl3/glyph.frag");
 #endif
 
-		std::cout << "linking 1" << std::endl;
-        StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE,          LinkShader(normal_static_vertex, normal_static_fragment));
-        std::cout << "linking 2" << std::endl;
-		StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(normal_static_vertex, normal_static_fragment_alpha));
-        std::cout << "linking 3" << std::endl;
-		StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE,          LinkShader(normal_dynamic_vertex, normal_dynamic_fragment));
-        std::cout << "linking 4" << std::endl;
-		StoreShaderForLater(Model::DYNAMIC_VERTEX,  Material::TEXTURE_ALPHA,    LinkShader(normal_dynamic_vertex, normal_dynamic_fragment_alpha));
-        std::cout << "linking 5" << std::endl;
-		StoreShaderForLater(Model::STATIC_VERTEX,   Material::TEXTURE_WATER,    LinkShader(normal_static_vertex, normal_water_fragment));
-        std::cout << "linking 6" << std::endl;
-		StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_ALPHA,    LinkShader(sprite_vertex, sprite_fragment));
-        std::cout << "linking 7" << std::endl;
-		StoreShaderForLater(Model::LINE_VERTEX,     Material::FLAT_COLOR,       LinkShader(line_vertex, line_fragment));
-        std::cout << "linking 8" << std::endl;
-		StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_MSDF,     LinkShader(text_vertex, text_fragment));
-        std::cout << "linking 9" << std::endl;
-		StoreShaderForLater(Model::SPRITE_VERTEX,   Material::TEXTURE_GLYPH,    LinkShader(glyph_vertex, glyph_fragment));
+        StoreShaderForLater(VERTEX_STATIC,   MATERIAL_TEXTURE,          LinkShader(normal_static_vertex, normal_static_fragment));
+        StoreShaderForLater(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    LinkShader(normal_static_vertex, normal_static_fragment_alpha));
+        StoreShaderForLater(VERTEX_DYNAMIC,  MATERIAL_TEXTURE,          LinkShader(normal_dynamic_vertex, normal_dynamic_fragment));
+        StoreShaderForLater(VERTEX_DYNAMIC,  MATERIAL_TEXTURE_ALPHA,    LinkShader(normal_dynamic_vertex, normal_dynamic_fragment_alpha));
+        StoreShaderForLater(VERTEX_STATIC,   MATERIAL_WATER,            LinkShader(normal_static_vertex, normal_water_fragment));
+        StoreShaderForLater(VERTEX_SPRITE,   MATERIAL_TEXTURE_ALPHA,    LinkShader(sprite_vertex, sprite_fragment));
+        StoreShaderForLater(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       LinkShader(line_vertex, line_fragment));
+        StoreShaderForLater(VERTEX_SPRITE,   MATERIAL_MSDF,             LinkShader(text_vertex, text_fragment));
+        StoreShaderForLater(VERTEX_SPRITE,   MATERIAL_GLYPH,            LinkShader(glyph_vertex, glyph_fragment));
         
-		std::cout << "binding tex" << std::endl;
         for (auto& sh : compiled_shaders) BindTextures(std::get<2>(sh));
     }
 }

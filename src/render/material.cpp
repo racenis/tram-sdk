@@ -37,7 +37,7 @@ template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
 
 /// Loads the default error material.
 void Material::LoadErrorMaterial() {
-    ERROR_MATERIAL = Material::Make(UID("defaulttexture"), Material::TEXTURE);
+    ERROR_MATERIAL = Material::Make(UID("defaulttexture"), MATERIAL_TEXTURE);
     ERROR_MATERIAL->Load();
 }
 
@@ -64,23 +64,23 @@ void Material::LoadMaterialInfo(const char* filename){
     }
 
     while(file.is_continue()){
-        Material::Type mat_type;
+        materialtype_t mat_type;
 
         name_t mat_name = file.read_name();
         name_t mat_type_name = file.read_name();
 
         if(mat_type_name == UID("flat")){
-            mat_type = Material::TEXTURE;
+            mat_type = MATERIAL_TEXTURE;
         } else if(mat_type_name == UID("alpha")){
-            mat_type = Material::TEXTURE_ALPHA;
+            mat_type = MATERIAL_TEXTURE_ALPHA;
         } else if(mat_type_name == UID("lightmap")){
-            mat_type = Material::TEXTURE_LIGHTMAP;
+            mat_type = MATERIAL_LIGHTMAP;
         } else if(mat_type_name == UID("msdf")){
-            mat_type = Material::TEXTURE_MSDF;
+            mat_type = MATERIAL_MSDF;
         } else if(mat_type_name == UID("glyph")){
-            mat_type = Material::TEXTURE_GLYPH;
+            mat_type = MATERIAL_GLYPH;
         } else if(mat_type_name == UID("water")){
-            mat_type = Material::TEXTURE_WATER;
+            mat_type = MATERIAL_WATER;
         } else {
             std::cout << "Error material list material: " << mat_name << std::endl;
             continue;
@@ -93,7 +93,7 @@ void Material::LoadMaterialInfo(const char* filename){
 /// Creates a material.
 /// If a Material already exists with that name, then the existing Material is returned.
 /// @return Always returns a pointer to a Material.
-Material* Material::Make (name_t name, Material::Type type) {
+Material* Material::Make (name_t name, materialtype_t type) {
     Material* material = MATERIAL_LIST.Find(name);
     
     if (!material) {
@@ -117,7 +117,7 @@ Material* Material::Find(name_t name){
     Material* material = MATERIAL_LIST.Find(name);
     
     if (!material) {
-        material = PoolProxy<Material>::New(name, TEXTURE_LIGHTMAP);
+        material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP);
         MATERIAL_LIST.Insert(UID(name), material);
     }
     
@@ -148,13 +148,13 @@ void Material::LoadFromDisk(){
     char path[100];
     int channels;
 
-    if(type == TEXTURE_LIGHTMAP){
+    if(type == MATERIAL_LIGHTMAP){
         strcpy(path, "data/textures/lightmap/");
         channels = 3;
-    } else if(type == TEXTURE_ALPHA){
+    } else if(type == MATERIAL_TEXTURE_ALPHA){
         strcpy(path, "data/textures/");
         channels = 4;
-    } else if(type == TEXTURE_MSDF || type == TEXTURE_GLYPH){
+    } else if(type == MATERIAL_MSDF || type == MATERIAL_GLYPH){
         strcpy(path, "data/textures/ui/");
         channels = 4;
     } else {
@@ -195,7 +195,7 @@ void Material::LoadFromDisk(){
 void Material::LoadFromMemory(){
     assert(status == LOADED);
 
-    if(type == TEXTURE_ALPHA || type == TEXTURE_MSDF || type == TEXTURE_GLYPH){
+    if(type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH){
         texture = CreateTexture(COLORMODE_RGBA, TEXTUREFILTER_LINEAR, width, height, textureData);
     } else {
         texture = CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, textureData);

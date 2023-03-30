@@ -72,6 +72,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make all CAPITAL globals be not capital
 
 #### Should do later
+- Add emscripten to maketool
 - Make Raycast that returns multiple points
 - Add constraints to PhysicsComponents
 - Models with different sets of materials
@@ -100,6 +101,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Also add stuff for comment filtering
 
 #### Not important
+- Add rotations to sprites
 - Switch out all of the std::cout's to Log's
 - ~~Switch namespace Core to tram~~
 - Switch the AudioComponent to using audio/source.h

@@ -15,7 +15,7 @@
         data->bogeycollmodel = PUID(str);
     };
     void Tram::UpdateParameters() {
-        if (!isloaded) return;
+        if (!is_loaded) return;
         rendercomponent->UpdateLocation(location);
         rendercomponent->UpdateRotation(rotation);
     };
@@ -49,12 +49,12 @@
 
         rendercomponent->SetPose(armaturecomponent->GetPosePtr());
 
-        isloaded = true;
+        is_loaded = true;
 
         UpdateParameters();
     }
     void Tram::Unload(){
-        isloaded = false;
+        is_loaded = false;
 
 
         rendercomponent->Uninit();

@@ -16,14 +16,14 @@ namespace tram {
     };
 
     void StaticWorldObject::UpdateParameters() {
-        if(isloaded){
+        if(is_loaded){
             rendercomponent->UpdateLocation(location);
             rendercomponent->UpdateRotation(rotation);
         }
     }
     
     void StaticWorldObject::SetParameters() {
-        if(isloaded){
+        if(is_loaded){
             rendercomponent->UpdateLocation(location);
             rendercomponent->UpdateRotation(rotation);
             physicscomponent->SetLocation(location);
@@ -47,13 +47,13 @@ namespace tram {
 
         rendercomponent->Init();
         physicscomponent->Init();
-        isloaded = true;
+        is_loaded = true;
 
         UpdateParameters();
     };
 
     void StaticWorldObject::Unload(){
-        isloaded = false;
+        is_loaded = false;
         Serialize();
 
         rendercomponent.clear();

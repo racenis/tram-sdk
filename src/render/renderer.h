@@ -9,6 +9,8 @@
 #include <render/render.h>
 #include <render/model.h>
 
+#include <render/vertices.h>
+
 namespace tram::Render {
     /// Flags for DrawListObjects.
     enum renderflags: uint32_t {
@@ -36,32 +38,6 @@ namespace tram::Render {
         TEXTUREFILTER_LINEAR,           //< Textures use linear filtering.
         TEXTUREFILTER_LINEAR_MIPMAPPED  //< Textures use linear filtering and are mipmapped.
     };
-    
-    /// Atributes for vertex buffer vertices.
-    struct VertexAttribute {
-        // @note None of the current renderers use this field.
-        enum {
-            POSITION_VECTOR,
-            NORMAL_VECTOR,
-            COLOR_VECTOR,
-            TEXTURE_COORDINATE,
-            TEXTURE_INDEX,
-            LIGHTMAP_COORDINATE,
-            BONE_INDEX,
-            BONE_WEIGHT,
-            OTHER
-        } function;
-        enum {
-            FLOAT32,
-            INT32,
-            UINT32
-        } type;
-        uint32_t size;      //< Size of the attribute, in bytes.
-        uint32_t stride;    //< Distance between same attribute in different vertices, in bytes.
-        uint64_t offset;    //< Offset of beginning of attribute in vertex buffer.
-    };
-    
-    typedef std::vector<VertexAttribute> VertexDefinition;
     
     struct LightListObject {
         vec3 location = {0.0f, 0.0f, 0.0f};
@@ -97,7 +73,7 @@ namespace tram::Render {
         void (*SetRotation) (drawlistentry_t entry, glm::quat& rotation) = nullptr;
         void (*SetDrawListVertexArray) (drawlistentry_t entry, uint32_t vertex_array_handle) = nullptr;
         void (*SetDrawListElements) (drawlistentry_t entry, uint32_t element_offset, uint32_t element_length) = nullptr;
-        void (*SetDrawListShader) (drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type) = nullptr;
+        void (*SetDrawListShader) (drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) = nullptr;
         void (*SetDrawListTextures) (drawlistentry_t entry, size_t texture_count, uint32_t* textures) = nullptr;
 
         void (*RemoveDrawListEntry) (drawlistentry_t entry) = nullptr;
@@ -172,7 +148,7 @@ namespace tram::Render {
     }
     
     /// Sets the shader of a draw list entry.
-    inline void SetDrawListShader (drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type) {
+    inline void SetDrawListShader (drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
         return RENDERER.SetDrawListShader(entry, vertex_format, material_type);
     }
     

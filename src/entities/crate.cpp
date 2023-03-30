@@ -29,14 +29,14 @@ namespace tram {
     }
 
     void Crate::UpdateParameters() {
-        if (!isloaded) return;
+        if (!is_loaded) return;
         rendercomponent->UpdateLocation(location);
         rendercomponent->UpdateRotation(rotation);
         rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
     }
     
     void Crate::SetParameters() {
-        if (!isloaded) return;
+        if (!is_loaded) return;
         UpdateParameters();
         physicscomponent->SetLocation(location);
         physicscomponent->SetRotation(rotation);
@@ -64,13 +64,13 @@ namespace tram {
 
         rendercomponent->Init();
         physicscomponent->Init();
-        isloaded = true;
+        is_loaded = true;
 
         UpdateParameters();
     }
 
     void Crate::Unload() {
-        isloaded = false;
+        is_loaded = false;
 
         Serialize();
 
@@ -93,7 +93,7 @@ namespace tram {
     }
     
     void Crate::Testingolingo() {
-        assert(isloaded);
+        assert(is_loaded);
         assert(physicscomponent);
         physicscomponent->SetAngularFactor({0.0f, 0.0f, 0.0f});
         physicscomponent->SetRotation(glm::vec3(0.0f, 0.785f, 0.0f));

@@ -27,16 +27,8 @@ namespace tram::Render {
     typedef vec3 color_t;
     typedef uint32_t layer_t;
     
-    const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
-    const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);
-    const color_t COLOR_GREEN  (0.0f, 1.0f, 0.0f);
-    const color_t COLOR_BLUE   (0.0f, 0.0f, 1.0f);
-    const color_t COLOR_YELLOW (1.0f, 1.0f, 0.0f);
-    const color_t COLOR_PINK   (1.0f, 0.0f, 1.0f);
-    const color_t COLOR_CYAN   (0.0f, 1.0f, 1.0f);
-    const color_t COLOR_BLACK  (0.0f, 0.0f, 0.0f);
-
-    const color_t COLOR_GRAY   (0.3f, 0.3f, 0.3f);
+    typedef uint32_t vertexformat_t;
+    typedef uint32_t materialtype_t;
 
     void Init();
     void Render();
@@ -57,6 +49,33 @@ namespace tram::Render {
 
     void AddLine(const glm::vec3& from, const glm::vec3& to, const color_t& color);
     void AddLineMarker(const glm::vec3& location, const color_t& color);
+    
+    const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
+    const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);
+    const color_t COLOR_GREEN  (0.0f, 1.0f, 0.0f);
+    const color_t COLOR_BLUE   (0.0f, 0.0f, 1.0f);
+    const color_t COLOR_YELLOW (1.0f, 1.0f, 0.0f);
+    const color_t COLOR_PINK   (1.0f, 0.0f, 1.0f);
+    const color_t COLOR_CYAN   (0.0f, 1.0f, 1.0f);
+    const color_t COLOR_BLACK  (0.0f, 0.0f, 0.0f);
+    const color_t COLOR_GRAY   (0.3f, 0.3f, 0.3f);
+    
+    enum VertexFormats : vertexformat_t {
+        VERTEX_STATIC,
+        VERTEX_DYNAMIC,
+        VERTEX_SPRITE,
+        VERTEX_LINE
+    };
+    
+    enum MaterialTypes : materialtype_t {
+        MATERIAL_TEXTURE,
+        MATERIAL_TEXTURE_ALPHA,
+        MATERIAL_LIGHTMAP,
+        MATERIAL_MSDF,
+        MATERIAL_GLYPH,
+        MATERIAL_WATER,
+        MATERIAL_FLAT_COLOR
+    };
 }
 
 #endif // RENDER_H

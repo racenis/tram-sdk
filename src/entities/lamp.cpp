@@ -12,7 +12,7 @@ namespace tram {
     }
     
     void Lamp::UpdateParameters() {
-        if (!isloaded) return;
+        if (!is_loaded) return;
         light->UpdateLocation(location);
     }
     
@@ -28,13 +28,13 @@ namespace tram {
         data.clear();
 
         light->Init();
-        isloaded = true;
+        is_loaded = true;
 
         UpdateParameters();
     }
     
     void Lamp::Unload(){
-        isloaded = false;
+        is_loaded = false;
 
         Serialize();
 

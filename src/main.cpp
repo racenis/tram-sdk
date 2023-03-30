@@ -264,7 +264,6 @@ void mainloop() {
     Async::ResourceLoader2ndStage();
     Async::FinishResource();
 
-
     Event::Dispatch();
     Message::Dispatch();
     

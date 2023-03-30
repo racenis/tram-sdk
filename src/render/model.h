@@ -7,26 +7,19 @@
 #include <render/material.h>
 
 namespace tram::Render{
-    struct ModelData{};
+    struct ModelData;
 
     class Model : public Resource {
-    public:
-        enum VertexFormat {
-            STATIC_VERTEX,
-            DYNAMIC_VERTEX,
-            SPRITE_VERTEX,
-            LINE_VERTEX
-        };
-        
+    public:        
         struct ElementRange {
             uint32_t element_offset = 0;
             uint32_t element_length = 0;
             uint32_t material_count = 0;
-            Material::Type material_type;
+            materialtype_t material_type;
             uint32_t materials[15] = { 0 };
         };
         
-        VertexFormat vertex_format = STATIC_VERTEX;
+        vertexformat_t vertex_format = VERTEX_STATIC;
         
         vertexhandle_t vertex_buffer_handle = 0;
         vertexhandle_t element_buffer_handle = 0;

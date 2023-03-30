@@ -350,7 +350,7 @@ namespace tram::Render::OpenGL {
         ((DrawListEntry*)entry.draw_list_entries[0])->eboLen = element_length;
     }
     
-    void SetDrawListShader(drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type) {
+    void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
         ((DrawListEntry*)entry.draw_list_entries[0])->shader = FindShader(vertex_format, material_type);
     }
     

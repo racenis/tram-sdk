@@ -13,7 +13,7 @@ namespace tram::Render::OpenGL {
     
     void CompileShaders();
     
-    uint32_t FindShader(Model::VertexFormat format, Material::Type type);
+    uint32_t FindShader(vertexformat_t format, materialtype_t type);
     
     void BindUniformBlock (const char* name, uint32_t binding);
     
@@ -31,7 +31,7 @@ namespace tram::Render::OpenGL {
     void SetRotation (drawlistentry_t entry, glm::quat& rotation);
     void SetDrawListVertexArray (drawlistentry_t entry, uint32_t vertex_array_handle);
     void SetDrawListElements (drawlistentry_t entry, uint32_t element_offset, uint32_t element_length);
-    void SetDrawListShader (drawlistentry_t entry, Model::VertexFormat vertex_format, Material::Type material_type);
+    void SetDrawListShader (drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type);
     void SetDrawListTextures (drawlistentry_t entry, size_t texture_count, uint32_t* textures);
     
     void RemoveDrawListEntry (drawlistentry_t entry);

@@ -1,6 +1,8 @@
 #include <platform/file.h>
 #include <framework/file.h>
 
+#include <charconv>
+
 namespace tram {
 
 void skip_text_whitespace (const char*& cursor, const char* cursor_end) {
@@ -20,12 +22,6 @@ void skip_text (const char*& cursor, const char* cursor_end) {
         }
         
         cursor++;
-    
-        
-        //if (i + 1 == reader.length()) {
-        //    reader.move_cursor(reader.length());
-        //    return;
-        //}
     }
     
     skip_text_whitespace(cursor, cursor_end);
@@ -38,6 +34,14 @@ bool is_text_continue (const char* cursor, const char* cursor_end) {
     }
     
     return false;
+}
+
+template <typename T>
+auto read_text_from_chars (const char*& cursor, const char* cursor_end) {
+    T value;
+    cursor = std::from_chars(cursor, cursor_end, value).ptr;
+    skip_text_whitespace(cursor, cursor_end);
+    return value;
 }
 
 int32_t read_text_int32 (const char*& cursor, const char* cursor_end) {
@@ -67,8 +71,6 @@ UID read_text_name(const char*& cursor, const char* cursor_end) {
     *buf_it = '\0';
     return UID(buffer);
 }
-
-
 
 
 File::File (char const* path, FileAccessMode mode) : path(path), mode(mode) {
@@ -146,8 +148,8 @@ uint16_t File::read_uint16() { auto ret = read_text_int32(cursor, cursor_end); s
 uint32_t File::read_uint32() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 uint64_t File::read_uint64() { auto ret = read_text_int64(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 
-float File::read_float32() { auto ret = read_text_float32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-double File::read_float64() { auto ret = read_text_float64(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
+float File::read_float32() { return read_text_from_chars<float>(cursor, cursor_end); }
+double File::read_float64() { return read_text_from_chars<double>(cursor, cursor_end); }
 
 name_t File::read_name() { auto ret = read_text_name(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 std::string_view File::read_string() { abort(); }

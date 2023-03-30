@@ -63,7 +63,7 @@ namespace tram::GUI {
         CreateVertexArray(VERTEX_DEFINITION<SpriteVertex>, glyphvertices_vertex_buffer, glyphvertices_vertex_array);
         glyphvertices_entry = InsertDrawListEntry();
         SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
-        SetDrawListShader(glyphvertices_entry, Model::SPRITE_VERTEX, Material::TEXTURE_GLYPH);
+        SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
         SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
         
         System::SetInitialized(System::SYSTEM_GUI, true);

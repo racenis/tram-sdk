@@ -297,11 +297,11 @@ void WorldCell::AddEntity(Entity* entity){
 
     entity->cell = this;
 
-    if(loaded && !entity->isloaded && entity->auto_load){
+    if(loaded && !entity->is_loaded && entity->auto_load){
         entity->Load();
     }
 
-    if (!loaded && entity->isloaded && entity->auto_load){
+    if (!loaded && entity->is_loaded && entity->auto_load){
         entity->Unload();
     }
 }

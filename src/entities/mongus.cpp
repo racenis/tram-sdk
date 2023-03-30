@@ -30,7 +30,7 @@
         //data->collmodel = UID(collisionmodelname);
     }
     void Mongus::UpdateParameters() {
-        if (!isloaded) return;
+        if (!is_loaded) return;
         rendercomponent->UpdateLocation(location);
         rendercomponent->UpdateRotation(rotation);
         rendercomponent->SetCellParams(cell->HasInteriorLighting());
@@ -104,12 +104,12 @@
 
         if (data->mtype == MONGUS_BINGUS) physicscomponent->DisableMovement();
 
-        isloaded = true;
+        is_loaded = true;
 
         UpdateParameters();
     }
     void Mongus::Unload(){
-        isloaded = false;
+        is_loaded = false;
 
         Serialize();
 

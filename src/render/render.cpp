@@ -55,16 +55,16 @@ namespace tram::Render {
         CreateVertexArray (VERTEX_DEFINITION<LineVertex>, colorlines_vertex_buffer, colorlines_vertex_array);
         colorlines_entry = InsertDrawListEntry ();
         SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
-        SetDrawListShader(colorlines_entry, Model::LINE_VERTEX, Material::FLAT_COLOR);
+        SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
         SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
         
         // generating fullbright lightmap
-        Material* fullbright = Material::Make("fullbright", Material::TEXTURE_LIGHTMAP);
+        Material* fullbright = Material::Make("fullbright", MATERIAL_LIGHTMAP);
         fullbright->MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
         fullbright->LoadFromMemory();
         
         // generating default texture
-        Material* defaulttexture = Material::Make("defaulttexture", Material::TEXTURE);
+        Material* defaulttexture = Material::Make("defaulttexture", MATERIAL_TEXTURE);
         defaulttexture->MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
         defaulttexture->LoadFromMemory();
         
