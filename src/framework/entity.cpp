@@ -147,27 +147,4 @@ namespace tram {
 
     }
 
-    void Entity::ParametersString(std::string& str){
-        // TODO: convert this to new way
-        str.append(std::string(name));
-        str.push_back(' ');
-        str.append(std::to_string(location.x));
-        str.push_back(' ');
-        str.append(std::to_string(location.y));
-        str.push_back(' ');
-        str.append(std::to_string(location.z));
-        str.push_back(' ');
-
-
-        glm::vec3 rot = glm::eulerAngles(rotation);
-
-        str.append(std::to_string(rot.x));
-        str.push_back(' ');
-        str.append(std::to_string(rot.y));
-        str.push_back(' ');
-        str.append(std::to_string(rot.z));
-        str.push_back(' ');
-        str.append(std::string(action));
-        str.push_back(' ');
-    }
 }

@@ -46,31 +46,13 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Keybinding menu
 - Graphics menu
 
-- ~~Make isloaded in Entity to is_loaded~~
-- ~~Yeet material types and vertex types from material and vertex classes resplectivley~~
-- ~~Make single loading function load only single resource~~
-- Rewrite file parser for the third time
-- ~~Add some sort of a memory pool for Messages and Events~~
-- ~~Change UpdateLocation/Rotation to SetLocation/Rotation in RenderComponent~~
-- ~~Make UID == operator to work with const char*~~
-- ~~Add IDs to entity definitions in worldcell files~~
-- ~~Allow entities without names~~
-- ~~Allow enitties without IDs~~
-	- ~~In that case the IDs would be generated automatically~~
-- ~~Make Entity FindByName and FindByID overloads of Find~~
+#### Should do later
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
-	- ~~Default/error models/materials should be baked into source code~~
-		- ~~Error model~~
-		- ~~Error texture~~
-		- ~~Fullbright texture~~
-- ~~Move types out of material/model and into render.h~~
-- Yeet all opengl code from UI.cPP
-- Make all CAPITAL globals be not capital
-
-
-
-#### Should do later
+- Make it so that it is possible to launch multiple resource loader threads
+- Rewrite Queue template
+	- So that there are no need for LOCK() and UNLOCK() methods
+- Also rewrite Stackpool
 - Add emscripten to maketool
 - Make Raycast that returns multiple points
 - Add constraints to PhysicsComponents

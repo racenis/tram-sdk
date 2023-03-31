@@ -103,6 +103,8 @@ namespace tram::Render::OpenGL {
         SCREEN_WIDTH = width;
         SCREEN_HEIGHT = height;
         
+        glViewport(0, 0, width, height);
+        
         matrices.projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 1000.0f);
     }
     
@@ -137,6 +139,11 @@ namespace tram::Render::OpenGL {
             .UpdateVertexArray = OpenGL::UpdateVertexArray,
             .RenderFrame = OpenGL::RenderFrame
         };
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        
+        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         
         CompileShaders();
 

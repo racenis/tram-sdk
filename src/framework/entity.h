@@ -34,8 +34,6 @@ namespace tram {
         inline bool IsPersistent() { return is_persistent; }
         inline bool IsChanged() { return changed; }
 
-        void ParametersString(std::string& str);
-
         void virtual UpdateParameters() = 0;
         void virtual SetParameters() = 0;
         

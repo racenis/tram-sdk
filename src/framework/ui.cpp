@@ -167,16 +167,10 @@ namespace tram::UI {
             glfwSwapInterval(1);
         }
 
-        // maybe move these to render::init()
-        glViewport(0, 0, 800, 600);
-        
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-
         glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height){
             screen_width = width;
             screen_height = height;
-            glViewport(0, 0, width, height); // wut
+            
             Render::SetScreenSize(width, height);
         });
 

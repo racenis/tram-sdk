@@ -16,7 +16,7 @@ namespace tram {
         serializeddata->FromString(str);
     }
 
-    Crate::Crate(const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot){
+    Crate::Crate(const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot) : Entity(nname) {
         name = UID(nname);
         location = pos;
         rotation = glm::quat(rot);

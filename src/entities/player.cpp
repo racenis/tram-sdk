@@ -11,9 +11,8 @@
 #include <components/triggercomponent.h>
 
 namespace tram {
-Player::Player(){
+Player::Player() : Entity("player") {
     plomp = PoolProxy<PlayerComponent>::New();
-    name = UID("player");
     auto_load = false;
 }
 void Player::Load(){
