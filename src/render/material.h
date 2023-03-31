@@ -18,8 +18,7 @@ namespace tram::Render {
         uint8_t* textureData = nullptr;
         size_t approx_vram_usage = 0;
     public:
-        Material (){}
-        Material(name_t mName, materialtype_t mType) {
+        Material(name_t mName, materialtype_t mType) : Resource(mName) {
             name = mName;
             type = mType;
             status = UNLOADED;

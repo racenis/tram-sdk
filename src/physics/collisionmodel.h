@@ -12,8 +12,7 @@ class btCompoundShape;
 namespace tram::Physics {
     class CollisionModel : public Resource {
     public:
-        CollisionModel(){}
-        CollisionModel(name_t mName){
+        CollisionModel(name_t mName) : Resource(mName){
             name = mName;
             status = UNLOADED;
         }

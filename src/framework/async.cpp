@@ -103,7 +103,7 @@ namespace tram::Async {
         resourceRequestQueue2ndStage.Unlock();
 
         while (req){
-            if(req->requested_res->GetStatus() == Resource::LOADED || req->requested_res->GetStatus() == Resource::LOAD_FAIL){
+            if(req->requested_res->GetStatus() == Resource::LOADED){
                 req->requested_res->LoadFromMemory();
             }
 
@@ -129,7 +129,7 @@ namespace tram::Async {
             res->LoadFromDisk();
         }
 
-        if(res->GetStatus() == Resource::READY || res->GetStatus() == Resource::LOAD_FAIL){
+        if(res->GetStatus() == Resource::READY){
             finishedResourceRequestQueue.Lock();
             ResourceRequest* f_req = finishedResourceRequestQueue.AddNew();
             f_req->requester = nullptr;

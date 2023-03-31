@@ -244,7 +244,7 @@ void Model::LoadFromDisk(){
         status = LOADED;
 
         for (size_t i = 0; i < materials.size(); i++){
-            materials[i]->AddRef();
+            materials[i]->AddReference();
             Async::ForceLoadResource(materials[i]);
         }
 
@@ -431,7 +431,7 @@ void Model::LoadFromDisk(){
         // push references into material
         status = LOADED;
         for (size_t i = 0; i < materials.size(); i++){
-            materials[i]->AddRef();
+            materials[i]->AddReference();
             Async::ForceLoadResource(materials[i]);
         }
 

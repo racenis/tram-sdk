@@ -10,63 +10,65 @@
 #include <framework/uid.h>
 
 namespace tram {
-    extern bool DRAW_PATH_DEBUG;
     
-    struct Path {
-        struct Node {
-            Node* next;
-            Node* prev;
-            Node* left;
-            Node* right;
-            glm::vec3 p1;
-            glm::vec3 p2;
-            glm::vec3 p3;
-            glm::vec3 p4;
-            float lens[10];
+extern bool DRAW_PATH_DEBUG;
+
+struct Path {
+    struct Node {
+        Node* next;
+        Node* prev;
+        Node* left;
+        Node* right;
+        glm::vec3 p1;
+        glm::vec3 p2;
+        glm::vec3 p3;
+        glm::vec3 p4;
+        float lens[10];
+        
+        void ProducePoint(glm::vec3& p, const float& t);
+        void CalculateLenghts();
+        void Render();
+        
+        struct Follower {
+            Node* current_node;
+            float t = 0.0f;
             
-            void ProducePoint(glm::vec3& p, const float& t);
-            void CalculateLenghts();
+            void GoForth(float ammount);
             void Render();
-            
-            struct Follower {
-                Node* current_node;
-                float t = 0.0f;
-                
-                void GoForth(float ammount);
-                void Render();
-                void GetPosition(glm::vec3& pos);
-            };
+            void GetPosition(glm::vec3& pos);
         };
-        
-        name_t name;
-        std::vector<Node> nodes;
     };
     
-    struct Navmesh {
-        struct Node {
-            Node* next;
-            Node* prev;
-            Node* left;
-            Node* right;
-            glm::vec3 location;
-        };
-        
-        name_t name;
-        std::vector<Node> nodes;
-        static Octree<Node*> all_nodes;
+    name_t name;
+    std::vector<Node> nodes;
+};
+
+struct Navmesh {
+    struct Node {
+        Node* next;
+        Node* prev;
+        Node* left;
+        Node* right;
+        glm::vec3 location;
     };
     
-    struct NavigationPlan {
-        glm::vec3 from;
-        glm::vec3 to;
-        size_t len = -1;
-        size_t node_len = 0;
-        Navmesh::Node* nodes;
-        char padding[4];
-    };
-    
-    NavigationPlan* MakeNavigationPlan(const glm::vec3& from, const glm::vec3& to);
-    void YeetNavigationPlan(NavigationPlan* plan);
+    name_t name;
+    std::vector<Node> nodes;
+    static Octree<Node*> all_nodes;
+};
+
+struct NavigationPlan {
+    glm::vec3 from;
+    glm::vec3 to;
+    size_t len = -1;
+    size_t node_len = 0;
+    Navmesh::Node* nodes;
+    char padding[4];
+};
+
+NavigationPlan* MakeNavigationPlan(const glm::vec3& from, const glm::vec3& to);
+void YeetNavigationPlan(NavigationPlan* plan);
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_NAVIGATION_H

@@ -75,9 +75,9 @@ namespace tram::Ext::Menu {
         static bool debugdraw_stats = false;
         
         
-        if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawTransitions();
-        if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawPaths();
-        if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDrawn()) cell.DrawNavmeshes();
+        if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawTransitions();
+        if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawPaths();
+        if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawNavmeshes();
         
         if (debugdraw_stats) {
             char meminfobuffer[100]; char timeinfobuffer[100]; char fpsinfobuffer[100];
@@ -147,7 +147,7 @@ namespace tram::Ext::Menu {
             auto worldcell = worldcell_pool.begin().ptr + worldcell_selected;
             char numbuffer[20];
             std::sprintf(numbuffer, "%lld", worldcell->EntityCount());
-            bool is_draw = worldcell->IsDrawn();
+            bool is_draw = worldcell->IsDebugDraw();
             bool is_load = worldcell->IsLoaded();
             bool is_int = worldcell->IsInterior();
             bool is_intl = worldcell->HasInteriorLighting();
@@ -173,7 +173,7 @@ namespace tram::Ext::Menu {
             EndFrame();
             EndFrame();
             
-            if(is_draw != is_draw_bef) worldcell->SetDrawn(is_draw);
+            if(is_draw != is_draw_bef) worldcell->SetDebugDraw(is_draw);
             
             EndFrame();
             EndFrame();

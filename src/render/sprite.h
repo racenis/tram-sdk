@@ -25,7 +25,6 @@ namespace tram::Render {
     protected:
         Material* material = nullptr;
     public:
-        Sprite (){}
         Sprite(UID name) : Resource(name) {}
         inline Material* GetMaterial () const { return material; }
         inline void SetMaterial (Material* mat) { material = mat; }

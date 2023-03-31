@@ -4,55 +4,41 @@
 #include <framework/language.h>
 
 #include <templates/stackpool.h>
-
-#include <framework/templates.h>
-
 #include <templates/hashmap.h>
 
 #include <cstring>
-
 #include <fstream>
-#include <unordered_map>
 
 namespace tram::Language {
-    StackPool<char> stringPoolforLangs("stringpool for langs", 10000);
-    //std::unordered_map<uint64_t, uint64_t> langStringHashMap;
-    Hashmap<const char*> LANGUAGE_STRING_MAP ("Hashmap for language strings", 500);
+
+static StackPool<char> language_string_pool ("stringpool for langs", 10000);
+static Hashmap<const char*> language_string_map ("Hashmap for language strings", 500);
+    
+void Load (const char* filename){
+    std::ifstream file;
+    file.open (filename);
+    
+    while (file) {
+        std::string string_name;
+        std::string string_content;
+
+        file >> string_name;
+        file.ignore(1);
         
-    // when refactoring this, it would be good idea to move these out to a language.cpp or something
-    void Load (const char* filename){
-        std::ifstream file;
-        file.open(filename);
-        while(file){
-            std::string strid;
-            std::string langstr;
+        std::getline(file, string_content);
 
-            file >> strid;
-            file.ignore(1);
-            std::getline(file, langstr);
+        char* string_ptr = language_string_pool.AddNew(string_content.length() + 1);
 
-            name_t strkey = UID(strid);
-            //uint64_t langkey = stringPoolforLangs.GetSize();
+        strcpy(string_ptr, string_content.c_str());
 
-            char* tbr = stringPoolforLangs.AddNew(langstr.length() + 1);
-
-            strcpy(tbr, langstr.c_str());
-
-            //langStringHashMap[strkey.key] = langkey;
-            LANGUAGE_STRING_MAP.Insert(strkey, tbr);
-
-        }
-        file.close();
+        language_string_map.Insert(string_name, string_ptr);
     }
     
-    const char* Get (name_t name){
-        /*std::unordered_map<uint64_t, uint64_t>::iterator ff = langStringHashMap.find(name.key);
+    file.close();
+}
 
-        if(ff == langStringHashMap.end()){
-            return 0;
-        } else {
-            return ff->second;
-        }*/
-        return LANGUAGE_STRING_MAP.Find(name);
-    }
+const char* Get (name_t name){
+    return language_string_map.Find(name);
+}
+
 }

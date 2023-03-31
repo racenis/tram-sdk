@@ -108,7 +108,7 @@ void Sprite::LoadFromDisk() {
         material = Material::Find(UID(matname));
     }
     
-    material->AddRef();
+    material->AddReference();
     Async::ForceLoadResource(material);
     
     status = LOADED;

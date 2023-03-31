@@ -5,13 +5,13 @@
 #include <framework/net.h>
 
 namespace tram::Net {
-    //void (*pushfuncs[50])(const Command& c);
+//void (*pushfuncs[50])(const Command& c);
 
-    /*void SubmitCommand(const Command& c){
-        (*pushfuncs[c.subsystem])(c);
-    }
+/*void SubmitCommand(const Command& c){
+    (*pushfuncs[c.subsystem])(c);
+}
 
-    void RegisterQueue(uint8_t subsystem, void (*pushfunc)(const Command& c)){
-        pushfuncs[subsystem] = pushfunc;
-    }*/
+void RegisterQueue(uint8_t subsystem, void (*pushfunc)(const Command& c)){
+    pushfuncs[subsystem] = pushfunc;
+}*/
 }

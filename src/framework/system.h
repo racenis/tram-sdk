@@ -7,27 +7,29 @@
 #include <cstdint>
 
 namespace tram::System {
-    typedef uint32_t system_t;
-    enum System : uint32_t {
-        SYSTEM_CORE,
-        SYSTEM_UI,
-        SYSTEM_GUI,
-        SYSTEM_ASYNC,
-        SYSTEM_RENDER,
-        SYSTEM_PHYSICS,
-        SYSTEM_AUDIO,
-        SYSTEM_MISC,
-        SYSTEM_LAST
-    };
-    
-    uint32_t Register (char const* name, char const* short_name);
-    void SetInitialized (uint32_t system, bool is_initialized);
-    bool IsInitialized (uint32_t system);
-    void SetUpdated (uint32_t system, bool is_updated);
-    bool IsUpdated (uint32_t system);
-    char const* GetName (uint32_t system);
-    char const* GetShortName (uint32_t system);
-    system_t GetSystemCount ();
+
+typedef uint32_t system_t;
+enum System : system_t {
+    SYSTEM_CORE,
+    SYSTEM_UI,
+    SYSTEM_GUI,
+    SYSTEM_ASYNC,
+    SYSTEM_RENDER,
+    SYSTEM_PHYSICS,
+    SYSTEM_AUDIO,
+    SYSTEM_MISC,
+    SYSTEM_LAST
+};
+
+system_t Register (char const* name, char const* short_name);
+void SetInitialized (system_t system, bool is_initialized);
+bool IsInitialized (system_t system);
+void SetUpdated (system_t system, bool is_updated);
+bool IsUpdated (system_t system);
+char const* GetName (system_t system);
+char const* GetShortName (system_t system);
+uint32_t GetSystemCount ();
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_SYSTEM_H

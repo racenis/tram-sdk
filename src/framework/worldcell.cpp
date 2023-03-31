@@ -24,18 +24,6 @@ template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, fa
 template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
 template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcellloader pool", 10, false);
 
-void WorldCell::SetName(name_t new_name) {
-    if (name) {
-        std::cout << "WHY ARE YOU REJECTING ME" << std::endl;
-        abort();
-        // TODO: add code to remove the cell from worldcell list
-    }
-    
-    name = new_name;
-    //WORLDCELL_LIST[name.key] = this;
-    WORLDCELL_LIST.Insert(name, this);
-}
-
 WorldCell* WorldCell::Find(name_t name){
     /*std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
 
