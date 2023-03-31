@@ -49,6 +49,10 @@
       <File Name="src/components/armaturecomponent.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/loader.h"/>
+      <File Name="src/framework/loader.cpp"/>
+      <File Name="src/framework/transition.cpp"/>
+      <File Name="src/framework/transition.h"/>
       <File Name="src/framework/file.cpp"/>
       <File Name="src/framework/type.h"/>
       <File Name="src/framework/language.cpp"/>

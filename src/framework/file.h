@@ -58,6 +58,7 @@ public:
     
     name_t read_name();
     std::string_view read_string();
+    std::string_view read_line();
     
     std::string path;
     FileAccessMode mode;

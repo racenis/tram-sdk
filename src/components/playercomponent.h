@@ -7,7 +7,7 @@
 #include <framework/ui.h>
 #include <framework/event.h>
 #include <framework/entity.h>
-#include <framework/worldcell.h>
+#include <framework/loader.h>
 
 #include <components/controllercomponent.h>
 

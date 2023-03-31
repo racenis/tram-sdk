@@ -60,7 +60,7 @@ double read_text_float64 (const char*& cursor, const char* cursor_end) {
     return atof (cursor);
 }
 
-UID read_text_name(const char*& cursor, const char* cursor_end) {
+UID read_text_name (const char*& cursor, const char* cursor_end) {
     char buffer[200];
     char* buf_it = buffer;
     
@@ -69,9 +69,22 @@ UID read_text_name(const char*& cursor, const char* cursor_end) {
     }
     
     *buf_it = '\0';
+    
     return UID(buffer);
 }
 
+std::string_view read_text_line (const char*& cursor, const char* cursor_end) {
+    const char* first_char = cursor;
+    
+    while (*cursor != '\r' && *cursor != '\n' && cursor < cursor_end) {
+        cursor++;
+    }
+    
+    const char* last_char = cursor;
+    skip_text_whitespace(cursor, cursor_end);
+    
+    return std::string_view (first_char, last_char - first_char);
+}
 
 File::File (char const* path, FileAccessMode mode) : path(path), mode(mode) {
     if (mode == MODE_READ) {
@@ -153,5 +166,5 @@ double File::read_float64() { return read_text_from_chars<double>(cursor, cursor
 
 name_t File::read_name() { auto ret = read_text_name(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 std::string_view File::read_string() { abort(); }
-
+std::string_view File::read_line() { return read_text_line(cursor, cursor_end); }
 }

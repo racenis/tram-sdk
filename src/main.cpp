@@ -14,6 +14,7 @@
 #include <framework/ui.h>
 #include <framework/entity.h>
 #include <framework/worldcell.h>
+#include <framework/loader.h>
 #include <framework/event.h>
 #include <framework/message.h>
 #include <framework/language.h>
@@ -306,7 +307,7 @@ int main() {
     Ext::Camera::Init();
 
     // load all of the language strings
-    Language::Load("data/lv.lang");
+    Language::Load("lv");
 
     // texture info stuff
     Material::LoadMaterialInfo("texture");

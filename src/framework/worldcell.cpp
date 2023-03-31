@@ -1,10 +1,11 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-//#include <framework/core.h>
 #include <framework/worldcell.h>
+
 #include <framework/entity.h>
 #include <framework/navigation.h>
+#include <framework/transition.h>
 
 #include <templates/pool.h>
 #include <templates/hashmap.h>
@@ -15,13 +16,11 @@
 #include <cstring>
 #include <sstream>
 
-#include <set>
+
 
 namespace tram {
 
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
-template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", 250, false);
-template <> Pool<Loader> PoolProxy<Loader>::pool("worldcellloader pool", 10, false);
 
 static Hashmap<WorldCell*> worldcell_list ("Worldcell list hashmap", 500);
 
@@ -96,30 +95,7 @@ bool WorldCell::IsInside (vec3 point) {
     return false;
 }
 
-void Loader::Update() {
-    std::set<WorldCell*> active_cells;
-    auto& loader_pool = PoolProxy<Loader>::GetPool();
-    auto& cell_pool = PoolProxy<WorldCell>::GetPool();
-    
-    for (auto& loader : loader_pool) {
-        if (loader.current_cell) {
-            active_cells.insert(loader.current_cell);
-            for (auto trans : loader.current_cell->transitions_from) {
-                active_cells.insert(trans->GetInto());
-            }
-        }
-    }
-    
-    for (auto& cell : cell_pool) {
-        if(cell.IsLoaded() && !active_cells.contains(&cell)) {
-            cell.Unload();
-        }
-    }
-    
-    for (auto cell : active_cells) {
-        if (!cell->IsLoaded()) cell->Load();
-    }
-}
+
 
 void WorldCell::LoadFromDisk() {
     char path[100] = "data/worldcells/";
@@ -156,13 +132,13 @@ void WorldCell::LoadFromDisk() {
         
         if (type_name == "transition") {
             // TODO: store the transition name in a lookupable map
-            auto trans = PoolProxy<Transition>::New();
             std::stringstream ss (line.substr(first_name_end));
             std::string name;
             ss >> name;
-            trans->name = UID(name);
+            name_t tran_name = UID(name);
             ss >> name;
             name_t into_cell_name = UID(name);
+            auto trans = Transition::Make(tran_name, WorldCell::Find(this->name), WorldCell::Find(into_cell_name));
             size_t pointcount;
             ss >> pointcount;
             for (size_t i = 0; i < pointcount; i++) {
@@ -173,17 +149,7 @@ void WorldCell::LoadFromDisk() {
                 trans->AddPoint(point);
             }
             
-            auto into_cell_ptr = WorldCell::Find(into_cell_name);
-            assert(into_cell_ptr);
-            
-            trans->SetInto(into_cell_ptr);
             trans->GeneratePlanes(false);
-            
-            if (into_cell_ptr == this) {
-                AddTransitionInto(trans);
-            } else {
-                AddTransitionFrom(trans);
-            }
             
             continue;
         } else if (type_name == "path") {
@@ -291,81 +257,6 @@ void WorldCell::RemoveEntity (Entity* entity) {
     entities.erase(std::find(entities.begin(), entities.end(), entity));
 };
 
-void Transition::AddPoint (vec3 point) {
-    points.push_back(point);
-}
-
-bool Transition::IsInside (vec3 point) {
-    for(size_t i = 0; i < planes.size(); i++)
-        if(glm::dot(planes[i], glm::vec4(point, 1.0f)) < 0.0f) return false;    
-    return true;
-}
-
-void Transition::GeneratePlanes (bool disp) {
-    assert(points.size() > 3);
-    
-    planes.clear();
-    
-    for (size_t i = 0; i < points.size(); i++) {
-        for (size_t j = i+1; j < points.size(); j++) {
-            for (size_t k = j+1; k < points.size(); k++) {
-                auto& A = points[i];
-                auto& B = points[j];
-                auto& C = points[k];
-                auto AB = B - A;
-                auto AC = C - A;
-                auto cross = glm::cross(AB, AC);
-                auto d = -(cross.x*A.x + cross.y*A.y + cross.z*A.z);
-                
-                glm::vec4 plane = glm::vec4(cross, d);
-                
-                for (size_t it = 0; it < points.size(); it++) {
-                    if(i == it || j == it || k == it) continue;
-                    if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
-                        plane *= -1.0f;
-                        goto tryagain;
-                    }
-                }
-                
-                okay:
-                
-                if (disp) {
-                    Render::AddLine(A, B, Render::COLOR_WHITE);
-                    Render::AddLine(A, C, Render::COLOR_WHITE);
-                    Render::AddLine(B, C, Render::COLOR_WHITE);
-                    
-                    Render::AddLine(A, A+(glm::normalize(cross)*0.5f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    Render::AddLine(B, B+(glm::normalize(cross)*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    Render::AddLine(C, C+(glm::normalize(cross)*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                }
-                
-                planes.push_back(plane);
-                
-                yeet:
-                continue;
-                
-                tryagain:
-                
-                for (size_t it = 0; it < points.size(); it++) {
-                    if(i == it || j == it || k == it) continue;
-                    if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
-                        goto yeet;
-                    }
-                }
-                
-                goto okay;
-            }
-        }
-    }
-    
-    std::sort(planes.begin(), planes.end(), [](const glm::vec4& a, const glm::vec4& b){ 
-        if (a.x != b.x) return a.x < b.x;
-        if (a.y != b.y) return a.y < b.y;
-        if (a.z != b.z) return a.z < b.z;
-        return a.w < b.w;});
-    planes.erase(unique( planes.begin(), planes.end() ), planes.end());
-}
-    
 void WorldCell::DrawTransitions(){
     for (auto it : transitions_into) it->GeneratePlanes(true);
     for (auto it : transitions_from) it->GeneratePlanes(true);

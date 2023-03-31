@@ -71,31 +71,6 @@ protected:
     friend class Loader;
 };
 
-class Transition {
-public:
-    void AddPoint (vec3 point);
-    void GeneratePlanes (bool disp = false);
-    bool IsInside (vec3 point);
-    void SetInto (WorldCell* new_into) { into = new_into; }
-    WorldCell* GetInto() { return into; }
-protected:
-    name_t name;
-    WorldCell* into;
-    std::vector<vec3> points;
-    std::vector<vec4> planes;
-    friend class WorldCell;
-};
-    
-class Loader {
-public:
-    void SetLocation (const vec3& new_location) { location = new_location; current_cell = WorldCell::Find(new_location); }
-    void UpdateLocation (const vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) { current_cell = n_trans; } }
-    static void Update();
-private:
-    vec3 location = {0.0f, 0.0f, 0.0f};
-    WorldCell* current_cell;
-};
-
 }
 
 #endif // TRAM_SDK_FRAMEWORK_WORLDCELL_H
