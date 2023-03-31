@@ -25,7 +25,7 @@ namespace tram::Ext::Menu {
     bool escape_menu_open = false;
     bool debug_menu_open = false;
     
-    void ToggleMenuState() { UI::INPUT_STATE = (UI::INPUT_STATE == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT; }
+    void ToggleMenuState() { UI::SetInputState((UI::GetInputState() == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT); }
     
     void EscapeMenuKeyboard () { 
         ToggleMenuState();
@@ -146,7 +146,7 @@ namespace tram::Ext::Menu {
             
             auto worldcell = worldcell_pool.begin().ptr + worldcell_selected;
             char numbuffer[20];
-            std::sprintf(numbuffer, "%lld", worldcell->EntityCount());
+            std::sprintf(numbuffer, "%lld", worldcell->GetEntityCount());
             bool is_draw = worldcell->IsDebugDraw();
             bool is_load = worldcell->IsLoaded();
             bool is_int = worldcell->IsInterior();

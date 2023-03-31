@@ -69,15 +69,6 @@ ArmatureComponent* monguser_armature = nullptr;
 void mainloop() {
     Core::Update();
     UI::Update();
-
-    if (UI::INPUT_STATE == STATE_DEFAULT) {
-        //glm::vec3 player_head;
-        //player.GetLocation(player_head);
-        //player_head += glm::vec3(0.0f, 0.5f, 0.0f);
-        //Render::CAMERA_POSITION = player_head;
-        //Audio::SetListenerPosition(player_head);
-        //Audio::SetListenerOrientation(Render::CAMERA_ROTATION);
-    }
     
     //time_of_day += 0.001f;
     SetSun(0.8f); // this sets the ambient lighting
@@ -267,7 +258,7 @@ void mainloop() {
     Event::Dispatch();
     Message::Dispatch();
     
-    WorldCell::Loader::Update();
+    Loader::Update();
     
     ControllerComponent::Update();
     ArmatureComponent::Update();

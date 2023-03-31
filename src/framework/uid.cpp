@@ -6,47 +6,41 @@
 #include <cstring>
 #include <templates/stackpool.h>
 
-// TODO: yeet this
 #include <unordered_map>
 
 namespace tram {
-    StackPool<char> stringPool("stringpool", 10000);
-    std::unordered_map<std::string, uint64_t> stringHashMap;
-    
-    UID::UID(const std::string& value) {
-        const char* str = value.c_str();
-        *this = UID(str);
-    }
-    
-    // TODO: optimize this
-    UID::UID(const char* value) {
-        if (!value) {
-            char b = *value;
-            b++;
-        }
+
+static StackPool<char> string_pool ("stringpool", 10000);
+static std::unordered_map<std::string, uint64_t> string_list;
+
+UID::UID (const std::string& value) {
+    const char* str = value.c_str();
+    *this = UID(str);
+}
+
+// TODO: optimize this
+UID::UID (const char* value) {
+    std::string name = value;
+    std::unordered_map<std::string, uint64_t>::iterator ff = string_list.find(name);
+    if(ff == string_list.end()){
+        uint64_t key = string_pool.GetSize();
+        char* newstr = string_pool.AddNew(name.size() + 1);
+
+        string_list.emplace(name, key);
+        strcpy(newstr, name.c_str());
         
-        std::string name = value;
-        std::unordered_map<std::string, uint64_t>::iterator ff = stringHashMap.find(name);
-        if(ff == stringHashMap.end()){
-            uint64_t key = stringPool.GetSize();
-            char* newstr = stringPool.AddNew(name.size() + 1);
+        this->key = key;
+    } else {
+        this->key = ff->second;
+    }
+}
 
-            stringHashMap.emplace(name, key);
-            strcpy(newstr, name.c_str());
-            //return key;
-            this->key = key;
-        } else {
-            //return ff->second;
-            this->key = ff->second;
-        }
-    }
+UID::operator std::string() const {
+    return string_pool.begin() + key;
+}
 
-    UID::operator std::string() const {
-        return stringPool.begin() + key;
-    }
-    
-    UID::operator char const*() const {
-        return stringPool.begin() + key;
-    }
-    
+UID::operator char const*() const {
+    return string_pool.begin() + key;
+}
+
 }

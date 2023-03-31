@@ -60,8 +60,8 @@ namespace tram::Ext::Camera {
     }
 
     void Camera::Update () {
-        if (UI::INPUT_STATE == UI::STATE_FLYING ||
-            UI::INPUT_STATE == UI::STATE_MENU_OPEN
+        if (UI::GetInputState() == UI::STATE_FLYING ||
+            UI::GetInputState() == UI::STATE_MENU_OPEN
         ) {
             return;
         }

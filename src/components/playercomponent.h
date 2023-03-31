@@ -95,7 +95,7 @@ namespace tram {
             keydown = Event::AddListener(Event::KEYDOWN, this);
             keyup = Event::AddListener(Event::KEYUP, this);
             mouselistener = Event::AddListener(Event::CURSORPOS, this);
-            cell_loader = PoolProxy<WorldCell::Loader>::New();
+            cell_loader = PoolProxy<Loader>::New();
             cell_loader->SetLocation(parent->GetLocation());
         }
         ~PlayerComponent(){
@@ -107,7 +107,7 @@ namespace tram {
             keyup = 0;
             Event::RemoveListener(mouselistener);
             mouselistener = 0;
-            PoolProxy<WorldCell::Loader>::Delete(cell_loader);
+            PoolProxy<Loader>::Delete(cell_loader);
             cell_loader = nullptr;
         }
         void SetParent(Entity* ent){
@@ -130,7 +130,7 @@ namespace tram {
         listener_t listener = 0;
         listener_t mouselistener = 0;
         ControllerComponent* controller = nullptr;
-        WorldCell::Loader* cell_loader = nullptr;
+        Loader* cell_loader = nullptr;
 
         uint64_t vehicle = 0;
 

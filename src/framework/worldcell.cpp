@@ -17,74 +17,53 @@
 
 #include <set>
 
-using namespace tram;
-//std::unordered_map<uint64_t, WorldCell*> WORLDCELL_LIST;
-Hashmap<WorldCell*> WORLDCELL_LIST ("Worldcell list hashmap", 500);
+namespace tram {
+
 template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
-template <> Pool<WorldCell::Transition> PoolProxy<WorldCell::Transition>::pool("worldcelltransition pool", 250, false);
-template <> Pool<WorldCell::Loader> PoolProxy<WorldCell::Loader>::pool("worldcellloader pool", 10, false);
+template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", 250, false);
+template <> Pool<Loader> PoolProxy<Loader>::pool("worldcellloader pool", 10, false);
 
-WorldCell* WorldCell::Find(name_t name){
-    /*std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
+static Hashmap<WorldCell*> worldcell_list ("Worldcell list hashmap", 500);
 
-    if(ff == WORLDCELL_LIST.end()){
-        return nullptr;
-    } else {
-        return ff->second;
-    }*/
-    
-    return WORLDCELL_LIST.Find(name);
+
+WorldCell* WorldCell::Find (name_t name) {
+    return worldcell_list.Find(name);
 }
 
-WorldCell* WorldCell::Make(name_t name){
-    /*std::unordered_map<uint64_t, WorldCell*>::iterator ff = WORLDCELL_LIST.find(name.key);
-
-    if(ff == WORLDCELL_LIST.end()){
-        WorldCell* new_cell = PoolProxy<WorldCell>::New(name);
-        WORLDCELL_LIST[name.key] = new_cell;
-        return new_cell;
-    } else {
-        return ff->second;
-    }*/
-    
-    auto cell = WORLDCELL_LIST.Find(name);
+WorldCell* WorldCell::Make (name_t name) {
+    auto cell = worldcell_list.Find(name);
     
     if (!cell) {
         cell = PoolProxy<WorldCell>::New(name);
-        WORLDCELL_LIST.Insert(name, cell);
+        worldcell_list.Insert(name, cell);
     }
     
     return cell;
 }
 
-WorldCell* WorldCell::Find (const glm::vec3& point){
-    auto& cellPool = PoolProxy<WorldCell>::GetPool();
-    WorldCell* ptr = cellPool.begin().ptr;
-    for(; ptr < cellPool.end().ptr; ptr++){
-        if(*((uint64_t*) ptr) == 0) continue;
-        if(!ptr->IsInterior()) continue;
-        if(ptr->IsInside(point)) return ptr;
+WorldCell* WorldCell::Find (vec3 point) {
+    for (auto& cell : PoolProxy<WorldCell>::GetPool()) {
+        if (!cell.IsInterior()) continue;
+        if (cell.IsInside(point)) return &cell;
     }
-
-    ptr = cellPool.begin().ptr;
-    for(; ptr < cellPool.end().ptr; ptr++){
-        if(*((uint64_t*) ptr) == 0) continue;
-        if(ptr->IsInterior()) continue;
-        if(ptr->IsInside(point)) return ptr;
+    
+    for (auto& cell : PoolProxy<WorldCell>::GetPool()) {
+        if (cell.IsInside(point)) return &cell;
     }
-
+    
     return nullptr;
 }
 
-void WorldCell::Load(){
+void WorldCell::Load() {
     std::cout << "Loading cell: " << name << std::endl;
-    for (auto& it : entities)
-        if(it->IsAutoLoad()) it->Load();
-
+    for (auto it : entities) {
+        if (it->IsAutoLoad()) it->Load();
+    }
+        
     loaded = true;
 };
 
-void WorldCell::Unload(){
+void WorldCell::Unload() {
     std::cout << "Unloading cell: " << name << std::endl;
     auto entities_copy = entities;
     for (auto& it : entities_copy) {
@@ -101,7 +80,23 @@ void WorldCell::Unload(){
     loaded = false;
 };
 
-void WorldCell::Loader::Update() {
+WorldCell* WorldCell::FindTransition (vec3 point) {
+    for (auto it : transitions_from) {
+        if (it->IsInside(point)) return it->GetInto();
+    }
+    
+    return nullptr;
+}
+
+bool WorldCell::IsInside (vec3 point) {
+    for (auto it : transitions_into) {
+        if (it->IsInside(point)) return true;
+    }
+    
+    return false;
+}
+
+void Loader::Update() {
     std::set<WorldCell*> active_cells;
     auto& loader_pool = PoolProxy<Loader>::GetPool();
     auto& cell_pool = PoolProxy<WorldCell>::GetPool();
@@ -109,8 +104,8 @@ void WorldCell::Loader::Update() {
     for (auto& loader : loader_pool) {
         if (loader.current_cell) {
             active_cells.insert(loader.current_cell);
-            for (auto trans : loader.current_cell->trans_out) {
-                active_cells.insert(trans->into);
+            for (auto trans : loader.current_cell->transitions_from) {
+                active_cells.insert(trans->GetInto());
             }
         }
     }
@@ -126,7 +121,7 @@ void WorldCell::Loader::Update() {
     }
 }
 
-void WorldCell::LoadFromDisk(){
+void WorldCell::LoadFromDisk() {
     char path[100] = "data/worldcells/";
     strcat(path, name);
     strcat(path, ".cell");
@@ -161,7 +156,7 @@ void WorldCell::LoadFromDisk(){
         
         if (type_name == "transition") {
             // TODO: store the transition name in a lookupable map
-            auto trans = PoolProxy<WorldCell::Transition>::New();
+            auto trans = PoolProxy<Transition>::New();
             std::stringstream ss (line.substr(first_name_end));
             std::string name;
             ss >> name;
@@ -185,7 +180,7 @@ void WorldCell::LoadFromDisk(){
             trans->GeneratePlanes(false);
             
             if (into_cell_ptr == this) {
-                AddTransition(trans);
+                AddTransitionInto(trans);
             } else {
                 AddTransitionFrom(trans);
             }
@@ -278,11 +273,9 @@ void WorldCell::LoadFromDisk(){
     }
 };
 
-void WorldCell::AddEntity(Entity* entity){
+void WorldCell::AddEntity (Entity* entity) {
     entities.push_back(entity);
-
-    //entity->Init();
-
+    
     entity->cell = this;
 
     if(loaded && !entity->is_loaded && entity->auto_load){
@@ -294,21 +287,21 @@ void WorldCell::AddEntity(Entity* entity){
     }
 }
 
-void WorldCell::RemoveEntity(Entity* entPtr){
-    entities.erase(std::find(entities.begin(), entities.end(), entPtr));
+void WorldCell::RemoveEntity (Entity* entity) {
+    entities.erase(std::find(entities.begin(), entities.end(), entity));
 };
 
-void WorldCell::Transition::AddPoint(const glm::vec3& point){
+void Transition::AddPoint (vec3 point) {
     points.push_back(point);
 }
 
-bool WorldCell::Transition::IsInside(const glm::vec3& point){
+bool Transition::IsInside (vec3 point) {
     for(size_t i = 0; i < planes.size(); i++)
         if(glm::dot(planes[i], glm::vec4(point, 1.0f)) < 0.0f) return false;    
     return true;
 }
 
-void WorldCell::Transition::GeneratePlanes(bool disp) {
+void Transition::GeneratePlanes (bool disp) {
     assert(points.size() > 3);
     
     planes.clear();
@@ -374,8 +367,8 @@ void WorldCell::Transition::GeneratePlanes(bool disp) {
 }
     
 void WorldCell::DrawTransitions(){
-    for (auto& it : trans_in) it->GeneratePlanes(true);
-    for (auto& it : trans_out) it->GeneratePlanes(true);
+    for (auto it : transitions_into) it->GeneratePlanes(true);
+    for (auto it : transitions_from) it->GeneratePlanes(true);
 }
 
 void WorldCell::DrawNavmeshes() {
@@ -395,4 +388,4 @@ void WorldCell::DrawPaths() {
             nd.Render();
 }
 
-
+}
