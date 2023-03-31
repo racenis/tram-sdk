@@ -2,10 +2,9 @@
 // All rights reserved.
 
 #include <framework/stats.h>
+#include <framework/core.h>
 
-#ifndef ENGINE_EDITOR_MODE
-#include <framework/ui.h>
-#endif
+#include <platform/time.h>
 
 #include <vector>
 
@@ -30,9 +29,7 @@ namespace tram::Stats {
         
         assert(ALL_STATS[system].time_started == -1.0f && "System has already been started.");
         
-        #ifndef ENGINE_EDITOR_MODE
-        ALL_STATS[system].time_started = UI::GetTime();
-        #endif
+        ALL_STATS[system].time_started = GetTime();
     }
     
     /// Stops counting time spent on a system.
@@ -40,10 +37,8 @@ namespace tram::Stats {
         assert(ALL_STATS.size() > system &&  "System does not exist.");
         assert(ALL_STATS[system].time_started != -1.0f && "System was not started.");
         
-        #ifndef ENGINE_EDITOR_MODE
-        ALL_STATS[system].time_spent += UI::GetTime() - ALL_STATS[system].time_started;
+        ALL_STATS[system].time_spent += GetTime() - ALL_STATS[system].time_started;
         ALL_STATS[system].time_started = -1.0f;
-        #endif
     }
     
     /// Adds an ammount of a resource.

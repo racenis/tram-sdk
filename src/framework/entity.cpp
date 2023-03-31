@@ -3,7 +3,6 @@
 
 #include <framework/entity.h>
 #include <framework/worldcell.h>
-#include <framework/etc.h>
 #include <framework/serializeddata.h>
 
 #include <templates/hashmap.h>
@@ -12,139 +11,110 @@
 #include <unordered_map>
 
 namespace tram {
-    // TODO: swap all of these out for my own hashmap
-    //std::unordered_map<uint64_t, Entity*> ENTITY_ID_LIST;
-    Hashmap<Entity*> ENTITY_ID_LIST ("Entity ID hashmap", 500);
-    //std::unordered_map<uint64_t, Entity*> ENTITY_NAME_LIST;
-    Hashmap<Entity*> ENTITY_NAME_LIST ("Entity name hashmap", 500);
-    std::unordered_map<std::string, Entity* (*)(std::string_view& params)> ENTITY_CONSTRUCTORS; //  !!!!
 
-    Entity::Entity(name_t name) {
-        this->id = GenerateID();
-        this->name = name;
-        Register();
+static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", 500);
+static Hashmap<Entity*> entity_name_list ("Entity name hashmap", 500);
+static Hashmap<Entity* (*)(std::string_view& params)> entity_constructors ("Entity constructor hasmap", 50);
+
+Entity::Entity (name_t name) {
+    this->id = GenerateID();
+    this->name = name;
+    Register();
+}
+
+Entity::Entity (std::string_view& str) {
+    id = SerializedEntityData::Field<uint64_t>().FromString(str);
+    name = SerializedEntityData::Field<name_t>().FromString(str);
+
+    location.x = SerializedEntityData::Field<float>().FromString(str);
+    location.y = SerializedEntityData::Field<float>().FromString(str);
+    location.z = SerializedEntityData::Field<float>().FromString(str);
+
+    float rx = SerializedEntityData::Field<float>().FromString(str);
+    float ry = SerializedEntityData::Field<float>().FromString(str);
+    float rz = SerializedEntityData::Field<float>().FromString(str);
+
+    rotation = glm::quat(glm::vec3(rx, ry, rz));
+
+    if (!id) {
+        is_serializable = false;
+        id = GenerateID();
     }
     
-    Entity::Entity(std::string_view& str) {
-        id = SerializedEntityData::Field<uint64_t>().FromString(str);
-        name = SerializedEntityData::Field<name_t>().FromString(str);
+    Register();
+}
 
-        location.x = SerializedEntityData::Field<float>().FromString(str);
-        location.y = SerializedEntityData::Field<float>().FromString(str);
-        location.z = SerializedEntityData::Field<float>().FromString(str);
+Entity::~Entity() {
+    if (cell) cell->RemoveEntity(this);
 
-        float rx = SerializedEntityData::Field<float>().FromString(str);
-        float ry = SerializedEntityData::Field<float>().FromString(str);
-        float rz = SerializedEntityData::Field<float>().FromString(str);
-
-        rotation = glm::quat(glm::vec3(rx, ry, rz));
-
-        if (!id) {
-            is_serializable = false;
-            id = GenerateID();
+    if (id) {
+        if (entity_id_list.Find(id)) {
+            entity_id_list.Insert(id, nullptr);
         }
-        
-        Register();
+    }
+
+    if (name) {
+        if (entity_name_list.Find(name)) {
+            entity_name_list.Insert(name, nullptr);
+        }
+    }
+}
+
+void Entity::CheckTransition() {
+#ifndef ENGINE_EDITOR_MODE
+    if (!cell) return;
+
+    WorldCell* into = cell->FindTransition(location);
+
+    if (!into) return;
+    
+    std::cout << name << " transitioned into " << into->GetName() << std::endl;
+    
+    cell->RemoveEntity (this);
+    into->AddEntity (this);
+    
+#endif // ENGINE_EDITOR_MODE
+}
+
+void Entity::Register(const char* name, Entity* (*constr_func)(std::string_view& params)){
+    entity_constructors.Insert(name, constr_func);
+}
+
+void Entity::Register(){
+    if (id) {
+        entity_id_list.Insert(id, this);
+    }
+
+    if (name) {
+        entity_name_list.Insert(name, this);
+    }
+}
+
+Entity* Entity::Find (uint64_t entityID){
+    return entity_id_list.Find(entityID);
+}
+
+Entity* Entity::Find(name_t entityName){
+    return entity_name_list.Find(entityName);
+}
+
+Entity* Entity::Make (std::string_view& params){
+    size_t st_f = params.find_first_not_of(" \t");
+    size_t st_e = params.find_first_of(" \t", st_f);
+
+    std::string entity_type (params.substr(st_f, st_e - st_f));
+
+    params.remove_prefix(st_e);
+
+    Entity* entity = nullptr;
+    
+    auto constructor = entity_constructors.Find(entity_type);
+    
+    if (constructor) {
+        entity = constructor(params);
     }
     
-    Entity::~Entity() {
-        if (cell) cell->RemoveEntity(this);
-
-        if (id) {
-            //auto id_it = ENTITY_ID_LIST.find(id);
-            //if (id_it != ENTITY_ID_LIST.end()) ENTITY_ID_LIST.erase(id_it);
-            if (ENTITY_ID_LIST.Find(id)) {
-                ENTITY_ID_LIST.Insert(id, nullptr);
-            }
-        }
-
-        if (name) {
-            //auto name_it = ENTITY_NAME_LIST.find(name.key);
-            //if (name_it != ENTITY_NAME_LIST.end()) ENTITY_NAME_LIST.erase(name_it);
-            if (ENTITY_NAME_LIST.Find(name)) {
-                ENTITY_NAME_LIST.Insert(name, nullptr);
-            }
-        }
-    }
-    
-    void Entity::CheckTransition(){
-        #ifndef ENGINE_EDITOR_MODE
-        if(!cell) return;
-
-        WorldCell* into = cell->FindTransition(location);
-
-
-        if (into) {
-            std::cout << name << " transitioned into " << into->GetName() << std::endl;
-            cell->RemoveEntity(this);
-            into->AddEntity(this);
-        }
-        #endif // ENGINE_EDITOR_MODE
-    }
-
-    void Entity::Register(const char* name, Entity* (*constr_func)(std::string_view& params)){
-        ENTITY_CONSTRUCTORS[name] = constr_func;
-    }
-
-    void Entity::Register(){
-        if (id) {
-            //ENTITY_ID_LIST[id] = this;
-            ENTITY_ID_LIST.Insert(id, this);
-        }
-
-        if (name) {
-            //ENTITY_NAME_LIST[name.key] = this;
-            ENTITY_NAME_LIST.Insert(name, this);
-        }
-    }
-    
-    Entity* Entity::Find (uint64_t entityID){
-        /*std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_ID_LIST.find(entityID);
-
-        if(ff == ENTITY_ID_LIST.end()){
-            return nullptr;
-        } else {
-            return ff->second;
-        }*/
-        
-        return ENTITY_ID_LIST.Find(entityID);
-    }
-
-    Entity* Entity::Find(name_t entityName){
-        /*std::unordered_map<uint64_t, Entity*>::iterator ff = ENTITY_NAME_LIST.find(entityName.key);
-
-        if(ff == ENTITY_NAME_LIST.end()){
-            return nullptr;
-        } else {
-            return ff->second;
-        }*/
-        
-        return ENTITY_NAME_LIST.Find(entityName);
-    }
-    
-    Entity* MakeEntityFromString(std::string_view& entStr){
-        return nullptr; //TODO: find where this function went
-    }
-
-    Entity* Entity::Make (std::string_view& params){
-        size_t st_f = params.find_first_not_of(" \t");
-        size_t st_e = params.find_first_of(" \t", st_f);
-
-        std::string entType(params.substr(st_f, st_e - st_f));
-
-        params.remove_prefix(st_e);
-
-        Entity* entit = nullptr;
-
-        std::unordered_map<std::string, Entity* (*)(std::string_view& params)>::iterator ff = ENTITY_CONSTRUCTORS.find(entType);
-        if (ff != ENTITY_CONSTRUCTORS.end()){
-            entit = ff->second(params);
-            return entit;
-        } else {
-            return nullptr;
-        }
-
-
-    }
+    return entity;
+}
 
 }

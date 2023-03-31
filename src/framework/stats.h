@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_STATS_H
-#define FRAMEWORK_STATS_H
+#ifndef TRAM_SDK_FRAMEWORK_STATS_H
+#define TRAM_SDK_FRAMEWORK_STATS_H
 
 #include <framework/math.h>
 
@@ -24,4 +24,4 @@ namespace tram::Stats {
     double GetStatUncollated (Resource resource);
 }
 
-#endif // FRAMEWORK_STATS_H
+#endif // TRAM_SDK_FRAMEWORK_STATS_H

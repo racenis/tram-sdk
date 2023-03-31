@@ -316,10 +316,6 @@ namespace tram::UI {
 #endif
     }
     
-    double GetTime() {
-        return glfwGetTime();
-    }
-    
     float GetScreenWidth() {
         return screen_width;
     }

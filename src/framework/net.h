@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_NET_H
-#define FRAMEWORK_NET_H
+#ifndef TRAM_SDK_FRAMEWORK_NET_H
+#define TRAM_SDK_FRAMEWORK_NET_H
 
 namespace tram::Net {
 
@@ -13,4 +13,4 @@ namespace tram::Net {
     // idk, maybe some day i'll actually implement this...
 
 }
-#endif // FRAMEWORK_NET_H
+#endif // TRAM_SDK_FRAMEWORK_NET_H

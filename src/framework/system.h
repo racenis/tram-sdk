@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_SYSTEM_H
-#define FRAMEWORK_SYSTEM_H
+#ifndef TRAM_SDK_FRAMEWORK_SYSTEM_H
+#define TRAM_SDK_FRAMEWORK_SYSTEM_H
 
 #include <cstdint>
 
@@ -30,4 +30,4 @@ namespace tram::System {
     system_t GetSystemCount ();
 }
 
-#endif // FRAMEWORK_SYSTEM_H
+#endif // TRAM_SDK_FRAMEWORK_SYSTEM_H

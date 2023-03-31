@@ -46,14 +46,14 @@ void Material::LoadMaterialInfo(const char* filename){
     
     if (!file.is_open()) {
         std::cout << "Can't open texture info file '" << path << "'" << std::endl;
-        abort();
+        return;
     }
     
     name_t file_type = file.read_name();
     
     if (file_type != UID("MATv1")) {
         std::cout << "Invalid material file type " << path << std::endl;
-        abort();
+        return;
     }
 
     while(file.is_continue()){

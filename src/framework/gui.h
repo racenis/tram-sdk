@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_GUI_H
-#define FRAMEWORK_GUI_H
+#ifndef TRAM_SDK_FRAMEWORK_GUI_H
+#define TRAM_SDK_FRAMEWORK_GUI_H
 
 #include <framework/ui.h>
 
@@ -92,4 +92,4 @@ namespace tram::GUI {
     void DropdownBox(char const** texts, uint32_t len, uint32_t& selected);
 }
 
-#endif // FRAMEWORK_GUI_H
+#endif // TRAM_SDK_FRAMEWORK_GUI_H

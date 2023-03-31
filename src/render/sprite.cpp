@@ -56,7 +56,21 @@ void Sprite::LoadFromDisk() {
     std::string str; 
     
     if (!file.is_open()) {
-        Log("File not found: {}", filename);
+        Log("Sprite not found: {}", filename);
+        
+        frames.push_back(Frame {
+            0, 0,
+            64, 64,
+            0, 0,
+            1.0f, 1.0f
+        });
+        
+        if (!material) material = Material::Find("defaulttexture");
+        
+        status = LOADED;
+        load_fail = true;
+        
+        return;
     }
     
     std::getline(file, str);

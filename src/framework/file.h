@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_FILE_H
-#define FRAMEWORK_FILE_H
+#ifndef TRAM_SDK_FRAMEWORK_FILE_H
+#define TRAM_SDK_FRAMEWORK_FILE_H
 
 #include <string>
 
@@ -70,4 +70,4 @@ namespace tram {
     
 }
 
-#endif // FRAMEWORK_FILE_H
+#endif // TRAM_SDK_FRAMEWORK_FILE_H

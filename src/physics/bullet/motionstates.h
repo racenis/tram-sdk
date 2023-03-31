@@ -36,8 +36,8 @@ namespace tram::Physics {
                 loc = glm::vec3(0.0f, 0.0f, 0.0f);
                 rot = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
             } else {
-                entity->GetLocation(loc);
-                entity->GetRotation(rot);
+                loc = entity->GetLocation();
+                rot = entity->GetRotation();
             }
 
             loc += troffse;
@@ -103,11 +103,8 @@ namespace tram::Physics {
         }
 
         virtual void getWorldTransform(btTransform &worldTrans) const {
-            glm::vec3 loc;
-            glm::quat rot;
-
-            ent->GetLocation(loc);
-            ent->GetRotation(rot);
+            glm::vec3 loc = ent->GetLocation();
+            glm::quat rot = ent->GetRotation();
 
             loc += rot * offset;
 
@@ -145,11 +142,9 @@ namespace tram::Physics {
             rotation.z = rot.getZ();
             rotation.w = rot.getW();
 
-            glm::vec3 ent_loc;
-            glm::quat ent_rot;
+            glm::vec3 ent_loc = ent->GetLocation();
+            glm::quat ent_rot = ent->GetRotation();
 
-            ent->GetLocation(ent_loc);
-            ent->GetRotation(ent_rot);
 
             location = location - ent_loc;
             location = glm::inverse(ent_rot) * location;

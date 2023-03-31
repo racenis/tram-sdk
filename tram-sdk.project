@@ -98,6 +98,8 @@
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
+      <File Name="src/platform/time.cpp"/>
+      <File Name="src/platform/time.h"/>
       <File Name="src/platform/file.h"/>
       <File Name="src/platform/platform.h"/>
       <File Name="src/platform/file.cpp"/>

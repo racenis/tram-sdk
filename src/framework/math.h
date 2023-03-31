@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_MATH_H
-#define FRAMEWORK_MATH_H
+#ifndef TRAM_SDK_FRAMEWORK_MATH_H
+#define TRAM_SDK_FRAMEWORK_MATH_H
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -24,4 +24,4 @@ namespace tram {
     void ProjectLine(vec3& point, const vec3& from, const vec3& to);
 }
 
-#endif // FRAMEWORK_MATH_H
+#endif // TRAM_SDK_FRAMEWORK_MATH_H

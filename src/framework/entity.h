@@ -1,98 +1,92 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_ENTITY_H
-#define FRAMEWORK_ENTITY_H
+#ifndef TRAM_SDK_FRAMEWORK_ENTITY_H
+#define TRAM_SDK_FRAMEWORK_ENTITY_H
 
 #include <framework/uid.h>
 #include <framework/core.h>
 #include <framework/math.h>
 
 namespace tram {
-    class WorldCell;
-    class Message;
     
-    class Entity {
-    public:
-        virtual void Load() = 0;
+class WorldCell;
+class Message;
 
-        virtual void Unload() = 0;
+class Entity {
+public:
+    virtual void Load() = 0;
 
-        virtual void Serialize() = 0;
+    virtual void Unload() = 0;
 
-        Entity(name_t name);
-        Entity(std::string_view& str);
-        
-        virtual ~Entity();
-        
-        inline name_t GetName() const { return name; }
-        inline uint64_t GetID() const { return id; }
-        inline WorldCell* GetCell() { return cell; }
-        inline bool IsLoaded() const { return is_loaded; }
-        inline bool IsAutoLoad() const { return auto_load; }
-        inline bool IsInInterior() { return in_interior; }
-        inline bool IsPersistent() { return is_persistent; }
-        inline bool IsChanged() { return changed; }
+    virtual void Serialize() = 0;
 
-        void virtual UpdateParameters() = 0;
-        void virtual SetParameters() = 0;
-        
-        inline void SetPersistent(bool persistent) { this->is_persistent = persistent; }
+    Entity(name_t name);
+    Entity(std::string_view& str);
+    
+    virtual ~Entity();
+    
+    inline name_t GetName() const { return name; }
+    inline id_t GetID() const { return id; }
+    inline WorldCell* GetCell() { return cell; }
+    inline bool IsLoaded() const { return is_loaded; }
+    inline bool IsAutoLoad() const { return auto_load; }
+    inline bool IsInInterior() { return in_interior; }
+    inline bool IsPersistent() { return is_persistent; }
+    inline bool IsChanged() { return changed; }
 
-        void SetLocation(const vec3& loc) { location = loc; SetParameters(); CheckTransition();}
+    void virtual UpdateParameters() = 0;
+    void virtual SetParameters() = 0;
+    
+    inline void SetPersistent(bool persistent) { this->is_persistent = persistent; }
 
-        void SetRotation(const quat& rot) { rotation = rot; SetParameters(); }
+    void SetLocation(vec3 loc) { location = loc; SetParameters(); CheckTransition();}
 
-        inline void UpdateTransform(const vec3& loc, const quat& rot){
-            location = loc;
-            rotation = rot;
-            UpdateParameters();
-            CheckTransition();
-        }
+    void SetRotation(quat rot) { rotation = rot; SetParameters(); }
 
-        inline void Move(const glm::vec3& move_by){
-            SetLocation(location + move_by);
-        }
+    inline void UpdateTransform(const vec3& loc, const quat& rot){
+        location = loc;
+        rotation = rot;
+        UpdateParameters();
+        CheckTransition();
+    }
+    
+    inline const vec3& GetLocation() { return location; }
+    inline const quat& GetRotation() { return rotation; }
 
-        // idk why these methods exist
-        inline void GetLocation(vec3& loc) { loc = location; }
-        inline void GetRotation(glm::quat& rot) { rot = rotation; }
-        
-        inline const vec3& GetLocation() { return location; }
-        inline const quat& GetRotation() { return rotation; }
+    virtual void MessageHandler(Message& msg) = 0;
 
-        virtual void MessageHandler(Message& msg) = 0;
+    void CheckTransition();
 
-        void CheckTransition();
+    static Entity* Make (std::string_view& params);
 
-        static Entity* Make (std::string_view& params);
+    static void Register (const char* name, Entity* (*constr_func)(std::string_view& params));
 
-        static void Register (const char* name, Entity* (*constr_func)(std::string_view& params));
+    static Entity* Find (id_t entity_id);
 
-        static Entity* Find (uint64_t entityID);
+    static Entity* Find (name_t entity_name);
+protected:
+    id_t id = 0;
+    name_t name;
 
-        static Entity* Find (name_t entityName);
-    protected:
-        uint64_t id = 0;
-        name_t name;
+    bool is_persistent = true;
+    bool is_loaded = false;
+    bool auto_load = true;
+    bool in_interior = false;
+    
+    bool changed = false;
+    bool is_serializable = true;
+    
+    WorldCell* cell = nullptr;
+    
+    quat rotation = {0.0f, 0.0f, 0.0f, 1.0f};
+    vec3 location = {0.0f, 0.0f, 0.0f};
 
-        bool is_persistent = true;
-        bool is_loaded = false;
-        bool auto_load = true;
-        bool in_interior = false;
-        
-        bool changed = false;
-        bool is_serializable = true;
-        
-        WorldCell* cell = nullptr;
-        
-        quat rotation = {0.0f, 0.0f, 0.0f, 1.0f};
-        vec3 location = {0.0f, 0.0f, 0.0f};
+    void Register();
 
-        void Register();
+    friend class WorldCell;
+};
 
-        friend class WorldCell;
-    };
 }
 
-#endif // FRAMEWORK_ENTITY_H
+#endif // TRAM_SDK_FRAMEWORK_ENTITY_H

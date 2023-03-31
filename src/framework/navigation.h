@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_NAVIGATION_H
-#define FRAMEWORK_NAVIGATION_H
+#ifndef TRAM_SDK_FRAMEWORK_NAVIGATION_H
+#define TRAM_SDK_FRAMEWORK_NAVIGATION_H
 
 #include <templates/octree.h>
 
@@ -69,4 +69,4 @@ namespace tram {
     void YeetNavigationPlan(NavigationPlan* plan);
 }
 
-#endif // FRAMEWORK_NAVIGATION_H
+#endif // TRAM_SDK_FRAMEWORK_NAVIGATION_H

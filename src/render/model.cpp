@@ -326,8 +326,6 @@ void Model::LoadFromDisk(){
             vertex.boneweight.w = file.read_float32();
 
             data->vertices.push_back(vertex);
-            
-            if (i % 100 == 0) std::cout << i << std::endl;
         }
         
         // this is basically a repetion of the same code as for static model

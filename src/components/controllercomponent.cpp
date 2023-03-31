@@ -52,7 +52,7 @@ namespace tram {
             //if (action_updated) Play (ACTION_LIVESEY);
             glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
             glm::quat objrotation;
-            physcomp->GetParent()->GetRotation(objrotation);
+            objrotation = physcomp->GetParent()->GetRotation();
 
             fwd = objrotation * fwd;
 

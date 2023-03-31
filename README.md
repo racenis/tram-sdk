@@ -47,17 +47,15 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Graphics menu
 
 #### Should do later
-- Make the engine work without any files
-	- That means that it will run just fine without any files on the disk
-- Make it so that it is possible to launch multiple resource loader threads
+
 - Rewrite Queue template
 	- So that there are no need for LOCK() and UNLOCK() methods
+- Make it so that it is possible to launch multiple resource loader threads
 - Also rewrite Stackpool
 - Add emscripten to maketool
 - Make Raycast that returns multiple points
 - Add constraints to PhysicsComponents
 - Models with different sets of materials
-	- While doing this it would also be good to have models with more than 15 materials
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
@@ -69,14 +67,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make constructors/destructors protected
 	- Some classes should only be created in Pools
 - Move GetTime() out of UI
-- ~~SetScreenSize() causes a segfault~~
-- Add more types to file reader/writer
-	- ~~String~~
-	- ~~UID~~
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- Add a callback function for updating
-
 - Replace Bezier curves with Catmull-Roms
 - Rewrite insides of file abstraction
 	- Also add stuff for comment filtering
@@ -84,23 +77,15 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 #### Not important
 - Add rotations to sprites
 - Switch out all of the std::cout's to Log's
-- ~~Switch namespace Core to tram~~
-- Switch the AudioComponent to using audio/source.h
-- Render/Armature component linking
-- Add uninit functions to all systems.
-	- Add checks for them also.
-	- Uniniting Core checks if everything else is also uninited
 - Think of new glyphs.
 	- Draw new glyphs.
 - Add some more asserts to the GUI system.
-- Figure out how to do resources that are generated, not loaded.
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
 - Add scripting
 - Add a prefix to all header guards
 - Add a better way to register entities
 	- Could be a static method 'REGISTER' for each entity type
-- ~~Move file.h into platform~~
 - Add more rendering stuff
 	- Single drawlistthingy can be in mutliple layers
 	- Layers have different cameras
@@ -108,7 +93,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Add shear test
 	- Maybe rename camera? camera is extension and in render:: there is view
 	- Allow uploading of custom shaders
-
+- Make the engine work without any files
+	- That means that it will run just fine without any files on the disk
 
 #### For very later versions
 - Vertex animation

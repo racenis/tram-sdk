@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef FRAMEWORK_UI_H
-#define FRAMEWORK_UI_H
+#ifndef TRAM_SDK_FRAMEWORK_UI_H
+#define TRAM_SDK_FRAMEWORK_UI_H
 
 #include <render/render.h>
 
@@ -210,8 +210,6 @@ namespace tram::UI {
     
     void SetWebMainLoop(void(*loop_function)(void));
     
-    double GetTime();
-    
     void BindKeyboardKey (KeyboardKey key, KeyBinding binding);
 
     bool PollKeyboardKey (KeyboardKey key);
@@ -221,4 +219,4 @@ namespace tram::UI {
 
 
 
-#endif // FRAMEWORK_UI_H
+#endif // TRAM_SDK_FRAMEWORK_UI_H
