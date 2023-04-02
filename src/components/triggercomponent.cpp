@@ -34,13 +34,13 @@ namespace tram {
         trigger->setUserIndex(USERINDEX_TRIGGERCOMPONENT);
         trigger->setCollisionFlags(trigger->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
         
-        dynamicsWorld->addCollisionObject(trigger, collisionGroup, collisionMask);
+        BULLET_DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
         
         is_ready = true;
     }
     
     TriggerComponent::~TriggerComponent(){
-        dynamicsWorld->removeCollisionObject(trigger);
+        BULLET_DYNAMICS_WORLD->removeCollisionObject(trigger);
         delete trigger;
         
         if (shape && !model.get()) delete shape;
@@ -58,8 +58,8 @@ namespace tram {
         collisionMask = flags;
         
         if (is_ready) {
-            dynamicsWorld->removeCollisionObject(trigger);
-            dynamicsWorld->addCollisionObject(trigger, collisionGroup, collisionMask);
+            BULLET_DYNAMICS_WORLD->removeCollisionObject(trigger);
+            BULLET_DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
         }
     }
     
@@ -70,8 +70,8 @@ namespace tram {
         collisionGroup = flags;
         
         if (is_ready) {
-            dynamicsWorld->removeCollisionObject(trigger);
-            dynamicsWorld->addCollisionObject(trigger, collisionGroup, collisionMask);
+            BULLET_DYNAMICS_WORLD->removeCollisionObject(trigger);
+            BULLET_DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
         }
     }
     
@@ -173,7 +173,7 @@ namespace tram {
         std::vector<Physics::Collision> collisions;
         
         TriggerPollCallback callback (collisions);
-        dynamicsWorld->contactTest(trigger, callback);
+        BULLET_DYNAMICS_WORLD->contactTest(trigger, callback);
         
         return collisions;
     }

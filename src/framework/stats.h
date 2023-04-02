@@ -20,7 +20,7 @@ void Remove (Resource resource, size_t ammount);
 
 void Collate ();
 
-double GetStat (Resource resource);
+size_t GetStat (Resource resource);
 double GetStat (System::system_t system);
 double GetStatUncollated (System::system_t system);
 

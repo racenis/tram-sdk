@@ -46,6 +46,34 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Keybinding menu
 - Graphics menu
 
+Redraw glyphs
+ArmatureComponent auto load animations
+
+
+RENAME WORLDCELL interioLighr
+also AddTrabsuibInto
+
+
+
+Remake transition system
+- Transitions live outside of WorldCells
+
+- Transitions get auto-linked
+- Transitions are enableable and disabeleabel
+- Transitions are findable
+
+- Yeet debug draw methods from WORLDCELL
+
+- Take Loader out of WorldCell
+
+- Finally fix the queue
+	- Fix the async.cpp
+	- Fix the event.cpp
+
+- Add a getline to File Loader
+	- It would read until end of line and  return  that rest of line
+	- We can then rewrite language and worldcell and maybe some other loaders
+
 #### Should do later
 
 - Rewrite Queue template

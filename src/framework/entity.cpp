@@ -76,7 +76,7 @@ void Entity::CheckTransition() {
 #endif // ENGINE_EDITOR_MODE
 }
 
-void Entity::Register(const char* name, Entity* (*constr_func)(std::string_view& params)){
+void Entity::RegisterType(name_t name, Entity* (*constr_func)(std::string_view& params)){
     entity_constructors.Insert(name, constr_func);
 }
 
@@ -98,17 +98,10 @@ Entity* Entity::Find(name_t entityName){
     return entity_name_list.Find(entityName);
 }
 
-Entity* Entity::Make (std::string_view& params){
-    size_t st_f = params.find_first_not_of(" \t");
-    size_t st_e = params.find_first_of(" \t", st_f);
-
-    std::string entity_type (params.substr(st_f, st_e - st_f));
-
-    params.remove_prefix(st_e);
-
+Entity* Entity::Make (name_t type_name, std::string_view& params){
     Entity* entity = nullptr;
     
-    auto constructor = entity_constructors.Find(entity_type);
+    auto constructor = entity_constructors.Find(type_name);
     
     if (constructor) {
         entity = constructor(params);

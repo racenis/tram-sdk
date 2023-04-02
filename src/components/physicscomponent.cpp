@@ -25,7 +25,7 @@ namespace tram {
 
         rigidbody = new btRigidBody (bullet_construction_info);
 
-        dynamicsWorld->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        BULLET_DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
         
         rigidbody->setUserPointer(this);
         rigidbody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
@@ -38,7 +38,7 @@ namespace tram {
     }
     
     PhysicsComponent::~PhysicsComponent(){
-        dynamicsWorld->removeRigidBody(rigidbody);
+        BULLET_DYNAMICS_WORLD->removeRigidBody(rigidbody);
         
         delete rigidbody;
         delete motion_state;
@@ -75,8 +75,8 @@ namespace tram {
         rigidbody_collision_mask = flags;
         
         if (is_ready) {
-            dynamicsWorld->removeRigidBody(rigidbody);
-            dynamicsWorld->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+            BULLET_DYNAMICS_WORLD->removeRigidBody(rigidbody);
+            BULLET_DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
         }
     }
     
@@ -88,8 +88,8 @@ namespace tram {
     void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
         rigidbody_collision_group = flags;
         if (is_ready) {
-            dynamicsWorld->removeRigidBody(rigidbody);
-            dynamicsWorld->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+            BULLET_DYNAMICS_WORLD->removeRigidBody(rigidbody);
+            BULLET_DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
         }
     }
 

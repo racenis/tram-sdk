@@ -15,7 +15,7 @@ enum FileSource {
 
 class FileReader {
 public:
-    FileReader (const char* path, FileSource source);
+    FileReader (const char* path, FileSource source = SOURCE_ANY);
     ~FileReader ();
     
     bool is_open();
@@ -26,7 +26,7 @@ public:
 
 class FileWriter {
 public:
-    FileWriter (const char* path, FileSource source);
+    FileWriter (const char* path, FileSource source = SOURCE_ANY);
     ~FileWriter ();
     
     bool is_open();

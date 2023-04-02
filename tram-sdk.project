@@ -49,6 +49,10 @@
       <File Name="src/components/armaturecomponent.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/navmesh.h"/>
+      <File Name="src/framework/navmesh.cpp"/>
+      <File Name="src/framework/path.h"/>
+      <File Name="src/framework/path.cpp"/>
       <File Name="src/framework/loader.h"/>
       <File Name="src/framework/loader.cpp"/>
       <File Name="src/framework/transition.cpp"/>

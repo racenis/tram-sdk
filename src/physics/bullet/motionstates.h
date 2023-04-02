@@ -13,160 +13,158 @@
 #include <components/armaturecomponent.h>
 
 namespace tram::Physics {
-    
-    class EntMotionState : public btMotionState {
-    public:
-        EntMotionState(Entity* ent, glm::vec3& offset) {
-            entity = ent;
-            troffse = offset;
+
+class EntMotionState : public btMotionState {
+public:
+    EntMotionState (Entity* ent, vec3& offset) {
+        entity = ent;
+        troffse = offset;
+    }
+
+    virtual ~EntMotionState() {
+    }
+
+    void SetEntity(Entity* ent) {
+        entity = ent;
+    }
+
+    virtual void getWorldTransform (btTransform &worldTrans) const {
+        vec3 loc;
+        quat rot;
+
+        if (entity == nullptr){
+            loc = vec3(0.0f, 0.0f, 0.0f);
+            rot = quat(vec3(0.0f, 0.0f, 0.0f));
+        } else {
+            loc = entity->GetLocation();
+            rot = entity->GetRotation();
         }
 
-        virtual ~EntMotionState() {
-        }
+        loc += troffse;
 
-        void SetEntity(Entity* ent) {
-            entity = ent;
-        }
+        btVector3 translation;
+        translation.setX(loc.x);
+        translation.setY(loc.y);
+        translation.setZ(loc.z);
 
-        virtual void getWorldTransform(btTransform &worldTrans) const {
-            glm::vec3 loc;
-            glm::quat rot;
+        btQuaternion rotation;
+        rotation.setX(rot.x);
+        rotation.setY(rot.y);
+        rotation.setZ(rot.z);
+        rotation.setW(rot.w);
 
-            if (entity == nullptr){
-                loc = glm::vec3(0.0f, 0.0f, 0.0f);
-                rot = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-            } else {
-                loc = entity->GetLocation();
-                rot = entity->GetRotation();
-            }
+        btTransform transf;
+        transf.setRotation(rotation);
+        transf.setOrigin(translation);
 
-            loc += troffse;
+        worldTrans = transf;
+    }
 
-            btVector3 translation;
-            translation.setX(loc.x);
-            translation.setY(loc.y);
-            translation.setZ(loc.z);
+    virtual void setWorldTransform (const btTransform &worldTrans) {
+        if (entity == nullptr) return;
 
-            btQuaternion rotation;
-            rotation.setX(rot.x);
-            rotation.setY(rot.y);
-            rotation.setZ(rot.z);
-            rotation.setW(rot.w);
+        vec3 location;
+        quat rotation;
 
-            btTransform transf;
-            transf.setRotation(rotation);
-            transf.setOrigin(translation);
+        btQuaternion rot = worldTrans.getRotation();
+        btVector3 loc = worldTrans.getOrigin();
 
-            worldTrans = transf;
-        }
+        location.x = loc.getX();
+        location.y = loc.getY();
+        location.z = loc.getZ();
 
-        virtual void setWorldTransform(const btTransform &worldTrans) {
-            if (entity == nullptr) return;
+        location -= troffse;
 
-            glm::vec3 location;
-            glm::quat rotation;
+        rotation.x = rot.getX();
+        rotation.y = rot.getY();
+        rotation.z = rot.getZ();
+        rotation.w = rot.getW();
 
-            btQuaternion rot = worldTrans.getRotation();
-            btVector3 loc = worldTrans.getOrigin();
+        entity->UpdateTransform(location, rotation);
+    }
 
-            location.x = loc.getX();
-            location.y = loc.getY();
-            location.z = loc.getZ();
+protected:
+    Entity* entity = nullptr;
+    vec3 troffse;
+};
 
-            location -= troffse;
+class ArmMotionState : public btMotionState {
+public:
+    ArmMotionState (name_t boneName, ArmatureComponent* armature, vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
+        ent = entity;
+        arm = armature;
+        offset = bindPos;
+        bone = boneName;
+        physcomp = physicsComp;
+    }
 
-            rotation.x = rot.getX();
-            rotation.y = rot.getY();
-            rotation.z = rot.getZ();
-            rotation.w = rot.getW();
+    virtual ~ArmMotionState() {}
 
-            entity->UpdateTransform(location, rotation);
-        }
+    virtual void getWorldTransform (btTransform &worldTrans) const {
+        vec3 loc = ent->GetLocation();
+        quat rot = ent->GetRotation();
 
-    protected:
-        Entity* entity = nullptr;
-        glm::vec3 troffse;
-    };
+        loc += rot * offset;
 
-    /// Used to interface the physics library with the rest of the system.
-    class ArmMotionState : public btMotionState {
-    public:
-        ArmMotionState(UID boneName, ArmatureComponent* armature, glm::vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
-            ent = entity;
-            arm = armature;
-            offset = bindPos;
-            bone = boneName;
-            physcomp = physicsComp;
-        }
+        btVector3 translation;
+        translation.setX(loc.x);
+        translation.setY(loc.y);
+        translation.setZ(loc.z);
 
-        virtual ~ArmMotionState() {
-        }
+        btQuaternion rotation;
+        rotation.setX(rot.x);
+        rotation.setY(rot.y);
+        rotation.setZ(rot.z);
+        rotation.setW(rot.w);
 
-        virtual void getWorldTransform(btTransform &worldTrans) const {
-            glm::vec3 loc = ent->GetLocation();
-            glm::quat rot = ent->GetRotation();
+        btTransform transf;
+        transf.setRotation(rotation);
+        transf.setOrigin(translation);
 
-            loc += rot * offset;
+        worldTrans = transf;
+    }
 
-            btVector3 translation;
-            translation.setX(loc.x);
-            translation.setY(loc.y);
-            translation.setZ(loc.z);
+    virtual void setWorldTransform (const btTransform &worldTrans) {
+        vec3 location;
+        quat rotation;
 
-            btQuaternion rotation;
-            rotation.setX(rot.x);
-            rotation.setY(rot.y);
-            rotation.setZ(rot.z);
-            rotation.setW(rot.w);
+        btQuaternion rot = worldTrans.getRotation();
+        btVector3 loc = worldTrans.getOrigin();
 
-            btTransform transf;
-            transf.setRotation(rotation);
-            transf.setOrigin(translation);
+        location.x = loc.getX();
+        location.y = loc.getY();
+        location.z = loc.getZ();
 
-            worldTrans = transf;
-        }
+        rotation.x = rot.getX();
+        rotation.y = rot.getY();
+        rotation.z = rot.getZ();
+        rotation.w = rot.getW();
 
-        virtual void setWorldTransform(const btTransform &worldTrans) {
-            glm::vec3 location;
-            glm::quat rotation;
-
-            btQuaternion rot = worldTrans.getRotation();
-            btVector3 loc = worldTrans.getOrigin();
-
-            location.x = loc.getX();
-            location.y = loc.getY();
-            location.z = loc.getZ();
-
-            rotation.x = rot.getX();
-            rotation.y = rot.getY();
-            rotation.z = rot.getZ();
-            rotation.w = rot.getW();
-
-            glm::vec3 ent_loc = ent->GetLocation();
-            glm::quat ent_rot = ent->GetRotation();
+        vec3 ent_loc = ent->GetLocation();
+        quat ent_rot = ent->GetRotation();
 
 
-            location = location - ent_loc;
-            location = glm::inverse(ent_rot) * location;
-            location = location - offset;
+        location = location - ent_loc;
+        location = glm::inverse(ent_rot) * location;
+        location = location - offset;
 
-            rotation = rotation * glm::inverse(ent_rot);
+        rotation = rotation * glm::inverse(ent_rot);
 
-            Render::Keyframe kframe;
-            kframe.rotation = rotation;
-            kframe.location = location;
+        Render::Keyframe kframe;
+        kframe.rotation = rotation;
+        kframe.location = location;
 
-            arm->SetBoneKeyframe(bone, kframe);
-        }
+        arm->SetBoneKeyframe(bone, kframe);
+    }
 
-    protected:
-        PhysicsComponent* physcomp;
-        ArmatureComponent* arm;
-        Entity* ent;
-        glm::vec3 offset;
-        UID bone;
-    };
-    
+protected:
+    PhysicsComponent* physcomp;
+    ArmatureComponent* arm;
+    Entity* ent;
+    vec3 offset;
+    name_t bone;
+};
+
 }
 
 #endif // PHYSICS_BULLET_MOTIONSTATES_H

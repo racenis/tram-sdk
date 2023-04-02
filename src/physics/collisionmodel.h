@@ -10,21 +10,21 @@
 class btCompoundShape;
 
 namespace tram::Physics {
-    class CollisionModel : public Resource {
-    public:
-        CollisionModel(name_t mName) : Resource(mName){
-            name = mName;
-            status = UNLOADED;
-        }
 
-        void LoadFromDisk();
-        void LoadFromMemory(){}
-        inline btCompoundShape* GetShape () { return model; }
+class CollisionModel : public Resource {
+public:
+    CollisionModel(name_t mName) : Resource(mName) {}
 
-        static CollisionModel* Find(name_t modelName);
-    protected:
-        btCompoundShape* model = nullptr;
-    };
+    void LoadFromDisk ();
+    void LoadFromMemory () {}
+    
+    inline btCompoundShape* GetShape () { return model; }
+
+    static CollisionModel* Find (name_t model_name);
+protected:
+    btCompoundShape* model = nullptr;
+};
+
 }
 
 #endif // PHYSICS_COLLISIONMODEL_H

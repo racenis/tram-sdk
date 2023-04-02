@@ -18,8 +18,8 @@ struct SystemStat {
     double time_spent_total = 0.0f;     //< total time spend during all periods
 };
 
-static std::vector<SystemStat> all_stats;
-static std::vector<size_t> all_resources;
+static std::vector<SystemStat> all_stats (100);
+static std::vector<size_t> all_resources (100);
 
 static uint32_t last_collate = -1;
 
@@ -36,8 +36,8 @@ void Start (System::system_t system) {
 
 /// Stops counting time spent on a system.
 void Stop (System::system_t system) {
-    assert(all_stats.size() > system &&  "System does not exist.");
-    assert(all_stats[system].time_started != -1.0f && "System was not started.");
+    assert(all_stats.size() > system && "System does not exist.");
+    assert(all_stats[system].time_started != -1.0f && "System statistics was not started.");
     
     all_stats[system].time_spent += GetTime() - all_stats[system].time_started;
     all_stats[system].time_started = -1.0f;
@@ -45,9 +45,7 @@ void Stop (System::system_t system) {
 
 /// Adds an ammount of a resource.
 void Add (Resource resource, size_t ammount) {
-    if (all_resources.size() <= resource) {
-        all_resources.resize(resource + 1);
-    }
+    assert(all_resources.size() > resource && "Resource does not exist.");
     
     all_resources[resource] += ammount;
 }
@@ -76,7 +74,7 @@ void Collate () {
 }
 
 /// Returns the uncollated ammount of a resource.
-double GetStat (Resource resource) {
+size_t GetStat (Resource resource) {
     assert(all_resources.size() > resource);
     return all_resources[resource];
 }

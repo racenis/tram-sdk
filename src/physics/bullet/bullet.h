@@ -10,24 +10,26 @@
 #include <btBulletDynamicsCommon.h>
 
 namespace tram::Physics {
-    enum UserIndex : int {
-        USERINDEX_PHYSICSCOMPONENT = 1,
-        USERINDEX_TRIGGERCOMPONENT = 2,
-    };
     
-    btConvexShape* CollisionShapeToConvexShape (CollisionShape shape);
+enum UserIndex : int {
+    USERINDEX_PHYSICSCOMPONENT = 1,
+    USERINDEX_TRIGGERCOMPONENT = 2,
+};
+
+btConvexShape* CollisionShapeToConvexShape (CollisionShape shape);
+
+void InitBullet();
+void StepPhysics();
+void DrawDebug();
+
+extern btBroadphaseInterface* BULLET_BROADPHASE_INTERFACE;
+extern btDefaultCollisionConfiguration* BULLET_COLLISION_CONFIGURATION;
+extern btCollisionDispatcher* BULLET_COLLIISION_DISPATCHER;
+extern btSequentialImpulseConstraintSolver* BULLET_CONSTRAINT_SOLVER;
+extern btDiscreteDynamicsWorld* BULLET_DYNAMICS_WORLD;
+extern btIDebugDraw* BULLET_DEBUG_DRAWER;
+extern btVehicleRaycaster* BULLET_VEHICLE_RAYCASTER;
     
-    void InitBullet();
-    void StepPhysics();
-    void DrawDebug();
-    
-    extern btBroadphaseInterface* broadphaseInterface;
-    extern btDefaultCollisionConfiguration* collisionConfiguration;
-    extern btCollisionDispatcher* collisionDispatcher;
-    extern btSequentialImpulseConstraintSolver* constraintSolver;
-    extern btDiscreteDynamicsWorld* dynamicsWorld;
-    extern btIDebugDraw* debugDrawer;
-    extern btVehicleRaycaster* vehicleRaycaster;
 }
 
 #endif // PHYSICS_BULLET_BULLET_H

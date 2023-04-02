@@ -58,9 +58,9 @@ public:
 
     void CheckTransition();
 
-    static Entity* Make (std::string_view& params);
+    static Entity* Make (name_t type_name, std::string_view& params);
 
-    static void Register (const char* name, Entity* (*constr_func)(std::string_view& params));
+    static void RegisterType (name_t name, Entity* (*constr_func)(std::string_view& params));
 
     static Entity* Find (id_t entity_id);
 

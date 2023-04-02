@@ -12,8 +12,6 @@
 namespace tram {
 
 class Entity;
-class Path;
-class Navmesh;
 class Transition;
 class Loader;
 
@@ -36,10 +34,6 @@ public:
     void Unload();
 
     void LoadFromDisk();
-    
-    void DrawTransitions();
-    void DrawNavmeshes();
-    void DrawPaths();
 
     void AddEntity(Entity* entity);
     void RemoveEntity(Entity* entity);
@@ -66,8 +60,6 @@ protected:
     std::vector<Entity*> entities;
     std::vector<Transition*> transitions_into;
     std::vector<Transition*> transitions_from;
-    std::vector<Path*> paths;
-    std::vector<Navmesh*> navmeshes;
     friend class Loader;
 };
 

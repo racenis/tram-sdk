@@ -2,6 +2,7 @@
 // All rights reserved.
 
 #include <framework/gui.h>
+#include <framework/stats.h>
 #include <framework/worldcell.h>
 
 #include <physics/physics.h>
@@ -75,15 +76,15 @@ namespace tram::Ext::Menu {
         static bool debugdraw_stats = false;
         
         
-        if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawTransitions();
-        if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawPaths();
-        if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawNavmeshes();
+        //if (debugdraw_trans) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawTransitions();
+        //if (debugdraw_paths) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawPaths();
+        //if (debugdraw_navmeshes) for (auto& cell : PoolProxy<WorldCell>::GetPool()) if (cell.IsDebugDraw()) cell.DrawNavmeshes();
         
         if (debugdraw_stats) {
             char meminfobuffer[100]; char timeinfobuffer[100]; char fpsinfobuffer[100];
-            //sprintf(meminfobuffer, "VRAM approximate usage: %lldKB", (RESOURCE_VRAM_USAGE / 1024));
-            //sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::final_time_avg[Stats::FRAME]);
-            //sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::final_time_avg[Stats::FRAME]));
+            sprintf(meminfobuffer, "VRAM approximate usage: %lldKB", (Stats::GetStat(Stats::RESOURCE_VRAM) / 1024));
+            sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::GetStat(System::SYSTEM_RENDER));
+            sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::GetStat(System::SYSTEM_RENDER)));
             GUI::Text(meminfobuffer, 2); GUI::FrameBreakLine();
             GUI::Text(timeinfobuffer, 2); GUI::FrameBreakLine();
             GUI::Text(fpsinfobuffer, 2); GUI::FrameBreakLine();

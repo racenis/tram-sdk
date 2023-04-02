@@ -5,7 +5,12 @@
 
 namespace tram {
 
-/// This will attempt to read file into memory.
+/// Loads a file into memory.
+/// Use FileReader::is_open() to check if the file was successfully loaded. If
+/// it was, then you can access the contents through the FileReader::contents
+/// pointer and get the length of the file from FileReader::length.
+/// @param path     Path to the file.
+/// @param source   Source from which the file will be loaded.
 FileReader::FileReader (const char* path, FileSource source) {
     FILE* file_handle = fopen(path, "rb");
     
@@ -34,6 +39,8 @@ FileReader::FileReader (const char* path, FileSource source) {
 }
 
 /// Deletes the loaded file from memory.
+/// This will free the memory pointed to by FileReader::contents, so if you need
+/// anything from there, you'll need to copy it out before you close the file.
 FileReader::~FileReader () {
     delete[] this->contents;
     
@@ -49,6 +56,8 @@ bool FileReader::is_open() {
 
 
 /// Opens a file for writing.
+/// @param path     Path to the file.
+/// @param source   Source to which the file will be written.
 FileWriter::FileWriter (const char* path, FileSource source) {
     this->file_handle = fopen(path, "wb");
 
@@ -83,6 +92,9 @@ FileWriter::~FileWriter () {
 }
 
 /// Writes to a file.
+/// @note  This will completely overwrite the file contents. 
+/// @param data     Data which will be written to the file.
+/// @param length   Length of the data, in bytes, pointed to by data parameter.
 void FileWriter::write (const char* data, size_t length) {
     assert(length + buffer_length > 1000);
     
@@ -95,6 +107,5 @@ void FileWriter::write (const char* data, size_t length) {
 bool FileWriter::is_open() {
     return this->file_handle != nullptr;
 }
-
 
 }
