@@ -92,13 +92,6 @@ void Model::LoadFromMemory(){
 }
 
 
-bool Model::Unload(){
-    // TODO: add the code that deletes models
-    // like the gldeletebuffers()
-    return false;
-}
-
-
 void Model::LoadFromDisk(){
     assert(status == UNLOADED);
     std::ifstream file;

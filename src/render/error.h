@@ -1,8 +1,8 @@
 //clTabCtrl TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef TRAM_SDL_RENDER_ERROR_H
-#define TRAM_SDL_RENDER_ERROR_H
+#ifndef TRAM_SDK_RENDER_ERROR_H
+#define TRAM_SDK_RENDER_ERROR_H
 
 #include <render/vertices.h>
 
@@ -14,4 +14,4 @@ StaticModelData* MakeNewErrorModel();
     
 }
 
-#endif // TRAM_SDL_RENDER_ERROR_H
+#endif // TRAM_SDK_RENDER_ERROR_H

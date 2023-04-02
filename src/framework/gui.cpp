@@ -216,7 +216,7 @@ void GlyphNoclip(const float& x, const float& y, const float& w, const float& h,
 
 void Glyph(const uint32_t& symbol, const float& x, const float& y) {
     //auto& f = UI::glyphinfo[0][symbol]; // yeah, this will have to go
-    auto& f = fonts[0]->frames[symbol];
+    auto& f = fonts[0]->GetFrames()[symbol];
     Glyph(x, y, f.width, f.height, f.offset_x, f.offset_y, Render::COLOR_WHITE, 0);
 }
 
@@ -315,12 +315,12 @@ void ScrollBar(float& scroll, float& height) {
     //auto& st = UI::glyphinfo[0][SCROLL_BAR];
     //auto& sb = UI::glyphinfo[0][SCROLL_BAR+1];
     //auto& sm = UI::glyphinfo[0][SCROLL_BAR+2];
-    auto& tb = fonts[0]->frames[BUTTON_UP];
-    auto& bb = fonts[0]->frames[BUTTON_DOWN];
-    auto& tr = fonts[0]->frames[SCROLL_TRACK];
-    auto& st = fonts[0]->frames[SCROLL_BAR];
-    auto& sb = fonts[0]->frames[SCROLL_BAR+1];
-    auto& sm = fonts[0]->frames[SCROLL_BAR+2];
+    auto& tb = fonts[0]->GetFrames()[BUTTON_UP];
+    auto& bb = fonts[0]->GetFrames()[BUTTON_DOWN];
+    auto& tr = fonts[0]->GetFrames()[SCROLL_TRACK];
+    auto& st = fonts[0]->GetFrames()[SCROLL_BAR];
+    auto& sb = fonts[0]->GetFrames()[SCROLL_BAR+1];
+    auto& sm = fonts[0]->GetFrames()[SCROLL_BAR+2];
 
     auto& f = FrameStack.top();
     float x = f.width - tb.width;
@@ -407,7 +407,7 @@ void FrameBreakLine() {
 
 bool SmallButton(const symbol& glyph) {
     //auto& f = UI::glyphinfo[0][glyph];
-    auto& f = fonts[0]->frames[glyph];
+    auto& f = fonts[0]->GetFrames()[glyph];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - f.height) / 2.0f);
     bool isclick = false;
@@ -432,7 +432,7 @@ bool SmallButton(const symbol& glyph) {
 
 void CheckBox(bool& check) {
     //auto& f = UI::glyphinfo[0][BUTTON_CHECHBOX];
-    auto& f = fonts[0]->frames[BUTTON_CHECHBOX];
+    auto& f = fonts[0]->GetFrames()[BUTTON_CHECHBOX];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - f.height) / 2.0f);
     
@@ -453,7 +453,7 @@ void CheckBox(bool& check) {
 
 void RadioButton(uint32_t& val, const uint32_t& this_val) {
     //auto& f = UI::glyphinfo[0][BUTTON_RADIO];
-    auto& f = fonts[0]->frames[BUTTON_RADIO];
+    auto& f = fonts[0]->GetFrames()[BUTTON_RADIO];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - f.height) / 2.0f);
     
@@ -477,7 +477,7 @@ void GlyphText(char const* text, font_t font, float x, float y, float space, con
     for (char const* t = text; *t != '\0'; t++) {
         if (*t == ' ') { x += space; continue; }
         //auto& f = UI::glyphinfo[font][(size_t)*t];
-        auto& f = fonts[font]->frames[(size_t)*t];
+        auto& f = fonts[font]->GetFrames()[(size_t)*t];
         Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.width, f.height, f.offset_x, f.offset_y, color, font);
         x += f.width;
     }
@@ -488,7 +488,7 @@ void GlyphText(char const* text, char const* end, font_t font, float x, float y,
     for (char const* t = text; t != end; t++) {
         if (*t == ' ') { x += space; continue; }
         //auto& f = UI::glyphinfo[font][(size_t)*t];
-        auto& f = fonts[font]->frames[(size_t)*t];
+        auto& f = fonts[font]->GetFrames()[(size_t)*t];
         Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.width, f.height, f.offset_x, f.offset_y, color, font);
         x += f.width;
     }
@@ -501,7 +501,7 @@ void GlyphMetrics(char const* text, font_t font, float& w, uint32_t& sp, char co
     for (; *it != '\n' && *it != '\0'; it++) {
         if (*it == ' ') sp++;
         //w += UI::glyphinfo[font][(size_t)*it].w;
-        w += fonts[font]->frames[(size_t)*it].width;
+        w += fonts[font]->GetFrames()[(size_t)*it].width;
     } nl = it;
 }
 
@@ -546,9 +546,9 @@ bool Button(char const* text) {
     //auto& l = UI::glyphinfo[0][BUTTON_TEXT + LEFT];
     //auto& m = UI::glyphinfo[0][BUTTON_TEXT + MIDDLE];
     //auto& r = UI::glyphinfo[0][BUTTON_TEXT + RIGHT];        
-    auto& l = fonts[0]->frames[BUTTON_TEXT + LEFT];
-    auto& m = fonts[0]->frames[BUTTON_TEXT + MIDDLE];
-    auto& r = fonts[0]->frames[BUTTON_TEXT + RIGHT];
+    auto& l = fonts[0]->GetFrames()[BUTTON_TEXT + LEFT];
+    auto& m = fonts[0]->GetFrames()[BUTTON_TEXT + MIDDLE];
+    auto& r = fonts[0]->GetFrames()[BUTTON_TEXT + RIGHT];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.height) / SPACE_WIDTH);
     bool isclick = false;
@@ -589,9 +589,9 @@ void TextBox(char* text, uint32_t max_len) {
     //auto& l = UI::glyphinfo[0][BUTTON_TEXTBOX + LEFT];
     //auto& m = UI::glyphinfo[0][BUTTON_TEXTBOX + MIDDLE];
     //auto& r = UI::glyphinfo[0][BUTTON_TEXTBOX + RIGHT];        
-    auto& l = fonts[0]->frames[BUTTON_TEXTBOX + LEFT];
-    auto& m = fonts[0]->frames[BUTTON_TEXTBOX + MIDDLE];
-    auto& r = fonts[0]->frames[BUTTON_TEXTBOX + RIGHT];
+    auto& l = fonts[0]->GetFrames()[BUTTON_TEXTBOX + LEFT];
+    auto& m = fonts[0]->GetFrames()[BUTTON_TEXTBOX + MIDDLE];
+    auto& r = fonts[0]->GetFrames()[BUTTON_TEXTBOX + RIGHT];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.height) / SPACE_WIDTH);
     //bool isclick = false;
@@ -629,9 +629,9 @@ void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
     //auto& l = UI::glyphinfo[0][BUTTON_DROPDOWN + LEFT];
     //auto& m = UI::glyphinfo[0][BUTTON_DROPDOWN + MIDDLE];
     //auto& r = UI::glyphinfo[0][BUTTON_DROPDOWN + RIGHT];
-    auto& l = fonts[0]->frames[BUTTON_DROPDOWN + LEFT];
-    auto& m = fonts[0]->frames[BUTTON_DROPDOWN + MIDDLE];
-    auto& r = fonts[0]->frames[BUTTON_DROPDOWN + RIGHT];
+    auto& l = fonts[0]->GetFrames()[BUTTON_DROPDOWN + LEFT];
+    auto& m = fonts[0]->GetFrames()[BUTTON_DROPDOWN + MIDDLE];
+    auto& r = fonts[0]->GetFrames()[BUTTON_DROPDOWN + RIGHT];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.height) / SPACE_WIDTH);
     //bool isclick = false;
@@ -663,15 +663,15 @@ void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
         //auto& t = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP];
         //auto& b = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM];
         //auto& c = UI::glyphinfo[0][BOX_PLAIN + CORNER_CENTER];            
-        auto& tl = fonts[0]->frames[BOX_PLAIN + CORNER_TOP_LEFT];
-        auto& tr = fonts[0]->frames[BOX_PLAIN + CORNER_TOP_RIGHT];
-        auto& bl = fonts[0]->frames[BOX_PLAIN + CORNER_BOTTOM_LEFT];
-        auto& br = fonts[0]->frames[BOX_PLAIN + CORNER_BOTTOM_RIGHT];
-        auto& l = fonts[0]->frames[BOX_PLAIN + CORNER_LEFT];
-        auto& r = fonts[0]->frames[BOX_PLAIN + CORNER_RIGHT];
-        auto& t = fonts[0]->frames[BOX_PLAIN + CORNER_TOP];
-        auto& b = fonts[0]->frames[BOX_PLAIN + CORNER_BOTTOM];
-        auto& c = fonts[0]->frames[BOX_PLAIN + CORNER_CENTER];
+        auto& tl = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_TOP_LEFT];
+        auto& tr = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_TOP_RIGHT];
+        auto& bl = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_BOTTOM_LEFT];
+        auto& br = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_BOTTOM_RIGHT];
+        auto& l = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_LEFT];
+        auto& r = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_RIGHT];
+        auto& t = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_TOP];
+        auto& b = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_BOTTOM];
+        auto& c = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_CENTER];
         float b_y = y + m.height;
         float total_h = len * 16.0f;
         float mid_w = total_w - tl.width - tr.width;

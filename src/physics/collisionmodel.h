@@ -18,6 +18,8 @@ public:
     void LoadFromDisk ();
     void LoadFromMemory () {}
     
+    void Unload() {}
+    
     inline btCompoundShape* GetShape () { return model; }
 
     static CollisionModel* Find (name_t model_name);

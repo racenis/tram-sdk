@@ -72,12 +72,12 @@ namespace tram {
     void ParticleComponent::UpdateRenderListObject(){
         if (!is_ready) return;
         
-        float tex_width = sprite->frames.front().width / (float)sprite->GetMaterial()->GetWidth();
-        float tex_height = sprite->frames.front().height / (float)sprite->GetMaterial()->GetHeight();
-        float tex_w_off = sprite->frames.front().offset_x / (float)sprite->GetMaterial()->GetWidth();
-        float tex_h_off = sprite->frames.front().offset_y / (float)sprite->GetMaterial()->GetHeight();
-        float half_width = tex_width * sprite->frames.front().scale / 2.0f;
-        float half_height = tex_height * sprite->frames.front().scale / 2.0f;
+        float tex_width = sprite->GetFrames().front().width / (float)sprite->GetMaterial()->GetWidth();
+        float tex_height = sprite->GetFrames().front().height / (float)sprite->GetMaterial()->GetHeight();
+        float tex_w_off = sprite->GetFrames().front().offset_x / (float)sprite->GetMaterial()->GetWidth();
+        float tex_h_off = sprite->GetFrames().front().offset_y / (float)sprite->GetMaterial()->GetHeight();
+        float half_width = tex_width * sprite->GetFrames().front().scale / 2.0f;
+        float half_height = tex_height * sprite->GetFrames().front().scale / 2.0f;
 
         std::vector<Render::SpriteVertex> vertices;
 

@@ -12,20 +12,27 @@ namespace tram {
 class Resource  {
 public:
     enum Status {
-        UNLOADED,          /// Resource not in memory. Can't be used.
-        LOADED,            /// Resource loaded in memory, but still needs some processing (like uploading to video memory).
-        READY,             /// Resource is ready for use.
+        UNLOADED,   //< Resource not in memory. Can't be used.
+        LOADED,     //< Resource loaded in memory, but still needs some processing (like uploading to video memory).
+        READY,      //< Resource is ready for sus.
     };
 
     Resource (name_t name) : name(name) {}
+    
     inline Resource::Status GetStatus() const { return status; }
-    inline name_t GetName() { return name; }
-    inline size_t GetReferences() { return references; }
+    inline name_t GetName() const { return name; }
+    inline size_t GetReferences() const { return references; }
+    inline bool IsLoadFailed() const { return load_fail; }
+    
     inline void AddReference() { references++; }
     inline void RemoveReference() { references--; }
-    void virtual LoadFromDisk() = 0;
-    void virtual LoadFromMemory() = 0;
     
+    virtual void LoadFromDisk() = 0;
+    virtual void LoadFromMemory() = 0;
+    
+    void Load() { LoadFromDisk(); LoadFromMemory(); }
+    
+    virtual void Unload() = 0;
 protected:
     Status status = UNLOADED;
     name_t name;

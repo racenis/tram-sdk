@@ -34,18 +34,16 @@ namespace tram::Render{
         ModelData* model_data = nullptr;
         size_t approx_vram_usage = 0;
     public:
-        Model (name_t mName) : Resource(mName) {name = mName; status = UNLOADED; /*res_type = RESOURCE_MATERIAL;*/}
+        Model (name_t name) : Resource(name) {}
 
-        bool Load(){
-            LoadFromDisk();
-            LoadFromMemory();
-            return true;
-        };
-        bool Unload();
         void LoadFromDisk();
         void LoadFromMemory();
+        
+        void Unload() {}
+        
         size_t GetArmatureSize() { return armature.size(); }
         Bone* GetArmature() { return &armature.front(); }
+        
         static Model* Find(name_t name);
     };
 }

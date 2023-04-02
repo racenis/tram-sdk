@@ -41,7 +41,7 @@ namespace tram {
             if (!(anim_bframe < anim_speed)) {
                 anim_bframe = 0;
                 anim_frame++;
-                if (!(anim_frame < sprite->frames.size())) anim_frame = 0;
+                if (!(anim_frame < sprite->GetFrames().size())) anim_frame = 0;
             }
             anim_bframe++;
         }
@@ -51,12 +51,12 @@ namespace tram {
         if (!is_ready) return;
 
         // maybe cache these values, instead of re-calculating them for each frame?
-        float tex_width = (float)sprite->frames[anim_frame].width / (float)sprite->GetMaterial()->GetWidth();//sprite->width;
-        float tex_height = (float)sprite->frames[anim_frame].height / (float)sprite->GetMaterial()->GetHeight(); //sprite->height;
-        float tex_w_off = (float)sprite->frames[anim_frame].offset_x / (float)sprite->GetMaterial()->GetWidth();//(float)(anim_frame % sprite->frames_w) * tex_width;
-        float tex_h_off = (float)sprite->frames[anim_frame].offset_y / (float)sprite->GetMaterial()->GetHeight();//(float)(anim_frame / sprite->frames_w) * tex_height;
-        float half_width = tex_width * sprite->frames[anim_frame].scale / 2.0f;
-        float half_height = tex_height * sprite->frames[anim_frame].scale / 2.0f;
+        float tex_width = (float)sprite->GetFrames()[anim_frame].width / (float)sprite->GetMaterial()->GetWidth();//sprite->width;
+        float tex_height = (float)sprite->GetFrames()[anim_frame].height / (float)sprite->GetMaterial()->GetHeight(); //sprite->height;
+        float tex_w_off = (float)sprite->GetFrames()[anim_frame].offset_x / (float)sprite->GetMaterial()->GetWidth();//(float)(anim_frame % sprite->frames_w) * tex_width;
+        float tex_h_off = (float)sprite->GetFrames()[anim_frame].offset_y / (float)sprite->GetMaterial()->GetHeight();//(float)(anim_frame / sprite->frames_w) * tex_height;
+        float half_width = tex_width * sprite->GetFrames()[anim_frame].scale / 2.0f;
+        float half_height = tex_height * sprite->GetFrames()[anim_frame].scale / 2.0f;
 
         Render::SpriteVertex top_left {
             .co = glm::vec3(0.0f, 0.0f, 0.0f),

@@ -58,7 +58,7 @@ void Sprite::LoadFromDisk() {
     if (!file.is_open()) {
         Log("Sprite not found: {}", filename);
         
-        frames.push_back(Frame {
+        frames.push_back({
             0, 0,
             64, 64,
             0, 0,
@@ -90,7 +90,7 @@ void Sprite::LoadFromDisk() {
         if(first_nospace == std::string::npos || str[first_nospace] == '#') continue;
         std::stringstream wrd (str);
         
-        Frame fr;
+        SpriteFrame fr;
         
         wrd >> fr.offset_x;
         wrd >> fr.offset_y;
@@ -122,7 +122,7 @@ void Sprite::AutogenTiledFrames(uint16_t frame_offset_x, uint16_t frame_offset_y
     frames.clear();
     
     for (uint16_t i = 0; i < frame_count; i++) {
-        frames.push_back(Frame {
+        frames.push_back({
             .offset_x = current_offset_x,
             .offset_y = current_offset_y,
             .width = frame_width,
