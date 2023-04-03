@@ -65,7 +65,7 @@ void Sprite::LoadFromDisk() {
     }
     
     while (file.is_continue()) {
-        frames.push_back({
+        frames.push_back ({
             .offset_x = file.read_uint16(),
             .offset_y = file.read_uint16(),
             .width = file.read_uint16(),

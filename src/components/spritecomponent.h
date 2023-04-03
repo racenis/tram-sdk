@@ -8,50 +8,52 @@
 #include <render/sprite.h>
 
 namespace tram {
-    class SpriteComponent : public EntityComponent {
-    public:
-        SpriteComponent() : sprite(this){}
-        ~SpriteComponent();
-        inline name_t GetSprite(){return sprite->GetName();}
 
-        void SetSprite(Render::Sprite* sprite){
-            this->sprite = sprite;
-        }
+class SpriteComponent : public EntityComponent {
+public:
+    SpriteComponent() : sprite(this){}
+    ~SpriteComponent();
+    inline name_t GetSprite(){return sprite->GetName();}
 
-        void Start();
-        
-        void Update();
-        
-        void Play();
-        
-        void Pause();
-        
-        void SetPlaySpeed(size_t speed);
+    void SetSprite(Render::Sprite* sprite){
+        this->sprite = sprite;
+    }
 
-        void UpdateRenderListObject();
-
-        void UpdateLocation(glm::vec3 nlocation){
-            location = nlocation;
-            UpdateRenderListObject();
-        }
-
-        void EventHandler(Event &event){return;}
-
-    protected:
-        ResourceProxy<Render::Sprite> sprite;
+    void Start();
     
-        Render::drawlistentry_t draw_list_entry;
-        
-        glm::vec3 location;
-        
-        size_t anim_frame = 0;
-        size_t anim_speed = 0;
-        size_t anim_bframe = 0;
-        bool anim_isplaying = false;
-        
-        uint32_t vertex_array;
-        uint32_t vertex_buffer;
-    };
+    void Update();
+    
+    void Play();
+    
+    void Pause();
+    
+    void SetPlaySpeed(size_t speed);
+
+    void UpdateRenderListObject();
+
+    void UpdateLocation(glm::vec3 nlocation){
+        location = nlocation;
+        UpdateRenderListObject();
+    }
+
+    void EventHandler(Event &event){return;}
+
+protected:
+    ResourceProxy<Render::Sprite> sprite;
+
+    Render::drawlistentry_t draw_list_entry;
+    
+    glm::vec3 location;
+    
+    size_t anim_frame = 0;
+    size_t anim_speed = 0;
+    size_t anim_bframe = 0;
+    bool anim_isplaying = false;
+    
+    uint32_t vertex_array;
+    uint32_t vertex_buffer;
+};
+
 }
 
 #endif // COMPONENTS_SPRITECOMPONENT_H

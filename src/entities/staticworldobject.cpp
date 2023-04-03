@@ -8,67 +8,68 @@
 #include <components/physicscomponent.h>
 
 namespace tram {
-    using namespace tram::Physics;
 
-    StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
-        data.make();
-        data->FromString(str);
-    };
+using namespace tram::Physics;
 
-    void StaticWorldObject::UpdateParameters() {
-        if(is_loaded){
-            rendercomponent->SetLocation(location);
-            rendercomponent->SetRotation(rotation);
-        }
+StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
+    data.make();
+    data->FromString(str);
+};
+
+void StaticWorldObject::UpdateParameters() {
+    if(is_loaded){
+        rendercomponent->SetLocation(location);
+        rendercomponent->SetRotation(rotation);
     }
-    
-    void StaticWorldObject::SetParameters() {
-        if(is_loaded){
-            rendercomponent->SetLocation(location);
-            rendercomponent->SetRotation(rotation);
-            physicscomponent->SetLocation(location);
-            physicscomponent->SetRotation(rotation);
-        }
+}
+
+void StaticWorldObject::SetParameters() {
+    if(is_loaded){
+        rendercomponent->SetLocation(location);
+        rendercomponent->SetRotation(rotation);
+        physicscomponent->SetLocation(location);
+        physicscomponent->SetRotation(rotation);
     }
+}
 
-    void StaticWorldObject::Load(){
-        rendercomponent.make();
-        rendercomponent->SetModel(data->model);
-        rendercomponent->SetLightmap(data->lightmap);
-        rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
+void StaticWorldObject::Load(){
+    rendercomponent.make();
+    rendercomponent->SetModel(data->model);
+    rendercomponent->SetLightmap(data->lightmap);
+    rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
 
-        physicscomponent.make();
-        physicscomponent->SetModel(data->model);
-        physicscomponent->SetMass(0.0f);
-        physicscomponent->SetParent(this);
-        physicscomponent->SetCollisionGroup(COLL_WORLDOBJ);
+    physicscomponent.make();
+    physicscomponent->SetModel(data->model);
+    physicscomponent->SetMass(0.0f);
+    physicscomponent->SetParent(this);
+    physicscomponent->SetCollisionGroup(COLL_WORLDOBJ);
 
-        data.clear();
+    data.clear();
 
-        rendercomponent->Init();
-        physicscomponent->Init();
-        is_loaded = true;
+    rendercomponent->Init();
+    physicscomponent->Init();
+    is_loaded = true;
 
-        UpdateParameters();
-    };
+    UpdateParameters();
+};
 
-    void StaticWorldObject::Unload(){
-        is_loaded = false;
-        Serialize();
+void StaticWorldObject::Unload(){
+    is_loaded = false;
+    Serialize();
 
-        rendercomponent.clear();
-        physicscomponent.clear();
-    };
+    rendercomponent.clear();
+    physicscomponent.clear();
+};
 
-    void StaticWorldObject::Serialize() {
-        data.make();
+void StaticWorldObject::Serialize() {
+    data.make();
 
-        data->model = rendercomponent->GetModel();
-        data->lightmap = rendercomponent->GetLightmap();
-    };
+    data->model = rendercomponent->GetModel();
+    data->lightmap = rendercomponent->GetLightmap();
+};
 
-    void StaticWorldObject::MessageHandler(Message& msg){
-        return;
-    };
+void StaticWorldObject::MessageHandler(Message& msg){
+    return;
+};
 
 }

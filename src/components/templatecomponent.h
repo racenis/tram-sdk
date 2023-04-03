@@ -7,16 +7,16 @@
 #include <framework/entitycomponent.h>
 
 namespace tram {
-    
-    class TemplateComponent : public EntityComponent {
-    public:
-        TemplateComponent();
-        ~TemplateComponent();
-        void Init();
-        void Start();
-        void EventHandler(Event &event);
-    };
-    
+
+class TemplateComponent : public EntityComponent {
+public:
+    TemplateComponent();
+    ~TemplateComponent();
+    void Init();
+    void Start();
+    void EventHandler(Event &event);
+};
+
 }
 
 #endif // COMPONENTS_TEMPLATECOMPONENT_H

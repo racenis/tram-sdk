@@ -20,6 +20,8 @@ static void skip_text_whitespace (const char*& cursor, const char* cursor_end) {
             
             skip_text_line (cursor, cursor_end);
             skip_text_whitespace (cursor, cursor_end);
+            
+            return;
         }
         
         cursor++;

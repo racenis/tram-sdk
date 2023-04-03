@@ -7,47 +7,49 @@
 #include <render/model.h>
 
 namespace tram {
-    class ArmatureComponent;
-    
-    class RenderComponent : public EntityComponent {
-    public:
-        RenderComponent();
-        ~RenderComponent();
-        inline name_t GetModel(){return model->GetName();};
 
-        inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
+class ArmatureComponent;
 
-        void SetModel(name_t name);
+class RenderComponent : public EntityComponent {
+public:
+    RenderComponent();
+    ~RenderComponent();
+    inline name_t GetModel(){return model->GetName();};
 
-        void SetLightmap(name_t name);
+    inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
 
-        void SetArmature(ArmatureComponent* armature);
+    void SetModel(name_t name);
 
-        void Start();
+    void SetLightmap(name_t name);
 
-        void SetLocation(glm::vec3 nlocation);
+    void SetArmature(ArmatureComponent* armature);
 
-        void SetRotation(glm::quat nrotation);
+    void Start();
 
-        void SetWorldParameters (bool interior_lighting);
+    void SetLocation(glm::vec3 nlocation);
 
-        void EventHandler(Event &event){return;}
+    void SetRotation(glm::quat nrotation);
 
-    protected:
-        void InsertDrawListEntry();
-    
-        ResourceProxy<Render::Model> model;
-        ResourceProxy<Render::Material> lightmap;
+    void SetWorldParameters (bool interior_lighting);
 
-        Render::drawlistentry_t draw_list_entry;
+    void EventHandler(Event &event){return;}
 
-        Render::Pose* pose = nullptr;
+protected:
+    void InsertDrawListEntry();
 
-        vec3 location;
-        quat rotation;
+    ResourceProxy<Render::Model> model;
+    ResourceProxy<Render::Material> lightmap;
 
-        uint32_t render_flags;
-    };
+    Render::drawlistentry_t draw_list_entry;
+
+    Render::Pose* pose = nullptr;
+
+    vec3 location;
+    quat rotation;
+
+    uint32_t render_flags;
+};
+
 }
 
 #endif // COMPONENTS_RENDERCOMPONENT_H

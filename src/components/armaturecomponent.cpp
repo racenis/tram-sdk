@@ -7,7 +7,7 @@ namespace tram {
     
 template <> Pool<ArmatureComponent> PoolProxy<ArmatureComponent>::pool("armature component pool", 50, false);
 
-void ArmatureComponent::Init(){
+void ArmatureComponent::Init() {
     assert(!is_ready);
     is_init = true;
     poseobj = PoolProxy<Render::Pose>::New ();
@@ -15,17 +15,17 @@ void ArmatureComponent::Init(){
     for (size_t i = 0; i < Render::BONE_COUNT; i++) poseobj->pose[i] = mat4(1.0f);
 
     if (resources_waiting == 0) Start();
-};
+}
     
-ArmatureComponent::~ArmatureComponent(){
+ArmatureComponent::~ArmatureComponent() {
     assert(is_ready);
     assert(poseobj);
     PoolProxy<Render::Pose>::Delete (poseobj);
     poseobj = nullptr;
     is_ready = false;
-};
+}
 
-void ArmatureComponent::Start(){
+void ArmatureComponent::Start() {
     assert(!is_ready);
     // it's probably not necessary to cache this, but whatever
     armature_bone_count = model->GetArmature().size();
@@ -42,7 +42,7 @@ void ArmatureComponent::Start(){
 }
 
 /// Sets procedural animation keyframe.
-void ArmatureComponent::SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe){
+void ArmatureComponent::SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe) {
     // not super efficient, but it works
     // maybe add a method for setting the keyframe based on the index
     for (size_t i = 0; i < armature_bone_count; i++){
@@ -66,7 +66,7 @@ void ArmatureComponent::SetBoneKeyframe (name_t bone_name, const Render::Keyfram
 /// @param interpolate      If set to true, then animation will be interpolated, if set to
 ///                         false, then it will use only the latest keyframe.
 /// @param pause_on_last    If set to true, then the animation will pause on the last keyframe.
-void ArmatureComponent::PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame){
+void ArmatureComponent::PlayAnimation (name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame) {
     // find an empty slot for the animation
     size_t slot;
     for (slot = 0; slot < ANIM_COUNT; slot++) {
@@ -110,7 +110,7 @@ void ArmatureComponent::PlayAnimation(name_t animation_name, uint32_t repeats, f
 }
 
 /// Extracts pointers to keyframes from animation data.
-void ArmatureComponent::FindKeyframePointers(size_t animation_index) {
+void ArmatureComponent::FindKeyframePointers (size_t animation_index) {
     const auto& slot = animation_index;
     size_t anim_bone_count = anim_info[slot].animation_header->second;
     
@@ -138,7 +138,7 @@ void ArmatureComponent::FindKeyframePointers(size_t animation_index) {
 
 /// Stops an animation if its playing.
 /// Will do nothing, if the animation is not playing.
-void ArmatureComponent::StopAnimation(name_t animation_name){
+void ArmatureComponent::StopAnimation (name_t animation_name) {
     for (size_t i = 0; i < ANIM_COUNT; i++){
         if(anim_playing[i] == animation_name){
             anim_playing[i] = UID();
@@ -159,7 +159,7 @@ void ArmatureComponent::StopAnimation(name_t animation_name){
 /// or continuing an already playing animation will do nothing.
 /// @param animation_name Name of the animation to pause.
 /// @param pause            Set to true, to pause the animation, set to false to continue.
-void ArmatureComponent::PauseAnimation(name_t animation_name, bool pause) {
+void ArmatureComponent::PauseAnimation (name_t animation_name, bool pause) {
     for (size_t i = 0; i < ANIM_COUNT; i++){
         if(anim_playing[i] == animation_name){
             anim_info[i].pause = pause;
@@ -169,7 +169,7 @@ void ArmatureComponent::PauseAnimation(name_t animation_name, bool pause) {
 }
 
 /// Returns true if an animation is playing.
-bool ArmatureComponent::IsPlayingAnimation(name_t animation_name) {
+bool ArmatureComponent::IsPlayingAnimation (name_t animation_name) {
     for (size_t i = 0; i < ANIM_COUNT; i++) {
         if (anim_playing[i] == animation_name) {
             return true;
@@ -189,7 +189,7 @@ bool ArmatureComponent::IsPlayingAnimation(name_t animation_name) {
 /// @param fade_speed   Fade speed in in weight units per animation frame. So, for example,
 ///                     if you wanted to fade an animation for 2 seconds, you would set
 ///                     fade_speed to 1.0/24.0*2.0.
-void ArmatureComponent::FadeAnimation(name_t animation_name, bool fade_in, float fade_speed) {
+void ArmatureComponent::FadeAnimation (name_t animation_name, bool fade_in, float fade_speed) {
     for (size_t i = 0; i < ANIM_COUNT; i++){
         if(anim_playing[i] == animation_name){
             anim_info[i].fade_in = fade_in;
@@ -221,7 +221,7 @@ void ArmatureComponent::SetFrameAnimation (name_t animation_name, float frame) {
 
 /// Updates an armature.
 /// Pushes animations forward and regenerates matrices.
-void ArmatureComponent::Refresh(){
+void ArmatureComponent::Refresh() {
     
     // it might be useful in the future to split this method into multiple methods
     

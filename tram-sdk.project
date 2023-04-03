@@ -27,6 +27,8 @@
       <File Name="src/audio/audio.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="components">
+      <File Name="src/components/lightcomponent.cpp"/>
+      <File Name="src/components/playercomponent.cpp"/>
       <File Name="src/components/audiocomponent.cpp"/>
       <File Name="src/components/triggercomponent.cpp"/>
       <File Name="src/components/physicscomponent.cpp"/>
@@ -41,7 +43,6 @@
       <File Name="src/components/particlecomponent.h"/>
       <File Name="src/components/particlecomponent.cpp"/>
       <File Name="src/components/lightcomponent.h"/>
-      <File Name="src/components/entitycomponents.cpp"/>
       <File Name="src/components/controllercomponent.h"/>
       <File Name="src/components/controllercomponent.cpp"/>
       <File Name="src/components/audiocomponent.h"/>
@@ -66,8 +67,6 @@
       <File Name="src/framework/ui.h"/>
       <File Name="src/framework/ui.cpp"/>
       <File Name="src/framework/serializeddata.h"/>
-      <File Name="src/framework/net.h"/>
-      <File Name="src/framework/net.cpp"/>
       <File Name="src/framework/navigation.h"/>
       <File Name="src/framework/navigation.cpp"/>
       <File Name="src/framework/logging.h"/>
@@ -155,18 +154,14 @@
     <VirtualDirectory Name="entities">
       <File Name="src/entities/marker.h"/>
       <File Name="src/entities/marker.cpp"/>
-      <File Name="src/entities/entities.h"/>
       <File Name="src/entities/crate.h"/>
       <File Name="src/entities/lamp.h"/>
       <File Name="src/entities/player.h"/>
       <File Name="src/entities/staticworldobject.h"/>
-      <File Name="src/entities/tram.cpp"/>
       <File Name="src/entities/staticworldobject.cpp"/>
       <File Name="src/entities/player.cpp"/>
-      <File Name="src/entities/mongus.cpp"/>
       <File Name="src/entities/lamp.cpp"/>
       <File Name="src/entities/crate.cpp"/>
-      <File Name="src/entities/bus.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>

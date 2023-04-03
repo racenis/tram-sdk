@@ -14,65 +14,67 @@ class btRigidBody;
 class btActionInterface;
 
 namespace tram {
-    class PhysicsComponent : public EntityComponent {
-    public:
-        PhysicsComponent() : collision_model (this) {}
-        ~PhysicsComponent();
-        void EventHandler(Event &event) {}
-        void Start();
 
-        name_t GetModel();
-        void SetModel (name_t model);
+class PhysicsComponent : public EntityComponent {
+public:
+    PhysicsComponent() : collision_model (this) {}
+    ~PhysicsComponent();
+    void EventHandler(Event &event) {}
+    void Start();
 
-        void SetMass (float mass);
-        void SetShape (Physics::CollisionShape shape);
+    name_t GetModel();
+    void SetModel (name_t model);
 
-        void Push (const glm::vec3& direction);
+    void SetMass (float mass);
+    void SetShape (Physics::CollisionShape shape);
 
-        void SetCollisionMask (uint32_t flags);
-        void SetCollisionGroup (uint32_t flags);
-        
-        uint32_t GetCollisionMask();
-        uint32_t GetCollisionGroup();
+    void Push (const glm::vec3& direction);
 
-        void SetDebugDrawing (bool drawing);
-        void SetKinematic(bool kinematic);
+    void SetCollisionMask (uint32_t flags);
+    void SetCollisionGroup (uint32_t flags);
+    
+    uint32_t GetCollisionMask();
+    uint32_t GetCollisionGroup();
 
-        void SetSleep (bool sleep);
-        
-        
-        void SetRotation (const glm::quat& rotation);
-        void SetLocation (const glm::vec3& location);
+    void SetDebugDrawing (bool drawing);
+    void SetKinematic(bool kinematic);
 
-        void SetActivation (bool activation);
-        
-        void SetAngularFactor (const glm::vec3& factor);
-        void SetLinearFactor (const glm::vec3& factor);
+    void SetSleep (bool sleep);
+    
+    
+    void SetRotation (const glm::quat& rotation);
+    void SetLocation (const glm::vec3& location);
 
-        void SetVelocity (const vec3& velocity);
-        vec3 GetVelocity ();
+    void SetActivation (bool activation);
+    
+    void SetAngularFactor (const glm::vec3& factor);
+    void SetLinearFactor (const glm::vec3& factor);
 
-    private:
-        ResourceProxy<Physics::CollisionModel> collision_model;
-        btCollisionShape* collision_shape = nullptr;
-        btMotionState* motion_state = nullptr;
-        btRigidBody* rigidbody = nullptr;
-        btActionInterface* action = nullptr;
+    void SetVelocity (const vec3& velocity);
+    vec3 GetVelocity ();
 
-        float rigidbody_mass = 1.0f;
+private:
+    ResourceProxy<Physics::CollisionModel> collision_model;
+    btCollisionShape* collision_shape = nullptr;
+    btMotionState* motion_state = nullptr;
+    btRigidBody* rigidbody = nullptr;
+    btActionInterface* action = nullptr;
 
-        bool rigidbody_should_sleep = true;
-        bool rigidbody_should_awake = false;
-        
-        vec3 rigidbody_offset = {0.0f, 0.0f, 0.0f};
-        vec3 rigidbody_angular_factor = {1.0f, 1.0f, 1.0f};
-        vec3 rigidbody_linear_factor = {1.0f, 1.0f, 1.0f};
+    float rigidbody_mass = 1.0f;
 
-        uint32_t rigidbody_collision_mask = -1;
-        uint32_t rigidbody_collision_group = -1;
-        
-        uint32_t rigidbody_collision_flags = 0;
-    };
+    bool rigidbody_should_sleep = true;
+    bool rigidbody_should_awake = false;
+    
+    vec3 rigidbody_offset = {0.0f, 0.0f, 0.0f};
+    vec3 rigidbody_angular_factor = {1.0f, 1.0f, 1.0f};
+    vec3 rigidbody_linear_factor = {1.0f, 1.0f, 1.0f};
+
+    uint32_t rigidbody_collision_mask = -1;
+    uint32_t rigidbody_collision_group = -1;
+    
+    uint32_t rigidbody_collision_flags = 0;
+};
+
 }
 
 #endif // COMPONENTS_PHYSICSCOMPONENT_H

@@ -10,28 +10,28 @@
 #include <audio/sound.h>
 
 namespace tram {
+
+class AudioComponent : public EntityComponent {
+public:
+    AudioComponent() : sound(this){}
+    ~AudioComponent();
+    void Start();
+    void UpdateLocation(const vec3& location);
+    void SetSound(name_t name);
+    void SetRepeating(bool is_repeating);
+    bool IsPlaying();
+    void Play();
+    void Pause();
+    void Stop();
     
-    class AudioComponent : public EntityComponent {
-    public:
-        AudioComponent() : sound(this){}
-        ~AudioComponent();
-        void Start();
-        void UpdateLocation(const vec3& location);
-        void SetSound(name_t name);
-        void SetRepeating(bool is_repeating);
-        bool IsPlaying();
-        void Play();
-        void Pause();
-        void Stop();
-        
-        void EventHandler(Event &event){}
-    protected:
-        ResourceProxy<Audio::Sound> sound;
-        Audio::audiosource_t source;
-        vec3 location = {0.0f, 0.0f, 0.0f};
-        bool repeat = false;
-    };
-    
+    void EventHandler(Event &event){}
+protected:
+    ResourceProxy<Audio::Sound> sound;
+    Audio::audiosource_t source;
+    vec3 location = {0.0f, 0.0f, 0.0f};
+    bool repeat = false;
+};
+
 }
 
 #endif // COMPONENTS_AUDIOCOMPONENT_H
