@@ -22,7 +22,7 @@ const size_t BONE_COUNT = 30;
 
 struct Bone {
     name_t name;
-    uint32_t parentIndex = -1;  // why is this name using pascalCase
+    uint32_t parent = -1;  // why is this name using pascalCase
     vec3 head = vec3(1.0f);
     vec3 tail = vec3(1.0f);
     float roll = 0.0f;
@@ -37,10 +37,10 @@ struct Keyframe {
 };
 
 struct Pose {
-    mat4 pose[BONE_COUNT];
+    mat4 pose [BONE_COUNT];
 };
 
-extern Pool<Pose> poseList;
+extern Pose* BLANK_POSE;
 
 class Animation : public Resource {
 public:

@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <render/renderer.h>
+#include <render/api.h>
 #include <components/rendercomponent.h>
 #include <components/armaturecomponent.h>
 
@@ -39,9 +39,8 @@ namespace tram {
     void RenderComponent::SetArmature(ArmatureComponent* armature){
         pose = armature->GetPose();
         
-        // maybe make a global variable BLANK_POSE or something like that? instead of poseList.begin()?
         if (!pose) {
-            pose = Render::poseList.begin().ptr;
+            pose = BLANK_POSE;
         }
         
         if (is_ready) {
@@ -78,9 +77,9 @@ namespace tram {
         if (is_ready) {
             Render::SetLocation(draw_list_entry, location);
             
-            uint32_t lights[4];
-            lightTree.FindNearest(lights, location.x, location.y, location.z);
-            SetLights(draw_list_entry, lights);
+            //uint32_t lights[4];
+            //lightTree.FindNearest(lights, location.x, location.y, location.z);
+            //SetLights(draw_list_entry, lights);
         }
     }
 
@@ -101,22 +100,30 @@ namespace tram {
     }
 
     void RenderComponent::InsertDrawListEntry() {
-        draw_list_entry = InsertDrawListEntryFromModel(model.get());
+        draw_list_entry = Render::InsertDrawListEntry();
+        
+        texturehandle_t textures [15];
+        for (uint32_t i = 0; i < model->GetIndexRanges()[0].material_count; i++) {
+            textures [i] = model->GetMaterials()[model->GetIndexRanges()[0].materials[i]]->GetTexture();
+        }
+        
+        Render::SetDrawListVertexArray(draw_list_entry, model->GetVertexArray());
+        Render::SetDrawListTextures(draw_list_entry, model->GetIndexRanges()[0].material_count, textures);
+        Render::SetDrawListShader(draw_list_entry, model->GetVertexFormat(), model->GetIndexRanges()[0].material_type);
+        Render::SetDrawListIndexRange(draw_list_entry, model->GetIndexRanges()[0].index_offset, model->GetIndexRanges()[0].index_length);
         
         Render::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
         Render::SetFlags(draw_list_entry, render_flags);
-        //if (isInterior) SetFlags(draw_list_entry, GetFlags(draw_list_entry) | FLAG_INTERIOR_LIGHTING);
         
         Render::SetLocation(draw_list_entry, location);
         Render::SetRotation(draw_list_entry, rotation);
         
-        uint32_t lights[4];
-        lightTree.FindNearest(lights, location.x, location.y, location.z);
-        SetLights(draw_list_entry, lights);
+        //uint32_t lights[4];
+        //lightTree.FindNearest(lights, location.x, location.y, location.z);
+        //SetLights(draw_list_entry, lights);
         
-        // this sets the pose to the default identity matrix pose
         if (!pose) {
-            pose = Render::poseList.begin().ptr;
+            pose = BLANK_POSE;
         }
         
         Render::SetPose(draw_list_entry, pose);

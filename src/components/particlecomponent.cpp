@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <render/renderer.h>
+#include <render/api.h>
 #include <render/vertices.h>
 #include <components/particlecomponent.h>
 
@@ -27,7 +27,7 @@ namespace tram {
         
         draw_list_entry = InsertDrawListEntry();
         SetDrawListVertexArray(draw_list_entry, vertex_array);
-        SetDrawListElements(draw_list_entry, 0, 6);
+        SetDrawListIndexRange(draw_list_entry, 0, 6);
         SetFlags(draw_list_entry, FLAG_RENDER);
         SetDrawListTextures(draw_list_entry, 1, &texture_handle);
         SetDrawListShader(draw_list_entry, VERTEX_SPRITE, MATERIAL_TEXTURE_ALPHA);
@@ -127,7 +127,7 @@ namespace tram {
         }
         
         UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
-        SetDrawListElements(draw_list_entry, 0, /*6 * */vertices.size());
+        SetDrawListIndexRange(draw_list_entry, 0, /*6 * */vertices.size());
         
         
         SetLocation(draw_list_entry, location);

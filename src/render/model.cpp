@@ -7,7 +7,7 @@
 #include <framework/logging.h>
 
 #include <render/model.h>
-#include <render/renderer.h>
+#include <render/api.h>
 #include <render/vertices.h>
 #include <render/error.h>
 
@@ -19,24 +19,25 @@
 #include <templates/hashmap.h>
 
 using namespace tram;
-using namespace tram::Render;
-using namespace tram::Render;
 
-Hashmap<Model*> MODEL_LIST("model name list", 500);
-template <> Pool<Model> PoolProxy<Model>::pool("model pool", 500);
+template <> Pool<Render::Model> PoolProxy<Render::Model>::pool("model pool", 500);
 
-Model* Model::Find(name_t name){
-    Model* model = MODEL_LIST.Find(name);
+namespace tram::Render {
+
+static Hashmap<Model*> model_list ("model name list", 500);
+    
+Model* Model::Find (name_t name) {
+    Model* model = model_list.Find (name);
     
     if (!model) {
-        model = PoolProxy<Model>::New(name);
-        MODEL_LIST.Insert(UID(name), model);
+        model = PoolProxy<Model>::New (name);
+        model_list.Insert (UID(name), model);
     }
     
     return model;
 }
 
-void Model::LoadFromMemory(){
+void Model::LoadFromMemory() {
     assert(status == LOADED);
     
     if (vertex_format == VERTEX_STATIC){
@@ -45,7 +46,7 @@ void Model::LoadFromMemory(){
         CreateIndexedVertexArray(
             VERTEX_DEFINITION<StaticModelVertex>,
             vertex_buffer_handle,
-            element_buffer_handle,
+            index_buffer_handle,
             vertex_array_handle, 
             data->vertices.size() * sizeof(StaticModelVertex),
             &data->vertices[0],
@@ -69,7 +70,7 @@ void Model::LoadFromMemory(){
         CreateIndexedVertexArray(
             VERTEX_DEFINITION<DynamicModelVertex>,
             vertex_buffer_handle,
-            element_buffer_handle,
+            index_buffer_handle,
             vertex_array_handle, 
             data->vertices.size() * sizeof(DynamicModelVertex),
             &data->vertices[0],
@@ -92,7 +93,7 @@ void Model::LoadFromMemory(){
 }
 
 
-void Model::LoadFromDisk(){
+void Model::LoadFromDisk() {
     assert(status == UNLOADED);
     std::ifstream file;
     char path[200];
@@ -209,9 +210,9 @@ void Model::LoadFromDisk(){
         }
 
         for (auto& bucket : triangle_buckets) {
-            ElementRange range {
-                .element_offset = (uint32_t) data->indices.size(),
-                .element_length = (uint32_t) bucket.triangles.size(),
+            IndexRange range {
+                .index_offset = (uint32_t) data->indices.size(),
+                .index_length = (uint32_t) bucket.triangles.size(),
                 .material_count = (uint32_t) bucket.materials.size(),
                 .material_type = bucket.material_type,
             };
@@ -220,13 +221,13 @@ void Model::LoadFromDisk(){
                 range.materials[i] = bucket.materials[i];
             }
             
-            element_ranges.push_back(range);
+            index_ranges.push_back(range);
             data->indices.insert(data->indices.end(), bucket.triangles.begin(), bucket.triangles.end());
         }
 
         Bone rootbone {
             .name = UID("Root"),
-            .parentIndex = (uint32_t) -1,
+            .parent = (uint32_t) -1,
             .head = {0.0f, 0.0f, 0.0f},
             .tail = {0.0f, 1.0f, 0.0f},
             .roll = 0.0f
@@ -377,7 +378,7 @@ void Model::LoadFromDisk(){
         for (uint32_t i = 0; i < bcount; i++) {
             armature.push_back(Bone {
                 .name = file.read_name(),
-                .parentIndex = file.read_uint32(),
+                .parent = file.read_uint32(),
                 
                 .head = {
                     file.read_float32(),
@@ -406,9 +407,9 @@ void Model::LoadFromDisk(){
         }
         
         for (auto& bucket : triangle_buckets) {
-            ElementRange range {
-                .element_offset = (uint32_t) data->indices.size(),
-                .element_length = (uint32_t) bucket.triangles.size(),
+            IndexRange range {
+                .index_offset = (uint32_t) data->indices.size(),
+                .index_length = (uint32_t) bucket.triangles.size(),
                 .material_count = (uint32_t) bucket.materials.size(),
                 .material_type = bucket.material_type,
             };
@@ -417,7 +418,7 @@ void Model::LoadFromDisk(){
                 range.materials[i] = bucket.materials[i];
             }
             
-            element_ranges.push_back(range);
+            index_ranges.push_back(range);
             data->indices.insert(data->indices.end(), bucket.triangles.begin(), bucket.triangles.end());
         }
 
@@ -434,33 +435,8 @@ void Model::LoadFromDisk(){
     // ok, so the model isn't static or dynamic
     // we have no other model types, so it means that there actually isn't any usable model
 
-    //status = LOAD_FAIL;
-
-    // if we get this far, then it means that the model wasn't loaded from disk
-
     std::cout << "Model file for " << name << " couldn't be accessed!" << std::endl;
 
-    // copy the error model stuff
-    //vao = error_model->vao;
-    //vbo = error_model->vbo;
-    //ebo = error_model->ebo;
-
-    //for (size_t i = 0; i < 6; i++){
-    //    eboLen[i] = error_model->eboLen[i];
-    //    eboOff[i] = error_model->eboOff[i];
-    //    eboMat[i] = error_model->eboMat[i];
-    //}
-    
-    //vertex_array_handle = ERROR_MODEL->vertex_array_handle;
-    //vertex_buffer_handle = ERROR_MODEL->vertex_buffer_handle;
-    //element_buffer_handle = ERROR_MODEL->element_buffer_handle;
-    
-    //element_ranges = ERROR_MODEL->element_ranges;
-
-    //materials = ERROR_MODEL->materials;
-    //armature = ERROR_MODEL->armature;
-
-    //status = READY;
     
     vertex_format = VERTEX_STATIC;
 
@@ -469,9 +445,9 @@ void Model::LoadFromDisk(){
 
     materials.push_back(Material::Find("defaulttexture"));
 
-    element_ranges.push_back(ElementRange {
-        .element_offset = 0,
-        .element_length = (uint32_t) data->indices.size(),
+    index_ranges.push_back(IndexRange {
+        .index_offset = 0,
+        .index_length = (uint32_t) data->indices.size(),
         .material_count = 1,
         .material_type = MATERIAL_TEXTURE,
         .materials = {0}
@@ -479,7 +455,7 @@ void Model::LoadFromDisk(){
     
     armature.push_back(Bone {
         .name = UID("Root"),
-        .parentIndex = (uint32_t) -1,
+        .parent = (uint32_t) -1,
         .head = {0.0f, 0.0f, 0.0f},
         .tail = {0.0f, 1.0f, 0.0f},
         .roll = 0.0f
@@ -488,4 +464,6 @@ void Model::LoadFromDisk(){
     status = LOADED;
     
     load_fail = true;
+}
+
 }

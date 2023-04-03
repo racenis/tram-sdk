@@ -17,7 +17,7 @@
 #include <framework/file.h>
 
 #include <render/material.h>
-#include <render/renderer.h>
+#include <render/api.h>
 #include <render/error.h>
 
 #include <templates/hashmap.h>
@@ -25,11 +25,12 @@
 #include <fstream>
 
 using namespace tram;
-using namespace tram::Render;
-using namespace tram::Render;
 
-Hashmap<Material*> MATERIAL_LIST("material name list", 500);
-template <> Pool<Material> PoolProxy<Material>::pool("material pool", 500);
+template <> Pool<Render::Material> PoolProxy<Render::Material>::pool("material pool", 500);
+
+namespace tram::Render {
+
+static Hashmap<Material*> material_list ("material name list", 500);
 
 /// Loads a Material definition file.
 void Material::LoadMaterialInfo(const char* filename){
@@ -76,7 +77,7 @@ void Material::LoadMaterialInfo(const char* filename){
             continue;
         }
 
-        MATERIAL_LIST.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type));
+        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type));
     }
 }
 
@@ -84,11 +85,11 @@ void Material::LoadMaterialInfo(const char* filename){
 /// If a Material already exists with that name, then the existing Material is returned.
 /// @return Always returns a pointer to a Material.
 Material* Material::Make (name_t name, materialtype_t type) {
-    Material* material = MATERIAL_LIST.Find(name);
+    Material* material = material_list.Find(name);
     
     if (!material) {
         material = PoolProxy<Material>::New(name, type);
-        MATERIAL_LIST.Insert(UID(name), material);
+        material_list.Insert(UID(name), material);
     }
     
     return material;
@@ -104,11 +105,11 @@ Material* Material::Find(name_t name){
     // APPARENTLY:
     // "something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()"
     // TODO: check if it still happens
-    Material* material = MATERIAL_LIST.Find(name);
+    Material* material = material_list.Find(name);
     
     if (!material) {
         material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP);
-        MATERIAL_LIST.Insert(UID(name), material);
+        material_list.Insert(UID(name), material);
     }
     
     return material;
@@ -125,7 +126,7 @@ void Material::MakePattern(vec3 color1, vec3 color2) {
     height = 64;
     channels = 3;
 
-    textureData = MakeNewErrorTexture (color1, color2);
+    texture_data = MakeNewErrorTexture (color1, color2);
 
     status = LOADED;
 }
@@ -158,14 +159,13 @@ void Material::LoadFromDisk(){
     stbi_set_flip_vertically_on_load(true);
     loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, channels);
 
-    if (loadtexture){
-        //std::cout << "Loading: " << path << std::endl;
+    if (loadtexture) {
         width = loadwidth;
         height = loadheight;
-        textureData = new uint8_t[width * height * channels];
+        texture_data = new uint8_t[width * height * channels];
 
-        for (size_t i = 0; i < width * height * channels; i++){
-            textureData[i] = loadtexture[i];
+        for (size_t i = 0; i < width * height * channels; i++) {
+            texture_data[i] = loadtexture[i]; // what the fuck
         }
 
         status = LOADED;
@@ -185,23 +185,26 @@ void Material::LoadFromDisk(){
 void Material::LoadFromMemory(){
     assert(status == LOADED);
 
-    if(type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH){
-        texture = CreateTexture(COLORMODE_RGBA, TEXTUREFILTER_LINEAR, width, height, textureData);
+    if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
+        texture = CreateTexture(COLORMODE_RGBA, TEXTUREFILTER_LINEAR, width, height, texture_data);
     } else {
-        texture = CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, textureData);
+        texture = CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, texture_data);
     }
 
     float approx_memory = width * height * channels;  // image size
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
+    
     approx_vram_usage = (size_t) approx_memory;
-    //RESOURCE_VRAM_USAGE += approx_vram_usage;
+    
     Stats::Add(Stats::RESOURCE_VRAM, approx_vram_usage);
 
-    delete[] textureData;
-    textureData = nullptr;
+    delete[] texture_data;
+    texture_data = nullptr;
 
     status = READY;
     return;
+}
+
 }
 
 

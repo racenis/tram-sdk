@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <config.h>
+#include <platform/platform.h>
 
 #include <framework/core.h>
 #include <framework/event.h>
@@ -9,7 +9,7 @@
 #include <framework/system.h>
 
 #include <render/render.h>
-#include <render/renderer.h>
+#include <render/api.h>
 
 #include <fstream>
 #include <cstring>
@@ -20,7 +20,7 @@
     #include <GL/gl.h>
     #include <GLFW/glfw3.h>
 #else
-    #include <glad.h>
+    #include <glad.c>
     #include <glfw3.h>
 #endif
 

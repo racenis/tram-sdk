@@ -8,7 +8,7 @@
 #include <framework/system.h>
 #include <framework/logging.h>
 
-#include <render/renderer.h>
+#include <render/api.h>
 #include <render/vertices.h>
 #include <render/sprite.h>
 
@@ -97,7 +97,7 @@ void UpdateDrawListFonts () {
 void Update () {
     using namespace tram::Render;
     UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
-    SetDrawListElements(glyphvertices_entry, 0, glyphvertices.size());
+    SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size());
     glyphvertices.clear();
 }
 

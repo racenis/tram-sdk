@@ -4,96 +4,78 @@
 #include <render/armature.h>
 #include <components/armaturecomponent.h>
 #include <framework/logging.h>
+#include <framework/file.h>
 #include <templates/hashmap.h>
 
-#include <fstream>
+#include <cstring>
 
-template <> tram::Pool<tram::Render::Animation> tram::PoolProxy<tram::Render::Animation>::pool("animation pool", 50, false);
+using namespace tram;
+
+template <> Pool<Render::Animation> PoolProxy<Render::Animation>::pool ("animation pool", 50, false);
+template <> Pool<Render::Pose> PoolProxy<Render::Pose>::pool ("pose pool", 100, false);
 
 namespace tram::Render {
     
-Hashmap<Animation*> ANIMATION_LIST ("model name list", 500);
-StackPool<uint8_t> ANIMATION_POOL ("animation keyframe pool", 50000);
-Pool<Pose> poseList ("pose list", 100, true);
+Hashmap<Animation*> animation_list ("model name list", 500);
+StackPool<uint8_t> animation_pool ("animation keyframe pool", 50000);
 
+Pose* BLANK_POSE = nullptr;
 
 void Animation::LoadFromDisk(){
-    using namespace Render;
-    std::ifstream file;
+    char filename [100] = "data/animations/";
+    strcat (filename, name);
+    strcat (filename, ".anim");
 
-    std::string filename = "data/animations/";
-    filename += std::string(name);
-    filename += ".anim";
+    File file (filename, MODE_READ);
 
-    file.open(filename);
-
-    if(!file.is_open()){std::cout << "Can't open " << filename << "!" << std::endl; return;}
+    if (!file.is_open()) {
+        std::cout << "Can't open " << filename << "!" << std::endl; 
+        return;
+    }
 
     std::cout << "Loading animation: " << filename << std::endl;
 
-    std::string noot;
-    //uint64_t ac;
-    uint64_t bc;
-    uint64_t kc;
-    //uint64_t a_name;
-    UID a_name;
-    NameCount* nameptr;
-    Keyframe* kframe;
 
-    file >> noot; // file type
-    
-    if (noot != "ANIMv1") {
-        Log ("Unrecognized header '{}' in animation {}", noot, filename);
+    NameCount* nameptr;
+
+    if (name_t header = file.read_name(); header != "ANIMv1") {
+        Log ("Unrecognized header '{}' in animation {}", header, filename);
         return;
     }
     
-    file >> noot;       //name of animation as string
-    file >> bc;         //count of bones used by animation
+    nameptr = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
 
-    nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
-    a_name = noot;   //uint64 hash of name string
-
-    nameptr->first = a_name;
-    nameptr->second = bc;
-    //ANIMATION_LIST[a_name] = nameptr;
+    nameptr->first = file.read_name();
+    nameptr->second = file.read_uint32();
+    
     this->animation_pointer = nameptr;
 
-    for (uint64_t j = 0; j < bc; j++){
-        nameptr = (NameCount*) ANIMATION_POOL.AddNew(sizeof(NameCount));
-        file >> noot;       //name of bone as string
-        file >> kc;         //count of keyframes for the bone
-        a_name = noot;   //uint64 hash of bone name
+    for (uint64_t j = 0; j < nameptr->second; j++){
+        nameptr = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
 
-        nameptr->first = a_name;
-        nameptr->second = kc;
+        nameptr->first = file.read_name();
+        nameptr->second = file.read_uint32();
 
-
-        for (uint64_t k = 0; k < kc; k++){
-            kframe = (Keyframe*) ANIMATION_POOL.AddNew(sizeof(Keyframe));
-            file >> kframe->frame;
-            file >> kframe->location.x;
-            file >> kframe->location.y;
-            file >> kframe->location.z;
-            file >> kframe->rotation.x;
-            file >> kframe->rotation.y;
-            file >> kframe->rotation.z;
-            file >> kframe->rotation.w;
-            file >> kframe->scale.x;
-            file >> kframe->scale.y;
-            file >> kframe->scale.z;
+        for (uint64_t k = 0; k < nameptr->second; k++){
+            Keyframe* kframe = (Keyframe*) animation_pool.AddNew(sizeof(Keyframe));
+            
+            kframe->frame = file.read_float32();
+            kframe->location = {file.read_float32(), file.read_float32(), file.read_float32()};
+            kframe->rotation.x = file.read_float32();
+            kframe->rotation.y = file.read_float32();
+            kframe->rotation.z = file.read_float32();
+            kframe->rotation.w = file.read_float32();
+            kframe->scale = {file.read_float32(), file.read_float32(), file.read_float32()};
         }
     }
-
-
-    file.close();
 }
 
 Animation* Animation::Find (name_t name) {
-    Animation* animation = ANIMATION_LIST.Find(name);
+    Animation* animation = animation_list.Find(name);
     
     if (!animation) {
         animation = PoolProxy<Animation>::New(name);
-        ANIMATION_LIST.Insert(UID(name), animation);
+        animation_list.Insert(UID(name), animation);
     }
     
     return animation;

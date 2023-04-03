@@ -21,15 +21,15 @@ extern bool THIRD_PERSON;
 // probably switch these from int to void*
 typedef uint32_t vertexhandle_t;
 typedef uint32_t texturehandle_t;
-struct drawlistentry_t {
-    void* draw_list_entries[6] = { nullptr };
-};
+typedef void* drawlistentry_t;
 
 typedef vec3 color_t;
 typedef uint32_t layer_t;
 
 typedef uint32_t vertexformat_t;
 typedef uint32_t materialtype_t;
+
+typedef void* light_t;
 
 void Init();
 void Render();

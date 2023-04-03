@@ -127,6 +127,7 @@
       <File Name="src/physics/collisionmodel.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
+      <File Name="src/render/api.h"/>
       <File Name="src/render/vertices.cpp"/>
       <File Name="src/render/error.cpp"/>
       <File Name="src/render/error.h"/>
@@ -136,6 +137,7 @@
       <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
+        <File Name="src/render/opengl/api.h"/>
         <File Name="src/render/opengl/renderer.h"/>
         <File Name="src/render/opengl/shader.cpp"/>
         <File Name="src/render/opengl/renderer.cpp"/>

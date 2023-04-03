@@ -36,7 +36,7 @@ protected:
     uint32_t width = 0;
     uint32_t height = 0;
     uint8_t channels = 0;
-    uint8_t* textureData = nullptr;
+    uint8_t* texture_data = nullptr;
     size_t approx_vram_usage = 0;
     
     friend class Sprite;

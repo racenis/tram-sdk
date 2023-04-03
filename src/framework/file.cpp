@@ -5,17 +5,28 @@
 
 namespace tram {
 
-void skip_text_whitespace (const char*& cursor, const char* cursor_end) {
+static void skip_text_line (const char*& cursor, const char* cursor_end) {
+    while (*cursor != '\r' && *cursor != '\n' && cursor < cursor_end) {
+        cursor++;
+    }
+}
+
+static void skip_text_whitespace (const char*& cursor, const char* cursor_end) {
     while (cursor < cursor_end) {
         if (!isspace(*cursor)) {
-            return;
+            if (*cursor != '#') {
+                return;
+            }
+            
+            skip_text_line (cursor, cursor_end);
+            skip_text_whitespace (cursor, cursor_end);
         }
         
         cursor++;
     }
 }
 
-void skip_text (const char*& cursor, const char* cursor_end) {
+static void skip_text (const char*& cursor, const char* cursor_end) {
     while (cursor < cursor_end) {
         if (isspace(*cursor)) {
             break;
@@ -27,7 +38,7 @@ void skip_text (const char*& cursor, const char* cursor_end) {
     skip_text_whitespace(cursor, cursor_end);
 }
 
-bool is_text_continue (const char* cursor, const char* cursor_end) {
+static bool is_text_continue (const char* cursor, const char* cursor_end) {
     while (cursor < cursor_end) {
         if (!isspace(*cursor)) return true;
         cursor++;
@@ -157,7 +168,7 @@ int32_t File::read_int32() { auto ret = read_text_int32(cursor, cursor_end); ski
 int64_t File::read_int64() { auto ret = read_text_int64(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 
 uint8_t File::read_uint8() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-uint16_t File::read_uint16() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
+uint16_t File::read_uint16() { return read_text_from_chars<uint16_t>(cursor, cursor_end); }
 uint32_t File::read_uint32() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 uint64_t File::read_uint64() { auto ret = read_text_int64(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 

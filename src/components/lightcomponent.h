@@ -4,23 +4,20 @@
 #ifndef COMPONENTS_LIGHTCOMPONENT_H
 #define COMPONENTS_LIGHTCOMPONENT_H
 
-#include <render/renderer.h>
+#include <render/api.h>
 
 namespace tram {
     
     class LightComponent : public EntityComponent {
     protected:
-        Render::LightListObject* lightLObj = nullptr;
-        glm::vec3 location;
-        glm::vec3 color;
+        Render::light_t light = nullptr;
+        vec3 location;
+        vec3 color;
         float distance;
-        uint32_t light_tree_id = 0;
     public:
         void Update(){
             if(is_ready){
-                lightLObj->location = location;
-                lightLObj->color = color;
-                lightLObj->distance = distance;
+                Render::SetLightParameters(light, location, color, distance);
             }
         };
         void SetLocation(const glm::vec3& location){
@@ -41,8 +38,8 @@ namespace tram {
         void GetDistance(float& distance){
             distance = this->distance;
         }
-        void Init(){lightLObj = Render::lightPool.AddNew(); light_tree_id = Render::lightTree.AddLeaf(lightLObj - Render::lightPool.begin().ptr, location.x, location.y, location.z); is_ready = true; Update();};
-        ~LightComponent(){Render::lightPool.Remove(lightLObj); Render::lightTree.RemoveLeaf(light_tree_id); lightLObj = nullptr;};
+        void Init(){ light = Render::MakeLight(); is_ready = true; Update(); }
+        ~LightComponent(){Render::DeleteLight(light); light = nullptr;};
         void Start(){}
         void EventHandler(Event &event){return;}
     };

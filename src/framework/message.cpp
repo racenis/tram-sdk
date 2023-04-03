@@ -39,11 +39,12 @@ void Message::Dispatch() {
         future_messages.pop();
     }
     
-    while (Message* message = message_queue.GetFirstPtr()) {
-        Entity* receiver = Entity::Find(message->receiver);
-        if (receiver) receiver->MessageHandler(*message);
+    while (message_queue.size()) {
+        Message& message = message_queue.front();
+        Entity* receiver = Entity::Find(message.receiver);
+        if (receiver) receiver->MessageHandler(message);
 
-        message_queue.Remove();
+        message_queue.pop();
     }
     
     data_pool.Reset();
@@ -53,7 +54,7 @@ void Message::Dispatch() {
 /// Message will be delivered to the Entity with the ID number specified in the
 /// Message::receiver field, by calling its Entity::MessageHandler() method.
 void Message::Send (const Message& message) {
-    *(message_queue.AddNew()) = message;
+    message_queue.push(message);
 }
 
 /// Semds a message into the future.

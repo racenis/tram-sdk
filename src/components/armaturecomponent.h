@@ -41,7 +41,7 @@ class ArmatureComponent : public EntityComponent {
         
         void (*anim_finish_callback) (ArmatureComponent*, name_t) = nullptr;
         
-        Render::Bone* armature_bones = nullptr;
+        const Render::Bone* armature_bones = nullptr;
         size_t armature_bone_count = 0;
         uint32_t armature_bone_parents[BONE_COUNT] = {-1ul};
         

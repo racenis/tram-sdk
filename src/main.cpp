@@ -45,7 +45,7 @@
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>
 
-#include <render/renderer.h>
+#include <render/api.h>
 
 using namespace tram;
 using namespace tram::Render;
@@ -294,7 +294,7 @@ int main() {
 	Render::Init();         // render init must always come after the ui inited
     
 	std::cout << "Starting async" << std::endl;
-	Async::Init(0);          // async init must always come after render init
+	Async::Init(3);          // async init must always come after render init
     
 	std::cout << "Starting audio" << std::endl;
 	Audio::Init();

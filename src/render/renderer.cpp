@@ -3,6 +3,3 @@
 
 #include <render/renderer.h>
 
-namespace tram::Render {
-    RendererAPI RENDERER;
-}
