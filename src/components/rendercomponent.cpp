@@ -13,7 +13,7 @@ template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render comp
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue
 /// and the component will start when it the loading is complete.
-void RenderComponent::SetModel(name_t name){
+void RenderComponent::SetModel (name_t name) {
     model = Render::Model::Find(name);
     
     if (is_ready) {
@@ -25,7 +25,7 @@ void RenderComponent::SetModel(name_t name){
 /// Sets the lightmap for the model.
 /// Lightmaps are rendered only for static models, so setting a lightmap for
 /// a dynamic model will do nothing.
-void RenderComponent::SetLightmap(name_t name){
+void RenderComponent::SetLightmap (name_t name) {
     lightmap = Render::Material::Find(name);
     
     if (is_ready) {
@@ -38,7 +38,7 @@ void RenderComponent::SetLightmap(name_t name){
 /// played by the ArmatureComponent.
 /// Alternatively, this can be set to a nullptr, if no animations are to be played.
 /// This affects only dynamic models, static models don't play animations.
-void RenderComponent::SetArmature(ArmatureComponent* armature){
+void RenderComponent::SetArmature (ArmatureComponent* armature) {
     pose = armature->GetPose();
     
     if (!pose) {
@@ -50,18 +50,19 @@ void RenderComponent::SetArmature(ArmatureComponent* armature){
     }
 };
 
-RenderComponent::RenderComponent() : model(this), lightmap(this){
+RenderComponent::RenderComponent() : model(this), lightmap(this) {
     render_flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
 }
 
-RenderComponent::~RenderComponent(){
+RenderComponent::~RenderComponent() {
     assert(is_ready);
     is_ready = false;
     
     RemoveDrawListEntry(draw_list_entry);
 };
 
-void RenderComponent::SetWorldParameters(bool interior_lighting){
+/// Sets the world parameters for model rendering.
+void RenderComponent::SetWorldParameters (bool interior_lighting) {
     if (interior_lighting) {
         render_flags |= FLAG_INTERIOR_LIGHTING;
     } else {
@@ -73,6 +74,7 @@ void RenderComponent::SetWorldParameters(bool interior_lighting){
     }
 }
 
+/// Sets the location of the model.
 void RenderComponent::SetLocation(glm::vec3 nlocation){
     location = nlocation;
     
@@ -81,6 +83,7 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
     }
 }
 
+/// Sets the rotation of the model.
 void RenderComponent::SetRotation(glm::quat nrotation){
     rotation = nrotation;
     

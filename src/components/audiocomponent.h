@@ -16,7 +16,7 @@ public:
     AudioComponent() : sound(this){}
     ~AudioComponent();
     void Start();
-    void UpdateLocation(const vec3& location);
+    void SetLocation(vec3 location);
     void SetSound(name_t name);
     void SetRepeating(bool is_repeating);
     bool IsPlaying();

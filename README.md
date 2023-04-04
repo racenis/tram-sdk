@@ -43,66 +43,43 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 
 #### Should do sooner
+- Rewrite Stackpool
+- Add emscripten to maketool
+
+- Fix the editor
+
+#### Should do later
 - Keybinding menu
 - Graphics menu
 
-Redraw glyphs
-ArmatureComponent auto load animations
 
-
-RENAME WORLDCELL interioLighr
-also AddTrabsuibInto
-
-
-
-Remake transition system
-- Transitions live outside of WorldCells
-
-- Transitions get auto-linked
-- Transitions are enableable and disabeleabel
-- Transitions are findable
-
-- Yeet debug draw methods from WORLDCELL
-
-- Take Loader out of WorldCell
-
-- Finally fix the queue
-	- Fix the async.cpp
-	- Fix the event.cpp
-
-- Add a getline to File Loader
-	- It would read until end of line and  return  that rest of line
-	- We can then rewrite language and worldcell and maybe some other loaders
-
-#### Should do later
-
-- Rewrite Queue template
-	- So that there are no need for LOCK() and UNLOCK() methods
-- Make it so that it is possible to launch multiple resource loader threads
-- Also rewrite Stackpool
-- Add emscripten to maketool
+- Fix scale in animations
+	- Fix the animation exporter
+	- Fix the animation player code
+- Split off an AnimationComponent from ArmatureComponent
+- Add log filtering
 - Make Raycast that returns multiple points
 - Add constraints to PhysicsComponents
 - Models with different sets of materials
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
-- Rewrite older templates
-	- Pool template is already rewritten
-- Make sure that there are no duplications of typedefs
-	- There are some duplications in typedefs
 - Multiple player inputs
-- Make constructors/destructors protected
-	- Some classes should only be created in Pools
-- Move GetTime() out of UI
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- Add a callback function for updating
 - Replace Bezier curves with Catmull-Roms
-- Rewrite insides of file abstraction
-	- Also add stuff for comment filtering
+- Finish menu extension
+- Finish particles
+	- Steal ideas from various particle editors
+- Finish sprites
+	- Make them not be distorted horizontally in the shader
+- Additional serialized data fields
+	- Position XYZ
+	- Color RGB
 
-#### Not important
+#### For very later versions
+- Occlusion/frustrum culling
 - Add rotations to sprites
 - Switch out all of the std::cout's to Log's
 - Think of new glyphs.
@@ -111,7 +88,6 @@ Remake transition system
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
 - Add scripting
-- Add a prefix to all header guards
 - Add a better way to register entities
 	- Could be a static method 'REGISTER' for each entity type
 - Add more rendering stuff
@@ -123,11 +99,10 @@ Remake transition system
 	- Allow uploading of custom shaders
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
-
-#### For very later versions
-- Vertex animation
-- 3D text component
-- Tilemaps
+- Dynamically loading entity definitions into editor
+	- Link entity definitions dynamically, not statically
+- Additional scripts
+	- Project generation script
 
 ### New features that would be nice to have, but are not very important
 - ControllerComponents have configurable transitions between animations
@@ -145,3 +120,7 @@ Remake transition system
 - AudioComponents can play more than 128 sounds at the same time
 - Split animation into animation and StreamableAnimation
 	- Animations that need to be streamed in and later removed have their own keyframe pools
+- Sprite batching
+- Vertex animation
+- 3D text component
+- Tilemaps

@@ -371,8 +371,8 @@ int main() {
     // create a light
     lit = PoolProxy<LightComponent>::New();
     lit->Init();
-    lit->UpdateColor(glm::vec3(1.0f, 0.0f, 1.0f));
-    lit->UpdateDistance(100.0f);
+    lit->SetColor({1.0f, 0.0f, 1.0f});
+    lit->SetDistance(100.0f);
 
     std::cout << "making armatur" << std::endl;
 
@@ -411,7 +411,7 @@ int main() {
     derp->Load();
     
     derp_player = PoolProxy<AudioComponent>::New();
-    derp_player->UpdateLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    derp_player->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
     //derp_player->SetSound(derp);
     derp_player->SetSound("apelsin");
     derp_player->SetRepeating(true);

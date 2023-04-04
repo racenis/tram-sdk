@@ -17,6 +17,8 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
+      <File Name="src/audio/api.h"/>
+      <File Name="src/audio/api.cpp"/>
       <File Name="src/audio/sound.h"/>
       <File Name="src/audio/sound.cpp"/>
       <VirtualDirectory Name="openal">

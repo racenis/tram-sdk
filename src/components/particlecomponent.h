@@ -43,20 +43,16 @@ public:
     // put these behind getter/setter methods, maybe?
     uint32_t emission_rate = 1;
     uint32_t particle_max_age = 120;
-    glm::vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
-    glm::vec3 initial_velocity = glm::vec3(0.0f, 0.15f, 0.0f);
+    vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
+    vec3 initial_velocity = vec3(0.0f, 0.15f, 0.0f);
     float initial_velocity_randomness = 0.1f;
-
 protected:
-    
     std::vector<Particle> particles;
-    
     ResourceProxy<Render::Sprite> sprite;
 
-    //Render::RenderListObject* robject = nullptr;
     Render::drawlistentry_t draw_list_entry;
     
-    glm::vec3 location;
+    vec3 location;
     
     uint32_t vertex_array;
     uint32_t vertex_buffer;

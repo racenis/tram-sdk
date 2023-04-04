@@ -1,6 +1,6 @@
 #include <components/audiocomponent.h>
 
-#include <audio/audio.h>
+#include <audio/api.h>
 #include <audio/sound.h>
 
 namespace tram {
@@ -32,11 +32,13 @@ void AudioComponent::Start() {
     is_ready = true;
 }
 
+/// Sets the sound that the component will play.
 void AudioComponent::SetSound(name_t name) {
     this->sound = Sound::Find(name);
 }
 
-void AudioComponent::UpdateLocation(const glm::vec3& location) {
+/// Sets the location from which the sound will play.
+void AudioComponent::SetLocation(vec3 location) {
     this->location = location;
     
     if (is_ready) {
@@ -44,6 +46,7 @@ void AudioComponent::UpdateLocation(const glm::vec3& location) {
     }
 }
 
+/// Sets whether the component will repeat its sound.
 void AudioComponent::SetRepeating(bool is_repeating) {
     this->repeat = is_repeating;
     
@@ -52,18 +55,28 @@ void AudioComponent::SetRepeating(bool is_repeating) {
     }
 }
 
+/// Plays the sound.
+/// Plays the sound that the component has been set to play.
 void AudioComponent::Play() {
     if (is_ready) PlayAudioSource(source);
 }
 
+/// Pauses the sound.
+/// Pauses the sound that the component is playing, or does nothing, if no sound
+/// is playing.
 void AudioComponent::Pause() {
     if (is_ready) PauseAudioSource(source);
 }
 
+/// Stops the sound.
+/// Stops the sound that the component is playing, or does nothing, if no sound
+/// is playing.
 void AudioComponent::Stop() {
     if (is_ready) StopAudioSource(source);
 }
 
+/// Checks if component is playing a sound.
+/// @return True, if a sound is playing, false if it hasn't started or has stopped.
 bool AudioComponent::IsPlaying() {
     if (is_ready) {
         return IsAudioSourcePlaying(source);

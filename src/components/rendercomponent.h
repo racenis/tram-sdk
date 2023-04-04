@@ -19,21 +19,16 @@ public:
     inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
 
     void SetModel(name_t name);
-
     void SetLightmap(name_t name);
-
     void SetArmature(ArmatureComponent* armature);
 
     void Start();
 
     void SetLocation(glm::vec3 nlocation);
-
     void SetRotation(glm::quat nrotation);
-
     void SetWorldParameters (bool interior_lighting);
 
     void EventHandler(Event &event){return;}
-
 protected:
     void InsertDrawListEntry();
 

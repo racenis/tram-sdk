@@ -16,7 +16,7 @@ void ArmatureComponent::Init() {
 
     if (resources_waiting == 0) Start();
 }
-    
+
 ArmatureComponent::~ArmatureComponent() {
     assert(is_ready);
     assert(poseobj);
@@ -95,7 +95,6 @@ void ArmatureComponent::PlayAnimation (name_t animation_name, uint32_t repeats, 
     
     for (size_t i; i < BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
     
-    //anim_info[slot].animation_header = Render::Animation::Find(animation_name);
     anim_info[slot].animation_header = Render::Animation::Find(animation_name)->GetPointer();
 
     if(anim_info[slot].animation_header == nullptr){

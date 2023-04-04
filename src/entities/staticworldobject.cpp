@@ -17,14 +17,14 @@ StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
 };
 
 void StaticWorldObject::UpdateParameters() {
-    if(is_loaded){
+    if (is_loaded) {
         rendercomponent->SetLocation(location);
         rendercomponent->SetRotation(rotation);
     }
 }
 
 void StaticWorldObject::SetParameters() {
-    if(is_loaded){
+    if (is_loaded) {
         rendercomponent->SetLocation(location);
         rendercomponent->SetRotation(rotation);
         physicscomponent->SetLocation(location);

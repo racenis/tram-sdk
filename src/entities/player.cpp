@@ -11,10 +11,12 @@
 #include <components/triggercomponent.h>
 
 namespace tram {
+
 Player::Player() : Entity("player") {
     plomp = PoolProxy<PlayerComponent>::New();
     auto_load = false;
 }
+
 void Player::Load(){
     physicscomponent = PoolProxy<PhysicsComponent>::New();
     physicscomponent->SetParent(this);
@@ -56,9 +58,11 @@ void Player::Unload(){
     std::cout << "Player is not unloadable!!!" << std::endl;
     PoolProxy<PlayerComponent>::Delete(plomp);
 }
+
 void Player::Serialize(){
     std::cout << "Player not seriaziable" << std::endl;
 }
+
 void Player::SerializeString(std::string& str){
     std::cout << "Player not stringable" << std::endl;
 }
@@ -73,31 +77,12 @@ void Player::UpdateParameters() {
 void Player::SetParameters() {
     if (!is_loaded) return;
     UpdateParameters();
-    //physicscomponent->SetLocation(location);
-    //physicscomponent->SetRotation(rotation);
-    // actually we should add a SetUpdate() to the player component and call that
-    // TODO: fix
 }
 
 void Player::MessageHandler(Message& msg) {
     if (msg.type == Message::PING) {
         Log ("Player was pinged with {}!", (long long) msg.data);
     }
-    /*if(msg.type == Message::GET_IN){
-        plomp->IgnoreMove();
-        plomp->SetVehicle(msg.senderID);
-        physicscomponent->Glue((PhysicsComponent*)msg.data);
-        physicscomponent->SetCollisionGroup(0);
-        //physicscomponent->EnableRotation();
-    }
-
-    if(msg.type == Message::GET_OUT){
-        plomp->StopIgnoreMove();
-        plomp->SetVehicle(0);
-        physicscomponent->Unglue();
-        physicscomponent->SetCollisionGroup(Physics::COLL_PLAYER);
-        // TODO: add some sort of freeze/keep upright method to the physics component
-        //physicscomponent->DisableRotation();
-    }*/
 }
+
 }

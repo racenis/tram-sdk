@@ -18,7 +18,8 @@ template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::
 namespace tram::Audio {
 
 Hashmap<Sound*> SOUND_MAP ("Sound hash map", 500);
-    
+
+/// Loads the sound from the disk.
 void Sound::LoadFromDisk() {
     sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + std::string(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
     
@@ -30,14 +31,21 @@ void Sound::LoadFromDisk() {
         sound_buffers = OpenAL::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels, sound_buffer_count);
     }
     
+    free (sound_data);
+    sound_data = nullptr;
+    
     status = READY;
 }
 
+/// Removes the sound from memory.
 void Sound::Unload() {
     OpenAL::RemoveAudioBuffer(sound_buffers, sound_buffer_count);
     status = UNLOADED;
 }
 
+/// Finds a sound by a name.
+/// If a sound by that name doesn't exist, then it will be created.
+/// @return Always returns a pointer to a Sound.
 Sound* Sound::Find (name_t name) {
     auto sound = SOUND_MAP.Find(name);
     

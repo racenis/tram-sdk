@@ -9,39 +9,26 @@
 namespace tram {
 
 class LightComponent : public EntityComponent {
+public:
+    void Init ();
+    void Start () {}
+    
+    void SetLocation (vec3 location);
+    void SetColor (Render::color_t color);
+    void SetDistance (float dist);
+    
+    vec3 GetColor ();
+    float GetDistance ();
+
+    void EventHandler(Event &event) { return; }    
+    ~LightComponent();
 protected:
+    void Update();
+    
     Render::light_t light = nullptr;
     vec3 location;
-    vec3 color;
+    Render::color_t color;
     float distance;
-public:
-    void Update(){
-        if(is_ready){
-            Render::SetLightParameters(light, location, color, distance);
-        }
-    };
-    void SetLocation(const glm::vec3& location){
-        this->location = location;
-        Update();
-    };
-    void UpdateColor(const glm::vec3& color){
-        this->color = color;
-        Update();
-    };
-    void UpdateDistance(float dist){
-        distance = dist;
-        Update();
-    }
-    void GetColor(glm::vec3& color){
-        color = this->color;
-    }
-    void GetDistance(float& distance){
-        distance = this->distance;
-    }
-    void Init(){ light = Render::MakeLight(); is_ready = true; Update(); }
-    ~LightComponent(){Render::DeleteLight(light); light = nullptr;};
-    void Start(){}
-    void EventHandler(Event &event){return;}
 };
 
 }
