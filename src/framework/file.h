@@ -42,6 +42,7 @@ public:
     
     void write_name(name_t value);
     void write_string(const char* value);
+    void write_newline();
     
     int8_t read_int8();
     int16_t read_int16();

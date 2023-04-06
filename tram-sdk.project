@@ -183,7 +183,10 @@
         <IncludePath Value="."/>
         <IncludePath Value="./src"/>
         <IncludePath Value="./libraries"/>
-        <IncludePath Value="./libraries/headers"/>
+        <IncludePath Value="./libraries/bullet"/>
+        <IncludePath Value="./libraries/glad"/>
+        <IncludePath Value="./libraries/glfw"/>
+        <IncludePath Value="./libraries/openal"/>
       </Compiler>
       <Linker Options="-lglfw3;-lgdi32;-lopengl32" Required="yes">
         <LibraryPath Value="libraries/binaries/win64"/>

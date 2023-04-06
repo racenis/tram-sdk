@@ -6,19 +6,21 @@
 
 ## What's it
 
-Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022.
+Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022 and similar applications.
 
 ![Software Development Kit logo](/docs/screen11.png)
 
-### How finished is it?
 
-It's usable, but the programming interfaces aren't very stable. User experience also is very lacking, but it's getting better. Need to write up the documentation.
 
 ### Links
 
 More information and also screenshots can be found on the [github.io page](https://racenis.github.io/tram-sdk/). 
 
-Instruction manual and other documentations [can be found here](https://racenis.github.io/tram-sdk/manual/). 
+#### Demos
+
+- FPS ([source code](https://github.com/racenis/jam-game) / [itch.io](https://racenis.itch.io/dziiviibas-partikula))
+
+- Platformer ([source code](https://github.com/racenis/jam-game-ii) / [itch.io](https://racenis.itch.io/sulas-glaaze))
 
 ### Dependencies
 Right now I'm using glad for OpenGL pointer acquisition, glfw for windowing, glm for vector math, Bullet for physics simulation. Maybe will change in the future.
@@ -26,7 +28,7 @@ Right now I'm using glad for OpenGL pointer acquisition, glfw for windowing, glm
 ### Building
 I don't have any makefiles right now, so I suggest that you dump all of the code from the `src` directory into your favorite IDE.
 
-Set the compiler include search directories to `src` and `libraries`.
+Set the compiler include search directories to `src`, `libraries`, `libraries/glad`, `libraries/glfw` and `libraries/openal`.
 
 For the linker, set the search directories to `libraries/binaries/win64`, if you're compiling on windows. For Linux you should install the relevant packages from your package manager. Here's the linking order that should work: `-Llibraries  -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lglfw3 -lOpenAL32  -lglfw3 -lgdi32 -lopengl32`. The last two are for windows only, I think.
 

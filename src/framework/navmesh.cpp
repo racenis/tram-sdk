@@ -50,9 +50,9 @@ Navmesh* Navmesh::Find (name_t name) {
 }
 
 void Navmesh::LoadFromDisk() {
-    char path[100] = "data/paths/";
+    char path[100] = "data/navmeshes/";
     strcat(path, name);
-    strcat(path, ".path");
+    strcat(path, ".navmesh");
     
     File file (path, MODE_READ);
     

@@ -142,10 +142,10 @@ void WorldCell::LoadFromDisk() {
         name_t entry_type = file.read_name();
         
         if (entry_type == "transition") {
-            std::cout << "found transition" << std::endl;
-            
             name_t transition_name = file.read_name();
             name_t transition_into = file.read_name();
+            
+            std::cout << "found transition " << transition_name << " into " << transition_into << std::endl;
             
             Transition* transition = Transition::Make(transition_name, this, WorldCell::Find(transition_into));
             
