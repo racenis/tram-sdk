@@ -5,6 +5,7 @@
 #define TRAM_SDK_FRAMEWORK_MESSAGE_H
 
 #include <cstdint>
+#include <cstddef>
 
 namespace tram {
 

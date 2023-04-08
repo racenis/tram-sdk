@@ -30,12 +30,12 @@ public:
 
     void EventHandler(Event &event){return;}
 protected:
-    void InsertDrawListEntry();
+    void InsertDrawListEntries();
 
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Material> lightmap;
 
-    Render::drawlistentry_t draw_list_entry;
+    Render::drawlistentry_t draw_list_entries [3] = {nullptr};
 
     Render::Pose* pose = nullptr;
 

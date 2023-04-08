@@ -6,6 +6,8 @@
 
 #include <framework/system.h>
 
+#include <cstddef>
+
 namespace tram::Stats {
     
 enum Resource : uint32_t {

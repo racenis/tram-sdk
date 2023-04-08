@@ -4,7 +4,7 @@
 #ifndef PLATFORM_FILE_H
 #define PLATFORM_FILE_H
 
-#include <cstdint>
+#include <cstddef>
 
 namespace tram {
 
@@ -34,8 +34,6 @@ public:
     
 private:
     void* file_handle = nullptr;
-    char* buffer = nullptr;
-    size_t buffer_length = 0;
 };
     
 }

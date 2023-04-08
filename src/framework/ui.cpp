@@ -75,6 +75,7 @@ std::unordered_map<KeyboardKey, KeyBinding> KeyActionBindings = {
     {KEY_BACKSPACE, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ CharacterBackspaceCallback(); }}}
 };
 
+#ifndef __EMSCRIPTEN__
 void APIENTRY RenderErrorCallback (uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void*) {
     // apparently these are spammy, or something
     //if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
@@ -110,6 +111,7 @@ void APIENTRY RenderErrorCallback (uint32_t source, uint32_t type, uint32_t id, 
     std::cout << "OpenGL Debug Message: " << source_str << " " << type_str << " " << severity_str << " " << id << std::endl;
     std::cout << message << std::endl;
 }
+#endif
 
 void BindKeyboardKey (KeyboardKey key, KeyBinding binding) {
     KeyActionBindings[key] = binding;
@@ -151,7 +153,7 @@ void Init(){
     glfwMakeContextCurrent(WINDOW);
     
     // random settings that we don't need on web platform
-    if (CURRENT_PLATFORM != PLATFORM_WEB) {
+#ifndef __EMSCRIPTEN__
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();
@@ -162,7 +164,7 @@ void Init(){
         glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
         glfwSwapInterval(1);
-    }
+#endif
 
     glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height) {
         screen_width = width;

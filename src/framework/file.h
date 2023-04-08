@@ -64,6 +64,12 @@ public:
     std::string path;
     FileAccessMode mode;
     
+    // cursors for writing
+    char* buffer = nullptr;
+    char* buffer_cursor = nullptr;
+    char* buffer_end = nullptr;
+    
+    // cursors for reading
     const char* cursor = nullptr;
     const char* cursor_end = nullptr;
     

@@ -17,8 +17,13 @@ void RenderComponent::SetModel (name_t name) {
     model = Render::Model::Find(name);
     
     if (is_ready) {
-        RemoveDrawListEntry(draw_list_entry);
-        InsertDrawListEntry();
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                RemoveDrawListEntry(entry);
+            }
+        }
+        
+        InsertDrawListEntries();
     }
 };
 
@@ -29,7 +34,11 @@ void RenderComponent::SetLightmap (name_t name) {
     lightmap = Render::Material::Find(name);
     
     if (is_ready) {
-        Render::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                Render::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
+            }
+        }
     }
 };
 
@@ -46,7 +55,11 @@ void RenderComponent::SetArmature (ArmatureComponent* armature) {
     }
     
     if (is_ready) {
-        Render::SetPose(draw_list_entry, pose);
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                Render::SetPose(entry, pose);
+            }
+        }
     }
 };
 
@@ -58,7 +71,11 @@ RenderComponent::~RenderComponent() {
     assert(is_ready);
     is_ready = false;
     
-    RemoveDrawListEntry(draw_list_entry);
+    for (auto entry : draw_list_entries) {
+        if (entry) {
+            Render::RemoveDrawListEntry(entry);
+        }
+    }
 };
 
 /// Sets the world parameters for model rendering.
@@ -70,7 +87,11 @@ void RenderComponent::SetWorldParameters (bool interior_lighting) {
     }
     
     if (is_ready) {
-        SetFlags(draw_list_entry, render_flags);
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                Render::SetFlags(entry, render_flags);
+            }
+        }
     }
 }
 
@@ -79,7 +100,11 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
     location = nlocation;
     
     if (is_ready) {
-        Render::SetLocation(draw_list_entry, location);
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                Render::SetLocation(entry, location);
+            }
+        }
     }
 }
 
@@ -88,42 +113,54 @@ void RenderComponent::SetRotation(glm::quat nrotation){
     rotation = nrotation;
     
     if (is_ready) {
-        Render::SetRotation(draw_list_entry, rotation);
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                Render::SetRotation(entry, rotation);
+            }
+        }
     }
 }
 
 void RenderComponent::Start(){
     assert(!is_ready);
 
-    InsertDrawListEntry();
+    InsertDrawListEntries();
     
     is_ready = true;
 }
 
-void RenderComponent::InsertDrawListEntry() {
-    draw_list_entry = Render::InsertDrawListEntry();
-    
-    texturehandle_t textures [15];
-    for (uint32_t i = 0; i < model->GetIndexRanges()[0].material_count; i++) {
-        textures [i] = model->GetMaterials()[model->GetIndexRanges()[0].materials[i]]->GetTexture();
-    }
-    
-    Render::SetDrawListVertexArray(draw_list_entry, model->GetVertexArray());
-    Render::SetDrawListTextures(draw_list_entry, model->GetIndexRanges()[0].material_count, textures);
-    Render::SetDrawListShader(draw_list_entry, model->GetVertexFormat(), model->GetIndexRanges()[0].material_type);
-    Render::SetDrawListIndexRange(draw_list_entry, model->GetIndexRanges()[0].index_offset, model->GetIndexRanges()[0].index_length);
-    
-    Render::SetLightmap(draw_list_entry, lightmap ? lightmap->GetTexture() : 0);
-    Render::SetFlags(draw_list_entry, render_flags);
-    
-    Render::SetLocation(draw_list_entry, location);
-    Render::SetRotation(draw_list_entry, rotation);
-    
+void RenderComponent::InsertDrawListEntries() {
     if (!pose) {
         pose = BLANK_POSE;
     }
     
-    Render::SetPose(draw_list_entry, pose);
+    auto& index_ranges = model->GetIndexRanges();
+    
+    for (size_t i = 0; i < index_ranges.size(); i++) {
+        std::cout << "----------------------- INSERTING " << i << std::endl;
+        
+        drawlistentry_t entry = Render::InsertDrawListEntry();
+    
+        texturehandle_t textures [15];
+        for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
+            textures [j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
+        }
+
+        Render::SetDrawListVertexArray(entry, model->GetVertexArray());
+        Render::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
+        Render::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
+        Render::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
+
+        Render::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
+        Render::SetFlags(entry, render_flags);
+
+        Render::SetLocation(entry, location);
+        Render::SetRotation(entry, rotation);
+
+        Render::SetPose(entry, pose);
+        
+        draw_list_entries [i] = entry;
+    }
 }
 
 }

@@ -8,7 +8,6 @@
 #ifdef NEKADEEE
 
 
-
 #include <framework/core.h>
 #include <framework/async.h>
 #include <framework/ui.h>
@@ -46,6 +45,8 @@
 #include <extensions/camera/camera.h>
 
 #include <render/api.h>
+
+#include <platform/platform.h>
 
 using namespace tram;
 using namespace tram::Render;
@@ -275,6 +276,8 @@ void mainloop() {
 
 
 int main() {
+    std::cout << "CURRENT_PLATFORM: " << CURRENT_PLATFORM << std::endl; 
+    
     //std::cout << std::filesystem::current_path() << std::endl;
 
     // register the entity types, so that they can be loaded from level files
@@ -294,7 +297,7 @@ int main() {
 	Render::Init();         // render init must always come after the ui inited
     
 	std::cout << "Starting async" << std::endl;
-	Async::Init(3);          // async init must always come after render init
+	Async::Init(0);          // async init must always come after render init
     
 	std::cout << "Starting audio" << std::endl;
 	Audio::Init();
@@ -448,16 +451,18 @@ using namespace tram;
 
 
 int main() {
-    tram::Init();
+    tram::Core::Init();
     
     std::cout << tram::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
     
     {
-        File file ("bepito.bepis", MODE_READ);
+        File file ("bepito.bepis", MODE_WRITE);
         
         for (int i = 0; i < 4; i++) {
-            std::cout << file.read_float64() << std::endl;
+            file.write_string("bepis");
+            file.write_float32(((float) i) * 0.420f);
+            file.write_newline();
         }
     }
     

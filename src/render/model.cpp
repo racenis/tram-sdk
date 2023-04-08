@@ -104,8 +104,7 @@ void Model::LoadFromDisk() {
         std::vector<Triangle> triangles;    // triangle indices in the bucket
     };
     
-    // TODO: make this autoexpand, not predefined
-    std::vector<TriangleBucket> triangle_buckets {TriangleBucket(), TriangleBucket(), TriangleBucket(), TriangleBucket(), TriangleBucket(), TriangleBucket()};
+    std::vector<TriangleBucket> triangle_buckets;
     
 
     // trying to load model as a static model, text mode
@@ -171,6 +170,7 @@ void Model::LoadFromDisk() {
             materialtype_t material_type = materials[material_index]->GetType();
             
             size_t bucket = 0;
+            uint32_t material_index_in_bucket = 0;
             
             // try to find the bucket that contains this triangle's material
             for (; bucket < triangle_buckets.size(); bucket++) {
@@ -179,12 +179,14 @@ void Model::LoadFromDisk() {
                 // check if material is in the bucket
                 for (size_t i = 0; i < triangle_buckets[bucket].materials.size(); i++) {
                     if (triangle_buckets[bucket].materials[i] == material_index) {
+                        material_index_in_bucket = material_index;
                         goto found_bucket;
                     }
                 }
                 
                 // otherwise try to add it to the bucket
                 if (triangle_buckets[bucket].materials.size() < 15) {
+                    material_index_in_bucket = triangle_buckets[bucket].materials.size();
                     triangle_buckets[bucket].materials.push_back(material_index);
                     goto found_bucket;
                 }
@@ -204,9 +206,9 @@ void Model::LoadFromDisk() {
                 });
             }
 
-            data->vertices[index.indices.x].texture = material_index;
-            data->vertices[index.indices.y].texture = material_index;
-            data->vertices[index.indices.z].texture = material_index;
+            data->vertices[index.indices.x].texture = material_index_in_bucket;
+            data->vertices[index.indices.y].texture = material_index_in_bucket;
+            data->vertices[index.indices.z].texture = material_index_in_bucket;
         }
 
         for (auto& bucket : triangle_buckets) {

@@ -63,8 +63,6 @@ FileWriter::FileWriter (const char* path, FileSource source) {
 
     if (file_handle != nullptr) {
         std::cout << "Opened file: " << path << std::endl;
-        
-        this->buffer = new char[1000]; // hehe
     } else {
         std::cout << "Failed to open file: " << path << std::endl;
         return;
@@ -73,21 +71,10 @@ FileWriter::FileWriter (const char* path, FileSource source) {
 
 /// Closes the file for writing.
 FileWriter::~FileWriter () {
-    if (is_open() && buffer) {
-        fwrite(buffer, buffer_length, 1, (FILE*) file_handle);
-    }
-    
     if (is_open()) {
         fclose((FILE*) file_handle);
         
         file_handle = nullptr;
-    }
-
-    if (buffer) {
-        delete[] buffer;
-        
-        buffer = nullptr;
-        buffer_length = 0;
     }
 }
 
@@ -96,11 +83,7 @@ FileWriter::~FileWriter () {
 /// @param data     Data which will be written to the file.
 /// @param length   Length of the data, in bytes, pointed to by data parameter.
 void FileWriter::write (const char* data, size_t length) {
-    assert(length + buffer_length > 1000);
-    
-    memcpy(buffer + buffer_length, data, length);
-    
-    buffer_length += length;
+    fwrite(data, length, 1, (FILE*) file_handle);
 }
 
 /// Checks if a file was opened for writing.

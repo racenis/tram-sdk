@@ -5,6 +5,7 @@
 #define TRAM_SDK_FRAMEWORK_EVENT_H
 
 #include <cstdint>
+#include <cstddef>
 
 namespace tram {
 

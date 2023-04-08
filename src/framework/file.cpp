@@ -2,6 +2,7 @@
 #include <framework/file.h>
 
 #include <charconv>
+#include <cstring>
 
 namespace tram {
 
@@ -57,6 +58,23 @@ auto read_text_from_chars (const char*& cursor, const char* cursor_end) {
     return value;
 }
 
+#ifdef __clang__
+template <>
+auto read_text_from_chars<float> (const char*& cursor, const char* cursor_end) {
+    float value;
+    char* new_cursor = nullptr;
+    value = strtof(cursor, &new_cursor);
+    cursor = new_cursor;
+    skip_text_whitespace(cursor, cursor_end);
+    return value;
+}
+
+template <>
+auto read_text_from_chars<double> (const char*& cursor, const char* cursor_end) {
+    return read_text_from_chars<float> (cursor, cursor_end);
+}
+#endif
+
 int32_t read_text_int32 (const char*& cursor, const char* cursor_end) {
     return atoi (cursor);
 }
@@ -99,6 +117,13 @@ std::string_view read_text_line (const char*& cursor, const char* cursor_end) {
     return std::string_view (first_char, last_char - first_char);
 }
 
+template <typename T>
+void write_text_to_chars (T value, char*& cursor, char* cursor_end) {
+    cursor = std::to_chars(cursor, cursor_end, value).ptr;
+    *cursor++ = ' ';
+    *cursor = '\0';
+}
+
 File::File (char const* path, FileAccessMode mode) : path(path), mode(mode) {
     if (mode == MODE_READ) {
         disk_reader = new FileReader(path, SOURCE_ANY);
@@ -109,6 +134,14 @@ File::File (char const* path, FileAccessMode mode) : path(path), mode(mode) {
         }
         
         skip_text_whitespace(cursor, cursor_end);
+    } else if (mode == MODE_WRITE) {
+        disk_writer = new FileWriter(path, SOURCE_ANY);
+        
+        if (disk_writer->is_open()) {
+            buffer = new char [10000];
+            buffer_cursor = buffer;
+            buffer_end = buffer + 10000;
+        }
     } else {
         abort();
     }
@@ -120,7 +153,10 @@ File::~File() {
     }
     
     if (disk_writer) {
+        disk_writer->write(buffer, buffer_cursor - buffer);
+        
         delete disk_writer;
+        delete[] buffer;
     }
 }
 
@@ -148,21 +184,22 @@ bool File::is_continue() {
     return false;
 }
 
-void File::write_int8(int8_t value) { abort(); }
-void File::write_int16(int16_t value) { abort();  }
-void File::write_int32(int32_t value) {abort();  }
-void File::write_int64(int64_t value) { abort(); }
+void File::write_int8(int8_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_int16(int16_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_int32(int32_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_int64(int64_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
 
-void File::write_uint8(uint8_t value) { abort();  }
-void File::write_uint16(uint16_t value) { abort();  }
-void File::write_uint32(uint32_t value) { abort();  }
-void File::write_uint64(uint64_t value) { abort(); }
+void File::write_uint8(uint8_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_uint16(uint16_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_uint32(uint32_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_uint64(uint64_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
 
-void File::write_float32(float value) { abort(); }
-void File::write_float64(double value) { abort(); }
+void File::write_float32(float value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_float64(double value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
 
-void File::write_name(name_t value) { abort(); }
-void File::write_string(const char* value) { abort(); }
+void File::write_name(name_t value) { strcpy(buffer_cursor, value); buffer_cursor += strlen(value); *buffer_cursor++ = ' '; }
+void File::write_string(const char* value) { *buffer_cursor++ = '"'; strcpy(buffer_cursor, value); buffer_cursor += strlen(value); *buffer_cursor++ = '"'; *buffer_cursor++ = ' '; }
+void File::write_newline() { *buffer_cursor++ = '\n'; }
 
 int8_t File::read_int8() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
 int16_t File::read_int16() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }

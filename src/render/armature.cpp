@@ -17,7 +17,7 @@ template <> Pool<Render::Pose> PoolProxy<Render::Pose>::pool ("pose pool", 100, 
 namespace tram::Render {
     
 Hashmap<Animation*> animation_list ("model name list", 500);
-StackPool<uint8_t> animation_pool ("animation keyframe pool", 50000);
+StackPool<uint8_t> animation_pool ("animation keyframe pool", 1024 * 1024);
 
 Pose* BLANK_POSE = nullptr;
 
@@ -36,27 +36,25 @@ void Animation::LoadFromDisk(){
     std::cout << "Loading animation: " << filename << std::endl;
 
 
-    NameCount* nameptr;
-
     if (name_t header = file.read_name(); header != "ANIMv1") {
         Log ("Unrecognized header '{}' in animation {}", header, filename);
         return;
     }
     
-    nameptr = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
+    NameCount* anim_header = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
 
-    nameptr->first = file.read_name();
-    nameptr->second = file.read_uint32();
+    anim_header->first = file.read_name();
+    anim_header->second = file.read_uint32();
     
-    this->animation_pointer = nameptr;
+    this->animation_pointer = anim_header;
 
-    for (uint64_t j = 0; j < nameptr->second; j++){
-        nameptr = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
+    for (uint64_t j = 0; j < anim_header->second; j++){
+        NameCount* bone_header = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
 
-        nameptr->first = file.read_name();
-        nameptr->second = file.read_uint32();
+        bone_header->first = file.read_name();
+        bone_header->second = file.read_uint32();
 
-        for (uint64_t k = 0; k < nameptr->second; k++){
+        for (uint64_t k = 0; k < bone_header->second; k++){
             Keyframe* kframe = (Keyframe*) animation_pool.AddNew(sizeof(Keyframe));
             
             kframe->frame = file.read_float32();

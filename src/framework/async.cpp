@@ -130,7 +130,7 @@ void Init (size_t threads) {
     if (threads) {
         loaders_should_stop = false;
         
-        for (size_t i; i < threads; i++) {
+        for (size_t i = 0; i < threads; i++) {
             resource_loaders.push_back (std::thread(ResourceLoader));
         }
     }
