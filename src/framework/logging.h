@@ -6,6 +6,7 @@
 
 #include <framework/core.h>
 #include <framework/uid.h>
+#include <framework/system.h>
 #include <concepts>
 
 namespace tram {
@@ -56,12 +57,14 @@ namespace implementation {
 }
 
 enum Severity {
-    SEVERITY_DEFAULT,
-    SEVERITY_CRITICAL_ERROR,
-    SEVERITY_ERROR,
+    SEVERITY_INFO,
     SEVERITY_WARNING,
-    SEVERITY_INFO
+    SEVERITY_ERROR,
+    SEVERITY_CRITICAL_ERROR,
+    SEVERITY_DEFAULT
 };
+
+void SetSystemLoggingSeverity (System::system_t system, Severity min_severity);
 
 template <typename... Args>
 void Log (int severity, int system, const std::string_view& format, Args&&... args) {

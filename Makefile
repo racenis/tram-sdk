@@ -1,182 +1,178 @@
-src_main.o: ./src/main.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/main.cpp -o src_main.o
-
 src_audio_api.o: ./src/audio/api.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/audio/api.cpp -o src_audio_api.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/audio/api.cpp -o src_audio_api.o
 
 src_audio_audio.o: ./src/audio/audio.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/audio/audio.cpp -o src_audio_audio.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/audio/audio.cpp -o src_audio_audio.o
 
 src_audio_sound.o: ./src/audio/sound.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/audio/sound.cpp -o src_audio_sound.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/audio/sound.cpp -o src_audio_sound.o
 
 src_audio_openal_openal.o: ./src/audio/openal/openal.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/audio/openal/openal.cpp -o src_audio_openal_openal.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/audio/openal/openal.cpp -o src_audio_openal_openal.o
 
 src_components_armaturecomponent.o: ./src/components/armaturecomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/armaturecomponent.cpp -o src_components_armaturecomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/armaturecomponent.cpp -o src_components_armaturecomponent.o
 
 src_components_audiocomponent.o: ./src/components/audiocomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/audiocomponent.cpp -o src_components_audiocomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/audiocomponent.cpp -o src_components_audiocomponent.o
 
 src_components_controllercomponent.o: ./src/components/controllercomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/controllercomponent.cpp -o src_components_controllercomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/controllercomponent.cpp -o src_components_controllercomponent.o
 
 src_components_lightcomponent.o: ./src/components/lightcomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/lightcomponent.cpp -o src_components_lightcomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/lightcomponent.cpp -o src_components_lightcomponent.o
 
 src_components_particlecomponent.o: ./src/components/particlecomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/particlecomponent.cpp -o src_components_particlecomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/particlecomponent.cpp -o src_components_particlecomponent.o
 
 src_components_physicscomponent.o: ./src/components/physicscomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/physicscomponent.cpp -o src_components_physicscomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/physicscomponent.cpp -o src_components_physicscomponent.o
 
 src_components_playercomponent.o: ./src/components/playercomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/playercomponent.cpp -o src_components_playercomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/playercomponent.cpp -o src_components_playercomponent.o
 
 src_components_rendercomponent.o: ./src/components/rendercomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/rendercomponent.cpp -o src_components_rendercomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/rendercomponent.cpp -o src_components_rendercomponent.o
 
 src_components_spritecomponent.o: ./src/components/spritecomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/spritecomponent.cpp -o src_components_spritecomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/spritecomponent.cpp -o src_components_spritecomponent.o
 
 src_components_triggercomponent.o: ./src/components/triggercomponent.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/components/triggercomponent.cpp -o src_components_triggercomponent.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/triggercomponent.cpp -o src_components_triggercomponent.o
 
 src_entities_crate.o: ./src/entities/crate.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/entities/crate.cpp -o src_entities_crate.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/crate.cpp -o src_entities_crate.o
 
 src_entities_lamp.o: ./src/entities/lamp.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/entities/lamp.cpp -o src_entities_lamp.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/lamp.cpp -o src_entities_lamp.o
 
 src_entities_marker.o: ./src/entities/marker.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/entities/marker.cpp -o src_entities_marker.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/marker.cpp -o src_entities_marker.o
 
 src_entities_player.o: ./src/entities/player.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/entities/player.cpp -o src_entities_player.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/player.cpp -o src_entities_player.o
 
 src_entities_staticworldobject.o: ./src/entities/staticworldobject.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/entities/staticworldobject.cpp -o src_entities_staticworldobject.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/staticworldobject.cpp -o src_entities_staticworldobject.o
 
 src_extensions_camera_camera.o: ./src/extensions/camera/camera.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/extensions/camera/camera.cpp -o src_extensions_camera_camera.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/camera/camera.cpp -o src_extensions_camera_camera.o
 
 src_extensions_menu_menu.o: ./src/extensions/menu/menu.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/extensions/menu/menu.cpp -o src_extensions_menu_menu.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/menu/menu.cpp -o src_extensions_menu_menu.o
 
 src_framework_async.o: ./src/framework/async.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/async.cpp -o src_framework_async.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/async.cpp -o src_framework_async.o
 
 src_framework_core.o: ./src/framework/core.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/core.cpp -o src_framework_core.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/core.cpp -o src_framework_core.o
 
 src_framework_entity.o: ./src/framework/entity.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/entity.cpp -o src_framework_entity.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/entity.cpp -o src_framework_entity.o
 
 src_framework_event.o: ./src/framework/event.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/event.cpp -o src_framework_event.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/event.cpp -o src_framework_event.o
 
 src_framework_file.o: ./src/framework/file.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/file.cpp -o src_framework_file.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/file.cpp -o src_framework_file.o
 
 src_framework_gui.o: ./src/framework/gui.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/gui.cpp -o src_framework_gui.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/gui.cpp -o src_framework_gui.o
 
 src_framework_language.o: ./src/framework/language.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/language.cpp -o src_framework_language.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/language.cpp -o src_framework_language.o
 
 src_framework_loader.o: ./src/framework/loader.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/loader.cpp -o src_framework_loader.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/loader.cpp -o src_framework_loader.o
 
 src_framework_logging.o: ./src/framework/logging.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/logging.cpp -o src_framework_logging.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/logging.cpp -o src_framework_logging.o
 
 src_framework_math.o: ./src/framework/math.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/math.cpp -o src_framework_math.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/math.cpp -o src_framework_math.o
 
 src_framework_message.o: ./src/framework/message.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/message.cpp -o src_framework_message.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/message.cpp -o src_framework_message.o
 
 src_framework_navigation.o: ./src/framework/navigation.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/navigation.cpp -o src_framework_navigation.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/navigation.cpp -o src_framework_navigation.o
 
 src_framework_navmesh.o: ./src/framework/navmesh.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/navmesh.cpp -o src_framework_navmesh.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/navmesh.cpp -o src_framework_navmesh.o
 
 src_framework_path.o: ./src/framework/path.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/path.cpp -o src_framework_path.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/path.cpp -o src_framework_path.o
 
 src_framework_stats.o: ./src/framework/stats.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/stats.cpp -o src_framework_stats.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/stats.cpp -o src_framework_stats.o
 
 src_framework_system.o: ./src/framework/system.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/system.cpp -o src_framework_system.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/system.cpp -o src_framework_system.o
 
 src_framework_transition.o: ./src/framework/transition.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/transition.cpp -o src_framework_transition.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/transition.cpp -o src_framework_transition.o
 
 src_framework_ui.o: ./src/framework/ui.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/ui.cpp -o src_framework_ui.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/ui.cpp -o src_framework_ui.o
 
 src_framework_uid.o: ./src/framework/uid.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/uid.cpp -o src_framework_uid.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/uid.cpp -o src_framework_uid.o
 
 src_framework_worldcell.o: ./src/framework/worldcell.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/framework/worldcell.cpp -o src_framework_worldcell.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/framework/worldcell.cpp -o src_framework_worldcell.o
 
 src_physics_collisionmodel.o: ./src/physics/collisionmodel.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/physics/collisionmodel.cpp -o src_physics_collisionmodel.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/physics/collisionmodel.cpp -o src_physics_collisionmodel.o
 
 src_physics_physics.o: ./src/physics/physics.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/physics/physics.cpp -o src_physics_physics.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/physics/physics.cpp -o src_physics_physics.o
 
 src_physics_bullet_bullet.o: ./src/physics/bullet/bullet.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/physics/bullet/bullet.cpp -o src_physics_bullet_bullet.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/physics/bullet/bullet.cpp -o src_physics_bullet_bullet.o
 
 src_platform_file.o: ./src/platform/file.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/platform/file.cpp -o src_platform_file.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/platform/file.cpp -o src_platform_file.o
 
 src_platform_time.o: ./src/platform/time.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/platform/time.cpp -o src_platform_time.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/platform/time.cpp -o src_platform_time.o
 
 src_render_armature.o: ./src/render/armature.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/armature.cpp -o src_render_armature.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/armature.cpp -o src_render_armature.o
 
 src_render_error.o: ./src/render/error.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/error.cpp -o src_render_error.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/error.cpp -o src_render_error.o
 
 src_render_material.o: ./src/render/material.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/material.cpp -o src_render_material.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/material.cpp -o src_render_material.o
 
 src_render_model.o: ./src/render/model.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/model.cpp -o src_render_model.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/model.cpp -o src_render_model.o
 
 src_render_render.o: ./src/render/render.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/render.cpp -o src_render_render.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/render.cpp -o src_render_render.o
 
 src_render_renderer.o: ./src/render/renderer.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/renderer.cpp -o src_render_renderer.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/renderer.cpp -o src_render_renderer.o
 
 src_render_render_misc.o: ./src/render/render_misc.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/render_misc.cpp -o src_render_render_misc.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/render_misc.cpp -o src_render_render_misc.o
 
 src_render_sprite.o: ./src/render/sprite.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/sprite.cpp -o src_render_sprite.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/sprite.cpp -o src_render_sprite.o
 
 src_render_vertices.o: ./src/render/vertices.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/vertices.cpp -o src_render_vertices.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/vertices.cpp -o src_render_vertices.o
 
 src_render_opengl_error.o: ./src/render/opengl/error.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/opengl/error.cpp -o src_render_opengl_error.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/opengl/error.cpp -o src_render_opengl_error.o
 
 src_render_opengl_renderer.o: ./src/render/opengl/renderer.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/opengl/renderer.cpp -o src_render_opengl_renderer.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/opengl/renderer.cpp -o src_render_opengl_renderer.o
 
 src_render_opengl_shader.o: ./src/render/opengl/shader.cpp
-	emcc -c -g -O0 -std=c++20 -I./src -Wno-undefined-var-template -I./src -I./libraries -I./src -I./libraries/bullet ./src/render/opengl/shader.cpp -o src_render_opengl_shader.o
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/opengl/shader.cpp -o src_render_opengl_shader.o
 
 clean:
-	del src_main.o
 	del src_audio_api.o
 	del src_audio_audio.o
 	del src_audio_sound.o
@@ -236,5 +232,5 @@ clean:
 	del src_render_opengl_renderer.o
 	del src_render_opengl_shader.o
 
-project: src_main.o src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_lightcomponent.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_playercomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_armature.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
-	emcc -g src_main.o src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_lightcomponent.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_playercomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_armature.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o -sASSERTIONS=2 -sSAFE_HEAP=0 -sALLOW_MEMORY_GROWTH -sSTACK_OVERFLOW_CHECK=1 -sUSE_BULLET=1 -sUSE_GLFW=3 -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -L./  -L./libraries/binaries/web/ -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -o tramsdk.html --preload-file ./
+library: src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_lightcomponent.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_playercomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_armature.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+	ar -crf libtramsdk.a src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_lightcomponent.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_playercomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_armature.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 

@@ -55,9 +55,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Graphics menu
 
 
-- Fix scale in animations
-	- Fix the animation exporter
-	- Fix the animation player code
 - Split off an AnimationComponent from ArmatureComponent
 - Add log filtering
 - Make Raycast that returns multiple points
@@ -105,6 +102,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Link entity definitions dynamically, not statically
 - Additional scripts
 	- Project generation script
+- Fix animation scaling translation
+	- There's something weird going on if you both scale and translate in an animation
+- Fix animation exporter
 
 ### New features that would be nice to have, but are not very important
 - ControllerComponents have configurable transitions between animations

@@ -38,6 +38,7 @@ public:
     void virtual UpdateParameters() = 0;
     void virtual SetParameters() = 0;
     
+    inline void SetAutoLoad(bool auto_load) { this->auto_load = auto_load; }
     inline void SetPersistent(bool persistent) { this->is_persistent = persistent; }
 
     void SetLocation(vec3 loc) { location = loc; SetParameters(); CheckTransition();}

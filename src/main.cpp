@@ -104,9 +104,9 @@ void mainloop() {
     auto ray_world = Physics::Raycast(cast_from, cast_to, Physics::COLL_WORLDOBJ);
     
     if (ray_world.collider) {
-        AddLineMarker(ray_world.point, COLOR_PINK);
+        //AddLineMarker(ray_world.point, COLOR_PINK);
     } else if (ray_all.collider) {
-        AddLineMarker(ray_all.point, COLOR_GREEN);
+        //AddLineMarker(ray_all.point, COLOR_GREEN);
     }
     
     //if (tick > 300 && tick % 100 == 0) {
@@ -284,28 +284,16 @@ int main() {
     Entity::RegisterType("staticwobj", [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
     Entity::RegisterType("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
 
-	std::cout << "Starting core" << std::endl;
-    Core::Init();           // core init should always be first
-	
-	std::cout << "Starting UI" << std::endl;
-    UI::Init();
-	
-	std::cout << "Starting physics" << std::endl;
-    Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities
-    
-	std::cout << "Starting render" << std::endl;
-	Render::Init();         // render init must always come after the ui inited
-    
-	std::cout << "Starting async" << std::endl;
-	Async::Init(0);          // async init must always come after render init
-    
-	std::cout << "Starting audio" << std::endl;
-	Audio::Init();
-    
-	std::cout << "Starting gui" << std::endl;
-	GUI::Init();
+    SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
 
-	std::cout << "Starting menu" << std::endl;
+    Core::Init();           // core init should always be first
+    UI::Init();
+    Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities
+    Render::Init();         // render init must always come after the ui inited
+    Async::Init(0);          // async init must always come after render init
+    Audio::Init();
+    GUI::Init();
+
     Ext::Menu::Init();
     Ext::Camera::Init();
 
@@ -319,28 +307,21 @@ int main() {
 
     //UID bepitong;
     
-    
     UIDFunc("bepito");
 
-
-    Render::SetScreenClear({0.0f, 0.0f, 0.0f}, false);
-
-    std::cout << "loading worldcell" << std::endl;
+    //Render::SetScreenClear({0.0f, 0.0f, 0.0f}, false);
+    Render::SetScreenClear({0.0f, 0.0f, 0.0f}, true);
 
     // loading the demo level
     WorldCell::Make(UID("demo_mov"))->LoadFromDisk();
-    
 
-    std::cout << "making player" << std::endl;
+
     // create the player entity
     player = new Player;
-    std::cout << "setting player pos" << std::endl;
     //player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
     player->SetLocation(vec3(3.0f, 4.0f, 3.0f));
-    std::cout << "loading player" << std::endl;
     player->Load();
     
-    std::cout << "making camera" << std::endl;
     camera = new Ext::Camera::Camera;
     camera->SetMouselook(true);
     camera->SetRotateFollowing(true);
@@ -349,8 +330,6 @@ int main() {
     
     Ext::Camera::SetCamera(camera);
     
-    std::cout << "making binguser" << std::endl;
-
 
     // create the createdwdww model
     binguser = PoolProxy<RenderComponent>::New();
@@ -358,8 +337,6 @@ int main() {
     binguser->Init();
     binguser->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
     binguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
-
-    std::cout << "making monguser" << std::endl;
 
     // create the mongus model
     monguser = PoolProxy<RenderComponent>::New();
@@ -369,15 +346,11 @@ int main() {
     monguser->SetLocation(glm::vec3(0.0f, 10.0f, 0.0f));
     monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
-   std::cout << "making light" << std::endl; 
-
     // create a light
     lit = PoolProxy<LightComponent>::New();
     lit->Init();
     lit->SetColor({1.0f, 0.0f, 1.0f});
     lit->SetDistance(100.0f);
-
-    std::cout << "making armatur" << std::endl;
 
     // create the animation player for the mongus model
     monguser_armature = PoolProxy<ArmatureComponent>::New();
@@ -392,8 +365,6 @@ int main() {
     
     // turn on physics drawing
     //DRAW_PHYSICS_DEBUG = true;
-    
-    std::cout << "DCIKS" << std::endl;
     
     tolet_sprite = new Sprite(UID("poland"));
     //tolet_sprite->SetMaterial(Material::Find(UID("poland")));

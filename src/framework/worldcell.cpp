@@ -178,7 +178,6 @@ void WorldCell::LoadFromDisk() {
             std::cout << "Entity type '" << entry_type << "' not recognized; in file " << path << std::endl;
         } else {
             this->AddEntity(entity);
-            std::cout << "made entity: " << entity->GetName() << std::endl;
         }
     }
 }

@@ -62,11 +62,16 @@ static void CharacterBackspaceCallback();
 std::unordered_map<KeyboardKey, KeyBinding> KeyActionBindings = {
     {KEY_W, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_FORWARD}},
     {KEY_S, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_BACKWARD}},
-    {KEY_A, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_LEFT}},
-    {KEY_D, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_RIGHT}},
+    {KEY_A, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_STRAFE_LEFT}},
+    {KEY_D, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_STRAFE_RIGHT}},
     {KEY_SPACE, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_JUMP}},
     {KEY_LEFT_CONTROL, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_CROUCH}},
     {KEY_E, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_ACTIVATE}},
+    
+    {KEY_UP, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_UP}},
+    {KEY_DOWN, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_DOWN}},
+    {KEY_LEFT, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_LEFT}},
+    {KEY_RIGHT, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_RIGHT}},
 
     {KEY_F1, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ EXIT = true; glfwSetWindowShouldClose(WINDOW, EXIT); }}},
     {KEY_F5, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},

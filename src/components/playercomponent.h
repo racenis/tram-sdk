@@ -35,8 +35,8 @@ public:
             
             if (event.subtype == KEY_ACTION_FORWARD)    move_forward =  move_value;
             if (event.subtype == KEY_ACTION_BACKWARD)   move_backward = move_value;
-            if (event.subtype == KEY_ACTION_LEFT)       move_left =     move_value;
-            if (event.subtype == KEY_ACTION_RIGHT)      move_right =    move_value;
+            if (event.subtype == KEY_ACTION_STRAFE_LEFT)       move_left =     move_value;
+            if (event.subtype == KEY_ACTION_STRAFE_RIGHT)      move_right =    move_value;
         }
 
         // I have literally no idea what is going on in here

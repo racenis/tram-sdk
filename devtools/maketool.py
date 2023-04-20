@@ -127,7 +127,7 @@ def generate_makefile():
 		for unit in units:
 			makefile += objectify(unit) + ".o "
 		makefile += "\n\t" + archiver
-		if is_emscripten:
+		if not is_emscripten:
 			makefile += " -crf "
 		else:
 			makefile += " rcs "

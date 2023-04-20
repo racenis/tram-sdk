@@ -98,6 +98,7 @@
       <File Name="src/framework/entity.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="templates">
+      <File Name="src/templates/aabb.h"/>
       <File Name="src/templates/octree.h"/>
       <File Name="src/templates/stack.h"/>
       <File Name="src/templates/queue.h"/>

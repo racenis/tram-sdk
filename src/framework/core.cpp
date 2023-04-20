@@ -40,6 +40,7 @@ void Core::Init () {
     // feel free to extend the list, but do note that this list
     // is in the same order as the System::System enumeration.
     System::Register("Core", "CORE");
+    System::Register("Platform", "PLATFORM");
     System::Register("User Interface", "UI");
     System::Register("Graphical User Interface", "GUI");
     System::Register("Async", "ASYNC");

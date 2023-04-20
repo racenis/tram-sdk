@@ -137,8 +137,6 @@ void RenderComponent::InsertDrawListEntries() {
     auto& index_ranges = model->GetIndexRanges();
     
     for (size_t i = 0; i < index_ranges.size(); i++) {
-        std::cout << "----------------------- INSERTING " << i << std::endl;
-        
         drawlistentry_t entry = Render::InsertDrawListEntry();
     
         texturehandle_t textures [15];

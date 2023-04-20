@@ -3,6 +3,8 @@
 
 #include <platform/file.h>
 
+#include <framework/logging.h>
+
 namespace tram {
 
 /// Loads a file into memory.
@@ -15,9 +17,9 @@ FileReader::FileReader (const char* path, FileSource source) {
     FILE* file_handle = fopen(path, "rb");
     
     if (file_handle != nullptr) {
-        std::cout << "Opened file for reading: " << path << std::endl;
+        Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Opened file for reading: {}", path);
     } else {
-        std::cout << "Failed to open file for reading: " << path << std::endl;
+        Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Failed to open file for reading: {}", path);
         return;
     }
     
@@ -29,13 +31,14 @@ FileReader::FileReader (const char* path, FileSource source) {
     
     fread(file_data, file_size, 1, file_handle);
     
-    std::cout << "Read " << file_size << " from " << path << std::endl;
+    Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Read {} bytes from file: {}", file_size, path);
 
     fclose(file_handle);
     
     this->contents = file_data;
     this->length = file_size;
-    std::cout << "Closed file: " << path << std::endl;
+    
+    Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Closed file: {}", path);
 }
 
 /// Deletes the loaded file from memory.
@@ -62,9 +65,9 @@ FileWriter::FileWriter (const char* path, FileSource source) {
     this->file_handle = fopen(path, "wb");
 
     if (file_handle != nullptr) {
-        std::cout << "Opened file: " << path << std::endl;
+        Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Opened file for writing: {}", path);
     } else {
-        std::cout << "Failed to open file: " << path << std::endl;
+        Log (SEVERITY_ERROR, System::SYSTEM_PLATFORM, "Failed to open file for writing: {}", path);
         return;
     }
 }

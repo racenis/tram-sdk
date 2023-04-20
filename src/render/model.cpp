@@ -17,6 +17,7 @@
 #include <cstring>
 
 #include <templates/hashmap.h>
+#include <templates/aabb.h>
 
 using namespace tram;
 
@@ -92,20 +93,81 @@ void Model::LoadFromMemory() {
     }
 }
 
+struct AABBTriangle {
+    vec3 point1, point2, point3;
+    vec3 normal;
+    uint32_t material;
+};
+
+struct ModelAABB {
+    AABBTree tree;
+    std::vector<AABBTriangle> triangles;
+};
+
+struct TriangleBucket {
+    materialtype_t material_type;       // material type for this bucket
+    std::vector<uint32_t> materials;    // which materials have already been added to the bucket
+    std::vector<Triangle> triangles;    // triangle indices in the bucket
+};
+
+struct BucketMapping {
+    uint32_t bucket = -1ul;
+    uint32_t index_in_bucket = -1ul;
+};
+
+static uint32_t PutTriangleInBucket (
+    std::vector<TriangleBucket>& buckets,
+    std::vector<BucketMapping>& bucket_mappings,
+    const std::vector<Material*>& materials,
+    uint32_t material_index,
+    Triangle triangle
+) {
+    // check if material is already in a bucket
+    if (auto& mapping = bucket_mappings[material_index]; mapping.bucket != -1ul) {
+        buckets[mapping.bucket].triangles.push_back(triangle);
+        return mapping.index_in_bucket;
+    }
+    
+    // check if there is already a bucket with the same type as material
+    for (size_t i = 0; i < buckets.size(); i++) {
+        if (buckets[i].material_type == materials[material_index]->GetType()
+            && buckets[i].materials.size() < 15
+        ) {
+            uint32_t bucket_index = buckets[i].materials.size();
+            
+            buckets[i].materials.push_back(material_index);
+            buckets[i].triangles.push_back(triangle);
+            
+            bucket_mappings[material_index].bucket = i;
+            bucket_mappings[material_index].index_in_bucket = bucket_index;
+            
+            return bucket_index;
+        }
+    }
+    
+    // check if allowed to make another bucket
+    assert(buckets.size() < 3);
+    
+    // insert a new bucket
+    buckets.push_back({
+        materials[material_index]->GetType(),
+        {material_index},
+        {triangle}
+    });
+    
+    bucket_mappings[material_index].bucket = buckets.size() - 1;
+    bucket_mappings[material_index].index_in_bucket = 0;
+    
+    return 0;
+}
 
 void Model::LoadFromDisk() {
     assert(status == UNLOADED);
     std::ifstream file;
     char path[200];
-
-    struct TriangleBucket {
-        materialtype_t material_type;       // material type for this bucket
-        std::vector<uint32_t> materials;    // which materials have already been added to the bucket
-        std::vector<Triangle> triangles;    // triangle indices in the bucket
-    };
     
     std::vector<TriangleBucket> triangle_buckets;
-    
+    std::vector<BucketMapping> bucket_mappings;
 
     // trying to load model as a static model, text mode
     strcpy(path, "data/models/");
@@ -124,6 +186,8 @@ void Model::LoadFromDisk() {
         uint32_t vcount = file.read_uint32();   // number of vertices
         uint32_t tcount = file.read_uint32();   // number of triangles
         uint32_t mcount = file.read_uint32();   // number of materials
+
+        bucket_mappings.resize(mcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
@@ -167,7 +231,10 @@ void Model::LoadFromDisk() {
             };
             
             uint32_t material_index = file.read_uint32();
-            materialtype_t material_type = materials[material_index]->GetType();
+            
+            uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
+            
+            /*materialtype_t material_type = materials[material_index]->GetType();
             
             size_t bucket = 0;
             uint32_t material_index_in_bucket = 0;
@@ -208,7 +275,11 @@ void Model::LoadFromDisk() {
 
             data->vertices[index.indices.x].texture = material_index_in_bucket;
             data->vertices[index.indices.y].texture = material_index_in_bucket;
-            data->vertices[index.indices.z].texture = material_index_in_bucket;
+            data->vertices[index.indices.z].texture = material_index_in_bucket;*/
+            
+            data->vertices[index.indices.x].texture = bucket_index;
+            data->vertices[index.indices.y].texture = bucket_index;
+            data->vertices[index.indices.z].texture = bucket_index;
         }
 
         for (auto& bucket : triangle_buckets) {
@@ -279,6 +350,7 @@ void Model::LoadFromDisk() {
         uint32_t bcount = file.read_uint32();   // number of bones
         uint32_t gcount = file.read_uint32();   // number of vertex groups
 
+        bucket_mappings.resize(mcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
@@ -336,7 +408,10 @@ void Model::LoadFromDisk() {
             };
             
             uint32_t material_index = file.read_uint32();
-            materialtype_t material_type = materials[material_index]->GetType();
+            
+            uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
+            
+            /*materialtype_t material_type = materials[material_index]->GetType();
             
             size_t bucket = 0;
             
@@ -374,7 +449,12 @@ void Model::LoadFromDisk() {
 
             data->vertices[index.indices.x].texture = material_index;
             data->vertices[index.indices.y].texture = material_index;
-            data->vertices[index.indices.z].texture = material_index;
+            data->vertices[index.indices.z].texture = material_index;*/
+            
+            
+            data->vertices[index.indices.x].texture = bucket_index;
+            data->vertices[index.indices.y].texture = bucket_index;
+            data->vertices[index.indices.z].texture = bucket_index;
         }
         
         for (uint32_t i = 0; i < bcount; i++) {

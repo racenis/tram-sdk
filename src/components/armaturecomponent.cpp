@@ -311,7 +311,7 @@ void ArmatureComponent::Refresh() {
                 // mix together will all other animations
                 anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * total_mix_weight;
                 anim_mixed[k].rotation *= glm::mix(glm::quat(glm::vec3(0.0f)), glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w), total_mix_weight);
-                anim_mixed[k].scale *= glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w) * total_mix_weight;                    
+                anim_mixed[k].scale *= glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w); // * total_mix_weight;                    
             }
         }
     }
@@ -340,13 +340,10 @@ void ArmatureComponent::Refresh() {
         glm::mat4 boneAnim = glm::mat4(1.0f);
         boneAnim = glm::toMat4(anim_mixed[i].rotation) * boneAnim;
         boneAnim = glm::translate(glm::mat4(1.0f), anim_mixed[i].location) * boneAnim;
-        //boneAnim = glm::scale(glm::mat4(1.0f), anim_mixed[i].scale) * boneAnim;
-        // where's the scale? forgotted?
+        boneAnim = glm::scale(glm::mat4(1.0f), anim_mixed[i].scale) * boneAnim;
 
         glm::mat4 boneToModel = glm::inverse(modelToBone);
-        
-        //auto poz = boneToModel * boneAnim /* rolltransf*/;
-        
+
         if(armature_bone_parents[i] == (uint32_t)-1){
             poseobj->pose[i] = boneToModel * boneAnim * modelToBone;
         } else {

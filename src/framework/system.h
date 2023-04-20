@@ -11,6 +11,7 @@ namespace tram::System {
 typedef uint32_t system_t;
 enum System : system_t {
     SYSTEM_CORE,
+    SYSTEM_PLATFORM,
     SYSTEM_UI,
     SYSTEM_GUI,
     SYSTEM_ASYNC,

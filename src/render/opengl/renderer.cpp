@@ -314,10 +314,7 @@ light_t MakeLight() {
     uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
     
     light_tree_ids [light_id] = leaf_id;
-    
-    std::cout << "light: " << (long long) light << " ptr : " << (long long) light_list.GetFirst() << std::endl;
-    std::cout << "made light with id " << light_id << std::endl;
-    
+        
     return light;
 }
 

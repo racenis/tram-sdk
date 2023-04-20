@@ -32,7 +32,7 @@ struct Keyframe {
     float frame;
     vec3 location = {0.0f, 0.0f, 0.0f};
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
-    vec3 scale = {0.0f, 0.0f, 0.0f};
+    vec3 scale = {1.0f, 1.0f, 1.0f};
     char padding [4]; // for emscripten ??
 };
 

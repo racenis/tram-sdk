@@ -6,6 +6,21 @@
 #include <cstring>
 #include <charconv>
 #include <iostream>
+#include <vector>
+
+namespace tram {
+
+static std::vector <Severity> severities;
+
+void SetSystemLoggingSeverity (System::system_t system, Severity min_severity) {
+    if (system >= severities.size()) {
+        severities.resize(system + 1);
+    }
+    
+    severities[system] = min_severity;
+}
+
+}
 
 namespace tram::implementation {
 
@@ -24,14 +39,19 @@ void concat_fmt (std::string_view& str) {
 }
 
 void flush (int severity, int system) {
+    if ((size_t) system < severities.size() && severity < severities[system]) {
+        buffer[0] = '\0';
+        return;
+    }
+    
     const char* severity_text;
     
     switch (severity) {
-        case 0:     severity_text = "[    ]";   break;
-        case 1:     severity_text = "[CRIT]";   break;
+        case 4:     severity_text = "[    ]";   break;
+        case 3:     severity_text = "[CRIT]";   break;
         case 2:     severity_text = "[ERRR]";   break;
-        case 3:     severity_text = "[WARN]";   break;
-        case 4:     severity_text = "[INFO]";   break;
+        case 1:     severity_text = "[WARN]";   break;
+        case 0:     severity_text = "[INFO]";   break;
         default:    severity_text = "[    ]";   break;
     }
     

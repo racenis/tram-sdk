@@ -56,8 +56,6 @@ public:
         
         *((uint64_t*)last) = 0;
         *(((uint64_t*)last) + 1) = 0;
-
-        std::cout << "size: " << sizeof(T) << " mod: " << sizeof(T) % 8 << " type: " << typeid(T).name() << std::endl;
     };
     
     template <typename... Args>

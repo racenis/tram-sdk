@@ -9,6 +9,7 @@
 namespace tram::Render {
 
 struct ModelData;
+struct ModelAABB;
 
 struct IndexRange {
     uint32_t index_offset = 0;
@@ -51,6 +52,7 @@ protected:
 
     std::vector<Bone> armature;
     ModelData* model_data = nullptr;
+    ModelAABB* model_aabb = nullptr;
     size_t approx_vram_usage = 0;
 };
 
