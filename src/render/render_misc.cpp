@@ -103,4 +103,32 @@ void AddLine (const glm::vec3& from, const glm::vec3& to, const glm::vec3& color
     colorlines.push_back({to, color});
 }
 
+void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color) {
+    vec3 point1 = center + (rotation * vec3 {min.x, min.y, min.z});
+    vec3 point2 = center + (rotation * vec3 {max.x, max.y, max.z});
+    vec3 point3 = center + (rotation * vec3 {min.x, max.y, max.z});
+    vec3 point4 = center + (rotation * vec3 {max.x, min.y, max.z});
+    vec3 point5 = center + (rotation * vec3 {max.x, max.y, min.z});
+    vec3 point6 = center + (rotation * vec3 {max.x, min.y, min.z});
+    vec3 point7 = center + (rotation * vec3 {min.x, max.y, min.z});
+    vec3 point8 = center + (rotation * vec3 {min.x, min.y, max.z});
+    
+    AddLine(point1, point6, color);
+    AddLine(point1, point7, color);
+    AddLine(point1, point8, color);
+    
+    AddLine(point2, point3, color);
+    AddLine(point2, point4, color);
+    AddLine(point2, point5, color);
+    
+    AddLine(point3, point7, color);
+    AddLine(point3, point8, color);
+    
+    AddLine(point4, point6, color);
+    AddLine(point4, point8, color);
+    
+    AddLine(point5, point6, color);
+    AddLine(point5, point7, color);
+}
+
 }

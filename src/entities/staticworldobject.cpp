@@ -34,6 +34,7 @@ void StaticWorldObject::SetParameters() {
 
 void StaticWorldObject::Load(){
     rendercomponent.make();
+    rendercomponent->SetParent(this);
     rendercomponent->SetModel(data->model);
     rendercomponent->SetLightmap(data->lightmap);
     rendercomponent->SetWorldParameters(cell->HasInteriorLighting());

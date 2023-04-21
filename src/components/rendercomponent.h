@@ -29,6 +29,8 @@ public:
     void SetWorldParameters (bool interior_lighting);
 
     void EventHandler(Event &event){return;}
+    
+    static void DrawAllAABB();
 protected:
     void InsertDrawListEntries();
 

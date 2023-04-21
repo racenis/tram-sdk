@@ -72,6 +72,10 @@ void mainloop() {
     Core::Update();
     UI::Update();
     
+    Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, vec3(0.0f, 0.75f, 0.0f), COLOR_GREEN);
+    Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {3.0f, 0.0f, 3.0f}, vec3(0.75f, 0.0f, 0.0f), COLOR_GREEN);
+    Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {-3.0f, 3.0f, -3.0f}, vec3(0.0f, 0.0f, 0.75f), COLOR_GREEN);
+    
     //time_of_day += 0.001f;
     SetSun(0.8f); // this sets the ambient lighting
     
@@ -264,6 +268,7 @@ void mainloop() {
     
     ControllerComponent::Update();
     ArmatureComponent::Update();
+    RenderComponent::DrawAllAABB();
 
     Physics::Update();
 

@@ -19,6 +19,8 @@
 #include <templates/hashmap.h>
 #include <templates/aabb.h>
 
+#include <set>
+
 using namespace tram;
 
 template <> Pool<Render::Model> PoolProxy<Render::Model>::pool("model pool", 500);
@@ -104,6 +106,77 @@ struct ModelAABB {
     std::vector<AABBTriangle> triangles;
 };
 
+static int total_counter = 0;
+static int node_counter = 0;
+static int leaf_counter = 0;
+
+static std::set<uint32_t> lookedat_nodes;
+
+static void DrawAABBNodeChildren (const std::vector<AABBTree::Node>& nodes, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation, uint32_t node_id) {
+    const auto& node = nodes[node_id];
+    
+    lookedat_nodes.emplace(node_id);
+    
+    total_counter++;
+    
+    if (node.IsLeaf()) {
+        //AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
+        
+        vec3 point1 = position + (rotation * triangles[node.value].point1);
+        vec3 point2 = position + (rotation * triangles[node.value].point2);
+        vec3 point3 = position + (rotation * triangles[node.value].point3);
+        
+        AddLine(point1, point2, COLOR_WHITE);
+        AddLine(point2, point3, COLOR_WHITE);
+        AddLine(point3, point1, COLOR_WHITE);
+        
+        leaf_counter++;
+    } else {
+        DrawAABBNodeChildren(nodes, triangles, position, rotation, node.left);
+        DrawAABBNodeChildren(nodes, triangles, position, rotation, node.right);
+        
+        if (node_id == 0) {
+            AddLineAABB(node.min, node.max, position, rotation, COLOR_RED);
+        } else {
+            AddLineAABB(node.min, node.max, position, rotation, COLOR_PINK);
+        }
+        
+        node_counter++;
+    }
+}
+
+void Model::DrawAABB(vec3 position, quat rotation) {
+    if (!model_aabb) return;
+    return;
+    total_counter = 0;
+    node_counter = 0;
+    leaf_counter = 0;
+    //std::cout << name << " " << model_aabb->tree.GetAABBMin().x << " " << model_aabb->tree.GetAABBMin().y << " " << model_aabb->tree.GetAABBMin().z << " / ";
+    //std::cout << model_aabb->tree.GetAABBMax().x << " " << model_aabb->tree.GetAABBMax().y << " " << model_aabb->tree.GetAABBMax().z << std::endl;
+    
+    lookedat_nodes.clear();
+    
+    DrawAABBNodeChildren(model_aabb->tree.nodes, model_aabb->triangles, position, rotation, 0);
+    
+    std::cout << "total counter " << total_counter << std::endl;
+    std::cout << "leaf counter " << leaf_counter << std::endl;
+    std::cout << "node counter " << node_counter << std::endl;
+    
+    for (uint32_t i = 0; i < model_aabb->tree.nodes.size(); i++) {
+        if (lookedat_nodes.contains(i)) continue;
+        
+        const auto& node = model_aabb->tree.nodes[i];
+        
+        std::cout << "id: " << i << " parent: " << node.parent << " l: " << model_aabb->tree.nodes[node.parent].left << " r: " << model_aabb->tree.nodes[node.parent].right << std::endl;
+    }
+    
+    /*for (auto& node : model_aabb->tree.nodes) {
+        if (node.right == 0) {
+            AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
+        }
+    }*/
+}
+
 struct TriangleBucket {
     materialtype_t material_type;       // material type for this bucket
     std::vector<uint32_t> materials;    // which materials have already been added to the bucket
@@ -178,6 +251,7 @@ void Model::LoadFromDisk() {
         vertex_format = VERTEX_STATIC;
         StaticModelData* data = new StaticModelData;
         model_data = data;
+        model_aabb = new ModelAABB;
 
         std::cout << "Loading: " << path << std::endl;
 
@@ -233,6 +307,30 @@ void Model::LoadFromDisk() {
             uint32_t material_index = file.read_uint32();
             
             uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
+            
+            const auto& point1 = data->vertices[index.indices.x];
+            const auto& point2 = data->vertices[index.indices.y];
+            const auto& point3 = data->vertices[index.indices.z];
+            
+            vec3 triangle_normal = glm::normalize(point1.normal + point2.normal + point3.normal);
+            
+            uint32_t aabb_triangle_index = model_aabb->triangles.size();
+            
+            model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, material_index});
+            
+            vec3 triangle_aabb_min = {
+                point1.co.x < point2.co.x ? (point1.co.x < point3.co.x ? point1.co.x : point3.co.x) : (point2.co.x < point3.co.x ? point2.co.x : point3.co.x),
+                point1.co.y < point2.co.y ? (point1.co.y < point3.co.y ? point1.co.y : point3.co.y) : (point2.co.y < point3.co.y ? point2.co.y : point3.co.y),
+                point1.co.z < point2.co.z ? (point1.co.z < point3.co.z ? point1.co.z : point3.co.z) : (point2.co.z < point3.co.z ? point2.co.z : point3.co.z)
+            };
+            
+            vec3 triangle_aabb_max = {
+                point1.co.x > point2.co.x ? (point1.co.x > point3.co.x ? point1.co.x : point3.co.x) : (point2.co.x > point3.co.x ? point2.co.x : point3.co.x),
+                point1.co.y > point2.co.y ? (point1.co.y > point3.co.y ? point1.co.y : point3.co.y) : (point2.co.y > point3.co.y ? point2.co.y : point3.co.y),
+                point1.co.z > point2.co.z ? (point1.co.z > point3.co.z ? point1.co.z : point3.co.z) : (point2.co.z > point3.co.z ? point2.co.z : point3.co.z)
+            };
+            
+            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             /*materialtype_t material_type = materials[material_index]->GetType();
             

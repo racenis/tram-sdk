@@ -50,6 +50,7 @@ void SetSun(float timeOfDay);
 
 void AddLine(const glm::vec3& from, const glm::vec3& to, const color_t& color);
 void AddLineMarker(const glm::vec3& location, const color_t& color);
+void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color);
 
 const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
 const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);

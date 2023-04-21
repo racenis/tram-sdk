@@ -5,6 +5,9 @@
 #define TRAM_SDK_TEMPLATES_AABB_H
 
 #include <framework/math.h>
+#include <framework/logging.h>
+
+#include <iostream>
 
 #include <vector>
 
@@ -28,19 +31,24 @@ public:
         auto& root = nodes[0];
         auto& leaf = nodes[leaf_index];
         
-        leaf = {value, 0, 0, min, max};
+        //leaf = {value, 0, 0, min - vec3(0.1f, 0.1f, 0.1f), max + vec3(0.1f, 0.1f, 0.1f)};
+        leaf = {value, 0, 2000, min, max};
         
         // check if root node has free spots
         if (root.left == 0) {
             root.left = leaf_index;
             leaf.parent = 0;
             
+            std::cout << "inserted root left" << std::endl;
+            
             if (root.right) {
                 UpdateParentAABB(0);
             } else {
-                root.min = leaf.min;
-                root.max = leaf.max;
+                root.min = leaf.min;// - vec3(0.1f, 0.1f, 0.1f);
+                root.max = leaf.max;// + vec3(0.1f, 0.1f, 0.1f);
             }
+            
+            assert(leaf.parent != 2000);
             
             return leaf_index;
         }
@@ -49,12 +57,16 @@ public:
             root.right = leaf_index;
             leaf.parent = 0;
             
+            std::cout << "inserted root right" << std::endl;
+            
             if (root.left) {
                 UpdateParentAABB(0);
             } else {
-                root.min = leaf.min;
-                root.max = leaf.max;
+                root.min = leaf.min;// - vec3(0.1f, 0.1f, 0.1f);
+                root.max = leaf.max;// + vec3(0.1f, 0.1f, 0.1f);
             }
+            
+            assert(leaf.parent != 2000);
             
             return leaf_index;
         }
@@ -63,14 +75,20 @@ public:
         aabb_t new_parent_index =  AllocateNode();
         aabb_t old_parent_index = nodes[sibling_index].parent;
         
+        assert(old_parent_index != 2000);
+        
         auto& sibling = nodes[sibling_index];
         auto& new_parent = nodes[new_parent_index];
         auto& old_parent = nodes[old_parent_index];
         
         if (old_parent.left == sibling_index) {
             old_parent.left = new_parent_index;
+        } else if (old_parent.right == sibling_index) {
+            old_parent.right = new_parent_index;
         } else {
             old_parent.right = new_parent_index;
+            std::cout << "fucky wucky " << sibling_index << " " << sibling.parent << std::endl;
+            std::cout << sibling.left << " " << sibling.right << " " << sibling.min.x << " " << sibling.max.x << std::endl;
         }
         
         new_parent.left = sibling_index;
@@ -82,13 +100,15 @@ public:
         
         UpdateParentAABB(new_parent_index);
         
+        assert(leaf.parent != 2000);
+        
         return leaf_index;
     }
     
     void RemoveLeaf(aabb_t node_index) {
         aabb_t parent_index = nodes[node_index].parent;
         
-        auto& node = nodes[node_index];
+        //auto& node = nodes[node_index];
         auto& parent = nodes[node_index];
         
         aabb_t sibling_index = parent.left == node_index ? parent.right : parent.left;
@@ -140,12 +160,13 @@ public:
     void UpdateParentAABB (aabb_t node) {
         auto& node_self = nodes[node];
         auto& left_child = nodes[node_self.left];
-        auto& right_child = nodes[node_self.left];
+        auto& right_child = nodes[node_self.right];
         
         node_self.min = MergeAABBMin(left_child.min, right_child.min);
         node_self.max = MergeAABBMax(left_child.max, right_child.max);
         
         if (node != 0) {
+            assert(node_self.parent != 2000);
             UpdateParentAABB(node_self.parent);
         }
     }
@@ -158,11 +179,15 @@ public:
             node = nodes.size();
             nodes.push_back(Node());
         } else {
+            assert(false);
+            
             node = lastfree_node;
             lastfree_node = nodes[lastfree_node].parent;
             
             nodes[node] = Node();
         }
+        
+        if (node == 0) std::cout << "this should not happend" << std::endl;
         
         return node;
     }
@@ -175,24 +200,27 @@ public:
     
     // searches the children of search_node to find a sibling for target_node
     aabb_t FindSibling (aabb_t target_node, aabb_t search_node) {
-        auto& s_node = nodes[search_node];
-        auto& t_node = nodes[target_node];
-        auto& l_node = nodes[s_node.left];
-        auto& r_node = nodes[s_node.right];
+        const auto& s_node = nodes[search_node];
+        const auto& t_node = nodes[target_node];
+        const auto& l_node = nodes[s_node.left];
+        const auto& r_node = nodes[s_node.right];
         
         
         if (s_node.IsLeaf()) {
             return search_node;
         }
         
-        vec3 left_merge_min = MergeAABBMin(s_node.min, l_node.min);
-        vec3 left_merge_max = MergeAABBMax(s_node.max, l_node.max);
+        vec3 left_merge_min = MergeAABBMin(t_node.min, l_node.min);
+        vec3 left_merge_max = MergeAABBMax(t_node.max, l_node.max);
         
-        vec3 right_merge_min = MergeAABBMin(s_node.min, r_node.min);
-        vec3 right_merge_max = MergeAABBMax(s_node.max, r_node.max);
+        vec3 right_merge_min = MergeAABBMin(t_node.min, r_node.min);
+        vec3 right_merge_max = MergeAABBMax(t_node.max, r_node.max);
         
         float left_merge_volume = AABBVolume(left_merge_min, left_merge_max);
         float right_merge_volume = AABBVolume(right_merge_min, right_merge_max);
+        
+        //float left_merge_volume = AABBSurface(left_merge_min, left_merge_max);
+        //float right_merge_volume = AABBSurface(right_merge_min, right_merge_max);
         
         if (left_merge_volume < right_merge_volume) {
             return FindSibling(target_node, s_node.left);
@@ -206,7 +234,7 @@ public:
             a.x < b.x ? a.x : b.x,
             a.y < b.y ? a.y : b.y,
             a.z < b.z ? a.z : b.z
-        };
+        } - vec3 {0.1f, 0.1f, 0.1f};
     }
     
     static vec3 MergeAABBMax (vec3 a, vec3 b) {
@@ -214,15 +242,27 @@ public:
             a.x > b.x ? a.x : b.x,
             a.y > b.y ? a.y : b.y,
             a.z > b.z ? a.z : b.z
-        };
+        } + vec3 {0.1f, 0.1f, 0.1f};
     }
     
     static float AABBVolume (vec3 min, vec3 max) {
         return (max.x - min.x) * (max.y - min.y) * (max.z - min.z);
     }
     
+    static float AABBSurface (vec3 min, vec3 max) {
+        float x = max.x - min.x;
+        float y = max.y - min.y;
+        float z = max.z - min.z;
+        
+        assert(max.x >= min.x);
+        assert(max.y >= min.y);
+        assert(max.z >= min.z);
+        
+        return 2 * ((x * y) + (x * z) + (y * z));
+    }
+    
     struct Node {
-        bool IsLeaf () { return right == 0; }
+        bool IsLeaf () const { return right == 0; }
         
         union {
             aabb_t left = 0;
@@ -230,7 +270,7 @@ public:
         };
         
         aabb_t right = 0;
-        aabb_t parent = 0;
+        aabb_t parent = 2001;
         
         vec3 min;
         vec3 max;

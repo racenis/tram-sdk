@@ -37,6 +37,8 @@ public:
     const std::vector<Material*>& GetMaterials() const { return materials; }
     const std::vector<IndexRange>& GetIndexRanges() const { return index_ranges; }
     
+    void DrawAABB(vec3 position, quat rotation);
+    
     static Model* Find(name_t name);
     
 protected:

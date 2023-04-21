@@ -5,6 +5,8 @@
 #include <components/rendercomponent.h>
 #include <components/armaturecomponent.h>
 
+#include <framework/entity.h>
+
 namespace tram {
 using namespace tram::Render;
 
@@ -158,6 +160,22 @@ void RenderComponent::InsertDrawListEntries() {
         Render::SetPose(entry, pose);
         
         draw_list_entries [i] = entry;
+    }
+}
+
+void RenderComponent::DrawAllAABB() {
+    for (auto& component : PoolProxy<RenderComponent>::GetPool()) {
+        name_t model_name = component.GetModel();
+        Model* model_ptr = Model::Find(model_name);
+        
+        Entity* parent = component.GetParent();
+        
+        if (!parent) continue;
+        
+        vec3 parent_position = parent->GetLocation();
+        quat parent_rotation = parent->GetRotation();
+        
+        model_ptr->DrawAABB(parent_position, parent_rotation);
     }
 }
 
