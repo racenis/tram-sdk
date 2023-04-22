@@ -39,6 +39,9 @@ public:
     
     void DrawAABB(vec3 position, quat rotation);
     
+    vec3 GetAABBMin() const { return aabb_min; }
+    vec3 GetAABBMax() const { return aabb_max; }
+    
     static Model* Find(name_t name);
     
 protected:
@@ -49,6 +52,9 @@ protected:
     vertexhandle_t vertex_array_handle = 0;
     
     std::vector<IndexRange> index_ranges;
+    
+    vec3 aabb_min;
+    vec3 aabb_max;
     
     std::vector<Material*> materials;
 

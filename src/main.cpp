@@ -424,25 +424,39 @@ int main() {
 using namespace tram;
 
 #include <templates/macros.h>
-
+#include <templates/aabb.h>
 
 int main() {
     tram::Core::Init();
     
-    std::cout << tram::ENGINE_VERSION << std::endl;
     std::cout << "Hello World!" << std::endl;
     
-    {
-        File file ("bepito.bepis", MODE_WRITE);
-        
-        for (int i = 0; i < 4; i++) {
-            file.write_string("bepis");
-            file.write_float32(((float) i) * 0.420f);
-            file.write_newline();
-        }
-    }
     
-    std::cout << "K THX BYE!" << std::endl;
+    
+    AABBTree tree;
+    
+    tree.InsertLeaf(123, {-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f});
+    auto yoink4 = tree.InsertLeaf(123, {-2.0f, -2.0f, -2.0f}, {0.0f, 0.0f, 0.0f});
+    auto yoink = tree.InsertLeaf(123, {-0.0f, -0.0f, -0.0f}, {2.0f, 2.0f, 2.0f});
+    
+    tree.RemoveLeaf(yoink);
+    
+    tree.InsertLeaf(123, {-0.0f, -0.0f, -0.0f}, {2.0f, 2.0f, 2.0f});
+    auto yoink2 = tree.InsertLeaf(123, {-32.0f, -21.0f, -23.0f}, {10.0f, 30.0f, 40.0f});
+    tree.InsertLeaf(123, {-1.0f, -1.0f, -1.0f}, {1.0f, 12.0f, 11.0f});
+    
+    tree.RemoveLeaf(yoink2);
+    
+    tree.InsertLeaf(123, {-1.0f, -1234.0f, -1.0f}, {1.0f, 1.0f, 1.0f});
+    auto yoink3 = tree.InsertLeaf(123, {-1314.0f, -2525.0f, -226.0f}, {0.0f, 0.0f, 0.0f});
+    
+    tree.RemoveLeaf(yoink3);
+    tree.RemoveLeaf(yoink4);
+    
+    tree.InsertLeaf(123, {10.0f, 10.0f, 10.0f}, {100.0f, 100.0f, 100.0f});
+    
+    
+    
 }
 
 #endif

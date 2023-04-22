@@ -19,7 +19,7 @@
 #include <templates/hashmap.h>
 #include <templates/aabb.h>
 
-#include <set>
+//#include <set>
 
 using namespace tram;
 
@@ -28,7 +28,7 @@ template <> Pool<Render::Model> PoolProxy<Render::Model>::pool("model pool", 500
 namespace tram::Render {
 
 static Hashmap<Model*> model_list ("model name list", 500);
-    
+
 Model* Model::Find (name_t name) {
     Model* model = model_list.Find (name);
     
@@ -110,12 +110,12 @@ static int total_counter = 0;
 static int node_counter = 0;
 static int leaf_counter = 0;
 
-static std::set<uint32_t> lookedat_nodes;
+//static std::set<uint32_t> lookedat_nodes;
 
 static void DrawAABBNodeChildren (const std::vector<AABBTree::Node>& nodes, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation, uint32_t node_id) {
     const auto& node = nodes[node_id];
     
-    lookedat_nodes.emplace(node_id);
+    //lookedat_nodes.emplace(node_id);
     
     total_counter++;
     
@@ -147,21 +147,29 @@ static void DrawAABBNodeChildren (const std::vector<AABBTree::Node>& nodes, cons
 
 void Model::DrawAABB(vec3 position, quat rotation) {
     if (!model_aabb) return;
-    return;
+    
+    if (name == "kadbusest") return;
+    
+    //return ;
+    
     total_counter = 0;
     node_counter = 0;
     leaf_counter = 0;
     //std::cout << name << " " << model_aabb->tree.GetAABBMin().x << " " << model_aabb->tree.GetAABBMin().y << " " << model_aabb->tree.GetAABBMin().z << " / ";
     //std::cout << model_aabb->tree.GetAABBMax().x << " " << model_aabb->tree.GetAABBMax().y << " " << model_aabb->tree.GetAABBMax().z << std::endl;
     
-    lookedat_nodes.clear();
+    //lookedat_nodes.clear();
     
     DrawAABBNodeChildren(model_aabb->tree.nodes, model_aabb->triangles, position, rotation, 0);
     
-    std::cout << "total counter " << total_counter << std::endl;
-    std::cout << "leaf counter " << leaf_counter << std::endl;
-    std::cout << "node counter " << node_counter << std::endl;
+    //std::cout << name << std::endl;
+    //std::cout << "nodes " << model_aabb->tree.nodes.size() << std::endl;
+    //std::cout << "total counter " << total_counter << std::endl;
+    //std::cout << "leaf counter " << leaf_counter << std::endl;
+    //std::cout << "node counter " << node_counter << std::endl << std::endl;
     
+    return;
+    /*
     for (uint32_t i = 0; i < model_aabb->tree.nodes.size(); i++) {
         if (lookedat_nodes.contains(i)) continue;
         
@@ -169,12 +177,28 @@ void Model::DrawAABB(vec3 position, quat rotation) {
         
         std::cout << "id: " << i << " parent: " << node.parent << " l: " << model_aabb->tree.nodes[node.parent].left << " r: " << model_aabb->tree.nodes[node.parent].right << std::endl;
     }
-    
+    */
     /*for (auto& node : model_aabb->tree.nodes) {
         if (node.right == 0) {
             AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
         }
     }*/
+}
+
+static vec3 TriangleAABBMin (vec3 point1, vec3 point2, vec3 point3) {
+    return {
+        point1.x < point2.x ? (point1.x < point3.x ? point1.x : point3.x) : (point2.x < point3.x ? point2.x : point3.x),
+        point1.y < point2.y ? (point1.y < point3.y ? point1.y : point3.y) : (point2.y < point3.y ? point2.y : point3.y),
+        point1.z < point2.z ? (point1.z < point3.z ? point1.z : point3.z) : (point2.z < point3.z ? point2.z : point3.z)
+    };
+}
+
+static vec3 TriangleAABBMax (vec3 point1, vec3 point2, vec3 point3) {
+    return {
+        point1.x > point2.x ? (point1.x > point3.x ? point1.x : point3.x) : (point2.x > point3.x ? point2.x : point3.x),
+        point1.y > point2.y ? (point1.y > point3.y ? point1.y : point3.y) : (point2.y > point3.y ? point2.y : point3.y),
+        point1.z > point2.z ? (point1.z > point3.z ? point1.z : point3.z) : (point2.z > point3.z ? point2.z : point3.z)
+    };
 }
 
 struct TriangleBucket {
@@ -228,6 +252,8 @@ static uint32_t PutTriangleInBucket (
         {triangle}
     });
     
+    buckets.back().triangles.reserve(10000);
+    
     bucket_mappings[material_index].bucket = buckets.size() - 1;
     bucket_mappings[material_index].index_in_bucket = 0;
     
@@ -262,6 +288,9 @@ void Model::LoadFromDisk() {
         uint32_t mcount = file.read_uint32();   // number of materials
 
         bucket_mappings.resize(mcount);
+
+        model_aabb->triangles.reserve(tcount);
+        model_aabb->tree.nodes.reserve(tcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
@@ -318,17 +347,8 @@ void Model::LoadFromDisk() {
             
             model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, material_index});
             
-            vec3 triangle_aabb_min = {
-                point1.co.x < point2.co.x ? (point1.co.x < point3.co.x ? point1.co.x : point3.co.x) : (point2.co.x < point3.co.x ? point2.co.x : point3.co.x),
-                point1.co.y < point2.co.y ? (point1.co.y < point3.co.y ? point1.co.y : point3.co.y) : (point2.co.y < point3.co.y ? point2.co.y : point3.co.y),
-                point1.co.z < point2.co.z ? (point1.co.z < point3.co.z ? point1.co.z : point3.co.z) : (point2.co.z < point3.co.z ? point2.co.z : point3.co.z)
-            };
-            
-            vec3 triangle_aabb_max = {
-                point1.co.x > point2.co.x ? (point1.co.x > point3.co.x ? point1.co.x : point3.co.x) : (point2.co.x > point3.co.x ? point2.co.x : point3.co.x),
-                point1.co.y > point2.co.y ? (point1.co.y > point3.co.y ? point1.co.y : point3.co.y) : (point2.co.y > point3.co.y ? point2.co.y : point3.co.y),
-                point1.co.z > point2.co.z ? (point1.co.z > point3.co.z ? point1.co.z : point3.co.z) : (point2.co.z > point3.co.z ? point2.co.z : point3.co.z)
-            };
+            vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
+            vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
             model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
@@ -413,6 +433,9 @@ void Model::LoadFromDisk() {
             Async::ForceLoadResource(materials[i]);
         }
 
+        aabb_min = model_aabb->tree.GetAABBMin();
+        aabb_max = model_aabb->tree.GetAABBMax();
+
         return;
     }
 
@@ -429,6 +452,7 @@ void Model::LoadFromDisk() {
         vertex_format = VERTEX_DYNAMIC;
         DynamicModelData* data = new DynamicModelData;
         model_data = data;
+        model_aabb = new ModelAABB;
 
         std::cout << "Loading: " << path << std::endl;
 
@@ -449,6 +473,9 @@ void Model::LoadFromDisk() {
         uint32_t gcount = file.read_uint32();   // number of vertex groups
 
         bucket_mappings.resize(mcount);
+
+        model_aabb->triangles.reserve(tcount);
+        model_aabb->tree.nodes.reserve(tcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
@@ -508,6 +535,21 @@ void Model::LoadFromDisk() {
             uint32_t material_index = file.read_uint32();
             
             uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
+            
+            const auto& point1 = data->vertices[index.indices.x];
+            const auto& point2 = data->vertices[index.indices.y];
+            const auto& point3 = data->vertices[index.indices.z];
+            
+            vec3 triangle_normal = glm::normalize(point1.normal + point2.normal + point3.normal);
+            
+            uint32_t aabb_triangle_index = model_aabb->triangles.size();
+            
+            model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, material_index});
+            
+            vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
+            vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
+            
+            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             /*materialtype_t material_type = materials[material_index]->GetType();
             
@@ -608,6 +650,9 @@ void Model::LoadFromDisk() {
             materials[i]->AddReference();
             Async::ForceLoadResource(materials[i]);
         }
+        
+        aabb_min = model_aabb->tree.GetAABBMin();
+        aabb_max = model_aabb->tree.GetAABBMax();
 
         return;
     }
@@ -640,6 +685,9 @@ void Model::LoadFromDisk() {
         .tail = {0.0f, 1.0f, 0.0f},
         .roll = 0.0f
     });
+    
+    aabb_min = {1.0f, 1.0f, 1.0f};
+    aabb_max = {-1.0f, -1.0f, -1.0f};
 
     status = LOADED;
     

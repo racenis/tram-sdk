@@ -33,6 +33,7 @@ public:
     static void DrawAllAABB();
 protected:
     void InsertDrawListEntries();
+    void RefreshAABB();
 
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Material> lightmap;
@@ -43,6 +44,8 @@ protected:
 
     vec3 location;
     quat rotation;
+
+    uint32_t aabb_tree_key = 0;
 
     uint32_t render_flags;
 };

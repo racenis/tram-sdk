@@ -45,6 +45,7 @@ void Crate::Load(){
     rendercomponent.make();
     physicscomponent.make();
     
+    rendercomponent->SetParent(this);
     rendercomponent->SetModel(serializeddata->model);
 
     physicscomponent->SetParent(this);

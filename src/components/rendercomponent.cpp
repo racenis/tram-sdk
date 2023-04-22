@@ -7,10 +7,14 @@
 
 #include <framework/entity.h>
 
+#include <templates/aabb.h>
+
 namespace tram {
 using namespace tram::Render;
 
 template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render component pool", 250, false);
+
+static AABBTree rendertree;
 
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue
@@ -26,6 +30,7 @@ void RenderComponent::SetModel (name_t name) {
         }
         
         InsertDrawListEntries();
+        RefreshAABB();
     }
 };
 
@@ -78,6 +83,10 @@ RenderComponent::~RenderComponent() {
             Render::RemoveDrawListEntry(entry);
         }
     }
+    
+    if (aabb_tree_key) {
+        rendertree.RemoveLeaf(aabb_tree_key);
+    }
 };
 
 /// Sets the world parameters for model rendering.
@@ -107,6 +116,8 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
                 Render::SetLocation(entry, location);
             }
         }
+        
+        RefreshAABB();
     }
 }
 
@@ -120,6 +131,8 @@ void RenderComponent::SetRotation(glm::quat nrotation){
                 Render::SetRotation(entry, rotation);
             }
         }
+        
+        RefreshAABB();
     }
 }
 
@@ -127,8 +140,47 @@ void RenderComponent::Start(){
     assert(!is_ready);
 
     InsertDrawListEntries();
+    RefreshAABB();
     
     is_ready = true;
+}
+
+void RenderComponent::RefreshAABB() {
+    vec3 min = model->GetAABBMin();
+    vec3 max = model->GetAABBMax();
+    
+    vec3 extents[8] = {
+        {min.x, min.y, min.z},
+        {max.x, min.y, min.z},
+        {min.x, max.y, min.z},
+        {min.x, min.y, max.z},
+        {max.x, max.y, min.z},
+        {max.x, min.y, max.z},
+        {max.x, max.y, max.z},
+        {min.x, max.y, max.z}
+    };
+    
+    for (auto& extent : extents) {
+        extent = rotation * extent;
+    }
+    
+    min = extents[0];
+    max = extents[0];
+    
+    for (auto& extent : extents) {
+        min = AABBTree::MergeAABBMin(min, extent);
+        max = AABBTree::MergeAABBMax(max, extent);
+    }
+
+    min += location;
+    max += location;
+
+    //AddLineAABB(min, max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
+    
+    //if (aabb_tree_key) return;
+    if (aabb_tree_key) rendertree.RemoveLeaf(aabb_tree_key);
+    
+    aabb_tree_key = rendertree.InsertLeaf(this - PoolProxy<RenderComponent>::GetPool().begin().ptr, min, max);
 }
 
 void RenderComponent::InsertDrawListEntries() {
@@ -163,8 +215,25 @@ void RenderComponent::InsertDrawListEntries() {
     }
 }
 
+static void DrawAABBNodeChildren (uint32_t node_id) {
+    const auto& node = rendertree.nodes[node_id];
+    
+    if (node.IsLeaf()) {
+        AddLineAABB(node.min, node.max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
+    } else {
+        DrawAABBNodeChildren(node.left);
+        DrawAABBNodeChildren(node.right);
+        
+        if (node_id == 0) {
+            AddLineAABB(node.min, node.max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_RED);
+        } else {
+            AddLineAABB(node.min, node.max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_PINK);
+        }
+    }
+}
+
 void RenderComponent::DrawAllAABB() {
-    for (auto& component : PoolProxy<RenderComponent>::GetPool()) {
+    /*for (auto& component : PoolProxy<RenderComponent>::GetPool()) {
         name_t model_name = component.GetModel();
         Model* model_ptr = Model::Find(model_name);
         
@@ -176,7 +245,9 @@ void RenderComponent::DrawAllAABB() {
         quat parent_rotation = parent->GetRotation();
         
         model_ptr->DrawAABB(parent_position, parent_rotation);
-    }
+    }*/
+    
+    DrawAABBNodeChildren(0);
 }
 
 }
