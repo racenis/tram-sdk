@@ -84,8 +84,8 @@ RenderComponent::~RenderComponent() {
         }
     }
     
-    if (aabb_tree_key) {
-        rendertree.RemoveLeaf(aabb_tree_key);
+    if (aabb_tree_leaf) {
+        rendertree.RemoveLeaf((AABBTree::Node*) aabb_tree_leaf);
     }
 };
 
@@ -177,10 +177,10 @@ void RenderComponent::RefreshAABB() {
 
     //AddLineAABB(min, max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
     
-    //if (aabb_tree_key) return;
-    if (aabb_tree_key) rendertree.RemoveLeaf(aabb_tree_key);
+    //if (aabb_tree_leaf) return;
+    if (aabb_tree_leaf) rendertree.RemoveLeaf((AABBTree::Node*) aabb_tree_leaf);
     
-    aabb_tree_key = rendertree.InsertLeaf(this - PoolProxy<RenderComponent>::GetPool().begin().ptr, min, max);
+    aabb_tree_leaf = rendertree.InsertLeaf(this - PoolProxy<RenderComponent>::GetPool().begin().ptr, min, max);
 }
 
 void RenderComponent::InsertDrawListEntries() {
@@ -215,19 +215,17 @@ void RenderComponent::InsertDrawListEntries() {
     }
 }
 
-static void DrawAABBNodeChildren (uint32_t node_id) {
-    const auto& node = rendertree.nodes[node_id];
-    
-    if (node.IsLeaf()) {
-        AddLineAABB(node.min, node.max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
+static void DrawAABBNodeChildren (AABBTree::Node* node) {
+    if (node->IsLeaf()) {
+        AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
     } else {
-        DrawAABBNodeChildren(node.left);
-        DrawAABBNodeChildren(node.right);
+        DrawAABBNodeChildren(node->left);
+        DrawAABBNodeChildren(node->right);
         
-        if (node_id == 0) {
-            AddLineAABB(node.min, node.max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_RED);
+        if (node->parent == nullptr) {
+            AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_RED);
         } else {
-            AddLineAABB(node.min, node.max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_PINK);
+            AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_PINK);
         }
     }
 }
@@ -247,7 +245,18 @@ void RenderComponent::DrawAllAABB() {
         model_ptr->DrawAABB(parent_position, parent_rotation);
     }*/
     
-    DrawAABBNodeChildren(0);
+    DrawAABBNodeChildren(rendertree.root);
+}
+
+void RenderComponent::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<RenderComponent*>& result) {
+    std::vector<uint32_t> results;
+    results.reserve(10);
+    
+    rendertree.FindIntersection(ray_pos, ray_dir, rendertree.root, results);
+    
+    for (auto res : results) {
+        result.push_back(PoolProxy<RenderComponent>::GetPool().begin().ptr + res);
+    }
 }
 
 }

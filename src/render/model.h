@@ -11,6 +11,12 @@ namespace tram::Render {
 struct ModelData;
 struct ModelAABB;
 
+struct AABBTriangle {
+    vec3 point1, point2, point3;
+    vec3 normal;
+    uint32_t material;
+};
+
 struct IndexRange {
     uint32_t index_offset = 0;
     uint32_t index_length = 0;
@@ -38,6 +44,7 @@ public:
     const std::vector<IndexRange>& GetIndexRanges() const { return index_ranges; }
     
     void DrawAABB(vec3 position, quat rotation);
+    void FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result);
     
     vec3 GetAABBMin() const { return aabb_min; }
     vec3 GetAABBMax() const { return aabb_max; }

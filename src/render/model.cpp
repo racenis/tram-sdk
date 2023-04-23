@@ -95,16 +95,25 @@ void Model::LoadFromMemory() {
     }
 }
 
-struct AABBTriangle {
-    vec3 point1, point2, point3;
-    vec3 normal;
-    uint32_t material;
-};
-
 struct ModelAABB {
     AABBTree tree;
     std::vector<AABBTriangle> triangles;
 };
+
+
+void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result) {
+    std::vector<uint32_t> results;
+    results.reserve(10);
+    
+    model_aabb->tree.FindIntersection(ray_pos, ray_dir, model_aabb->tree.root, results);
+    
+    for (auto res : results) {
+        result.push_back(model_aabb->triangles[res]);
+    }
+}
+
+
+
 
 static int total_counter = 0;
 static int node_counter = 0;
@@ -112,19 +121,17 @@ static int leaf_counter = 0;
 
 //static std::set<uint32_t> lookedat_nodes;
 
-static void DrawAABBNodeChildren (const std::vector<AABBTree::Node>& nodes, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation, uint32_t node_id) {
-    const auto& node = nodes[node_id];
-    
+static void DrawAABBNodeChildren (AABBTree::Node* node, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation) {
     //lookedat_nodes.emplace(node_id);
     
     total_counter++;
     
-    if (node.IsLeaf()) {
+    if (node->IsLeaf()) {
         //AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
         
-        vec3 point1 = position + (rotation * triangles[node.value].point1);
-        vec3 point2 = position + (rotation * triangles[node.value].point2);
-        vec3 point3 = position + (rotation * triangles[node.value].point3);
+        vec3 point1 = position + (rotation * triangles[node->value].point1);
+        vec3 point2 = position + (rotation * triangles[node->value].point2);
+        vec3 point3 = position + (rotation * triangles[node->value].point3);
         
         AddLine(point1, point2, COLOR_WHITE);
         AddLine(point2, point3, COLOR_WHITE);
@@ -132,13 +139,13 @@ static void DrawAABBNodeChildren (const std::vector<AABBTree::Node>& nodes, cons
         
         leaf_counter++;
     } else {
-        DrawAABBNodeChildren(nodes, triangles, position, rotation, node.left);
-        DrawAABBNodeChildren(nodes, triangles, position, rotation, node.right);
+        DrawAABBNodeChildren(node->left, triangles, position, rotation);
+        DrawAABBNodeChildren(node->right, triangles, position, rotation);
         
-        if (node_id == 0) {
-            AddLineAABB(node.min, node.max, position, rotation, COLOR_RED);
+        if (node->parent == nullptr) {
+            AddLineAABB(node->min, node->max, position, rotation, COLOR_RED);
         } else {
-            AddLineAABB(node.min, node.max, position, rotation, COLOR_PINK);
+            AddLineAABB(node->min, node->max, position, rotation, COLOR_PINK);
         }
         
         node_counter++;
@@ -160,7 +167,7 @@ void Model::DrawAABB(vec3 position, quat rotation) {
     
     //lookedat_nodes.clear();
     
-    DrawAABBNodeChildren(model_aabb->tree.nodes, model_aabb->triangles, position, rotation, 0);
+    DrawAABBNodeChildren(model_aabb->tree.root, model_aabb->triangles, position, rotation);
     
     //std::cout << name << std::endl;
     //std::cout << "nodes " << model_aabb->tree.nodes.size() << std::endl;
@@ -290,7 +297,7 @@ void Model::LoadFromDisk() {
         bucket_mappings.resize(mcount);
 
         model_aabb->triangles.reserve(tcount);
-        model_aabb->tree.nodes.reserve(tcount);
+        //model_aabb->tree.nodes.reserve(tcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
@@ -475,7 +482,7 @@ void Model::LoadFromDisk() {
         bucket_mappings.resize(mcount);
 
         model_aabb->triangles.reserve(tcount);
-        model_aabb->tree.nodes.reserve(tcount);
+        //model_aabb->tree.nodes.reserve(tcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));

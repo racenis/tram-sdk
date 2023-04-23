@@ -24,6 +24,9 @@ public:
 
     void Start();
 
+    vec3 GetLocation() const { return location; }
+    quat GetRotation() const { return rotation; }
+
     void SetLocation(glm::vec3 nlocation);
     void SetRotation(glm::quat nrotation);
     void SetWorldParameters (bool interior_lighting);
@@ -31,6 +34,7 @@ public:
     void EventHandler(Event &event){return;}
     
     static void DrawAllAABB();
+    static void FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<RenderComponent*>& result);
 protected:
     void InsertDrawListEntries();
     void RefreshAABB();
@@ -45,7 +49,7 @@ protected:
     vec3 location;
     quat rotation;
 
-    uint32_t aabb_tree_key = 0;
+    void* aabb_tree_leaf = 0;
 
     uint32_t render_flags;
 };

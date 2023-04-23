@@ -68,19 +68,143 @@ RenderComponent* binguser = nullptr;
 RenderComponent* monguser = nullptr;
 ArmatureComponent* monguser_armature = nullptr;
 
+std::pair<vec3, bool> RayIntersectsTriangle(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point2, vec3 point3) {
+    const float epsilon = 0.000001;
+    
+    const vec3 p1_p2 = point2 - point1;
+    const vec3 p1_p3 = point3 - point1;
+    
+    const vec3 p_vec = glm::cross(ray_dir, p1_p3);
+    const float det = glm::dot(p1_p2, p_vec);
+
+    // ray too parallel; yeet
+    if (fabs(det) < epsilon) {
+        return {vec3{}, false};
+    }
+
+    const float inv_det = 1.0 / det;
+    const vec3 t_vec = ray_pos - point1;
+    const float u = inv_det * glm::dot(t_vec, p_vec);
+
+    if (u < 0.0 || u > 1.0) {
+        return {vec3{}, false};
+    }
+    
+    const vec3 q_vec = glm::cross(t_vec, p1_p2);
+    const float v = inv_det * glm::dot(ray_dir, q_vec);
+
+    if (v < 0.0 || u + v > 1.0) {
+        return {vec3{}, false};
+    }
+
+    const float t = inv_det * glm::dot(p1_p3, q_vec);
+
+    if (t > epsilon) {
+        return {ray_pos + (ray_dir * t), true};
+    } else {
+        return {vec3{}, false};
+    }
+
+}
+
+
+std::pair<AABBTriangle, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 ray_dir) {
+    std::vector<RenderComponent*> intersected_render_components;
+    std::vector<AABBTriangle> intersected_triangles;
+    intersected_render_components.reserve(10);
+    intersected_triangles.reserve(10);
+    
+    RenderComponent::FindAllFromRay(ray_pos, ray_dir, intersected_render_components);
+    
+    float nearest_distance = INFINITY;
+    AABBTriangle nearest_triangle;
+    
+    for (auto comp : intersected_render_components) {
+        auto comp_position = comp->GetLocation();
+        auto comp_rotation = comp->GetRotation();
+        
+        vec3 ray_pos_local = glm::inverse(comp_rotation) * (ray_pos - comp_position);
+        vec3 ray_dir_local = glm::inverse(comp_rotation) * ray_dir;
+        
+        
+        std::vector<AABBTriangle> intersected_triangles;
+        intersected_triangles.reserve(10);
+
+        Model::Find(comp->GetModel())->FindAllFromRay(ray_pos_local, ray_dir_local, intersected_triangles);
+        
+        
+        for (auto& tri : intersected_triangles) {
+            auto [intersection, happened] = RayIntersectsTriangle(ray_pos_local, ray_dir_local, tri.point1, tri.point2, tri.point3);
+            
+            if (!happened) continue;
+            
+            float intersection_distance = glm::distance(ray_pos_local, intersection);
+            
+            if (nearest_distance > intersection_distance) {
+                nearest_distance = intersection_distance;
+                nearest_triangle = {
+                    comp_position + (comp_rotation * tri.point1),
+                    comp_position + (comp_rotation * tri.point2),
+                    comp_position + (comp_rotation * tri.point3),
+                    comp_rotation * tri.normal,
+                    tri.material
+                };
+            }
+        }
+    }
+    
+    if (nearest_distance != INFINITY) {
+        AddLine(nearest_triangle.point1, nearest_triangle.point2, COLOR_WHITE);
+        AddLine(nearest_triangle.point2, nearest_triangle.point3, COLOR_WHITE);
+        AddLine(nearest_triangle.point3, nearest_triangle.point1, COLOR_WHITE);
+    }
+    
+    return {nearest_triangle, nearest_distance != INFINITY};
+}
+
+void FindSomePaths(vec3 ray_pos, vec3 ray_dir, uint32_t iterations) {
+    auto [triangle, hit] = NearestTriangleFromRay(ray_pos, ray_dir);
+    
+    if (!hit) {
+        AddLine(ray_pos, ray_dir * 10.0f, COLOR_CYAN);
+        return;
+    } 
+    
+    vec3 intersection = RayIntersectsTriangle(ray_pos, ray_dir, triangle.point1, triangle.point2, triangle.point3).first;
+    
+    vec3 new_dir = ray_dir - (2.0f * glm::dot(ray_dir, triangle.normal) * triangle.normal);
+    
+    AddLine(ray_pos, intersection, COLOR_CYAN);
+    //AddLineMarker(intersection, COLOR_PINK);
+    
+    if (iterations < 10) {
+        FindSomePaths(intersection /*- (ray_dir * 0.01f)*/, new_dir, iterations + 1);
+    }
+}
+
+
 void mainloop() {
     Core::Update();
     UI::Update();
     
-    Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, vec3(0.0f, 0.75f, 0.0f), COLOR_GREEN);
-    Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {3.0f, 0.0f, 3.0f}, vec3(0.75f, 0.0f, 0.0f), COLOR_GREEN);
-    Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {-3.0f, 3.0f, -3.0f}, vec3(0.0f, 0.0f, 0.75f), COLOR_GREEN);
-    
-    //time_of_day += 0.001f;
-    SetSun(0.8f); // this sets the ambient lighting
+    //Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, vec3(0.0f, 0.75f, 0.0f), COLOR_GREEN);
+    //Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {3.0f, 0.0f, 3.0f}, vec3(0.75f, 0.0f, 0.0f), COLOR_GREEN);
+    //Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {-3.0f, 3.0f, -3.0f}, vec3(0.0f, 0.0f, 0.75f), COLOR_GREEN);
     
     static int tick = 0;
     tick++;
+    
+    vec3 ray_pos = Render::GetCameraPosition();
+    vec3 ray_dir = Render::GetCameraRotation() * DIRECTION_FORWARD;
+
+    //NearestTriangleFromRay(ray_pos, ray_dir);
+    FindSomePaths(ray_pos, ray_dir, 0);
+
+
+    //time_of_day += 0.001f;
+    SetSun(0.8f); // this sets the ambient lighting
+    
+
     
     //if (tick%69 == 0) {
     //    std::cout << "tick: " << tick << std::endl;
@@ -268,7 +392,7 @@ void mainloop() {
     
     ControllerComponent::Update();
     ArmatureComponent::Update();
-    RenderComponent::DrawAllAABB();
+    //RenderComponent::DrawAllAABB();
 
     Physics::Update();
 
