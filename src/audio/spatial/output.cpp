@@ -4,14 +4,9 @@
 
 #include <framework/logging.h>
 
+#include <atomic>
+
 namespace tram::Audio::Spatial {
-
-size_t next_buffer = 0;
-float output_buffer[4][4096] = {0.0f};
-
-static size_t buffer_progress = 0;
-
-static bool very_bad_error = false;
 
 static PaStream* audio_stream;
 
@@ -22,36 +17,50 @@ static int PortaudioCallback (
     PaStreamCallbackFlags statusFlags,
     void *userData
 ) {
-    float* output = (float*) outputBuffer;
-    size_t samples_left_in_buffer = 4096 - buffer_progress;
+    LockRenderlist();
     
-    if (samples_left_in_buffer > framesPerBuffer) {
-        memcpy(output, &output_buffer[next_buffer][buffer_progress], framesPerBuffer);
-        buffer_progress += framesPerBuffer;
-        
-        return 0;
+    float* output = (float*) outputBuffer;
+    
+    for (unsigned int i = 0; i < framesPerBuffer * 2; i++) {
+        output[i] = 0.0f;
     }
     
-    memcpy(output, &output_buffer[next_buffer][buffer_progress], samples_left_in_buffer);
+    for (auto& source : audiosources) {
+        source.lock.Lock();
+        
+        // if not playing, skip
+        if (~source.flags & SOURCE_PLAYING) {
+            source.lock.Unlock();
+            continue;
+        }
+        
+        size_t source_length = source.buffer->length;
+        for (size_t sample = 0; sample < framesPerBuffer; sample++) {
+            for (size_t path = 0; path < PATHS_FOR_SOURCE; path++) {
+                float delay = source.paths[path].distance / 331.0f;
+                int32_t sample_delay = delay * 44100.0f;
+                
+                int32_t sample_delayed = source.sample;
+                sample_delayed -= sample_delay;
+                
+                if (sample_delayed < 0) {
+                    sample_delayed += source.buffer->length;
+                }
+                
+                float sample_value = source.buffer->data[sample_delayed] * source.paths[path].force;
+                
+                output[sample * 2] += sample_value;
+                output[(sample * 2) + 1] += sample_value;
+            }
+            
+            source.sample += sample % source.buffer->sample_rate == 0;
+            source.sample = source.sample % source_length;
+        }
+        
+        source.lock.Unlock();
+    }
     
-    output += samples_left_in_buffer;
-    
-    buffer_progress = 0;
-    next_buffer += 1;
-    
-    if (next_buffer >= 4) next_buffer = 0;
-    
-    memcpy(output, &output_buffer[next_buffer][buffer_progress], framesPerBuffer - samples_left_in_buffer);
-    
-    
-    
-    Log("fuck EEE {}", framesPerBuffer);
-    
-    //memcpy(outputBuffer, &output_buffer[next_buffer], 4096);
-    
-    
-    next_buffer = next_buffer == 0 ? 1 : 0;
-    
+    UnlockRenderlist();
     return 0;
 }
 
@@ -71,7 +80,8 @@ void InitOutput() {
                                 2,          /* stereo output */
                                 paFloat32,  /* 32 bit floating point output */
                                 44100,
-                                512,
+                                paFramesPerBufferUnspecified,
+                                //512,
                                 /*4096,*/        /* frames per buffer, i.e. the number
                                                    of sample frames that PortAudio will
                                                    request from the callback. Many apps
@@ -97,10 +107,7 @@ void InitOutput() {
 }
 
 void UpdateOutput() {
-    if (very_bad_error) {
-        Log("very bad error!");
-        abort();
-    }
+
 }
 
 void UninitOutput() {
@@ -117,6 +124,14 @@ void UninitOutput() {
     if (error != paNoError) {
         Log("portaudio did fucky wucky on shutdown: {}", Pa_GetErrorText(error));
     }
+}
+
+void LockRenderlist() {
+    
+}
+
+void UnlockRenderlist() {
+    
 }
 
 }

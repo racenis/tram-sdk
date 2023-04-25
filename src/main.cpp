@@ -215,10 +215,10 @@ void mainloop() {
     //    std::cout << "tick: " << tick << std::endl;
     //}
     
-    //if (tick % 4 == 0) {
-    //    auto aaa = Entity::FindByName(UID("muca"));
-    //    derp_player->UpdateLocation(aaa->GetLocation());
-    //}
+    if (tick % 4 == 0) {
+        auto aaa = Entity::Find("muca");
+        derp_player->SetLocation(aaa->GetLocation() + vec3(0.0f, 1.0f, 0.0f));
+    }
     
     if (tick == 300) {
         //auto aaa = Entity::FindByName(UID("estijs"));

@@ -154,9 +154,9 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
 
 void FindPaths(std::vector<PathResult>& paths, vec3 position) {
     std::vector<PathSegment> segments;
-    segments.reserve(10);
+    segments.reserve(25);
     
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 25; i++) {
         float x = ((int32_t) xorshift()) - 2147483647;
         float y = ((int32_t) xorshift()) - 2147483647;
         float z = ((int32_t) xorshift()) - 2147483647;
@@ -172,8 +172,14 @@ void FindPaths(std::vector<PathResult>& paths, vec3 position) {
         
         for (auto& segment : segments) {
             distance += glm::distance(segment.segment_start, segment.segment_end);
-            force *= 0.9f;
+            force *= 0.9f; // this would depend on the materials etc.
         }
+        
+        float attenuation = (20.0f - distance) / 20.0f;
+        
+        if (attenuation < 0.0f) attenuation = 0.0f;
+        
+        force *= attenuation;
         
         vec3 end_direction = glm::normalize(segments.back().segment_end - segments.back().segment_start);
         

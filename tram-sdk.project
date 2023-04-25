@@ -18,6 +18,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
       <VirtualDirectory Name="spatial">
+        <File Name="src/audio/spatial/definitions.h"/>
         <File Name="src/audio/spatial/output.h"/>
         <File Name="src/audio/spatial/output.cpp"/>
         <File Name="src/audio/spatial/pathtracer.h"/>
@@ -106,6 +107,7 @@
       <File Name="src/framework/entity.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="templates">
+      <File Name="src/templates/spinlock.h"/>
       <File Name="src/templates/aabb.h"/>
       <File Name="src/templates/octree.h"/>
       <File Name="src/templates/stack.h"/>

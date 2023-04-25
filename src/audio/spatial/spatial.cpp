@@ -1,70 +1,37 @@
 #include <audio/spatial/spatial.h>
 
+#include <audio/spatial/definitions.h>
 #include <audio/spatial/pathtracer.h>
 #include <audio/spatial/output.h>
 
 #include <render/render.h>
 
 #include <vector>
+#include <atomic>
 
 namespace tram::Audio::Spatial {
 
-const size_t PATHS_FOR_SOURCE = 100;
-    
-enum AudioSourceFlags : uint32_t {
-    SOURCE_PLAYING = 1,
-    SOURCE_REPEATING = 2
-};
-    
-struct AudioBuffer {
-    uint32_t sample_rate;
-    uint32_t channels;
-    size_t length;
-    float* data;
-};
+AudioBuffer audiobuffers[1000];
+AudioSource audiosources[200];
 
-struct AudioSource {
-    uint32_t flags;
-    uint32_t sample;
-    vec3 position;
-    AudioBuffer* buffer;
-    PathResult* paths;
-    size_t last_path;
-};
-
-static std::vector<AudioBuffer> audiobuffers;
 static std::vector<uint32_t> audiobuffer_free_list;
-
-static std::vector<AudioSource> audiosources;
 static std::vector<uint32_t> audiosource_free_list;
+
+static size_t last_audiobuffer = 0;
+static size_t last_audiosource = 0;
 
 vec3 listener_position = {0.0f, 0.0f, 0.0f};
 quat listener_orientation = {1.0f, 0.0f, 0.0f, 0.0f};
 
 void Init() {
+    for (auto& source : audiosources) {
+        source.flags = 0; // just in case; don't want renderer to render uninitialized sources
+    }
+    
     InitOutput();
 }
 
 void Update() {
-    //std::cout << "update " << audiosources.size() << std::endl;
-    static size_t last_buffer = 0;
-    
-    if (last_buffer != next_buffer) {
-        static float samplecount = 0.0f;
-        samplecount += 4096.0f;
-        
-        for (size_t i = 0; i < 4096; i++) {
-            output_buffer[next_buffer][i] = sin((((float) i) + samplecount) / 22.0f);
-        }
-        
-        std::cout << "putte" << std::endl;
-    } else {
-        std::cout << "not" << std::endl;
-    }
-    
-    last_buffer = next_buffer;
-    
-    
     for (auto& source: audiosources) {
         if (~source.flags & SOURCE_PLAYING) continue;
         
@@ -85,7 +52,14 @@ void Update() {
             source.last_path++;
         }
         
-        //std::cout << "found " << paths.size() << std::endl;
+        if (paths.size() == 0) {
+            if (source.last_path >= PATHS_FOR_SOURCE) {
+                source.last_path = 0;
+            }
+            
+            source.paths[source.last_path].force = 0.0f;
+            source.last_path++;
+        }
     }
     
     UpdateOutput();
@@ -119,16 +93,31 @@ audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_
         buffer_index = audiobuffer_free_list.back();
         audiobuffer_free_list.pop_back();
     } else {
-        buffer_index = audiobuffers.size();
-        audiobuffers.push_back(AudioBuffer{});
+        buffer_index = last_audiobuffer;
+        last_audiobuffer++;
     }
     
     auto& buffer = audiobuffers[buffer_index];
     
     buffer.length = length;
     buffer.data = buffer_data;
-    buffer.sample_rate = samples;
     buffer.channels = channels;
+    
+    switch (samples) {
+        case 44100:
+            buffer.sample_rate = SAMPLERATE_44100;
+            break;
+        case 22050:
+            buffer.sample_rate = SAMPLERATE_22050;
+            break;
+        case 11025:
+            buffer.sample_rate = SAMPLERATE_11025;
+            break;
+        default:
+            buffer.sample_rate = SAMPLERATE_44100;
+            std::cout << "Unrecognized sample rate: " << samples << std::endl;
+            break;
+    }
     
     buffer_count = 1;
     
@@ -152,8 +141,8 @@ audiosource_t MakeAudioSource() {
         source_index = audiosource_free_list.back();
         audiosource_free_list.pop_back();
     } else {
-        source_index = audiosources.size();
-        audiosources.push_back(AudioSource{});
+        source_index = last_audiosource;
+        last_audiosource++;
     }
     
     auto& source = audiosources[source_index];
