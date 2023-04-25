@@ -17,6 +17,14 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
+      <VirtualDirectory Name="spatial">
+        <File Name="src/audio/spatial/output.h"/>
+        <File Name="src/audio/spatial/output.cpp"/>
+        <File Name="src/audio/spatial/pathtracer.h"/>
+        <File Name="src/audio/spatial/pathtracer.cpp"/>
+        <File Name="src/audio/spatial/spatial.cpp"/>
+        <File Name="src/audio/spatial/spatial.h"/>
+      </VirtualDirectory>
       <File Name="src/audio/api.h"/>
       <File Name="src/audio/api.cpp"/>
       <File Name="src/audio/sound.h"/>
@@ -189,7 +197,7 @@
         <IncludePath Value="./libraries/glfw3"/>
         <IncludePath Value="./libraries/openal"/>
       </Compiler>
-      <Linker Options="-lglfw3;-lgdi32;-lopengl32" Required="yes">
+      <Linker Options="-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
         <LibraryPath Value="libraries/binaries/win64"/>
         <Library Value="libBulletSoftBody.a"/>
         <Library Value="libBulletDynamics.a"/>

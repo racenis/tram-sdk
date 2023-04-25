@@ -183,6 +183,8 @@ void FindSomePaths(vec3 ray_pos, vec3 ray_dir, uint32_t iterations) {
 }
 
 
+
+
 void mainloop() {
     Core::Update();
     UI::Update();
@@ -194,11 +196,14 @@ void mainloop() {
     static int tick = 0;
     tick++;
     
-    vec3 ray_pos = Render::GetCameraPosition();
-    vec3 ray_dir = Render::GetCameraRotation() * DIRECTION_FORWARD;
+    //vec3 ray_pos = Render::GetCameraPosition();
+    //vec3 ray_dir = Render::GetCameraRotation() * DIRECTION_FORWARD;
+    
 
     //NearestTriangleFromRay(ray_pos, ray_dir);
-    FindSomePaths(ray_pos, ray_dir, 0);
+    
+    
+    //FindSomePaths(ray_pos, ray_dir, 0);
 
 
     //time_of_day += 0.001f;
@@ -514,13 +519,13 @@ int main() {
     derp->Load();
     
     derp_player = PoolProxy<AudioComponent>::New();
-    derp_player->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    derp_player->SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
     //derp_player->SetSound(derp);
     derp_player->SetSound("apelsin");
     derp_player->SetRepeating(true);
     derp_player->Init();
     
-    //derp_player->Play();
+    derp_player->Play();
     
     //auto crate_ent = Entity::Find(UID("estijs"));
     

@@ -45,10 +45,18 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 
 #### Should do sooner
-- Rewrite Stackpool
-- Add emscripten to maketool
 
+- Better UX
+	- Scripts
+		- Setup script
+		- Project creation script
+	- Make level editor not bad
 - Fix the editor
+- Model conversion tool
+- Lightmap tool
+	- Generates layouts
+	- Bakes lightmaps
+- Brush map importer
 
 #### Should do later
 - Keybinding menu
@@ -56,7 +64,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 
 - Split off an AnimationComponent from ArmatureComponent
-- Add log filtering
 - Make Raycast that returns multiple points
 - Add constraints to PhysicsComponents
 - Models with different sets of materials
@@ -69,6 +76,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Add a callback function for updating
 - Replace Bezier curves with Catmull-Roms
 - Finish menu extension
+	- Add ability to add more buttons
 - Finish particles
 	- Steal ideas from various particle editors
 - Finish sprites
@@ -76,7 +84,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Additional serialized data fields
 	- Position XYZ
 	- Color RGB
-
+	
 #### For very later versions
 - Occlusion/frustrum culling
 - Add rotations to sprites

@@ -11,7 +11,11 @@
 #include <unordered_map>
 
 #include <audio/openal/openal.h>
+#include <audio/spatial/spatial.h>
 
+
+//#define AUDIO_SYSTEM OpenAL
+#define AUDIO_SYSTEM Spatial
 
 namespace tram::Audio {
 
@@ -20,14 +24,14 @@ void Init() {
     assert(System::IsInitialized(System::SYSTEM_CORE));
     assert(System::IsInitialized(System::SYSTEM_UI));
     
-    OpenAL::Init();
+    AUDIO_SYSTEM::Init();
     
     System::SetInitialized(System::SYSTEM_AUDIO, true);
 }
 
 /// Updates the Audio system.
 void Update() {        
-    OpenAL::Update();
+    AUDIO_SYSTEM::Update();
 }
 
 // Stops the Audio system.
@@ -35,7 +39,7 @@ void Uninit() {
     for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
     for (auto& it : PoolProxy<Sound>::GetPool()) it.Unload();
     
-    OpenAL::Uninit();
+    AUDIO_SYSTEM::Uninit();
 }
 
 }

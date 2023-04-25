@@ -6,7 +6,7 @@
 #undef C
 
 #include <audio/sound.h>
-#include <audio/openal/openal.h>
+#include <audio/api.h>
 
 #include <framework/logging.h>
 #include <framework/system.h>
@@ -28,7 +28,7 @@ void Sound::LoadFromDisk() {
     if (sound_length < 0) {
         Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
     } else {
-        sound_buffers = OpenAL::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels, sound_buffer_count);
+        sound_buffers = MakeAudioBuffer(sound_data, sound_length, sample_rate, channels, sound_buffer_count);
     }
     
     free (sound_data);
@@ -39,7 +39,7 @@ void Sound::LoadFromDisk() {
 
 /// Removes the sound from memory.
 void Sound::Unload() {
-    OpenAL::RemoveAudioBuffer(sound_buffers, sound_buffer_count);
+    RemoveAudioBuffer(sound_buffers, sound_buffer_count);
     status = UNLOADED;
 }
 
