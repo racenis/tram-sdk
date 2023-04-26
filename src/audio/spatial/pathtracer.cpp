@@ -125,7 +125,7 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
     
     bool hit_listener = RaySphereIntersection(ray_pos, ray_dir, listener_position, 0.5f);
     
-    if (!hit_wall) {
+    if (!hit_wall || iterations > 9) {
         if (hit_listener) {
             segments.push_back({ray_pos, listener_position});
         } else {
@@ -134,7 +134,7 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
         
         AddLine(ray_pos, ray_dir * 10.0f, COLOR_CYAN);
         return;
-    } 
+    }
     
     vec3 intersection = RayIntersectsTriangle(ray_pos, ray_dir, triangle.point1, triangle.point2, triangle.point3).first;
     
@@ -145,16 +145,16 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
     
     segments.push_back({ray_pos, intersection});
     
-    if (iterations < 10) {
-        FindSomePaths(segments, intersection, new_dir, iterations + 1);
-    }
+    
+    
+    FindSomePaths(segments, intersection, new_dir, iterations + 1);
 }
     
 
 
 void FindPaths(std::vector<PathResult>& paths, vec3 position) {
     std::vector<PathSegment> segments;
-    segments.reserve(25);
+    segments.reserve(100);
     
     for (int i = 0; i < 25; i++) {
         float x = ((int32_t) xorshift()) - 2147483647;

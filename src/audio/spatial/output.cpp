@@ -10,6 +10,13 @@ namespace tram::Audio::Spatial {
 
 static PaStream* audio_stream;
 
+float largest_sample = 0.0f;
+float largest_panning = INFINITY;
+float smallest_panning = -INFINITY;
+
+// also do same for panning !!! largest/smallest panning
+// then do normalization
+
 static int PortaudioCallback (
     const void *inputBuffer, void *outputBuffer,
     unsigned long framesPerBuffer,
@@ -34,24 +41,53 @@ static int PortaudioCallback (
             continue;
         }
         
+        float total_force = 0.0f;
+        for (size_t path = 0; path < PATHS_FOR_SOURCE; path++) total_force += source.paths[path].force;
+        
+        float force_equalizer = total_force < 1.0f ? 1.0f : 1.0f / total_force;
+        
         size_t source_length = source.buffer->length;
         for (size_t sample = 0; sample < framesPerBuffer; sample++) {
             for (size_t path = 0; path < PATHS_FOR_SOURCE; path++) {
-                float delay = source.paths[path].distance / 331.0f;
-                int32_t sample_delay = delay * 44100.0f;
+                float panning = glm::dot(source.paths[path].direction, listener_orientation * DIRECTION_SIDE);
+                int32_t panning_delay = panning * 20.0f; // 20 sample between ears
                 
-                int32_t sample_delayed = source.sample;
-                sample_delayed -= sample_delay;
+                if (largest_panning < panning) largest_panning = panning;
+                if (smallest_panning > panning) smallest_panning = panning;
                 
-                if (sample_delayed < 0) {
-                    sample_delayed += source.buffer->length;
+                float delay = source.paths[path].distance / 331.0f; // 331 m/s sound velocity
+                int32_t sample_delay = delay * 44100.0f; // 44100 hz sample rate
+                
+                int32_t sample_delayed_left = source.sample;
+                int32_t sample_delayed_right = source.sample;
+                
+                sample_delayed_left += sample_delay + panning_delay;
+                sample_delayed_right += sample_delay - panning_delay;
+                
+                
+                if (sample_delayed_left < 0) {
+                    sample_delayed_left += source.buffer->length;
                 }
                 
-                float sample_value = source.buffer->data[sample_delayed] * source.paths[path].force;
+                if (sample_delayed_right < 0) {
+                    sample_delayed_right += source.buffer->length;
+                }
                 
-                output[sample * 2] += sample_value;
-                output[(sample * 2) + 1] += sample_value;
+                
+                //float sample_value_left = source.buffer->data[sample_delayed_left] * source.paths[path].force * force_equalizer;
+                //float sample_value_right = source.buffer->data[sample_delayed_right] * source.paths[path].force * force_equalizer;
+                
+                //float sample_value_left = source.buffer->data[source.sample] * source.paths[path].force * ((panning * 0.5f) + 0.5f) * force_equalizer;
+                //float sample_value_right = source.buffer->data[source.sample] * source.paths[path].force * ((-panning * 0.5f) + 0.5f)* force_equalizer;
+                
+                float sample_value_left = source.buffer->data[sample_delayed_left] * source.paths[path].force * ((panning * 0.25f) + 0.75f) * force_equalizer;
+                float sample_value_right = source.buffer->data[sample_delayed_right] * source.paths[path].force * ((-panning * 0.25f) + 0.75f)* force_equalizer;
+                
+                output[sample * 2] += sample_value_left;
+                output[(sample * 2) + 1] += sample_value_right;
             }
+            
+            if (largest_sample < output[sample * 2]) largest_sample = output[sample * 2];
             
             source.sample += sample % source.buffer->sample_rate == 0;
             source.sample = source.sample % source_length;
@@ -107,7 +143,10 @@ void InitOutput() {
 }
 
 void UpdateOutput() {
-
+    //Log("l sample: {} l panning: {} s panning: {}", largest_sample, largest_panning, smallest_panning);
+    largest_sample = 0.0f;
+     largest_panning = -INFINITY;
+ smallest_panning = INFINITY;
 }
 
 void UninitOutput() {

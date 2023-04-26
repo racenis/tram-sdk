@@ -63,6 +63,7 @@ Sprite* tolet_sprite = nullptr;
 SpriteComponent* tolet_spinner = nullptr;
 ParticleComponent* tolet_emitter = nullptr;
 Audio::Sound* derp = nullptr;
+Audio::Sound* eerp = nullptr;
 AudioComponent* derp_player = nullptr;
 RenderComponent* binguser = nullptr;
 RenderComponent* monguser = nullptr;
@@ -516,12 +517,13 @@ int main() {
     tolet_emitter->Init();
     
     derp = Audio::Sound::Find(UID("apelsin"));
+    eerp = Audio::Sound::Find(UID("miku"));
     derp->Load();
+    eerp->Load();
     
     derp_player = PoolProxy<AudioComponent>::New();
     derp_player->SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
-    //derp_player->SetSound(derp);
-    derp_player->SetSound("apelsin");
+    derp_player->SetSound("miku");
     derp_player->SetRepeating(true);
     derp_player->Init();
     
