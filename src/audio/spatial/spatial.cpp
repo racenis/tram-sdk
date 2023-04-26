@@ -42,7 +42,7 @@ void Update() {
         
         FindPaths(paths, source.position);
         
-        std::cout << "found paths: " << paths.size() << std::endl;
+        //std::cout << "found paths: " << paths.size() << std::endl;
         
         for (auto& path : paths) {
             if (source.last_path >= PATHS_FOR_SOURCE) {

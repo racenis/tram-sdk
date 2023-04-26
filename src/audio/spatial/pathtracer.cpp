@@ -57,7 +57,7 @@ static std::pair<vec3, bool> RayIntersectsTriangle(vec3 ray_pos, vec3 ray_dir, v
 }
 
 
-static std::pair<AABBTriangle, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 ray_dir) {
+static std::tuple<AABBTriangle, vec3, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 ray_dir) {
     std::vector<RenderComponent*> intersected_render_components;
     std::vector<AABBTriangle> intersected_triangles;
     intersected_render_components.reserve(10);
@@ -67,6 +67,7 @@ static std::pair<AABBTriangle, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 
     
     float nearest_distance = INFINITY;
     AABBTriangle nearest_triangle;
+    vec3 nearest_intersection = {0.0f, 0.0f, 0.0f};
     
     for (auto comp : intersected_render_components) {
         auto comp_position = comp->GetLocation();
@@ -91,6 +92,7 @@ static std::pair<AABBTriangle, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 
             
             if (nearest_distance > intersection_distance) {
                 nearest_distance = intersection_distance;
+                nearest_intersection = comp_position + (comp_rotation * intersection);
                 nearest_triangle = {
                     comp_position + (comp_rotation * tri.point1),
                     comp_position + (comp_rotation * tri.point2),
@@ -102,13 +104,13 @@ static std::pair<AABBTriangle, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 
         }
     }
     
-    if (nearest_distance != INFINITY) {
+    /*if (nearest_distance != INFINITY) {
         AddLine(nearest_triangle.point1, nearest_triangle.point2, COLOR_WHITE);
         AddLine(nearest_triangle.point2, nearest_triangle.point3, COLOR_WHITE);
         AddLine(nearest_triangle.point3, nearest_triangle.point1, COLOR_WHITE);
-    }
+    }*/
     
-    return {nearest_triangle, nearest_distance != INFINITY};
+    return {nearest_triangle, nearest_intersection, nearest_distance != INFINITY};
 }
 
 bool RaySphereIntersection(vec3 ray_pos, vec3 ray_dir, vec3 sphere_pos, float sphere_radius) {
@@ -121,26 +123,30 @@ bool RaySphereIntersection(vec3 ray_pos, vec3 ray_dir, vec3 sphere_pos, float sp
 }
 
 static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3 ray_dir, uint32_t iterations) {
-    auto [triangle, hit_wall] = NearestTriangleFromRay(ray_pos, ray_dir);
+    auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_pos, ray_dir);
     
     bool hit_listener = RaySphereIntersection(ray_pos, ray_dir, listener_position, 0.5f);
     
-    if (!hit_wall || iterations > 9) {
+    if (!hit_wall || hit_listener || iterations > 9) {
         if (hit_listener) {
             segments.push_back({ray_pos, listener_position});
         } else {
             segments.clear();
         }
         
-        AddLine(ray_pos, ray_dir * 10.0f, COLOR_CYAN);
+        //AddLine(ray_pos, ray_dir * 10.0f, COLOR_CYAN);
         return;
     }
     
-    vec3 intersection = RayIntersectsTriangle(ray_pos, ray_dir, triangle.point1, triangle.point2, triangle.point3).first;
+    //vec3 intersection = RayIntersectsTriangle(ray_pos, ray_dir, triangle.point1, triangle.point2, triangle.point3).first;
+    
+    if (intersection == vec3{0.0f,0.0f,0.0f}) {
+        std::cout << "wut " << RayIntersectsTriangle(ray_pos, ray_dir, triangle.point1, triangle.point2, triangle.point3).second << std::endl;
+    }
     
     vec3 new_dir = ray_dir - (2.0f * glm::dot(ray_dir, triangle.normal) * triangle.normal);
     
-    AddLine(ray_pos, intersection, COLOR_CYAN);
+    //AddLine(ray_pos, intersection, COLOR_CYAN);
     //AddLineMarker(intersection, COLOR_PINK);
     
     segments.push_back({ray_pos, intersection});
@@ -175,9 +181,11 @@ void FindPaths(std::vector<PathResult>& paths, vec3 position) {
             force *= 0.9f; // this would depend on the materials etc.
         }
         
-        float attenuation = (20.0f - distance) / 20.0f;
+        float attenuation = (15.0f - distance) / 15.0f;
         
         if (attenuation < 0.0f) attenuation = 0.0f;
+        
+        //std::cout << attenuation << std::endl;
         
         force *= attenuation;
         
