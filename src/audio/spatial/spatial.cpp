@@ -38,25 +38,12 @@ void Update() {
         
         Render::AddLineMarker(audiosources[i].position, Render::COLOR_BLUE);
         
-        std::vector<PathTracingResult> paths;
-        paths.reserve(10);
-        
-        FindPaths(paths, audiosources[i].position);
+        FindPathsMetropolis(audiosources[i].paths, audiosources[i].last_path, audiosources[i].position);
         
         //if (paths.size()) std::cout << "found paths: " << paths.size() << std::endl;
         
         for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
-            Render::AddLine(listener_position, listener_position - (audiosources[i].paths[k].force * audiosources[i].paths[k].direction * 4.0f), Render::COLOR_PINK);
-        }
-        
-        for (auto& path : paths) {
-            if (audiosources[i].last_path >= PATHS_FOR_SOURCE) {
-                audiosources[i].last_path = 0;
-                //std::cout << "wraparpond" << std::endl;
-            }
-            
-            audiosources[i].paths[audiosources[i].last_path] = path;
-            audiosources[i].last_path++;
+            Render::AddLine(listener_position, listener_position - (audiosources[i].paths[k].force * audiosources[i].paths[k].arrival_direction * 4.0f), Render::COLOR_PINK);
         }
         
         // copy path trace results into renderer
@@ -68,7 +55,7 @@ void Update() {
             //audiorenders[i].paths[k].direction = audiosources[i].paths[k].direction;
             
             
-            float panning = glm::dot(audiosources[i].paths[k].direction, listener_orientation * DIRECTION_SIDE);
+            float panning = glm::dot(audiosources[i].paths[k].arrival_direction, listener_orientation * DIRECTION_SIDE);
             int32_t panning_delay = panning * 20.0f; // 20 sample between ears
             
             float delay = audiosources[i].paths[k].distance / 331.0f; // 331 m/s sound velocity
@@ -191,15 +178,13 @@ audiosource_t MakeAudioSource() {
     
     
     for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
-        source.paths[i].direction = {0.0f, 1.0f, 0.0f};
-        source.paths[i].distance = 0.0f;
-        source.paths[i].force = 0.0f;
-        
         render.paths[i].force = 0.0f;
         render.paths[i].panning = 0.0f;
         render.paths[i].panning_delay = 0;
         render.paths[i].distance_delay = 0;
     }
+    
+    InitPaths(source.paths);
     
     return source_index;
 }

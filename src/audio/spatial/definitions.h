@@ -18,7 +18,8 @@ const size_t SOURCE_COUNT = 200;
 struct PathTracingResult {
     float force;
     float distance;
-    vec3 direction;
+    vec3 arrival_direction;
+    vec3 sampling_direction;
 };
 
 // Cached results for audio rendering

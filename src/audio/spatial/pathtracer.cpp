@@ -2,15 +2,17 @@
 
 #include <components/rendercomponent.h>
 
+#include <random>
+
 namespace tram::Audio::Spatial {
 using namespace tram::Render;
 
 uint32_t xorshift() {
-    static uint32_t x = 42069;
+    static uint32_t x = 123456789;
     x ^= x << 13;
     x ^= x >> 17;
     x ^= x << 5;
-    return x;
+    return x * 123456789;
 }
 
 struct PathSegment {
@@ -204,7 +206,7 @@ void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
         
         succ_hits++;
         
-        paths.push_back({force, distance, end_direction});
+        paths.push_back({force, distance, end_direction, end_direction});
         //paths.push_back({force, end_direction});
     }
     
@@ -221,6 +223,109 @@ void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
         for (auto& segment : all_segments) {
             AddLine(segment.segment_start, segment.segment_end, COLOR_CYAN);
         }
+}
+
+std::random_device device; 
+std::mt19937 generator(device()); 
+
+std::normal_distribution<float> bell_distribution(0.0f, 0.01f); 
+std::uniform_real_distribution<float> uniform_distribution(0.0f, 1.0f);
+
+void FindPathsMetropolis(PathTracingResult* paths, size_t& last_path, vec3 position) {
+    std::vector<PathSegment> segments;
+    segments.reserve(100);
+    
+    
+    
+    //sample = distribution(generator);
+    
+    if (last_path >= PATHS_FOR_SOURCE) {
+        last_path = 0;
+    }
+    
+    for (size_t i = last_path, j = 0; j < 25 && i < PATHS_FOR_SOURCE; i++, j++) {
+        vec3 random_vector = {
+            bell_distribution(generator),
+            bell_distribution(generator),
+            bell_distribution(generator)
+        };
+        
+        vec3 direction = glm::normalize(paths[i].sampling_direction + random_vector);
+        
+        FindSomePaths(segments, position, direction, 0);
+        
+        total_hits++;
+        
+        if (segments.size() == 0) {
+            paths[i].sampling_direction = glm::normalize(random_vector);
+            continue;
+        }
+        
+        float distance = 0.0f;
+        float force = 1.0f;
+        
+        for (auto& segment : segments) {
+            distance += glm::distance(segment.segment_start, segment.segment_end);
+            force *= 0.9f; // this would depend on the materials etc.
+        }
+        
+        /*if (all_segments.size() < 400 && GetTick() > 400) {
+            for (auto& segment : segments) {
+                all_segments.push_back(segment);
+            }
+        }*/
+        
+        float attenuation = (25.0f - distance) / 25.0f;
+        
+        if (attenuation < 0.0f) attenuation = 0.0f;
+        
+        //std::cout << attenuation << std::endl;
+        
+        force *= attenuation;
+        
+        vec3 end_direction = glm::normalize(segments.back().segment_end - segments.back().segment_start);
+        
+        succ_hits++;
+        
+        // Metropolising
+        if (uniform_distribution(generator) >= glm::min(force / paths[i].force, 1.0f)) {
+            paths[i].sampling_direction = direction;
+        }
+        
+        //paths.push_back({force, distance, end_direction});
+        
+        paths[i].force = force;
+        paths[i].distance = distance;
+        paths[i].arrival_direction = end_direction;
+    }
+    
+    if (GetTick() % 200 == 100) {
+        float ftotal = total_hits;
+        float fsucc = succ_hits;
+        
+        total_hits = 0;
+        succ_hits = 0;
+        
+        std::cout << "succ hits " << fsucc / ftotal << std::endl;
+    }
+    
+    for (auto& segment : all_segments) {
+        AddLine(segment.segment_start, segment.segment_end, COLOR_CYAN);
+    }
+}
+
+void InitPaths(PathTracingResult* paths) {
+    for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
+        paths[i].sampling_direction = glm::normalize(vec3 {
+            bell_distribution(generator),
+            bell_distribution(generator),
+            bell_distribution(generator)
+        });
+        
+        paths[i].arrival_direction = {0.0f, 1.0f, 0.0f};
+        paths[i].distance = 0.0f;
+        paths[i].force = 0.0f;
+    }
 }
 
 }
