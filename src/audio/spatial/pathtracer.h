@@ -10,7 +10,7 @@
 
 namespace tram::Audio::Spatial {
 
-void FindPaths(std::vector<PathDirection>& paths, vec3 position);
+void FindPaths(std::vector<PathTracingResult>& paths, vec3 position);
 
 }
 

@@ -15,14 +15,14 @@ const size_t BUFFER_COUNT = 1000;
 const size_t SOURCE_COUNT = 200;
 
 // Cached results for path tracing
-struct PathDirection {
+struct PathTracingResult {
     float force;
     float distance;
     vec3 direction;
 };
 
 // Cached results for audio rendering
-struct PathResult {
+struct PathRenderingInfo {
     float force;
     float panning;
     int32_t panning_delay;
@@ -50,7 +50,7 @@ struct AudioBuffer {
 // Audio source information for path tracing
 struct AudioSource {
     vec3 position;
-    PathDirection* paths;
+    PathTracingResult* paths;
     size_t last_path;
 };
 
@@ -60,7 +60,7 @@ struct AudioRender {
     uint16_t flags;
     uint32_t sample;
     AudioBuffer* buffer;
-    PathResult* paths;
+    PathRenderingInfo* paths;
 };
 
 extern AudioBuffer audiobuffers[BUFFER_COUNT];

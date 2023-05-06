@@ -161,7 +161,7 @@ std::vector<PathSegment> all_segments;
 uint32_t total_hits = 0;
 uint32_t succ_hits = 0;
 
-void FindPaths(std::vector<PathDirection>& paths, vec3 position) {
+void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
     std::vector<PathSegment> segments;
     segments.reserve(100);
     

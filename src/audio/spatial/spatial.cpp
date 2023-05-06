@@ -38,7 +38,7 @@ void Update() {
         
         Render::AddLineMarker(audiosources[i].position, Render::COLOR_BLUE);
         
-        std::vector<PathDirection> paths;
+        std::vector<PathTracingResult> paths;
         paths.reserve(10);
         
         FindPaths(paths, audiosources[i].position);
@@ -181,13 +181,13 @@ audiosource_t MakeAudioSource() {
     source.position = {0.0f, 0.0f, 0.0f};
     source.last_path = 0;
     
-    source.paths = new PathDirection[PATHS_FOR_SOURCE];
+    source.paths = new PathTracingResult[PATHS_FOR_SOURCE];
     
     render.flags = 0;
     render.sample = 0;
     render.buffer = nullptr;
     
-    render.paths = new PathResult[PATHS_FOR_SOURCE];
+    render.paths = new PathRenderingInfo[PATHS_FOR_SOURCE];
     
     
     for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
