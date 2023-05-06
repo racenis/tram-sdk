@@ -158,6 +158,9 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
     
 std::vector<PathSegment> all_segments;
 
+uint32_t total_hits = 0;
+uint32_t succ_hits = 0;
+
 void FindPaths(std::vector<PathResult>& paths, vec3 position) {
     std::vector<PathSegment> segments;
     segments.reserve(100);
@@ -170,6 +173,8 @@ void FindPaths(std::vector<PathResult>& paths, vec3 position) {
         vec3 direction = glm::normalize(vec3 {x, y, z});
         
         FindSomePaths(segments, position, direction, 0);
+        
+        total_hits++;
         
         if (segments.size() == 0) continue;
         
@@ -197,7 +202,19 @@ void FindPaths(std::vector<PathResult>& paths, vec3 position) {
         
         vec3 end_direction = glm::normalize(segments.back().segment_end - segments.back().segment_start);
         
+        succ_hits++;
+        
         paths.push_back({force, distance, end_direction});
+    }
+    
+    if (GetTick() % 200 == 100) {
+        float ftotal = total_hits;
+        float fsucc = succ_hits;
+        
+        total_hits = 0;
+        succ_hits = 0;
+        
+        std::cout << "succ hits " << fsucc / ftotal << std::endl;
     }
     
         for (auto& segment : all_segments) {

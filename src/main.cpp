@@ -508,13 +508,13 @@ int main() {
     tolet_spinner = PoolProxy<SpriteComponent>::New();
     tolet_spinner->SetSprite(tolet_sprite);
     tolet_spinner->UpdateLocation(glm::vec3(3.0f, 1.2f, -1.0f));
-    tolet_spinner->Init();
-    tolet_spinner->Play();
+    //tolet_spinner->Init();
+    //tolet_spinner->Play();
     
     tolet_emitter = PoolProxy<ParticleComponent>::New();
     tolet_emitter->SetSprite(tolet_sprite);
     tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -7.0f));
-    tolet_emitter->Init();
+    //tolet_emitter->Init();
     
     derp = Audio::Sound::Find(UID("apelsin"));
     eerp = Audio::Sound::Find(UID("dekpunkta"));
@@ -528,6 +528,16 @@ int main() {
     derp_player->Init();
     
     derp_player->Play();
+    
+    UI::BindKeyboardKey(UI::KEY_APOSTROPHE, UI::KeyBinding { .type = UI::KeyBinding::SPECIAL_OPTION, .special_option = [](){
+        camera->SetFollowing(nullptr);
+        camera->SetMouselook(false);
+        camera->SetLocation({0.0f, 25.0f, 0.0f});
+        camera->SetRotation(vec3 {glm::radians(-90.0f), glm::radians(86.8f), 0.0f});
+        
+        std::cout << "aaa" << std::endl;
+    }});
+    
     
     //auto crate_ent = Entity::Find(UID("estijs"));
     
