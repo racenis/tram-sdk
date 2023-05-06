@@ -11,11 +11,22 @@
 namespace tram::Audio::Spatial {
 
 const size_t PATHS_FOR_SOURCE = 100;
+const size_t BUFFER_COUNT = 1000;
+const size_t SOURCE_COUNT = 200;
 
-struct PathResult {
+// Cached results for path tracing
+struct PathDirection {
     float force;
     float distance;
     vec3 direction;
+};
+
+// Cached results for audio rendering
+struct PathResult {
+    float force;
+    float panning;
+    int32_t panning_delay;
+    int32_t distance_delay;
 };
 
 enum AudioSourceFlags : uint16_t {
@@ -36,18 +47,25 @@ struct AudioBuffer {
     float* data;
 };
 
+// Audio source information for path tracing
 struct AudioSource {
-    Spinlock lock;
-    uint16_t flags;
-    uint32_t sample;
     vec3 position;
-    AudioBuffer* buffer;
-    PathResult* paths;
+    PathDirection* paths;
     size_t last_path;
 };
 
-extern AudioBuffer audiobuffers[1000];
-extern AudioSource audiosources[200];
+// Audio source information for rendering
+struct AudioRender {
+    Spinlock lock;
+    uint16_t flags;
+    uint32_t sample;
+    AudioBuffer* buffer;
+    PathResult* paths;
+};
+
+extern AudioBuffer audiobuffers[BUFFER_COUNT];
+extern AudioSource audiosources[SOURCE_COUNT];
+extern AudioRender audiorenders[SOURCE_COUNT];
 
 extern vec3 listener_position;
 extern quat listener_orientation;

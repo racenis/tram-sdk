@@ -32,7 +32,7 @@ static int PortaudioCallback (
         output[i] = 0.0f;
     }
     
-    for (auto& source : audiosources) {
+    for (auto& source : audiorenders) {
         source.lock.Lock();
         
         // if not playing, skip
@@ -49,20 +49,18 @@ static int PortaudioCallback (
         size_t source_length = source.buffer->length;
         for (size_t sample = 0; sample < framesPerBuffer; sample++) {
             for (size_t path = 0; path < PATHS_FOR_SOURCE; path++) {
-                float panning = glm::dot(source.paths[path].direction, listener_orientation * DIRECTION_SIDE);
-                int32_t panning_delay = panning * 20.0f; // 20 sample between ears
                 
-                if (largest_panning < panning) largest_panning = panning;
-                if (smallest_panning > panning) smallest_panning = panning;
                 
-                float delay = source.paths[path].distance / 331.0f; // 331 m/s sound velocity
-                int32_t sample_delay = delay * -44100.0f; // 44100 hz sample rate
+                //if (largest_panning < panning) largest_panning = panning;
+                //if (smallest_panning > panning) smallest_panning = panning;
+                
+                
                 
                 int32_t sample_delayed_left = source.sample;
                 int32_t sample_delayed_right = source.sample;
                 
-                sample_delayed_left += sample_delay + panning_delay;
-                sample_delayed_right += sample_delay - panning_delay;
+                sample_delayed_left += source.paths[path].distance_delay + source.paths[path].panning_delay;
+                sample_delayed_right += source.paths[path].distance_delay - source.paths[path].panning_delay;
                 
                 
                 if (sample_delayed_left < 0) {
@@ -80,8 +78,8 @@ static int PortaudioCallback (
                 //float sample_value_left = source.buffer->data[source.sample] * source.paths[path].force * ((panning * 0.5f) + 0.5f) * force_equalizer;
                 //float sample_value_right = source.buffer->data[source.sample] * source.paths[path].force * ((-panning * 0.5f) + 0.5f)* force_equalizer;
                 
-                float sample_value_left = source.buffer->data[sample_delayed_left] * source.paths[path].force * ((panning * 0.25f) + 0.75f) * force_equalizer;
-                float sample_value_right = source.buffer->data[sample_delayed_right] * source.paths[path].force * ((-panning * 0.25f) + 0.75f)* force_equalizer;
+                float sample_value_left = source.buffer->data[sample_delayed_left] * source.paths[path].force * ((source.paths[path].panning * 0.25f) + 0.75f) * force_equalizer;
+                float sample_value_right = source.buffer->data[sample_delayed_right] * source.paths[path].force * ((source.paths[path].panning * -0.25f) + 0.75f)* force_equalizer;
                 
                 output[sample * 2] += sample_value_left;
                 output[(sample * 2) + 1] += sample_value_right;

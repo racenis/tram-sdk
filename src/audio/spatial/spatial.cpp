@@ -13,6 +13,7 @@ namespace tram::Audio::Spatial {
 
 AudioBuffer audiobuffers[1000];
 AudioSource audiosources[200];
+AudioRender audiorenders[200];
 
 static std::vector<uint32_t> audiobuffer_free_list;
 static std::vector<uint32_t> audiosource_free_list;
@@ -24,7 +25,7 @@ vec3 listener_position = {0.0f, 0.0f, 0.0f};
 quat listener_orientation = {1.0f, 0.0f, 0.0f, 0.0f};
 
 void Init() {
-    for (auto& source : audiosources) {
+    for (auto& source : audiorenders) {
         source.flags = 0; // just in case; don't want renderer to render uninitialized sources
     }
     
@@ -32,30 +33,53 @@ void Init() {
 }
 
 void Update() {
-    for (auto& source: audiosources) {
-        if (~source.flags & SOURCE_PLAYING) continue;
+    for (size_t i = 0; i < SOURCE_COUNT; i++) {
+        if (~audiorenders[i].flags & SOURCE_PLAYING) continue;
         
-        Render::AddLineMarker(source.position, Render::COLOR_BLUE);
+        Render::AddLineMarker(audiosources[i].position, Render::COLOR_BLUE);
         
-        std::vector<PathResult> paths;
+        std::vector<PathDirection> paths;
         paths.reserve(10);
         
-        FindPaths(paths, source.position);
+        FindPaths(paths, audiosources[i].position);
         
         //if (paths.size()) std::cout << "found paths: " << paths.size() << std::endl;
         
-        for (int i = 0; i < PATHS_FOR_SOURCE; i++) {
-            Render::AddLine(listener_position, listener_position - (source.paths[i].force * source.paths[i].direction * 4.0f), Render::COLOR_PINK);
+        for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
+            Render::AddLine(listener_position, listener_position - (audiosources[i].paths[k].force * audiosources[i].paths[k].direction * 4.0f), Render::COLOR_PINK);
         }
         
         for (auto& path : paths) {
-            if (source.last_path >= PATHS_FOR_SOURCE) {
-                source.last_path = 0;
+            if (audiosources[i].last_path >= PATHS_FOR_SOURCE) {
+                audiosources[i].last_path = 0;
                 //std::cout << "wraparpond" << std::endl;
             }
             
-            source.paths[source.last_path] = path;
-            source.last_path++;
+            audiosources[i].paths[audiosources[i].last_path] = path;
+            audiosources[i].last_path++;
+        }
+        
+        // copy path trace results into renderer
+        for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
+            //audiorenders[i].paths[k].distance = audiosources[i].paths[k].distance;
+            //audiorenders[i].paths[k].distance = 0.0f;
+            //audiosources[i].paths[k].distance = 0.0f;
+            
+            //audiorenders[i].paths[k].direction = audiosources[i].paths[k].direction;
+            
+            
+            float panning = glm::dot(audiosources[i].paths[k].direction, listener_orientation * DIRECTION_SIDE);
+            int32_t panning_delay = panning * 20.0f; // 20 sample between ears
+            
+            float delay = audiosources[i].paths[k].distance / 331.0f; // 331 m/s sound velocity
+            int32_t distance_delay = delay * -44100.0f; // 44100 hz sample rate
+            
+            
+            audiorenders[i].paths[k].force = audiosources[i].paths[k].force;
+            audiorenders[i].paths[k].panning = panning;
+            audiorenders[i].paths[k].panning_delay = panning_delay;
+            audiorenders[i].paths[k].distance_delay = distance_delay;
+            
         }
         
         /*if (paths.size() == 0) {
@@ -152,18 +176,29 @@ audiosource_t MakeAudioSource() {
     }
     
     auto& source = audiosources[source_index];
+    auto& render = audiorenders[source_index];
     
-    source.flags = 0;
-    source.sample = 0;
     source.position = {0.0f, 0.0f, 0.0f};
-    source.buffer = nullptr;
-    source.paths = new PathResult[PATHS_FOR_SOURCE];
     source.last_path = 0;
     
+    source.paths = new PathDirection[PATHS_FOR_SOURCE];
+    
+    render.flags = 0;
+    render.sample = 0;
+    render.buffer = nullptr;
+    
+    render.paths = new PathResult[PATHS_FOR_SOURCE];
+    
+    
     for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
-        source.paths[i].distance = 0.0f;
         source.paths[i].direction = {0.0f, 1.0f, 0.0f};
+        source.paths[i].distance = 0.0f;
         source.paths[i].force = 0.0f;
+        
+        render.paths[i].force = 0.0f;
+        render.paths[i].panning = 0.0f;
+        render.paths[i].panning_delay = 0;
+        render.paths[i].distance_delay = 0;
     }
     
     return source_index;
@@ -187,39 +222,43 @@ void SetAudioSourceVelocity (audiosource_t source, vec3 velocity) {
 
 void SetAudioSourceRepeating (audiosource_t source, bool repeating) {
     if (repeating) {
-        audiosources[source].flags |= SOURCE_REPEATING;
+        audiorenders[source].flags |= SOURCE_REPEATING;
     } else {
-        audiosources[source].flags &= ~SOURCE_REPEATING;
+        audiorenders[source].flags &= ~SOURCE_REPEATING;
     }
 }
 
 void SetAudioSourceBuffer(audiosource_t source, const audiobuffer_t* buffers, int32_t buffer_count) {
-    audiosources[source].buffer = &audiobuffers[(uint32_t) ((uint64_t) buffers)];
+    audiorenders[source].buffer = &audiobuffers[(uint32_t) ((uint64_t) buffers)];
 }
 
 void PlayAudioSource (audiosource_t source) {
-    audiosources[source].flags |= SOURCE_PLAYING;
+    audiorenders[source].flags |= SOURCE_PLAYING;
 }
 
 void PauseAudioSource (audiosource_t source) {
-    audiosources[source].flags &= ~SOURCE_PLAYING;
+    audiorenders[source].flags &= ~SOURCE_PLAYING;
 }
 
 void StopAudioSource (audiosource_t source) {
-    audiosources[source].flags &= ~SOURCE_PLAYING;
-    audiosources[source].sample = 0;
+    audiorenders[source].flags &= ~SOURCE_PLAYING;
+    audiorenders[source].sample = 0;
 }
 
 bool IsAudioSourcePlaying (audiosource_t source) {
-    return audiosources[source].flags & SOURCE_PLAYING;
+    return audiorenders[source].flags & SOURCE_PLAYING;
 }
 
 void RemoveAudioSource (audiosource_t source) {
     delete[] audiosources[source].paths;
+    delete[] audiorenders[source].paths;
     
-    audiosources[source].flags = 0; 
-    audiosources[source].buffer = nullptr;
     audiosources[source].paths = nullptr;
+    
+    // nulling flags prevents the renderer from playing removed source
+    audiorenders[source].flags = 0;
+    audiorenders[source].buffer = nullptr;
+    audiorenders[source].paths = nullptr;
 
     audiosource_free_list.push_back(source);
 }
