@@ -56,7 +56,7 @@ static int PortaudioCallback (
                 if (smallest_panning > panning) smallest_panning = panning;
                 
                 float delay = source.paths[path].distance / 331.0f; // 331 m/s sound velocity
-                int32_t sample_delay = delay * 44100.0f; // 44100 hz sample rate
+                int32_t sample_delay = delay * -44100.0f; // 44100 hz sample rate
                 
                 int32_t sample_delayed_left = source.sample;
                 int32_t sample_delayed_right = source.sample;

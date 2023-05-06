@@ -110,7 +110,7 @@ static std::tuple<AABBTriangle, vec3, bool> NearestTriangleFromRay (vec3 ray_pos
         AddLine(nearest_triangle.point3, nearest_triangle.point1, COLOR_WHITE);
     }*/
     
-    return {nearest_triangle, nearest_intersection, nearest_distance != INFINITY};
+    return {nearest_triangle, nearest_intersection - (ray_dir * 0.01f), nearest_distance != INFINITY};
 }
 
 bool RaySphereIntersection(vec3 ray_pos, vec3 ray_dir, vec3 sphere_pos, float sphere_radius) {
@@ -128,7 +128,7 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
     bool hit_listener = RaySphereIntersection(ray_pos, ray_dir, listener_position, 0.5f);
     
     if (!hit_wall || hit_listener || iterations > 9) {
-        if (hit_listener) {
+        if (hit_listener && (!hit_wall || glm::distance(ray_pos, listener_position) < glm::distance(ray_pos, intersection))) {
             segments.push_back({ray_pos, listener_position});
         } else {
             segments.clear();
@@ -156,7 +156,7 @@ static void FindSomePaths(std::vector<PathSegment>& segments, vec3 ray_pos, vec3
     FindSomePaths(segments, intersection, new_dir, iterations + 1);
 }
     
-
+std::vector<PathSegment> all_segments;
 
 void FindPaths(std::vector<PathResult>& paths, vec3 position) {
     std::vector<PathSegment> segments;
@@ -181,7 +181,13 @@ void FindPaths(std::vector<PathResult>& paths, vec3 position) {
             force *= 0.9f; // this would depend on the materials etc.
         }
         
-        float attenuation = (15.0f - distance) / 15.0f;
+        /*if (all_segments.size() < 400 && GetTick() > 400) {
+            for (auto& segment : segments) {
+                all_segments.push_back(segment);
+            }
+        }*/
+        
+        float attenuation = (25.0f - distance) / 25.0f;
         
         if (attenuation < 0.0f) attenuation = 0.0f;
         
@@ -193,6 +199,10 @@ void FindPaths(std::vector<PathResult>& paths, vec3 position) {
         
         paths.push_back({force, distance, end_direction});
     }
+    
+        for (auto& segment : all_segments) {
+            AddLine(segment.segment_start, segment.segment_end, COLOR_CYAN);
+        }
 }
 
 }

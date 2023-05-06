@@ -42,7 +42,11 @@ void Update() {
         
         FindPaths(paths, source.position);
         
-        //std::cout << "found paths: " << paths.size() << std::endl;
+        //if (paths.size()) std::cout << "found paths: " << paths.size() << std::endl;
+        
+        for (int i = 0; i < PATHS_FOR_SOURCE; i++) {
+            Render::AddLine(listener_position, listener_position - (source.paths[i].force * source.paths[i].direction * 4.0f), Render::COLOR_PINK);
+        }
         
         for (auto& path : paths) {
             if (source.last_path >= PATHS_FOR_SOURCE) {
@@ -59,7 +63,7 @@ void Update() {
                 source.last_path = 0;
             }
             
-            source.paths[source.last_path].force = 0.0f;
+            source.paths[source.last_path].force *= 0.2f;
             source.last_path++;
         }*/
     }
