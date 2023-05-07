@@ -2,6 +2,7 @@
 
 #include <components/rendercomponent.h>
 
+#include <array>
 #include <random>
 
 namespace tram::Audio::Spatial {
@@ -163,7 +164,7 @@ std::vector<PathSegment> all_segments;
 uint32_t total_hits = 0;
 uint32_t succ_hits = 0;
 
-void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
+/*void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
     std::vector<PathSegment> segments;
     segments.reserve(100);
     
@@ -192,7 +193,7 @@ void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
             for (auto& segment : segments) {
                 all_segments.push_back(segment);
             }
-        }*/
+        }*//*
         
         float attenuation = (25.0f - distance) / 25.0f;
         
@@ -224,14 +225,180 @@ void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
         for (auto& segment : all_segments) {
             AddLine(segment.segment_start, segment.segment_end, COLOR_CYAN);
         }
+}*/
+
+bool StraightPathBetweenPoints(vec3 point1, vec3 point2) {
+    vec3 direction = glm::normalize(point2 - point1);
+    
+    auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(point1, direction);
+    
+    if (hit_wall) {
+        return glm::distance(point1, intersection) - glm::distance(point1, point2) > -0.02f;
+    }
+    
+    return true;
+}
+
+void SourceInsertNewPath(AudioSource& source, PathTracingResult result) {
+    for (size_t i = 0; i < PATHS_FOR_RENDERING; i++) {
+        // TODO: instead of replacing the first result, we might
+        // actually replace the result with the lowest force.
+        // could sound better
+        if (source.result_paths[i].force < result.force) {
+            source.result_paths[i] = result;
+            return;
+        }
+    }
 }
 
 std::random_device device; 
 std::mt19937 generator(device()); 
 
-std::normal_distribution<float> bell_distribution(0.0f, 0.01f); 
+std::normal_distribution<float> bell_distribution(0.0f, 0.1f); 
 std::uniform_real_distribution<float> uniform_distribution(0.0f, 1.0f);
 
+void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
+    vec3 ray_direction = result.sampling_direction;
+    vec3 ray_position = position;
+    
+    std::vector<std::pair<vec3, vec3>> points;
+    total_hits++;
+    
+    // make a variation of the ray direction
+    if (metropolis) {
+        vec3 random_vector = {
+            bell_distribution(generator),
+            bell_distribution(generator),
+            bell_distribution(generator)
+        };
+        
+        ray_direction = glm::normalize(ray_direction + random_vector);
+    }
+    
+    // get a list of all the source that are playing
+    int unconnected_sources[16]; // might want to bump this one up to max
+    int source_count;
+    
+    for (size_t i = 0; i < SOURCE_COUNT; i++) {
+        if (~audiorenders[i].flags & SOURCE_PLAYING) continue;
+        
+        unconnected_sources[source_count++] = i;
+    }
+    
+    // init counters
+    float force = 1.0f;
+    float distance = 0.0f;
+    float total_force = 0.0f;
+    
+    // do path tracing
+    for (size_t n = 0; n < LISTENER_DEPTH_LIMIT; n++) {
+        auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_position, ray_direction);
+    
+        if (!hit_wall) break;
+    
+        if (intersection == vec3{0.0f,0.0f,0.0f}) {
+            std::cout << "wut " << RayIntersectsTriangle(ray_position, ray_direction, triangle.point1, triangle.point2, triangle.point3).second << std::endl;
+        }
+        
+        force *= 0.9f; // TODO: actually sample absorption
+        distance += glm::distance(ray_position, intersection);
+        
+        points.push_back({ray_position, intersection});
+        
+        ray_direction = ray_direction - (2.0f * glm::dot(ray_direction, triangle.normal) * triangle.normal);
+        ray_position = intersection;
+        
+        
+        
+        
+        for (int i = 0; i < source_count; i++) {
+            if (unconnected_sources[i] < 0) continue;
+            
+            auto& source = audiosources[unconnected_sources[i]];
+            
+            // check if possible to directly connect to audio source
+            if (StraightPathBetweenPoints(source.position, ray_position)) {
+                total_force += force;
+                
+                SourceInsertNewPath(source, {
+                    force,
+                    distance + glm::distance(source.position, ray_position),
+                    0,
+                    glm::normalize(ray_position - source.position),
+                    result.sampling_direction
+                });
+                
+                for (auto& p : points) {
+                    AddLine(p.first, p.second, COLOR_CYAN);
+                }
+                AddLine(ray_position, source.position, COLOR_CYAN);
+                
+                succ_hits++;
+                
+                unconnected_sources[i] = -1;
+                goto success;
+            }
+            
+            // check if can connect to other bouncy paths
+            for (size_t j = 0; j < SOURCE_DEPTH_LIMIT; j++) {
+                for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
+                    if (!StraightPathBetweenPoints(source.paths[k].reflections[j].point, ray_position)) continue;
+                    
+                    float path_force = force * source.paths[k].reflections[j].force;
+                    total_force += path_force;
+                    
+                    SourceInsertNewPath(source, {
+                        path_force,
+                        distance + glm::distance(source.paths[k].reflections[j].point, ray_position),
+                        0,
+                        source.paths[k].reflections[j].direction,
+                        result.sampling_direction
+                    });
+                    
+                    for (auto& p : points) {
+                        AddLine(p.first, p.second, COLOR_CYAN);
+                    }
+                    
+                    if (j == 0) {
+                        AddLine(ray_position, source.paths[k].reflections[0].point, COLOR_CYAN);
+                        AddLine(source.paths[k].reflections[0].point, source.position, COLOR_CYAN);
+                    } else {
+                        AddLine(ray_position, source.paths[k].reflections[1].point, COLOR_CYAN);
+                        AddLine(source.paths[k].reflections[1].point, source.paths[k].reflections[0].point, COLOR_CYAN);
+                        AddLine(source.paths[k].reflections[0].point, source.position, COLOR_CYAN);
+                    }
+                    
+                    succ_hits++;
+                    
+                    unconnected_sources[i] = -1;
+                    goto success;
+                }
+            }
+            
+            success:;
+        }
+    }
+    
+    if (uniform_distribution(generator) >= glm::min(total_force / result.force, 1.0f)) {
+        result.sampling_direction = ray_direction;
+        result.force = force;
+    }
+    
+    static uint32_t lastgood = 1;
+    
+    if (GetTick() % 200 == 100 && GetTick() != lastgood) {
+        float ftotal = total_hits;
+        float fsucc = succ_hits;
+        lastgood = GetTick();
+        
+        total_hits = 0;
+        succ_hits = 0;
+        
+        std::cout << "succ hits " << fsucc / ftotal << std::endl;
+    }
+}
+
+/*
 void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* result, vec3 position) {
     std::vector<PathSegment> segments;
     segments.reserve(100);
@@ -277,7 +444,7 @@ void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* 
             for (auto& segment : segments) {
                 all_segments.push_back(segment);
             }
-        }*/
+        }*//*
         
         float attenuation = (25.0f - distance) / 25.0f;
         
@@ -324,59 +491,43 @@ void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* 
     for (auto& segment : all_segments) {
         AddLine(segment.segment_start, segment.segment_end, COLOR_CYAN);
     }
-}
+}*/
 
 void ValidateResult(PathTracingResult& result, vec3 position) {
-    std::vector<PathSegment> segments;
-    segments.reserve(100);
     
-    FindSomePaths(segments, position, result.sampling_direction, 0);
+}
+
+void MakeSomeSourcePaths(PathFromAudioSource& path, vec3 source_position) {
+    vec3 ray_direction = glm::normalize(vec3 {
+        bell_distribution(generator),
+        bell_distribution(generator),
+        bell_distribution(generator)
+    });
     
-    total_hits++;
-    
-    if (segments.size() == 0) {
-        if (result.cycles_since_last_hit > 10 && result.force > 0.0f) {
-            result.force -= 0.01f;
-            if (result.force < 0.0f) result.force = 0.0f;
-        }
-        
-        result.cycles_since_last_hit++;
-        return;
-    }
-    
-    result.cycles_since_last_hit = 0;
-    
-    float distance = 0.0f;
+    vec3 ray_position = source_position;
     float force = 1.0f;
     
-    for (auto& segment : segments) {
-        distance += glm::distance(segment.segment_start, segment.segment_end);
-        force *= 0.9f; // this would depend on the materials etc.
+    for (int n = 0; n < 2; n++) {
+        auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_position, ray_direction);
+    
+        if (intersection == vec3{0.0f,0.0f,0.0f}) {
+            std::cout << "wut " << RayIntersectsTriangle(ray_position, ray_direction, triangle.point1, triangle.point2, triangle.point3).second << std::endl;
+        }
+        
+        force *= 0.9f; // TODO: actually sample absorption
+        
+        ray_direction = ray_direction - (2.0f * glm::dot(ray_direction, triangle.normal) * triangle.normal);
+        ray_position = intersection;
+        
+        path.reflections[n].force = force;
+        path.reflections[n].point = ray_position;
+        path.reflections[n].direction = ray_direction;
     }
     
-    /*if (all_segments.size() < 400 && GetTick() > 400) {
-        for (auto& segment : segments) {
-            all_segments.push_back(segment);
-        }
-    }*/
-    
-    float attenuation = (25.0f - distance) / 25.0f;
-    
-    if (attenuation < 0.0f) attenuation = 0.0f;
-    
-    force *= attenuation;
-    
-    vec3 end_direction = glm::normalize(segments.back().segment_end - segments.back().segment_start);
-    
-    result.force = force;
-    result.distance = distance;
-    result.arrival_direction = end_direction;
-    
-    succ_hits++;
 }
 
 void InitExplorationPaths(PathExplorationResult* paths) {
-    for (size_t i = 0; i < PATHS_FOR_EXPLORATION; i++) {
+    for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
         paths[i].sampling_direction = glm::normalize(vec3 {
             bell_distribution(generator),
             bell_distribution(generator),

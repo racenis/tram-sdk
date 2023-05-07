@@ -21,6 +21,8 @@ static std::vector<uint32_t> audiosource_free_list;
 static size_t last_audiobuffer = 0;
 static size_t last_audiosource = 0;
 
+static PathExplorationResult listener_paths[PATHS_FOR_LISTENER]; 
+
 vec3 listener_position = {0.0f, 0.0f, 0.0f};
 quat listener_orientation = {1.0f, 0.0f, 0.0f, 0.0f};
 
@@ -30,19 +32,33 @@ void Init() {
     }
     
     InitOutput();
+    InitExplorationPaths(listener_paths);
 }
 
 void Update() {
     for (size_t i = 0; i < SOURCE_COUNT; i++) {
         if (~audiorenders[i].flags & SOURCE_PLAYING) continue;
         
-        Render::AddLineMarker(audiosources[i].position, Render::COLOR_BLUE);
-        
-        FindPathsMetropolis(audiosources[i].exploration_paths, audiosources[i].result_paths, audiosources[i].position);
-        
+        // validate old results
         for (size_t k = audiosources[i].last_path, j = 0; j < 20 && k < PATHS_FOR_RENDERING; k++, j++) {
             ValidateResult(audiosources[i].result_paths[k], audiosources[i].position);
         }
+        
+        for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
+            MakeSomeSourcePaths(audiosources[i].paths[k], audiosources[i].position);
+        }
+    }
+    
+    for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
+        FindPaths(listener_paths[i], true, listener_position);
+    }
+    
+    
+    
+    for (size_t i = 0; i < SOURCE_COUNT; i++) {
+        if (~audiorenders[i].flags & SOURCE_PLAYING) continue;
+        
+        Render::AddLineMarker(audiosources[i].position, Render::COLOR_BLUE);
         
         audiosources[i].last_path += 20;
         if (audiosources[i].last_path >= PATHS_FOR_RENDERING) {
@@ -50,12 +66,12 @@ void Update() {
         }
         
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
-            Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * audiosources[i].result_paths[k].arrival_direction * 4.0f), Render::COLOR_PINK);
+            Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * -audiosources[i].result_paths[k].listener_sampling_direction * 4.0f), Render::COLOR_PINK);
         }
         
         // copy path trace results into renderer
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
-            float panning = glm::dot(audiosources[i].result_paths[k].arrival_direction, listener_orientation * DIRECTION_SIDE);
+            float panning = glm::dot(-audiosources[i].result_paths[k].listener_sampling_direction, listener_orientation * DIRECTION_SIDE);
             int32_t panning_delay = panning * 20.0f; // 20 sample between ears
             
             float delay = audiosources[i].result_paths[k].distance / 331.0f; // 331 m/s sound velocity
@@ -159,7 +175,7 @@ audiosource_t MakeAudioSource() {
     source.position = {0.0f, 0.0f, 0.0f};
     source.last_path = 0;
     
-    source.exploration_paths = new PathExplorationResult[PATHS_FOR_EXPLORATION];
+    source.paths = new PathFromAudioSource[PATHS_FOR_SOURCE];
     source.result_paths = new PathTracingResult[PATHS_FOR_RENDERING];
     
     render.flags = 0;
@@ -168,12 +184,21 @@ audiosource_t MakeAudioSource() {
     
     render.paths = new PathRenderingInfo[PATHS_FOR_RENDERING];
     
+    for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
+        source.paths[i].source_direction = {0.0f, 1.0f, 0.0f};
+        source.paths[i].reflections[0].force = 0.0f;
+        source.paths[i].reflections[1].force = 0.0f;
+        source.paths[i].reflections[0].point = {0.0f, 0.0f, 0.0f};
+        source.paths[i].reflections[1].point = {0.0f, 0.0f, 0.0f};
+        source.paths[i].reflections[0].direction = {0.0f, 1.0f, 0.0f};
+        source.paths[i].reflections[1].direction = {0.0f, 1.0f, 0.0f};
+    }
     
     for (size_t i = 0; i < PATHS_FOR_RENDERING; i++) {
         source.result_paths[i].force = 0.0f;
         source.result_paths[i].distance = 0.0f;
-        source.result_paths[i].sampling_direction = {0.0f, 1.0f, 0.0f};
-        source.result_paths[i].arrival_direction = {0.0f, 1.0f, 0.0f};
+        source.result_paths[i].source_sampling_direction = {0.0f, 1.0f, 0.0f};
+        source.result_paths[i].listener_sampling_direction = {0.0f, 1.0f, 0.0f};
         source.result_paths[i].cycles_since_last_hit = 0.0f;
         
         render.paths[i].force = 0.0f;
@@ -181,8 +206,6 @@ audiosource_t MakeAudioSource() {
         render.paths[i].panning_delay = 0;
         render.paths[i].distance_delay = 0;
     }
-    
-    InitExplorationPaths(source.exploration_paths);
     
     return source_index;
 }
@@ -233,11 +256,11 @@ bool IsAudioSourcePlaying (audiosource_t source) {
 }
 
 void RemoveAudioSource (audiosource_t source) {
-    delete[] audiosources[source].exploration_paths;
+    delete[] audiosources[source].paths;
     delete[] audiosources[source].result_paths;
     delete[] audiorenders[source].paths;
     
-    audiosources[source].exploration_paths = nullptr;
+    audiosources[source].paths = nullptr;
     audiosources[source].result_paths = nullptr;
     
     // nulling flags prevents the renderer from playing removed source

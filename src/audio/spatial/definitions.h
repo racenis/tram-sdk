@@ -11,26 +11,41 @@
 namespace tram::Audio::Spatial {
 
 const size_t PATHS_FOR_RENDERING = 100;
-const size_t PATHS_FOR_EXPLORATION = 10;
+const size_t PATHS_FOR_SOURCE = 5;
+const size_t PATHS_FOR_LISTENER = 5;
+
 const size_t BUFFER_COUNT = 1000;
 const size_t SOURCE_COUNT = 200;
 
+const size_t SOURCE_DEPTH_LIMIT = 2;
+const size_t LISTENER_DEPTH_LIMIT = 2;
+
+// actually this might be useful!!! for both. or not
 struct PathExplorationResult {
     float force;
     vec3 sampling_direction;
     uint32_t cycles_since_last_hit;
 };
 
-// Cached results for path tracing
+// this is the successful path that might need to be revalidated
 struct PathTracingResult {
     float force;
     float distance;
     uint32_t cycles_since_last_hit;
-    vec3 arrival_direction;
-    vec3 sampling_direction;
+    vec3 source_sampling_direction;
+    vec3 listener_sampling_direction;
 };
 
-// Cached results for audio rendering
+struct PathFromAudioSource {
+    struct {
+        vec3 point;
+        vec3 direction;
+        float force;
+    } reflections[2];
+    vec3 source_direction;
+};
+
+// this is handed over to the rendering algorithm
 struct PathRenderingInfo {
     float force;
     float panning;
@@ -59,7 +74,9 @@ struct AudioBuffer {
 // Audio source information for path tracing
 struct AudioSource {
     vec3 position;
-    PathExplorationResult* exploration_paths;
+    
+    PathFromAudioSource* paths; // bidirectional paths
+    
     PathTracingResult* result_paths;
     size_t last_path;
 };
