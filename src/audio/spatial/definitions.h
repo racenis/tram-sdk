@@ -10,14 +10,22 @@
 
 namespace tram::Audio::Spatial {
 
-const size_t PATHS_FOR_SOURCE = 100;
+const size_t PATHS_FOR_RENDERING = 100;
+const size_t PATHS_FOR_EXPLORATION = 10;
 const size_t BUFFER_COUNT = 1000;
 const size_t SOURCE_COUNT = 200;
+
+struct PathExplorationResult {
+    float force;
+    vec3 sampling_direction;
+    uint32_t cycles_since_last_hit;
+};
 
 // Cached results for path tracing
 struct PathTracingResult {
     float force;
     float distance;
+    uint32_t cycles_since_last_hit;
     vec3 arrival_direction;
     vec3 sampling_direction;
 };
@@ -51,7 +59,8 @@ struct AudioBuffer {
 // Audio source information for path tracing
 struct AudioSource {
     vec3 position;
-    PathTracingResult* paths;
+    PathExplorationResult* exploration_paths;
+    PathTracingResult* result_paths;
     size_t last_path;
 };
 

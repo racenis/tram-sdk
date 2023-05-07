@@ -42,13 +42,13 @@ static int PortaudioCallback (
         }
         
         float total_force = 0.0f;
-        for (size_t path = 0; path < PATHS_FOR_SOURCE; path++) total_force += source.paths[path].force;
+        for (size_t path = 0; path < PATHS_FOR_RENDERING; path++) total_force += source.paths[path].force;
         
         float force_equalizer = total_force < 1.0f ? 1.0f : 1.0f / total_force;
         
         size_t source_length = source.buffer->length;
         for (size_t sample = 0; sample < framesPerBuffer; sample++) {
-            for (size_t path = 0; path < PATHS_FOR_SOURCE; path++) {
+            for (size_t path = 0; path < PATHS_FOR_RENDERING; path++) {
                 
                 
                 //if (largest_panning < panning) largest_panning = panning;

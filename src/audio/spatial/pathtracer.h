@@ -12,9 +12,11 @@ namespace tram::Audio::Spatial {
 
 void FindPaths(std::vector<PathTracingResult>& paths, vec3 position);
 
-void FindPathsMetropolis(PathTracingResult* paths, size_t& last_path, vec3 position);
+void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* result, vec3 position);
 
-void InitPaths(PathTracingResult* paths);
+void InitExplorationPaths(PathExplorationResult* paths);
+
+void ValidateResult(PathTracingResult& result, vec3 position);
 
 }
 

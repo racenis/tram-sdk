@@ -204,10 +204,11 @@ void FindPaths(std::vector<PathTracingResult>& paths, vec3 position) {
         
         vec3 end_direction = glm::normalize(segments.back().segment_end - segments.back().segment_start);
         
+        (void)end_direction;
+        
         succ_hits++;
         
-        paths.push_back({force, distance, end_direction, end_direction});
-        //paths.push_back({force, end_direction});
+        //paths.push_back({force, distance, end_direction, end_direction});
     }
     
     if (GetTick() % 200 == 100) {
@@ -231,35 +232,38 @@ std::mt19937 generator(device());
 std::normal_distribution<float> bell_distribution(0.0f, 0.01f); 
 std::uniform_real_distribution<float> uniform_distribution(0.0f, 1.0f);
 
-void FindPathsMetropolis(PathTracingResult* paths, size_t& last_path, vec3 position) {
+void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* result, vec3 position) {
     std::vector<PathSegment> segments;
     segments.reserve(100);
     
-    
-    
-    //sample = distribution(generator);
-    
-    if (last_path >= PATHS_FOR_SOURCE) {
-        last_path = 0;
-    }
-    
-    for (size_t i = last_path, j = 0; j < 25 && i < PATHS_FOR_SOURCE; i++, j++) {
+    for (size_t i = 0; i < PATHS_FOR_EXPLORATION; i++) {
         vec3 random_vector = {
             bell_distribution(generator),
             bell_distribution(generator),
             bell_distribution(generator)
         };
         
-        vec3 direction = glm::normalize(paths[i].sampling_direction + random_vector);
+        vec3 direction = glm::normalize(exploration[i].sampling_direction + random_vector);
         
         FindSomePaths(segments, position, direction, 0);
         
         total_hits++;
         
         if (segments.size() == 0) {
-            paths[i].sampling_direction = glm::normalize(random_vector);
+            exploration[i].sampling_direction = direction;
+            exploration[i].force = 0.0f;
+            
+            exploration[i].cycles_since_last_hit++;
+            
+            if (exploration[i].cycles_since_last_hit > 10) {
+                exploration[i].sampling_direction = glm::normalize(random_vector);
+            }
+            
+            //std::cout << exploration[i].cycles_since_last_hit << std::endl;
             continue;
         }
+        
+        exploration[i].cycles_since_last_hit = 0;
         
         float distance = 0.0f;
         float force = 1.0f;
@@ -288,15 +292,23 @@ void FindPathsMetropolis(PathTracingResult* paths, size_t& last_path, vec3 posit
         succ_hits++;
         
         // Metropolising
-        if (uniform_distribution(generator) >= glm::min(force / paths[i].force, 1.0f)) {
-            paths[i].sampling_direction = direction;
+        if (uniform_distribution(generator) >= glm::min(force / exploration[i].force, 1.0f)) {
+            exploration[i].sampling_direction = direction;
+            exploration[i].force = force;
         }
         
-        //paths.push_back({force, distance, end_direction});
-        
-        paths[i].force = force;
-        paths[i].distance = distance;
-        paths[i].arrival_direction = end_direction;
+        // check if result is better than existing results
+        for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
+            if (result[k].force >= force) continue;
+            
+            result[k].force = force;
+            result[k].distance = distance;
+            result[k].sampling_direction = direction;
+            result[k].arrival_direction = end_direction;
+            result[k].cycles_since_last_hit = 0;
+            
+            break;
+        }
     }
     
     if (GetTick() % 200 == 100) {
@@ -314,17 +326,65 @@ void FindPathsMetropolis(PathTracingResult* paths, size_t& last_path, vec3 posit
     }
 }
 
-void InitPaths(PathTracingResult* paths) {
-    for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
+void ValidateResult(PathTracingResult& result, vec3 position) {
+    std::vector<PathSegment> segments;
+    segments.reserve(100);
+    
+    FindSomePaths(segments, position, result.sampling_direction, 0);
+    
+    total_hits++;
+    
+    if (segments.size() == 0) {
+        if (result.cycles_since_last_hit > 10 && result.force > 0.0f) {
+            result.force -= 0.01f;
+            if (result.force < 0.0f) result.force = 0.0f;
+        }
+        
+        result.cycles_since_last_hit++;
+        return;
+    }
+    
+    result.cycles_since_last_hit = 0;
+    
+    float distance = 0.0f;
+    float force = 1.0f;
+    
+    for (auto& segment : segments) {
+        distance += glm::distance(segment.segment_start, segment.segment_end);
+        force *= 0.9f; // this would depend on the materials etc.
+    }
+    
+    /*if (all_segments.size() < 400 && GetTick() > 400) {
+        for (auto& segment : segments) {
+            all_segments.push_back(segment);
+        }
+    }*/
+    
+    float attenuation = (25.0f - distance) / 25.0f;
+    
+    if (attenuation < 0.0f) attenuation = 0.0f;
+    
+    force *= attenuation;
+    
+    vec3 end_direction = glm::normalize(segments.back().segment_end - segments.back().segment_start);
+    
+    result.force = force;
+    result.distance = distance;
+    result.arrival_direction = end_direction;
+    
+    succ_hits++;
+}
+
+void InitExplorationPaths(PathExplorationResult* paths) {
+    for (size_t i = 0; i < PATHS_FOR_EXPLORATION; i++) {
         paths[i].sampling_direction = glm::normalize(vec3 {
             bell_distribution(generator),
             bell_distribution(generator),
             bell_distribution(generator)
         });
         
-        paths[i].arrival_direction = {0.0f, 1.0f, 0.0f};
-        paths[i].distance = 0.0f;
         paths[i].force = 0.0f;
+        paths[i].cycles_since_last_hit = 0;
     }
 }
 
