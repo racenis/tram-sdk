@@ -40,8 +40,12 @@ void Update() {
         if (~audiorenders[i].flags & SOURCE_PLAYING) continue;
         
         // validate old results
-        for (size_t k = audiosources[i].last_path, j = 0; j < 20 && k < PATHS_FOR_RENDERING; k++, j++) {
+        for (size_t k = audiosources[i].last_path, j = 0; j < 5 && k < PATHS_FOR_RENDERING; k++, j++) {
             ValidateResult(audiosources[i].result_paths[k], audiosources[i].position);
+        }
+        
+        for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
+            //RenderResult(audiosources[i].result_paths[k], audiosources[i].position);
         }
         
         for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
@@ -60,18 +64,26 @@ void Update() {
         
         Render::AddLineMarker(audiosources[i].position, Render::COLOR_BLUE);
         
-        audiosources[i].last_path += 20;
+        audiosources[i].last_path += 5;
         if (audiosources[i].last_path >= PATHS_FOR_RENDERING) {
             audiosources[i].last_path = 0;
         }
         
+        // check if invalid paths need to be culled
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
-            Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * -audiosources[i].result_paths[k].listener_sampling_direction * 4.0f), Render::COLOR_PINK);
+            Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * audiosources[i].result_paths[k].arrival_direction), Render::COLOR_PINK);
+            
+            if (audiosources[i].result_paths[k].cycles_since_last_hit > 0 && audiosources[i].result_paths[k].force > 0.0f) {
+                audiosources[i].result_paths[k].force += -0.1f;
+                if (audiosources[i].result_paths[k].force < 0.0f) {
+                    audiosources[i].result_paths[k].force = 0.0f;
+                }
+            }
         }
         
         // copy path trace results into renderer
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
-            float panning = glm::dot(-audiosources[i].result_paths[k].listener_sampling_direction, listener_orientation * DIRECTION_SIDE);
+            float panning = glm::dot(audiosources[i].result_paths[k].arrival_direction, listener_orientation * DIRECTION_SIDE);
             int32_t panning_delay = panning * 20.0f; // 20 sample between ears
             
             float delay = audiosources[i].result_paths[k].distance / 331.0f; // 331 m/s sound velocity
@@ -197,8 +209,8 @@ audiosource_t MakeAudioSource() {
     for (size_t i = 0; i < PATHS_FOR_RENDERING; i++) {
         source.result_paths[i].force = 0.0f;
         source.result_paths[i].distance = 0.0f;
-        source.result_paths[i].source_sampling_direction = {0.0f, 1.0f, 0.0f};
-        source.result_paths[i].listener_sampling_direction = {0.0f, 1.0f, 0.0f};
+        source.result_paths[i].reflection_count = 0;
+        source.result_paths[i].arrival_direction = {0.0f, 1.0f, 0.0f};
         source.result_paths[i].cycles_since_last_hit = 0.0f;
         
         render.paths[i].force = 0.0f;

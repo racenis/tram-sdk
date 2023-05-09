@@ -32,8 +32,12 @@ struct PathTracingResult {
     float force;
     float distance;
     uint32_t cycles_since_last_hit;
-    vec3 source_sampling_direction;
-    vec3 listener_sampling_direction;
+    uint32_t reflection_count;
+    vec3 arrival_direction;
+    
+    struct {
+        vec3 point;
+    } reflections[SOURCE_DEPTH_LIMIT * LISTENER_DEPTH_LIMIT];
 };
 
 struct PathFromAudioSource {
@@ -41,7 +45,7 @@ struct PathFromAudioSource {
         vec3 point;
         vec3 direction;
         float force;
-    } reflections[2];
+    } reflections[LISTENER_DEPTH_LIMIT];
     vec3 source_direction;
 };
 

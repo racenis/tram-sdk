@@ -189,7 +189,7 @@ uint32_t succ_hits = 0;
             force *= 0.9f; // this would depend on the materials etc.
         }
         
-        /*if (all_segments.size() < 400 && GetTick() > 400) {
+        if (all_segments.size() < 400 && GetTick() > 400) {
             for (auto& segment : segments) {
                 all_segments.push_back(segment);
             }
@@ -290,6 +290,9 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
     float distance = 0.0f;
     float total_force = 0.0f;
     
+    vec3 reflections[LISTENER_DEPTH_LIMIT];
+    uint32_t reflection_count = 0;
+    
     // do path tracing
     for (size_t n = 0; n < LISTENER_DEPTH_LIMIT; n++) {
         auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_position, ray_direction);
@@ -308,8 +311,8 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
         ray_direction = ray_direction - (2.0f * glm::dot(ray_direction, triangle.normal) * triangle.normal);
         ray_position = intersection;
         
-        
-        
+        // save reflection point
+        reflections[reflection_count++] = intersection;
         
         for (int i = 0; i < source_count; i++) {
             if (unconnected_sources[i] < 0) continue;
@@ -319,19 +322,25 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
             // check if possible to directly connect to audio source
             if (StraightPathBetweenPoints(source.position, ray_position)) {
                 total_force += force;
-                
-                SourceInsertNewPath(source, {
+
+                PathTracingResult new_result = {
                     force,
                     distance + glm::distance(source.position, ray_position),
                     0,
-                    glm::normalize(ray_position - source.position),
-                    result.sampling_direction
-                });
+                    reflection_count,
+                    glm::normalize(listener_position - reflections[0])
+                };
                 
-                for (auto& p : points) {
-                    AddLine(p.first, p.second, COLOR_CYAN);
+                for (uint32_t i = 0; i < reflection_count; i++) {
+                    new_result.reflections[reflection_count - i - 1].point = reflections[i];
                 }
-                AddLine(ray_position, source.position, COLOR_CYAN);
+                
+                SourceInsertNewPath(source, new_result);
+                
+                //for (auto& p : points) {
+                    //AddLine(p.first, p.second, COLOR_CYAN);
+                //}
+                //AddLine(ray_position, source.position, COLOR_CYAN);
                 
                 succ_hits++;
                 
@@ -340,32 +349,42 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
             }
             
             // check if can connect to other bouncy paths
-            for (size_t j = 0; j < SOURCE_DEPTH_LIMIT; j++) {
-                for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
+            for (uint32_t j = 0; j < SOURCE_DEPTH_LIMIT; j++) {
+                for (uint32_t k = 0; k < PATHS_FOR_SOURCE; k++) {
                     if (!StraightPathBetweenPoints(source.paths[k].reflections[j].point, ray_position)) continue;
                     
                     float path_force = force * source.paths[k].reflections[j].force;
                     total_force += path_force;
                     
-                    SourceInsertNewPath(source, {
+                    PathTracingResult new_result = {
                         path_force,
                         distance + glm::distance(source.paths[k].reflections[j].point, ray_position),
                         0,
-                        source.paths[k].reflections[j].direction,
-                        result.sampling_direction
-                    });
+                        reflection_count + j,
+                        glm::normalize(listener_position - reflections[0])
+                    };
                     
-                    for (auto& p : points) {
-                        AddLine(p.first, p.second, COLOR_CYAN);
+                    for (uint32_t i = 0; i < j + 1; i++) {
+                        new_result.reflections[i].point = source.paths[k].reflections[i].point;
                     }
                     
+                    for (uint32_t i = 0; i < reflection_count; i++) {
+                        new_result.reflections[j + reflection_count - i].point = reflections[i];
+                    }
+                    
+                    SourceInsertNewPath(source, new_result);
+                    
+                    //for (auto& p : points) {
+                        //AddLine(p.first, p.second, COLOR_CYAN);
+                    //}
+                    
                     if (j == 0) {
-                        AddLine(ray_position, source.paths[k].reflections[0].point, COLOR_CYAN);
-                        AddLine(source.paths[k].reflections[0].point, source.position, COLOR_CYAN);
+                        //AddLine(ray_position, source.paths[k].reflections[0].point, COLOR_CYAN);
+                        //AddLine(source.paths[k].reflections[0].point, source.position, COLOR_CYAN);
                     } else {
-                        AddLine(ray_position, source.paths[k].reflections[1].point, COLOR_CYAN);
-                        AddLine(source.paths[k].reflections[1].point, source.paths[k].reflections[0].point, COLOR_CYAN);
-                        AddLine(source.paths[k].reflections[0].point, source.position, COLOR_CYAN);
+                        //AddLine(ray_position, source.paths[k].reflections[1].point, COLOR_CYAN);
+                        //AddLine(source.paths[k].reflections[1].point, source.paths[k].reflections[0].point, COLOR_CYAN);
+                        //AddLine(source.paths[k].reflections[0].point, source.position, COLOR_CYAN);
                     }
                     
                     succ_hits++;
@@ -440,7 +459,7 @@ void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* 
             force *= 0.9f; // this would depend on the materials etc.
         }
         
-        /*if (all_segments.size() < 400 && GetTick() > 400) {
+        if (all_segments.size() < 400 && GetTick() > 400) {
             for (auto& segment : segments) {
                 all_segments.push_back(segment);
             }
@@ -493,8 +512,75 @@ void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* 
     }
 }*/
 
-void ValidateResult(PathTracingResult& result, vec3 position) {
+bool ValidatePathSegment(vec3 ray_pos, vec3 target, vec3& result, float& distance) {
+    vec3 ray_dir = glm::normalize(target - ray_pos);
     
+    auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_pos, ray_dir);
+    
+    if (!hit_wall) return false;
+    if (glm::distance(target, intersection) > 0.05f) return false;
+    
+    distance += glm::distance(ray_pos, intersection);
+    
+    result = intersection;
+    
+    return true;
+}
+
+void ColorPath(PathTracingResult& result, vec3 position, vec3 color) {
+    AddLine(position, result.reflections[0].point, color);
+    
+    for (uint32_t i = 1; i < result.reflection_count; i++) {
+        AddLine(result.reflections[i-1].point, result.reflections[i].point, color);
+    }
+    
+    AddLine(result.reflections[result.reflection_count-1].point, listener_position, color);
+}
+
+void ValidateResult(PathTracingResult& result, vec3 position) {
+    if (result.reflection_count == 0) return;
+    
+    vec3 ray_pos = position;
+    float distance = 0.0f;
+    
+    if (!ValidatePathSegment(ray_pos, result.reflections[0].point, ray_pos, distance)) {
+        goto fail;
+    }
+    
+    for (uint32_t i = 1; i < result.reflection_count; i++) {
+        if (!ValidatePathSegment(ray_pos, result.reflections[i].point, ray_pos, distance)) {
+            goto fail;
+        }
+    }
+    
+    if (!ValidatePathSegment(listener_position, ray_pos, ray_pos, distance)) {
+        goto fail;
+    }
+    
+    result.distance = distance;
+    result.arrival_direction = listener_position - result.reflections[result.reflection_count - 1].point;
+    
+    
+    ColorPath(result, position, COLOR_GREEN);
+    
+    return;
+fail:
+    
+    result.cycles_since_last_hit++;
+    
+    ColorPath(result, position, COLOR_RED);
+}
+
+void RenderResult(PathTracingResult& result, vec3 position) {
+    if (result.reflection_count == 0) return;
+    
+    AddLine(position, result.reflections[0].point, COLOR_CYAN);
+    
+    for (uint32_t i = 1; i < result.reflection_count; i++) {
+        AddLine(result.reflections[i-1].point, result.reflections[i].point, COLOR_CYAN);
+    }
+    
+    AddLine(result.reflections[result.reflection_count-1].point, listener_position, COLOR_CYAN);
 }
 
 void MakeSomeSourcePaths(PathFromAudioSource& path, vec3 source_position) {

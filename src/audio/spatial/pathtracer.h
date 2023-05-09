@@ -19,6 +19,7 @@ void FindPathsMetropolis(PathExplorationResult* exploration, PathTracingResult* 
 void InitExplorationPaths(PathExplorationResult* paths);
 
 void ValidateResult(PathTracingResult& result, vec3 position);
+void RenderResult(PathTracingResult& result, vec3 position);
 
 
 void MakeSomeSourcePaths(PathFromAudioSource& path, vec3 source_position);
