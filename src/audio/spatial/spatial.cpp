@@ -74,7 +74,7 @@ void Update() {
             Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * audiosources[i].result_paths[k].arrival_direction), Render::COLOR_PINK);
             
             if (audiosources[i].result_paths[k].cycles_since_last_hit > 0 && audiosources[i].result_paths[k].force > 0.0f) {
-                audiosources[i].result_paths[k].force += -0.1f;
+                audiosources[i].result_paths[k].force += -0.01f;
                 if (audiosources[i].result_paths[k].force < 0.0f) {
                     audiosources[i].result_paths[k].force = 0.0f;
                 }
@@ -211,7 +211,10 @@ audiosource_t MakeAudioSource() {
         source.result_paths[i].distance = 0.0f;
         source.result_paths[i].reflection_count = 0;
         source.result_paths[i].arrival_direction = {0.0f, 1.0f, 0.0f};
-        source.result_paths[i].cycles_since_last_hit = 0.0f;
+        source.result_paths[i].cycles_since_last_hit = 0;
+        source.result_paths[i].reflection_absorption = 0.0f;
+        source.result_paths[i].listener_ideal_angle = {0.0f, 1.0f, 0.0f};
+        source.result_paths[i].source_ideal_angle = {0.0f, 1.0f, 0.0f};
         
         render.paths[i].force = 0.0f;
         render.paths[i].panning = 0.0f;

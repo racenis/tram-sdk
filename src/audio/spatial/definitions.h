@@ -35,6 +35,10 @@ struct PathTracingResult {
     uint32_t reflection_count;
     vec3 arrival_direction;
     
+    float reflection_absorption;
+    vec3 listener_ideal_angle;
+    vec3 source_ideal_angle;
+    
     struct {
         vec3 point;
     } reflections[SOURCE_DEPTH_LIMIT * LISTENER_DEPTH_LIMIT];
