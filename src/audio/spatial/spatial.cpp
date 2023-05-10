@@ -45,7 +45,8 @@ void Update() {
         }
         
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
-            //RenderResult(audiosources[i].result_paths[k], audiosources[i].position);
+            if (audiosources[i].result_paths[k].force > 0.0f)
+                RenderResult(audiosources[i].result_paths[k], audiosources[i].position);
         }
         
         for (size_t k = 0; k < PATHS_FOR_SOURCE; k++) {
@@ -198,12 +199,12 @@ audiosource_t MakeAudioSource() {
     
     for (size_t i = 0; i < PATHS_FOR_SOURCE; i++) {
         source.paths[i].source_direction = {0.0f, 1.0f, 0.0f};
-        source.paths[i].reflections[0].force = 0.0f;
-        source.paths[i].reflections[1].force = 0.0f;
-        source.paths[i].reflections[0].point = {0.0f, 0.0f, 0.0f};
-        source.paths[i].reflections[1].point = {0.0f, 0.0f, 0.0f};
-        source.paths[i].reflections[0].direction = {0.0f, 1.0f, 0.0f};
-        source.paths[i].reflections[1].direction = {0.0f, 1.0f, 0.0f};
+        
+        for (size_t n = 0; n < SOURCE_DEPTH_LIMIT; n++) {
+            source.paths[i].reflections[n].force = 0.0f;
+            source.paths[i].reflections[n].point = {0.0f, 0.0f, 0.0f};
+            source.paths[i].reflections[n].direction = {0.0f, 1.0f, 0.0f};
+        }
     }
     
     for (size_t i = 0; i < PATHS_FOR_RENDERING; i++) {

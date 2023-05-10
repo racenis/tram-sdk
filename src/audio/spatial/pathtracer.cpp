@@ -284,10 +284,10 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
                     //ValidateResult(new_result, source.position);
                     SourceInsertNewPath(source, new_result);
                     
-                    //for (auto& p : points) {
-                        //AddLine(p.first, p.second, COLOR_CYAN);
-                    //}
-                    //AddLine(ray_position, source.position, COLOR_CYAN);
+                    /*for (auto& p : points) {
+                        AddLine(p.first, p.second, COLOR_PINK);
+                    }
+                    AddLine(ray_position, source.position, COLOR_PINK);*/
                     
                     succ_hits++;
                     
@@ -466,7 +466,7 @@ void MakeSomeSourcePaths(PathFromAudioSource& path, vec3 source_position) {
     vec3 ray_position = source_position;
     float force = 1.0f;
     
-    for (int n = 0; n < 2; n++) {
+    for (size_t n = 0; n < SOURCE_DEPTH_LIMIT; n++) {
         auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_position, ray_direction);
     
         if (intersection == vec3{0.0f,0.0f,0.0f}) {

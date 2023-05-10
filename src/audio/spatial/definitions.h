@@ -10,15 +10,15 @@
 
 namespace tram::Audio::Spatial {
 
-const size_t PATHS_FOR_RENDERING = 100;
+const size_t PATHS_FOR_RENDERING = 10;
 const size_t PATHS_FOR_SOURCE = 5;
 const size_t PATHS_FOR_LISTENER = 5;
 
 const size_t BUFFER_COUNT = 1000;
 const size_t SOURCE_COUNT = 200;
 
-const size_t SOURCE_DEPTH_LIMIT = 2;
-const size_t LISTENER_DEPTH_LIMIT = 2;
+const size_t SOURCE_DEPTH_LIMIT = 3;
+const size_t LISTENER_DEPTH_LIMIT = 6;
 
 // actually this might be useful!!! for both. or not
 struct PathExplorationResult {
