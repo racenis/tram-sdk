@@ -4,6 +4,7 @@
 
 #include <array>
 #include <random>
+#include <algorithm>
 
 namespace tram::Audio::Spatial {
 using namespace tram::Render;
@@ -191,26 +192,46 @@ void SourceInsertNewPath(AudioSource& source, PathTracingResult result) {
 std::random_device device; 
 std::mt19937 generator(device()); 
 
-std::normal_distribution<float> bell_distribution(0.0f, 0.1f); 
+std::normal_distribution<float> bell_distribution(0.0f, 0.05f); 
 std::uniform_real_distribution<float> uniform_distribution(0.0f, 1.0f);
+std::uniform_real_distribution<float> uniform_distribution2(-1.0f, 1.0f);
 
 void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
-    vec3 ray_direction = result.sampling_direction;
-    vec3 ray_position = position;
+    vec3 sampling_direction = result.sampling_direction;
     
     std::vector<std::pair<vec3, vec3>> points;
     total_hits++;
     
+    vec3 random_vector = {
+        bell_distribution(generator),
+        bell_distribution(generator),
+        bell_distribution(generator)
+    };
+    
     // make a variation of the ray direction
-    if (metropolis) {
-        vec3 random_vector = {
-            bell_distribution(generator),
-            bell_distribution(generator),
-            bell_distribution(generator)
-        };
+    if (result.cycles_since_last_hit > 10) {
+        /*vec3 random_vector = {
+            uniform_distribution2(generator),
+            uniform_distribution2(generator),
+            uniform_distribution2(generator)
+        };*/
         
-        ray_direction = glm::normalize(ray_direction + random_vector);
+        sampling_direction = glm::normalize(random_vector);
+    } else {
+
+        
+        sampling_direction = glm::normalize(sampling_direction + random_vector);
+        //ray_direction = glm::normalize(glm::quat(random_vector) * ray_direction);
     }
+    
+    
+    vec3 ray_direction = sampling_direction;
+    vec3 ray_position = position;
+    
+    //ray_direction = glm::normalize(random_vector);
+    
+        
+    
     
     vec3 arrival_direction = -ray_direction;
     
@@ -353,13 +374,30 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
                 }
             }
             
-            success:;
+            result.cycles_since_last_hit++;
+            goto unsuccess;
+        success:;
+            result.cycles_since_last_hit = 0;
+        unsuccess:;
         }
     }
     
-    if (uniform_distribution(generator) >= glm::min(total_force / result.force, 1.0f)) {
-        result.sampling_direction = ray_direction;
-        result.force = force;
+    float random = uniform_distribution(generator);
+    float compar = glm::min(total_force / result.force, 1.0f);
+    
+    if (!std::isfinite(compar)) {
+        //std::cout << "wtf total_force: " << total_force << " result.force: " << result.force << std::endl;
+    } else {
+        //std::cout << "okay: " << compar << std::endl;
+    }
+    
+    //std::cout << "wtf " << random << " >= " << compar << std::endl;
+    
+    if (result.force == 0 || random >= compar) {
+        result.sampling_direction = sampling_direction;
+        result.force = total_force;
+        
+        //std::cout << "rewritted " << random << " >= " << compar << std::endl;
     }
     
     static uint32_t lastgood = 1;
@@ -430,9 +468,8 @@ void ValidateResult(PathTracingResult& result, vec3 position) {
     }
     
     result.distance = distance;
-    result.force = result.reflection_absorption * connection_goodness;
+    result.force = result.reflection_absorption ;//* connection_goodness;
     result.arrival_direction = listener_position - result.reflections[result.reflection_count - 1].point;
-    
     
     //ColorPath(result, position, COLOR_GREEN);
     
@@ -454,6 +491,55 @@ void RenderResult(PathTracingResult& result, vec3 position) {
     }
     
     AddLine(result.reflections[result.reflection_count-1].point, listener_position, COLOR_CYAN);
+}
+
+void CheckReverb(PathExplorationResult* paths) {
+    struct {
+        float force;
+        float distance;
+    } result[5];
+    
+    for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
+        vec3 ray_position = listener_position;
+        vec3 ray_direction = paths[i].sampling_direction;
+        
+         auto [triangle, intersection, hit_wall] = NearestTriangleFromRay(ray_position, ray_direction);
+         
+         if (!hit_wall) {
+            result[i].force = 0.0f;
+            result[i].distance = listener_reverb_distance[i];
+            continue;
+        }
+        
+        result[i].force = 0.9f;
+        result[i].distance = glm::distance(ray_position, intersection);
+    }
+    
+    std::sort(std::begin(result), std::end(result), [](auto& a, auto& b) { return a.force < b.force; });
+    
+    for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
+        
+        // step reverb force towards result
+        if (float diff = listener_reverb_force[i] - result[i].force;
+            diff < -0.01f || diff > 0.01f) {
+            if (listener_reverb_force[i] < result[i].force) {
+                listener_reverb_force[i] += 0.02f;
+            } else {
+                listener_reverb_force[i] -= 0.02f;
+            }
+        }
+        
+        // step reverb distance towards result
+        if (float diff = listener_reverb_distance[i] - result[i].distance;
+            diff < -0.05f || diff > 0.05f) {
+            if (listener_reverb_distance[i] < result[i].distance) {
+                listener_reverb_distance[i] += 0.1f;
+            } else {
+                listener_reverb_distance[i] -= 0.1f;
+            }
+        }
+        
+    }
 }
 
 void MakeSomeSourcePaths(PathFromAudioSource& path, vec3 source_position) {

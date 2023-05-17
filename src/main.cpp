@@ -517,13 +517,13 @@ int main() {
     //tolet_emitter->Init();
     
     derp = Audio::Sound::Find(UID("apelsin"));
-    eerp = Audio::Sound::Find(UID("dekpunkta"));
+    eerp = Audio::Sound::Find(UID("impulse"));
     derp->Load();
     eerp->Load();
     
     derp_player = PoolProxy<AudioComponent>::New();
     derp_player->SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
-    derp_player->SetSound("dekpunkta");
+    derp_player->SetSound("impulse");
     derp_player->SetRepeating(true);
     derp_player->Init();
     

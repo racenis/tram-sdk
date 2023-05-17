@@ -14,8 +14,9 @@ float largest_sample = 0.0f;
 float largest_panning = INFINITY;
 float smallest_panning = -INFINITY;
 
-// also do same for panning !!! largest/smallest panning
-// then do normalization
+static const size_t REVERB_SIZE = 44100 * 3;
+static float reverb_buffer[REVERB_SIZE];
+static size_t reverb_progress = 0;
 
 static int PortaudioCallback (
     const void *inputBuffer, void *outputBuffer,
@@ -93,6 +94,36 @@ static int PortaudioCallback (
         
         source.lock.Unlock();
     }
+    
+    
+    // copy mixed-down sound into reverb buffer
+    for (size_t sample = 0; sample < framesPerBuffer; sample++) {
+        reverb_buffer[(reverb_progress + sample) % REVERB_SIZE] = 0.2f * 
+        (output[sample * 2] +
+        output[(sample * 2) + 1]);
+    }
+        
+    // convolve some more reverb
+    for (size_t sample = 0; sample < framesPerBuffer; sample++) {
+        float value = reverb_buffer[(reverb_progress + sample) % REVERB_SIZE];
+        
+        value += listener_reverb_normalized[0] * reverb_buffer[(reverb_progress + listener_reverb_delay[0] + sample) % REVERB_SIZE];
+        value += listener_reverb_normalized[1] * reverb_buffer[(reverb_progress + listener_reverb_delay[1] + sample) % REVERB_SIZE];
+        value += listener_reverb_normalized[2] * reverb_buffer[(reverb_progress + listener_reverb_delay[2] + sample) % REVERB_SIZE];
+        value += listener_reverb_normalized[3] * reverb_buffer[(reverb_progress + listener_reverb_delay[3] + sample) % REVERB_SIZE];
+        value += listener_reverb_normalized[4] * reverb_buffer[(reverb_progress + listener_reverb_delay[4] + sample) % REVERB_SIZE];
+        
+        reverb_buffer[(reverb_progress + sample) % REVERB_SIZE] = value;
+    }
+    
+    // copy reverb into output
+    for (size_t sample = 0; sample < framesPerBuffer; sample++) {
+        output[sample * 2] += 5.0f * reverb_buffer[(reverb_progress + sample) % REVERB_SIZE];
+        output[(sample * 2) + 1] += 5.0f *  reverb_buffer[(reverb_progress + sample) % REVERB_SIZE];
+    }
+    
+    reverb_progress += framesPerBuffer;
+    reverb_progress %= REVERB_SIZE;
     
     UnlockRenderlist();
     return 0;

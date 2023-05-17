@@ -105,6 +105,11 @@ extern AudioRender audiorenders[SOURCE_COUNT];
 extern vec3 listener_position;
 extern quat listener_orientation;
 
+extern int32_t listener_reverb_delay[5];
+extern float listener_reverb_distance[5];
+extern float listener_reverb_force[5];
+extern float listener_reverb_normalized[5];
+
 }
 
 #endif // TRAM_SDK_AUDIO_SPATIAL_DEFINITIONS_H

@@ -26,6 +26,12 @@ static PathExplorationResult listener_paths[PATHS_FOR_LISTENER];
 vec3 listener_position = {0.0f, 0.0f, 0.0f};
 quat listener_orientation = {1.0f, 0.0f, 0.0f, 0.0f};
 
+int32_t listener_reverb_delay[5] = {0};
+float listener_reverb_distance[5] = {0.0f};
+float listener_reverb_force[5] = {0.0f};
+float listener_reverb_normalized[5] = {0.0f};
+
+
 void Init() {
     for (auto& source : audiorenders) {
         source.flags = 0; // just in case; don't want renderer to render uninitialized sources
@@ -56,7 +62,14 @@ void Update() {
     
     for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
         FindPaths(listener_paths[i], true, listener_position);
+        Render::AddLine(listener_position, listener_position + listener_paths[i].sampling_direction, Render::COLOR_PINK);
     }
+    
+    /*if (GetTick() % 200 == 100) {
+        for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
+            std::cout << listener_paths[i].cycles_since_last_hit << std::endl;
+        }
+    }*/
     
     
     
@@ -72,7 +85,7 @@ void Update() {
         
         // check if invalid paths need to be culled
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
-            Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * audiosources[i].result_paths[k].arrival_direction), Render::COLOR_PINK);
+            //Render::AddLine(listener_position, listener_position - (audiosources[i].result_paths[k].force * audiosources[i].result_paths[k].arrival_direction), Render::COLOR_PINK);
             
             if (audiosources[i].result_paths[k].cycles_since_last_hit > 0 && audiosources[i].result_paths[k].force > 0.0f) {
                 audiosources[i].result_paths[k].force += -0.01f;
@@ -81,6 +94,8 @@ void Update() {
                 }
             }
         }
+        
+        float total_force = 0.0f;
         
         // copy path trace results into renderer
         for (size_t k = 0; k < PATHS_FOR_RENDERING; k++) {
@@ -91,13 +106,36 @@ void Update() {
             int32_t distance_delay = delay * -44100.0f; // 44100 hz sample rate
             
             
+            total_force += audiosources[i].result_paths[k].force;
+            
             audiorenders[i].paths[k].force = audiosources[i].result_paths[k].force;
             audiorenders[i].paths[k].panning = panning;
             audiorenders[i].paths[k].panning_delay = panning_delay;
             audiorenders[i].paths[k].distance_delay = distance_delay;
             
         }
+        
+        /*if (GetTick() % 30 == 0) {
+            std::cout << total_force << std::endl;
+        }*/
     }
+    
+    // calculate reverb delays into samples
+    for (size_t i = 0; i < PATHS_FOR_LISTENER; i++) {
+        float delay = listener_reverb_distance[i] / 331.0f; // 331 m/s sound velocity
+        listener_reverb_delay[i] = delay * -44100.0f; // 44100 hz sample rate
+        listener_reverb_normalized[i] = 0.2f * listener_reverb_force[i];
+    }
+    
+    // calculate total force
+    float total_force = 0.0f;
+    for (float val : listener_reverb_normalized) {
+        total_force += val;
+    }
+    
+    //std::cout << total_force << std::endl;
+    
+    CheckReverb(listener_paths);
     
     UpdateOutput();
 }
