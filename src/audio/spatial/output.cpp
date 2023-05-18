@@ -79,8 +79,8 @@ static int PortaudioCallback (
                 //float sample_value_left = source.buffer->data[source.sample] * source.paths[path].force * ((panning * 0.5f) + 0.5f) * force_equalizer;
                 //float sample_value_right = source.buffer->data[source.sample] * source.paths[path].force * ((-panning * 0.5f) + 0.5f)* force_equalizer;
                 
-                float sample_value_left = source.buffer->data[sample_delayed_left] * source.paths[path].force * ((source.paths[path].panning * 0.5f) + 0.5f) * force_equalizer;
-                float sample_value_right = source.buffer->data[sample_delayed_right] * source.paths[path].force * ((source.paths[path].panning * -0.5f) + 0.5f)* force_equalizer;
+                float sample_value_left = source.buffer->data[sample_delayed_left] * source.paths[path].force * glm::min((source.paths[path].panning * 1.0f) + 1.0f, 1.0f) * force_equalizer;
+                float sample_value_right = source.buffer->data[sample_delayed_right] * source.paths[path].force * glm::min((source.paths[path].panning * -1.0f) + 1.0f, 1.0f)* force_equalizer;
                 
                 output[sample * 2] += sample_value_left;
                 output[(sample * 2) + 1] += sample_value_right;

@@ -179,14 +179,24 @@ bool StraightPathBetweenPoints(vec3 point1, vec3 point2) {
 
 void SourceInsertNewPath(AudioSource& source, PathTracingResult result) {
     for (size_t i = 0; i < PATHS_FOR_RENDERING; i++) {
-        // TODO: instead of replacing the first result, we might
-        // actually replace the result with the lowest force.
-        // could sound better
-        if (source.result_paths[i].force < result.force) {
+        if (source.result_paths[i].force < result.force &&
+            glm::dot(source.result_paths[i].arrival_direction, result.arrival_direction) < 0.7f) {
             source.result_paths[i] = result;
             return;
         }
     }
+    
+    /*size_t smallest = 0;
+    
+    for (size_t i = 0; i < PATHS_FOR_RENDERING; i++) {
+        if (source.result_paths[i].force < source.result_paths[smallest].force) {
+            smallest = i;
+        }
+    }
+    
+    if (source.result_paths[smallest].force < result.force) {
+        source.result_paths[smallest] = result;
+    }*/
 }
 
 std::random_device device; 
@@ -209,7 +219,7 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
     };
     
     // make a variation of the ray direction
-    if (result.cycles_since_last_hit > 10) {
+    if (result.cycles_since_last_hit > 10 || uniform_distribution(generator) < 0.05f) {
         /*vec3 random_vector = {
             uniform_distribution2(generator),
             uniform_distribution2(generator),
@@ -445,6 +455,7 @@ void ValidateResult(PathTracingResult& result, vec3 position) {
     vec3 ray_pos = position;
     float distance = 0.0f;
     float connection_goodness = 1.0f;
+    float goodness_compressed;
     
     if (!ValidatePathSegment(ray_pos, result.reflections[0].point, distance)) {
         goto fail;
@@ -467,8 +478,10 @@ void ValidateResult(PathTracingResult& result, vec3 position) {
         goto fail;
     }
     
+    goodness_compressed = ((connection_goodness - 0.25f) * 0.2f) + 0.8125f;
+    
     result.distance = distance;
-    result.force = result.reflection_absorption ;//* connection_goodness;
+    result.force = result.reflection_absorption * goodness_compressed;//* connection_goodness;
     result.arrival_direction = listener_position - result.reflections[result.reflection_count - 1].point;
     
     //ColorPath(result, position, COLOR_GREEN);
