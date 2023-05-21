@@ -5,7 +5,17 @@
 
 namespace tram {
     
-Marker::Marker(std::string_view& str) : Entity(str) {}
+Marker::Marker(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {}
+
+void Marker::Register() {
+    Entity::RegisterType(
+        "marker", 
+        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new Marker(a, b); },
+        [](Entity* a) { delete a; },
+        nullptr,
+        0
+    );
+}
 
 void Marker::UpdateParameters() {}
 void Marker::SetParameters() {}
@@ -13,5 +23,5 @@ void Marker::Load() {}
 void Marker::Unload() {}
 void Marker::Serialize() {}
 void Marker::MessageHandler(Message& msg) {}
-    
+
 }

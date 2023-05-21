@@ -14,8 +14,8 @@
 #include <audio/spatial/spatial.h>
 
 
-//#define AUDIO_SYSTEM OpenAL
-#define AUDIO_SYSTEM Spatial
+#define AUDIO_SYSTEM OpenAL
+//#define AUDIO_SYSTEM Spatial
 
 namespace tram::Audio {
 

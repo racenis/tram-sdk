@@ -7,14 +7,36 @@
 #include <components/rendercomponent.h>
 #include <components/physicscomponent.h>
 
+#include <framework/serialization/serialization.h>
+
 namespace tram {
 
 using namespace tram::Physics;
 
-StaticWorldObject::StaticWorldObject(std::string_view& str) : Entity(str) {
-    data.make();
-    data->FromString(str);
+enum {
+    FIELD_MODEL,
+    FIELD_LIGHTMAP
 };
+
+static const uint32_t fields[2] = {
+    TYPE_NAME,
+    TYPE_NAME
+}; 
+
+void StaticWorldObject::Register() {
+    Entity::RegisterType(
+        "staticwobj", 
+        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new StaticWorldObject(a, b); },
+        [](Entity* a) { delete a; },
+        fields,
+        2
+    );
+}
+
+StaticWorldObject::StaticWorldObject(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {
+    model = field_array[FIELD_MODEL];
+    lightmap = field_array[FIELD_LIGHTMAP];
+}
 
 void StaticWorldObject::UpdateParameters() {
     if (is_loaded) {
@@ -35,17 +57,15 @@ void StaticWorldObject::SetParameters() {
 void StaticWorldObject::Load(){
     rendercomponent.make();
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(data->model);
-    rendercomponent->SetLightmap(data->lightmap);
+    rendercomponent->SetModel(model);
+    rendercomponent->SetLightmap(lightmap);
     rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
 
     physicscomponent.make();
-    physicscomponent->SetModel(data->model);
+    physicscomponent->SetModel(model);
     physicscomponent->SetMass(0.0f);
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_WORLDOBJ);
-
-    data.clear();
 
     rendercomponent->Init();
     physicscomponent->Init();
@@ -63,10 +83,8 @@ void StaticWorldObject::Unload(){
 };
 
 void StaticWorldObject::Serialize() {
-    data.make();
-
-    data->model = rendercomponent->GetModel();
-    data->lightmap = rendercomponent->GetLightmap();
+    model = rendercomponent->GetModel();
+    lightmap = rendercomponent->GetLightmap();
 };
 
 void StaticWorldObject::MessageHandler(Message& msg){

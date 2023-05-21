@@ -31,7 +31,7 @@ namespace tram {
             first = (PAIR*) memory;
             last = (PAIR*) (memory + memory_size);
             
-            for (PAIR* it = first; it != last; it++) new (it) PAIR();
+            for (PAIR* it = first; it != last; it++) new (it) PAIR(); // wait what the fuck
         }
         
         T Find (UID key) {

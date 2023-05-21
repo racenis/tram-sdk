@@ -8,13 +8,35 @@
 #include <components/rendercomponent.h>
 #include <components/physicscomponent.h>
 
+#include <framework/serialization/serialization.h>
+
 namespace tram {
 
 using namespace tram::Physics;
 
-Crate::Crate(std::string_view& str) : Entity(str) {
-    serializeddata.make();
-    serializeddata->FromString(str);
+enum {
+    FIELD_MODEL,
+    FIELD_COLLMODEL
+};
+
+static const uint32_t fields[2] = {
+    TYPE_NAME,
+    TYPE_NAME
+}; 
+
+void Crate::Register() {
+    Entity::RegisterType(
+        "crate", 
+        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new Crate(a, b); },
+        [](Entity* a) { delete a; },
+        fields,
+        2
+    );
+}
+
+Crate::Crate(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {
+    model = field_array[FIELD_MODEL];
+    collmodel = field_array[FIELD_COLLMODEL];
 }
 
 Crate::Crate (const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot) : Entity(nname) {
@@ -22,9 +44,8 @@ Crate::Crate (const char* nname, const char* modelname, const char* collisionmod
     location = pos;
     rotation = glm::quat(rot);
 
-    serializeddata.make();
-    serializeddata->model = UID(modelname);
-    serializeddata->collmodel = UID(collisionmodelname);
+    model = UID(modelname);
+    collmodel = UID(collisionmodelname);
 }
 
 void Crate::UpdateParameters() {
@@ -46,16 +67,14 @@ void Crate::Load(){
     physicscomponent.make();
     
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(serializeddata->model);
+    rendercomponent->SetModel(model);
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);
-    physicscomponent->SetModel(serializeddata->collmodel);
+    physicscomponent->SetModel(collmodel);
     physicscomponent->SetMass(68.9f);
     physicscomponent->SetSleep(true);
     
-    serializeddata.clear();
-
     rendercomponent->Init();
     physicscomponent->Init();
     is_loaded = true;
@@ -73,10 +92,8 @@ void Crate::Unload() {
 }
 
 void Crate::Serialize() {
-    serializeddata.make();
-
-    serializeddata->model = rendercomponent->GetModel();
-    serializeddata->collmodel = physicscomponent->GetModel();
+    model = rendercomponent->GetModel();
+    collmodel = physicscomponent->GetModel();
 }
 
 void Crate::MessageHandler(Message& msg){

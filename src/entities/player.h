@@ -6,7 +6,7 @@
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
-#include <framework/serializeddata.h>
+#include <framework/serialization.h>
 
 namespace tram {
 

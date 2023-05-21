@@ -6,7 +6,7 @@
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
-#include <framework/serializeddata.h>
+#include <framework/serialization.h>
 
 namespace tram {
     class RenderComponent;
@@ -14,7 +14,7 @@ namespace tram {
     
     class Crate : public Entity {
     public:
-        Crate(std::string_view& str);
+        Crate(const SharedEntityData&, const SerializedFieldArray&);
 
         Crate(const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot);
         void UpdateParameters();
@@ -24,37 +24,13 @@ namespace tram {
         void Serialize();
         void MessageHandler(Message& msg);
         void Testingolingo();
-
-        class Data: public SerializedEntityData {
-        public:
-            Field<name_t> model;
-            Field<name_t> collmodel;
-
-            void ToString(std::string& str) {
-                model.ToString(str);
-                collmodel.ToString(str);
-            }
-
-            void FromString(std::string_view& str) {
-                model.FromString(str);
-                collmodel.FromString(str);
-            }
-            
-            std::vector<FieldInfo> GetFieldInfo() {
-                return std::vector<FieldInfo> {
-                     { FieldInfo::FIELD_MODELNAME, "model" },
-                     { FieldInfo::FIELD_STRING, "collision-model" },
-                };
-            }
-            
-            char const* GetType() {
-                return "crate";
-            }
-        };
+        static void Register();
     protected:
         Component<RenderComponent> rendercomponent;
         Component<PhysicsComponent> physicscomponent;
-        SerializedData<Data> serializeddata;
+        
+        name_t model;
+        name_t collmodel;
     };
 }
 

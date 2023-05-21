@@ -5,12 +5,41 @@
 #include <entities/lamp.h>
 #include <components/lightcomponent.h>
 
+#include <framework/serialization/serialization.h>
+
 namespace tram {
 
-Lamp::Lamp (std::string_view& str) : Entity (str) {
-    data.make();
-    data->FromString(str);
+enum {
+    FIELD_COLOR_R,
+    FIELD_COLOR_G,
+    FIELD_COLOR_B,
+    FIELD_DISTANCE
+};
+
+static const uint32_t fields[4] = {
+    TYPE_FLOAT32,
+    TYPE_FLOAT32,
+    TYPE_FLOAT32,
+    TYPE_FLOAT32
+}; 
+
+void Lamp::Register() {
+    Entity::RegisterType(
+        "lamp", 
+        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new Lamp(a, b); },
+        [](Entity* a) { delete a; },
+        fields,
+        4
+    );
 }
+
+Lamp::Lamp(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {
+    color_r = field_array[FIELD_COLOR_R];
+    color_g = field_array[FIELD_COLOR_G];
+    color_b = field_array[FIELD_COLOR_B];
+    distance = field_array[FIELD_DISTANCE];
+}
+
 
 void Lamp::UpdateParameters () {
     if (!is_loaded) return;
@@ -23,10 +52,8 @@ void Lamp::SetParameters () {
 
 void Lamp::Load () {
     light.make();
-    light->SetColor({data->color_r, data->color_g, data->color_b});
-    light->SetDistance(data->distance);
-
-    data.clear();
+    light->SetColor({color_r, color_g, color_b});
+    light->SetDistance(distance);
 
     light->Init();
     is_loaded = true;
@@ -43,18 +70,16 @@ void Lamp::Unload () {
 }
 
 void Lamp::Serialize () {
-    data.make();
-    
     glm::vec3 light_color;
     float light_distance;
     
     light_color = light->GetColor(); // idk if this actually works
     light_distance = light->GetDistance();
     
-    data->color_r = light_color.r;
-    data->color_g = light_color.g;
-    data->color_b = light_color.b;
-    data->distance = light_distance;
+    color_r = light_color.r;
+    color_g = light_color.g;
+    color_b = light_color.b;
+    distance = light_distance;
 }
 
 void Lamp::MessageHandler (Message& msg) {

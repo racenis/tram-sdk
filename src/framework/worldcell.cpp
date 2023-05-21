@@ -170,9 +170,10 @@ void WorldCell::LoadFromDisk() {
             continue;
         }
 
-        std::string_view entity_definition = file.read_line();
+        //std::string_view entity_definition = file.read_line();
         
-        Entity* entity = Entity::Make(entry_type, entity_definition);
+        //Entity* entity = Entity::Make(entry_type, entity_definition);
+        Entity* entity = Entity::Make(entry_type, &file);
         
         if (!entity) {
             std::cout << "Entity type '" << entry_type << "' not recognized; in file " << path << std::endl;

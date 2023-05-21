@@ -6,7 +6,7 @@
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
-#include <framework/serializeddata.h>
+#include <framework/serialization.h>
 
 namespace tram {
 
@@ -15,45 +15,22 @@ class PhysicsComponent;
 
 class StaticWorldObject : public Entity {
 public:
-    StaticWorldObject(std::string_view& str);
+    StaticWorldObject(const SharedEntityData&, const SerializedFieldArray&);
     void UpdateParameters();
     void SetParameters();
     void Load();
     void Unload();
     void Serialize();
     void MessageHandler(Message& msg);
+    static void Register();
 
-    class Data: public SerializedEntityData {
-    public:
-        Field<name_t> model;
-        Field<name_t> lightmap;
 
-        void ToString (std::string& str) {
-            model.ToString(str);
-            lightmap.ToString(str);
-        }
-
-        void FromString (std::string_view& str) {
-            model.FromString(str);
-            lightmap.FromString(str);
-        }
-        
-        std::vector<FieldInfo> GetFieldInfo() {
-            return std::vector<FieldInfo> {
-                 { FieldInfo::FIELD_MODELNAME, "model", },
-                 { FieldInfo::FIELD_STRING, "lightmap", },
-            };
-        }
-        
-        char const* GetType() {
-            return "staticwobj";
-        }
-    };
 protected:
     Component<RenderComponent> rendercomponent;
     Component<PhysicsComponent> physicscomponent;
     
-    SerializedData<Data> data;
+    name_t model;
+    name_t lightmap;
 };
 
 }
