@@ -63,8 +63,8 @@ void Init() {
     FONT_TEXT_BOLD =    GUI::RegisterFont(font_text_bold);
     FONT_HEADER =       GUI::RegisterFont(font_headers);
     
-    UI::BindKeyboardKey(UI::KEY_ESCAPE, UI::KeyBinding {.type = UI::KeyBinding::SPECIAL_OPTION, .special_option = EscapeMenuKeyboard});
-    UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, UI::KeyBinding {.type = UI::KeyBinding::SPECIAL_OPTION, .special_option = DebugMenuKeyboard});
+    UI::BindKeyboardKey(UI::KEY_ESCAPE, EscapeMenuKeyboard);
+    UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, DebugMenuKeyboard);
     
     MENU_SYSTEM = System::Register("Default Menus", "MENU");
     System::SetInitialized(MENU_SYSTEM, true);

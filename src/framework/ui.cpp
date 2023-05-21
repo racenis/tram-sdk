@@ -30,7 +30,7 @@ using namespace tram::Render;
 
 namespace tram::UI {
 
-static KeyboardKey glfw_key_to_keyboardkey (int keycode);
+static KeyboardKey GLFWKeyToKeyboardKey(int keycode);
 
 static InputState input_state = STATE_DEFAULT;
 
@@ -59,25 +59,30 @@ static void MouseKeyCallback(GLFWwindow* window, int button, int action, int mod
 static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 static void CharacterBackspaceCallback();
 
-std::unordered_map<KeyboardKey, KeyBinding> KeyActionBindings = {
-    {KEY_W, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_FORWARD}},
-    {KEY_S, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_BACKWARD}},
-    {KEY_A, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_STRAFE_LEFT}},
-    {KEY_D, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_STRAFE_RIGHT}},
-    {KEY_SPACE, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_JUMP}},
-    {KEY_LEFT_CONTROL, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_CROUCH}},
-    {KEY_E, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_ACTIVATE}},
-    
-    {KEY_UP, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_UP}},
-    {KEY_DOWN, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_DOWN}},
-    {KEY_LEFT, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_LEFT}},
-    {KEY_RIGHT, KeyBinding {.type = KeyBinding::KEYBOARD_ACTION, .action = KEY_ACTION_RIGHT}},
+struct KeyBinding {
+    KeyboardAction action = KEY_ACTION_NONE;
+    void (*special_option)(void) = nullptr;
+};
 
-    {KEY_F1, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ EXIT = true; glfwSetWindowShouldClose(WINDOW, EXIT); }}},
-    {KEY_F5, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
-    {KEY_F6, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
-    {KEY_F9, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
-    {KEY_BACKSPACE, KeyBinding {.type = KeyBinding::SPECIAL_OPTION, .special_option = [](){ CharacterBackspaceCallback(); }}}
+static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
+    {KEY_W, KeyBinding {.action = KEY_ACTION_FORWARD}},
+    {KEY_S, KeyBinding {.action = KEY_ACTION_BACKWARD}},
+    {KEY_A, KeyBinding {.action = KEY_ACTION_STRAFE_LEFT}},
+    {KEY_D, KeyBinding {.action = KEY_ACTION_STRAFE_RIGHT}},
+    {KEY_SPACE, KeyBinding {.action = KEY_ACTION_JUMP}},
+    {KEY_LEFT_CONTROL, KeyBinding {.action = KEY_ACTION_CROUCH}},
+    {KEY_E, KeyBinding {.action = KEY_ACTION_ACTIVATE}},
+    
+    {KEY_UP, KeyBinding {.action = KEY_ACTION_UP}},
+    {KEY_DOWN, KeyBinding {.action = KEY_ACTION_DOWN}},
+    {KEY_LEFT, KeyBinding {.action = KEY_ACTION_LEFT}},
+    {KEY_RIGHT, KeyBinding {.action = KEY_ACTION_RIGHT}},
+
+    {KEY_F1, KeyBinding {.special_option = [](){ EXIT = true; glfwSetWindowShouldClose(WINDOW, EXIT); }}},
+    {KEY_F5, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
+    {KEY_F6, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
+    {KEY_F9, KeyBinding {.special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
+    {KEY_BACKSPACE, KeyBinding {.special_option = [](){ CharacterBackspaceCallback(); }}}
 };
 
 #ifndef __EMSCRIPTEN__
@@ -118,8 +123,12 @@ void APIENTRY RenderErrorCallback (uint32_t source, uint32_t type, uint32_t id, 
 }
 #endif
 
-void BindKeyboardKey (KeyboardKey key, KeyBinding binding) {
-    KeyActionBindings[key] = binding;
+void BindKeyboardKey (KeyboardKey key, KeyboardAction action) {
+    key_action_bindings[key] = {.action = action};
+}
+
+void BindKeyboardKey (KeyboardKey key, void (*action)()) {
+    key_action_bindings[key] = {.special_option = action};
 }
 
 void Init(){
@@ -227,22 +236,22 @@ void Update() {
 }
 
 static void KeyCallback (GLFWwindow* window, int key, int scancode, int action, int mods) {
-    const auto& binding = KeyActionBindings[glfw_key_to_keyboardkey(key)];
+    const auto& binding = key_action_bindings[GLFWKeyToKeyboardKey(key)];
     
-    if (binding.type == KeyBinding::KEYBOARD_ACTION && input_state == STATE_DEFAULT) {            
+    if (binding.action && input_state == STATE_DEFAULT) {            
         if (action == GLFW_PRESS) {
             Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
         } else if (action == GLFW_RELEASE) {
             Event::Post({Event::KEYUP, binding.action, 0, nullptr});
         }
-    } else if (binding.type == KeyBinding::SPECIAL_OPTION && action == GLFW_PRESS) {
+    } else if (binding.special_option && action == GLFW_PRESS) {
         binding.special_option();
     }
     
     if (action == GLFW_PRESS) {
-        keyboard_keys_values[glfw_key_to_keyboardkey(key)] = true;
+        keyboard_keys_values[GLFWKeyToKeyboardKey(key)] = true;
     } else if (action == GLFW_RELEASE) {
-        keyboard_keys_values[glfw_key_to_keyboardkey(key)] = false;
+        keyboard_keys_values[GLFWKeyToKeyboardKey(key)] = false;
     }
 }
 
@@ -350,7 +359,7 @@ float PollKeyboardAxis (KeyboardAxis key) {
 }
 
 /// Maps a glfw keycode to a KeyboardKey.
-static KeyboardKey glfw_key_to_keyboardkey (int keycode) {
+static KeyboardKey GLFWKeyToKeyboardKey (int keycode) {
     switch (keycode) {
         case GLFW_MOUSE_BUTTON_LEFT:    return KEY_LEFTMOUSE;
         case GLFW_MOUSE_BUTTON_RIGHT:   return KEY_RIGHTMOUSE;

@@ -94,21 +94,6 @@ enum KeyboardAction : uint16_t {
     KEY_ACTION_RIGHT
 };
 
-struct KeyBinding {
-    enum Type: uint8_t {
-        UNBOUND,
-        KEYBOARD_ACTION,
-        SPECIAL_OPTION
-    };
-
-    KeyBinding::Type type = UNBOUND;
-
-    union {
-        KeyboardAction action = KEY_ACTION_NONE;
-        void (*special_option)(void);
-    };
-};
-
 enum CursorType {
     CURSOR_NONE,
     CURSOR_DEFAULT,
@@ -132,7 +117,8 @@ void SetTextInput (char* text, uint32_t len);
 
 void SetWebMainLoop (void(*loop_function)(void));
 
-void BindKeyboardKey (KeyboardKey key, KeyBinding binding);
+void BindKeyboardKey (KeyboardKey key, KeyboardAction action);
+void BindKeyboardKey (KeyboardKey key, void (*action)());
 
 bool PollKeyboardKey (KeyboardKey key);
 float PollKeyboardAxis (KeyboardAxis key);

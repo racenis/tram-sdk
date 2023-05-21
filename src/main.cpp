@@ -415,14 +415,14 @@ int main() {
     
     derp_player->Play();
     
-    UI::BindKeyboardKey(UI::KEY_APOSTROPHE, UI::KeyBinding { .type = UI::KeyBinding::SPECIAL_OPTION, .special_option = [](){
+    UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
         camera->SetFollowing(nullptr);
         camera->SetMouselook(false);
         camera->SetLocation({0.0f, 25.0f, 0.0f});
         camera->SetRotation(vec3 {glm::radians(-90.0f), glm::radians(86.8f), 0.0f});
         
         std::cout << "aaa" << std::endl;
-    }});
+    });
     
     
     //auto crate_ent = Entity::Find(UID("estijs"));
