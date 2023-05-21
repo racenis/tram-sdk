@@ -120,7 +120,7 @@ void Entity::Register(){
     }
 }
 
-Entity* Entity::Find (uint64_t entityID){
+Entity* Entity::Find (id_t entityID){
     return entity_id_list.Find(entityID);
 }
 

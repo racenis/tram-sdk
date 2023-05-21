@@ -8,7 +8,7 @@
 
 namespace tram {
 
-typedef uint64_t id_t;
+typedef uint32_t id_t;
 
 extern bool EXIT;
 extern char const* ENGINE_VERSION;

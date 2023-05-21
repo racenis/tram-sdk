@@ -24,8 +24,8 @@ static float frame_time = 0.0f;
 static uint32_t frame_tick = 0;
 
 /// Generates a unique ID number.
-uint64_t GenerateID () {
-    static uint64_t num = 0;
+id_t GenerateID () {
+    static id_t num = 0;
     num++;
     return num;
 }

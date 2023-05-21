@@ -10,7 +10,7 @@
 namespace tram {
 
 typedef uint64_t message_t;
-typedef uint64_t id_t;
+typedef uint32_t id_t;
 
 struct Message {
     enum Type : message_t {

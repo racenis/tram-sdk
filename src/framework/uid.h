@@ -32,7 +32,7 @@ struct UID {
     operator std::string() const;
     operator char const*() const;
     
-    uint64_t key = 0;
+    uint32_t key = 0;
 };
 
 typedef UID name_t;
