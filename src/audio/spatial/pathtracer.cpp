@@ -220,28 +220,13 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
     
     // make a variation of the ray direction
     if (result.cycles_since_last_hit > 10 || uniform_distribution(generator) < 0.05f) {
-        /*vec3 random_vector = {
-            uniform_distribution2(generator),
-            uniform_distribution2(generator),
-            uniform_distribution2(generator)
-        };*/
-        
         sampling_direction = glm::normalize(random_vector);
     } else {
-
-        
         sampling_direction = glm::normalize(sampling_direction + random_vector);
-        //ray_direction = glm::normalize(glm::quat(random_vector) * ray_direction);
     }
-    
     
     vec3 ray_direction = sampling_direction;
     vec3 ray_position = position;
-    
-    //ray_direction = glm::normalize(random_vector);
-    
-        
-    
     
     vec3 arrival_direction = -ray_direction;
     
@@ -269,15 +254,12 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
     
         if (!hit_wall) break;
     
-        if (intersection == vec3{0.0f,0.0f,0.0f}) {
-            std::cout << "wut " << RayIntersectsTriangle(ray_position, ray_direction, triangle.point1, triangle.point2, triangle.point3).second << std::endl;
-        }
-        
-        force *= 0.9f; // TODO: actually sample absorption
+        force *= 0.9f; // TODO: actually sample absorption when loader is finish
         distance += glm::distance(ray_position, intersection);
         
         points.push_back({ray_position, intersection});
         
+        // calculate reflected direction
         ray_direction = ray_direction - (2.0f * glm::dot(ray_direction, triangle.normal) * triangle.normal);
         ray_position = intersection;
         
@@ -312,7 +294,6 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
                         new_result.reflections[reflection_count - i - 1].point = reflections[i];
                     }
                     
-                    //ValidateResult(new_result, source.position);
                     SourceInsertNewPath(source, new_result);
                     
                     /*for (auto& p : points) {
@@ -358,9 +339,6 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
                             new_result.reflections[j + reflection_count - i].point = reflections[i];
                         }
                         
-                        //auto new_new_result = new_result;
-                        
-                        //ValidateResult(new_new_result, source.position);
                         SourceInsertNewPath(source, new_result);
                         
                         /*for (auto& p : points) {
@@ -395,19 +373,9 @@ void FindPaths(PathExplorationResult& result, bool metropolis, vec3 position) {
     float random = uniform_distribution(generator);
     float compar = glm::min(total_force / result.force, 1.0f);
     
-    if (!std::isfinite(compar)) {
-        //std::cout << "wtf total_force: " << total_force << " result.force: " << result.force << std::endl;
-    } else {
-        //std::cout << "okay: " << compar << std::endl;
-    }
-    
-    //std::cout << "wtf " << random << " >= " << compar << std::endl;
-    
     if (result.force == 0 || random >= compar) {
         result.sampling_direction = sampling_direction;
         result.force = total_force;
-        
-        //std::cout << "rewritted " << random << " >= " << compar << std::endl;
     }
     
     static uint32_t lastgood = 1;
