@@ -61,10 +61,7 @@
       <File Name="src/components/armaturecomponent.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
-      <VirtualDirectory Name="serialization">
-        <File Name="src/framework/serialization/entityworldcelldata.h"/>
-        <File Name="src/framework/serialization/serialization.h"/>
-      </VirtualDirectory>
+      <File Name="src/framework/entitycomponent.cpp"/>
       <File Name="src/framework/serialization.h"/>
       <File Name="src/framework/navmesh.h"/>
       <File Name="src/framework/navmesh.cpp"/>

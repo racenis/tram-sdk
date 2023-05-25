@@ -17,21 +17,6 @@ public:
     void Serialize();
     void MessageHandler(Message& msg);
     void Register();
-    
-    class Data: public SerializedEntityData {
-    public:
-        void ToString(std::string& str) {}
-
-        void FromString(std::string_view& str) {}
-        
-        std::vector<FieldInfo> GetFieldInfo() {
-            return std::vector<FieldInfo> {};
-        }
-        
-        char const* GetType() {
-            return "marker";
-        }
-    };
 };
 
 }

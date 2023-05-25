@@ -4,7 +4,7 @@
 #include <framework/entity.h>
 #include <framework/worldcell.h>
 #include <framework/serialization.h>
-#include <framework/serialization/serialization.h>
+#include <framework/serialization.h>
 #include <framework/file.h>
 
 #include <templates/hashmap.h>
@@ -37,28 +37,6 @@ Entity::Entity (name_t name) {
     this->name = name;
     Register();
 }
-
-/*Entity::Entity (std::string_view& str) {
-    id = SerializedEntityData::Field<uint64_t>().FromString(str);
-    name = SerializedEntityData::Field<name_t>().FromString(str);
-
-    location.x = SerializedEntityData::Field<float>().FromString(str);
-    location.y = SerializedEntityData::Field<float>().FromString(str);
-    location.z = SerializedEntityData::Field<float>().FromString(str);
-
-    float rx = SerializedEntityData::Field<float>().FromString(str);
-    float ry = SerializedEntityData::Field<float>().FromString(str);
-    float rz = SerializedEntityData::Field<float>().FromString(str);
-
-    rotation = glm::quat(glm::vec3(rx, ry, rz));
-
-    if (!id) {
-        is_serializable = false;
-        id = GenerateID();
-    }
-    
-    Register();
-}*/
 
 Entity::Entity(const SharedEntityData& shared_data) {
     id = shared_data.id;
@@ -173,17 +151,5 @@ Entity* Entity::Make(name_t type, File* file) {
     
     return record.constructor(shared_data, field_array);
 }
-
-/*Entity* Entity::Make (name_t type_name, std::string_view& params){
-    Entity* entity = nullptr;
-    
-    auto constructor = entity_constructors.Find(type_name);
-    
-    if (constructor) {
-        entity = constructor(params);
-    }
-    
-    return entity;
-}*/
 
 }

@@ -8,7 +8,7 @@
 #include <components/rendercomponent.h>
 #include <components/physicscomponent.h>
 
-#include <framework/serialization/serialization.h>
+#include <framework/serialization.h>
 
 namespace tram {
 

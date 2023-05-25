@@ -24,14 +24,14 @@ static float frame_time = 0.0f;
 static uint32_t frame_tick = 0;
 
 /// Generates a unique ID number.
-id_t GenerateID () {
+id_t GenerateID() {
     static id_t num = 0;
     num++;
     return num;
 }
 
 /// Initializes the core of the framework.
-void Core::Init () {
+void Core::Init() {
     // set the 0th string to 'none'
     UID none("none");
     
@@ -63,7 +63,7 @@ void Core::Init () {
 
 /// Updates the core system.
 /// @note This should be called only once per update cycle.
-void Core::Update () {
+void Core::Update() {
     frame_time = GetTime();
     frame_tick++;
     

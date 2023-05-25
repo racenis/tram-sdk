@@ -4,7 +4,7 @@
 #ifndef TEMPLATES_HASHMAP_H
 #define TEMPLATES_HASHMAP_H
 
-#include <framework/core.h>
+#include <framework/uid.h>
 #include <iostream> // error message
 
 namespace tram {

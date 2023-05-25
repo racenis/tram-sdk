@@ -25,7 +25,6 @@ public:
     virtual void Serialize() = 0;
 
     Entity(name_t name);
-    //Entity(std::string_view& str);
     Entity(const SharedEntityData&);
     
     virtual ~Entity();
@@ -63,8 +62,6 @@ public:
 
     void CheckTransition();
 
-    //static Entity* Make (name_t type_name, std::string_view& params);
-    
     static Entity* Make (name_t type, File* file);
 
     static void RegisterType (name_t name, Entity* (*constr_func)(const SharedEntityData&, const SerializedFieldArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
@@ -86,7 +83,7 @@ protected:
     
     WorldCell* cell = nullptr;
     
-    quat rotation = {0.0f, 0.0f, 0.0f, 1.0f};
+    quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 location = {0.0f, 0.0f, 0.0f};
 
     void Register();

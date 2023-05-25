@@ -5,7 +5,7 @@
 #include <entities/lamp.h>
 #include <components/lightcomponent.h>
 
-#include <framework/serialization/serialization.h>
+#include <framework/serialization.h>
 
 namespace tram {
 

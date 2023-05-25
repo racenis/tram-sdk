@@ -18,8 +18,7 @@ static std::vector<std::thread> resource_loaders;
 static bool loaders_should_stop = false;
 
 struct ResourceRequest {
-    EntityComponent* requester;
-    uint64_t requester_id;
+    id_t requester_id;
     Resource* requested_res;
 };
 
@@ -33,7 +32,6 @@ static Queue<ResourceRequest> finished_queue ("finished resource request queue",
 /// @param requested_resource The resource that will be loaded.
 void RequestResource (EntityComponent* requester, Resource* requested_resource) {
     disk_loader_queue.push(ResourceRequest {
-        .requester = requester,
         .requester_id = requester ? requester->GetID() : 0,
         .requested_res = requested_resource
     });
@@ -97,7 +95,6 @@ void ForceLoadResource (Resource* res) {
     }
 
     ResourceRequest req {
-        .requester = nullptr,
         .requester_id = 0,
         .requested_res = res
     };
@@ -114,10 +111,12 @@ void FinishResource () {
     ResourceRequest req;
 
     while (finished_queue.try_pop(req)) {
-        // TODO: check if requester pointer is valid
-        // TODO: check if requester ids match up
-        if (req.requester) {
-            req.requester->ResourceReady();
+        if (req.requester_id) {
+            auto requester = EntityComponent::Find(req.requester_id);
+            
+            if (requester) {
+                requester->ResourceReady();
+            }
         }
     }
 }

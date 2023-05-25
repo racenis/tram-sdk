@@ -17,8 +17,8 @@ class Entity;
 
 class EntityComponent {
 public:
-    EntityComponent(){ id = GenerateID(); }
-    virtual ~EntityComponent() {}
+    EntityComponent();
+    virtual ~EntityComponent();
 
     virtual void Init() {
         is_init = true;
@@ -33,7 +33,9 @@ public:
     inline Entity* GetParent() { return parent; }
     inline void SetParent(Entity* parent) { this->parent = parent; }
 
-    inline uint64_t GetID() { return id; }
+    inline id_t GetID() { return id; }
+
+    static EntityComponent* Find (id_t component_id);
 protected:
     id_t id = 0;
     size_t resources_waiting = 0;
