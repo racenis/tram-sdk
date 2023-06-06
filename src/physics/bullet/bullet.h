@@ -9,7 +9,7 @@
 
 #include <btBulletDynamicsCommon.h>
 
-namespace tram::Physics {
+namespace tram::Physics::Bullet {
     
 enum UserIndex : int {
     USERINDEX_PHYSICSCOMPONENT = 1,
@@ -18,17 +18,20 @@ enum UserIndex : int {
 
 btConvexShape* CollisionShapeToConvexShape (CollisionShape shape);
 
-void InitBullet();
+void Init();
 void StepPhysics();
 void DrawDebug();
 
-extern btBroadphaseInterface* BULLET_BROADPHASE_INTERFACE;
-extern btDefaultCollisionConfiguration* BULLET_COLLISION_CONFIGURATION;
-extern btCollisionDispatcher* BULLET_COLLIISION_DISPATCHER;
-extern btSequentialImpulseConstraintSolver* BULLET_CONSTRAINT_SOLVER;
-extern btDiscreteDynamicsWorld* BULLET_DYNAMICS_WORLD;
-extern btIDebugDraw* BULLET_DEBUG_DRAWER;
-extern btVehicleRaycaster* BULLET_VEHICLE_RAYCASTER;
+Collision Raycast (const vec3& from, const vec3& to, uint32_t collision_mask = -1);
+std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask = -1);
+
+extern btBroadphaseInterface* BROADPHASE_INTERFACE;
+extern btDefaultCollisionConfiguration* COLLISION_CONFIGURATION;
+extern btCollisionDispatcher* COLLIISION_DISPATCHER;
+extern btSequentialImpulseConstraintSolver* CONSTRAINT_SOLVER;
+extern btDiscreteDynamicsWorld* DYNAMICS_WORLD;
+extern btIDebugDraw* DEBUG_DRAWER;
+extern btVehicleRaycaster* VEHICLE_RAYCASTER;
     
 }
 

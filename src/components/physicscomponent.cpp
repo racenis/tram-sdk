@@ -7,6 +7,7 @@
 #include <physics/bullet/motionstates.h>
 
 using namespace tram::Physics;
+using namespace tram::Physics::Bullet;
 
 namespace tram {
 
@@ -26,7 +27,7 @@ void PhysicsComponent::Start(){
 
     rigidbody = new btRigidBody (bullet_construction_info);
 
-    BULLET_DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+    DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     
     rigidbody->setUserPointer(this);
     rigidbody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
@@ -39,7 +40,7 @@ void PhysicsComponent::Start(){
 }
 
 PhysicsComponent::~PhysicsComponent(){
-    BULLET_DYNAMICS_WORLD->removeRigidBody(rigidbody);
+    DYNAMICS_WORLD->removeRigidBody(rigidbody);
     
     delete rigidbody;
     delete motion_state;
@@ -76,8 +77,8 @@ void PhysicsComponent::SetCollisionMask (uint32_t flags) {
     rigidbody_collision_mask = flags;
     
     if (is_ready) {
-        BULLET_DYNAMICS_WORLD->removeRigidBody(rigidbody);
-        BULLET_DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        DYNAMICS_WORLD->removeRigidBody(rigidbody);
+        DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     }
 }
 
@@ -89,8 +90,8 @@ void PhysicsComponent::SetCollisionMask (uint32_t flags) {
 void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
     rigidbody_collision_group = flags;
     if (is_ready) {
-        BULLET_DYNAMICS_WORLD->removeRigidBody(rigidbody);
-        BULLET_DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        DYNAMICS_WORLD->removeRigidBody(rigidbody);
+        DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     }
 }
 

@@ -5,6 +5,7 @@
 #include <physics/bullet/bullet.h>
 
 using namespace tram::Physics;
+using namespace tram::Physics::Bullet;
 
 namespace tram {
 
@@ -35,13 +36,13 @@ void TriggerComponent::Start(){
     trigger->setUserIndex(USERINDEX_TRIGGERCOMPONENT);
     trigger->setCollisionFlags(trigger->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
     
-    BULLET_DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
+    DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
     
     is_ready = true;
 }
 
 TriggerComponent::~TriggerComponent(){
-    BULLET_DYNAMICS_WORLD->removeCollisionObject(trigger);
+    DYNAMICS_WORLD->removeCollisionObject(trigger);
     delete trigger;
     
     if (shape && !model.get()) delete shape;
@@ -59,8 +60,8 @@ void TriggerComponent::SetCollisionMask(uint32_t flags){
     collisionMask = flags;
     
     if (is_ready) {
-        BULLET_DYNAMICS_WORLD->removeCollisionObject(trigger);
-        BULLET_DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
+        DYNAMICS_WORLD->removeCollisionObject(trigger);
+        DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
     }
 }
 
@@ -71,8 +72,8 @@ void TriggerComponent::SetCollisionGroup(uint32_t flags){
     collisionGroup = flags;
     
     if (is_ready) {
-        BULLET_DYNAMICS_WORLD->removeCollisionObject(trigger);
-        BULLET_DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
+        DYNAMICS_WORLD->removeCollisionObject(trigger);
+        DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
     }
 }
 
@@ -174,7 +175,7 @@ std::vector<Physics::Collision> TriggerComponent::Poll () {
     std::vector<Physics::Collision> collisions;
     
     TriggerPollCallback callback (collisions);
-    BULLET_DYNAMICS_WORLD->contactTest(trigger, callback);
+    DYNAMICS_WORLD->contactTest(trigger, callback);
     
     return collisions;
 }
