@@ -73,6 +73,7 @@ private:
     ActionModifier current_modifier = ACTIONMODIFIER_NONE;
     uint32_t current_magnitude = 0;
     bool action_updated = false;
+    bool is_in_air = false;
 protected:
     ControllerComponent() = default;
     ~ControllerComponent() = default;

@@ -60,7 +60,7 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
     
     Render::AddLineMarker(nearest_point, Render::COLOR_YELLOW);
     
-    Render::AddLine(position, position + penetration * push_dir, Render::COLOR_RED);
+    //Render::AddLine(position, position + penetration * push_dir, Render::COLOR_RED);
     
     //std::cout << penetration << std::endl;
     
@@ -112,93 +112,106 @@ void ControllerComponent::Perform() {
         action_updated = true;
     }
     
-    if (current_action == ACTION_JUMP) {
-        triggercomp->SetLocation(parent->GetLocation() - vec3(0.0f, 0.1f, 0.0f));
-        if (triggercomp->Poll().size() > 0) {
-            velocity.y += 0.089f;
-        }
-        action_updated = true;
+    if (current_action == ACTION_JUMP && !is_in_air) {
+        velocity.y += 0.119f;
+        is_in_air = true;
     }
 
-    //velocity.y -= 0.0037f;
-
-    // add friction
-    velocity *= 0.89f;
+    if (is_in_air) {
+        // add gravity
+        if (velocity.y > -0.12f) {
+            velocity.y -= 0.0053f;
+        }
+        Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_RED);
+    } else {
+        // add friction
+        velocity *= 0.89f;
+        Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_GREEN);
+    }
 
     // compute character's new position
     vec3 old_pos = parent->GetLocation();
     quat old_rot = parent->GetRotation();
     vec3 new_pos = old_pos + velocity;
     
-    // check if new position is in air
-    if (!Physics::Raycast(new_pos, new_pos - vec3(0.0f, half_height + 0.1f, 0.0f)).collider) {
-        velocity.y -= 0.0137f;
-        
-        Render::AddLineMarker(new_pos + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_RED);
-    } else {
-        Render::AddLineMarker(new_pos + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_GREEN);
-    }
-    
-
     for (int i = 0; i < 3 && PushOutOfWall(new_pos, width, triggercomp); i++);
     
     
-
-    //triggercomp->SetLocation(new_pos);
+    // check if new position is on the ground
+    auto ground_collisions = Physics::Shapecast(
+        Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f),
+        new_pos + vec3(0.0f, 0.35f, 0.0f),
+        new_pos - vec3(0.0f, 0.1f, 0.0f),
+        -1 ^ Physics::COLL_PLAYER
+    );
+    
+    
+    //triggercomp->SetLocation(new_pos - vec3(0.0f, 0.1f, 0.0f));
     //auto ground_collisions = triggercomp->Poll();
     
-    auto ground_collisions = Physics::Shapecast(Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f), new_pos + vec3(0.0f, 0.35f, 0.0f), new_pos, -1 ^ Physics::COLL_PLAYER);
-    
     if (ground_collisions.size()) {
-        float highest_collision_height = INFINITY;
-        size_t highest_collision = 0;
-        
-        for (size_t i = 0; i < ground_collisions.size(); i++) {       
-            float collision_height = ground_collisions[i].point.y;
-            
-            if (collision_height < highest_collision_height) {
-                highest_collision_height = collision_height;
-                highest_collision = i;
-            }
-            
-            (void) highest_collision;
-            
-            //Render::AddLineMarker({new_pos.x, highest_collision_height, new_pos.z}, Render::COLOR_CYAN);
-        }
+        vec3 lowest_collision = {INFINITY, INFINITY, INFINITY};
+        vec3 lowest_collision_normal;
         
         float character_bottom_height = new_pos.y - half_height;
-        float step_height = highest_collision_height - character_bottom_height;
         
-        
-        vec3 color = IsWallNormal(ground_collisions[highest_collision].normal) ? Render::COLOR_RED : Render::COLOR_GREEN;
-        Render::AddLine(ground_collisions[highest_collision].point, ground_collisions[highest_collision].point + ground_collisions[highest_collision].normal, color);
-        
-        
-        
-        if (!IsWallNormal(ground_collisions[highest_collision].normal) && step_height > 0.0f && step_height < 0.35f) {
-            //Render::AddLineMarker({new_pos.x, highest_collision_height, new_pos.z}, Render::COLOR_CYAN);
+        // find the lowest collision above character's bottom
+        for (auto& coll : ground_collisions) {
+            if (coll.point.y > character_bottom_height && coll.point.y < lowest_collision.y) {
+                lowest_collision = coll.point;
+                lowest_collision_normal = coll.normal;
+            }
             
-            //vec3 color = IsWallNormal(ground_collisions[highest_collision].normal) ? Render::COLOR_RED : Render::COLOR_GREEN;
-            //Render::AddLine(ground_collisions[highest_collision].point, ground_collisions[highest_collision].point + ground_collisions[highest_collision].normal, color);
-            
-            new_pos.y = highest_collision_height + half_height + 0.01f;
-            
-            velocity.y = 0.0f;
-        } else {
-            std::cout << step_height << std::endl;
+            Render::AddLineMarker(coll.point, Render::COLOR_CYAN);
         }
+        
+        if (lowest_collision.y != INFINITY) {
+            Render::AddLineMarker({new_pos.x, character_bottom_height, new_pos.z}, Render::COLOR_RED);
+        }
+        
+        // if there is such a collision, then put the character at that position
+        if (lowest_collision.y != INFINITY) {
+            // calcuate step height
+            float step_height = lowest_collision.y - character_bottom_height;
+            
+            // check if stepping up is allowed and then step up
+            if (lowest_collision_normal.y > 0.70f && step_height > 0.0f && step_height < 0.35f) {
+                //float target_height = lowest_collision.y + half_height + 0.01f;
+                //if (new_pos.y < target_height) new_pos.y += 0.1f;
+                //if (new_pos.y > target_height) new_pos.y = target_height;
+                new_pos.y = lowest_collision.y + half_height + 0.01f;
+                velocity.y = 0.0f;
+                is_in_air = false;
+            } else {
+                //std::cout << "failed " << lowest_collision_normal.y << "\t" << step_height << std::endl;
+            }
+        } else if (!is_in_air) {
+            // if character is a certain distance above the ground, we will move the
+            // character to the ground. this will help with the floaty feeling when
+            // walking down a slope
+            float highest_collision = -INFINITY;
+            
+            for (auto& coll : ground_collisions) {       
+                if (coll.point.y > highest_collision) {
+                    highest_collision = coll.point.y;
+                }
+            }
+            
+            float character_bottom_height = new_pos.y - half_height;
+            float step_height = highest_collision - character_bottom_height;
+            
+            //std::cout << step_height << std::endl;
+            if (step_height < 0.0f && step_height > -0.1f) {
+                new_pos.y = highest_collision + half_height + 0.01f;
+                velocity.y = 0.0f;
+                is_in_air = false;;
+            }
+        }
+    } else {
+        is_in_air = true;
     }
     
-    /*auto ground = Physics::Shapecast(Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f), new_pos + vec3(0.0f, 0.35f, 0.0f), new_pos, -1 ^ Physics::COLL_PLAYER);
-    
-    std::cout << ground.size() << std::endl;
-    
-    for (auto& coll : ground) {
-        Render::AddLine(coll.point, coll.point + coll.normal, Render::COLOR_WHITE);
-    }*/
-    
-    //Render::AddLine(new_pos, new_pos +10.0f * velocity, Render::COLOR_CYAN);
-    //Render::AddLineMarker(new_pos, Render::COLOR_PINK);
+    std::cout << new_pos.y << std::endl;
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
