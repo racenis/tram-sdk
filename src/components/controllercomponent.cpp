@@ -30,9 +30,7 @@ void ControllerComponent::Update() {
 
 // checks if a normal is a wall normal
 bool IsWallNormal(vec3 normal) {
-    float flooriness = glm::dot(normal, DIRECTION_UP);
-    
-    return flooriness > 0.4f;
+    return normal.y < 0.75f;
 }
 
 bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
@@ -64,7 +62,7 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
     
     Render::AddLine(position, position + penetration * push_dir, Render::COLOR_RED);
     
-    std::cout << penetration << std::endl;
+    //std::cout << penetration << std::endl;
     
     position += push_dir * penetration;
     
@@ -146,8 +144,10 @@ void ControllerComponent::Perform() {
     
     
 
-    triggercomp->SetLocation(new_pos);
-    auto ground_collisions = triggercomp->Poll();
+    //triggercomp->SetLocation(new_pos);
+    //auto ground_collisions = triggercomp->Poll();
+    
+    auto ground_collisions = Physics::Shapecast(Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f), new_pos + vec3(0.0f, 0.35f, 0.0f), new_pos, -1 ^ Physics::COLL_PLAYER);
     
     if (ground_collisions.size()) {
         float highest_collision_height = INFINITY;
@@ -169,18 +169,36 @@ void ControllerComponent::Perform() {
         float character_bottom_height = new_pos.y - half_height;
         float step_height = highest_collision_height - character_bottom_height;
         
-        if (step_height > 0.0f && step_height < 0.3f) {
+        
+        vec3 color = IsWallNormal(ground_collisions[highest_collision].normal) ? Render::COLOR_RED : Render::COLOR_GREEN;
+        Render::AddLine(ground_collisions[highest_collision].point, ground_collisions[highest_collision].point + ground_collisions[highest_collision].normal, color);
+        
+        
+        
+        if (!IsWallNormal(ground_collisions[highest_collision].normal) && step_height > 0.0f && step_height < 0.35f) {
             //Render::AddLineMarker({new_pos.x, highest_collision_height, new_pos.z}, Render::COLOR_CYAN);
-            Render::AddLine(ground_collisions[highest_collision].point, ground_collisions[highest_collision].point + ground_collisions[highest_collision].normal, Render::COLOR_WHITE);
+            
+            //vec3 color = IsWallNormal(ground_collisions[highest_collision].normal) ? Render::COLOR_RED : Render::COLOR_GREEN;
+            //Render::AddLine(ground_collisions[highest_collision].point, ground_collisions[highest_collision].point + ground_collisions[highest_collision].normal, color);
             
             new_pos.y = highest_collision_height + half_height + 0.01f;
             
             velocity.y = 0.0f;
+        } else {
+            std::cout << step_height << std::endl;
         }
     }
     
-    Render::AddLine(new_pos, new_pos +10.0f * velocity, Render::COLOR_CYAN);
-    Render::AddLineMarker(new_pos, Render::COLOR_PINK);
+    /*auto ground = Physics::Shapecast(Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f), new_pos + vec3(0.0f, 0.35f, 0.0f), new_pos, -1 ^ Physics::COLL_PLAYER);
+    
+    std::cout << ground.size() << std::endl;
+    
+    for (auto& coll : ground) {
+        Render::AddLine(coll.point, coll.point + coll.normal, Render::COLOR_WHITE);
+    }*/
+    
+    //Render::AddLine(new_pos, new_pos +10.0f * velocity, Render::COLOR_CYAN);
+    //Render::AddLineMarker(new_pos, Render::COLOR_PINK);
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
