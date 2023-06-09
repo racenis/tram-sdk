@@ -28,6 +28,49 @@ void ControllerComponent::Update() {
     for (auto& component : PoolProxy<ControllerComponent>::GetPool()) component.Perform();
 }
 
+// checks if a normal is a wall normal
+bool IsWallNormal(vec3 normal) {
+    float flooriness = glm::dot(normal, DIRECTION_UP);
+    
+    return flooriness > 0.4f;
+}
+
+bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
+    triggercomp->SetLocation(position + vec3(0.0f, 0.35f, 0.0f));
+    auto wall_collisions = triggercomp->Poll();
+
+    if (!wall_collisions.size()) {
+        return false;
+    }
+        
+    float nearest_wall = INFINITY;
+    vec3 nearest_point = {0.0f, 0.0f, 0.0f};
+    
+    for (auto& coll : wall_collisions) {
+        float dist = glm::distance(vec2 {position.x, position.z}, vec2 {coll.point.x, coll.point.z});
+        
+        //Render::AddLineMarker(coll.point, Render::COLOR_YELLOW);
+        
+        if (dist < nearest_wall) {
+            nearest_wall = dist;
+            nearest_point = coll.point;
+        }
+    }
+    
+    float penetration = width - nearest_wall;
+    vec3 push_dir = glm::normalize((position - nearest_point) * vec3(1.0f, 0.0f, 1.0f));
+    
+    Render::AddLineMarker(nearest_point, Render::COLOR_YELLOW);
+    
+    Render::AddLine(position, position + penetration * push_dir, Render::COLOR_RED);
+    
+    std::cout << penetration << std::endl;
+    
+    position += push_dir * penetration;
+    
+    return true;
+}
+
 /// Performs the action.
 /// Performs the action that is setted with Act() method.
 void ControllerComponent::Perform() {
@@ -35,34 +78,10 @@ void ControllerComponent::Perform() {
     assert(triggercomp);
     assert(parent);
     
-    float boost = 0.0f;
-
-    // check if character is in the air
-    triggercomp->SetLocation(parent->GetLocation() - vec3(0.0f, 0.1f, 0.0f));
-    if (triggercomp->Poll().size() > 0) { // if on the ground            
-        velocity.y = 0.0f;
-        velocity *= 0.89f;   // friction
-    } else if (action_updated) { // if in air
-        velocity.y -= 0.0037f; // make the character fall
-    }
+    const float half_height = 1.85f / 2.0f;
+    const float width = 0.35f;
     
-    if(current_action == ACTION_IDLE){
-        //if (action_updated) PlayOnce(ACTION_IDLE);
-    }
-    
-    if (current_action == ACTION_LIVESEY) {
-        //if (action_updated) Play (ACTION_LIVESEY);
-        glm::vec3 fwd = glm::vec3(0.0f, 0.0f, -1.0f);
-        glm::quat objrotation;
-        objrotation = physcomp->GetParent()->GetRotation();
-
-        fwd = objrotation * fwd;
-
-        fwd = fwd* 2.0f;
-
-        if(glm::length(physcomp->GetVelocity()) < 3.0f)physcomp->Push(fwd);
-        //action_updated = false;
-    }
+    (void) width;
     
     if (current_action == ACTION_WALK) {
         glm::vec3 move_direction = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -92,37 +111,6 @@ void ControllerComponent::Perform() {
         velocity.x += add_velocity.x;
         velocity.z += add_velocity.z;
         
-        
-        // check if there is a stair in front of the move direction
-        auto poll1_origin = (parent->GetLocation() + (wish_dir * 0.2f)) + vec3(0.0f, 0.3f, 0.0f);
-        auto poll2_origin = (parent->GetLocation() + (wish_dir * 0.1f)) + vec3(0.0f, 0.01f, 0.0f);
-
-        triggercomp->SetLocation(poll1_origin);
-        auto poll1 = triggercomp->Poll();
-        triggercomp->SetLocation(poll2_origin);
-        auto poll2 = triggercomp->Poll();
-        poll1.insert(poll1.end(), poll2.begin(), poll2.end());
-        
-        //Render::AddLineMarker(poll1_origin, Render::COLOR_RED);
-        //Render::AddLineMarker(poll2_origin, Render::COLOR_RED);
-        
-        boost = 1.0f;
-        bool can_raise = false;
-        for (auto& coll : poll1) {
-            //Render::AddLineMarker(coll.point, Render::COLOR_BLUE);
-            auto rel_point = coll.point - parent->GetLocation() + (1.85f/2.0f);
-            if (rel_point.y > 0.005f) can_raise = true;
-            if (rel_point.y > 0.4f) {
-                can_raise = false;
-                break;
-            }
-            if (rel_point.y < boost) boost = rel_point.y;
-        }
-        
-        // if there is a stair, then increase the upward velocity
-        //if (can_raise) velocity.y += 0.01f;
-        if (!can_raise) boost = 0.0f;
-        
         action_updated = true;
     }
     
@@ -134,43 +122,68 @@ void ControllerComponent::Perform() {
         action_updated = true;
     }
 
+    //velocity.y -= 0.0037f;
+
+    // add friction
+    velocity *= 0.89f;
+
+    // compute character's new position
+    vec3 old_pos = parent->GetLocation();
+    quat old_rot = parent->GetRotation();
+    vec3 new_pos = old_pos + velocity;
     
-    // get the character's orientation
-    auto p_loc = parent->GetLocation();
-    auto p_rot = parent->GetRotation();
-    
-    // compute the new position
-    auto new_loc = p_loc + velocity;
-    
-    // check if position is in a wall
-    triggercomp->SetLocation(new_loc);
-    if (triggercomp->Poll().size() > 0) {
-        vec3 average_normal = vec3(0.0f, 0.0f, 0.0f);
-        auto poll = triggercomp->Poll();
-        for (auto& coll : poll) {
-            average_normal += coll.normal;
-        }
-        average_normal /= poll.size();
+    // check if new position is in air
+    if (!Physics::Raycast(new_pos, new_pos - vec3(0.0f, half_height + 0.1f, 0.0f)).collider) {
+        velocity.y -= 0.0137f;
         
-        auto v_dir = glm::normalize(velocity);
-        auto s_dir = glm::normalize(average_normal);
-
-        auto n_dir = glm::normalize(v_dir - s_dir);
-
-        auto n_vel = n_dir * glm::length(velocity) * glm::dot(v_dir, n_dir);
-
-        if (std::isnan(n_vel.x) || std::isnan(n_vel.z)) n_vel = vec3(0.0f, 0.0f, 0.0f);
-
-        // change the velocity, so that the character is no longer in a wall
-        velocity = n_vel;
+        Render::AddLineMarker(new_pos + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_RED);
+    } else {
+        Render::AddLineMarker(new_pos + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_GREEN);
     }
     
-    p_loc += velocity;
-    
-    p_loc.y += boost;
-    
-    parent->UpdateTransform(p_loc, p_rot);
 
+    for (int i = 0; i < 3 && PushOutOfWall(new_pos, width, triggercomp); i++);
+    
+    
+
+    triggercomp->SetLocation(new_pos);
+    auto ground_collisions = triggercomp->Poll();
+    
+    if (ground_collisions.size()) {
+        float highest_collision_height = INFINITY;
+        size_t highest_collision = 0;
+        
+        for (size_t i = 0; i < ground_collisions.size(); i++) {       
+            float collision_height = ground_collisions[i].point.y;
+            
+            if (collision_height < highest_collision_height) {
+                highest_collision_height = collision_height;
+                highest_collision = i;
+            }
+            
+            (void) highest_collision;
+            
+            //Render::AddLineMarker({new_pos.x, highest_collision_height, new_pos.z}, Render::COLOR_CYAN);
+        }
+        
+        float character_bottom_height = new_pos.y - half_height;
+        float step_height = highest_collision_height - character_bottom_height;
+        
+        if (step_height > 0.0f && step_height < 0.3f) {
+            //Render::AddLineMarker({new_pos.x, highest_collision_height, new_pos.z}, Render::COLOR_CYAN);
+            Render::AddLine(ground_collisions[highest_collision].point, ground_collisions[highest_collision].point + ground_collisions[highest_collision].normal, Render::COLOR_WHITE);
+            
+            new_pos.y = highest_collision_height + half_height + 0.01f;
+            
+            velocity.y = 0.0f;
+        }
+    }
+    
+    Render::AddLine(new_pos, new_pos +10.0f * velocity, Render::COLOR_CYAN);
+    Render::AddLineMarker(new_pos, Render::COLOR_PINK);
+    
+    // apply new position to character
+    parent->UpdateTransform(new_pos, old_rot);
 }
 
 }

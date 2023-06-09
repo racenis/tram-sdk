@@ -340,7 +340,7 @@ int main() {
     // create the player entity
     player = new Player;
     //player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
-    player->SetLocation(vec3(3.0f, 4.0f, 3.0f));
+    player->SetLocation(vec3(0.0f, (1.85f/2.0f) + 0.05f, 0.0f));
     player->Load();
     
     camera = new Ext::Camera::Camera;
