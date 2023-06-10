@@ -13,6 +13,10 @@
 
 #include <framework/logging.h>
 
+// this is for holding
+#include <render/render.h>
+#include <framework/message.h>
+
 namespace tram {
 
 class PlayerComponent : public EntityComponent {
@@ -27,7 +31,55 @@ public:
             //auto p_pos = parent->GetLocation();
             //auto p_rot = glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f));
             //parent->UpdateTransform(p_pos, p_rot);
+            
+            // this is dumb
+            // camera system shouldn't poll mouse position directly and then
+            // update the render system. instead the player component should
+            // poll the input system and then update the camera.
+            // or something, idk.
+            // TODO: fix
+            
+            look_direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+            look_position = Render::GetCameraPosition();
+            
+            if (holding) {
+                vec3* data = (vec3*) Message::AllocateData(sizeof(vec3));
+                *data = look_position + 2.0f * look_direction;
+                
+                Message::Send({
+                    Message::MOVE_PICK_UP,
+                    holding->GetID(),
+                    parent->GetID(),
+                    data
+                });
+            }
+            
             return;
+        }
+        
+        if (event.type == Event::KEYDOWN && event.subtype == KEY_ACTION_ACTIVATE) {
+            if (holding) {
+                std::cout << "dropped" << std::endl;
+                
+                Message::Send({
+                    Message::MOVE_PICK_UP,
+                    holding->GetID(),
+                    parent->GetID(),
+                    nullptr
+                });
+                
+                holding = nullptr;
+            } else {
+                auto res = Physics::Raycast(look_position, look_position + (2.0f * look_direction), -1 ^ Physics::COLL_PLAYER);
+            
+                if (res.collider) {
+                    std::cout << "picked up" << std::endl;
+                    
+                    holding = res.collider->GetParent();
+                } else {
+                    std::cout << "missed" << std::endl;
+                }
+            }
         }
 
         if (is_move && (event.type == Event::KEYDOWN || event.type == Event::KEYUP)) {
@@ -135,10 +187,16 @@ private:
 
     uint64_t vehicle = 0;
 
+    // wtf are these
     const glm::vec3 forwarddir = glm::vec3(0.0f, 0.0f, -1.0f);
     const glm::vec3 sidedir = glm::vec3(1.0f, 0.0f, 0.0f);
     const glm::vec3 updir = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::quat direction;
+    
+    vec3 look_direction = {0.0f, 1.0f, 0.0f};
+    vec3 look_position = {0.0f, 0.0f, 0.0f};
+    
+    Entity* holding = nullptr;
     
     bool move_forward = false;
     bool move_backward = false;

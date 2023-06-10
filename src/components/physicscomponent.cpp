@@ -40,6 +40,8 @@ void PhysicsComponent::Start(){
 }
 
 PhysicsComponent::~PhysicsComponent(){
+    RemoveAllConstraints();
+    
     DYNAMICS_WORLD->removeRigidBody(rigidbody);
     
     delete rigidbody;
@@ -244,6 +246,75 @@ vec3 PhysicsComponent::GetVelocity () {
         return {velocity.getX(), velocity.getY(), velocity.getZ()};
     } else {
         return {0.0f, 0.0f, 0.0f};
+    }
+}
+
+void PhysicsComponent::AddPointConstraint(vec3 offset) {
+    btTypedConstraint* constr = new btPoint2PointConstraint(
+        *this->rigidbody,
+        {offset.x, offset.y, offset.z}
+    );
+
+    this->constraints.push_back({
+        nullptr,
+        constr
+    });
+    
+    DYNAMICS_WORLD->addConstraint(constr);
+}
+
+void PhysicsComponent::AddPointConstraint(vec3 offset, PhysicsComponent* other, vec3 other_offset) {
+    // TODO: implement
+}
+
+/// Constraint removal helper function.
+void RemoveConstraintHelper(std::vector<PhysicsConstraint>& constraints, btTypedConstraint* removable) {
+    for (auto it = constraints.begin(); it < constraints.end(); it++) {
+        if (it->constraint == removable) {
+            constraints.erase(it);
+            return;
+        }
+    }
+}
+
+void PhysicsComponent::RemoveConstraint(PhysicsComponent* other) {
+    bool try_erasing = true;
+    
+    while (try_erasing) {
+        try_erasing = false;
+        
+        for (auto it = constraints.begin(); it < constraints.end(); it++) {
+            if (it->other == other) {
+                if (other) {
+                    RemoveConstraintHelper(other->constraints, it->constraint);
+                }
+                
+                DYNAMICS_WORLD->removeConstraint(it->constraint);
+                
+                delete it->constraint;
+                
+                constraints.erase(it);
+                try_erasing = true;
+                
+                break;
+            }
+        }
+    }
+}
+
+void PhysicsComponent::RemoveAllConstraints() {
+    while (constraints.size()) {
+        auto it = constraints.begin();
+        
+        if (it->other) {
+            RemoveConstraintHelper(it->other->constraints, it->constraint);
+        }
+        
+        delete it->constraint;
+        
+        DYNAMICS_WORLD->removeConstraint(it->constraint);
+        
+        constraints.erase(it);
     }
 }
 

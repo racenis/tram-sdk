@@ -12,8 +12,18 @@ class btCollisionShape;
 class btMotionState;
 class btRigidBody;
 class btActionInterface;
+class btTypedConstraint;
 
 namespace tram {
+
+struct PhysicsConstraint {
+    PhysicsComponent* other;
+    btTypedConstraint* constraint;
+};
+
+// TODO: hide all of BulletPhysics pointers
+// it would be a good idea to hide away all of these pointers behind an opaque
+// struct pointer
 
 class PhysicsComponent : public EntityComponent {
 public:
@@ -23,42 +33,48 @@ public:
     void Start();
 
     name_t GetModel();
-    void SetModel (name_t model);
+    void SetModel(name_t model);
 
-    void SetMass (float mass);
-    void SetShape (Physics::CollisionShape shape);
+    void SetMass(float mass);
+    void SetShape(Physics::CollisionShape shape);
 
-    void Push (const glm::vec3& direction);
+    void Push(const glm::vec3& direction);
 
-    void SetCollisionMask (uint32_t flags);
-    void SetCollisionGroup (uint32_t flags);
+    void SetCollisionMask(uint32_t flags);
+    void SetCollisionGroup(uint32_t flags);
     
     uint32_t GetCollisionMask();
     uint32_t GetCollisionGroup();
 
-    void SetDebugDrawing (bool drawing);
+    void SetDebugDrawing(bool drawing);
     void SetKinematic(bool kinematic);
 
-    void SetSleep (bool sleep);
+    void SetSleep(bool sleep);
     
     
-    void SetRotation (const glm::quat& rotation);
-    void SetLocation (const glm::vec3& location);
+    void SetRotation(const glm::quat& rotation);
+    void SetLocation(const glm::vec3& location);
 
-    void SetActivation (bool activation);
+    void SetActivation(bool activation);
     
-    void SetAngularFactor (const glm::vec3& factor);
-    void SetLinearFactor (const glm::vec3& factor);
+    void SetAngularFactor(const glm::vec3& factor);
+    void SetLinearFactor(const glm::vec3& factor);
 
-    void SetVelocity (const vec3& velocity);
-    vec3 GetVelocity ();
+    void SetVelocity(const vec3& velocity);
+    vec3 GetVelocity();
 
+    void AddPointConstraint(vec3 offset);
+    void AddPointConstraint(vec3 offset, PhysicsComponent* other, vec3 other_offset);
+    
+    void RemoveConstraint(PhysicsComponent* other);
+    void RemoveAllConstraints();
 private:
     ResourceProxy<Physics::CollisionModel> collision_model;
     btCollisionShape* collision_shape = nullptr;
     btMotionState* motion_state = nullptr;
     btRigidBody* rigidbody = nullptr;
     btActionInterface* action = nullptr;
+    std::vector<PhysicsConstraint> constraints;
 
     float rigidbody_mass = 1.0f;
 

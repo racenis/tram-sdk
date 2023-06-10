@@ -31,6 +31,8 @@ namespace tram {
         
         name_t model;
         name_t collmodel;
+        
+        id_t holder = 0;
     };
 }
 

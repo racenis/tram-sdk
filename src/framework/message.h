@@ -19,6 +19,7 @@ struct Message {
         ACTIVATE,
         GET_IN,
         GET_OUT,
+        MOVE_PICK_UP,
         KILL,
         LAST_MESSAGE
     };

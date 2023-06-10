@@ -9,6 +9,7 @@
 #include <components/physicscomponent.h>
 
 #include <framework/serialization.h>
+#include <framework/message.h>
 
 namespace tram {
 
@@ -97,7 +98,25 @@ void Crate::Serialize() {
 }
 
 void Crate::MessageHandler(Message& msg){
-    return;
+    if (msg.type != Message::MOVE_PICK_UP) {
+        return;
+    }
+    
+    holder = msg.sender;
+    
+    if (msg.data) {
+        physicscomponent->SetSleep(false);
+        physicscomponent->SetKinematic(true);
+        //physicscomponent->SetLocation(*(vec3*)msg.data);
+        //rendercomponent->SetLocation(*(vec3*)msg.data);
+        this->location = *(vec3*)msg.data;
+        UpdateParameters();
+    } else {
+        physicscomponent->SetKinematic(false);
+        UpdateParameters();
+    }
+
+    
 }
 
 void Crate::Testingolingo() {
