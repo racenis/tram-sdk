@@ -34,11 +34,11 @@ bool IsWallNormal(vec3 normal) {
 }
 
 bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
-    triggercomp->SetLocation(position + vec3(0.0f, 0.35f, 0.0f));
+    triggercomp->SetLocation(position + vec3(0.0f, 0.35f * 0.5f, 0.0f));
     auto wall_collisions = triggercomp->Poll();
 
     if (!wall_collisions.size()) {
-        return false;
+        return true;
     }
         
     float nearest_wall = INFINITY;
@@ -62,11 +62,11 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
     
     //Render::AddLine(position, position + penetration * push_dir, Render::COLOR_RED);
     
-    //std::cout << penetration << std::endl;
+    //std::cout << "pen: " << penetration << " ";
     
     position += push_dir * penetration;
     
-    return true;
+    return penetration < 0.01f;
 }
 
 /// Performs the action.
@@ -133,10 +133,7 @@ void ControllerComponent::Perform() {
     vec3 old_pos = parent->GetLocation();
     quat old_rot = parent->GetRotation();
     vec3 new_pos = old_pos + velocity;
-    
-    for (int i = 0; i < 3 && PushOutOfWall(new_pos, width, triggercomp); i++);
-    
-    
+        
     // check if new position is on the ground
     auto ground_collisions = Physics::Shapecast(
         Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f),
@@ -211,7 +208,16 @@ void ControllerComponent::Perform() {
         is_in_air = true;
     }
     
-    std::cout << new_pos.y << std::endl;
+    bool push_success = false;
+    for (int i = 0; i < 3 && !(push_success = PushOutOfWall(new_pos, width, triggercomp)); i++);// std::cout << "push " << i << " ";
+    
+    if (!push_success) {
+        std::cout << "fucky wucky" << std::endl;
+        return;
+    }
+    
+    //std::cout << std::endl;
+    //std::cout << new_pos.y << std::endl;
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
