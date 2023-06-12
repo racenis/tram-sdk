@@ -34,22 +34,22 @@ typedef void* light_t;
 void Init();
 void Render();
 
-void Project (const glm::vec3& point, glm::vec3& result);
+void Project(const glm::vec3& point, glm::vec3& result);
 
-void SetSunDirection (vec3 direction, layer_t layer = 0);
-void SetSunColor (color_t color, layer_t layer = 0);
-void SetAmbientColor (color_t color, layer_t layer = 0);
+void SetSunDirection(vec3 direction, layer_t layer = 0);
+void SetSunColor(color_t color, layer_t layer = 0);
+void SetAmbientColor(color_t color, layer_t layer = 0);
 
-void SetCameraPosition (vec3 position, layer_t layer = 0);
-void SetCameraRotation (quat rotation, layer_t layer = 0);
+void SetCameraPosition(vec3 position, layer_t layer = 0);
+void SetCameraRotation(quat rotation, layer_t layer = 0);
 
-vec3 GetCameraPosition (layer_t layer = 0);
-quat GetCameraRotation (layer_t layer = 0);
+vec3 GetCameraPosition(layer_t layer = 0);
+quat GetCameraRotation(layer_t layer = 0);
 
 void SetSun(float timeOfDay);
 
-void AddLine(const glm::vec3& from, const glm::vec3& to, const color_t& color);
-void AddLineMarker(const glm::vec3& location, const color_t& color);
+void AddLine(vec3 from, vec3 to, color_t color);
+void AddLineMarker(vec3 location, color_t color);
 void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color);
 
 const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
@@ -66,7 +66,8 @@ enum VertexFormats : vertexformat_t {
     VERTEX_STATIC,
     VERTEX_DYNAMIC,
     VERTEX_SPRITE,
-    VERTEX_LINE
+    VERTEX_LINE,
+    VERTEX_LAST
 };
 
 enum MaterialTypes : materialtype_t {
@@ -76,8 +77,15 @@ enum MaterialTypes : materialtype_t {
     MATERIAL_MSDF,
     MATERIAL_GLYPH,
     MATERIAL_WATER,
-    MATERIAL_FLAT_COLOR
+    MATERIAL_FLAT_COLOR,
+    MATERIAL_LAST
 };
+
+vertexformat_t RegisterVertexFormat(const char* name);
+materialtype_t RegisterMaterialType(const char* name);
+
+const char* GetVertexFormatName(vertexformat_t type);
+const char* GetMaterialTypeName(materialtype_t type);
 
 }
 

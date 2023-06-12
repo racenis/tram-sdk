@@ -39,8 +39,8 @@ void RemoveDrawListEntry (drawlistentry_t entry);
 
 uint32_t CreateTexture (ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
 
-void CreateIndexedVertexArray (const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
-void CreateVertexArray (const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle);
+void CreateIndexedVertexArray (VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
+void CreateVertexArray (VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle);
 void UpdateVertexArray (vertexhandle_t vertex_buffer_handle, size_t data_size, void* data);
 
 void RenderFrame ();

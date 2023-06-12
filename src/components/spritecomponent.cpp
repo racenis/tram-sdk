@@ -21,7 +21,7 @@ SpriteComponent::~SpriteComponent() {
 void SpriteComponent::Start() {
     assert(!is_ready);
 
-    CreateVertexArray(VERTEX_DEFINITION<SpriteVertex>, vertex_buffer, vertex_array);
+    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_buffer, vertex_array);
     
     auto texture_handle = sprite->GetMaterial()->GetTexture();
     

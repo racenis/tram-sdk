@@ -384,7 +384,7 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
     return texture;
 }
 
-void CreateIndexedVertexArray(const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
     glGenBuffers(1, &vertex_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
     glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
@@ -397,13 +397,13 @@ void CreateIndexedVertexArray(const std::vector<VertexAttribute>& vertex_format,
 
     glBindVertexArray(vertex_array_handle);
 
-    for (size_t i = 0; i < vertex_format.size(); i++) {
-        uint32_t opengl_type = vertex_format[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
+        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
         
         if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format[i].size, opengl_type, GL_FALSE, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
         } else {
-            glVertexAttribIPointer(i, vertex_format[i].size, opengl_type, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
         }
         
         glEnableVertexAttribArray(i);
@@ -416,7 +416,7 @@ void CreateIndexedVertexArray(const std::vector<VertexAttribute>& vertex_format,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void CreateVertexArray(const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
+void CreateVertexArray(VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
     glGenBuffers(1, &vertex_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
@@ -425,13 +425,13 @@ void CreateVertexArray(const std::vector<VertexAttribute>& vertex_format, vertex
 
     glBindVertexArray(vertex_array_handle);
 
-    for (size_t i = 0; i < vertex_format.size(); i++) {
-        uint32_t opengl_type = vertex_format[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
+        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
         
         if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format[i].size, opengl_type, GL_FALSE, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
         } else {
-            glVertexAttribIPointer(i, vertex_format[i].size, opengl_type, vertex_format[i].stride, (void*)vertex_format[i].offset);
+            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
         }
         
         glEnableVertexAttribArray(i);

@@ -52,7 +52,7 @@ void Init () {
     
     
     // this is for rendering lines
-    CreateVertexArray (VERTEX_DEFINITION<LineVertex>, colorlines_vertex_buffer, colorlines_vertex_array);
+    CreateVertexArray (GetVertexDefinition(VERTEX_LINE), colorlines_vertex_buffer, colorlines_vertex_array);
     colorlines_entry = InsertDrawListEntry ();
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
@@ -136,7 +136,95 @@ quat GetCameraRotation (layer_t layer) {
     return CAMERA_ROTATION [layer];
 }
 
+void AddLine(vec3 from, vec3 to, vec3 color) {
+    colorlines.push_back({from, color});
+    colorlines.push_back({to, color});
+}
+
+void AddLineMarker(vec3 location, vec3 color) {
+    AddLine (location + vec3(-1.0f, 0.0f, 0.0f), location + vec3(1.0f, 0.0f, 0.0f), color);
+    AddLine (location + vec3(0.0f, -1.0f, 0.0f), location + vec3(0.0f, 1.0f, 0.0f), color);
+    AddLine (location + vec3(0.0f, 0.0f, -1.0f), location + vec3(0.0f, 0.0f, 1.0f), color);
+}
+
+void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color) {
+    vec3 point1 = center + (rotation * vec3 {min.x, min.y, min.z});
+    vec3 point2 = center + (rotation * vec3 {max.x, max.y, max.z});
+    vec3 point3 = center + (rotation * vec3 {min.x, max.y, max.z});
+    vec3 point4 = center + (rotation * vec3 {max.x, min.y, max.z});
+    vec3 point5 = center + (rotation * vec3 {max.x, max.y, min.z});
+    vec3 point6 = center + (rotation * vec3 {max.x, min.y, min.z});
+    vec3 point7 = center + (rotation * vec3 {min.x, max.y, min.z});
+    vec3 point8 = center + (rotation * vec3 {min.x, min.y, max.z});
+    
+    AddLine(point1, point6, color);
+    AddLine(point1, point7, color);
+    AddLine(point1, point8, color);
+    
+    AddLine(point2, point3, color);
+    AddLine(point2, point4, color);
+    AddLine(point2, point5, color);
+    
+    AddLine(point3, point7, color);
+    AddLine(point3, point8, color);
+    
+    AddLine(point4, point6, color);
+    AddLine(point4, point8, color);
+    
+    AddLine(point5, point6, color);
+    AddLine(point5, point7, color);
+}
+
+const uint32_t MAX_MATERIAL_TYPES = 10;
+const uint32_t MAX_VERTEX_FORMATS = 10;
+
+static uint32_t last_material_type = MATERIAL_LAST;
+static uint32_t last_vertex_format = MATERIAL_LAST;
+
+static const char* material_type_names[MAX_MATERIAL_TYPES] = {
+    "VERTEX_STATIC",
+    "VERTEX_DYNAMIC",
+    "VERTEX_SPRITE",
+    "VERTEX_LINE"
+};
+
+static const char* vertex_format_names[MAX_VERTEX_FORMATS] = {
+    "MATERIAL_TEXTURE",
+    "MATERIAL_TEXTURE_ALPHA",
+    "MATERIAL_LIGHTMAP",
+    "MATERIAL_MSDF",
+    "MATERIAL_GLYPH",
+    "MATERIAL_WATER",
+    "MATERIAL_FLAT_COLOR"
+};
+
+vertexformat_t RegisterVertexFormat(const char* name) {
+    assert(last_vertex_format < MAX_MATERIAL_TYPES);
+    
+    vertex_format_names[last_vertex_format] = name;
+    
+    return last_vertex_format++;
+}
+
+materialtype_t RegisterMaterialType(const char* name) {
+    assert(last_material_type < MAX_MATERIAL_TYPES);
+    
+    material_type_names[last_material_type] = name;
+    
+    return last_material_type++;
+}
+
+const char* GetVertexFormatName(vertexformat_t type) {
+    assert(type < MAX_VERTEX_FORMATS);
+    
+    return vertex_format_names[type];
+}
+
+const char* GetMaterialTypeName(materialtype_t type) {
+    assert(type < MAX_MATERIAL_TYPES);
+    
+    return material_type_names[type];
 }
 
 
-
+}

@@ -7,12 +7,6 @@
 #include <render/vertices.h>
 
 namespace tram::Render {
-    
-void AddLineMarker (const vec3& location, const vec3& color) {
-    AddLine (location + vec3(-1.0f, 0.0f, 0.0f), location + vec3(1.0f, 0.0f, 0.0f), color);
-    AddLine (location + vec3(0.0f, -1.0f, 0.0f), location + vec3(0.0f, 1.0f, 0.0f), color);
-    AddLine (location + vec3(0.0f, 0.0f, -1.0f), location + vec3(0.0f, 0.0f, 1.0f), color);
-}
 
 // the implementation of this function is extremely inefficient
 // ignore that, i'll eventually make a better function
@@ -98,37 +92,7 @@ void SetSun (float timeOfDay) {
     SetAmbientColor(glm::mix(suns[t].ambientcolor, suns[nt].ambientcolor, mixf) / 256.0f*1.2f);
 }
 
-void AddLine (const glm::vec3& from, const glm::vec3& to, const glm::vec3& color) {
-    colorlines.push_back({from, color});
-    colorlines.push_back({to, color});
-}
 
-void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color) {
-    vec3 point1 = center + (rotation * vec3 {min.x, min.y, min.z});
-    vec3 point2 = center + (rotation * vec3 {max.x, max.y, max.z});
-    vec3 point3 = center + (rotation * vec3 {min.x, max.y, max.z});
-    vec3 point4 = center + (rotation * vec3 {max.x, min.y, max.z});
-    vec3 point5 = center + (rotation * vec3 {max.x, max.y, min.z});
-    vec3 point6 = center + (rotation * vec3 {max.x, min.y, min.z});
-    vec3 point7 = center + (rotation * vec3 {min.x, max.y, min.z});
-    vec3 point8 = center + (rotation * vec3 {min.x, min.y, max.z});
-    
-    AddLine(point1, point6, color);
-    AddLine(point1, point7, color);
-    AddLine(point1, point8, color);
-    
-    AddLine(point2, point3, color);
-    AddLine(point2, point4, color);
-    AddLine(point2, point5, color);
-    
-    AddLine(point3, point7, color);
-    AddLine(point3, point8, color);
-    
-    AddLine(point4, point6, color);
-    AddLine(point4, point8, color);
-    
-    AddLine(point5, point6, color);
-    AddLine(point5, point7, color);
-}
+
 
 }

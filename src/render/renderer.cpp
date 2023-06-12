@@ -49,10 +49,10 @@ struct RegisteredVertexDefinition {
 
 // here's the 4 default vertices, all defined up
 static RegisteredVertexDefinition all_vertex_definitions[MAX_VERTEX_TYPES] = {
-    {true, vertex_static_definition},
-    {true, vertex_dynamic_definition},
-    {true, vertex_sprite_definition},
-    {true, vertex_line_definition}
+    {true, {vertex_static_definition,   sizeof(vertex_static_definition)    / sizeof(VertexAttribute)}},
+    {true, {vertex_dynamic_definition,  sizeof(vertex_dynamic_definition)   / sizeof(VertexAttribute)}},
+    {true, {vertex_sprite_definition,   sizeof(vertex_sprite_definition)    / sizeof(VertexAttribute)}},
+    {true, {vertex_line_definition,     sizeof(vertex_line_definition)      / sizeof(VertexAttribute)}}
 };
 
 /// Registers a VertexDefinition for a specified vertex format.
