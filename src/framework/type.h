@@ -11,6 +11,7 @@ namespace tram {
 /// Type enumeration for serialization, etc.
 
 enum Type : uint32_t {
+    TYPE_UNDEFINED, //< When you don't know what the type is.
     TYPE_BOOL,      //< Bool. Defaults to C++ bool type.
     TYPE_INT,       //< Generic signed integer. Defaults to a int32_t.
     TYPE_UINT,      //< Generic unsigned integer. Defaults to a uint32_t.
@@ -26,7 +27,10 @@ enum Type : uint32_t {
     TYPE_UINT32,    //< Unigned 32 bit long integer.
     TYPE_UINT64,    //< Unigned 64 bit long integer.
     TYPE_FLOAT32,   //< Normal precision floating-point.
-    TYPE_FLOAT64    //< Double precision floating-point.
+    TYPE_FLOAT64,   //< Double precision floating-point.
+    TYPE_VEC2,      //< Normal precision floating-point 2 element vector.
+    TYPE_VEC3,      //< Normal precision floating-point 3 element vector.
+    TYPE_VEC4,      //< Normal precision floating-point 4 element vector.
 };
 
 }

@@ -4,6 +4,8 @@
 #include <render/opengl/renderer.h>
 #include <render/opengl/api.h>
 
+#include <templates/octree.h>
+
 #ifdef __EMSCRIPTEN__
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
@@ -382,7 +384,7 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
     return texture;
 }
 
-void CreateIndexedVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+void CreateIndexedVertexArray(const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
     glGenBuffers(1, &vertex_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
     glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
@@ -414,7 +416,7 @@ void CreateIndexedVertexArray(const VertexDefinition& vertex_format, vertexhandl
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void CreateVertexArray(const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
+void CreateVertexArray(const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
     glGenBuffers(1, &vertex_buffer_handle);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);

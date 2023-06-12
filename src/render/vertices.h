@@ -4,27 +4,13 @@
 #ifndef RENDER_VERTICES_H
 #define RENDER_VERTICES_H
 
+#include <render/renderer.h>
+
 #include <render/render.h>
 
 namespace tram::Render {
 
-/// Atributes for vertex buffer vertices.
-struct VertexAttribute {
-    enum {
-        FLOAT32,
-        INT32,
-        UINT32
-    } type;
-    uint32_t size;      //< Size of the attribute, in bytes.
-    uint32_t stride;    //< Distance between same attribute in different vertices, in bytes.
-    uint64_t offset;    //< Offset of beginning of attribute in vertex buffer.
-};
-
-typedef std::vector<VertexAttribute> VertexDefinition; // TODO: rename to VertexFormatDefinition .. or get rid of it altogether
-
-void RegisterVertexDefinition (vertexformat_t format, VertexDefinition defintion);
-
-template <typename T> VertexDefinition VERTEX_DEFINITION;
+template <typename T> std::vector<VertexAttribute> VERTEX_DEFINITION;
 
 struct StaticModelVertex {
     vec3 co;            //< Vertex position in object space.
@@ -34,7 +20,7 @@ struct StaticModelVertex {
     uint32_t texture;   //< Vertex texture material index.
 };
 
-template <> inline VertexDefinition VERTEX_DEFINITION <StaticModelVertex> = {
+template <> inline std::vector<VertexAttribute> VERTEX_DEFINITION <StaticModelVertex> = {
     {VertexAttribute::FLOAT32, 3, sizeof(StaticModelVertex), offsetof(StaticModelVertex, co)},
     {VertexAttribute::FLOAT32, 3, sizeof(StaticModelVertex), offsetof(StaticModelVertex, normal)},
     {VertexAttribute::FLOAT32, 2, sizeof(StaticModelVertex), offsetof(StaticModelVertex, tex)},
@@ -51,7 +37,7 @@ struct DynamicModelVertex {
     uint32_t texture;   //< Vertex texture material index.
 };
 
-template <> inline VertexDefinition VERTEX_DEFINITION <DynamicModelVertex> = {
+template <> inline std::vector<VertexAttribute> VERTEX_DEFINITION <DynamicModelVertex> = {
     {VertexAttribute::FLOAT32, 3, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, co)},
     {VertexAttribute::FLOAT32, 3, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, normal)},
     {VertexAttribute::FLOAT32, 2, sizeof(DynamicModelVertex), offsetof(DynamicModelVertex, tex)},
@@ -69,7 +55,7 @@ struct SpriteVertex {
     uint32_t texture;   //< Vertex texture material index.
 };
 
-template <> inline VertexDefinition VERTEX_DEFINITION <SpriteVertex> = {
+template <> inline std::vector<VertexAttribute> VERTEX_DEFINITION <SpriteVertex> = {
     {VertexAttribute::FLOAT32, 3, sizeof(SpriteVertex), 0},
     {VertexAttribute::FLOAT32, 2, sizeof(SpriteVertex), offsetof(SpriteVertex, texco)},
     {VertexAttribute::FLOAT32, 3, sizeof(SpriteVertex), offsetof(SpriteVertex, color)},
@@ -85,7 +71,7 @@ struct LineVertex {
     vec3 color;         //< Vertex color.
 };
 
-template <> inline VertexDefinition VERTEX_DEFINITION <LineVertex> = {
+template <> inline std::vector<VertexAttribute> VERTEX_DEFINITION <LineVertex> = {
     {VertexAttribute::FLOAT32, 3, sizeof(LineVertex), 0},
     {VertexAttribute::FLOAT32, 3, sizeof(LineVertex), offsetof(LineVertex, color)}
 };

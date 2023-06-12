@@ -11,6 +11,7 @@
 #include <render/api.h>
 #include <render/vertices.h>
 #include <render/sprite.h>
+#include <render/material.h>
 
 namespace tram::GUI {
 

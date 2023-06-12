@@ -147,7 +147,13 @@ void WorldCell::LoadFromDisk() {
             
             std::cout << "found transition " << transition_name << " into " << transition_into << std::endl;
             
-            Transition* transition = Transition::Make(transition_name, this, WorldCell::Find(transition_into));
+            WorldCell* into_ptr = WorldCell::Find(transition_into);
+            
+            if (!into_ptr) {
+                std::cout << "Transition into cell '" << transition_into << "' defined in " << path << ", but can't find said cell." << std::endl;
+            }
+            
+            Transition* transition = Transition::Make(transition_name, this, into_ptr);
             
             size_t point_count = file.read_int32();
 

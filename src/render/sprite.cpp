@@ -3,6 +3,7 @@
 
 #include <render/sprite.h>
 #include <render/renderer.h>
+#include <render/material.h>
 
 #include <framework/async.h>
 #include <framework/logging.h>

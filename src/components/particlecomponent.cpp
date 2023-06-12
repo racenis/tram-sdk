@@ -4,6 +4,7 @@
 #include <render/api.h>
 #include <render/vertices.h>
 #include <components/particlecomponent.h>
+#include <render/material.h>
 
 namespace tram {
 

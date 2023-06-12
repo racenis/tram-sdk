@@ -4,6 +4,7 @@
 #ifndef RENDER_OPENGL_RENDERER_H
 #define RENDER_OPENGL_RENDERER_H
 
+#include <render/render.h>
 #include <render/renderer.h>
 
 namespace tram::Render::OpenGL {

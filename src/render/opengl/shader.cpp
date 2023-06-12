@@ -23,6 +23,14 @@ void StoreShaderForLater (vertexformat_t vertex_format, materialtype_t material_
     compiled_shaders.push_back(std::tuple(vertex_format, material_type, shader));
 }
 
+/* ideally you would have some sort of a struct, like
+ * struct { const char* shader name/path, int compiled shader program };
+ * and you would also have a std::vector full of them.
+ * and every time you register a thing, you would register.
+ * good.
+ */
+
+
 uint32_t LoadVertexShader (const char* path) {
     std::ifstream file;
     std::stringstream filestream;

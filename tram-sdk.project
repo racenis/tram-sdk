@@ -61,6 +61,8 @@
       <File Name="src/components/armaturecomponent.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/query.h"/>
+      <File Name="src/framework/value.h"/>
       <File Name="src/framework/entitycomponent.cpp"/>
       <File Name="src/framework/serialization.h"/>
       <File Name="src/framework/navmesh.h"/>

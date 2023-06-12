@@ -119,7 +119,7 @@ Entity* Entity::Make(name_t type, File* file) {
         vec3 {file->read_float32(), file->read_float32(), file->read_float32()}
     };
     
-    std::vector<SerializedField> fields;
+    std::vector<Value> fields;
     
     // TODO: do not the the. is is the.
     

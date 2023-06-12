@@ -4,12 +4,7 @@
 #ifndef TRAM_SDK_RENDER_RENDERER_H
 #define TRAM_SDK_RENDER_RENDERER_H
 
-#include <templates/octree.h>
-
 #include <render/render.h>
-#include <render/model.h>
-
-#include <render/vertices.h>
 
 namespace tram::Render {
 
@@ -39,6 +34,27 @@ enum TextureFilter {
     TEXTUREFILTER_LINEAR,           //< Textures use linear filtering.
     TEXTUREFILTER_LINEAR_MIPMAPPED  //< Textures use linear filtering and are mipmapped.
 };
+
+/// Atributes for vertex buffer vertices.
+struct VertexAttribute {
+    enum {
+        FLOAT32,
+        INT32,
+        UINT32
+    } type;
+    uint32_t size;      //< Size of the attribute, in bytes.
+    uint32_t stride;    //< Distance between same attribute in different vertices, in bytes.
+    uint64_t offset;    //< Offset of beginning of attribute in vertex buffer.
+};
+
+struct VertexDefinition {
+    const VertexAttribute* attributes;
+    size_t attribute_count;
+};
+
+void RegisterVertexDefinition (vertexformat_t format, VertexDefinition definition);
+VertexDefinition GetVertexDefinition(vertexformat_t format);
+
 
 }
 

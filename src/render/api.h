@@ -80,12 +80,12 @@ inline uint32_t CreateTexture (ColorMode color_mode, TextureFilter texture_filte
 }
 
 /// Creates an indexed vertex array.
-inline void CreateIndexedVertexArray (const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+inline void CreateIndexedVertexArray (const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
     return OpenGL::CreateIndexedVertexArray(vertex_format, vertex_buffer_handle, index_buffer_handle, vertex_array_handle, vertex_size, vertex_data, index_size, index_data);
 }
 
 /// Creates a regular vertex array.
-inline void CreateVertexArray (const VertexDefinition& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
+inline void CreateVertexArray (const std::vector<VertexAttribute>& vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
     return OpenGL::CreateVertexArray(vertex_format, vertex_buffer_handle, vertex_array_handle);
 }
 

@@ -3,6 +3,7 @@
 
 #include <render/api.h>
 #include <render/vertices.h>
+#include <render/material.h>
 #include <components/spritecomponent.h>
 #include <framework/logging.h>
 
