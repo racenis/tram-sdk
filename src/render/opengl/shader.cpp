@@ -16,17 +16,19 @@
 
 #include <framework/logging.h>
 
+#include <platform/file.h>
+
 #include <render/opengl/renderer.h>
 
 namespace tram::Render::OpenGL {
 
 struct VertexShader {
-    const char* name = nullptr;
+    name_t name;
     uint32_t compiled_shader;
 };
 
 struct FragmentShader {
-    const char* name = nullptr;
+    name_t name;
     uint32_t compiled_shader;
 };    
 
@@ -36,8 +38,8 @@ struct LinkedShader {
     
     uint32_t linked_shader;
     
-    const char* vertex_shader = nullptr;
-    const char* fragment_shader = nullptr;
+    name_t vertex_shader;
+    name_t fragment_shader;
 };
 
 const uint32_t MAX_MATERIAL_TYPES = 10;
@@ -58,53 +60,49 @@ static LinkedShader linked_shaders[MAX_LINKED_SHADERS];
 
 static uint32_t linked_shader_lookup_table[MAX_VERTEX_FORMATS][MAX_MATERIAL_TYPES] = {0};
 
-uint32_t LoadVertexShader(const char* path) {
+#ifdef __EMSCRIPTEN__
+    const char* shader_path = "shaders/gles3/";
+#else
+    const char* shader_path = "shaders/opengl3/";
+#endif
+
+uint32_t LoadVertexShader(name_t name) {
     for (size_t i = 0; i < last_vertex_shader; i++) {
-        if (strcmp(vertex_shaders[i].name, path) == 0) {
+        if (vertex_shaders[i].name == name) {
             return vertex_shaders[i].compiled_shader;
         }
     }
     
     assert(last_vertex_shader < MAX_VERTEX_SHADERS);
     
-    // TODO: swap out this stringstream loader for platform loader.
+    char path[256];
+    strcpy(path, shader_path);
+    strcat(path, name);
+    strcat(path, ".vert");
     
-    std::ifstream file;
-    std::stringstream filestream;
-    std::string shadercode;
-    const char* shadercode_c;
-    int32_t status;
-    char compilemsg[419];
-    uint32_t compiled_program;
-
-    assert(path);
-
-    file.open(path);
-    if(!file.is_open()){
-        std::cout << "Can't find shader: " << path << std::endl;
-        abort();
+    FileReader file(path);
+    
+    if (!file.is_open()) {
+        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Can't find vertex shader source file {}!", UID(path));
     }
 
-    filestream << file.rdbuf();
-    shadercode = filestream.str();
-
-    file.close();
-
-    shadercode_c = shadercode.c_str();
-
-    compiled_program = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(compiled_program, 1, &shadercode_c, NULL);
+    uint32_t compiled_program = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(compiled_program, 1, &file.contents, NULL);
     glCompileShader(compiled_program);
 
-
-    glGetShaderiv(compiled_program, GL_COMPILE_STATUS, &status);
-    if (!status){
-        glGetShaderInfoLog(compiled_program, 419, NULL, compilemsg);
-        std::cout << "Vertex shader " << path << " compile error:" << std::endl << compilemsg << std::endl;
+    int32_t compile_status;
+    glGetShaderiv(compiled_program, GL_COMPILE_STATUS, &compile_status);
+    
+    if (!compile_status) {
+        char compile_error[420];
+        glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
+        
+        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Vertex shader {} compile error:\n{}", UID(name), UID(compile_error));
+        
         abort();
     }
     
-    vertex_shaders[last_vertex_shader].name = path;
+    vertex_shaders[last_vertex_shader].name = name;
     vertex_shaders[last_vertex_shader].compiled_shader = compiled_program;
 
     last_vertex_shader++;
@@ -112,47 +110,39 @@ uint32_t LoadVertexShader(const char* path) {
     return compiled_program;   
 }
 
-uint32_t LoadFragmentShader(const char* path) {
+uint32_t LoadFragmentShader(name_t name) {
     for (size_t i = 0; i < last_fragment_shader; i++) {
-        if (strcmp(fragment_shaders[i].name, path) == 0) {
+        if (fragment_shaders[i].name == name) {
             return fragment_shaders[i].compiled_shader;
         }
     }
     
     assert(last_fragment_shader < MAX_FRAGMENT_SHADERS);
     
-    std::ifstream file;
-    std::stringstream filestream;
-    std::string shadercode;
-    const char* shadercode_c;
-    int32_t status;
-    char compilemsg[419];
-    uint32_t compiled_program;
-
-    assert(path);
-
-    file.open(path);
-    if(!file.is_open()){
-        std::cout << "Can't find shader: " << path << std::endl;
-        abort();
+    char path[256];
+    strcpy(path, shader_path);
+    strcat(path, name);
+    strcat(path, ".frag");
+    
+    FileReader file(path);
+    
+    if (!file.is_open()) {
+        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Can't find fragment shader source file {}!", UID(path));
     }
 
-    filestream << file.rdbuf();
-    shadercode = filestream.str();
-
-    file.close();
-
-    shadercode_c = shadercode.c_str();
-
-    compiled_program = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(compiled_program, 1, &shadercode_c, NULL);
+    uint32_t compiled_program = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(compiled_program, 1, &file.contents, NULL);
     glCompileShader(compiled_program);
 
-
-    glGetShaderiv(compiled_program, GL_COMPILE_STATUS, &status);
-    if (!status){
-        glGetShaderInfoLog(compiled_program, 419, NULL, compilemsg);
-        std::cout << "Fragment shader " << path << " compile error:" << std::endl << compilemsg << std::endl;
+    int32_t compile_status;
+    glGetShaderiv(compiled_program, GL_COMPILE_STATUS, &compile_status);
+    
+    if (!compile_status) {
+        char compile_error[420];
+        glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
+        
+        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Fragment shader {} compile error:\n{}", UID(name), UID(compile_error));
+        
         abort();
     }
 
@@ -165,35 +155,50 @@ uint32_t LoadFragmentShader(const char* path) {
 }
 
 uint32_t LinkShader(uint32_t vertex_shader, uint32_t fragment_shader) {
-    int32_t status;
-    char compilemsg[421];
-    uint32_t compiled_shader;
-
     assert(vertex_shader);
     assert(fragment_shader);
     
+    uint32_t linked_shader = glCreateProgram();
+    glAttachShader(linked_shader, vertex_shader);
+    glAttachShader(linked_shader, fragment_shader);
+    glLinkProgram(linked_shader);
 
-    compiled_shader = glCreateProgram();
-    glAttachShader(compiled_shader, vertex_shader);
-    glAttachShader(compiled_shader, fragment_shader);
-    glLinkProgram(compiled_shader);
-
-    glGetProgramiv(compiled_shader, GL_LINK_STATUS, &status);
-    if (!status){
-        glGetShaderInfoLog(compiled_shader, 421, NULL, compilemsg);
-        std::cout << "Shader link error: " << std::endl << compilemsg << std::endl;
+    int32_t link_status;
+    glGetProgramiv(linked_shader, GL_LINK_STATUS, &link_status);
+    
+    if (!link_status) {
+        char link_error[420];
+        glGetShaderInfoLog(linked_shader, 420, NULL, link_error);
+        
+        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Shader link error:\n{}", UID(link_error));
+        
         abort();
     }
+    
+    glUseProgram(linked_shader);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[0]"), 0);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[1]"), 1);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[2]"), 2);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[3]"), 3);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[4]"), 4);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[5]"), 5);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[6]"), 6);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[7]"), 7);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[8]"), 8);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[9]"), 9);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[10]"), 10);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[11]"), 11);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[12]"), 12);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[13]"), 13);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[14]"), 14);
+    glUniform1i(glGetUniformLocation(linked_shader, "sampler[15]"), 15);
+    glUseProgram(0);
 
-    return compiled_shader;
+    return linked_shader;
 }
 
 void BindTextures(uint32_t shader) {        
-    glUseProgram(shader);
-    for (unsigned int i = 0; i < 16; i++){
-        std::string ff = "sampler[" + std::to_string(i) + "]";
-        glUniform1i(glGetUniformLocation(shader, ff.c_str()), i);
-    }
+
 }
 
 void BindUniformBlock(const char* name, uint32_t binding) {
@@ -210,7 +215,7 @@ void BindUniformBlock(const char* name, uint32_t binding) {
 
 void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader) {
     for (size_t i = 0; i < last_linked_shader; i++) {
-        if (strcmp(linked_shaders[i].vertex_shader, vertex_shader) == 0 && strcmp(linked_shaders[i].fragment_shader, fragment_shader) == 0) {
+        if (linked_shaders[i].vertex_shader == vertex_shader && linked_shaders[i].fragment_shader == fragment_shader) {
             linked_shader_lookup_table[format][type] = i;
             return;
         }
@@ -252,32 +257,19 @@ uint32_t FindShader(vertexformat_t format, materialtype_t type) {
 
 void CompileShaders(){
     std::cout << "loading shaders" << std::endl;
-#ifdef __EMSCRIPTEN__
-    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "shaders/gles3/normal_static.vert", "shaders/gles3/normal_static.frag");
-    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    "shaders/gles3/normal_static.vert", "shaders/gles3/normal_static_alpha.frag");
-    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE,          "shaders/gles3/normal_dynamic.vert", "shaders/gles3/normal_dynamic.frag");
-    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE_ALPHA,    "shaders/gles3/normal_dynamic.vert", "shaders/gles3/normal_dynamic_alpha.frag");
-    RegisterShader(VERTEX_STATIC,   MATERIAL_WATER,            "shaders/gles3/normal_static.vert", "shaders/gles3/normal_water.frag");
-    RegisterShader(VERTEX_SPRITE,   MATERIAL_TEXTURE_ALPHA,    "shaders/gles3/normal_sprite.vert", "shaders/gles3/normal_sprite.frag");
-    RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       "shaders/gles3/line.vert", "shaders/gles3/line.frag");
-    RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,             "shaders/gles3/text.vert", "shaders/gles3/text.frag");
-    RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,            "shaders/gles3/glyph.vert", "shaders/gles3/glyph.frag");
-#else
-    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "shaders/opengl3/normal_static.vert", "shaders/opengl3/normal_static.frag");
-    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    "shaders/opengl3/normal_static.vert", "shaders/opengl3/normal_static_alpha.frag");
-    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE,          "shaders/opengl3/normal_dynamic.vert", "shaders/opengl3/normal_dynamic.frag");
-    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE_ALPHA,    "shaders/opengl3/normal_dynamic.vert", "shaders/opengl3/normal_dynamic_alpha.frag");
-    RegisterShader(VERTEX_STATIC,   MATERIAL_WATER,            "shaders/opengl3/normal_static.vert", "shaders/opengl3/normal_water.frag");
-    RegisterShader(VERTEX_SPRITE,   MATERIAL_TEXTURE_ALPHA,    "shaders/opengl3/normal_sprite.vert", "shaders/opengl3/normal_sprite.frag");
-    RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       "shaders/opengl3/line.vert", "shaders/opengl3/line.frag");
-    RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,             "shaders/opengl3/text.vert", "shaders/opengl3/text.frag");
-    RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,            "shaders/opengl3/glyph.vert", "shaders/opengl3/glyph.frag");
-#endif
 
-
+    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "normal_static",     "normal_static");
+    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    "normal_static",     "normal_static_alpha");
+    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE,          "normal_dynamic",    "normal_dynamic");
+    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE_ALPHA,    "normal_dynamic",    "normal_dynamic_alpha");
+    RegisterShader(VERTEX_STATIC,   MATERIAL_WATER,            "normal_static",     "normal_water");
+    RegisterShader(VERTEX_SPRITE,   MATERIAL_TEXTURE_ALPHA,    "normal_sprite",     "normal_sprite");
+    RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       "line",              "line");
+    RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,             "text",              "text");
+    RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,            "glyph",             "glyph");
     
     for (size_t i = 0; i < last_linked_shader; i++) {
-        BindTextures(linked_shaders[i].linked_shader);
+        //BindTextures(linked_shaders[i].linked_shader);
     }
 }
 

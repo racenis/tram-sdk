@@ -27,11 +27,12 @@ FileReader::FileReader (const char* path, FileSource source) {
     size_t file_size = ftell(file_handle);
     fseek(file_handle, 0, SEEK_SET);
     
-    char* file_data = new char[file_size];
+    char* file_data = new char[file_size + 1];
     
     fread(file_data, file_size, 1, file_handle);
-    
     Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Read {} bytes from file: {}", file_size, path);
+
+    file_data[file_size] = '\0';
 
     fclose(file_handle);
     
