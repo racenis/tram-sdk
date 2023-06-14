@@ -89,6 +89,9 @@ public:
             if (event.subtype == KEY_ACTION_BACKWARD)   move_backward = move_value;
             if (event.subtype == KEY_ACTION_STRAFE_LEFT)       move_left =     move_value;
             if (event.subtype == KEY_ACTION_STRAFE_RIGHT)      move_right =    move_value;
+            
+            if (event.subtype == KEY_ACTION_CROUCH) is_crouch =     move_value;
+            if (event.subtype == KEY_ACTION_SPRINT) is_run =        move_value;
         }
 
         // I have literally no idea what is going on in here
@@ -140,6 +143,10 @@ public:
             action = ACTION_JUMP;
             modifier = ACTIONMODIFIER_NONE;
         }
+        
+        if (is_run && action == ACTION_WALK) action = ACTION_RUN;
+        if (is_crouch && action == ACTION_WALK) action = ACTION_CROUCH;
+        if (is_crouch && action == ACTION_IDLE) action = ACTION_CROUCH_IDLE;
         
         controller->Act(action, modifier, 0);
     }
@@ -202,6 +209,9 @@ private:
     bool move_backward = false;
     bool move_left = false;
     bool move_right = false;
+    
+    bool is_crouch = false;
+    bool is_run = false;
 
     bool is_move = true;
 };

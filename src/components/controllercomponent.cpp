@@ -11,10 +11,24 @@ namespace tram {
 
 template <> Pool<ControllerComponent> PoolProxy<ControllerComponent>::pool ("controller component pool", 25, false);
 
+void ControllerComponent::Start() {
+    walk_collision.make();
+    crouch_collision.make();
+    
+    walk_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    walk_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height));
+    
+    crouch_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
+    
+    walk_collision->Init();
+    crouch_collision->Init();
+}
+
 /// Sets the controllers action.
 /// When updated, the controller will start performing the action
 /// that it is set to.
-void ControllerComponent::Act (Action action, ActionModifier modifier, uint32_t magnitude) {
+void ControllerComponent::Act(Action action, ActionModifier modifier, uint32_t magnitude) {
     current_action = action;
     current_modifier = modifier;
     current_magnitude = magnitude;
@@ -47,8 +61,6 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
     for (auto& coll : wall_collisions) {
         float dist = glm::distance(vec2 {position.x, position.z}, vec2 {coll.point.x, coll.point.z});
         
-        //Render::AddLineMarker(coll.point, Render::COLOR_YELLOW);
-        
         if (dist < nearest_wall) {
             nearest_wall = dist;
             nearest_point = coll.point;
@@ -60,10 +72,6 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
     
     Render::AddLineMarker(nearest_point, Render::COLOR_YELLOW);
     
-    //Render::AddLine(position, position + penetration * push_dir, Render::COLOR_RED);
-    
-    //std::cout << "pen: " << penetration << " ";
-    
     position += push_dir * penetration;
     
     return penetration < 0.01f;
@@ -73,16 +81,31 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
 /// Performs the action that is setted with Act() method.
 void ControllerComponent::Perform() {
     assert(physcomp);
-    assert(triggercomp);
     assert(parent);
     
-    const float half_height = 1.85f / 2.0f;
-    const float width = 0.35f;
+    const bool crouching = current_action == ACTION_CROUCH || current_action == ACTION_CROUCH_IDLE;
     
-    (void) width;
+    const float height = crouching ? collision_height_crouch : collision_height;
+    const float step = crouching ? step_height_crouch : step_height;
+    const float half_height = height / 2.0f;
+    const float width = collision_width;
     
-    if (current_action == ACTION_WALK) {
+    if (current_action == ACTION_WALK || current_action == ACTION_RUN || current_action == ACTION_CROUCH) {
         glm::vec3 move_direction = glm::vec3(0.0f, 0.0f, 0.0f);
+
+        float target_speed = 0.0f;
+        
+        // select speed
+        switch (current_action) {
+        case ACTION_RUN:
+            target_speed = run_speed;
+            break;
+        case ACTION_CROUCH:
+            target_speed = crouch_speed;
+            break;
+        default:
+            target_speed = walk_speed;
+        }
 
         // compute the move direction
         if (current_modifier == ACTIONMODIFIER_FORWARD || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT)
@@ -99,7 +122,7 @@ void ControllerComponent::Perform() {
         if (std::isnan(wish_dir.x) || std::isnan(wish_dir.y) || std::isnan(wish_dir.z)) wish_dir = glm::vec3(0.0f, 0.0f, 0.0f);
         
         float current_speed = glm::dot(velocity, wish_dir); 
-        float add_speed = 0.12f - current_speed;
+        float add_speed = target_speed - current_speed;
         add_speed = add_speed < 0.0f ? 0.0f : add_speed;
         add_speed = add_speed > 0.02f ? 0.02f : add_speed;
         
@@ -136,15 +159,11 @@ void ControllerComponent::Perform() {
         
     // check if new position is on the ground
     auto ground_collisions = Physics::Shapecast(
-        Physics::CollisionShape::Cylinder(0.35f, 1.85f/2.0f),
-        new_pos + vec3(0.0f, 0.35f, 0.0f),
+        Physics::CollisionShape::Cylinder(width, half_height),
+        new_pos + vec3(0.0f, step, 0.0f),
         new_pos - vec3(0.0f, 0.1f, 0.0f),
         -1 ^ Physics::COLL_PLAYER
     );
-    
-    
-    //triggercomp->SetLocation(new_pos - vec3(0.0f, 0.1f, 0.0f));
-    //auto ground_collisions = triggercomp->Poll();
     
     if (ground_collisions.size()) {
         vec3 lowest_collision = {INFINITY, INFINITY, INFINITY};
@@ -173,9 +192,6 @@ void ControllerComponent::Perform() {
             
             // check if stepping up is allowed and then step up
             if (lowest_collision_normal.y > 0.70f && step_height > 0.0f && step_height < 0.35f) {
-                //float target_height = lowest_collision.y + half_height + 0.01f;
-                //if (new_pos.y < target_height) new_pos.y += 0.1f;
-                //if (new_pos.y > target_height) new_pos.y = target_height;
                 new_pos.y = lowest_collision.y + half_height + 0.01f;
                 velocity.y = 0.0f;
                 is_in_air = false;
@@ -208,8 +224,9 @@ void ControllerComponent::Perform() {
         is_in_air = true;
     }
     
+    TriggerComponent* collider = crouching ? crouch_collision.get() : walk_collision.get();
     bool push_success = false;
-    for (int i = 0; i < 3 && !(push_success = PushOutOfWall(new_pos, width, triggercomp)); i++);// std::cout << "push " << i << " ";
+    for (int i = 0; i < 3 && !(push_success = PushOutOfWall(new_pos, width, collider)); i++);// std::cout << "push " << i << " ";
     
     if (!push_success) {
         std::cout << "fucky wucky" << std::endl;

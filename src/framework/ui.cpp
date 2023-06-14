@@ -71,6 +71,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_D, KeyBinding {.action = KEY_ACTION_STRAFE_RIGHT}},
     {KEY_SPACE, KeyBinding {.action = KEY_ACTION_JUMP}},
     {KEY_LEFT_CONTROL, KeyBinding {.action = KEY_ACTION_CROUCH}},
+    {KEY_LEFT_SHIFT, KeyBinding {.action = KEY_ACTION_SPRINT}},
     {KEY_E, KeyBinding {.action = KEY_ACTION_ACTIVATE}},
     
     {KEY_UP, KeyBinding {.action = KEY_ACTION_UP}},

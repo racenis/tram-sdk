@@ -26,18 +26,16 @@ void Player::Load(){
     //physicscomponent->SetSleep(true);
     physicscomponent->SetKinematic(true);
     
-    triggercomponent = PoolProxy<TriggerComponent>::New();
-    //triggercomponent->SetCollisionGroup(Physics::COLL_WORLDOBJ);
-    //triggercomponent->SetCollisionMask(Physics::COLL_WORLDOBJ);
-    triggercomponent->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
-    triggercomponent->SetShape(Physics::CollisionShape::Cylinder(0.35f, (1.85f/2.0f)-0.35f));
-    triggercomponent->SetLocation(location);
+    //triggercomponent = PoolProxy<TriggerComponent>::New();
+    //triggercomponent->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    //triggercomponent->SetShape(Physics::CollisionShape::Cylinder(0.35f, (1.85f/2.0f)-0.35f));
+    //triggercomponent->SetLocation(location);
     
 
     controllercomponent = PoolProxy<ControllerComponent>::New();
     controllercomponent->SetParent(this);
     controllercomponent->SetPhysicsComponent(physicscomponent);
-    controllercomponent->SetTriggerComponent(triggercomponent);
+    //controllercomponent->SetTriggerComponent(triggercomponent);
 
     plomp->SetParent(this);
     plomp->SetControllerComponent(controllercomponent);
@@ -45,7 +43,7 @@ void Player::Load(){
 
     controllercomponent->Init();
     physicscomponent->Init();
-    triggercomponent->Start();
+    //triggercomponent->Start();
     
     physicscomponent->SetActivation(true);
     //physicscomponent->DisableRotation();

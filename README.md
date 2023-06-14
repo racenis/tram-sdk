@@ -65,7 +65,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 - Split off an AnimationComponent from ArmatureComponent
 - Make Raycast that returns multiple points
-- Add constraints to PhysicsComponents
 - Models with different sets of materials
 - Flat shaded color material
 - Textured material with alpha test but with flat color
