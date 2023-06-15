@@ -90,6 +90,8 @@ protected:
     Component<TriggerComponent> walk_collision;
     Component<TriggerComponent> crouch_collision;
     
+    Component<PhysicsComponent> physics_body;
+    
     float collision_width = 0.35f;
     float collision_height = 1.85f;
     float collision_height_crouch = 0.5f;

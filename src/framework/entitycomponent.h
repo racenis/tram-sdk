@@ -63,6 +63,7 @@ public:
     T* get() { return ptr; }
     T* operator->() { return ptr; }
     T& operator*() { return ptr; }
+    operator T*() { return ptr; }
     explicit operator bool() { return ptr != nullptr; }
 protected:
     T* ptr = nullptr;

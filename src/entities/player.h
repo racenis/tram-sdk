@@ -27,10 +27,8 @@ public:
     void SetParameters();
     void MessageHandler(Message& msg);
 protected:
-    PlayerComponent* plomp;
-    ControllerComponent* controllercomponent;
-    PhysicsComponent* physicscomponent;
-    TriggerComponent* triggercomponent;
+    Component<PlayerComponent> plomp;
+    Component<ControllerComponent> controllercomponent;
 };
 
 }

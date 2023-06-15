@@ -14,6 +14,7 @@ template <> Pool<ControllerComponent> PoolProxy<ControllerComponent>::pool ("con
 void ControllerComponent::Start() {
     walk_collision.make();
     crouch_collision.make();
+    physics_body.make();
     
     walk_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     walk_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height));
@@ -21,8 +22,15 @@ void ControllerComponent::Start() {
     crouch_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
     
+    physics_body->SetParent(parent);
+    physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
+    physics_body->SetCollisionGroup(Physics::COLL_PLAYER);
+    physics_body->SetKinematic(true);
+    physics_body->SetActivation(true);
+    
     walk_collision->Init();
     crouch_collision->Init();
+    physics_body->Init();
 }
 
 /// Sets the controllers action.
@@ -80,7 +88,7 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
 /// Performs the action.
 /// Performs the action that is setted with Act() method.
 void ControllerComponent::Perform() {
-    assert(physcomp);
+    //assert(physcomp);
     assert(parent);
     
     const bool crouching = current_action == ACTION_CROUCH || current_action == ACTION_CROUCH_IDLE;
@@ -191,7 +199,7 @@ void ControllerComponent::Perform() {
             float step_height = lowest_collision.y - character_bottom_height;
             
             // check if stepping up is allowed and then step up
-            if (lowest_collision_normal.y > 0.70f && step_height > 0.0f && step_height < 0.35f) {
+            if (lowest_collision_normal.y > 0.70f && step_height > 0.0f /*&& step_height < 0.35f*/) {
                 new_pos.y = lowest_collision.y + half_height + 0.01f;
                 velocity.y = 0.0f;
                 is_in_air = false;

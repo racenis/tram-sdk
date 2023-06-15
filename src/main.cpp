@@ -40,6 +40,7 @@
 #include <components/controllercomponent.h>
 
 #include <components/triggercomponent.h>
+#include <components/playercomponent.h>
 
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>

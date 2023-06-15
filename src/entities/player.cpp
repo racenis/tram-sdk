@@ -13,55 +13,33 @@
 namespace tram {
 
 Player::Player() : Entity("player") {
-    plomp = PoolProxy<PlayerComponent>::New();
     auto_load = false;
 }
 
 void Player::Load(){
-    physicscomponent = PoolProxy<PhysicsComponent>::New();
-    physicscomponent->SetParent(this);
-    physicscomponent->SetShape(Physics::CollisionShape::Capsule(0.35f, 1.15f));
-    physicscomponent->SetMass(85.0f);
-    physicscomponent->SetCollisionGroup(Physics::COLL_PLAYER);
-    //physicscomponent->SetSleep(true);
-    physicscomponent->SetKinematic(true);
+    plomp.make();
+    controllercomponent.make();
     
-    //triggercomponent = PoolProxy<TriggerComponent>::New();
-    //triggercomponent->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
-    //triggercomponent->SetShape(Physics::CollisionShape::Cylinder(0.35f, (1.85f/2.0f)-0.35f));
-    //triggercomponent->SetLocation(location);
-    
-
-    controllercomponent = PoolProxy<ControllerComponent>::New();
     controllercomponent->SetParent(this);
-    controllercomponent->SetPhysicsComponent(physicscomponent);
-    //controllercomponent->SetTriggerComponent(triggercomponent);
 
     plomp->SetParent(this);
     plomp->SetControllerComponent(controllercomponent);
-    plomp->Init();
-
-    controllercomponent->Init();
-    physicscomponent->Init();
-    //triggercomponent->Start();
     
-    physicscomponent->SetActivation(true);
-    //physicscomponent->DisableRotation();
-    //physicscomponent->DisableDebugDrawing();
+    plomp->Init();
+    controllercomponent->Init();
 
     is_loaded = true;
 
 }
-void Player::Unload(){
+void Player::Unload() {
     std::cout << "Player is not unloadable!!!" << std::endl;
-    PoolProxy<PlayerComponent>::Delete(plomp);
 }
 
-void Player::Serialize(){
+void Player::Serialize() {
     std::cout << "Player not seriaziable" << std::endl;
 }
 
-void Player::SerializeString(std::string& str){
+void Player::SerializeString(std::string& str) {
     std::cout << "Player not stringable" << std::endl;
 }
 
