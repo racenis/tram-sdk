@@ -4,8 +4,8 @@
 #include <framework/entity.h>
 #include <framework/message.h>
 
-#include <components/controllercomponent.h>
-#include <components/physicscomponent.h>
+#include <components/controller.h>
+#include <components/physics.h>
 
 namespace tram {
 

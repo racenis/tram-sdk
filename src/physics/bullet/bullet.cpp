@@ -4,7 +4,7 @@
 #include <physics/bullet/bullet.h>
 #include <physics/bullet/debugdrawer.h>
 
-#include <components/triggercomponent.h>
+#include <components/trigger.h>
 
 #include <btBulletDynamicsCommon.h>
 

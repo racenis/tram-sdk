@@ -6,7 +6,7 @@
 #include <physics/bullet/actions.h>
 
 
-#include <components/triggercomponent.h>
+#include <components/trigger.h>
 
 
 #include <framework/system.h>

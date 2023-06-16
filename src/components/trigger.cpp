@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <components/triggercomponent.h>
+#include <components/trigger.h>
 #include <physics/bullet/bullet.h>
 
 using namespace tram::Physics;

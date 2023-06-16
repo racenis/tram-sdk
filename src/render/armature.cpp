@@ -2,7 +2,7 @@
 // All rights reserved.
 
 #include <render/armature.h>
-#include <components/armaturecomponent.h>
+#include <components/armature.h>
 #include <framework/logging.h>
 #include <framework/file.h>
 #include <templates/hashmap.h>

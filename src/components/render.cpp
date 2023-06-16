@@ -2,8 +2,8 @@
 // All rights reserved.
 
 #include <render/api.h>
-#include <components/rendercomponent.h>
-#include <components/armaturecomponent.h>
+#include <components/render.h>
+#include <components/armature.h>
 
 #include <framework/entity.h>
 

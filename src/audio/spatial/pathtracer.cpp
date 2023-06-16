@@ -1,6 +1,6 @@
 #include <audio/spatial/pathtracer.h>
 
-#include <components/rendercomponent.h>
+#include <components/render.h>
 
 #include <array>
 #include <random>

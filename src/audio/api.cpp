@@ -7,7 +7,7 @@
 #include <framework/system.h>
 #include <framework/logging.h>
 
-#include <components/audiocomponent.h>
+#include <components/audio.h>
 #include <unordered_map>
 
 

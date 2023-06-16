@@ -3,7 +3,7 @@
 
 #include <framework/core.h>
 #include <entities/lamp.h>
-#include <components/lightcomponent.h>
+#include <components/light.h>
 
 #include <framework/serialization.h>
 

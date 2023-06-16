@@ -5,10 +5,10 @@
 
 #include <framework/message.h>
 
-#include <components/controllercomponent.h>
-#include <components/playercomponent.h>
-#include <components/physicscomponent.h>
-#include <components/triggercomponent.h>
+#include <components/controller.h>
+#include <components/player.h>
+#include <components/physics.h>
+#include <components/trigger.h>
 
 namespace tram {
 

@@ -9,7 +9,7 @@
 #include <framework/entity.h>
 #include <framework/loader.h>
 
-#include <components/controllercomponent.h>
+#include <components/controller.h>
 
 #include <framework/logging.h>
 

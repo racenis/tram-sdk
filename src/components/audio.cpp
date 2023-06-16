@@ -1,4 +1,4 @@
-#include <components/audiocomponent.h>
+#include <components/audio.h>
 
 #include <audio/api.h>
 #include <audio/sound.h>

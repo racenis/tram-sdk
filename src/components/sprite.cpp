@@ -4,7 +4,7 @@
 #include <render/api.h>
 #include <render/vertices.h>
 #include <render/material.h>
-#include <components/spritecomponent.h>
+#include <components/sprite.h>
 #include <framework/logging.h>
 
 namespace tram {

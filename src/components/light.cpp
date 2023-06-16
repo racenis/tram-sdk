@@ -1,4 +1,4 @@
-#include <components/lightcomponent.h>
+#include <components/light.h>
 
 namespace tram {
 

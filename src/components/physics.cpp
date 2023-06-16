@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <components/physicscomponent.h>
+#include <components/physics.h>
 #include <physics/bullet/bullet.h>
 
 #include <physics/bullet/motionstates.h>

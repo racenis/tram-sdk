@@ -1,7 +1,7 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <components/armaturecomponent.h>
+#include <components/armature.h>
 
 namespace tram {
     

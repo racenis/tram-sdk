@@ -29,18 +29,18 @@
 #include <entities/staticworldobject.h>
 #include <entities/player.h>
 
-#include <components/rendercomponent.h>
-#include <components/armaturecomponent.h>
-#include <components/lightcomponent.h>
+#include <components/render.h>
+#include <components/armature.h>
+#include <components/light.h>
 
-#include <components/spritecomponent.h>
-#include <components/particlecomponent.h>
-#include <components/audiocomponent.h>
+#include <components/sprite.h>
+#include <components/particle.h>
+#include <components/audio.h>
 
-#include <components/controllercomponent.h>
+#include <components/controller.h>
 
-#include <components/triggercomponent.h>
-#include <components/playercomponent.h>
+#include <components/trigger.h>
+#include <components/player.h>
 
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>

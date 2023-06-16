@@ -3,7 +3,7 @@
 
 #include <render/api.h>
 #include <render/vertices.h>
-#include <components/particlecomponent.h>
+#include <components/particle.h>
 #include <render/material.h>
 
 namespace tram {

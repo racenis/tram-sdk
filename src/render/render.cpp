@@ -6,9 +6,9 @@
 #include <render/render.h>
 #include <render/renderer.h>
 #include <render/vertices.h>
-#include <components/rendercomponent.h>
-#include <components/spritecomponent.h>
-#include <components/particlecomponent.h>
+#include <components/render.h>
+#include <components/sprite.h>
+#include <components/particle.h>
 
 #include <render/api.h>
 

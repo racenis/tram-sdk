@@ -1,4 +1,4 @@
-#include <components/playercomponent.h>
+#include <components/player.h>
 
 namespace tram {
 

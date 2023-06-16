@@ -4,8 +4,8 @@
 #include <framework/worldcell.h>
 
 #include <entities/staticworldobject.h>
-#include <components/rendercomponent.h>
-#include <components/physicscomponent.h>
+#include <components/render.h>
+#include <components/physics.h>
 
 #include <framework/serialization.h>
 

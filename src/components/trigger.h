@@ -5,7 +5,7 @@
 #define COMPONENTS_TRIGGERCOMPONENT_H
 
 #include <physics/physics.h>
-#include <components/physicscomponent.h>
+#include <components/physics.h>
 
 #include <vector>
 

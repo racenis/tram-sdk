@@ -9,8 +9,8 @@
 #include <framework/core.h>
 #include <framework/entity.h>
 
-#include <components/physicscomponent.h>
-#include <components/armaturecomponent.h>
+#include <components/physics.h>
+#include <components/armature.h>
 
 namespace tram::Physics {
 
