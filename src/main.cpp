@@ -82,17 +82,34 @@ void mainloop() {
     
     static int tick = 0;
     tick++;
+
     
-    vec3 look_direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
-    vec3 look_position = Render::GetCameraPosition();
-    
-    auto res = Render::AABB::FindNearestFromRay(look_position, look_direction, -1);
-    
-    if (res.data) {
-        Render::AddLine(res.triangle.point1, res.triangle.point2, Render::COLOR_WHITE);
-        Render::AddLine(res.triangle.point2, res.triangle.point3, Render::COLOR_WHITE);
-        Render::AddLine(res.triangle.point3, res.triangle.point1, Render::COLOR_WHITE);
+
+    if (UI::GetInputState() != STATE_DEFAULT) {
+        float x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
+        float y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
+        
+        vec3 far_point = Render::ProjectInverse({x, y, 0.0f});
+        vec3 near_point = Render::ProjectInverse({x, y, 1000.0f});
+        
+        vec3 look_direction = glm::normalize(far_point - near_point);
+        vec3 look_position = near_point;
+        
+        auto res = Render::AABB::FindNearestFromRay(look_position, look_direction, -1);
+        
+        if (res.data) {
+            Render::AddLine(res.triangle.point1, res.triangle.point2, Render::COLOR_WHITE);
+            Render::AddLine(res.triangle.point2, res.triangle.point3, Render::COLOR_WHITE);
+            Render::AddLine(res.triangle.point3, res.triangle.point1, Render::COLOR_WHITE);
+        }
+        
+        
+
+        //Log("{} {} {} : {} {} {}", res2.x, res2.y, res2.z, res3.x, res3.y, res3.z);
+        
+        
     }
+
     
     //vec3 ray_pos = Render::GetCameraPosition();
     //vec3 ray_dir = Render::GetCameraRotation() * DIRECTION_FORWARD;
@@ -276,7 +293,7 @@ void mainloop() {
     
     GUI::EndFrame();*/
     
-    AABB::DebugDrawTree();
+    //AABB::DebugDrawTree();
     
     GUI::End();
     GUI::Update();
@@ -335,7 +352,7 @@ int main() {
     Language::Load("lv");
 
     // texture info stuff
-    Material::LoadMaterialInfo("texture");
+    Material::LoadMaterialInfo("material");
 
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
 

@@ -454,3 +454,10 @@ void tram::Render::Project(const glm::vec3& point, glm::vec3& result) {
     result.y = OpenGL::SCREEN_HEIGHT - result.y;
 }
 
+tram::vec3 tram::Render::ProjectInverse(tram::vec3 point) {
+    point.y =  OpenGL::SCREEN_HEIGHT - point.y;
+    vec3 result = glm::unProject(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, OpenGL::SCREEN_WIDTH, OpenGL::SCREEN_HEIGHT));
+    //result.y = OpenGL::SCREEN_HEIGHT - result.y;
+    
+    return result;
+}

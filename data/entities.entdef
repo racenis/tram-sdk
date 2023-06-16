@@ -1,0 +1,27 @@
+begin
+	name staticwobj
+	model none
+	field string model
+	field string lightmap
+end
+
+begin
+	name crate
+	model none
+	field string model
+	field string collision-model
+end
+
+begin
+	name lamp
+	model dev/lamp
+	field float color-r
+	field float color-g
+	field float color-b
+	field float distance
+end
+
+begin
+	name marker
+	model dev/marker
+end
