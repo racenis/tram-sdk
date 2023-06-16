@@ -21,8 +21,10 @@ const vec3 DIRECTION_FORWARD    (0.0f,  0.0f, -1.0f);
 const vec3 DIRECTION_SIDE       (1.0f,  0.0f,  0.0f);
 const vec3 DIRECTION_UP         (0.0f,  1.0f,  0.0f);
 
-void QuatLookAt (quat& quaternion, const vec3& from, const vec3& to);
-void ProjectLine (vec3& point, const vec3& from, const vec3& to);
+void QuatLookAt(quat& quaternion, const vec3& from, const vec3& to);
+void ProjectLine(vec3& point, const vec3& from, const vec3& to);
+
+vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point2, vec3 point3);
 
 }
 

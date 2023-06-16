@@ -46,6 +46,7 @@
 #include <extensions/camera/camera.h>
 
 #include <render/api.h>
+#include <render/aabb.h>
 
 #include <platform/platform.h>
 
@@ -81,6 +82,17 @@ void mainloop() {
     
     static int tick = 0;
     tick++;
+    
+    vec3 look_direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+    vec3 look_position = Render::GetCameraPosition();
+    
+    auto res = Render::AABB::FindNearestFromRay(look_position, look_direction, -1);
+    
+    if (res.data) {
+        Render::AddLine(res.triangle.point1, res.triangle.point2, Render::COLOR_WHITE);
+        Render::AddLine(res.triangle.point2, res.triangle.point3, Render::COLOR_WHITE);
+        Render::AddLine(res.triangle.point3, res.triangle.point1, Render::COLOR_WHITE);
+    }
     
     //vec3 ray_pos = Render::GetCameraPosition();
     //vec3 ray_dir = Render::GetCameraRotation() * DIRECTION_FORWARD;
@@ -264,7 +276,7 @@ void mainloop() {
     
     GUI::EndFrame();*/
     
-    
+    AABB::DebugDrawTree();
     
     GUI::End();
     GUI::Update();

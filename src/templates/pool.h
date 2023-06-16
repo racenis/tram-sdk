@@ -107,6 +107,7 @@ public:
     iterator end(){return last;};
     size_t GetSize(){return poolSize;}; // yeet too?
     size_t size(){return poolSize;};
+    size_t index(T* ptr){return ptr - first;};
     
     /// Checks if an object can be accessed through iteration.
     bool validate (T* ptr) {

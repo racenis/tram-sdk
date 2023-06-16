@@ -7,14 +7,12 @@
 
 #include <framework/entity.h>
 
-#include <templates/aabb.h>
+#include <render/aabb.h>
 
 namespace tram {
 using namespace tram::Render;
 
 template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render component pool", 250, false);
-
-static AABBTree rendertree;
 
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue
@@ -85,7 +83,7 @@ RenderComponent::~RenderComponent() {
     }
     
     if (aabb_tree_leaf) {
-        rendertree.RemoveLeaf((AABBTree::Node*) aabb_tree_leaf);
+        AABB::RemoveLeaf(aabb_tree_leaf);
     }
 };
 
@@ -146,41 +144,11 @@ void RenderComponent::Start(){
 }
 
 void RenderComponent::RefreshAABB() {
-    vec3 min = model->GetAABBMin();
-    vec3 max = model->GetAABBMax();
-    
-    vec3 extents[8] = {
-        {min.x, min.y, min.z},
-        {max.x, min.y, min.z},
-        {min.x, max.y, min.z},
-        {min.x, min.y, max.z},
-        {max.x, max.y, min.z},
-        {max.x, min.y, max.z},
-        {max.x, max.y, max.z},
-        {min.x, max.y, max.z}
-    };
-    
-    for (auto& extent : extents) {
-        extent = rotation * extent;
+    if (aabb_tree_leaf) {
+        AABB::RemoveLeaf(aabb_tree_leaf);
     }
     
-    min = extents[0];
-    max = extents[0];
-    
-    for (auto& extent : extents) {
-        min = AABBTree::MergeAABBMin(min, extent);
-        max = AABBTree::MergeAABBMax(max, extent);
-    }
-
-    min += location;
-    max += location;
-
-    //AddLineAABB(min, max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
-    
-    //if (aabb_tree_leaf) return;
-    if (aabb_tree_leaf) rendertree.RemoveLeaf((AABBTree::Node*) aabb_tree_leaf);
-    
-    aabb_tree_leaf = rendertree.InsertLeaf(this - PoolProxy<RenderComponent>::GetPool().begin().ptr, min, max);
+    aabb_tree_leaf = AABB::InsertLeaf(this, location, rotation);
 }
 
 void RenderComponent::InsertDrawListEntries() {
@@ -212,50 +180,6 @@ void RenderComponent::InsertDrawListEntries() {
         Render::SetPose(entry, pose);
         
         draw_list_entries [i] = entry;
-    }
-}
-
-static void DrawAABBNodeChildren (AABBTree::Node* node) {
-    if (node->IsLeaf()) {
-        AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
-    } else {
-        DrawAABBNodeChildren(node->left);
-        DrawAABBNodeChildren(node->right);
-        
-        if (node->parent == nullptr) {
-            AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_RED);
-        } else {
-            AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_PINK);
-        }
-    }
-}
-
-void RenderComponent::DrawAllAABB() {
-    /*for (auto& component : PoolProxy<RenderComponent>::GetPool()) {
-        name_t model_name = component.GetModel();
-        Model* model_ptr = Model::Find(model_name);
-        
-        Entity* parent = component.GetParent();
-        
-        if (!parent) continue;
-        
-        vec3 parent_position = parent->GetLocation();
-        quat parent_rotation = parent->GetRotation();
-        
-        model_ptr->DrawAABB(parent_position, parent_rotation);
-    }*/
-    
-    DrawAABBNodeChildren(rendertree.root);
-}
-
-void RenderComponent::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<RenderComponent*>& result) {
-    std::vector<uint32_t> results;
-    results.reserve(10);
-    
-    rendertree.FindIntersection(ray_pos, ray_dir, rendertree.root, results);
-    
-    for (auto res : results) {
-        result.push_back(PoolProxy<RenderComponent>::GetPool().begin().ptr + res);
     }
 }
 

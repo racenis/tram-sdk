@@ -93,7 +93,7 @@ void Crate::Unload() {
 }
 
 void Crate::Serialize() {
-    model = rendercomponent->GetModel();
+    model = rendercomponent->GetModel()->GetName();
     collmodel = physicscomponent->GetModel();
 }
 

@@ -83,7 +83,7 @@ void StaticWorldObject::Unload(){
 };
 
 void StaticWorldObject::Serialize() {
-    model = rendercomponent->GetModel();
+    model = rendercomponent->GetModel()->GetName();
     lightmap = rendercomponent->GetLightmap();
 };
 

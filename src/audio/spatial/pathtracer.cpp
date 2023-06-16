@@ -67,7 +67,7 @@ static std::tuple<AABBTriangle, vec3, bool> NearestTriangleFromRay (vec3 ray_pos
     intersected_render_components.reserve(10);
     intersected_triangles.reserve(10);
     
-    RenderComponent::FindAllFromRay(ray_pos, ray_dir, intersected_render_components);
+    //RenderComponent::FindAllFromRay(ray_pos, ray_dir, intersected_render_components);
     
     float nearest_distance = INFINITY;
     AABBTriangle nearest_triangle;
@@ -84,7 +84,7 @@ static std::tuple<AABBTriangle, vec3, bool> NearestTriangleFromRay (vec3 ray_pos
         std::vector<AABBTriangle> intersected_triangles;
         intersected_triangles.reserve(10);
 
-        Model::Find(comp->GetModel())->FindAllFromRay(ray_pos_local, ray_dir_local, intersected_triangles);
+        //Model::Find(comp->GetModel())->FindAllFromRay(ray_pos_local, ray_dir_local, intersected_triangles);
         
         
         for (auto& tri : intersected_triangles) {

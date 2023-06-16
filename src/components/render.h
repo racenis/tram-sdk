@@ -14,7 +14,7 @@ class RenderComponent : public EntityComponent {
 public:
     RenderComponent();
     ~RenderComponent();
-    inline name_t GetModel(){return model->GetName();};
+    inline Render::Model* GetModel(){return model.get();};
 
     inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
 
@@ -32,9 +32,6 @@ public:
     void SetWorldParameters (bool interior_lighting);
 
     void EventHandler(Event &event){return;}
-    
-    static void DrawAllAABB();
-    static void FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<RenderComponent*>& result);
 protected:
     void InsertDrawListEntries();
     void RefreshAABB();

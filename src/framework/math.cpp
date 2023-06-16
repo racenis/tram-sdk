@@ -26,4 +26,42 @@ void ProjectLine (glm::vec3& point, const glm::vec3& from, const glm::vec3& to) 
     point = from + (glm::dot(projectable, line) / glm::dot(line, line) * line);
 }
 
+vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point2, vec3 point3) {
+    const float epsilon = 0.000001;
+    
+    const vec3 p1_p2 = point2 - point1;
+    const vec3 p1_p3 = point3 - point1;
+    
+    const vec3 p_vec = glm::cross(ray_dir, p1_p3);
+    const float det = glm::dot(p1_p2, p_vec);
+
+    if (fabs(det) < epsilon) {
+        return {INFINITY, INFINITY, INFINITY};
+    }
+
+    const float inv_det = 1.0 / det;
+    const vec3 t_vec = ray_pos - point1;
+    const float u = inv_det * glm::dot(t_vec, p_vec);
+
+    if (u < 0.0 || u > 1.0) {
+        return {INFINITY, INFINITY, INFINITY};
+    }
+    
+    const vec3 q_vec = glm::cross(t_vec, p1_p2);
+    const float v = inv_det * glm::dot(ray_dir, q_vec);
+
+    if (v < 0.0 || u + v > 1.0) {
+        return {INFINITY, INFINITY, INFINITY};
+    }
+
+    const float t = inv_det * glm::dot(p1_p3, q_vec);
+
+    if (t > epsilon) {
+        return ray_pos + (ray_dir * t);
+    } else {
+        return {INFINITY, INFINITY, INFINITY};
+    }
+
+}
+
 }
