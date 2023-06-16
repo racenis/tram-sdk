@@ -8,7 +8,7 @@
 
 namespace tram {
 
-class ArmatureComponent;
+class AnimationComponent;
 
 class RenderComponent : public EntityComponent {
 public:
@@ -20,7 +20,7 @@ public:
 
     void SetModel(name_t name);
     void SetLightmap(name_t name);
-    void SetArmature(ArmatureComponent* armature);
+    void SetArmature(AnimationComponent* armature);
 
     void Start();
 

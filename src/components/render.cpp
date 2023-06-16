@@ -3,7 +3,7 @@
 
 #include <render/api.h>
 #include <components/render.h>
-#include <components/armature.h>
+#include <components/animation.h>
 
 #include <framework/entity.h>
 
@@ -49,12 +49,12 @@ void RenderComponent::SetLightmap (name_t name) {
     }
 };
 
-/// Links an ArmatureComponent.
+/// Links an AnimationComponent.
 /// This needs to be set, so that the model can be rendered with the animations
-/// played by the ArmatureComponent.
+/// played by the AnimationComponent.
 /// Alternatively, this can be set to a nullptr, if no animations are to be played.
 /// This affects only dynamic models, static models don't play animations.
-void RenderComponent::SetArmature (ArmatureComponent* armature) {
+void RenderComponent::SetArmature (AnimationComponent* armature) {
     pose = armature->GetPose();
     
     if (!pose) {

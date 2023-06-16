@@ -54,14 +54,24 @@ void main()
 {
 	vec3 lightColor = vec3(ambientcolor);
 	mat4 pvm = projection * view * model;
+	
 	vec4 bonepose1 = pvm * bone[BoneIndex.x] * vec4(Position, 1.0);
 	vec4 bonepose2 = pvm * bone[BoneIndex.y] * vec4(Position, 1.0);
 	vec4 bonepose3 = pvm * bone[BoneIndex.z] * vec4(Position, 1.0);
 	vec4 bonepose4 = pvm * bone[BoneIndex.w] * vec4(Position, 1.0);
 	
     gl_Position = bonepose1 * BoneWeight.x + bonepose2 * BoneWeight.y + bonepose3 * BoneWeight.z + bonepose4 * BoneWeight.w;
+	
+	vec4 normal1 = bone[BoneIndex.x] * vec4(Normal, 1.0);
+	vec4 normal2 = bone[BoneIndex.y] * vec4(Normal, 1.0);
+	vec4 normal3 = bone[BoneIndex.z] * vec4(Normal, 1.0);
+	vec4 normal4 = bone[BoneIndex.w] * vec4(Normal, 1.0);
+	
+	vec4 normal_weighted = normal1 * BoneWeight.x + normal2 * BoneWeight.y + normal3 * BoneWeight.z + normal4 * BoneWeight.w;
+	
 	vec3 vPos = vec3(model * vec4(Position, 1.0));
-	vec3 nPos = normalize(vec3(model * vec4(Normal, 0.0)));	//set this to 0.0
+	vec3 nPos = normalize(vec3(model * vec4(normal_weighted.xyz, 0.0)));
+	
 	float distance1 = length(vec3(scenelights[modellights.x].aa) - vPos);
 	float distance2 = length(vec3(scenelights[modellights.y].aa) - vPos);
 	float distance3 = length(vec3(scenelights[modellights.z].aa) - vPos);

@@ -8,7 +8,7 @@
 #include <framework/entitycomponent.h>
 
 // TODO: refactor so that this include can be replaced with forward declaration
-#include <components/armature.h>
+#include <components/animation.h>
 #include <components/trigger.h>
 
 namespace tram {

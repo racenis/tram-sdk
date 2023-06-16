@@ -57,8 +57,8 @@
       <File Name="src/components/controller.cpp"/>
       <File Name="src/components/audio.h"/>
       <File Name="src/components/audio.cpp"/>
-      <File Name="src/components/armature.h"/>
-      <File Name="src/components/armature.cpp"/>
+      <File Name="src/components/animation.h"/>
+      <File Name="src/components/animation.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
       <File Name="src/framework/query.h"/>
@@ -158,12 +158,11 @@
         <File Name="src/render/opengl/renderer.cpp"/>
       </VirtualDirectory>
       <File Name="src/render/render.h"/>
-      <File Name="src/render/armature.h"/>
+      <File Name="src/render/animation.h"/>
       <File Name="src/render/sprite.cpp"/>
       <File Name="src/render/render.cpp"/>
       <File Name="src/render/renderer.h"/>
-      <File Name="src/render/render_misc.cpp"/>
-      <File Name="src/render/armature.cpp"/>
+      <File Name="src/render/animation.cpp"/>
       <File Name="src/render/model.cpp"/>
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>

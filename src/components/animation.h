@@ -10,7 +10,7 @@
 #include <render/model.h>
 
 namespace tram {
-class ArmatureComponent : public EntityComponent {
+class AnimationComponent : public EntityComponent {
 public:
     void Init();
     void Start();
@@ -18,7 +18,7 @@ public:
     name_t GetModel() { return model->GetName(); }
     Render::Pose* GetPose(){ return poseobj; };
     void SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe);
-    void SetOnAnimationFinishCallback(void (*callback) (ArmatureComponent*, name_t)) { anim_finish_callback = callback; }
+    void SetOnAnimationFinishCallback(void (*callback) (AnimationComponent*, name_t)) { anim_finish_callback = callback; }
     void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);
     bool IsPlayingAnimation(name_t animation_name);
     void StopAnimation(name_t animation_name);
@@ -56,7 +56,7 @@ protected:
     
     float last_update = 0.0f;
     
-    void (*anim_finish_callback) (ArmatureComponent*, name_t) = nullptr;
+    void (*anim_finish_callback) (AnimationComponent*, name_t) = nullptr;
     
     const Render::Bone* armature_bones = nullptr;
     size_t armature_bone_count = 0;
@@ -65,8 +65,8 @@ protected:
     name_t anim_playing[ANIM_COUNT];
     AnimationPlaybackInfo anim_info[ANIM_COUNT];
     
-    ArmatureComponent() : model(this) {}
-    ~ArmatureComponent();
+    AnimationComponent() : model(this) {}
+    ~AnimationComponent();
     template <typename> friend class Pool;
 };
 

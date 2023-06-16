@@ -10,7 +10,7 @@
 #include <framework/entity.h>
 
 #include <components/physics.h>
-#include <components/armature.h>
+#include <components/animation.h>
 
 namespace tram::Physics {
 
@@ -90,7 +90,7 @@ protected:
 
 class ArmMotionState : public btMotionState {
 public:
-    ArmMotionState (name_t boneName, ArmatureComponent* armature, vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
+    ArmMotionState (name_t boneName, AnimationComponent* armature, vec3 bindPos, Entity* entity, PhysicsComponent* physicsComp) {
         ent = entity;
         arm = armature;
         offset = bindPos;
@@ -159,7 +159,7 @@ public:
 
 protected:
     PhysicsComponent* physcomp;
-    ArmatureComponent* arm;
+    AnimationComponent* arm;
     Entity* ent;
     vec3 offset;
     name_t bone;

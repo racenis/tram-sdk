@@ -30,7 +30,7 @@
 #include <entities/player.h>
 
 #include <components/render.h>
-#include <components/armature.h>
+#include <components/animation.h>
 #include <components/light.h>
 
 #include <components/sprite.h>
@@ -68,7 +68,7 @@ Audio::Sound* eerp = nullptr;
 AudioComponent* derp_player = nullptr;
 RenderComponent* binguser = nullptr;
 RenderComponent* monguser = nullptr;
-ArmatureComponent* monguser_armature = nullptr;
+AnimationComponent* monguser_armature = nullptr;
 
 
 void mainloop() {
@@ -93,7 +93,7 @@ void mainloop() {
 
 
     //time_of_day += 0.001f;
-    SetSun(0.8f); // this sets the ambient lighting
+    //SetSun(0.8f); // this sets the ambient lighting
     
 
     
@@ -282,7 +282,7 @@ void mainloop() {
     Loader::Update();
     
     ControllerComponent::Update();
-    ArmatureComponent::Update();
+    AnimationComponent::Update();
     //RenderComponent::DrawAllAABB();
 
     Physics::Update();
@@ -375,7 +375,7 @@ int main() {
     lit->SetDistance(100.0f);
 
     // create the animation player for the mongus model
-    monguser_armature = PoolProxy<ArmatureComponent>::New();
+    monguser_armature = PoolProxy<AnimationComponent>::New();
     monguser_armature->SetModel(UID("mongus"));
     monguser_armature->Init();
     monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 1.0f);

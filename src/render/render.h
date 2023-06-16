@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include <render/armature.h>
+#include <render/animation.h>
 
 namespace tram::Render {
 
