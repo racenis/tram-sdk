@@ -47,16 +47,10 @@ public:
     void Start();
     void EventHandler(Event &event) {}
     
-    void Move(glm::vec3& direction);
-    
-    void Act(Action action, ActionModifier modifier, uint32_t magnitude);
+    void Act(Action action, ActionModifier modifier);
     
     inline Action GetCurrentAction() { return current_action; }
     inline ActionModifier GetCurrentActionModifier() { return current_modifier; }
-    inline uint32_t GetMagnitude() { return current_magnitude; }
-    
-    inline void SetPhysicsComponent(PhysicsComponent* comp) { physcomp = comp; }
-    inline void SetArmatureComponent(ArmatureComponent* comp) { armcomp = comp; }
 
     inline void SetCollisionSize(float width, float height, float crouch_height) {
         collision_width = width;
@@ -70,19 +64,6 @@ public:
     }
 
     static void Update();
-private:
-    void Perform();
-    
-    PhysicsComponent* physcomp = nullptr;
-    ArmatureComponent* armcomp = nullptr;
-
-    vec3 velocity = vec3 (0.0f, 0.0f, 0.0f);
-
-    Action current_action = ACTION_IDLE;
-    ActionModifier current_modifier = ACTIONMODIFIER_NONE;
-    uint32_t current_magnitude = 0;
-    bool action_updated = false;
-    bool is_in_air = false;
 protected:
     ControllerComponent() = default;
     ~ControllerComponent() = default;
@@ -91,6 +72,15 @@ protected:
     Component<TriggerComponent> crouch_collision;
     
     Component<PhysicsComponent> physics_body;
+    
+    void Perform();
+    
+    vec3 velocity = {0.0f, 0.0f, 0.0f};
+
+    Action current_action = ACTION_IDLE;
+    ActionModifier current_modifier = ACTIONMODIFIER_NONE;
+    
+    bool is_in_air = false;
     
     float collision_width = 0.35f;
     float collision_height = 1.85f;

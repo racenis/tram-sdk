@@ -125,19 +125,22 @@ void PhysicsComponent::Push (const glm::vec3& direction){
     rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
 }
 
-/// Sets the sleep state of the physics object.
-/// If set to true, then the physics object will be put to sleep, otherwise
-/// it will be awakened. By default they start asleep.
-void PhysicsComponent::SetSleep (bool sleep) {
-    if (is_ready && sleep) {
-        rigidbody->setActivationState(0);
-    }
-    
-    if (is_ready && !sleep) {
+/// Awakens the object.
+void PhysicsComponent::Awaken() {
+    if (is_ready) {
         rigidbody->activate();
     }
     
-    rigidbody_should_sleep = sleep;
+    rigidbody_should_sleep = false;
+}
+
+/// Puts the object to sleep.
+void PhysicsComponent::Sleep() {
+    if (is_ready) {
+        rigidbody->setActivationState(0);
+    }
+    
+    rigidbody_should_sleep = true;
 }
 
 /// Sets the debug drawing of a physics object.
@@ -159,7 +162,7 @@ void PhysicsComponent::SetDebugDrawing (bool drawing) {
 /// If set to kinematic, then the physics object will poll its parent entity
 /// for its position, instead of simulated and pushing its position into its
 /// parent entity.
-/// @note SetActivation to true, otherwise will not follow!
+/// @note Use DisableDeactivation() if you don't want to constantly wake the object up.
 void PhysicsComponent::SetKinematic (bool kinematic) {
     if (kinematic) {
         rigidbody_collision_flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
@@ -208,19 +211,14 @@ void PhysicsComponent::SetLinearFactor (const glm::vec3& factor) {
     }
 }
 
-/// Sets the activation of the physics object.
-/// Set it to true, if you don't want the object to ever fall asleep. Set it
-/// to false, if you want it to fall asleep when it stops moving.
-void PhysicsComponent::SetActivation (bool activation) {
-    if (is_ready && activation) {
+/// Disables deactivation of the object.
+/// This makes the object to never fall asleep.
+void PhysicsComponent::DisableDeactivation() {
+    if (is_ready) {
         rigidbody->setActivationState(DISABLE_DEACTIVATION);
     }
-
-    if (is_ready && !activation) {
-        rigidbody->setActivationState(WANTS_DEACTIVATION);
-    }
     
-    rigidbody_should_awake = activation;
+    rigidbody_should_awake = true;
 }
 
 /// Sets the velocity of the physics object.

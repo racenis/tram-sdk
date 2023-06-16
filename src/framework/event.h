@@ -40,16 +40,15 @@ struct Event {
     void* data;
 };
 
-template<event_t EVENT, typename T>
+/// Smart wrapper class for Event listeners.
 class EventListener {
 public:
-    EventListener (T* parent) : parent(parent) {}
-    ~EventListener () { clear(); }
-    void make() { clear(); listener = Event::AddListener(EVENT, parent); }
-    void clear() { if (listener) Event::RemoveListener(listener); listener = 0; }
+    ~EventListener();
+    void make(event_t event, Entity* parent);
+    void make(event_t event, EntityComponent* parent);
+    void clear();
     explicit operator bool() { return listener != 0; }
 protected:
-    T* parent = nullptr;
     listener_t listener = 0;
 };
 

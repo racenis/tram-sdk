@@ -49,13 +49,13 @@ public:
     void SetDebugDrawing(bool drawing);
     void SetKinematic(bool kinematic);
 
-    void SetSleep(bool sleep);
-    
-    
     void SetRotation(const glm::quat& rotation);
     void SetLocation(const glm::vec3& location);
 
-    void SetActivation(bool activation);
+    void DisableDeactivation();
+    
+    void Awaken();
+    void Sleep();
     
     void SetAngularFactor(const glm::vec3& factor);
     void SetLinearFactor(const glm::vec3& factor);

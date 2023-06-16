@@ -109,9 +109,31 @@ void Event::Post (const Event &event){
 /// This allocation is useful for storing the additional data (Event::data pointer),
 /// for events, since all allocated space will be cleared once all events have been 
 /// dispatched.
-/// @note Remember to only use POD data types.
+/// @note Only store POD data types in the allocated memory.
 void* Event::AllocateData (size_t ammount) {
     return data_pool.AddNew(ammount);
+}
+
+EventListener::~EventListener() {
+    clear();    
+}
+
+void EventListener::make(event_t event, Entity* parent) {
+    clear();
+    listener = Event::AddListener(event, parent);
+}
+
+void EventListener::make(event_t event, EntityComponent* parent) {
+    clear();
+    listener = Event::AddListener(event, parent);
+}
+
+void EventListener::clear() {
+    if (listener) {
+        Event::RemoveListener(listener);
+    }
+
+    listener = 0;
 }
 
 }

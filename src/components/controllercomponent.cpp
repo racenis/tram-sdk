@@ -26,7 +26,7 @@ void ControllerComponent::Start() {
     physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
     physics_body->SetCollisionGroup(Physics::COLL_PLAYER);
     physics_body->SetKinematic(true);
-    physics_body->SetActivation(true);
+    physics_body->DisableDeactivation();
     
     walk_collision->Init();
     crouch_collision->Init();
@@ -36,11 +36,9 @@ void ControllerComponent::Start() {
 /// Sets the controllers action.
 /// When updated, the controller will start performing the action
 /// that it is set to.
-void ControllerComponent::Act(Action action, ActionModifier modifier, uint32_t magnitude) {
+void ControllerComponent::Act(Action action, ActionModifier modifier) {
     current_action = action;
     current_modifier = modifier;
-    current_magnitude = magnitude;
-    action_updated = true;
 }
 
 /// Updates the ControllerComponents.
@@ -139,8 +137,6 @@ void ControllerComponent::Perform() {
         
         velocity.x += add_velocity.x;
         velocity.z += add_velocity.z;
-        
-        action_updated = true;
     }
     
     if (current_action == ACTION_JUMP && !is_in_air) {

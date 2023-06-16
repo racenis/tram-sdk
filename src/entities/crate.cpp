@@ -74,7 +74,7 @@ void Crate::Load(){
     physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);
     physicscomponent->SetModel(collmodel);
     physicscomponent->SetMass(68.9f);
-    physicscomponent->SetSleep(true);
+    physicscomponent->Sleep();
     
     rendercomponent->Init();
     physicscomponent->Init();
@@ -105,7 +105,7 @@ void Crate::MessageHandler(Message& msg){
     holder = msg.sender;
     
     if (msg.data) {
-        physicscomponent->SetSleep(false);
+        physicscomponent->Awaken();
         physicscomponent->SetKinematic(true);
         //physicscomponent->SetLocation(*(vec3*)msg.data);
         //rendercomponent->SetLocation(*(vec3*)msg.data);
