@@ -10,35 +10,35 @@ src_audio_sound.o: ./src/audio/sound.cpp
 src_audio_openal_openal.o: ./src/audio/openal/openal.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/audio/openal/openal.cpp -o src_audio_openal_openal.o
 
-src_components_armaturecomponent.o: ./src/components/armaturecomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/armaturecomponent.cpp -o src_components_armaturecomponent.o
+src_components_animation.o: ./src/components/animation.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/animation.cpp -o src_components_animation.o
 
-src_components_audiocomponent.o: ./src/components/audiocomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/audiocomponent.cpp -o src_components_audiocomponent.o
+src_components_audio.o: ./src/components/audio.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/audio.cpp -o src_components_audio.o
 
-src_components_controllercomponent.o: ./src/components/controllercomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/controllercomponent.cpp -o src_components_controllercomponent.o
+src_components_controller.o: ./src/components/controller.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/controller.cpp -o src_components_controller.o
 
-src_components_lightcomponent.o: ./src/components/lightcomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/lightcomponent.cpp -o src_components_lightcomponent.o
+src_components_light.o: ./src/components/light.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/light.cpp -o src_components_light.o
 
-src_components_particlecomponent.o: ./src/components/particlecomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/particlecomponent.cpp -o src_components_particlecomponent.o
+src_components_particle.o: ./src/components/particle.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/particle.cpp -o src_components_particle.o
 
-src_components_physicscomponent.o: ./src/components/physicscomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/physicscomponent.cpp -o src_components_physicscomponent.o
+src_components_physics.o: ./src/components/physics.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/physics.cpp -o src_components_physics.o
 
-src_components_playercomponent.o: ./src/components/playercomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/playercomponent.cpp -o src_components_playercomponent.o
+src_components_player.o: ./src/components/player.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/player.cpp -o src_components_player.o
 
-src_components_rendercomponent.o: ./src/components/rendercomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/rendercomponent.cpp -o src_components_rendercomponent.o
+src_components_render.o: ./src/components/render.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/render.cpp -o src_components_render.o
 
-src_components_spritecomponent.o: ./src/components/spritecomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/spritecomponent.cpp -o src_components_spritecomponent.o
+src_components_sprite.o: ./src/components/sprite.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/sprite.cpp -o src_components_sprite.o
 
-src_components_triggercomponent.o: ./src/components/triggercomponent.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/triggercomponent.cpp -o src_components_triggercomponent.o
+src_components_trigger.o: ./src/components/trigger.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/components/trigger.cpp -o src_components_trigger.o
 
 src_entities_crate.o: ./src/entities/crate.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/crate.cpp -o src_entities_crate.o
@@ -139,8 +139,11 @@ src_platform_file.o: ./src/platform/file.cpp
 src_platform_time.o: ./src/platform/time.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/platform/time.cpp -o src_platform_time.o
 
-src_render_armature.o: ./src/render/armature.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/armature.cpp -o src_render_armature.o
+src_render_aabb.o: ./src/render/aabb.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/aabb.cpp -o src_render_aabb.o
+
+src_render_animation.o: ./src/render/animation.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/animation.cpp -o src_render_animation.o
 
 src_render_error.o: ./src/render/error.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/error.cpp -o src_render_error.o
@@ -156,9 +159,6 @@ src_render_render.o: ./src/render/render.cpp
 
 src_render_renderer.o: ./src/render/renderer.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/renderer.cpp -o src_render_renderer.o
-
-src_render_render_misc.o: ./src/render/render_misc.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/render_misc.cpp -o src_render_render_misc.o
 
 src_render_sprite.o: ./src/render/sprite.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/render/sprite.cpp -o src_render_sprite.o
@@ -180,16 +180,16 @@ clean:
 	del src_audio_audio.o
 	del src_audio_sound.o
 	del src_audio_openal_openal.o
-	del src_components_armaturecomponent.o
-	del src_components_audiocomponent.o
-	del src_components_controllercomponent.o
-	del src_components_lightcomponent.o
-	del src_components_particlecomponent.o
-	del src_components_physicscomponent.o
-	del src_components_playercomponent.o
-	del src_components_rendercomponent.o
-	del src_components_spritecomponent.o
-	del src_components_triggercomponent.o
+	del src_components_animation.o
+	del src_components_audio.o
+	del src_components_controller.o
+	del src_components_light.o
+	del src_components_particle.o
+	del src_components_physics.o
+	del src_components_player.o
+	del src_components_render.o
+	del src_components_sprite.o
+	del src_components_trigger.o
 	del src_entities_crate.o
 	del src_entities_lamp.o
 	del src_entities_marker.o
@@ -223,18 +223,18 @@ clean:
 	del src_physics_bullet_bullet.o
 	del src_platform_file.o
 	del src_platform_time.o
-	del src_render_armature.o
+	del src_render_aabb.o
+	del src_render_animation.o
 	del src_render_error.o
 	del src_render_material.o
 	del src_render_model.o
 	del src_render_render.o
 	del src_render_renderer.o
-	del src_render_render_misc.o
 	del src_render_sprite.o
 	del src_render_vertices.o
 	del src_render_opengl_error.o
 	del src_render_opengl_renderer.o
 	del src_render_opengl_shader.o
 
-library: src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_lightcomponent.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_playercomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_armature.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
-	ar -crf libtramsdk.a src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_armaturecomponent.o src_components_audiocomponent.o src_components_controllercomponent.o src_components_lightcomponent.o src_components_particlecomponent.o src_components_physicscomponent.o src_components_playercomponent.o src_components_rendercomponent.o src_components_spritecomponent.o src_components_triggercomponent.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_armature.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_render_misc.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+library: src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_animation.o src_components_audio.o src_components_controller.o src_components_light.o src_components_particle.o src_components_physics.o src_components_player.o src_components_render.o src_components_sprite.o src_components_trigger.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_aabb.o src_render_animation.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+	ar -crf libtramsdk.a src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_animation.o src_components_audio.o src_components_controller.o src_components_light.o src_components_particle.o src_components_physics.o src_components_player.o src_components_render.o src_components_sprite.o src_components_trigger.o src_entities_crate.o src_entities_lamp.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_menu_menu.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_aabb.o src_render_animation.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 

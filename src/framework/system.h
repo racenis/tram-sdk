@@ -22,14 +22,14 @@ enum System : system_t {
     SYSTEM_LAST
 };
 
-system_t Register (char const* name, char const* short_name);
-void SetInitialized (system_t system, bool is_initialized);
-bool IsInitialized (system_t system);
-void SetUpdated (system_t system, bool is_updated);
-bool IsUpdated (system_t system);
-char const* GetName (system_t system);
-char const* GetShortName (system_t system);
-uint32_t GetSystemCount ();
+system_t Register(char const* name, char const* short_name);
+void SetInitialized(system_t system, bool is_initialized);
+bool IsInitialized(system_t system);
+void SetUpdated(system_t system, bool is_updated);
+bool IsUpdated(system_t system);
+char const* GetName(system_t system);
+char const* GetShortName(system_t system);
+uint32_t GetSystemCount();
 
 }
 

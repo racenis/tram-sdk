@@ -35,20 +35,6 @@ void Core::Init() {
     // set the 0th string to 'none'
     UID none("none");
     
-    
-    // these are all of the default systems, as of now.
-    // feel free to extend the list, but do note that this list
-    // is in the same order as the System::System enumeration.
-    System::Register("Core", "CORE");
-    System::Register("Platform", "PLATFORM");
-    System::Register("User Interface", "UI");
-    System::Register("Graphical User Interface", "GUI");
-    System::Register("Async", "ASYNC");
-    System::Register("Rendering", "RENDER");
-    System::Register("Physics", "PHYSICS");
-    System::Register("Audio", "AUDIO");
-    System::Register("Misc", "MISC");
-    
     // this will register all of the default events
     for (event_t i = 0; i < Event::LAST_EVENT; i++) {
         Event::Register();

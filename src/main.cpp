@@ -474,46 +474,51 @@ int main() {
 #ifndef NEKADEEE
 
 #include <framework/core.h>
-#include <framework/file.h>
-
 #include <framework/logging.h>
+#include <framework/ui.h>
+#include <framework/event.h>
+#include <framework/message.h>
+#include <render/render.h>
+#include <physics/physics.h>
+#include <entities/player.h>
+#include <components/player.h>
+#include <components/controller.h>
 
 using namespace tram;
-
-#include <templates/macros.h>
-#include <templates/aabb.h>
+using namespace tram::UI;
 
 int main() {
-    tram::Core::Init();
-    
-    std::cout << "Hello World!" << std::endl;
-    
-    
-    
-    AABBTree tree;
-    
-    tree.InsertLeaf(123, {-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f});
-    auto yoink4 = tree.InsertLeaf(123, {-2.0f, -2.0f, -2.0f}, {0.0f, 0.0f, 0.0f});
-    auto yoink = tree.InsertLeaf(123, {-0.0f, -0.0f, -0.0f}, {2.0f, 2.0f, 2.0f});
-    
-    tree.RemoveLeaf(yoink);
-    
-    tree.InsertLeaf(123, {-0.0f, -0.0f, -0.0f}, {2.0f, 2.0f, 2.0f});
-    auto yoink2 = tree.InsertLeaf(123, {-32.0f, -21.0f, -23.0f}, {10.0f, 30.0f, 40.0f});
-    tree.InsertLeaf(123, {-1.0f, -1.0f, -1.0f}, {1.0f, 12.0f, 11.0f});
-    
-    tree.RemoveLeaf(yoink2);
-    
-    tree.InsertLeaf(123, {-1.0f, -1234.0f, -1.0f}, {1.0f, 1.0f, 1.0f});
-    auto yoink3 = tree.InsertLeaf(123, {-1314.0f, -2525.0f, -226.0f}, {0.0f, 0.0f, 0.0f});
-    
-    tree.RemoveLeaf(yoink3);
-    tree.RemoveLeaf(yoink4);
-    
-    tree.InsertLeaf(123, {10.0f, 10.0f, 10.0f}, {100.0f, 100.0f, 100.0f});
-    
-    
-    
+	Core::Init();
+	UI::Init();
+	Render::Init();
+	Physics::Init();
+	
+	Player* player = new Player();
+	player->SetLocation({0.0f, 1.0f, 0.0f});
+	player->Load();
+	
+	Physics::DRAW_PHYSICS_DEBUG = true;
+	
+	while (!EXIT) {
+		Core::Update();
+		UI::Update();
+		Physics::Update();
+		
+		vec3 v1 = {1.0f, 0.0f, 1.0f};
+		vec3 v2 = {-1.0f, 0.0f, 1.0f};
+		vec3 v3 = {1.0f, 0.0f, -1.0f};
+		vec3 v4 = {-1.0f, 0.0f, -1.0f};
+		
+		Render::AddLine(v1, v2, Render::COLOR_WHITE);
+		Render::AddLine(v2, v4, Render::COLOR_WHITE);
+		Render::AddLine(v3, v4, Render::COLOR_WHITE);
+		Render::AddLine(v3, v1, Render::COLOR_WHITE);
+		
+		//ControllerComponent::Update();
+		
+		Render::Render();
+		UI:EndFrame();
+	}
 }
 
 #endif

@@ -8,12 +8,10 @@
 #include <framework/entitycomponent.h>
 #include <framework/serialization.h>
 
-namespace tram {
+#include <components/player.h>
+#include <components/controller.h>
 
-class PlayerComponent;
-class ControllerComponent;
-class PhysicsComponent;
-class TriggerComponent;
+namespace tram {
 
 class Player : public Entity {
 public:

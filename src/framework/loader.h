@@ -10,8 +10,8 @@ namespace tram {
 
 class Loader {
 public:
-    void SetLocation (const vec3& new_location) { location = new_location; current_cell = WorldCell::Find(new_location); }
-    void UpdateLocation (const vec3& new_location) { location = new_location; auto n_trans = current_cell->FindTransition(location); if (n_trans) { current_cell = n_trans; } }
+    void SetLocation(vec3 location);
+    void UpdateLocation(vec3 location);
     static void Update();
 private:
     vec3 location = {0.0f, 0.0f, 0.0f};

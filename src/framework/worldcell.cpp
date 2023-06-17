@@ -56,6 +56,11 @@ WorldCell* WorldCell::Find (vec3 point) {
 
 void WorldCell::Load() {
     std::cout << "Loading cell: " << name << std::endl;
+    
+    if (!entities.size()) {
+        std::cout << "Cell " << name << " has no enitites. Forgot to load from disk?" << std::endl;
+    }
+    
     for (auto it : entities) {
         if (it->IsAutoLoad()) it->Load();
     }

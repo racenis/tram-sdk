@@ -31,6 +31,8 @@ static Queue<ResourceRequest> finished_queue ("finished resource request queue",
 /// Can be set to nullptr, in which case nothing will be notified.
 /// @param requested_resource The resource that will be loaded.
 void RequestResource (EntityComponent* requester, Resource* requested_resource) {
+    assert(System::IsInitialized(System::SYSTEM_ASYNC));
+    
     disk_loader_queue.push(ResourceRequest {
         .requester_id = requester ? requester->GetID() : 0,
         .requested_res = requested_resource

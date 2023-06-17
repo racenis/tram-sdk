@@ -12,6 +12,26 @@ namespace tram {
 
 template <> Pool<Loader> PoolProxy<Loader>::pool("worldcellloader pool", 10, false);
 
+void Loader::SetLocation(vec3 location) {
+    this->location = location;
+    
+    current_cell = WorldCell::Find(location);
+}
+
+void Loader::UpdateLocation(vec3 location) {
+    this->location = location;
+    
+    if (!current_cell) {
+        current_cell = WorldCell::Find(location);
+    } else {
+        WorldCell* new_cell = current_cell->FindTransition(location);
+        
+        if (new_cell) {
+            current_cell = new_cell;
+        }
+    }
+}
+
 void Loader::Update() {
     std::set<WorldCell*> active_cells;
     auto& loader_pool = PoolProxy<Loader>::GetPool();
