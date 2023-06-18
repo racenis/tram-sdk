@@ -64,8 +64,6 @@ private:
     vec3 look_direction = {0.0f, 1.0f, 0.0f};
     vec3 look_position = {0.0f, 0.0f, 0.0f};
     
-    Entity* holding = nullptr;
-    
     bool move_forward = false;
     bool move_backward = false;
     bool move_left = false;

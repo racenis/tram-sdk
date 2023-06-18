@@ -33,7 +33,11 @@ struct Message {
     message_t type;
     id_t receiver;
     id_t sender;
-    void* data = nullptr;
+    
+    union {
+        void* data = nullptr;
+        uint64_t data_int;
+    };
 };
 
 }

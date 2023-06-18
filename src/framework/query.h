@@ -11,8 +11,9 @@ namespace tram {
 
 typedef uint32_t query_t;
 
-enum class Query : query_t {
-    PICKUPABLE,
+enum Query : query_t {
+    QUERY_PICKUPABLE,
+    QUERY_LOOK_DIRECTION,
     LAST_QUERY
 };
 

@@ -4,7 +4,19 @@ namespace tram {
 
 template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool ("player component pool", 5, false);
 
-PlayerComponent::PlayerComponent() {}
+// technically incorrect, but it's not like we're going to have more than one
+// player components running at the same time.. right?
+static float cursorchangex = 0.0f;
+static float cursorchangey = 0.0f;
+static float cursorx_last = 0.0f;
+static float cursory_last = 0.0f;
+static float pitch = 0.0f;
+static float yaw = 0.0f;
+
+PlayerComponent::PlayerComponent() {
+    cursorx_last = PollKeyboardAxis(UI::KEY_MOUSE_X);
+    cursory_last = PollKeyboardAxis(UI::KEY_MOUSE_Y);
+}
 
 void PlayerComponent::Init() {
     keydown.make(Event::KEYDOWN, this);
@@ -27,59 +39,21 @@ void PlayerComponent::EventHandler (Event &event) {
     using enum tram::ControllerComponent::ActionModifier;
 
     if (event.type == Event::CURSORPOS) {
-        //controller->SetDirection(glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f)));
-        //auto p_pos = parent->GetLocation();
-        //auto p_rot = glm::quat(glm::vec3(0.0f, -glm::radians(CAMERA_YAW), 0.0f));
-        //parent->UpdateTransform(p_pos, p_rot);
+        cursorchangex = PollKeyboardAxis(UI::KEY_MOUSE_X) - cursorx_last;
+        cursorchangey = PollKeyboardAxis(UI::KEY_MOUSE_Y) - cursory_last;
+        cursorx_last = PollKeyboardAxis(UI::KEY_MOUSE_X);
+        cursory_last = PollKeyboardAxis(UI::KEY_MOUSE_Y);
+
+        yaw += cursorchangex * UI::CAMERA_SENSITIVITY;
+        pitch += cursorchangey * UI::CAMERA_SENSITIVITY;
+        pitch = pitch > 89.0f ? 89.0f : pitch < -89.0f ? -89.0f : pitch;
+        quat look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
+        quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
         
-        // this is dumb
-        // camera system shouldn't poll mouse position directly and then
-        // update the render system. instead the player component should
-        // poll the input system and then update the camera.
-        // or something, idk.
-        // TODO: fix
-        
-        look_direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
-        look_position = Render::GetCameraPosition();
-        
-        if (holding) {
-            vec3* data = (vec3*) Message::AllocateData(sizeof(vec3));
-            *data = look_position + 2.0f * look_direction;
-            
-            Message::Send({
-                Message::MOVE_PICK_UP,
-                holding->GetID(),
-                parent->GetID(),
-                data
-            });
-        }
-        
-        return;
-    }
-    
-    if (event.type == Event::KEYDOWN && event.subtype == KEY_ACTION_ACTIVATE) {
-        if (holding) {
-            std::cout << "dropped" << std::endl;
-            
-            Message::Send({
-                Message::MOVE_PICK_UP,
-                holding->GetID(),
-                parent->GetID(),
-                nullptr
-            });
-            
-            holding = nullptr;
-        } else {
-            auto res = Physics::Raycast(look_position, look_position + (2.0f * look_direction), -1 ^ Physics::COLL_PLAYER);
-        
-            if (res.collider) {
-                std::cout << "picked up" << std::endl;
+        controller->SetLookDirection(look_rotation);
+        parent->UpdateTransform(parent->GetLocation(), parent_rotation);
                 
-                holding = res.collider->GetParent();
-            } else {
-                std::cout << "missed" << std::endl;
-            }
-        }
+        return;
     }
 
     if (is_move && (event.type == Event::KEYDOWN || event.type == Event::KEYUP)) {

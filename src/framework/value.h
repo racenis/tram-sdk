@@ -18,7 +18,7 @@ public:
     Value() : uint64_value(0) { type = TYPE_UNDEFINED; }
     ~Value() {}
     
-    Value(const Value& other) : uint64_value(other.uint64_value) /* hehe */ { type = other.type; }
+    Value(const Value& other) : vec4_value(other.vec4_value) /* hehe */ { type = other.type; }
     
     Value(bool value) : bool_value(value) { type = TYPE_BOOL; }
     Value(name_t value) : name_value(value) { type = TYPE_NAME; }
@@ -33,6 +33,12 @@ public:
     Value(uint16_t value) : uint16_value(value) { type = TYPE_UINT16; }
     Value(uint32_t value) : uint32_value(value) { type = TYPE_UINT32; }
     Value(uint64_t value) : uint64_value(value) { type = TYPE_UINT64; }
+    
+    Value(vec2 value) : vec2_value(value) { type = TYPE_VEC2; }
+    Value(vec3 value) : vec3_value(value) { type = TYPE_VEC3; }
+    Value(vec4 value) : vec4_value(value) { type = TYPE_VEC4; }
+    
+    Value(quat value) : quat_value(value) { type = TYPE_QUAT; }
 
     Value(float value) : float_value(value) { type = TYPE_FLOAT32; }
     Value(double value) : double_value(value) { type = TYPE_FLOAT64; }
@@ -58,6 +64,8 @@ public:
     operator vec3() const { assert(type == TYPE_VEC3); return vec3_value; }
     operator vec4() const { assert(type == TYPE_VEC4); return vec4_value; }
     
+    operator quat() const { assert(type == TYPE_QUAT); return quat_value; }
+    
     inline Type GetType() const { return type; }
 private:
     Type type;
@@ -79,8 +87,11 @@ private:
         vec2 vec2_value;
         vec3 vec3_value;
         vec4 vec4_value;
+        quat quat_value;
     };
 };
+
+typedef Value value_t;
 
 }
 

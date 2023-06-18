@@ -31,6 +31,7 @@ enum Type : uint32_t {
     TYPE_VEC2,      //< Normal precision floating-point 2 element vector.
     TYPE_VEC3,      //< Normal precision floating-point 3 element vector.
     TYPE_VEC4,      //< Normal precision floating-point 4 element vector.
+    TYPE_QUAT,      //< Normal precision floating-point quaternion.
 };
 
 }

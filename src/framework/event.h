@@ -37,7 +37,11 @@ struct Event {
     event_t type;
     event_t subtype;
     id_t poster_id;
-    void* data;
+    
+    union {
+        void* data = nullptr;
+        uint64_t data_int;
+    };
 };
 
 /// Smart wrapper class for Event listeners.

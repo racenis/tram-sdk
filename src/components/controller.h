@@ -51,7 +51,10 @@ public:
     
     inline Action GetCurrentAction() { return current_action; }
     inline ActionModifier GetCurrentActionModifier() { return current_modifier; }
-
+    
+    inline void SetLookDirection(quat direction) { look_direction = direction; }
+    inline quat GetLookDirection() const { return look_direction; }
+    
     inline void SetCollisionSize(float width, float height, float crouch_height) {
         collision_width = width;
         collision_height = height;
@@ -76,6 +79,7 @@ protected:
     void Perform();
     
     vec3 velocity = {0.0f, 0.0f, 0.0f};
+    quat look_direction = {1.0f, 0.0f, 0.0f, 0.0f};
 
     Action current_action = ACTION_IDLE;
     ActionModifier current_modifier = ACTIONMODIFIER_NONE;

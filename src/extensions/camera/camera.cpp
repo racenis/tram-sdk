@@ -7,6 +7,7 @@
 #include <framework/ui.h>
 #include <render/render.h>
 #include <audio/audio.h>
+#include <components/controller.h>
 
 namespace tram::Ext::Camera {
 
@@ -89,28 +90,14 @@ void Camera::Update () {
         bob += BOB_SPEED;
     }
     
-    // retrieve new camera pos
     if (following) {
         location = following->GetLocation();
-    }
-    
-    // retrieve new camera rot
-    if (mouselook) {
-        cursorchangex = PollKeyboardAxis(UI::KEY_MOUSE_X) - cursorx_last;
-        cursorchangey = PollKeyboardAxis(UI::KEY_MOUSE_Y) - cursory_last;
-        cursorx_last = PollKeyboardAxis(UI::KEY_MOUSE_X);
-        cursory_last = PollKeyboardAxis(UI::KEY_MOUSE_Y);
-
-        yaw += cursorchangex * UI::CAMERA_SENSITIVITY;
-        pitch += cursorchangey * UI::CAMERA_SENSITIVITY;
-        pitch = pitch > 90.0f ? 90.0f : pitch < -90.0f ? -90.0f : pitch;
-        rotation = glm::quat(glm::vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
+        rotation = following->Query(QUERY_LOOK_DIRECTION);
     }
     
     // putting everything together
     vec3 term_loc = location;
     quat term_rot = rotation;
-    
     
     term_rot *= quat(vec3(0.0f, 0.0f, tilt));
     
@@ -122,10 +109,6 @@ void Camera::Update () {
     
     Audio::SetListenerPosition(term_loc);
     Audio::SetListenerOrientation(term_rot);
-    
-    if (rotate_following && following) {
-        following->UpdateTransform(following->GetLocation(), quat(vec3(0.0f, -glm::radians(yaw), 0.0f)));
-    }
 }
 
 }
