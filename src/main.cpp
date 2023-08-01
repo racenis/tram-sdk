@@ -84,6 +84,15 @@ void mainloop() {
     tick++;
 
     
+    static int frametick = 0;
+    static int lastprint = 0;
+    frametick++;
+
+    if ((int) GetTickTime() != lastprint) {
+        lastprint = GetTickTime();
+        std::cout << frametick << std::endl;
+        frametick = 0;
+    }
 
     if (UI::GetInputState() != STATE_DEFAULT) {
         float x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);

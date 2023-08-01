@@ -14,6 +14,8 @@ typedef uint32_t query_t;
 enum Query : query_t {
     QUERY_PICKUPABLE,
     QUERY_LOOK_DIRECTION,
+    QUERY_BOUNDING_BOX_MIN,
+    QUERY_BOUNDING_BOX_MAX,
     LAST_QUERY
 };
 

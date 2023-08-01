@@ -64,4 +64,45 @@ vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point
 
 }
 
+vec3 MergeAABBMin(vec3 a, vec3 b) {
+    return vec3 {
+        a.x < b.x ? a.x : b.x,
+        a.y < b.y ? a.y : b.y,
+        a.z < b.z ? a.z : b.z
+    };
+}
+
+vec3 MergeAABBMax(vec3 a, vec3 b) {
+    return vec3 {
+        a.x > b.x ? a.x : b.x,
+        a.y > b.y ? a.y : b.y,
+        a.z > b.z ? a.z : b.z
+    };
+}
+
+void RotateAABB(vec3& min, vec3& max, quat rotation) {
+    vec3 extents[8] = {
+        {min.x, min.y, min.z},
+        {max.x, min.y, min.z},
+        {min.x, max.y, min.z},
+        {min.x, min.y, max.z},
+        {max.x, max.y, min.z},
+        {max.x, min.y, max.z},
+        {max.x, max.y, max.z},
+        {min.x, max.y, max.z}
+    };
+    
+    for (auto& extent : extents) {
+        extent = rotation * extent;
+    }
+    
+    min = extents[0];
+    max = extents[0];
+    
+    for (auto& extent : extents) {
+        min = MergeAABBMin(min, extent);
+        max = MergeAABBMax(max, extent);
+    }
+}
+
 }

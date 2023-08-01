@@ -26,6 +26,8 @@ void ProjectLine(vec3& point, const vec3& from, const vec3& to);
 
 vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point2, vec3 point3);
 
+void RotateAABB(vec3& min, vec3& max, quat rotation);
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_MATH_H

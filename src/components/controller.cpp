@@ -76,7 +76,7 @@ bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
     float penetration = width - nearest_wall;
     vec3 push_dir = glm::normalize((position - nearest_point) * vec3(1.0f, 0.0f, 1.0f));
     
-    Render::AddLineMarker(nearest_point, Render::COLOR_YELLOW);
+    //Render::AddLineMarker(nearest_point, Render::COLOR_YELLOW);
     
     position += push_dir * penetration;
     
@@ -149,11 +149,11 @@ void ControllerComponent::Perform() {
         if (velocity.y > -0.12f) {
             velocity.y -= 0.0053f;
         }
-        Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_RED);
+        //Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_RED);
     } else {
         // add friction
         velocity *= 0.89f;
-        Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_GREEN);
+        //Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_GREEN);
     }
 
     // compute character's new position
@@ -182,7 +182,7 @@ void ControllerComponent::Perform() {
                 lowest_collision_normal = coll.normal;
             }
             
-            Render::AddLineMarker(coll.point, Render::COLOR_CYAN);
+            //Render::AddLineMarker(coll.point, Render::COLOR_CYAN);
         }
         
         if (lowest_collision.y != INFINITY) {

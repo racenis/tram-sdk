@@ -110,7 +110,7 @@ void SetScreenSize(float width, float height) {
     
     glViewport(0, 0, width, height);
     
-    matrices.projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 1000.0f);
+    matrices.projection = glm::perspective(glm::radians(90.0f), width / height, 0.1f, 1000.0f);
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
