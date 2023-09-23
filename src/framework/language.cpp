@@ -40,8 +40,14 @@ void Load (const char* filename){
     }
 }
 
-const char* Get (name_t name){
-    return language_string_map.Find(name);
+const char* Get (name_t name) {
+    const char* string = language_string_map.Find(name);
+    
+    if (!string) {
+        return name;
+    } else {
+        return string;
+    }
 }
 
 }

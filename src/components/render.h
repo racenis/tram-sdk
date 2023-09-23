@@ -43,8 +43,8 @@ protected:
 
     Render::Pose* pose = nullptr;
 
-    vec3 location;
-    quat rotation;
+    vec3 location = {0.0f, 0.0f, 0.0f};
+    quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
 
     void* aabb_tree_leaf = 0;
 

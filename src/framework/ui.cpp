@@ -158,7 +158,7 @@ void Init(){
 
     glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
     
-    WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.4-alfa", nullptr, nullptr);
+    WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.8", nullptr, nullptr);
     if (WINDOW == nullptr){
         std::cout << "GLFW window didn't open!" << std::endl;
         glfwTerminate();
