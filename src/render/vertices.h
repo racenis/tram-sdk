@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RENDER_VERTICES_H
-#define RENDER_VERTICES_H
+#ifndef TRAM_SDK_RENDER_VERTICES_H
+#define TRAM_SDK_RENDER_VERTICES_H
 
 #include <render/renderer.h>
 
@@ -60,4 +60,4 @@ struct DynamicModelData : public ModelData {
 
 }
 
-#endif // RENDER_VERTICES_H
+#endif // TRAM_SDK_RENDER_VERTICES_H

@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RENDER_H
-#define RENDER_H
+#ifndef TRAM_SDK_RENDER_H
+#define TRAM_SDK_RENDER_H
 
 #include <vector>
 
@@ -90,4 +90,4 @@ const char* GetMaterialTypeName(materialtype_t type);
 
 }
 
-#endif // RENDER_H
+#endif // TRAM_SDK_RENDER_H

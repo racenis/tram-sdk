@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef TEMPLATES_HASHMAP_H
-#define TEMPLATES_HASHMAP_H
+#ifndef TRAM_SDK_TEMPLATES_HASHMAP_H
+#define TRAM_SDK_TEMPLATES_HASHMAP_H
 
 #include <framework/uid.h>
 #include <iostream> // error message
@@ -96,4 +96,4 @@ namespace tram {
 
 }
 
-#endif // TEMPLATES_HASHMAP_H
+#endif // TRAM_SDK_TEMPLATES_HASHMAP_H

@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef PHYSICS_PHYSICS_H
-#define PHYSICS_PHYSICS_H
+#ifndef TRAM_SDK_PHYSICS_PHYSICS_H
+#define TRAM_SDK_PHYSICS_PHYSICS_H
 
 #include <framework/core.h>
 #include <framework/math.h>
@@ -43,4 +43,4 @@ std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from,
 
 }
 
-#endif // PHYSICS_PHYSICS_H
+#endif // TRAM_SDK_PHYSICS_PHYSICS_H

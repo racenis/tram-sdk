@@ -63,6 +63,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 #### Should do later
 - Keybinding menu
 - Graphics menu
+- Rewrite shaders
+	- All of the shader code is barely readable
+	- Also it would make it easier to add more shaders
 - Make Raycast that returns multiple points
 - Models with different sets of materials
 - Flat shaded color material

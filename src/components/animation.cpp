@@ -9,24 +9,31 @@ template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("armatu
 
 void AnimationComponent::Init() {
     assert(!is_ready);
+    
     is_init = true;
-    poseobj = PoolProxy<Render::Pose>::New ();
+    pose = PoolProxy<Render::Pose>::New();
 
-    for (size_t i = 0; i < Render::BONE_COUNT; i++) poseobj->pose[i] = mat4(1.0f);
+    // initialize animation matrices to identity matrix
+    for (size_t i = 0; i < Render::BONE_COUNT; i++) {
+        pose->pose[i] = mat4(1.0f);
+    }
 
     if (resources_waiting == 0) Start();
 }
 
 AnimationComponent::~AnimationComponent() {
     assert(is_ready);
-    assert(poseobj);
-    PoolProxy<Render::Pose>::Delete (poseobj);
-    poseobj = nullptr;
+    assert(pose);
+    
+    PoolProxy<Render::Pose>::Delete(pose);
+    
+    pose = nullptr;
     is_ready = false;
 }
 
 void AnimationComponent::Start() {
     assert(!is_ready);
+    
     // it's probably not necessary to cache this, but whatever
     armature_bone_count = model->GetArmature().size();
     armature_bones = &model->GetArmature()[0];
@@ -36,7 +43,9 @@ void AnimationComponent::Start() {
         armature_bone_parents[i] = armature_bones[i].parent;
     }
     
-    for (size_t i = 0; i < ANIM_COUNT; i++) if (anim_playing[i]) FindKeyframePointers(i);
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (anim_playing[i]) FindKeyframePointers(i);
+    }
 
     is_ready = true;
 }
@@ -93,7 +102,7 @@ void AnimationComponent::PlayAnimation (name_t animation_name, uint32_t repeats,
     anim_info[slot].pause_on_last_frame = pause_on_last_frame;
     anim_info[slot].animation_header = nullptr;
     
-    for (size_t i; i < BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
+    for (size_t i; i < Render::BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
     
     anim_info[slot].animation_header = Render::Animation::Find(animation_name)->GetPointer();
 
@@ -143,7 +152,7 @@ void AnimationComponent::StopAnimation (name_t animation_name) {
             anim_playing[i] = UID();
             
             // reset headers
-            for (size_t j = 0; j < BONE_COUNT; j++) {
+            for (size_t j = 0; j < Render::BONE_COUNT; j++) {
                 anim_info[i].keyframe_headers[j] = nullptr;
             }
             
@@ -225,7 +234,7 @@ void AnimationComponent::Refresh() {
     // it might be useful in the future to split this method into multiple methods
     
     if (!is_ready) return;
-    Render::Keyframe anim_mixed[BONE_COUNT];
+    Render::Keyframe anim_mixed[Render::BONE_COUNT];
     for (uint64_t i = 0; i < armature_bone_count; i++) anim_mixed[i] = base_pose[i];
     
     // increment animations' frames and check if they have stopped/repeated
@@ -321,7 +330,7 @@ void AnimationComponent::Refresh() {
     // convert mixed keyframes to pose matrices
     for(uint64_t i = 0; i < armature_bone_count; i++){
 
-        poseobj->pose[i] = glm::mat4(1.0f);
+        pose->pose[i] = glm::mat4(1.0f);
 
         glm::mat4 modelToBone = glm::translate(glm::mat4(1.0f), -armature_bones[i].head);
         
@@ -345,9 +354,9 @@ void AnimationComponent::Refresh() {
         glm::mat4 boneToModel = glm::inverse(modelToBone);
 
         if(armature_bone_parents[i] == (uint32_t)-1){
-            poseobj->pose[i] = boneToModel * boneAnim * modelToBone;
+            pose->pose[i] = boneToModel * boneAnim * modelToBone;
         } else {
-            poseobj->pose[i] = poseobj->pose[armature_bone_parents[i]] * boneToModel * boneAnim * modelToBone;
+            pose->pose[i] = pose->pose[armature_bone_parents[i]] * boneToModel * boneAnim * modelToBone;
         }
         
         /* idk i don't remember what this debugging code is for, but might be useful

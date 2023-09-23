@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef COMPONENTS_AUDIOCOMPONENT_H
-#define COMPONENTS_AUDIOCOMPONENT_H
+#ifndef TRAM_SDK_COMPONENTS_AUDIOCOMPONENT_H
+#define TRAM_SDK_COMPONENTS_AUDIOCOMPONENT_H
 
 #include <framework/entitycomponent.h>
 #include <framework/resource.h>
@@ -34,4 +34,4 @@ protected:
 
 }
 
-#endif // COMPONENTS_AUDIOCOMPONENT_H
+#endif // TRAM_SDK_COMPONENTS_AUDIOCOMPONENT_H

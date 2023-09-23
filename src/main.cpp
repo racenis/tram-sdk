@@ -414,7 +414,7 @@ int main() {
 
     // create the animation player for the mongus model
     monguser_armature = PoolProxy<AnimationComponent>::New();
-    monguser_armature->SetModel(UID("mongus"));
+    monguser_armature->SetModel(Render::Model::Find(UID("mongus")));
     monguser_armature->Init();
     monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 1.0f);
     //monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
@@ -452,7 +452,7 @@ int main() {
     derp_player->SetRepeating(true);
     derp_player->Init();
     
-    derp_player->Play();
+    //derp_player->Play();
     
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
         camera->SetFollowing(nullptr);

@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef TEMPLATES_SPINLOCK_H
-#define TEMPLATES_SPINLOCK_H
+#ifndef TRAM_SDK_TEMPLATES_SPINLOCK_H
+#define TRAM_SDK_TEMPLATES_SPINLOCK_H
 
 #include <atomic>
 
@@ -23,4 +23,4 @@ private:
     
 }
 
-#endif  // TEMPLATES_SPINLOCK_H
+#endif  // TRAM_SDK_TEMPLATES_SPINLOCK_H

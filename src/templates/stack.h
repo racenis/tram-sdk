@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef TEMPLATES_STACK_H
-#define TEMPLATES_STACK_H
+#ifndef TRAM_SDK_TEMPLATES_STACK_H
+#define TRAM_SDK_TEMPLATES_STACK_H
 
 #include <string>
 #include <iostream>
@@ -65,4 +65,4 @@ namespace tram {
     };
 }
 
-#endif  // TEMPLATES_STACK_H
+#endif  // TRAM_SDK_TEMPLATES_STACK_H

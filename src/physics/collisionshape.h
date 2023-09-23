@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef PHYSICS_COLLISIONSHAPE_H
-#define PHYSICS_COLLISIONSHAPE_H
+#ifndef TRAM_SDK_PHYSICS_COLLISIONSHAPE_H
+#define TRAM_SDK_PHYSICS_COLLISIONSHAPE_H
 
 #include <framework/math.h>
 
@@ -49,4 +49,4 @@ CollisionShape CollisionShape::Box (vec3 dimensions) {
 
 }
 
-#endif // PHYSICS_COLLISIONSHAPE_H
+#endif // TRAM_SDK_PHYSICS_COLLISIONSHAPE_H

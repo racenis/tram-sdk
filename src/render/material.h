@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RENDER_MATERIAL_H
-#define RENDER_MATERIAL_H
+#ifndef TRAM_SDK_RENDER_MATERIAL_H
+#define TRAM_SDK_RENDER_MATERIAL_H
 
 #include <render/render.h>
 
@@ -44,4 +44,4 @@ protected:
 
 }
 
-#endif // RENDER_MATERIAL_H
+#endif // TRAM_SDK_RENDER_MATERIAL_H

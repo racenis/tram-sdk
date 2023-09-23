@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef ENTITIES_LAMP_H
-#define ENTITIES_LAMP_H
+#ifndef TRAM_SDK_ENTITIES_LAMP_H
+#define TRAM_SDK_ENTITIES_LAMP_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -33,4 +33,4 @@ protected:
 
 }
 
-#endif // ENTITIES_LAMP_H
+#endif // TRAM_SDK_ENTITIES_LAMP_H

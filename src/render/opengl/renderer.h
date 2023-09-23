@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RENDER_OPENGL_RENDERER_H
-#define RENDER_OPENGL_RENDERER_H
+#ifndef TRAM_SDK_RENDER_OPENGL_RENDERER_H
+#define TRAM_SDK_RENDER_OPENGL_RENDERER_H
 
 #include <render/render.h>
 #include <render/renderer.h>
@@ -12,8 +12,11 @@ namespace tram::Render::OpenGL {
 void CompileShaders();
 
 uint32_t FindShader(vertexformat_t format, materialtype_t type);
+void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader);
 
 void BindUniformBlock (const char* name, uint32_t binding);
+
+
 
 struct LightListEntry {
     vec3 location = {0.0f, 0.0f, 0.0f};
@@ -62,4 +65,4 @@ struct DrawListEntry {
 
 }
 
-#endif // RENDER_OPENGL_RENDERER_H
+#endif // TRAM_SDK_RENDER_OPENGL_RENDERER_H

@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef RENDER_AABB_H
-#define RENDER_AABB_H
+#ifndef TRAM_SDK_RENDER_AABB_H
+#define TRAM_SDK_RENDER_AABB_H
 
 #include <framework/math.h>
 #include <render/model.h>
@@ -38,4 +38,4 @@ void DebugDrawTree();
 
 }
 
-#endif // RENDER_AABB_H
+#endif // TRAM_SDK_RENDER_AABB_H

@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef PHYSICS_COLLISIONMODEL_H
-#define PHYSICS_COLLISIONMODEL_H
+#ifndef TRAM_SDK_PHYSICS_COLLISIONMODEL_H
+#define TRAM_SDK_PHYSICS_COLLISIONMODEL_H
 
 #include <framework/resource.h>
 #include <unordered_map>
@@ -29,4 +29,4 @@ protected:
 
 }
 
-#endif // PHYSICS_COLLISIONMODEL_H
+#endif // TRAM_SDK_PHYSICS_COLLISIONMODEL_H

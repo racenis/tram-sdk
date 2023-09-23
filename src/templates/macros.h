@@ -3,8 +3,8 @@
 
 // This file contains some macros. All of them are completely optional.
 
-#ifndef TEMPLATES_MACROS_H
-#define TEMPLATES_MACROS_H
+#ifndef TRAM_SDK_TEMPLATES_MACROS_H
+#define TRAM_SDK_TEMPLATES_MACROS_H
 
 /// This is experimental template.
 #define TRAM_SDK_REGISTER_EVENT_DATATYPE(EVENT_ID, TYPE) template <> struct tram::EventDataType<EVENT_ID> { TYPE type; };
@@ -27,4 +27,4 @@
 #endif
 
 
-#endif // TEMPLATES_MACROS_H
+#endif // TRAM_SDK_TEMPLATES_MACROS_H

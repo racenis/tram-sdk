@@ -267,10 +267,6 @@ void CompileShaders(){
     RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       "line",              "line");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,             "text",              "text");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,            "glyph",             "glyph");
-    
-    for (size_t i = 0; i < last_linked_shader; i++) {
-        //BindTextures(linked_shaders[i].linked_shader);
-    }
 }
 
 }

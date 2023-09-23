@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef PLATFORM_FILE_H
-#define PLATFORM_FILE_H
+#ifndef TRAM_SDK_PLATFORM_FILE_H
+#define TRAM_SDK_PLATFORM_FILE_H
 
 #include <cstddef>
 

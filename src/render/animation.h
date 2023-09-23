@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef ARMATURE_H
-#define ARMATURE_H
+#ifndef TRAM_SDK_ARMATURE_H
+#define TRAM_SDK_ARMATURE_H
 
 #include <unordered_map>
 
@@ -18,11 +18,11 @@
 namespace tram::Render {
     
 typedef std::pair<name_t, uint64_t> NameCount; // animation header
-const size_t BONE_COUNT = 30;
+const size_t BONE_COUNT = 30; // bone count in a pose
 
 struct Bone {
     name_t name;
-    uint32_t parent = -1;  // why is this name using pascalCase
+    uint32_t parent = -1;
     vec3 head = vec3(1.0f);
     vec3 tail = vec3(1.0f);
     float roll = 0.0f;
@@ -33,11 +33,11 @@ struct Keyframe {
     vec3 location = {0.0f, 0.0f, 0.0f};
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 scale = {1.0f, 1.0f, 1.0f};
-    char padding [4]; // for emscripten ??
+    char padding[4]; // for emscripten ??
 };
 
 struct Pose {
-    mat4 pose [BONE_COUNT];
+    mat4 pose[BONE_COUNT];
 };
 
 extern Pose* BLANK_POSE;
@@ -53,7 +53,7 @@ public:
     
     void Unload() {}
     
-    static Animation* Find (name_t name);
+    static Animation* Find(name_t name);
     static void LoadAll();
 private:
     NameCount* animation_pointer;
@@ -61,4 +61,4 @@ private:
 
 }
 
-#endif // ARMATURE_H
+#endif // TRAM_SDK_ARMATURE_H
