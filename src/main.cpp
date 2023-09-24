@@ -90,7 +90,7 @@ void mainloop() {
 
     if ((int) GetTickTime() != lastprint) {
         lastprint = GetTickTime();
-        std::cout << frametick << std::endl;
+        //std::cout << frametick << std::endl;
         frametick = 0;
     }
 

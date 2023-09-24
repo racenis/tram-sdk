@@ -65,20 +65,24 @@ void StepPhysics(){
     // process the triggers
     for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
     
+    // BulletPhysics API is trash and I hate it
     int numManifolds = DYNAMICS_WORLD->getDispatcher()->getNumManifolds();
-    for (int i = 0; i < numManifolds; i++)
-    {
+    for (int i = 0; i < numManifolds; i++) {
         btPersistentManifold* contactManifold = DYNAMICS_WORLD->getDispatcher()->getManifoldByIndexInternal(i);
         const btCollisionObject* obA = contactManifold->getBody0();
         const btCollisionObject* obB = contactManifold->getBody1();
         
         // skip if no contacts
-        if (contactManifold->getNumContacts()) continue;
+        if (!contactManifold->getNumContacts()) continue;
+        
+        // stupid bullshit
+        bool swapped = false;
         
         // make sure that obA is triggercomponent
         if (obA->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
             obB->getUserIndex() == USERINDEX_TRIGGERCOMPONENT) {
             std::swap(obA, obB);
+            swapped = true;
         }
         
         // if not collision between physicscomponent and trigger, skip
@@ -95,7 +99,12 @@ void StepPhysics(){
             auto& posA = contact.getPositionWorldOnA();
             auto& posB = contact.getPositionWorldOnB();
             vec3 point = {posA.getX(), posA.getY(), posA.getZ()};
-            vec3 normal = glm::normalize(point - vec3 {posB.getX(), posB.getY(), posB.getZ()});
+            vec3 normal = -glm::normalize(point - vec3 {posB.getX(), posB.getY(), posB.getZ()});
+            
+            // idiot fuck shit piss ass crap
+            if (swapped) normal = -normal;
+            
+            if (contact.getDistance() == 0.0f) normal = {0.0f, 1.0f, 0.0f};
             
             ((TriggerComponent*) obA->getUserPointer())->Collision({
                 (PhysicsComponent*) obB->getUserPointer(),

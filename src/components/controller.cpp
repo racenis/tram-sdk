@@ -18,11 +18,11 @@ void ControllerComponent::Start() {
     
     walk_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     walk_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height));
-    
     walk_collision->SetStoreCollisions(true);
     
     crouch_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
+    crouch_collision->SetStoreCollisions(true);
     
     physics_body->SetParent(parent);
     physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
@@ -48,41 +48,6 @@ void ControllerComponent::Act(Action action, ActionModifier modifier) {
 /// update cycle.
 void ControllerComponent::Update() {
     for (auto& component : PoolProxy<ControllerComponent>::GetPool()) component.Perform();
-}
-
-// checks if a normal is a wall normal
-bool IsWallNormal(vec3 normal) {
-    return normal.y < 0.75f;
-}
-
-bool PushOutOfWall(vec3& position, float width, TriggerComponent* triggercomp) {
-    triggercomp->SetLocation(position + vec3(0.0f, 0.35f * 0.5f, 0.0f));
-    auto wall_collisions = triggercomp->Poll();
-
-    if (!wall_collisions.size()) {
-        return true;
-    }
-        
-    float nearest_wall = INFINITY;
-    vec3 nearest_point = {0.0f, 0.0f, 0.0f};
-    
-    for (auto& coll : wall_collisions) {
-        float dist = glm::distance(vec2 {position.x, position.z}, vec2 {coll.point.x, coll.point.z});
-        
-        if (dist < nearest_wall) {
-            nearest_wall = dist;
-            nearest_point = coll.point;
-        }
-    }
-    
-    float penetration = width - nearest_wall;
-    vec3 push_dir = glm::normalize((position - nearest_point) * vec3(1.0f, 0.0f, 1.0f));
-    
-    //Render::AddLineMarker(nearest_point, Render::COLOR_YELLOW);
-    
-    position += push_dir * penetration;
-    
-    return penetration < 0.01f;
 }
 
 /// Performs the action.
@@ -151,11 +116,9 @@ void ControllerComponent::Perform() {
         if (velocity.y > -0.12f) {
             velocity.y -= 0.0053f;
         }
-        //Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_RED);
     } else {
         // add friction
         velocity *= 0.89f;
-        //Render::AddLineMarker(parent->GetLocation() + vec3(0.0f, 1.5f, 0.0f), Render::COLOR_GREEN);
     }
 
     // compute character's new position
@@ -183,8 +146,6 @@ void ControllerComponent::Perform() {
                 lowest_collision = coll.point;
                 lowest_collision_normal = coll.normal;
             }
-            
-            //Render::AddLineMarker(coll.point, Render::COLOR_CYAN);
         }
         
         if (lowest_collision.y != INFINITY) {
@@ -230,20 +191,36 @@ void ControllerComponent::Perform() {
         is_in_air = true;
     }
     
-    TriggerComponent* collider = crouching ? crouch_collision.get() : walk_collision.get();
-    bool push_success = false;
-    for (int i = 0; i < 3 && !(push_success = PushOutOfWall(new_pos, width, collider)); i++);// std::cout << "push " << i << " ";
+    bool did_v = false;
     
-    if (!push_success) {
-        std::cout << "fucky wucky" << std::endl;
-        return;
+    TriggerComponent* collider = crouching ? crouch_collision.get() : walk_collision.get();
+    for (auto& col : collider->GetStoredCollisions()) {
+        if (col.distance != 0.0f) {
+            new_pos -= col.normal * col.distance;
+        }
+        
+        if (did_v) continue;
+        
+        // project velocity to collision surface
+        auto plane_normal = glm::normalize(-col.normal);
+        velocity = velocity - (glm::dot(velocity, plane_normal) * plane_normal);
+
+        if (std::isnan(velocity.x) || std::isnan(velocity.z)) {
+            velocity = {0.0f, 0.0f, 0.0f};
+        }
+        
+        // add firienction
+        if (is_in_air) {
+            velocity.x *= 0.5f;
+            velocity.z *= 0.5f;
+        }
+        
+        did_v = true;
+        //velocity = vec3(0.0f, 0.0f, 0.0f);
     }
     
-    
-    //std::cout << "clollisions: " << walk_collision->GetStoredCollisions().size() << std::endl;
-    
-    //std::cout << std::endl;
-    //std::cout << new_pos.y << std::endl;
+    walk_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
+    crouch_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
