@@ -14,7 +14,7 @@ class LightComponent;
 
 class Lamp : public Entity {
 public:
-    Lamp(const SharedEntityData&, const SerializedFieldArray&);
+    Lamp(const SharedEntityData&, const ValueArray&);
     void UpdateParameters();
     void SetParameters();
     void Load();

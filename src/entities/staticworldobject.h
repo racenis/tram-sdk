@@ -15,7 +15,7 @@ class PhysicsComponent;
 
 class StaticWorldObject : public Entity {
 public:
-    StaticWorldObject(const SharedEntityData&, const SerializedFieldArray&);
+    StaticWorldObject(const SharedEntityData&, const ValueArray&);
     void UpdateParameters();
     void SetParameters();
     void Load();

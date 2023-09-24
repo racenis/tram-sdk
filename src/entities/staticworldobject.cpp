@@ -26,14 +26,14 @@ static const uint32_t fields[2] = {
 void StaticWorldObject::Register() {
     Entity::RegisterType(
         "staticwobj", 
-        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new StaticWorldObject(a, b); },
+        [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new StaticWorldObject(a, b); },
         [](Entity* a) { delete a; },
         fields,
         2
     );
 }
 
-StaticWorldObject::StaticWorldObject(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {
+StaticWorldObject::StaticWorldObject(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     model = field_array[FIELD_MODEL];
     lightmap = field_array[FIELD_LIGHTMAP];
 }

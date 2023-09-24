@@ -26,14 +26,14 @@ static const uint32_t fields[4] = {
 void Lamp::Register() {
     Entity::RegisterType(
         "lamp", 
-        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new Lamp(a, b); },
+        [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Lamp(a, b); },
         [](Entity* a) { delete a; },
         fields,
         4
     );
 }
 
-Lamp::Lamp(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {
+Lamp::Lamp(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     color_r = field_array[FIELD_COLOR_R];
     color_g = field_array[FIELD_COLOR_G];
     color_b = field_array[FIELD_COLOR_B];

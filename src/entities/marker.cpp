@@ -5,12 +5,12 @@
 
 namespace tram {
     
-Marker::Marker(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {}
+Marker::Marker(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {}
 
 void Marker::Register() {
     Entity::RegisterType(
         "marker", 
-        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new Marker(a, b); },
+        [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Marker(a, b); },
         [](Entity* a) { delete a; },
         nullptr,
         0

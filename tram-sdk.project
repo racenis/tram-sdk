@@ -61,6 +61,10 @@
       <File Name="src/components/animation.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/script.h"/>
+      <File Name="src/framework/script.cpp"/>
+      <File Name="src/framework/signal.h"/>
+      <File Name="src/framework/signal.cpp"/>
       <File Name="src/framework/query.h"/>
       <File Name="src/framework/value.h"/>
       <File Name="src/framework/entitycomponent.cpp"/>

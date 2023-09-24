@@ -11,7 +11,7 @@ namespace tram {
     
 class Marker : public Entity {
 public:
-    Marker(const SharedEntityData&, const SerializedFieldArray&);
+    Marker(const SharedEntityData&, const ValueArray&);
 
     void UpdateParameters();
     void SetParameters();

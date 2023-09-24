@@ -15,7 +15,7 @@ namespace tram {
 class WorldCell;
 class Message;
 struct SharedEntityData;
-struct SerializedFieldArray;
+struct ValueArray;
 class File;
 
 class Entity {
@@ -64,7 +64,7 @@ public:
 
     void CheckTransition();
 
-    static void RegisterType (name_t name, Entity* (*constr_func)(const SharedEntityData&, const SerializedFieldArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
+    static void RegisterType (name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
 
     static Entity* Make (name_t type, File* file);
     static Entity* Find (id_t entity_id);

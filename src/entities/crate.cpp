@@ -28,14 +28,14 @@ static const uint32_t fields[2] = {
 void Crate::Register() {
     Entity::RegisterType(
         "crate", 
-        [](const SharedEntityData& a, const SerializedFieldArray& b) -> Entity* { return new Crate(a, b); },
+        [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Crate(a, b); },
         [](Entity* a) { delete a; },
         fields,
         2
     );
 }
 
-Crate::Crate(const SharedEntityData& shared_data, const SerializedFieldArray& field_array) : Entity(shared_data) {
+Crate::Crate(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     model = field_array[FIELD_MODEL];
     collmodel = field_array[FIELD_COLLMODEL];
 }

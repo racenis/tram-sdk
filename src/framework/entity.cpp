@@ -15,7 +15,7 @@
 namespace tram {
 
 struct EntityTypeInfo {
-    Entity* (*constructor)(const SharedEntityData&, const SerializedFieldArray&) = nullptr;
+    Entity* (*constructor)(const SharedEntityData&, const ValueArray&) = nullptr;
     void (*destructor)(Entity*);
     const uint32_t* fields;
     size_t fieldcount;
@@ -84,7 +84,7 @@ void Entity::CheckTransition() {
 #endif // ENGINE_EDITOR_MODE
 }
 
-void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const SerializedFieldArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount) {
+void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount) {
     registered_entity_types.Insert(name, {constr_func, destr_func, fields, fieldcount});
 }
 
@@ -147,7 +147,7 @@ Entity* Entity::Make(name_t type, File* file) {
         }
     }
     
-    SerializedFieldArray field_array(fields.data(), fields.size());
+    ValueArray field_array(fields.data(), fields.size());
     
     return record.constructor(shared_data, field_array);
 }
