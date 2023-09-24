@@ -34,6 +34,7 @@ struct Collision {
     PhysicsComponent* collider;
     vec3 point;
     vec3 normal;
+    float distance;
 };
 
 class CollisionShape;

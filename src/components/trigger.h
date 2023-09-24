@@ -32,11 +32,15 @@ public:
     void SetCollisionMask(uint32_t flags);
     void SetCollisionGroup(uint32_t flags);
     
+    void SetStoreCollisions(bool store_collisions) { this->store_collisions = store_collisions; }
+    
     uint32_t GetCollisionMask() { return collisionMask; }
     uint32_t GetCollisionGroup() { return collisionGroup; }
     
     void SetLocation(glm::vec3 location);
     void SetRotation(glm::quat rotation);
+    
+    std::vector<Physics::Collision> GetStoredCollisions() { return stored_collisions; }
     
     void Collision (const Physics::Collision& collision);
     void ResetCollisions();
@@ -61,7 +65,11 @@ private:
     bool is_collided = false;
     bool was_collided = false;
     
+    bool store_collisions = false;
+    
     Physics::Collision collision;
+    
+    std::vector<Physics::Collision> stored_collisions;
 };
 
 }

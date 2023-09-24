@@ -56,7 +56,7 @@ public:
     static Animation* Find(name_t name);
     static void LoadAll();
 private:
-    NameCount* animation_pointer;
+    NameCount* animation_pointer = nullptr;
 };
 
 }

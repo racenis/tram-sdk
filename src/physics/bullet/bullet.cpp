@@ -72,28 +72,39 @@ void StepPhysics(){
         const btCollisionObject* obA = contactManifold->getBody0();
         const btCollisionObject* obB = contactManifold->getBody1();
         
-        if (obA->getUserIndex() == USERINDEX_TRIGGERCOMPONENT &&
-            obB->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
-            contactManifold->getNumContacts()) {
-            assert(obA->getUserPointer());
-            assert(obB->getUserPointer());
-            auto& contact = contactManifold->getContactPoint(0).getPositionWorldOnA();
-            ((TriggerComponent*) obA->getUserPointer())->Collision({
-                (PhysicsComponent*) obB->getUserPointer(),
-                {contact.getX(), contact.getY(), contact.getZ()}
-            });
+        // skip if no contacts
+        if (contactManifold->getNumContacts()) continue;
+        
+        // make sure that obA is triggercomponent
+        if (obA->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
+            obB->getUserIndex() == USERINDEX_TRIGGERCOMPONENT) {
+            std::swap(obA, obB);
         }
         
-        if (obA->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
-            obB->getUserIndex() == USERINDEX_TRIGGERCOMPONENT &&
-            contactManifold->getNumContacts()) {
-            assert(obA->getUserPointer());
-            assert(obB->getUserPointer());
-            auto& contact = contactManifold->getContactPoint(0).getPositionWorldOnB();
-            ((TriggerComponent*) obB->getUserPointer())->Collision({
-                (PhysicsComponent*) obA->getUserPointer(),
-                {contact.getX(), contact.getY(), contact.getZ()}
+        // if not collision between physicscomponent and trigger, skip
+        if (obA->getUserIndex() != USERINDEX_TRIGGERCOMPONENT ||
+            obB->getUserIndex() != USERINDEX_PHYSICSCOMPONENT) {
+            continue;
+        }
+        
+        assert(obA->getUserPointer());
+        assert(obB->getUserPointer());
+        
+        for (int i = 0; i < contactManifold->getNumContacts(); i++) {
+            auto& contact = contactManifold->getContactPoint(i);
+            auto& posA = contact.getPositionWorldOnA();
+            auto& posB = contact.getPositionWorldOnB();
+            vec3 point = {posA.getX(), posA.getY(), posA.getZ()};
+            vec3 normal = glm::normalize(point - vec3 {posB.getX(), posB.getY(), posB.getZ()});
+            
+            ((TriggerComponent*) obA->getUserPointer())->Collision({
+                (PhysicsComponent*) obB->getUserPointer(),
+                point,
+                normal,
+                contact.getDistance()
             });
+            
+            
         }
     }
 }

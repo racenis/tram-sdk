@@ -46,7 +46,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
-- Add a thing that lets Trigger store all collisions
+- ~~Add a thing that lets Trigger store all collisions~~
 - Add better penetration recovery to ControllerComponent
 - Better UX
 	- Scripts

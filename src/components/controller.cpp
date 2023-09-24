@@ -19,6 +19,8 @@ void ControllerComponent::Start() {
     walk_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     walk_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height));
     
+    walk_collision->SetStoreCollisions(true);
+    
     crouch_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
     crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
     
@@ -236,6 +238,9 @@ void ControllerComponent::Perform() {
         std::cout << "fucky wucky" << std::endl;
         return;
     }
+    
+    
+    //std::cout << "clollisions: " << walk_collision->GetStoredCollisions().size() << std::endl;
     
     //std::cout << std::endl;
     //std::cout << new_pos.y << std::endl;

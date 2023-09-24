@@ -107,6 +107,10 @@ void TriggerComponent::Collision (const Physics::Collision& collision) {
             activation_callback(this, collision);
             this->collision = collision;
         }
+        
+        if (store_collisions) {
+            stored_collisions.push_back(collision);
+        }
 
         is_collided = true;
     }
@@ -117,6 +121,10 @@ void TriggerComponent::Collision (const Physics::Collision& collision) {
 void TriggerComponent::ResetCollisions() {
     if (!is_collided && was_collided && deactivation_callback) {
         deactivation_callback(this, collision);
+    }
+    
+    if (store_collisions) {
+        stored_collisions.clear();
     }
     
     was_collided = is_collided;
