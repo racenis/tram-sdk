@@ -205,6 +205,21 @@ void mainloop() {
     
     Ext::Camera::Update();
     
+    // ---------
+    //    GUI
+    // ---------
+    
+    static bool dingus_menu = false;
+
+    if (PollKeyboardKey(KEY_Y)) {
+        if (!dingus_menu) {
+            UI::SetInputState(tram::UI::STATE_MENU_OPEN);
+        }
+        
+        dingus_menu = true;
+    
+    }
+    
     GUI::Begin();
     Ext::Menu::DebugMenu();
     Ext::Menu::EscapeMenu();
@@ -216,6 +231,16 @@ void mainloop() {
     GUI::Text(tickstr.c_str(), 2, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
     GUI::Text(tickstr2.c_str(), 2, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
     //GUI::Text(tickstr3.c_str(), 2, tram::GUI::TEXT_CENTER);
+    
+    if (dingus_menu) {
+        if (GUI::Button("close menu!")) {
+           UI::SetInputState(tram::UI::STATE_DEFAULT); 
+           dingus_menu = false;
+        }
+        
+        GUI::FrameBreakLine();
+    }
+    
     
     //{
     //    auto p = trigga->Poll();

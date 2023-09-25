@@ -243,7 +243,7 @@ void Begin() {
 void End() {
     // if cursor changed, tell UI to display new cursor
     static UI::CursorType cursor_last = cursor;
-    if (cursor != cursor_last) UI::SetCursor(cursor);
+    if (cursor != cursor_last && UI::GetInputState() == UI::STATE_MENU_OPEN) UI::SetCursor(cursor);
     cursor_last = cursor;
     
     // if input text ptr changed, tell UI

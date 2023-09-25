@@ -323,7 +323,7 @@ float GetScreenHeight() {
     return screen_height;
 }
 
-void SetCursor(CursorType cursor){
+void SetCursor(CursorType cursor) {
     if (cursor == CURSOR_NONE) {
         glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPos(WINDOW, cursorx_last, cursory_last);
@@ -337,6 +337,9 @@ void SetInputState (InputState state) {
     input_state = state;
     
     if (input_state == STATE_MENU_OPEN) {
+        cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
+        cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
+        
         SetCursor(CURSOR_DEFAULT);
     } else {
         SetCursor(CURSOR_NONE);

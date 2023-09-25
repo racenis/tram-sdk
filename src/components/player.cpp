@@ -52,7 +52,7 @@ void PlayerComponent::EventHandler (Event &event) {
         
         controller->SetLookDirection(look_rotation);
         parent->UpdateTransform(parent->GetLocation(), parent_rotation);
-                
+        
         return;
     }
 
