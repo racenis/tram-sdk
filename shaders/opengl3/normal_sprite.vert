@@ -1,38 +1,39 @@
-#version 400 core
-layout (location = 0) in vec3 Position;
-layout (location = 3) in vec2 VOffset;
-layout (location = 1) in vec2 VertUV;
-layout (location = 4) in float Verticality;
-layout (location = 5) in uint TexIndex;
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
 
-layout (std140) uniform Matrices
-{
+#version 400 core
+
+layout (location = 0) in vec3 Position;		// vertex position
+layout (location = 3) in vec2 VOffset;		// screen space transform
+layout (location = 1) in vec2 VertUV;		// texture coordinates
+layout (location = 4) in float Verticality; // how vertical should a sprite be
+layout (location = 5) in uint TexIndex;		// texture index
+
+layout (std140) uniform Matrices {
     mat4 projection;
     mat4 view;
 };
 
-layout (std140) uniform ModelMatrices
-{
+layout (std140) uniform ModelMatrices {
     mat4 model;
-	uvec4 modellights;
-	vec3 sundir;
-	vec3 suncolor;
-	vec3 ambientcolor;
-	vec3 time;
+	uvec4 model_lights;
+	vec3 sun_direction;
+	vec3 sun_color;
+	vec4 ambient_color;
+	float time;
+	float sun_weight;
+	float screen_width;
+	float screen_height;
 };
 
-out vec2 vertUV;
-flat out uint texIndex;
+out vec2 vert_uv;
+flat out uint vert_tex_index;
 
-
-
-
-void main()
-{
-	vec4 scr_pos = projection * view * model * vec4(Position, 1.0);
+void main() {
+	vec4 screen_pos = projection * view * model * vec4(Position, 1.0);
 	
-    gl_Position = scr_pos + vec4(VOffset, 0.0, 0.0);
+    gl_Position = screen_pos + vec4(VOffset, 0.0, 0.0);
 
-    vertUV = VertUV;
-	texIndex = TexIndex;
+    vert_uv = VertUV;
+	vert_tex_index = TexIndex;
 }

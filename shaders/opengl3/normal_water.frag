@@ -1,31 +1,33 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #version 400 core
-out vec4 fragColor;
 
-in vec2 vertUV;
-in vec2 vertLightUV;
-in vec3 vertColor;
-flat in uint texIndex;
+out vec4 fragment;
 
-layout (std140) uniform ModelMatrices
-{
+in vec2 vert_uv;
+in vec2 vert_light_uv;
+in vec3 vert_color;
+flat in uint vert_tex_index;
+
+layout (std140) uniform ModelMatrices {
     mat4 model;
-	uvec4 modellights;
-	vec3 sundir;
-	vec3 suncolor;
-	vec4 ambientcolor;
+	uvec4 model_lights;
+	vec3 sun_direction;
+	vec3 sun_color;
+	vec4 ambient_color;
 	float time;
-	float sunweight;
-	float screenwidth;
-	float screenheight;
+	float sun_weight;
+	float screen_width;
+	float screen_height;
 };
 
 uniform sampler2D sampler[16];
 
-void main()
-{
+void main() {
     float offse = mod(time / 5.0, 1.0);
-	vec2 uv = vec2(vertUV.x + offse, vertUV.y + offse);
-	//vec2 uv2 = vec2(vertUV.x, vertUV.y + mod(time.x / 60.0, 1.0));
-    fragColor = texture(sampler[texIndex], uv)/* * texture(sampler[texIndex], uv2) */* texture(sampler[15], vertLightUV) * vec4(vertColor, 1.0);
+	vec2 uv = vec2(vert_uv.x + offse, vert_uv.y + offse);
+	//vec2 uv2 = vec2(vert_uv.x, vert_uv.y + mod(time.x / 60.0, 1.0));
+    fragment = texture(sampler[vert_tex_index], uv)/* * texture(sampler[vert_tex_index], uv2) */* texture(sampler[15], vert_light_uv) * vec4(vert_color, 1.0);
 	// TODO: break the shader again and make water pretty
 }
