@@ -110,7 +110,7 @@ void SetScreenSize(float width, float height) {
     
     glViewport(0, 0, width, height);
     
-    matrices.projection = glm::perspective(glm::radians(90.0f), width / height, 0.1f, 1000.0f);
+    matrices.projection = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 1000.0f);
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
@@ -131,7 +131,7 @@ void Init() {
     model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
     bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
     
-    matrices.projection = glm::perspective(glm::radians(45.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+    matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
     // initialize the default pose
     BLANK_POSE = PoolProxy<Render::Pose>::New();
