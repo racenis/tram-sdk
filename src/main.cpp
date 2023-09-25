@@ -458,13 +458,13 @@ int main() {
     tolet_spinner = PoolProxy<SpriteComponent>::New();
     tolet_spinner->SetSprite(tolet_sprite);
     tolet_spinner->UpdateLocation(glm::vec3(3.0f, 1.2f, -1.0f));
-    //tolet_spinner->Init();
-    //tolet_spinner->Play();
+    tolet_spinner->Init();
+    tolet_spinner->Play();
     
     tolet_emitter = PoolProxy<ParticleComponent>::New();
     tolet_emitter->SetSprite(tolet_sprite);
     tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -7.0f));
-    //tolet_emitter->Init();
+    tolet_emitter->Init();
     
     derp = Audio::Sound::Find(UID("apelsin"));
     eerp = Audio::Sound::Find(UID("dekpunkta"));

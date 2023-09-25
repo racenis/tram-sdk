@@ -1,4 +1,10 @@
+
+// idk if this shader is even used anymore
+
+// probably not
+
 #version 400 core
+
 layout (location = 0) in vec2 Position;
 layout (location = 1) in vec2 TexCoord;
 layout (location = 2) in vec3 VertColor;

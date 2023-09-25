@@ -1,11 +1,12 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 #version 400 core
-out vec4 fragColor;
+
+out vec4 fragment;
   
-in vec3 color;
+in vec3 vert_color;
 
-uniform sampler2D texture[16];
-
-void main()
-{
-    fragColor = vec4(color, 1.0);
+void main() {
+    fragment = vec4(vert_color, 1.0);
 }
