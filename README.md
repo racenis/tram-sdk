@@ -4,6 +4,8 @@
 
 ![Software Development Kit logo](/docs/devkit.gif)
 
+It does what Godoesn't.
+
 ## What's it
 
 Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022 and similar applications.
