@@ -37,18 +37,7 @@ inline void SetLights (drawlistentry_t entry, uint32_t* lights) {
     return OpenGL::SetLights(entry, lights);
 }
 
-
-/// Sets the location of a draw list entry.
-inline void SetLocation (drawlistentry_t entry, glm::vec3& location) {
-    return OpenGL::SetLocation(entry, location);
-}
-
-/// Sets the rotation of a draw list entry.
-inline void SetRotation (drawlistentry_t entry, glm::quat& rotation) {
-    return OpenGL::SetRotation(entry, rotation);
-}
-
-/// Sets the rotation of a draw list entry.
+/// Sets the matrix of a draw list entry.
 inline void SetMatrix (drawlistentry_t entry, const mat4& matrix) {
     return OpenGL::SetMatrix(entry, matrix);
 }

@@ -30,12 +30,8 @@ struct DrawListEntry {
     uint32_t flags = 0;
 
     Pose* pose = nullptr;
-
-    glm::vec3 location = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::quat rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
     
     mat4 matrix = mat4(1.0f);
-
 
     uint32_t lights[4] = {0};
     
@@ -53,6 +49,7 @@ struct DrawListEntry {
 
     /// Assembles a key for sorting
     uint64_t CalcSortKey (const glm::vec3& cameraPosition) {
+        vec3 location = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
         uint64_t sortkey = 0;
         sortkey = flags & FLAG_TRANSPARENT ? 1 : 0;
         sortkey = sortkey << 60;

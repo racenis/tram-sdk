@@ -105,7 +105,7 @@ void SpriteComponent::UpdateRenderListObject() {
 
     UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
     
-    SetLocation(draw_list_entry, location);
+    Render::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
 }
 
         

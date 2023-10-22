@@ -279,17 +279,6 @@ void SetLights(drawlistentry_t entry, uint32_t* lights) {
     }
 }
 
-void SetLocation(drawlistentry_t entry, glm::vec3& location) {
-    DrawListEntry* entry_ptr = (DrawListEntry*) entry;
-    entry_ptr->location = location;
-    
-    light_tree.FindNearest(entry_ptr->lights, location.x, location.y, location.z);
-}
-
-void SetRotation(drawlistentry_t entry, glm::quat& rotation) {
-    ((DrawListEntry*) entry)->rotation = rotation;
-}
-
 void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
     DrawListEntry* entry_ptr = (DrawListEntry*) entry;
     
