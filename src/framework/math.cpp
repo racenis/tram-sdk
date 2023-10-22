@@ -105,4 +105,13 @@ void RotateAABB(vec3& min, vec3& max, quat rotation) {
     }
 }
 
+
+
+mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation) {
+    mat4 matrix = glm::mat4(1.0f);
+    matrix = glm::translate(matrix, position);
+    matrix *= glm::toMat4(rotation);
+    return matrix;
+}
+
 }

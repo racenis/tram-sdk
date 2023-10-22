@@ -111,7 +111,8 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetLocation(entry, location);
+                //Render::SetLocation(entry, location);
+                Render::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
             }
         }
         
@@ -126,7 +127,8 @@ void RenderComponent::SetRotation(glm::quat nrotation){
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetRotation(entry, rotation);
+                //Render::SetRotation(entry, rotation);
+                Render::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
             }
         }
         
@@ -174,8 +176,9 @@ void RenderComponent::InsertDrawListEntries() {
         Render::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
         Render::SetFlags(entry, render_flags);
 
-        Render::SetLocation(entry, location);
-        Render::SetRotation(entry, rotation);
+        //Render::SetLocation(entry, location);
+        //Render::SetRotation(entry, rotation);
+        Render::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
 
         Render::SetPose(entry, pose);
         

@@ -19,8 +19,13 @@ void SetFlags (drawlistentry_t entry, uint32_t flags);
 void SetPose (drawlistentry_t entry, Pose* pose);
 void SetLightmap (drawlistentry_t entry, uint32_t lightmap);
 void SetLights (drawlistentry_t entry, uint32_t* lights);
+
+
 void SetLocation (drawlistentry_t entry, glm::vec3& location);
 void SetRotation (drawlistentry_t entry, glm::quat& rotation);
+
+void SetMatrix (drawlistentry_t entry, const mat4& matrix);
+
 void SetDrawListVertexArray (drawlistentry_t entry, uint32_t vertex_array_handle);
 void SetDrawListIndexRange (drawlistentry_t entry, uint32_t index_offset, uint32_t index_length);
 void SetDrawListShader (drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type);
@@ -39,6 +44,8 @@ void RemoveDrawListEntry (drawlistentry_t entry);
 
 uint32_t CreateTexture (ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
 
+// this bit of the API is a bit leaky
+// might change later!
 void CreateIndexedVertexArray (VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
 void CreateVertexArray (VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle);
 void UpdateVertexArray (vertexhandle_t vertex_buffer_handle, size_t data_size, void* data);

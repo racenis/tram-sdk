@@ -191,10 +191,9 @@ void RenderFrame() {
     for (std::pair<uint64_t, DrawListEntry*>& pp : rvec){
         DrawListEntry* robj = pp.second;
 
-        glm::mat4 model = glm::mat4(1.0f);
+        /*glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(robj->location[0], robj->location[1], robj->location[2]));
-
-        model *= glm::toMat4(robj->rotation);
+        model *= glm::toMat4(robj->rotation);*/
 
         glUseProgram(robj->shader);
 
@@ -214,7 +213,8 @@ void RenderFrame() {
             modelMatrices.sunWeight = 1.0f;
         }
 
-        modelMatrices.model = model;
+        //modelMatrices.model = model;
+        modelMatrices.model = robj->matrix;
         UploadUniformBuffer(model_matrix_uniform_buffer, sizeof(ShaderUniformModelMatrices), &modelMatrices);
 
 
@@ -288,6 +288,16 @@ void SetLocation(drawlistentry_t entry, glm::vec3& location) {
 
 void SetRotation(drawlistentry_t entry, glm::quat& rotation) {
     ((DrawListEntry*) entry)->rotation = rotation;
+}
+
+void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
+    DrawListEntry* entry_ptr = (DrawListEntry*) entry;
+    
+    vec4 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    entry_ptr->matrix = matrix;
+    
+    light_tree.FindNearest(entry_ptr->lights, origin.x, origin.y, origin.z);
 }
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexhandle_t vertex_array_handle) {
