@@ -114,6 +114,7 @@
       <File Name="src/framework/entity.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="templates">
+      <File Name="src/templates/test.h"/>
       <File Name="src/templates/spinlock.h"/>
       <File Name="src/templates/aabb.h"/>
       <File Name="src/templates/octree.h"/>

@@ -37,7 +37,8 @@ void Core::Init() {
     
     // this will register all of the default events
     for (event_t i = 0; i < Event::LAST_EVENT; i++) {
-        Event::Register();
+        Event::Register(); // this is fucking dumb
+        // TODO: fix
     }
     
     assert(!System::IsInitialized(System::SYSTEM_CORE));

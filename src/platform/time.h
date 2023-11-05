@@ -5,6 +5,8 @@
 #define TRAM_SDK_PLATFORM_FILE_H
 
 namespace tram {
+
+// should this be? in line  a namespace? like PLATFORM::GetTime()?????
     
 double GetTime();
     
