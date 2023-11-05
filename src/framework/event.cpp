@@ -28,8 +28,8 @@ struct ListenerInfo {
 };
 
 static Queue<Event> event_queue ("event queue", 500);
-static std::vector<Pool<ListenerInfo>> listener_table;
 static StackPool<char> data_pool ("event data pool", 2000);
+static std::vector<Pool<ListenerInfo>> listener_table(Event::LAST_EVENT, {"EVENTListnerPoo", 50});
 
 /// Registers a new event type.
 event_t Event::Register() {
@@ -38,7 +38,7 @@ event_t Event::Register() {
     return new_event_id;
 }
 
-listener_t EncodeListenerHandle (event_t type, ListenerInfo* entry) {
+static listener_t EncodeListenerHandle (event_t type, ListenerInfo* entry) {
     listener_t handle = type;
     handle <<= 48;
     handle |= (listener_t)entry;
