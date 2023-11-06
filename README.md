@@ -47,7 +47,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 
 #### Should do sooner
-
 - Better UX
 	- Scripts
 		- Setup script
@@ -82,6 +81,11 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Additional serialized data fields
 	- Position XYZ
 	- Color RGB
+- Refactor GLFW from UI to Platform
+	- Also make it so that GLFW can be swapped for SDL
+- Swapable physics engine?
+- Script abstraction
+	- Add a LUA integration
 	
 #### For very later versions
 - Occlusion/frustrum culling
