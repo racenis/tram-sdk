@@ -6,9 +6,6 @@
 
 #include <unordered_map>
 
-#include <templates/pool.h>
-#include <templates/stackpool.h>
-
 #include <framework/core.h>
 #include <framework/uid.h>
 #include <framework/resource.h>

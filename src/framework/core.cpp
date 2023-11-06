@@ -32,14 +32,6 @@ id_t GenerateID() {
 
 /// Initializes the core of the framework.
 void Core::Init() {
-    // set the 0th string to 'none'
-    UID none("none");
-    // it would be good if this was possible to not do here, but in
-    // definition of the symbol table, but then our pool thingy stuff
-    // should have also be in possible to have init constructor
-    // with the squirly bracelet
-    // TODO: fix
-        
     assert(!System::IsInitialized(System::SYSTEM_CORE));
     
     System::SetInitialized(System::SYSTEM_CORE, true);

@@ -81,9 +81,7 @@ void mainloop() {
     //Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {-3.0f, 3.0f, -3.0f}, vec3(0.0f, 0.0f, 0.75f), COLOR_GREEN);
     
     static int tick = 0;
-    tick++;
-
-    
+    tick++;   
     static int frametick = 0;
     static int lastprint = 0;
     frametick++;

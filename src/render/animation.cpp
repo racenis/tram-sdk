@@ -5,7 +5,9 @@
 #include <components/animation.h>
 #include <framework/logging.h>
 #include <framework/file.h>
+
 #include <templates/hashmap.h>
+#include <templates/stackpool.h>
 
 #include <cstring>
 

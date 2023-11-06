@@ -10,10 +10,12 @@ namespace tram {
 
 struct UID {
     UID() {}
+    UID(const UID& value) { *this = value; }
+    ~UID() {}
+    
     UID(const std::string& value);
     UID(const char* value);
-    ~UID() { }
-    UID(const UID& value) { *this = value; }
+    
     UID& operator=(const UID& value) {
         key = value.key;
         return *this;

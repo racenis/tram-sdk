@@ -10,8 +10,8 @@
 
 namespace tram {
 
-static StackPool<char> string_pool ("stringpool", 10000);
-static std::unordered_map<std::string, uint64_t> string_list;
+static StackPool<char> string_pool ("stringpool", 10000, {'n', 'o', 'n', 'e', '\0'});
+static std::unordered_map<std::string, uint64_t> string_list = {{"none", 0}};
 
 UID::UID (const std::string& value) {
     const char* str = value.c_str();
@@ -23,7 +23,7 @@ UID::UID (const char* value) {
     std::string name = value;
     std::unordered_map<std::string, uint64_t>::iterator ff = string_list.find(name);
     if(ff == string_list.end()){
-        uint64_t key = string_pool.GetSize();
+        uint64_t key = string_pool.size();
         char* newstr = string_pool.AddNew(name.size() + 1);
 
         string_list.emplace(name, key);
