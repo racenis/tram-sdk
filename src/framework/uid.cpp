@@ -4,35 +4,48 @@
 #include <framework/uid.h>
 
 #include <cstring>
-#include <templates/stackpool.h>
 
-#include <unordered_map>
+#include <templates/stackpool.h>
+#include <templates/hashmap.h>
+
+#include <murmur.h>
 
 namespace tram {
 
 static StackPool<char> string_pool ("stringpool", 10000, {'n', 'o', 'n', 'e', '\0'});
-static std::unordered_map<std::string, uint64_t> string_list = {{"none", 0}};
+static Hashmap<UID> string_list("stringlist", 1000, {{MurmurHash("none"), UID()}});
 
 UID::UID (const std::string& value) {
     const char* str = value.c_str();
     *this = UID(str);
 }
 
-// TODO: optimize this
 UID::UID (const char* value) {
-    std::string name = value;
-    std::unordered_map<std::string, uint64_t>::iterator ff = string_list.find(name);
-    if(ff == string_list.end()){
-        uint64_t key = string_pool.size();
-        char* newstr = string_pool.AddNew(name.size() + 1);
-
-        string_list.emplace(name, key);
-        strcpy(newstr, name.c_str());
+    uint64_t hash = MurmurHash2(value, strlen(value) + 1);
+    
+    // check if value is already added
+    UID existing = string_list.Find(hash);
+    
+    if (existing) {
+        if (strcmp(existing, value) != 0) {
+            std::cout << "UID collision " << existing << " with " << value << std::endl; 
+            abort();
+        }
         
-        this->key = key;
-    } else {
-        this->key = ff->second;
+        this->key = existing.key;
+        return;
     }
+    
+    // special case. very important!
+    if (strcmp("none", value) == 0) return;
+    
+    // else add to string table
+    this->key = string_pool.size();
+    
+    char* new_value = string_pool.AddNew(strlen(value) + 1);
+    strcpy(new_value, value);
+    
+    string_list.Insert(hash, *this);
 }
 
 UID::operator std::string() const {

@@ -26,7 +26,7 @@ public:
         for (PAIR* it = first; it != last; it++) new (it) PAIR(); // wait what the fuck
     }
     
-    Hashmap(std::string name, size_t max_size, std::initializer_list<std::pair<UID, T>> list) : Hashmap(name, max_size) {
+    Hashmap(std::string name, size_t max_size, std::initializer_list<std::pair<uint64_t, T>> list) : Hashmap(name, max_size) {
         for (const auto& entry : list) {
             Insert(entry.first, entry.second);
         }
