@@ -52,6 +52,9 @@ void SetSun(float timeOfDay);
 void AddLine(vec3 from, vec3 to, color_t color);
 void AddLineMarker(vec3 location, color_t color);
 void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color);
+void AddSphere(vec3 pos, float radius, color_t color);
+void AddCylinder(vec3 pos, float height, float radius, color_t color);
+void AddCube(vec3 pos, float height, float radius, color_t color);
 
 const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
 const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);

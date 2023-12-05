@@ -142,9 +142,9 @@ void AddLine(vec3 from, vec3 to, vec3 color) {
 }
 
 void AddLineMarker(vec3 location, vec3 color) {
-    AddLine (location + vec3(-1.0f, 0.0f, 0.0f), location + vec3(1.0f, 0.0f, 0.0f), color);
-    AddLine (location + vec3(0.0f, -1.0f, 0.0f), location + vec3(0.0f, 1.0f, 0.0f), color);
-    AddLine (location + vec3(0.0f, 0.0f, -1.0f), location + vec3(0.0f, 0.0f, 1.0f), color);
+    AddLine(location + vec3(-1.0f, 0.0f, 0.0f), location + vec3(1.0f, 0.0f, 0.0f), color);
+    AddLine(location + vec3(0.0f, -1.0f, 0.0f), location + vec3(0.0f, 1.0f, 0.0f), color);
+    AddLine(location + vec3(0.0f, 0.0f, -1.0f), location + vec3(0.0f, 0.0f, 1.0f), color);
 }
 
 void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color) {
@@ -173,6 +173,34 @@ void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color) {
     
     AddLine(point5, point6, color);
     AddLine(point5, point7, color);
+}
+
+static const int SPHERE_HEIGHT = 8;
+static const int SPHERE_WIDTH = 8;
+static constexpr float pi = 3.14159f;
+
+static constexpr vec3 sphere_p(int h, int w) {
+    float x = sin(pi * h/SPHERE_HEIGHT) * cos(2*pi * w/SPHERE_WIDTH);
+    float y = sin(pi * h/SPHERE_HEIGHT) * sin(2*pi * w/SPHERE_WIDTH);
+    float z = cos(pi * h/SPHERE_HEIGHT);
+    
+    return {x, z, y};
+}
+
+void AddSphere(vec3 pos, float radius, color_t color) {
+    for (int i = 0; i < SPHERE_HEIGHT; i++) {
+        for (int j = 0; j < SPHERE_WIDTH; j++) {
+            AddLine(pos + (sphere_p(i, j) * radius), pos + (sphere_p(i+1, j+1) * radius), color);
+        }
+    }
+}
+    
+void AddCylinder(vec3 pos, float height, float radius, color_t color) {
+    // TODO: implement
+}
+
+void AddCube(vec3 pos, float height, float radius, color_t color) {
+    // TODO: implement
 }
 
 const uint32_t MAX_MATERIAL_TYPES = 10;
