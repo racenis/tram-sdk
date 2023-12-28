@@ -7,7 +7,6 @@
 namespace tram::Ext::Scripting::Lua {
 
 void Init();
-void LoadScript(const char*);
 void Uninit();
     
 }

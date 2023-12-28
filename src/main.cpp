@@ -17,6 +17,7 @@
 #include <framework/event.h>
 #include <framework/message.h>
 #include <framework/language.h>
+#include <framework/script.h>
 #include <physics/physics.h>
 #include <audio/audio.h>
 
@@ -44,6 +45,9 @@
 
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>
+
+#include <extensions/design/design.h>
+#include <extensions/scripting/lua.h>
 
 #include <render/api.h>
 #include <render/aabb.h>
@@ -382,6 +386,8 @@ int main() {
 
     Ext::Menu::Init();
     Ext::Camera::Init();
+    
+    Ext::Scripting::Lua::Init();
 
     // load all of the language strings
     Language::Load("lv");
@@ -487,6 +493,18 @@ int main() {
         camera->SetRotation(vec3 {glm::radians(-90.0f), glm::radians(86.8f), 0.0f});
         
         std::cout << "aaa" << std::endl;
+        
+        Script::SetGlobal("nice_number", 420);
+        
+        Script::SetFunction("epic_function", {TYPE_INT32}, [](auto params) -> value_t {
+            return (int32_t)params[0] + 69;
+        });
+        
+        Script::LoadScript("bepis");
+        
+        vec3 v = Script::CallFunction("give_vector", {1, 2, 3});
+        
+        std::cout << v.x << " " << v.y << " " << v.z << std::endl;
     });
     
     
@@ -500,6 +518,7 @@ int main() {
     }
 
     Async::Yeet();
+    Ext::Scripting::Lua::Uninit();
     Audio::Uninit();
     UI::Uninit();
 #endif

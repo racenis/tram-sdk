@@ -30,8 +30,8 @@ value_t CallFunction(name_t name, std::vector<Value> parameters) {
     return language.call_function(name, parameters);
 }
 
-void SetLanguage(Language language) {
-    language = language;
+void SetLanguage(Language lang) {
+    language = lang;
 }
 
 void LoadScript(const char* path) {

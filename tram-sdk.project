@@ -233,6 +233,7 @@
         <Library Value="libLinearMath.a"/>
         <Library Value="libglfw3.a"/>
         <Library Value="libOpenAL32.a"/>
+        <Library Value="liblua.a"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(ProjectName).exe" IntermediateDirectory="" Command="$(WorkspacePath)/build-$(WorkspaceConfiguration)/bin/$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>

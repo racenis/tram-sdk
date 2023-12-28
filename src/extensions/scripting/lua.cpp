@@ -1,5 +1,6 @@
 #include <extensions/scripting/lua.h>
 #include <framework/script.h>
+#include <framework/logging.h>
 
 #include <lua/lua.hpp>
 
@@ -9,7 +10,7 @@ namespace tram::Ext::Scripting::Lua {
 
 static lua_State* L = nullptr;
 
-Type best_value(int index) {
+static Type best_value(int index) {
     switch (lua_type(L, index)) {
         case LUA_TNUMBER:   return TYPE_FLOAT;
         case LUA_TBOOLEAN:  return TYPE_BOOL;
@@ -23,7 +24,7 @@ Type best_value(int index) {
         }
 }
 
-void push_value_to_stack(const value_t& value) {
+static void push_value_to_stack(const value_t& value) {
     if (value.IsBool()) {
         lua_pushboolean(L, (bool)value);        return;
     }
@@ -49,7 +50,7 @@ void push_value_to_stack(const value_t& value) {
     }
 }
 
-value_t get_value_from_stack(int index, Type type) {
+static value_t get_value_from_stack(int index, Type type) {
     switch (type) {
         case TYPE_BOOL:         return (bool) lua_toboolean(L, index);
         
@@ -85,7 +86,8 @@ value_t get_value_from_stack(int index, Type type) {
 
 const size_t MAX_LUA_FUNCTIONS = 100;
 
-struct {
+// I think that this could acutally be easilier useed and switch to std::vector
+static struct {
     std::vector<Type> parameters;
     value_t (*function)(valuearray_t) = nullptr;
 } registered_functions[MAX_LUA_FUNCTIONS];
@@ -95,7 +97,17 @@ static size_t registered_function_count = 0;
 // call whichever its name was registered to
 extern "C" {
 static int function_call_from_lua(lua_State* L) {
-    return 0;
+    auto& func = registered_functions[lua_tointeger(L, lua_upvalueindex(1))];
+
+    // hee hee
+    std::vector<Value> params;
+    for (size_t i = 0; i < func.parameters.size(); i++) {
+        params.push_back(get_value_from_stack(i+1, func.parameters[i]));
+    }
+    
+    push_value_to_stack(func.function({params.data(), params.size()}));
+    
+    return 1;
 }
 }
 
@@ -118,6 +130,7 @@ static void set_function(name_t name, std::vector<Type> parameters, value_t (*fu
     registered_functions[registered_function_count] = {parameters, function};
     lua_pushinteger(L, registered_function_count);
     lua_pushcclosure(L, function_call_from_lua, 1);
+    lua_setglobal(L, name);
     registered_function_count++;
 }
 
@@ -125,11 +138,33 @@ static value_t call_function(name_t name, std::vector<Value> parameters) {
     lua_getglobal(L, name);
 	for (auto& val : parameters) push_value_to_stack(val);
 	lua_call(L, parameters.size(), 1);
-    value_t ret = get_value_from_stack(lua_gettop(L), TYPE_BOOL);
+    value_t ret = get_value_from_stack(lua_gettop(L), best_value(lua_gettop(L)));
     lua_pop(L, 1);
     return ret;
 }
 
+static void load_script(const char* script) {
+    std::string path = std::string("scripts/") + script + ".lua";
+    
+    /*File file (path.c_str(), MODE_READ);
+    
+    if (!file.is_open()) {
+        // TODO: add error message
+        return;
+    }
+    
+    load(file.cursor);*/
+    
+    if (luaL_loadfile(L, path.c_str())) {
+        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in loading {} \n {}", path, lua_tostring(L, -1));
+        lua_pop(L, 1);
+    }
+
+    if (lua_pcall(L, 0, LUA_MULTRET, 0)) {
+        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in executing {} \n {}", path, lua_tostring(L, -1));
+        lua_pop(L, 1);
+    }
+}
 
 
 
@@ -140,16 +175,27 @@ void Init() {
     
     L = luaL_newstate();
     luaL_openlibs(L);
-}
-
-void LoadScript(const char* script) {
-
+    
+    Script::Language lua;
+    
+    lua.name = "Lua";
+    lua.load_script = load_script;
+    lua.call_function = call_function;
+    lua.set_function = set_function;
+    lua.get_global = nullptr;
+    lua.set_global = set_global;
+    
+    Script::SetLanguage(lua);
 }
 
 void Uninit() {
     if (!L) {
         return; // TODO: add error
     }
+    
+    lua_close(L);
+    
+    L = nullptr;
 }
 
 }
