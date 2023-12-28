@@ -66,6 +66,46 @@ public:
     
     operator quat() const { assert(type == TYPE_QUAT); return quat_value; }
     
+    
+    
+    inline bool IsBool() const { return type == TYPE_BOOL; }
+    inline bool IsInt() const { return type >= TYPE_INT8 && type <= TYPE_UINT64; }
+    inline bool IsFloat() const { return type == TYPE_FLOAT32 || type == TYPE_FLOAT64; }
+    
+    inline int GetInt() const {
+        switch (type) {
+            case TYPE_INT8:     return int8_value;
+            case TYPE_INT16:    return int16_value;
+            case TYPE_INT32:    return int32_value;
+            case TYPE_INT64:    return int64_value;
+            case TYPE_UINT8:    return int8_value;
+            case TYPE_UINT16:   return int16_value;
+            case TYPE_UINT32:   return int32_value;
+            case TYPE_UINT64:   return int64_value;
+            case TYPE_FLOAT32:  return float_value;
+            case TYPE_FLOAT64:  return double_value;
+            default: return 0;
+        }
+    }
+    
+    inline float GetFloat() const {
+        switch (type) {
+            case TYPE_INT8:     return int8_value;
+            case TYPE_INT16:    return int16_value;
+            case TYPE_INT32:    return int32_value;
+            case TYPE_INT64:    return int64_value;
+            case TYPE_UINT8:    return int8_value;
+            case TYPE_UINT16:   return int16_value;
+            case TYPE_UINT32:   return int32_value;
+            case TYPE_UINT64:   return int64_value;
+            case TYPE_FLOAT32:  return float_value;
+            case TYPE_FLOAT64:  return double_value;
+            default: return 0;
+        }
+    }
+    
+    
+    
     inline Type GetType() const { return type; }
 private:
     Type type;

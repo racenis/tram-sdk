@@ -4,8 +4,7 @@
 #ifndef TRAM_SDK_FRAMEWORK_MESSAGE_H
 #define TRAM_SDK_FRAMEWORK_MESSAGE_H
 
-#include <cstdint>
-#include <cstddef>
+#include <framework/uid.h>
 
 namespace tram {
 
@@ -14,21 +13,30 @@ typedef uint32_t id_t;
 
 struct Message {
     enum Type : message_t {
+        NONE,
         PING,
-        HELLO,
-        ACTIVATE,
-        GET_IN,
-        GET_OUT,
         MOVE_PICK_UP,
+        OPEN,
+        CLOSE,
+        LOCK,
+        UNLOCK,
+        TOGGLE,
         KILL,
+        USE,
+        START,
+        STOP,
         LAST_MESSAGE
     };
 
-    static message_t Register ();
-    static void Send (const Message& message);
-    static void Send (const Message& message, uint32_t when);
-    static void Dispatch ();
-    static void* AllocateData (size_t ammount);
+    static message_t Register(const char* name);
+    static message_t GetType(name_t name);
+    static name_t GetName(message_t type);
+    
+    
+    static void Send(const Message& message);
+    static void Send(const Message& message, uint32_t when);
+    static void Dispatch();
+    static void* AllocateData(size_t ammount);
 
     message_t type;
     id_t receiver;
@@ -36,7 +44,7 @@ struct Message {
     
     union {
         void* data = nullptr;
-        uint64_t data_int;
+        int64_t data_int;
     };
 };
 

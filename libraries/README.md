@@ -30,4 +30,7 @@ Some of these libraries are not covered under the MIT license, so check before m
 ## stb_vorbis
 <https://github.com/nothings/stb/blob/master/stb_vorbis.c>
 
+## lua
+<https://www.lua.org/>
+
 Thanks to everyone for licensing their work under free licenses, so that I can appropriate it.

@@ -6,11 +6,28 @@
     <File Name="src/config.h"/>
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
+      <VirtualDirectory Name="design">
+        <File Name="src/extensions/design/quest.h"/>
+        <File Name="src/extensions/design/quest.cpp"/>
+        <File Name="src/extensions/design/dialog.cpp"/>
+        <File Name="src/extensions/design/dialog.h"/>
+        <File Name="src/extensions/design/character.h"/>
+        <File Name="src/extensions/design/character.cpp"/>
+        <File Name="src/extensions/design/design.h"/>
+        <File Name="src/extensions/design/design.cpp"/>
+        <File Name="src/extensions/design/inventory.cpp"/>
+        <File Name="src/extensions/design/attributes.cpp"/>
+        <File Name="src/extensions/design/inventory.h"/>
+        <File Name="src/extensions/design/attributes.h"/>
+      </VirtualDirectory>
       <VirtualDirectory Name="camera">
         <File Name="src/extensions/camera/camera.cpp"/>
         <File Name="src/extensions/camera/camera.h"/>
       </VirtualDirectory>
-      <VirtualDirectory Name="scripting"/>
+      <VirtualDirectory Name="scripting">
+        <File Name="src/extensions/scripting/lua.h"/>
+        <File Name="src/extensions/scripting/lua.cpp"/>
+      </VirtualDirectory>
       <VirtualDirectory Name="menu">
         <File Name="src/extensions/menu/menu.h"/>
         <File Name="src/extensions/menu/menu.cpp"/>

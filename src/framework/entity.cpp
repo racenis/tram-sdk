@@ -88,7 +88,7 @@ void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntity
     registered_entity_types.Insert(name, {constr_func, destr_func, fields, fieldcount});
 }
 
-void Entity::Register(){
+void Entity::Register() {
     if (id) {
         entity_id_list.Insert(id, this);
     }
@@ -98,11 +98,11 @@ void Entity::Register(){
     }
 }
 
-Entity* Entity::Find (id_t entityID){
+Entity* Entity::Find (id_t entityID) {
     return entity_id_list.Find(entityID);
 }
 
-Entity* Entity::Find(name_t entityName){
+Entity* Entity::Find(name_t entityName) {
     return entity_name_list.Find(entityName);
 }
 
@@ -143,6 +143,17 @@ Entity* Entity::Make(name_t type, File* file) {
             case TYPE_UINT64:   fields.push_back(file->read_uint64());  break;
             case TYPE_FLOAT32:  fields.push_back(file->read_float32()); break;
             case TYPE_FLOAT64:  fields.push_back(file->read_float64()); break;
+            case TYPE_VEC2:     fields.push_back(vec2(file->read_float32(),      // evil formatting. do not DO NOT
+                                file->read_float32()));                 break;
+            case TYPE_VEC3:     fields.push_back(vec3(file->read_float32(), 
+                                file->read_float32(), file->read_float32())
+                                );                                      break;
+            case TYPE_VEC4:     fields.push_back(vec4(file->read_float32(), 
+                                file->read_float32(), file->read_float32(),
+                                file->read_float32()));                 break;
+            case TYPE_QUAT:     fields.push_back(quat(file->read_float32(),
+                                file->read_float32(), file->read_float32(),
+                                file->read_float32()));                 break;
             default: assert(false);
         }
     }

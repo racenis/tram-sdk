@@ -14,20 +14,44 @@ typedef uint32_t signal_t;
     
 struct Signal {
     enum Type : signal_t {
-        SIGNAL_LAST
+        NONE,
+        SPAWN,
+        KILL,
+        ACTIVATE,
+        USE,
+        LOCKED_USE,
+        OPEN,
+        CLOSE,
+        END_OPEN,
+        END_CLOSE,
+        TRIGGER,
+        ENTER_TRIGGER,
+        EXIT_TRIGGER,
+        LAST_SIGNAL
     };
     
-    Type type;
+    signal_t type = NONE;
     
     name_t receiver;
-    uint64_t data_int;
+    int64_t data_int;
     
-    union {
-        message_t message_type;
-        event_t event_type;
-    };
+    float delay;
+    int limit;
     
-    signal_t Register();
+    message_t message_type;
+    
+    static signal_t Register(const char* name);
+    static signal_t GetType(name_t name);
+    static name_t GetName(signal_t type);
+};
+
+class SignalTable {
+public:
+    void Fire(signal_t signal, id_t sender);
+    void Add(const Signal& signal);
+public:
+    Signal signals[10];
+    size_t signal_count = 0;
 };
     
 }

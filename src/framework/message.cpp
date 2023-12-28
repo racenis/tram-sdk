@@ -7,23 +7,65 @@
 #include <templates/queue.h>
 #include <templates/pool.h>
 #include <templates/stackpool.h>
+#include <templates/hashmap.h>
 
 #include <queue>
 
 namespace tram {
 
+const size_t MAX_MESSAGE_TYPES = 100;
+    
 static Queue<Message> message_queue ("message queue", 500);
 static Pool<Message> message_pool ("message pool", 250);
 static StackPool<char> data_pool ("message data pool", 2000);
 
 std::priority_queue <std::pair<uint32_t, Message*>, std::vector<std::pair<uint32_t, Message*>>, std::greater<std::pair<uint32_t, Message*>>> future_messages;
 
+static Hashmap<message_t> name_t_to_message_t("name_t_to_message_t", (MAX_MESSAGE_TYPES*2)+11);
+
+static const char* message_names[MAX_MESSAGE_TYPES] = {
+    "none",
+    "ping",
+    "move-pick-up",
+    "open",
+    "close",
+    "lock",
+    "unlock",
+    "toggle",
+    "kill",
+    "use",
+    "start",
+    "stop"
+};
+
+static message_t last_type = Message::LAST_MESSAGE;
+
 /// Registers a new message type.
 /// @return Unique message type number.
-message_t Message::Register() {
-    static message_t last_type = LAST_MESSAGE;
-    
+message_t Message::Register(const char* name) {
+    message_names[last_type] = name;
     return last_type++;
+}
+
+/// Finds a message type from a name.
+message_t Message::GetType(name_t name) {
+    message_t type = name_t_to_message_t.Find(name);
+    
+    if (!type) {
+        for (message_t i = 0; i < last_type; i++) {
+            if (message_names[i] == name) {
+                name_t_to_message_t.Insert(name, i);
+                return i;
+            }
+        }
+    }
+    
+    return type;
+}
+
+/// Gets a nessage type name.
+name_t Message::GetName(message_t type) {
+    return message_names[type];
 }
 
 /// Dispatches sent messsages.

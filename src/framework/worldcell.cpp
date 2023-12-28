@@ -175,6 +175,27 @@ void WorldCell::LoadFromDisk() {
             continue;
         }
         
+        if (entry_type == "signal") {
+            Entity* owner = Entity::Find(file.read_uint64());
+            
+            if (!owner) {
+                std::cout << "Singal coudnlt find! find! signal ID for entity! " << std::endl;
+                continue;
+            }
+            
+            Signal signal;
+            
+            signal.type = Signal::GetType(file.read_name());
+            signal.receiver = file.read_name();
+            signal.data_int = file.read_int64();
+            signal.delay = file.read_float32();
+            signal.limit = file.read_int32();
+            signal.message_type = Message::GetType(file.read_name());
+            
+            owner->signals->Add(signal);
+            continue;
+        }
+        
         
         if (entry_type == "path" || entry_type == "navmesh" || entry_type == "group") {
             std::cout << "skipping " << entry_type << ": " << file.read_line() << std::endl;

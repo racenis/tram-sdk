@@ -9,9 +9,9 @@
 #include <framework/math.h>
 #include <framework/value.h>
 #include <framework/query.h>
+#include <framework/signal.h>
 
 namespace tram {
-    
 class WorldCell;
 class Message;
 struct SharedEntityData;
@@ -82,11 +82,13 @@ protected:
     bool is_serializable = true;
     
     WorldCell* cell = nullptr;
+    SignalTable* signals = nullptr;
     
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 location = {0.0f, 0.0f, 0.0f};
 
     void Register();
+    inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
 
     friend class WorldCell;
 };
