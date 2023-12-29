@@ -48,6 +48,7 @@ public:
 
     void SetDebugDrawing(bool drawing);
     void SetKinematic(bool kinematic);
+    void SetUpdateParentTransform(bool update);
 
     void SetRotation(const glm::quat& rotation);
     void SetLocation(const glm::vec3& location);
@@ -80,6 +81,10 @@ private:
 
     bool rigidbody_should_sleep = true;
     bool rigidbody_should_awake = false;
+    bool update_parent_transform = true;
+    
+    vec3 rigidbody_position = {0.0f, 0.0f, 0.0f};
+    quat rigidbody_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     
     vec3 rigidbody_offset = {0.0f, 0.0f, 0.0f};
     vec3 rigidbody_angular_factor = {1.0f, 1.0f, 1.0f};

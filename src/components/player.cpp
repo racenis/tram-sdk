@@ -20,8 +20,8 @@ PlayerComponent::PlayerComponent() {
 
 void PlayerComponent::Init() {
     keydown.make(Event::KEYDOWN, this);
-    keyup.make(Event::CURSORPOS, this);
-    keypress.make(Event::KEYUP, this);
+    keyup.make(Event::KEYUP, this);
+    keypress.make(Event::KEYPRESS, this);
     mouseposition.make(Event::CURSORPOS, this);
 
     cell_loader = PoolProxy<Loader>::New();
@@ -38,6 +38,7 @@ void PlayerComponent::EventHandler (Event &event) {
     using enum tram::ControllerComponent::Action;
     using enum tram::ControllerComponent::ActionModifier;
 
+    // Map cursor position into camera and entity orientation.
     if (event.type == Event::CURSORPOS) {
         cursorchangex = PollKeyboardAxis(UI::KEY_MOUSE_X) - cursorx_last;
         cursorchangey = PollKeyboardAxis(UI::KEY_MOUSE_Y) - cursory_last;
@@ -56,6 +57,7 @@ void PlayerComponent::EventHandler (Event &event) {
         return;
     }
 
+    // Compute move direction.
     if (is_move && (event.type == Event::KEYDOWN || event.type == Event::KEYUP)) {
         bool move_value = event.type == Event::KEYDOWN;
         

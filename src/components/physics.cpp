@@ -18,14 +18,29 @@ void PhysicsComponent::Start(){
         collision_shape = collision_model->GetShape();
     }
 
-    motion_state = new EntMotionState(parent, rigidbody_offset);
+    if (update_parent_transform) {
+        motion_state = new EntMotionState(parent, rigidbody_offset);
+    } else {
+        btTransform initial_transform;
+		initial_transform.setIdentity();
+		//initial_transform.setOrigin({rigidbody_position.x, rigidbody_position.y, rigidbody_position.z});
+        //initial_transform.setRotation({rigidbody_rotation.x, rigidbody_rotation.y, rigidbody_rotation.z, rigidbody_rotation.w});
+        if (parent) {
+            quat rot = parent->GetRotation();
+            vec3 pos = parent->GetLocation();
+            initial_transform.setOrigin({pos.x, pos.y, pos.z});
+            initial_transform.setRotation({rot.x, rot.y, rot.z, rot.w});
+        }
+        motion_state = new btDefaultMotionState(initial_transform);
+    }
+    
 
     btScalar bullet_mass = rigidbody_mass;
     btVector3 bullet_inertia (0.0f, 0.0f, 0.0f);
     collision_shape->calculateLocalInertia(bullet_mass, bullet_inertia);
     btRigidBody::btRigidBodyConstructionInfo bullet_construction_info (bullet_mass, motion_state, collision_shape, bullet_inertia);
 
-    rigidbody = new btRigidBody (bullet_construction_info);
+    rigidbody = new btRigidBody(bullet_construction_info);
 
     DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     
@@ -175,18 +190,35 @@ void PhysicsComponent::SetKinematic (bool kinematic) {
     }
 }
 
+/// Sets whether the movement of the rigibody should update parent Entity's transform.
+/// If set to true, then whenever the rigidbody moves, the transform of the parent
+/// will be set to the transform of the rigidbody. Otherwise, the parent's transform
+/// will remain unaffected.
+/// @note This only works if set before the component is initialized.
+void PhysicsComponent::SetUpdateParentTransform(bool update) {
+    update_parent_transform = update;
+}
+
 /// Sets the position of the physics object.
-void PhysicsComponent::SetLocation (const glm::vec3& location) {
-    btTransform trans = rigidbody->getWorldTransform();
-    trans.setOrigin(btVector3 (location.x, location.y, location.z));
-    rigidbody->setWorldTransform(trans);
+void PhysicsComponent::SetLocation (const glm::vec3& position) {
+    if (rigidbody) {
+        btTransform trans = rigidbody->getWorldTransform();
+        trans.setOrigin(btVector3 (position.x, position.y, position.z));
+        rigidbody->setWorldTransform(trans);
+    }
+    
+    rigidbody_position = position;
 }
 
 /// Sets the rotation of the physics object.
 void PhysicsComponent::SetRotation (const glm::quat& rotation) {
-    btTransform trans = rigidbody->getWorldTransform();
-    trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-    rigidbody->setWorldTransform(trans);
+    if (rigidbody) {
+        btTransform trans = rigidbody->getWorldTransform();
+        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+        rigidbody->setWorldTransform(trans);
+    }
+    
+    rigidbody_rotation = rotation;
 }
 
 /// Sets the angular factor of the physics object.

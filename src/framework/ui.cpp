@@ -244,6 +244,8 @@ static void KeyCallback (GLFWwindow* window, int key, int scancode, int action, 
             Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
         } else if (action == GLFW_RELEASE) {
             Event::Post({Event::KEYUP, binding.action, 0, nullptr});
+        } else if (action == GLFW_REPEAT) {
+            Event::Post({Event::KEYPRESS, binding.action, 0, nullptr});
         }
     } else if (binding.special_option && action == GLFW_PRESS) {
         binding.special_option();

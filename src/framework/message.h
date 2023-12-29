@@ -25,6 +25,8 @@ struct Message {
         USE,
         START,
         STOP,
+        ACTIVATE,
+        ACTIVATE_ONCE,
         LAST_MESSAGE
     };
 
@@ -39,8 +41,8 @@ struct Message {
     static void* AllocateData(size_t ammount);
 
     message_t type;
-    id_t receiver;
     id_t sender;
+    id_t receiver;
     
     union {
         void* data = nullptr;

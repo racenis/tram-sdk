@@ -41,7 +41,7 @@ event_t Event::Register() {
 static listener_t EncodeListenerHandle (event_t type, ListenerInfo* entry) {
     listener_t handle = type;
     handle <<= 48;
-    handle |= (listener_t)entry;
+    handle |= (listener_t)entry; // TODO: instead of stuffing pointer, stuff index!!!
     return handle;
 }
 
@@ -57,7 +57,7 @@ listener_t Event::AddListener(event_t type, EntityComponent* component) {
 listener_t Event::AddListener(event_t type, Entity* entity) {
     ListenerInfo* entry = listener_table[type].AddNew();
     entry->entity = entity;
-    entry->type = ListenerInfo::LISTENER_COMPONENT;
+    entry->type = ListenerInfo::LISTENER_ENTITY;
     return EncodeListenerHandle(type, entry);
 }
 
@@ -80,7 +80,7 @@ void Event::RemoveListener(listener_t listener_id) {
 void Event::Dispatch(){
     while (event_queue.size()) {
         Event& event = event_queue.front();
-        
+
         for (auto& listener : listener_table[event.type]) {
             switch (listener.type) {
                 case ListenerInfo::LISTENER_COMPONENT:
@@ -91,7 +91,7 @@ void Event::Dispatch(){
                     abort();
                     break;
                 case ListenerInfo::LISTENER_FUNCTION:
-                    listener.function (event);
+                    listener.function(event);
                     break;
             }
         }

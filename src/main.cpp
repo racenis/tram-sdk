@@ -47,6 +47,7 @@
 #include <extensions/camera/camera.h>
 
 #include <extensions/design/design.h>
+#include <extensions/design/entities.h>
 #include <extensions/scripting/lua.h>
 
 #include <render/api.h>
@@ -170,6 +171,25 @@ void mainloop() {
     } else if (ray_all.collider) {
         //AddLineMarker(ray_all.point, COLOR_GREEN);
     }
+    
+    bool is_use = PollKeyboardKey(KEY_E);
+    static bool was_use = false;
+    
+    if (is_use) {
+        vec3 start = Render::GetCameraPosition();
+        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        
+        auto result = Physics::Raycast(start, start + 2.0f * direction);
+        
+        if (result.collider) {
+            if (!was_use) {
+                Message::Send({Message::ACTIVATE_ONCE, 0, result.collider->GetParent()->GetID(), 0});
+            }
+            Message::Send({Message::ACTIVATE, 0, result.collider->GetParent()->GetID(), 0});
+        }
+    }
+    
+    was_use = is_use;
     
     //if (tick > 300 && tick % 100 == 0) {
     //    auto aaa = Entity::FindByName(UID("estijs"));
@@ -347,6 +367,8 @@ void mainloop() {
     Event::Dispatch();
     Message::Dispatch();
     
+    Entity::UpdateFromList();
+    
     Loader::Update();
     
     ControllerComponent::Update();
@@ -373,6 +395,7 @@ int main() {
     //Entity::RegisterType("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
     Crate::Register();
     StaticWorldObject::Register();
+    Ext::Design::Button::Register();
 
     SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
 

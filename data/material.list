@@ -164,3 +164,16 @@ kjeems flat
 skavotaajs flat
 metalakaste flat
 metalareste alpha
+dev/button16x16 flat
+dev/floor32x32 flat
+dev/floor128x128 flat
+dev/scaffold32x32 alpha
+dev/scale128x128 flat
+dev/vent16x16 flat
+dev/wall8x8 flat
+dev/wall16x16 flat
+dev/wall32x32 flat
+dev/wall64x64 flat
+dev/wall128x128 flat
+dev/wallstair32x32 flat
+dev/window128x128 flat

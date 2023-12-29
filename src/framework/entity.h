@@ -43,6 +43,8 @@ public:
     void virtual UpdateParameters() = 0;
     void virtual SetParameters() = 0;
     
+    void virtual Update() {}
+    
     inline void SetAutoLoad(bool auto_load) { this->auto_load = auto_load; }
     inline void SetPersistent(bool persistent) { this->is_persistent = persistent; }
 
@@ -65,7 +67,8 @@ public:
     void CheckTransition();
 
     static void RegisterType (name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
-
+    
+    static void UpdateFromList();
     static Entity* Make (name_t type, File* file);
     static Entity* Find (id_t entity_id);
     static Entity* Find (name_t entity_name);
@@ -89,6 +92,8 @@ protected:
 
     void Register();
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
+    void AddUpdate();
+    void RemoveUpdate();
 
     friend class WorldCell;
 };

@@ -35,7 +35,9 @@ static const char* message_names[MAX_MESSAGE_TYPES] = {
     "kill",
     "use",
     "start",
-    "stop"
+    "stop",
+    "activate",
+    "activate-once"
 };
 
 static message_t last_type = Message::LAST_MESSAGE;

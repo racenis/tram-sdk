@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <set>
 
 namespace tram {
 
@@ -106,6 +107,27 @@ Entity* Entity::Find(name_t entityName) {
     return entity_name_list.Find(entityName);
 }
 
+static std::set<Entity*> update_list;
+
+/// Adds entity to update list.
+/// After being added to the update list, the entity's Update() method will be
+/// called every time UpdateFromList() is called.
+void Entity::AddUpdate() {
+    update_list.insert(this);
+}
+
+/// Remove entity from the update list.
+void Entity::RemoveUpdate() {
+    update_list.erase(update_list.find(this));
+}
+
+/// Updates all of the entities in the update list.
+void Entity::UpdateFromList() {
+    for (auto it : update_list) {
+        it->Update();
+    }
+}
+
 /// Loads an Entity from a File.
 Entity* Entity::Make(name_t type, File* file) {
     auto record = registered_entity_types.Find(type);
@@ -143,17 +165,17 @@ Entity* Entity::Make(name_t type, File* file) {
             case TYPE_UINT64:   fields.push_back(file->read_uint64());  break;
             case TYPE_FLOAT32:  fields.push_back(file->read_float32()); break;
             case TYPE_FLOAT64:  fields.push_back(file->read_float64()); break;
-            case TYPE_VEC2:     fields.push_back(vec2(file->read_float32(),      // evil formatting. do not DO NOT
-                                file->read_float32()));                 break;
-            case TYPE_VEC3:     fields.push_back(vec3(file->read_float32(), 
-                                file->read_float32(), file->read_float32())
+            case TYPE_VEC2:     fields.push_back(vec2{file->read_float32(),      // evil formatting. do not DO NOT
+                                file->read_float32()});                 break;
+            case TYPE_VEC3:     fields.push_back(vec3{file->read_float32(), 
+                                file->read_float32(), file->read_float32()}
                                 );                                      break;
-            case TYPE_VEC4:     fields.push_back(vec4(file->read_float32(), 
+            case TYPE_VEC4:     fields.push_back(vec4{file->read_float32(), 
                                 file->read_float32(), file->read_float32(),
-                                file->read_float32()));                 break;
-            case TYPE_QUAT:     fields.push_back(quat(file->read_float32(),
+                                file->read_float32()});                 break;
+            case TYPE_QUAT:     fields.push_back(quat{file->read_float32(),
                                 file->read_float32(), file->read_float32(),
-                                file->read_float32()));                 break;
+                                file->read_float32()});                 break;
             default: assert(false);
         }
     }
