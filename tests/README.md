@@ -1,4 +1,13 @@
-!!! add a flag thing to the test framework
+
+# Running tests
+
+Set the directory to `/tests/`.
+Then run `make test`. This will compile and run all of the tests.
+
+# Todo list
+- Add a flag thing to the test framework
+- Make test text output nicer
+
 
 # Ideas for tests
 

@@ -5,15 +5,24 @@ libraries = -L../libraries/binaries/win64/ $\
 	-lglfw3 -lgdi32 -lopengl32
 
 # compile all of the tests
-compile:
-	$(compiler) core.cpp -o core $(libraries)
-	$(compiler) uid.cpp -o uid $(libraries)
-	
+compile: core uid event
+
 # run all of the tests
 test: compile
 	core
 	uid
+	event
 	
 clean:
 	del core.exe
 	del uid.exe
+	del event.exe
+	
+# tests themselves
+
+core:
+	$(compiler) core.cpp -o core $(libraries)
+uid:
+	$(compiler) uid.cpp -o uid $(libraries)
+event:
+	$(compiler) event.cpp -o event $(libraries)
