@@ -192,6 +192,10 @@ void WorldCell::LoadFromDisk() {
             signal.limit = file.read_int32();
             signal.message_type = Message::GetType(file.read_name());
             
+            if (!owner->signals) {
+                owner->signals = new SignalTable;
+            }
+            
             owner->signals->Add(signal);
             continue;
         }

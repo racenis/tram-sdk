@@ -192,6 +192,15 @@ void Button::Update() {
             SwitchState(BUTTON_STATE_APEXED);
         }
         
+        // momentary buttons need to fire every time they move
+        if (flags & BUTTON_FLAG_MOMENTARY) {
+            if (speed > 0.0f) {
+                FireSignal(Signal::OPEN);
+            } else {
+                FireSignal(Signal::CLOSE);
+            }
+        }
+        
         UpdateParameters();
     }
     
@@ -221,13 +230,7 @@ void Button::Update() {
             wait = 0.0f;
             SwitchState(BUTTON_STATE_WAITING);
         }
-        
-        //std::cout << "button in wait mode" << std::endl;
     }
-    
-    
-    
-    
     
     if (state == BUTTON_STATE_RELEASED) {
         progress -= 1.0f / (speed * 60.0f);
@@ -254,11 +257,13 @@ switch (state) {
             speed = -speed;
         }
     
+        if (progress == 0.0f) FireSignal(Signal::END_CLOSE);
     
         RemoveUpdate();
         break;
     case BUTTON_STATE_PUSHED:
         AddUpdate();
+        FireSignal(Signal::OPEN);
         break;
     case BUTTON_STATE_APEXED:
         wait = 0.0f;
@@ -267,9 +272,13 @@ switch (state) {
             RemoveUpdate();
         }
         
+        if (progress == 1.0f) FireSignal(Signal::END_OPEN);
+        if (progress == 0.0f) FireSignal(Signal::END_CLOSE);
+        
         break;
     case BUTTON_STATE_RELEASED:
         AddUpdate();
+        FireSignal(Signal::CLOSE);
         break;
     
     case BUTTON_STATE_REPUSHED:
@@ -296,11 +305,8 @@ std::cout << "switched state to " << state << std::endl;
 }
 
 void Button::MessageHandler(Message& msg){
-
-    if (flags & BUTTON_FLAG_LOCKED) return; // !!!
-    
     // button is pressed and it is not momentary
-    if (msg.type == Message::ACTIVATE_ONCE && !(flags & BUTTON_FLAG_MOMENTARY)) {
+    if (msg.type == Message::ACTIVATE_ONCE && !(flags & BUTTON_FLAG_MOMENTARY) && !(flags & BUTTON_FLAG_LOCKED)) {
         
         // if button is in either fully pushed or waiting, toggle it
         if (state == BUTTON_STATE_APEXED) {
@@ -311,10 +317,41 @@ void Button::MessageHandler(Message& msg){
     }
     
     // button is being pressed and it is momentary
-    if (msg.type == Message::ACTIVATE && flags & BUTTON_FLAG_MOMENTARY) {
+    if (msg.type == Message::ACTIVATE && flags & BUTTON_FLAG_MOMENTARY && !(flags & BUTTON_FLAG_LOCKED)) {
         SwitchState(BUTTON_STATE_REPUSHED);
     }
     
+    // opening and closing
+    if (flags & BUTTON_FLAG_MOMENTARY) {
+        if (msg.type == Message::OPEN) {
+            progress += 1.0f / (speed * 60.0f);
+            if (progress > 1.0f) progress = 1.0f;
+            UpdateParameters();
+        }
+        
+        if (msg.type == Message::CLOSE) {
+            progress -= 1.0f / (speed * 60.0f);
+            if (progress < 0.0f) progress = 0.0f;
+            UpdateParameters();
+        }
+    } else {
+        if ((msg.type == Message::OPEN || msg.type == Message::TOGGLE) && state == BUTTON_STATE_WAITING) {
+            SwitchState(BUTTON_STATE_PUSHED);
+        }
+        
+        if ((msg.type == Message::CLOSE || msg.type == Message::TOGGLE) && state == BUTTON_STATE_APEXED) {
+            SwitchState(BUTTON_STATE_RELEASED);
+        }
+    }
+    
+    // locking and unlocking
+    if (msg.type == Message::LOCK) {
+        flags |= BUTTON_FLAG_LOCKED;
+    } 
+    
+    if (msg.type == Message::UNLOCK) {
+        flags &= ~BUTTON_FLAG_LOCKED;
+    } 
 }
 
 }
