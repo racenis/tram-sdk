@@ -243,7 +243,7 @@ void Button::Update() {
         UpdateParameters();
     }
     
-    std::cout << "UPDATE " << GetTick() << " " << wait << " " << state << " " << speed << std::endl;
+    //std::cout << "UPDATE " << GetTick() << " " << wait << " " << state << " " << speed << std::endl;
 }
 
 void Button::SwitchState(int state) {
@@ -288,7 +288,7 @@ switch (state) {
         // this starts the rotation
         if (this->state == BUTTON_STATE_WAITING) {
             AddUpdate();
-            std::cout << "started rotato" << std::endl;
+            //std::cout << "started rotato" << std::endl;
         }
         
         // this will have the button stuck at apex, if you keep pressing on it.
@@ -301,7 +301,7 @@ switch (state) {
         break;
 }
     this->state = state;
-std::cout << "switched state to " << state << std::endl;
+//std::cout << "switched state to " << state << std::endl;
 }
 
 void Button::MessageHandler(Message& msg){

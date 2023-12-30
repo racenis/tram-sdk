@@ -21,7 +21,6 @@ PlayerComponent::PlayerComponent() {
 void PlayerComponent::Init() {
     keydown.make(Event::KEYDOWN, this);
     keyup.make(Event::KEYUP, this);
-    keypress.make(Event::KEYPRESS, this);
     mouseposition.make(Event::CURSORPOS, this);
 
     cell_loader = PoolProxy<Loader>::New();
@@ -33,7 +32,7 @@ PlayerComponent::~PlayerComponent() {
     cell_loader = nullptr;
 }
 
-void PlayerComponent::EventHandler (Event &event) {
+void PlayerComponent::EventHandler(Event &event) {
     using namespace tram::UI;
     using enum tram::ControllerComponent::Action;
     using enum tram::ControllerComponent::ActionModifier;

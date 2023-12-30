@@ -209,7 +209,7 @@ void Uninit() {
 }
 
 void Update() {
-    if (input_state == STATE_FLYING){
+    if (input_state == STATE_FLYING) {
         vec3 camera_position = GetCameraPosition();
         quat camera_rotation = GetCameraRotation();
         
@@ -234,6 +234,18 @@ void Update() {
         SetCameraPosition (camera_position);
         SetCameraRotation (quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f)));
     }
+    
+    // generate keypress events. these need to be generated every tick that the
+    // keyboard key is being pressed down.
+    for (auto& b : key_action_bindings) {
+        if (PollKeyboardKey(b.first) && b.second.action) {
+            Event::Post({Event::KEYPRESS, b.second.action, 0, nullptr});
+        }
+    }
+    
+    keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
+    
+    glfwPollEvents();
 }
 
 static void KeyCallback (GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -244,8 +256,6 @@ static void KeyCallback (GLFWwindow* window, int key, int scancode, int action, 
             Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
         } else if (action == GLFW_RELEASE) {
             Event::Post({Event::KEYUP, binding.action, 0, nullptr});
-        } else if (action == GLFW_REPEAT) {
-            Event::Post({Event::KEYPRESS, binding.action, 0, nullptr});
         }
     } else if (binding.special_option && action == GLFW_PRESS) {
         binding.special_option();
@@ -301,11 +311,8 @@ void SetTextInput(char* text, uint32_t len) {
     glfwSetCharCallback(WINDOW, nullptr);
 }
 
-void EndFrame(){
-    keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
-    
+void EndFrame() {
     glfwSwapBuffers(WINDOW);
-    glfwPollEvents();
 }
 
 void SetWebMainLoop(void(*loop_function)(void)) {

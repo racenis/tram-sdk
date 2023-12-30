@@ -172,7 +172,7 @@ void mainloop() {
         //AddLineMarker(ray_all.point, COLOR_GREEN);
     }
     
-    bool is_use = PollKeyboardKey(KEY_E);
+    /*bool is_use = PollKeyboardKey(KEY_E);
     static bool was_use = false;
     
     if (is_use) {
@@ -189,7 +189,7 @@ void mainloop() {
         }
     }
     
-    was_use = is_use;
+    was_use = is_use;*/
     
     //if (tick > 300 && tick % 100 == 0) {
     //    auto aaa = Entity::FindByName(UID("estijs"));
@@ -380,7 +380,6 @@ void mainloop() {
     Render::Render();
 
     UI::EndFrame();
-    
 }
 
 
@@ -508,6 +507,32 @@ int main() {
     derp_player->Init();
     
     //derp_player->Play();
+    
+    Event::AddListener(Event::KEYPRESS, [](Event& event) {
+        if (event.subtype != KEY_ACTION_ACTIVATE) return;
+        
+        vec3 start = Render::GetCameraPosition();
+        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        
+        auto result = Physics::Raycast(start, start + 2.0f * direction);
+        
+        if (result.collider) {
+            Message::Send({Message::ACTIVATE, 0, result.collider->GetParent()->GetID(), 0});
+        }
+    });
+    
+    Event::AddListener(Event::KEYDOWN, [](Event& event) {
+        if (event.subtype != KEY_ACTION_ACTIVATE) return;
+        
+        vec3 start = Render::GetCameraPosition();
+        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        
+        auto result = Physics::Raycast(start, start + 2.0f * direction);
+        
+        if (result.collider) {
+            Message::Send({Message::ACTIVATE_ONCE, 0, result.collider->GetParent()->GetID(), 0});
+        }
+    });
     
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
         camera->SetFollowing(nullptr);

@@ -24,60 +24,99 @@ struct ListenerInfo {
         void (*function)(Event& event);
     };
 
+    listener_t handle = -1;
     ListenerType type = LISTENER_COMPONENT;
 };
 
 static Queue<Event> event_queue ("event queue", 500);
 static StackPool<char> data_pool ("event data pool", 2000);
-static std::vector<Pool<ListenerInfo>> listener_table(Event::LAST_EVENT, {"EVENTListnerPoo", 50});
+//static std::vector<Pool<ListenerInfo>> listener_table(Event::LAST_EVENT, {"EVENTListnerPoo", 50});
+static std::vector<std::vector<ListenerInfo>> listener_table(Event::LAST_EVENT, std::vector<ListenerInfo>());
 
 /// Registers a new event type.
 event_t Event::Register() {
     auto new_event_id = listener_table.size();
-    listener_table.emplace_back(std::string("Event Listener Pool ") + std::to_string(new_event_id), 50);
+    //listener_table.emplace_back(std::string("Event Listener Pool ") + std::to_string(new_event_id), 50);
+    listener_table.push_back(std::vector<ListenerInfo>());
     return new_event_id;
 }
 
-static listener_t EncodeListenerHandle (event_t type, ListenerInfo* entry) {
-    listener_t handle = type;
-    handle <<= 48;
-    handle |= (listener_t)entry; // TODO: instead of stuffing pointer, stuff index!!!
-    return handle;
+static listener_t NewListenerHandle(event_t type) {
+    static listener_t last_id = 0;
+    
+    listener_t id_part = (last_id++) << 32;
+    listener_t event_part = type;
+    
+    return id_part | event_part;
 }
 
 /// Registers a listener.
 listener_t Event::AddListener(event_t type, EntityComponent* component) {
-    ListenerInfo* entry = listener_table[type].AddNew();
-    entry->component = component;
-    entry->type = ListenerInfo::LISTENER_COMPONENT;
-    return EncodeListenerHandle(type, entry);
+    ListenerInfo new_listener;
+    
+    new_listener.component = component;
+    new_listener.type = ListenerInfo::LISTENER_COMPONENT;
+    new_listener.handle = NewListenerHandle(type);
+    
+    listener_table[type].push_back(new_listener);
+    
+    return new_listener.handle;
 }
 
 /// Registers a listener.
 listener_t Event::AddListener(event_t type, Entity* entity) {
-    ListenerInfo* entry = listener_table[type].AddNew();
-    entry->entity = entity;
-    entry->type = ListenerInfo::LISTENER_ENTITY;
-    return EncodeListenerHandle(type, entry);
+    ListenerInfo new_listener;
+    
+    new_listener.entity = entity;
+    new_listener.type = ListenerInfo::LISTENER_ENTITY;
+    new_listener.handle = NewListenerHandle(type);
+    
+    listener_table[type].push_back(new_listener);
+    
+    return new_listener.handle;
 }
 
 /// Registers a listener.
 listener_t Event::AddListener(event_t type, void (*function)(Event& event)) {
-    ListenerInfo* entry = listener_table[type].AddNew();
-    entry->function = function;
-    entry->type = ListenerInfo::LISTENER_FUNCTION;
-    return EncodeListenerHandle(type, entry);
+    ListenerInfo new_listener;
+    
+    new_listener.function = function;
+    new_listener.type = ListenerInfo::LISTENER_FUNCTION;
+    new_listener.handle = NewListenerHandle(type);
+    
+    listener_table[type].push_back(new_listener);
+    
+    return new_listener.handle;
 }
 
 /// Deregisters a listener.
 void Event::RemoveListener(listener_t listener_id) {
-    event_t type = listener_id >> 48;
-    ListenerInfo* entry = (ListenerInfo*)((listener_id << 16) >> 16);
-    listener_table[type].Remove(entry);
+    // here I just do a simple linear search in the listener table
+    // if it is too slow, then it could possibly be replaced with a binary search,
+    // since each new handle is numerically larger than the previous, as well as
+    // each listener being added to the end of the table makes it sorted.
+    
+    //listener_t id_part = listener_id >> 32;
+    listener_t event_part = (listener_id << 32) >> 32;
+    
+    auto it = listener_table[event_part].begin();
+    auto end = listener_table[event_part].end();
+    
+    while (it != end) {
+        if (it->handle == listener_id) break;
+        it++;
+    }
+    
+    if (it == end) {
+        std::cout << "Listener with key " << listener_id << "not found and not deleted!" << std::endl;
+        return;
+    }
+    
+    listener_table[event_part].erase(it);
 }
 
 /// Dispatches events from the event queue.
-void Event::Dispatch(){
+void Event::Dispatch() {
     while (event_queue.size()) {
         Event& event = event_queue.front();
 
@@ -101,7 +140,7 @@ void Event::Dispatch(){
 }
 
 /// Adds an event to the event queue.
-void Event::Post (const Event &event){
+void Event::Post (const Event &event) {
     event_queue.push(event);
 }
 
