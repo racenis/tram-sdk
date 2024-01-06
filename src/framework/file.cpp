@@ -6,21 +6,26 @@
 
 namespace tram {
 
-static void skip_text_line (const char*& cursor, const char* cursor_end) {
+// skips until linebreak
+static void skip_text_line(const char*& cursor, const char* cursor_end) {
     while (*cursor != '\r' && *cursor != '\n' && cursor < cursor_end) {
         cursor++;
     }
 }
 
-static void skip_text_whitespace (const char*& cursor, const char* cursor_end) {
+// skips whitespace
+static void skip_text_whitespace(const char*& cursor, const char* cursor_end, bool pause_linebreak) {
     while (cursor < cursor_end) {
-        if (!isspace(*cursor)) {
+        if (*cursor == '\n' && pause_linebreak) {
+            return;
+        } else if (!isspace(*cursor)) {
             if (*cursor != '#') {
                 return;
             }
             
-            skip_text_line (cursor, cursor_end);
-            skip_text_whitespace (cursor, cursor_end);
+            // skips over a comment
+            skip_text_line(cursor, cursor_end);
+            skip_text_whitespace(cursor, cursor_end, false);
             
             return;
         }
@@ -29,7 +34,8 @@ static void skip_text_whitespace (const char*& cursor, const char* cursor_end) {
     }
 }
 
-static void skip_text (const char*& cursor, const char* cursor_end) {
+// skips non-whitespace
+static void skip_text(const char*& cursor, const char* cursor_end, bool pause_linebreak) {
     while (cursor < cursor_end) {
         if (isspace(*cursor)) {
             break;
@@ -38,10 +44,10 @@ static void skip_text (const char*& cursor, const char* cursor_end) {
         cursor++;
     }
     
-    skip_text_whitespace(cursor, cursor_end);
+    skip_text_whitespace(cursor, cursor_end, pause_linebreak);
 }
 
-static bool is_text_continue (const char* cursor, const char* cursor_end) {
+static bool is_text_continue(const char* cursor, const char* cursor_end) {
     while (cursor < cursor_end) {
         if (!isspace(*cursor)) return true;
         cursor++;
@@ -51,10 +57,9 @@ static bool is_text_continue (const char* cursor, const char* cursor_end) {
 }
 
 template <typename T>
-auto read_text_from_chars (const char*& cursor, const char* cursor_end) {
+auto read_text_from_chars(const char*& cursor, const char* cursor_end) {
     T value;
     cursor = std::from_chars(cursor, cursor_end, value).ptr;
-    skip_text_whitespace(cursor, cursor_end);
     return value;
 }
 
@@ -65,7 +70,6 @@ auto read_text_from_chars<float> (const char*& cursor, const char* cursor_end) {
     char* new_cursor = nullptr;
     value = strtof(cursor, &new_cursor);
     cursor = new_cursor;
-    skip_text_whitespace(cursor, cursor_end);
     return value;
 }
 
@@ -104,7 +108,7 @@ UID read_text_name (const char*& cursor, const char* cursor_end) {
     return UID(buffer);
 }
 
-std::string_view read_text_line (const char*& cursor, const char* cursor_end) {
+std::string_view read_text_line(const char*& cursor, const char* cursor_end) {
     const char* first_char = cursor;
     
     while (*cursor != '\r' && *cursor != '\n' && cursor < cursor_end) {
@@ -112,7 +116,6 @@ std::string_view read_text_line (const char*& cursor, const char* cursor_end) {
     }
     
     const char* last_char = cursor;
-    skip_text_whitespace(cursor, cursor_end);
     
     return std::string_view (first_char, last_char - first_char);
 }
@@ -124,8 +127,8 @@ void write_text_to_chars (T value, char*& cursor, char* cursor_end) {
     *cursor = '\0';
 }
 
-File::File (char const* path, FileAccessMode mode) : path(path), mode(mode) {
-    if (mode == MODE_READ) {
+File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
+    if (mode & MODE_READ) {
         disk_reader = new FileReader(path, SOURCE_ANY);
         
         if (disk_reader->is_open()) {
@@ -133,8 +136,10 @@ File::File (char const* path, FileAccessMode mode) : path(path), mode(mode) {
             cursor_end = disk_reader->contents + disk_reader->length;
         }
         
-        skip_text_whitespace(cursor, cursor_end);
-    } else if (mode == MODE_WRITE) {
+        pause_next = mode & MODE_PAUSE_LINE;
+        
+        skip_text_whitespace(cursor, cursor_end, pause_next);
+    } else if (mode & MODE_WRITE) {
         disk_writer = new FileWriter(path, SOURCE_ANY);
         
         if (disk_writer->is_open()) {
@@ -201,20 +206,26 @@ void File::write_name(name_t value) { strcpy(buffer_cursor, value); buffer_curso
 void File::write_string(const char* value) { *buffer_cursor++ = '"'; strcpy(buffer_cursor, value); buffer_cursor += strlen(value); *buffer_cursor++ = '"'; *buffer_cursor++ = ' '; }
 void File::write_newline() { *buffer_cursor++ = '\n'; }
 
-int8_t File::read_int8() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-int16_t File::read_int16() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-int32_t File::read_int32() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-int64_t File::read_int64() { auto ret = read_text_int64(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
+int8_t File::read_int8() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+int16_t File::read_int16() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+int32_t File::read_int32() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+int64_t File::read_int64() { auto ret = read_text_int64(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
 
-uint8_t File::read_uint8() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-uint16_t File::read_uint16() { return read_text_from_chars<uint16_t>(cursor, cursor_end); }
-uint32_t File::read_uint32() { auto ret = read_text_int32(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-uint64_t File::read_uint64() { auto ret = read_text_int64(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
+uint8_t File::read_uint8() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+uint16_t File::read_uint16() { auto ret = read_text_from_chars<uint16_t>(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+uint32_t File::read_uint32() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+uint64_t File::read_uint64() { auto ret = read_text_int64(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
 
-float File::read_float32() { return read_text_from_chars<float>(cursor, cursor_end); }
-double File::read_float64() { return read_text_from_chars<double>(cursor, cursor_end); }
+float File::read_float32() { auto ret = read_text_from_chars<float>(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+double File::read_float64() { auto ret = read_text_from_chars<double>(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
 
-name_t File::read_name() { auto ret = read_text_name(cursor, cursor_end); skip_text (cursor, cursor_end); return ret; }
-std::string_view File::read_string() { abort(); }
-std::string_view File::read_line() { return read_text_line(cursor, cursor_end); }
+name_t File::read_name() { auto ret = read_text_name(cursor, cursor_end); skip_text (cursor, cursor_end, pause_next); reset_flags(); return ret; }
+std::string_view File::read_string() { abort(); } // TODO: implement
+std::string_view File::read_line() { auto ret = read_text_line(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+
+void File::skip_linebreak() { skip_text_line(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, false); }
+
+void File::reset_flags() {
+    // nothing here idk
+}
 }

@@ -149,7 +149,7 @@ void ControllerComponent::Perform() {
         }
         
         if (lowest_collision.y != INFINITY) {
-            Render::AddLineMarker({new_pos.x, character_bottom_height, new_pos.z}, Render::COLOR_RED);
+            //Render::AddLineMarker({new_pos.x, character_bottom_height, new_pos.z}, Render::COLOR_RED);
         }
         
         // if there is such a collision, then put the character at that position

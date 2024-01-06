@@ -11,9 +11,10 @@
 
 namespace tram {
 
-enum FileAccessMode {
-    MODE_READ,
-    MODE_WRITE
+enum FileAccessMode : uint32_t {
+    MODE_READ = 1,
+    MODE_WRITE = 2,
+    MODE_PAUSE_LINE = 4
 };
 
 class FileReader;
@@ -21,7 +22,7 @@ class FileWriter;
 
 class File {
 public:
-    File (char const* path, FileAccessMode mode);
+    File (char const* path, uint32_t mode);
     ~File();
     
     bool is_open();
@@ -61,8 +62,13 @@ public:
     std::string_view read_string();
     std::string_view read_line();
     
+    void skip_linebreak();
+    void reset_flags();
+    
     std::string path;
-    FileAccessMode mode;
+    uint32_t mode;
+    
+    bool pause_next;
     
     // cursors for writing
     char* buffer = nullptr;

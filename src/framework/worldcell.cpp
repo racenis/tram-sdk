@@ -124,8 +124,7 @@ void WorldCell::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".cell");
     
-    File file (path, MODE_READ);
-    
+    File file (path, MODE_READ | MODE_PAUSE_LINE);
 
     if (!file.is_open()) {
         std::cout << "Worldcell file " << path << " not found!" << std::endl;
@@ -142,6 +141,7 @@ void WorldCell::LoadFromDisk() {
     this->interior = file.read_uint32();
     this->interior_lighting = file.read_uint32();
     
+    file.skip_linebreak();
     
     while (file.is_continue()) {
         name_t entry_type = file.read_name();
@@ -172,6 +172,7 @@ void WorldCell::LoadFromDisk() {
             
             transition->GeneratePlanes();
             
+            file.skip_linebreak();
             continue;
         }
         
@@ -180,6 +181,7 @@ void WorldCell::LoadFromDisk() {
             
             if (!owner) {
                 std::cout << "Singal coudnlt find! find! signal ID for entity! " << std::endl;
+                file.skip_linebreak();
                 continue;
             }
             
@@ -197,18 +199,18 @@ void WorldCell::LoadFromDisk() {
             }
             
             owner->signals->Add(signal);
+            
+            file.skip_linebreak();
             continue;
         }
         
         
         if (entry_type == "path" || entry_type == "navmesh" || entry_type == "group") {
             std::cout << "skipping " << entry_type << ": " << file.read_line() << std::endl;
+            file.skip_linebreak();
             continue;
         }
 
-        //std::string_view entity_definition = file.read_line();
-        
-        //Entity* entity = Entity::Make(entry_type, entity_definition);
         Entity* entity = Entity::Make(entry_type, &file);
         
         if (!entity) {
@@ -216,6 +218,8 @@ void WorldCell::LoadFromDisk() {
         } else {
             this->AddEntity(entity);
         }
+        
+        file.skip_linebreak();
     }
 }
 
