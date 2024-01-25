@@ -69,7 +69,7 @@ void SignalTable::Fire(signal_t signal, id_t sender) {
         msg.type = signals[i].message_type;
         msg.receiver = Entity::Find(signals[i].receiver)->GetID(); // this might crasherinoo
         // TODO: make Entity::Find not crash; erore message
-        msg.data_int = signals[i].data_int;
+        msg.data = signals[i].data;
         msg.sender = sender;
         
         if (signals[i].delay != 0.0f) {

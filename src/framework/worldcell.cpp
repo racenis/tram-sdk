@@ -189,10 +189,27 @@ void WorldCell::LoadFromDisk() {
             
             signal.type = Signal::GetType(file.read_name());
             signal.receiver = file.read_name();
-            signal.data_int = file.read_int64();
             signal.delay = file.read_float32();
             signal.limit = file.read_int32();
             signal.message_type = Message::GetType(file.read_name());
+            
+            name_t data_type = file.read_name();
+            if (!data_type) {
+                signal.data = nullptr;
+            } else {
+                Value* val = new Value(); // this might cause a memory leak, but we don't care
+                
+                if (data_type == "int") {
+                    *val = file.read_int32();
+                } else if (data_type == "name") {
+                    *val = file.read_name();
+                } else {
+                    *val = file.read_name();
+                    std::cout << "Unknown data type for signal: " << data_type << std::endl;
+                }
+                
+                signal.data = val;
+            }
             
             if (!owner->signals) {
                 owner->signals = new SignalTable;

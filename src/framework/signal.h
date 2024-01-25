@@ -33,7 +33,7 @@ struct Signal {
     signal_t type = NONE;
     
     name_t receiver;
-    int64_t data_int;
+    void* data;
     
     float delay;
     int limit;

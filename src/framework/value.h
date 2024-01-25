@@ -20,6 +20,11 @@ public:
     
     Value(const Value& other) : vec4_value(other.vec4_value) /* hehe */ { type = other.type; }
     
+    Value& operator=(const Value& other) {
+        vec4_value = other.vec4_value;
+        type = other.type; return *this;
+    }
+    
     Value(bool value) : bool_value(value) { type = TYPE_BOOL; }
     Value(name_t value) : name_value(value) { type = TYPE_NAME; }
     Value(const char* value) : string_value(value) { type = TYPE_STRING; }

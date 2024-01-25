@@ -1,3 +1,5 @@
+# basic engine entities
+
 begin
 	name staticwobj
 	model none
@@ -24,4 +26,23 @@ end
 begin
 	name marker
 	model dev/marker
+end
+
+
+
+# additional extension entities
+
+begin
+	name button
+	model none
+	field uint button-flags
+	field string model
+	field string collision-model
+	field origin origin
+	field direction direction
+	field float speed
+	field float pause
+	field float distance
+	field string sound
+	field string parent
 end

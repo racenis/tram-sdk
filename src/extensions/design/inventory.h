@@ -12,10 +12,26 @@ typedef int item_class;
 
 void RegisterItemAction(name_t name, void (*func)());
 
+struct ItemProperty {
+    enum Type {
+        ATTRIBUTE_BOOST,
+        FLAG,
+    };
+    
+    Type type;
+    
+    union {
+        AttributeBoost attribute_boost;
+        name_t flag;
+    };
+};
+
+
 struct ItemClass {
     name_t name;
     
     name_t viewmodel;
+    
     name_t viewmodel_animation;
     name_t primary_action_animation;
     name_t secondary_action_animation;
@@ -35,7 +51,6 @@ struct ItemClass {
 };
 
 struct ItemInstance {
-    std::vector<AttributeBoost> additional_boosts;
     int x = 0, y = 0;
     int count = 1;
 
