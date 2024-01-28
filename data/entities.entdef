@@ -35,6 +35,7 @@ end
 begin
 	name button
 	model none
+	
 	field uint button-flags
 	field string model
 	field string collision-model
@@ -45,4 +46,7 @@ begin
 	field float distance
 	field string sound
 	field string parent
+	
+	gizmo cyan point origin
+	gizmo cyan normal direction 
 end

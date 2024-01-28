@@ -192,13 +192,14 @@ void Button::Update() {
             SwitchState(BUTTON_STATE_APEXED);
         }
         
-        // momentary buttons need to fire every time they move
+        // momentary buttons need to fire every time they move // NO THEY DONT
         if (flags & BUTTON_FLAG_MOMENTARY) {
-            if (speed > 0.0f) {
+            FireSignal(Signal::PROGRESS, progress);
+            /*if (speed > 0.0f) {
                 FireSignal(Signal::OPEN);
             } else {
                 FireSignal(Signal::CLOSE);
-            }
+            }*/
         }
         
         UpdateParameters();
@@ -321,8 +322,15 @@ void Button::MessageHandler(Message& msg){
         SwitchState(BUTTON_STATE_REPUSHED);
     }
     
+    if (msg.type == Message::SET_PROGRESS) {
+        progress = *msg.data_value;
+        UpdateParameters();
+    }
+    
     // opening and closing
     if (flags & BUTTON_FLAG_MOMENTARY) {
+        
+        // this bit might be yeetable
         if (msg.type == Message::OPEN) {
             progress += 1.0f / (speed * 60.0f);
             if (progress > 1.0f) progress = 1.0f;
@@ -334,6 +342,8 @@ void Button::MessageHandler(Message& msg){
             if (progress < 0.0f) progress = 0.0f;
             UpdateParameters();
         }
+        // end yeetable bit
+        
     } else {
         if ((msg.type == Message::OPEN || msg.type == Message::TOGGLE) && state == BUTTON_STATE_WAITING) {
             SwitchState(BUTTON_STATE_PUSHED);

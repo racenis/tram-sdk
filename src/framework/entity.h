@@ -92,6 +92,7 @@ protected:
 
     void Register();
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
+    inline void FireSignal(signal_t type, Value value) { if (signals) signals->Fire(type, this->id, value); }
     void AddUpdate();
     void RemoveUpdate();
 

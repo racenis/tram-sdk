@@ -201,6 +201,8 @@ void WorldCell::LoadFromDisk() {
                 
                 if (data_type == "int") {
                     *val = file.read_int32();
+                } else if (data_type == "float") {
+                    *val = file.read_float32();
                 } else if (data_type == "name") {
                     *val = file.read_name();
                 } else {

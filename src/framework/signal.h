@@ -11,7 +11,9 @@
 namespace tram {
 
 typedef uint32_t signal_t;
-    
+
+struct Value;
+
 struct Signal {
     enum Type : signal_t {
         NONE,
@@ -27,6 +29,7 @@ struct Signal {
         TRIGGER,
         ENTER_TRIGGER,
         EXIT_TRIGGER,
+        PROGRESS,
         LAST_SIGNAL
     };
     
@@ -48,6 +51,7 @@ struct Signal {
 class SignalTable {
 public:
     void Fire(signal_t signal, id_t sender);
+    void Fire(signal_t signal, id_t sender, Value value);
     void Add(const Signal& signal);
 public:
     Signal signals[10];

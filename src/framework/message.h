@@ -11,6 +11,8 @@ namespace tram {
 typedef uint64_t message_t;
 typedef uint32_t id_t;
 
+struct Value;
+
 struct Message {
     enum Type : message_t {
         NONE,
@@ -27,6 +29,7 @@ struct Message {
         STOP,
         ACTIVATE,
         ACTIVATE_ONCE,
+        SET_PROGRESS,
         LAST_MESSAGE
     };
 
@@ -47,6 +50,7 @@ struct Message {
     union {
         void* data = nullptr;
         int64_t data_int;
+        Value* data_value;
     };
 };
 
