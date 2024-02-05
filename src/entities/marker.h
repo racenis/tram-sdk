@@ -19,7 +19,7 @@ public:
     void Unload();
     void Serialize();
     void MessageHandler(Message& msg);
-    void Register();
+    static void Register();
 };
 
 }

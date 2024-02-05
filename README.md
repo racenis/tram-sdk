@@ -47,6 +47,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 
 #### Should do sooner
+- Selecting the error model through model AABBs makes a crash
+	- Maybe error model doesn't build AABB tree properly?
+	- Even with no AABB tree there shouldn't be a crash
 - Better UX
 	- Scripts
 		- Setup script
