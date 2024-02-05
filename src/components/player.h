@@ -27,29 +27,17 @@ public:
     ~PlayerComponent();
     void SetParent(Entity* ent) { parent = ent; }
     void SetControllerComponent (ControllerComponent* comp) {controller = comp; }
-    void IgnoreMove() { is_move = false; }
-    void StopIgnoreMove() { is_move = true; }
     void Start() {}
     void MoveUpdate() { assert(cell_loader); cell_loader->UpdateLocation(parent->GetLocation()); }
 private:
     Entity* parent = nullptr; // whatuses?
     
     EventListener keydown;
-    EventListener keyup;
+    EventListener keypress;
     EventListener mouseposition;
     
     ControllerComponent* controller = nullptr;
     Loader* cell_loader = nullptr;
-
-    bool move_forward = false;
-    bool move_backward = false;
-    bool move_left = false;
-    bool move_right = false;
-    
-    bool is_crouch = false;
-    bool is_run = false;
-
-    bool is_move = true;
 };
 
 }

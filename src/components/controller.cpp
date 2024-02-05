@@ -35,65 +35,53 @@ void ControllerComponent::Start() {
     physics_body->Init();
 }
 
-/// Sets the controllers action.
-/// When updated, the controller will start performing the action
-/// that it is set to.
-void ControllerComponent::Act(Action action, ActionModifier modifier) {
-    current_action = action;
-    current_modifier = modifier;
+void ControllerComponent::Push(vec3 direction) {
+    
 }
 
-/// Updates the ControllerComponents.
-/// Updates all of the ControllerComponents. Should be called once per
-/// update cycle.
-void ControllerComponent::Update() {
-    for (auto& component : PoolProxy<ControllerComponent>::GetPool()) component.Perform();
+void ControllerComponent::Move(vec3 local_direction) {
+    move_direction += local_direction;
 }
 
-/// Performs the action.
-/// Performs the action that is setted with Act() method.
-void ControllerComponent::Perform() {
-    //assert(physcomp);
-    assert(parent);
-    
-    const bool crouching = current_action == ACTION_CROUCH || current_action == ACTION_CROUCH_IDLE;
-    
-    const float height = crouching ? collision_height_crouch : collision_height;
-    const float step = crouching ? step_height_crouch : step_height;
-    const float half_height = height / 2.0f;
-    const float width = collision_width;
-    
-    if (current_action == ACTION_WALK || current_action == ACTION_RUN || current_action == ACTION_CROUCH) {
-        glm::vec3 move_direction = glm::vec3(0.0f, 0.0f, 0.0f);
+void ControllerComponent::Run() {
+    running = true;
+}
 
-        float target_speed = 0.0f;
-        
-        // select speed
-        switch (current_action) {
-        case ACTION_RUN:
-            target_speed = run_speed;
-            break;
-        case ACTION_CROUCH:
-            target_speed = crouch_speed;
-            break;
-        default:
-            target_speed = walk_speed;
-        }
+void ControllerComponent::Crouch() {
+    crouching = true;
+}
 
-        // compute the move direction
-        if (current_modifier == ACTIONMODIFIER_FORWARD || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT)
-            move_direction += DIRECTION_FORWARD;
-        if (current_modifier == ACTIONMODIFIER_BACKWARD || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
-            move_direction -= DIRECTION_FORWARD;
-        if (current_modifier == ACTIONMODIFIER_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT)
-            move_direction -= DIRECTION_SIDE;
-        if (current_modifier == ACTIONMODIFIER_RIGHT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
-            move_direction += DIRECTION_SIDE;
+void ControllerComponent::Jump() {
+    if (!is_in_air) {
+        velocity.y += 0.119f;
+        is_in_air = true;
+    }
+}
+
+void ControllerComponent::TurnLeft() {
+    // TODO: implement
+}
+
+void ControllerComponent::TurnRight() {
+    // TODO: implement
+}
+
+
+void ControllerComponent::ApplyDynamics() {
+    
+    // first we will apply the move direction to the current velocity
+    if (glm::length(move_direction) > 0.0f) {
         
-        // clip the move direction so that it doesn't exceed maximum velocity
+        // get the move speed
+        float target_speed = walk_speed;
+        if (running) target_speed = run_speed;
+        if (crouching) target_speed = crouch_speed;
+
+        // convert local space direction into global space direction and normalize it
         glm::vec3 wish_dir = glm::normalize(parent->GetRotation() * move_direction);
         if (std::isnan(wish_dir.x) || std::isnan(wish_dir.y) || std::isnan(wish_dir.z)) wish_dir = glm::vec3(0.0f, 0.0f, 0.0f);
         
+        // clip the move direction so that it doesn't exceed maximum velocity
         float current_speed = glm::dot(velocity, wish_dir); 
         float add_speed = target_speed - current_speed;
         add_speed = add_speed < 0.0f ? 0.0f : add_speed;
@@ -106,21 +94,23 @@ void ControllerComponent::Perform() {
         velocity.z += add_velocity.z;
     }
     
-    if (current_action == ACTION_JUMP && !is_in_air) {
-        velocity.y += 0.119f;
-        is_in_air = true;
-    }
-
+    // if in air, apply gravity; otherwise apply ground friction
     if (is_in_air) {
-        // add gravity
+        // check for terminal velocity
         if (velocity.y > -0.12f) {
             velocity.y -= 0.0053f;
         }
     } else {
-        // add friction
         velocity *= 0.89f;
     }
+}
 
+void ControllerComponent::RecoverFromCollisions() {
+    const float height = crouching ? collision_height_crouch : collision_height;
+    const float step = crouching ? step_height_crouch : step_height;
+    const float half_height = height / 2.0f;
+    const float width = collision_width;
+    
     // compute character's new position
     vec3 old_pos = parent->GetLocation();
     quat old_rot = parent->GetRotation();
@@ -225,6 +215,41 @@ void ControllerComponent::Perform() {
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
 }
+
+void ControllerComponent::ResetMove() {
+    move_direction = {0.0f, 0.0f, 0.0f};
+    running = false;
+    crouching = false;
+}
+
+
+/// Updates the ControllerComponents.
+/// Updates all of the ControllerComponents. Should be called once per
+/// update cycle.
+void ControllerComponent::Update() {
+    for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+        component.ApplyDynamics();
+        component.RecoverFromCollisions();
+        component.ResetMove();
+    }
+}
+
+/// Performs the action.
+/// Performs the action that is setted with Act() method.
+//void ControllerComponent::Perform() {
+    //assert(physcomp);
+    //assert(parent);
+
+        // compute the move direction
+        /*if (current_modifier == ACTIONMODIFIER_FORWARD || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT)
+            move_direction += DIRECTION_FORWARD;
+        if (current_modifier == ACTIONMODIFIER_BACKWARD || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
+            move_direction -= DIRECTION_FORWARD;
+        if (current_modifier == ACTIONMODIFIER_LEFT || current_modifier == ACTIONMODIFIER_FORWARD_LEFT || current_modifier == ACTIONMODIFIER_BACKWARD_LEFT)
+            move_direction -= DIRECTION_SIDE;
+        if (current_modifier == ACTIONMODIFIER_RIGHT || current_modifier == ACTIONMODIFIER_FORWARD_RIGHT || current_modifier == ACTIONMODIFIER_BACKWARD_RIGHT)
+            move_direction += DIRECTION_SIDE;*/
+//}
 
 }
 

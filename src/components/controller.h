@@ -17,40 +17,18 @@ class PhysicsComponent;
 
 class ControllerComponent : public EntityComponent {
 public:
-    enum Action : uint8_t {
-        ACTION_IDLE,        //< Standing around, doing nothing.
-        ACTION_WALK,        //< Walking, normal speed.
-        ACTION_RUN,         //< Walking, fast speed.
-        ACTION_JUMP,        //< Increases vertical velocity.
-        ACTION_CROUCH,      //< Walking, slow speed, also lower collision box.
-        ACTION_CROUCH_IDLE, //< Standing around, doing nothing, also lower collision box.
-        ACTION_ACTIVATE,
-        ACTION_TURN,
-        ACTION_DAB,
-        ACTION_STARE,
-        ACTION_LIVESEY,
-        ACTION_LOOK_BUSY
-    };
-    
-    enum ActionModifier : uint8_t {
-        ACTIONMODIFIER_NONE,
-        ACTIONMODIFIER_FORWARD,
-        ACTIONMODIFIER_BACKWARD,
-        ACTIONMODIFIER_LEFT,
-        ACTIONMODIFIER_RIGHT,
-        ACTIONMODIFIER_FORWARD_RIGHT,
-        ACTIONMODIFIER_FORWARD_LEFT,
-        ACTIONMODIFIER_BACKWARD_LEFT,
-        ACTIONMODIFIER_BACKWARD_RIGHT
-    };
-    
     void Start();
     void EventHandler(Event &event) {}
     
-    void Act(Action action, ActionModifier modifier);
+    void Move(vec3 local_direction);
     
-    inline Action GetCurrentAction() { return current_action; }
-    inline ActionModifier GetCurrentActionModifier() { return current_modifier; }
+    void Run();
+    void Crouch();
+    void Jump();
+    void TurnLeft();
+    void TurnRight();
+    
+    void Push(vec3 direction);
     
     inline void SetLookDirection(quat direction) { look_direction = direction; }
     inline quat GetLookDirection() const { return look_direction; }
@@ -76,14 +54,14 @@ protected:
     
     Component<PhysicsComponent> physics_body;
     
-    void Perform();
+    void ApplyDynamics();
+    void RecoverFromCollisions();
+    void ResetMove();
     
     vec3 velocity = {0.0f, 0.0f, 0.0f};
+    vec3 move_direction = {0.0f, 0.0f, 0.0f};
     quat look_direction = {1.0f, 0.0f, 0.0f, 0.0f};
 
-    Action current_action = ACTION_IDLE;
-    ActionModifier current_modifier = ACTIONMODIFIER_NONE;
-    
     bool is_in_air = false;
     
     float collision_width = 0.35f;
@@ -96,6 +74,9 @@ protected:
     float walk_speed = 0.1f;
     float run_speed = 0.2f;
     float crouch_speed = 0.05f;
+    
+    bool crouching = false;
+    bool running = false;
     
     template <typename> friend class Pool;
 };
