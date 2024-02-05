@@ -113,19 +113,20 @@ void EndFrame();
 float GetScreenWidth();
 float GetScreenHeight();
 
-void SetCursor (CursorType cursor);
-void SetTextInput (char* text, uint32_t len);
+void SetCursor(CursorType cursor);
+void SetTextInput(char* text, uint32_t len);
 
-void SetWebMainLoop (void(*loop_function)(void));
+void SetWebMainLoop(void(*loop_function)(void));
 
-void BindKeyboardKey (KeyboardKey key, KeyboardAction action);
-void BindKeyboardKey (KeyboardKey key, void (*action)());
+void BindKeyboardKey(KeyboardKey key, KeyboardAction action);
+void BindKeyboardKey(KeyboardKey key, void (*action)());
 
-bool PollKeyboardKey (KeyboardKey key);
-float PollKeyboardAxis (KeyboardAxis key);
+bool PollKeyboardKey(KeyboardKey key);
+float PollKeyboardAxis(KeyboardAxis key);
+float PollKeyboardAxisDelta(KeyboardAxis key);
 
-void SetInputState (InputState state);
-InputState GetInputState ();
+void SetInputState(InputState state);
+InputState GetInputState();
 
 }
 

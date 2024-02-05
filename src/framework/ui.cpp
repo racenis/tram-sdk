@@ -46,8 +46,8 @@ static GLFWcursor* cursors[4] = {nullptr};
 
 static bool keyboard_keys_values[KEY_LASTKEY] = {false};
 static float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
+static float keyboard_axis_deltas[KEY_LASTAXIS] = {0.0f};
 
-static float cursorchangex = 0.0f, cursorchangey = 0.0f;
 static double cursorx_last = 0.0f, cursory_last = 0.0f;
 
 static char* input_text = nullptr;
@@ -222,13 +222,8 @@ void Update() {
         if (glfwGetKey(WINDOW, GLFW_KEY_D) == GLFW_PRESS)
             camera_position += camera_rotation * DIRECTION_SIDE * CAMERA_SPEED;
             
-        cursorchangex = keyboard_axis_values[KEY_MOUSE_X] - cursorx_last;
-        cursorchangey = keyboard_axis_values[KEY_MOUSE_Y] - cursory_last;
-        cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
-        cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
-
-        camera_yaw += cursorchangex * CAMERA_SENSITIVITY;
-        camera_pitch += cursorchangey * CAMERA_SENSITIVITY;
+        camera_yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_SENSITIVITY;
+        camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY;
         camera_pitch = camera_pitch > 90.0f ? 90.0f : camera_pitch < -90.0f ? -90.0f : camera_pitch;
         
         SetCameraPosition (camera_position);
@@ -244,6 +239,9 @@ void Update() {
     }
     
     keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
+    
+    keyboard_axis_deltas[KEY_MOUSE_X] = 0.0f;
+    keyboard_axis_deltas[KEY_MOUSE_Y] = 0.0f;
     
     glfwPollEvents();
 }
@@ -285,6 +283,8 @@ static void CharacterBackspaceCallback() {
 }
 
 static void MouseCallback (GLFWwindow* window, double xpos, double ypos) {
+    keyboard_axis_deltas[KEY_MOUSE_X] = xpos - keyboard_axis_values[KEY_MOUSE_X];
+    keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - keyboard_axis_values[KEY_MOUSE_Y];
     keyboard_axis_values[KEY_MOUSE_X] = xpos;
     keyboard_axis_values[KEY_MOUSE_Y] = ypos;
     
@@ -351,24 +351,33 @@ void SetInputState (InputState state) {
         
         SetCursor(CURSOR_DEFAULT);
     } else {
+        keyboard_axis_values[KEY_MOUSE_X] = cursorx_last;
+        keyboard_axis_values[KEY_MOUSE_Y] = cursory_last;
+        
         SetCursor(CURSOR_NONE);
     }
 }
 
-InputState GetInputState () {
+InputState GetInputState() {
     return input_state;
 }
 
 /// Checks the state of a key for the current frame.
 /// @return True, if key is pressed, false otherwise.
-bool PollKeyboardKey (KeyboardKey key) {
+bool PollKeyboardKey(KeyboardKey key) {
     return keyboard_keys_values[key];
 }
 
 /// Checks the state of an axis for the current frame.
 /// @return Value of the axis.
-float PollKeyboardAxis (KeyboardAxis key) {
+float PollKeyboardAxis(KeyboardAxis key) {
     return keyboard_axis_values[key];
+}
+
+/// Checks the change of an axis for since the last frame.
+/// @return Value of the axis delta.
+float PollKeyboardAxisDelta(KeyboardAxis key) {
+    return keyboard_axis_deltas[key];
 }
 
 /// Maps a glfw keycode to a KeyboardKey.

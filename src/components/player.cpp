@@ -6,16 +6,11 @@ template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool ("player comp
 
 // technically incorrect, but it's not like we're going to have more than one
 // player components running at the same time.. right?
-static float cursorchangex = 0.0f;
-static float cursorchangey = 0.0f;
-static float cursorx_last = 0.0f;
-static float cursory_last = 0.0f;
 static float pitch = 0.0f;
 static float yaw = 0.0f;
 
 PlayerComponent::PlayerComponent() {
-    cursorx_last = PollKeyboardAxis(UI::KEY_MOUSE_X);
-    cursory_last = PollKeyboardAxis(UI::KEY_MOUSE_Y);
+    
 }
 
 void PlayerComponent::Init() {
@@ -39,13 +34,8 @@ void PlayerComponent::EventHandler(Event &event) {
 
     // Map cursor position into camera and entity orientation.
     if (event.type == Event::CURSORPOS) {
-        cursorchangex = PollKeyboardAxis(UI::KEY_MOUSE_X) - cursorx_last;
-        cursorchangey = PollKeyboardAxis(UI::KEY_MOUSE_Y) - cursory_last;
-        cursorx_last = PollKeyboardAxis(UI::KEY_MOUSE_X);
-        cursory_last = PollKeyboardAxis(UI::KEY_MOUSE_Y);
-
-        yaw += cursorchangex * UI::CAMERA_SENSITIVITY;
-        pitch += cursorchangey * UI::CAMERA_SENSITIVITY;
+        yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * UI::CAMERA_SENSITIVITY;
+        pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * UI::CAMERA_SENSITIVITY;
         pitch = pitch > 89.0f ? 89.0f : pitch < -89.0f ? -89.0f : pitch;
         quat look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
         quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
