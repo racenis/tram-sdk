@@ -206,15 +206,24 @@ void ControllerComponent::RecoverFromCollisions() {
             velocity = {0.0f, 0.0f, 0.0f};
         }
         
-        // add firienction
+        // add wall slide friction
         if (is_in_air) {
             velocity.x *= 0.5f;
             velocity.z *= 0.5f;
         }
         
+        // call the wallbonk callback
+        if (wallbonk_callback) {
+            wallbonk_callback(col);
+        }
+        
         did_v = true;
         //velocity = vec3(0.0f, 0.0f, 0.0f);
     }
+    
+    /*if (collider->GetStoredCollisions().size() > 2) {
+        std::cout << "BUMP " << ground_collisions.size() << std::endl;
+    }*/
     
     // make controller follow whatever entity it is standing on
     if (standing_on == standing_on_prev && standing_on) {

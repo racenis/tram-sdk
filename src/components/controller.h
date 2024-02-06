@@ -43,6 +43,10 @@ public:
         step_height = height;
         step_height_crouch = crouch_height;
     }
+    
+    inline void SetWallCollisionCallback(void (*callback)(Physics::Collision)) {
+        wallbonk_callback = callback;
+    }
 
     static void Update();
 protected:
@@ -81,6 +85,8 @@ protected:
     id_t standing_on = 0;
     id_t standing_on_prev = 0;
     vec3 standing_pos;
+    
+    void (*wallbonk_callback)(Physics::Collision) = nullptr;
     
     template <typename> friend class Pool;
 };

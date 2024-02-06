@@ -6,15 +6,37 @@
 #include <components/render.h>
 #include <components/physics.h>
 
+#include <templates/hashmap.h>
+
 namespace tram::Ext::Design {
+
+// hacky parent/child transform thing.
+// it WILL crash if any of the entities gets killed, btw
+struct EntityChildren {
+    std::vector<id_t> children;
+};
+
+Hashmap<EntityChildren> hierarchy_map("hierarchy_map", 200);
+
+void AddChild(name_t parent, id_t child) {
+    auto parent_id = Entity::Find(parent)->GetID();
+    auto hierarchy = hierarchy_map.Find(parent_id);
+    hierarchy.children.push_back(child);
+    hierarchy_map.Insert(parent_id, hierarchy);
+}
+
+void UpdateHierarchy(id_t parent_id) {
+    auto hierarchy = hierarchy_map.Find(parent_id);
+    for (id_t child : hierarchy.children) {
+        Entity::Find(child)->UpdateParameters();
+    }
+}
 
 /******************************************************************************/
 /*                                                                            */
 /*                             FUNC_BUTTON                                    */
 /*                                                                            */
 /******************************************************************************/
-
-// TODO: rewrite the whole thing
 
 enum {
     BUTTON_FIELD_FLAGS,
@@ -127,6 +149,13 @@ void Button::UpdateParameters() {
     } else {
         pos += direction * distance * progress;
     }
+
+    // then check if parent has moved
+    if (parent) {
+        // if parent doesn't start at origin, this will glitch out.
+        // TODO: fix
+        pos += Entity::Find(parent)->GetLocation();
+    }
     
     location = pos;
     rotation = rot;
@@ -136,6 +165,9 @@ void Button::UpdateParameters() {
     rendercomponent->SetRotation(rot);
     physicscomponent->SetLocation(pos);
     physicscomponent->SetRotation(rot);
+    
+    // and update entities that are parented to this one
+    UpdateHierarchy(id);
 }
 
 void Button::SetParameters() {
@@ -180,8 +212,7 @@ void Button::Serialize() {
 
 
 void Button::Update() {
-    std::cout << "progs: " << progress << std::endl;
-    
+
     switch (state) {   
      
         case BUTTON_STATE_NADIR_WAITING:
