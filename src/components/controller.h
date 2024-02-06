@@ -78,6 +78,10 @@ protected:
     bool crouching = false;
     bool running = false;
     
+    id_t standing_on = 0;
+    id_t standing_on_prev = 0;
+    vec3 standing_pos;
+    
     template <typename> friend class Pool;
 };
 

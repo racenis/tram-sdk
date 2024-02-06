@@ -39,6 +39,9 @@ protected:
     name_t sound;
     name_t parent;
     
+    vec3 parent_offset;
+    vec3 start_position;
+    
     float progress;
     float wait;
     int state;

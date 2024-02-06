@@ -13,7 +13,9 @@ namespace tram::Ext::Design {
 /*                             FUNC_BUTTON                                    */
 /*                                                                            */
 /******************************************************************************/
-    
+
+// TODO: rewrite the whole thing
+
 enum {
     BUTTON_FIELD_FLAGS,
     BUTTON_FIELD_MODEL,
@@ -86,6 +88,8 @@ Button::Button(const SharedEntityData& shared_data, const ValueArray& field_arra
     wait = 0.0f;
     state = BUTTON_STATE_WAITING;
     
+    start_position = location;
+    
     //std::cout << origin.x << " " << origin.y << " " << origin.z << " " << std::endl;
     //std::cout << direction.x << " " << direction.y << " " << direction.z << " " << std::endl;
     //std::cout << speed << " " << pause << " " << distance << " " << std::endl;
@@ -94,8 +98,10 @@ Button::Button(const SharedEntityData& shared_data, const ValueArray& field_arra
 void Button::UpdateParameters() {
     if (!is_loaded) return;
     
-    vec3 pos = location;
+    vec3 pos = start_position;
     quat rot = rotation;
+    
+    if (parent) pos = location;
     
     if (flags & BUTTON_FLAG_ROTARY) {
         rot = glm::rotate(rot, progress * distance, direction);
@@ -106,6 +112,8 @@ void Button::UpdateParameters() {
     } else {
         pos += direction * distance * progress;
     }
+    
+    location = pos;
     
     rendercomponent->SetLocation(pos);
     rendercomponent->SetRotation(rot);
@@ -136,6 +144,11 @@ void Button::Load(){
     physicscomponent->Init();
     is_loaded = true;
 
+    if (parent) {
+        parent_offset = location - Entity::Find(parent)->GetLocation();
+        AddUpdate();
+    }
+
     UpdateParameters();
 }
 
@@ -155,6 +168,13 @@ void Button::Serialize() {
 
 
 void Button::Update() {
+    
+    if (parent) {
+        location = parent_offset + Entity::Find(parent)->GetLocation();
+        UpdateParameters();
+        //auto p = Entity::Find(parent)->GetLocation();
+        //std::cout << name << " location " << location.x << " " << location.y << " " << location.z << " " << parent_offset.x <<  " " << parent_offset.y <<  " " << p.z << " " << p.x <<  " " << p.y << std::endl;
+    }
     
     // special momentary options
     if (flags & BUTTON_FLAG_MOMENTARY) {
@@ -260,17 +280,17 @@ switch (state) {
     
         if (progress == 0.0f) FireSignal(Signal::END_CLOSE);
     
-        RemoveUpdate();
+        if (!parent) RemoveUpdate();
         break;
     case BUTTON_STATE_PUSHED:
-        AddUpdate();
+        if (!parent) AddUpdate();
         FireSignal(Signal::OPEN);
         break;
     case BUTTON_STATE_APEXED:
         wait = 0.0f;
         
         if (flags & BUTTON_FLAG_TOGGLE && !(flags & BUTTON_FLAG_MOMENTARY)) {
-            RemoveUpdate();
+            if (!parent) RemoveUpdate();
         }
         
         if (progress == 1.0f) FireSignal(Signal::END_OPEN);
@@ -278,7 +298,7 @@ switch (state) {
         
         break;
     case BUTTON_STATE_RELEASED:
-        AddUpdate();
+        if (!parent) AddUpdate();
         FireSignal(Signal::CLOSE);
         break;
     
@@ -288,7 +308,7 @@ switch (state) {
         
         // this starts the rotation
         if (this->state == BUTTON_STATE_WAITING) {
-            AddUpdate();
+            if (!parent) AddUpdate();
             //std::cout << "started rotato" << std::endl;
         }
         

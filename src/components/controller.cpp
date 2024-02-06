@@ -135,6 +135,10 @@ void ControllerComponent::RecoverFromCollisions() {
             if (coll.point.y > character_bottom_height && coll.point.y < lowest_collision.y) {
                 lowest_collision = coll.point;
                 lowest_collision_normal = coll.normal;
+                
+                if (coll.collider && coll.collider->GetParent()) {
+                    standing_on = coll.collider->GetParent()->GetID();
+                }
             }
         }
         
@@ -178,6 +182,7 @@ void ControllerComponent::RecoverFromCollisions() {
             }
         }
     } else {
+        standing_on = 0;
         is_in_air = true;
     }
     
@@ -208,6 +213,20 @@ void ControllerComponent::RecoverFromCollisions() {
         did_v = true;
         //velocity = vec3(0.0f, 0.0f, 0.0f);
     }
+    
+    // make controller follow whatever entity it is standing on
+    if (standing_on == standing_on_prev && standing_on) {
+        vec3 standing_new_pos = Entity::Find(standing_on)->GetLocation();
+        if (standing_pos != standing_new_pos) {
+            vec3 delta = standing_new_pos - standing_pos; 
+            new_pos += delta;
+        }
+        standing_pos = standing_new_pos;
+    } else if (standing_on) {
+        standing_pos = Entity::Find(standing_on)->GetLocation();
+    }
+    standing_on_prev = standing_on;
+    
     
     walk_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
     crouch_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
