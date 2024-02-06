@@ -17,10 +17,12 @@ void ControllerComponent::Start() {
     physics_body.make();
     
     walk_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    walk_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
     walk_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height));
     walk_collision->SetStoreCollisions(true);
     
     crouch_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    crouch_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
     crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
     crouch_collision->SetStoreCollisions(true);
     

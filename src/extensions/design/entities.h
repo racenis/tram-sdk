@@ -39,12 +39,13 @@ protected:
     name_t sound;
     name_t parent;
     
-    vec3 parent_offset;
-    vec3 start_position;
+    vec3 start_pos;
+    quat start_rot;
     
     float progress;
-    float wait;
+    float timer;
     int state;
+    int last_activate;
 };
 
 class Breakable : public Entity {

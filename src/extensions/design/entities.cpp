@@ -55,11 +55,12 @@ enum {
 };
 
 enum {
-    BUTTON_STATE_WAITING,
-    BUTTON_STATE_PUSHED,
-    BUTTON_STATE_APEXED,
-    BUTTON_STATE_RELEASED,
-    BUTTON_STATE_REPUSHED
+    BUTTON_STATE_NADIR_WAITING,
+    BUTTON_STATE_NADIR_READY,
+    BUTTON_STATE_RISING,
+    BUTTON_STATE_ZENITH_WAITING,
+    BUTTON_STATE_ZENITH_READY,
+    BUTTON_STATE_LOWERING
 };
 
 void Button::Register() {
@@ -84,11 +85,26 @@ Button::Button(const SharedEntityData& shared_data, const ValueArray& field_arra
     sound =         field_array[BUTTON_FIELD_SOUND];
     parent =        field_array[BUTTON_FIELD_PARENT];
     
+    // this tracks the progress of the button. it starts at 0.0, which is the
+    // button at its resting state. it can be increased up to 1.0, which is the
+    // button at its pressed state.
     progress = 0.0f;
-    wait = 0.0f;
-    state = BUTTON_STATE_WAITING;
     
-    start_position = location;
+    // timer is used to track the pause of a button. the button pauses when it
+    // reaches its most pressed or resting state, so that buttons with a very
+    // rapid progress rate don't get accidentally pressed repeatedly
+    timer = 0.0f;
+    
+    // this tracks the state of the button.
+    // in future user might be able to change the default value
+    state = BUTTON_STATE_NADIR_READY; 
+    
+    // the progress is applied to the starting position and rotation
+    start_pos = location;
+    start_rot = rotation;
+    
+    // this tracks the update cycles since the button was last updated
+    last_activate = 0;
     
     //std::cout << origin.x << " " << origin.y << " " << origin.z << " " << std::endl;
     //std::cout << direction.x << " " << direction.y << " " << direction.z << " " << std::endl;
@@ -98,11 +114,10 @@ Button::Button(const SharedEntityData& shared_data, const ValueArray& field_arra
 void Button::UpdateParameters() {
     if (!is_loaded) return;
     
-    vec3 pos = start_position;
-    quat rot = rotation;
-    
-    if (parent) pos = location;
-    
+    // first we apply the progress to the position or rotation of the entity    
+    vec3 pos = start_pos;
+    quat rot = start_rot;
+
     if (flags & BUTTON_FLAG_ROTARY) {
         rot = glm::rotate(rot, progress * distance, direction);
         
@@ -114,12 +129,13 @@ void Button::UpdateParameters() {
     }
     
     location = pos;
+    rotation = rot;
     
+    // then we update the render and physics components
     rendercomponent->SetLocation(pos);
     rendercomponent->SetRotation(rot);
     physicscomponent->SetLocation(pos);
     physicscomponent->SetRotation(rot);
-
 }
 
 void Button::SetParameters() {
@@ -142,12 +158,8 @@ void Button::Load(){
     
     rendercomponent->Init();
     physicscomponent->Init();
+    
     is_loaded = true;
-
-    if (parent) {
-        parent_offset = location - Entity::Find(parent)->GetLocation();
-        AddUpdate();
-    }
 
     UpdateParameters();
 }
@@ -168,105 +180,120 @@ void Button::Serialize() {
 
 
 void Button::Update() {
+    std::cout << "progs: " << progress << std::endl;
     
-    if (parent) {
-        location = parent_offset + Entity::Find(parent)->GetLocation();
-        UpdateParameters();
-        //auto p = Entity::Find(parent)->GetLocation();
-        //std::cout << name << " location " << location.x << " " << location.y << " " << location.z << " " << parent_offset.x <<  " " << parent_offset.y <<  " " << p.z << " " << p.x <<  " " << p.y << std::endl;
-    }
-    
-    // special momentary options
-    if (flags & BUTTON_FLAG_MOMENTARY) {
-        
-        // if button is let go
-        if (state == BUTTON_STATE_PUSHED) {
-            if (flags & BUTTON_FLAG_TOGGLE) {
-                //speed = -speed;
-                SwitchState(BUTTON_STATE_WAITING);
-            } else {
-                SwitchState(BUTTON_STATE_APEXED);
+    switch (state) {   
+     
+        case BUTTON_STATE_NADIR_WAITING:
+            timer += 1.0f / (pause * 60.0f);
+            if (timer >= 1.0f) {
+                timer = 0.0f;
+                state = BUTTON_STATE_NADIR_READY;
             }
-        }
-        
-        // if button is still being pushed
-        if (state == BUTTON_STATE_REPUSHED) {
-            state = BUTTON_STATE_PUSHED;
-            wait = 0.0f;
-        }
-    }
-    
-    // this will make the button progress forward
-    if (state == BUTTON_STATE_PUSHED) {
-        progress += 1.0f / (speed * 60.0f);
-        
-        if (progress >= 1.0f) {
-            progress = 1.0f;
-            SwitchState(BUTTON_STATE_APEXED);
-        }
-        
-        // we allow only momentary toggle buttons to be pushed backwards
-        if (progress < 0.0f && flags & BUTTON_FLAG_MOMENTARY) {
-            progress = 0.0f;
-            //speed = -speed;
-            SwitchState(BUTTON_STATE_APEXED);
-        }
-        
-        // momentary buttons need to fire every time they move // NO THEY DONT
-        if (flags & BUTTON_FLAG_MOMENTARY) {
+            
+            break;
+            
+        case BUTTON_STATE_NADIR_READY:
+            RemoveUpdate();
+            break;
+            
+        case BUTTON_STATE_RISING:
+            progress += 1.0f / (speed * 60.0f);
             FireSignal(Signal::PROGRESS, progress);
-            /*if (speed > 0.0f) {
-                FireSignal(Signal::OPEN);
+            if (progress >= 1.0f) {
+                progress = 1.0f;
+                state = BUTTON_STATE_ZENITH_WAITING;
+                FireSignal(Signal::END_OPEN);
+            }
+            if (last_activate > 10 && (flags & BUTTON_FLAG_MOMENTARY)) {
+                state = BUTTON_STATE_ZENITH_WAITING;
+                FireSignal(Signal::END_OPEN);
+            }
+            
+            break;
+            
+        case BUTTON_STATE_ZENITH_WAITING:
+            timer += 1.0f / (pause * 60.0f);
+            if (timer >= 1.0f) {
+                timer = 0.0f;
+                state = BUTTON_STATE_ZENITH_READY;
+            }
+            break;
+            
+        case BUTTON_STATE_ZENITH_READY:
+            if (flags & BUTTON_FLAG_TOGGLE) {
+                RemoveUpdate();
             } else {
+                state = BUTTON_STATE_LOWERING;
                 FireSignal(Signal::CLOSE);
-            }*/
-        }
-        
-        UpdateParameters();
+            }
+            break;
+            
+        case BUTTON_STATE_LOWERING:
+            progress -= 1.0f / (speed * 60.0f);
+            FireSignal(Signal::PROGRESS, progress);
+            if (progress <= 0.0f) {
+                progress = 0.0f;
+                state = BUTTON_STATE_NADIR_WAITING;
+                FireSignal(Signal::END_CLOSE);
+            }
+            if (last_activate > 10 && (flags & BUTTON_FLAG_MOMENTARY) && (flags & BUTTON_FLAG_TOGGLE)) {
+                state = BUTTON_STATE_NADIR_WAITING;
+                FireSignal(Signal::END_CLOSE);
+            }
+            break;
+            
     }
     
-    // button is at apex, regular case
-    // this will make the button wait a little bit at the apex, then it will
-    // start returning back to its normal state. toggle buttons are excluded
-    // for obvious reasons
-    if (state == BUTTON_STATE_APEXED && !(flags & BUTTON_FLAG_TOGGLE)) {
-        wait += 1.0f / (pause * 60.0f);
-        
-        if (wait >= 1.0f) {
-            wait = 0.0f;
-            SwitchState(BUTTON_STATE_RELEASED);
-        }
-        
-        UpdateParameters();
-    }
-    
-    //if (state == BUTTON_STATE_APEXED) std::cout << "apexed " << std::endl;
-    
-    // special case for momentary toggle buttons
-    // they need to wait a little bit at the apex, then they can be pushed again
-    if (state == BUTTON_STATE_APEXED && flags & BUTTON_FLAG_TOGGLE && flags & BUTTON_FLAG_MOMENTARY) {
-        wait += 1.0f / (pause * 60.0f);
-        
-        if (wait >= 1.0f) {
-            wait = 0.0f;
-            SwitchState(BUTTON_STATE_WAITING);
-        }
-    }
-    
-    if (state == BUTTON_STATE_RELEASED) {
-        progress -= 1.0f / (speed * 60.0f);
-        
-        if (progress <= 0.0f) {
-            progress = 0.0f;
-            SwitchState(BUTTON_STATE_WAITING);
-        }
-        
-        UpdateParameters();
-    }
-    
-    //std::cout << "UPDATE " << GetTick() << " " << wait << " " << state << " " << speed << std::endl;
+    UpdateParameters();
+    last_activate++;
 }
 
+void Button::MessageHandler(Message& msg){
+        
+    // button is pressed and it is not momentary
+    if (msg.type == Message::ACTIVATE_ONCE /*&& !(flags & BUTTON_FLAG_MOMENTARY)*/ && !(flags & BUTTON_FLAG_LOCKED)) {
+        switch (state) {
+            case BUTTON_STATE_NADIR_READY:  AddUpdate(); state = BUTTON_STATE_RISING;   FireSignal(Signal::OPEN);   break;
+            case BUTTON_STATE_ZENITH_READY: AddUpdate(); state = BUTTON_STATE_LOWERING; FireSignal(Signal::CLOSE);  break;
+            default:                                                                                                break;
+        }
+        
+        last_activate = 0;
+    }
+    
+    // button is being pressed and it is momentary
+    if (msg.type == Message::ACTIVATE && flags & BUTTON_FLAG_MOMENTARY && !(flags & BUTTON_FLAG_LOCKED)) {
+        last_activate = 0;
+    }
+    
+    if (msg.type == Message::SET_PROGRESS) {
+        progress = *msg.data_value;
+        UpdateParameters();
+    }
+    
+    // opening and closing
+    if ((msg.type == Message::OPEN || msg.type == Message::TOGGLE) && state == BUTTON_STATE_NADIR_READY) {
+        state = BUTTON_STATE_RISING;
+        AddUpdate(); 
+    }
+    if ((msg.type == Message::CLOSE || msg.type == Message::TOGGLE) && state == BUTTON_STATE_ZENITH_READY) {
+        state = BUTTON_STATE_LOWERING;
+        AddUpdate(); 
+    }
+    
+    
+    // locking and unlocking
+    if (msg.type == Message::LOCK) {
+        flags |= BUTTON_FLAG_LOCKED;
+    } 
+    
+    if (msg.type == Message::UNLOCK) {
+        flags &= ~BUTTON_FLAG_LOCKED;
+    } 
+}
+
+/*
 void Button::SwitchState(int state) {
 switch (state) {
     case BUTTON_STATE_WAITING:
@@ -314,7 +341,7 @@ switch (state) {
         
         // this will have the button stuck at apex, if you keep pressing on it.
         // otherwise it would start the timer and return back down
-        if (this->state == BUTTON_STATE_APEXED && (progress == 1.0f || progress == 0.0f) /*&& !(flags & BUTTON_FLAG_TOGGLE)*/) {
+        if (this->state == BUTTON_STATE_APEXED && (progress == 1.0f || progress == 0.0f) *//*&& !(flags & BUTTON_FLAG_TOGGLE)*//*) {
             wait = 0.0f;
             return;
         }
@@ -324,8 +351,10 @@ switch (state) {
     this->state = state;
 //std::cout << "switched state to " << state << std::endl;
 }
+*/
 
-void Button::MessageHandler(Message& msg){
+
+/*void Button::MessageHandler(Message& msg){
     // button is pressed and it is not momentary
     if (msg.type == Message::ACTIVATE_ONCE && !(flags & BUTTON_FLAG_MOMENTARY) && !(flags & BUTTON_FLAG_LOCKED)) {
         
@@ -382,6 +411,6 @@ void Button::MessageHandler(Message& msg){
     if (msg.type == Message::UNLOCK) {
         flags &= ~BUTTON_FLAG_LOCKED;
     } 
-}
+}*/
 
 }

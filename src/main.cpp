@@ -514,7 +514,7 @@ int main() {
         vec3 start = Render::GetCameraPosition();
         vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
         
-        auto result = Physics::Raycast(start, start + 2.0f * direction);
+        auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
         
         if (result.collider) {
             Message::Send({Message::ACTIVATE, 0, result.collider->GetParent()->GetID(), 0});
@@ -527,7 +527,9 @@ int main() {
         vec3 start = Render::GetCameraPosition();
         vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
         
-        auto result = Physics::Raycast(start, start + 2.0f * direction);
+        auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
+        
+        AddLineMarker(result.point, COLOR_CYAN);
         
         if (result.collider) {
             Message::Send({Message::ACTIVATE_ONCE, 0, result.collider->GetParent()->GetID(), 0});
