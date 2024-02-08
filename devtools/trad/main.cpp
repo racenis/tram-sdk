@@ -45,6 +45,11 @@ struct Lightmap {
 		t[y*w+x] = tex;
 	}
 	
+	void BlitMix(int x, int y, Texel tex) {
+		if (x < 0 || y < 0 || x >= w || y >= h) return;
+		t[y*w+x].color += tex.color;
+	}
+	
 	Texel Sample(int x, int y) {
 		return t[y*w+x];
 	}
@@ -133,6 +138,7 @@ int main(int argc, const char** argv) {
 	Lightmap l(1024, 1024);
 	
 	const float scanline = 1.0f/l.h;
+	const float column = 1.0f/l.w;
 	
 	auto blit = [&](float x, float y, vec3 color) {
 		if (x > 1.0f || y > 1.0f || x < 0.0f || y < 0.0f) return;
@@ -142,6 +148,11 @@ int main(int argc, const char** argv) {
 	};
 	
 	for (const auto& tri : triangles) {
+		
+		//static int i = 0;
+		//i++;
+		
+		//if (i != 2) continue;
 		
 		blit(tri.v1.map.x, tri.v1.map.y, {1.0f, 1.0f, 1.0f});
 		blit(tri.v2.map.x, tri.v2.map.y, {1.0f, 1.0f, 1.0f});
@@ -165,9 +176,11 @@ int main(int argc, const char** argv) {
 		if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
 		if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 		
-		int low_high_lines = (highest.map.y - lowest.map.y) / scanline;
-		int low_mid_lines = (middle.map.y - lowest.map.y) / scanline;
-		int mid_high_lines = (highest.map.y - middle.map.y) / scanline;
+		//std::cout << (highest.map.y - lowest.map.y) / scanline << std::endl;
+		
+		int low_high_lines = ceil((highest.map.y - lowest.map.y) / scanline);
+		int low_mid_lines = ceil((middle.map.y - lowest.map.y) / scanline);
+		int mid_high_lines = ceil((highest.map.y - middle.map.y) / scanline);
 		
 		vec2 low_high_dir = (highest.map - lowest.map) / (float)low_high_lines;
 		vec2 low_mid_dir = (middle.map - lowest.map) / (float)low_mid_lines;
@@ -180,6 +193,10 @@ int main(int argc, const char** argv) {
 		//std::cout << "hi " << highest.map.x << " " << highest.map.y << std::endl;
 		//std::cout << "lo " << lowest.map.x << " " << lowest.map.y << std::endl;
 		//std::cout << "to " << low_high_dir.x << " " << low_high_dir.y << std::endl;
+		
+		//std::cout << "hi " << highest.pos.x << " " << highest.pos.y << " " << highest.pos.z << std::endl;
+		//std::cout << "lo " << lowest.pos.x << " " << lowest.pos.y << " " << lowest.pos.z << std::endl;
+		//std::cout << "to " << low_high_dir_wrd.x << " " << low_high_dir_wrd.y << " " << low_high_dir_wrd.z << std::endl;
 		
 		
 		vec2 left_pos = lowest.map;
@@ -201,29 +218,47 @@ int main(int argc, const char** argv) {
 			int from = left_pos.x * (float)l.w;
 			int to = right_pos.x * (float)l.w;
 			
-			//vec3 mov_wrd = (right_pos_wrd - left_pos_wrd) / fabs((float)(from-to));
+			vec3 mov_wrd = (right_pos_wrd - left_pos_wrd) / fabs((float)(from-to));
 			vec3 pos_wrd = left_pos_wrd;
 			
 			if (from > to) {
 				std::swap(from, to);
-				//mov_wrd = -mov_wrd;
+				mov_wrd = -mov_wrd;
 			}
 			
 			for (int col = from; col < to; col++) {
+				const float x = (float)col / (float)l.w;
+				const float y = (float)line / (float)l.h;
+				const vec2 v1 = tri.v2.map - tri.v1.map;
+				const vec2 v2 = tri.v3.map - tri.v1.map;
+				const vec2 v3 = vec2(x, y) - tri.v1.map;
+				const float dominator = v1.x * v2.y - v2.x * v1.y;
+				const float d2 = (v3.x * v2.y - v2.x * v3.y) / dominator;
+				const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
+				const float d1 = 1.0f - d2 - d3;
+			
 				
+				//std::cout << d1 << " " << d2 << " " << d3 << " " << (d1+d2+d3) << " " << nm << " " << (d1+d2+d3)*nm << std::endl; 
 				
-				l.Blit(col, line, {pos_wrd});
+				vec3 pos = d1*tri.v1.pos + d2*tri.v2.pos + d3*tri.v3.pos;
 				
-				//pos_wrd += mov_wrd;
+				//std::cout << glm::distance(pos, pos_wrd) << std::endl;
+				
+				l.Blit(col, line, {glm::max(0.0f, 5.5f - glm::length(pos)) * pos});
+				//l.Blit(col, line, {glm::max(0.0f, 5.5f - glm::length(pos_wrd)) *pos_wrd});
+				//l.Blit(col, line, {pos_wrd});
+				//l.Blit(col, line, {pos});
+				
+				pos_wrd += mov_wrd;
 			}
 
 			line++;
 		}
 		
 		right_pos = middle.map;
-		//right_pos_wrd = middle.pos;
+		right_pos_wrd = middle.pos;
 		
-		/*for (int i = low_mid_lines; i < low_high_lines; i++) {
+		for (int i = low_mid_lines; i < low_high_lines; i++) {
 			left_pos += low_high_dir;
 			right_pos += mid_high_dir;
 			
@@ -233,18 +268,48 @@ int main(int argc, const char** argv) {
 			int from = left_pos.x * (float)l.w;
 			int to = right_pos.x * (float)l.w;
 			
-			if (from > to) std::swap(from, to);
+			vec3 mov_wrd = (right_pos_wrd - left_pos_wrd) / fabs((float)(from-to));
+			vec3 pos_wrd = left_pos_wrd;
+			
+			if (from > to) {
+				std::swap(from, to);
+				mov_wrd = -mov_wrd;
+			}
 			
 			for (int col = from; col < to; col++) {
-				l.Blit(col, line, {{1.0f, 1.0f, 1.0f}});
+				const float x = (float)col / (float)l.w;
+				const float y = (float)line / (float)l.h;
+				const vec2 v1 = tri.v2.map - tri.v1.map;
+				const vec2 v2 = tri.v3.map - tri.v1.map;
+				const vec2 v3 = vec2(x, y) - tri.v1.map;
+				const float dominator = v1.x * v2.y - v2.x * v1.y;
+				const float d2 = (v3.x * v2.y - v2.x * v3.y) / dominator;
+				const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
+				const float d1 = 1.0f - d2 - d3;
+			
+				 
+				//std::cout << d1 << " " << d2 << " " << d3 << " " << (d1+d2+d3) << " " << nm << " " << (d1+d2+d3)*nm << std::endl; 
+				
+				vec3 pos = d1*tri.v1.pos + d2*tri.v2.pos + d3*tri.v3.pos;
+				
+				//std::cout << glm::distance(pos, pos_wrd) << std::endl;
+				
+				l.Blit(col, line, {glm::max(0.0f, 5.5f - glm::length(pos)) * pos});
+				//l.Blit(col, line, {glm::max(0.0f, 5.5f - glm::length(pos_wrd)) *pos_wrd});
+				//l.Blit(col, line, {pos_wrd});
+				//l.Blit(col, line, {pos});
+				
+				pos_wrd += mov_wrd;
+				
+				//return 0;
 			}
 
 			line++;
-		}*/
+		}
 		
 		blit(lowest.map.x, lowest.map.y, {0.0f, 1.0f, 0.0f});
-		blit(highest.map.x, highest.map.y, {1.0f, 1.0f, 0.0f});
-		blit(middle.map.x, middle.map.y, {1.0f, 0.0f, 0.0f});
+		blit(highest.map.x, highest.map.y, {1.0f, 0.0f, 0.0f});
+		blit(middle.map.x, middle.map.y, {1.0f, 1.0f, 0.0f});
 		
 		//break;
 	}
@@ -264,6 +329,10 @@ int main(int argc, const char** argv) {
 		if (r > 1.0f) r = 1.0f;
 		if (g > 1.0f) g = 1.0f;
 		if (b > 1.0f) b = 1.0f;
+		
+		if (r < 0.0f) r = 0.0f;
+		if (g < 0.0f) g = 0.0f;
+		if (b < 0.0f) b = 0.0f;
 		
 		img[i*3+0] = r * 255.0f;
 		img[i*3+1] = g * 255.0f;
