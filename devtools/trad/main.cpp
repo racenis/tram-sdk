@@ -64,6 +64,15 @@ struct Light {
 	float radius;
 };
 
+struct Entity {
+	vec3 pos;
+	quat rot;
+	name_t id;
+	name_t name;
+	name_t model;
+	name_t lightmap;
+};
+
 static vec3 TriangleAABBMin (Triangle t) {
     return {
         t.v1.pos.x < t.v2.pos.x ? (t.v1.pos.x < t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x < t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
@@ -81,23 +90,119 @@ static vec3 TriangleAABBMax (Triangle t) {
 }
 
 int main(int argc, const char** argv) {
-	std::cout << "HELLO WORLD" << std::endl;
-	
 	stbi_flip_vertically_on_write(true);
+	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
 	
-	File file("../../data/models/movs.stmdl", MODE_READ);
+	std::cout << "Tramway SDK -- Radiosity lightmapper" << std::endl;
+	
+	const char* entity = "paliktnis";
+	const char* worldcell = "demo_mov";
+	
+	int lightmap_width = 256;
+	int lightmap_height = 256; 
+	
+	std::vector<Entity> entities;
+	std::vector<Light> lights; /*= {
+		{{0.0f, 5.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, 10.0f},
+		{{0.0f, 1.0f, -8.0f}, {1.0f, 0.0f, 0.0f}, 15.0f}
+	};*/
+	
+	// +-----------------------------------------------------------------------+
+	// +                                                                       +
+	// +                           WORLDCELL LOADER                            +
+	// +                                                                       +
+	// +-----------------------------------------------------------------------+
+	
+	std::cout << "Loading worldcell " << worldcell << "... " << std::flush;
+	
+	std::string worldcell_path = "../../data/worldcells/";
+	worldcell_path += worldcell;
+	worldcell_path += ".cell";
+	
+	File cell(worldcell_path.c_str(), MODE_READ);
+	
+	if (!cell.is_open()) {
+		std::cout << "\nError opening file: " << worldcell_path << "!" <<std::endl;
+		return 0;
+	}
+	
+	name_t file_version = cell.read_name(); cell.skip_linebreak();
+	
+	if (file_version != "CELLv2") {
+		std::cout << "\nUnrecognized worldcell file version: " << file_version << "!" << std::endl;
+		return 0;
+	}
+	
+	while (cell.is_continue()) {
+		name_t entity_type = cell.read_name();
+		
+		// right now I will hard-code the entity types directly into the program
+		// later it might be a good idea to load them from the entity definition
+		// file, when the format stabilizes
+		if (entity_type == "staticwobj") {
+			Entity entity;
+			
+			entity.id = cell.read_name();
+			entity.name = cell.read_name();
+			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			entity.model = cell.read_name();
+			entity.lightmap = cell.read_name();
+			
+			entities.push_back(entity);
+		}
+		
+		if (entity_type == "lamp") {
+			Light light;
+			
+			cell.read_name();
+			cell.read_name();
+			light.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			cell.read_float32(); cell.read_float32(); cell.read_float32();
+			light.color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			light.radius = cell.read_float32();
+			
+			lights.push_back(light);	
+		}
+		
+		cell.skip_linebreak();
+	}
+
+	std::cout << "done!" << std::endl;
+	
+	int entity_index = -1;
+	for (int i = 0; i < entities.size(); i++) {
+		if (entities[i].name == entity) entity_index = i;
+	}
+	
+	if (entity_index == -1) {
+		std::cout << "Could not find entity " << entity << " in worldcell!"  << std::endl;
+		return 0;
+	}
+	
+	// +-----------------------------------------------------------------------+
+	// +                                                                       +
+	// +                             MODEL LOADER                              +
+	// +                                                                       +
+	// +-----------------------------------------------------------------------+
+	
+	name_t model_name = entities[entity_index].model;
+	
+	std::string model_path = "../../data/models/";
+	model_path += (const char*)model_name;
+	model_path += ".stmdl";
+	
+	File file(model_path.c_str(), MODE_READ);
 	
 	if (!file.is_open()) {
-		std::cout << "ERROR OPENING FILE" << std::endl;
+		std::cout << "Error opening model file " << model_path << std::endl;
 		return 0;
 	}
 	
 	int vrt_c = file.read_int32();
 	int tri_c = file.read_int32();
 	int mat_c = file.read_int32();
-	
-	std::cout << "Opened model; " << vrt_c << " verts, " << tri_c << " tris, " << mat_c << " materials." << std::endl;
-	
+		
 	std::vector<name_t> materials;
 	for (int i = 0; i < mat_c; i++) {
 		materials.push_back(file.read_name());
@@ -127,14 +232,17 @@ int main(int argc, const char** argv) {
 		triangles.push_back(t);
 	}
 	
+	std::cout << "Loaded model " << model_name << ", it has " << vrt_c << " verts, " << tri_c << " tris, " << mat_c << " materials." << std::endl;
 	
-	std::vector<Light> lights = {
-		{{0.0f, 5.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, 10.0f},
-		{{0.0f, 1.0f, -8.0f}, {1.0f, 0.0f, 0.0f}, 15.0f}
-	};
+	
+	// +-----------------------------------------------------------------------+
+	// +                                                                       +
+	// +                        RADIOSITY CALCULATIONS                         +
+	// +                                                                       +
+	// +-----------------------------------------------------------------------+
 	
 	// this tree here will contain all of the triangles in the scene, at the
-	// of the radiosity computation.
+	// time of the radiosity computation.
 	// we will use it to determine if there is a clear path between two points
 	AABBTree all_tree;
 	std::vector<Triangle> all_tris;
@@ -182,14 +290,20 @@ int main(int argc, const char** argv) {
 		return color;
 	};
 	
-	Lightmap l(1024, 1024);
+	std::cout << "Baking a lightmap with " << lights.size() <<" lights, " << lightmap_width << " by " << lightmap_height << " pixels in size." << std::endl;
+	
+	Lightmap l(lightmap_width, lightmap_height);
 	
 	const float scanline = 1.0f/l.h;
 	const float column = 1.0f/l.w;
 	
-	int eee = 0;
+	//std::cout << "1";
+	
+	int tri_index = 0;
 	for (const auto& tri : triangles) {
-		std::cout << "tri: " << eee++ << std::endl;
+		if (tri_index++ % (triangles.size() / 50) == 0) {
+			std::cout << "tri: " << tri_index << std::endl;
+		}
 		
 		Vertex lowest = tri.v1;
 		if (tri.v1.map.y < lowest.map.y) lowest = tri.v1;
@@ -318,8 +432,6 @@ int main(int argc, const char** argv) {
 	
 	// then write it to a png
 	stbi_write_png("output.png", l.w, l.h, 3, img, 0);
-	
-	//std::cout << triangles[0].v1.pos.x << " " << triangles[0].v2.pos.y << " " << triangles[0].v3.pos.z << " "  << triangles[0].mat << std::endl;
 	
 	return 0;
 }
