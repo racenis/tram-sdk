@@ -41,6 +41,7 @@ struct Lightmap {
 	}
 	
 	void Blit(int x, int y, Texel tex) {
+		if (x < 0 || y < 0 || x >= w || y >= h) return;
 		t[y*w+x] = tex;
 	}
 	
@@ -73,8 +74,8 @@ int main(int argc, const char** argv) {
 	
 	stbi_flip_vertically_on_write(true);
 	
-	//File file("../../data/models/movs.stmdl", MODE_READ);
-	File file("../../data/models/movs2.stmdl", MODE_READ);
+	File file("../../data/models/movs.stmdl", MODE_READ);
+	//File file("../../data/models/movs2.stmdl", MODE_READ);
 	//File file("../../data/models/tepik.stmdl", MODE_READ);
 	
 	if (!file.is_open()) {
@@ -164,18 +165,86 @@ int main(int argc, const char** argv) {
 		if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
 		if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 		
-		blit(lowest.map.x, lowest.map.y, {0.0f, 1.0f, 0.0f});
-		blit(highest.map.x, highest.map.y, {1.0f, 1.0f, 0.0f});
-		blit(middle.map.x, middle.map.y, {1.0f, 0.0f, 0.0f});
-		
 		int low_high_lines = (highest.map.y - lowest.map.y) / scanline;
 		int low_mid_lines = (middle.map.y - lowest.map.y) / scanline;
 		int mid_high_lines = (highest.map.y - middle.map.y) / scanline;
 		
+		vec2 low_high_dir = (highest.map - lowest.map) / (float)low_high_lines;
+		vec2 low_mid_dir = (middle.map - lowest.map) / (float)low_mid_lines;
+		vec2 mid_high_dir = (highest.map - middle.map) / (float)mid_high_lines;
+		
+		vec3 low_high_dir_wrd = (highest.pos - lowest.pos) / (float)low_high_lines;
+		vec3 low_mid_dir_wrd = (middle.pos - lowest.pos) / (float)low_mid_lines;
+		vec3 mid_high_dir_wrd = (highest.pos - middle.pos) / (float)mid_high_lines;
+		
+		//std::cout << "hi " << highest.map.x << " " << highest.map.y << std::endl;
+		//std::cout << "lo " << lowest.map.x << " " << lowest.map.y << std::endl;
+		//std::cout << "to " << low_high_dir.x << " " << low_high_dir.y << std::endl;
+		
+		
+		vec2 left_pos = lowest.map;
+		vec2 right_pos = lowest.map;
+		
+		vec3 left_pos_wrd = lowest.pos;
+		vec3 right_pos_wrd = lowest.pos;
+		
+		
+		int line = lowest.map.y * (float)l.h;//(float)l.h - 1.0f;
+		
 		for (int i = 0; i < low_mid_lines; i++) {
+			left_pos += low_high_dir;
+			right_pos += low_mid_dir;
 			
+			left_pos_wrd += low_high_dir_wrd;
+			right_pos_wrd += low_mid_dir_wrd;
 			
+			int from = left_pos.x * (float)l.w;
+			int to = right_pos.x * (float)l.w;
+			
+			//vec3 mov_wrd = (right_pos_wrd - left_pos_wrd) / fabs((float)(from-to));
+			vec3 pos_wrd = left_pos_wrd;
+			
+			if (from > to) {
+				std::swap(from, to);
+				//mov_wrd = -mov_wrd;
+			}
+			
+			for (int col = from; col < to; col++) {
+				
+				
+				l.Blit(col, line, {pos_wrd});
+				
+				//pos_wrd += mov_wrd;
+			}
+
+			line++;
 		}
+		
+		right_pos = middle.map;
+		//right_pos_wrd = middle.pos;
+		
+		/*for (int i = low_mid_lines; i < low_high_lines; i++) {
+			left_pos += low_high_dir;
+			right_pos += mid_high_dir;
+			
+			left_pos_wrd += low_high_dir_wrd;
+			right_pos_wrd += mid_high_dir_wrd;
+			
+			int from = left_pos.x * (float)l.w;
+			int to = right_pos.x * (float)l.w;
+			
+			if (from > to) std::swap(from, to);
+			
+			for (int col = from; col < to; col++) {
+				l.Blit(col, line, {{1.0f, 1.0f, 1.0f}});
+			}
+
+			line++;
+		}*/
+		
+		blit(lowest.map.x, lowest.map.y, {0.0f, 1.0f, 0.0f});
+		blit(highest.map.x, highest.map.y, {1.0f, 1.0f, 0.0f});
+		blit(middle.map.x, middle.map.y, {1.0f, 0.0f, 0.0f});
 		
 		//break;
 	}
