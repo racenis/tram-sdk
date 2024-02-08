@@ -135,12 +135,33 @@ int main(int argc, const char** argv) {
 		all_tris.push_back(tri);
 	}
 	
-	Lightmap l(1024, 1024);
+	auto find_reachability = [&](vec3 pos, vec3 dir, vec3 pot) {
+		std::vector<uint32_t> results;
+		all_tree.FindIntersection(pos, dir, all_tree.root, results);
+		
+		if (!results.size()) return INFINITY;
+		
+		vec3 closest = all_tris[results[0]].v1.pos;
+		
+		for (auto res : results) {
+			vec3 intr = RayTriangleIntersection(pos, dir, all_tris[res].v1.pos, all_tris[res].v2.pos, all_tris[res].v3.pos);
+			if (intr.x == INFINITY) continue;
+			if (glm::dot(dir, glm::normalize(intr-pos)) < 0.0f) continue;
+			if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
+		}
+		
+		return glm::distance(pot, closest);
+	};
+	
+	
+	Lightmap l(256, 256);
 	
 	const float scanline = 1.0f/l.h;
 	const float column = 1.0f/l.w;
 	
+	int eee = 0;
 	for (const auto& tri : triangles) {
+		std::cout << "tri: " << eee++ << std::endl;
 		
 		Vertex lowest = tri.v1;
 		if (tri.v1.map.y < lowest.map.y) lowest = tri.v1;
@@ -199,6 +220,11 @@ int main(int argc, const char** argv) {
 			
 				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
 				
+				vec3 light_pos = {0.01f, 0.25f, 0.02f};
+				vec3 light_dir = glm::normalize(pos - light_pos);
+				
+				if (find_reachability(light_pos, light_dir, pos) > 0.01f) continue;
+				
 				l.Blit(col, line, {glm::max(0.0f, 5.5f - glm::length(pos)) * vec3(1.0f, 1.0f, 1.0f)});
 
 			}
@@ -230,6 +256,11 @@ int main(int argc, const char** argv) {
 			
 				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
 
+				vec3 light_pos = {0.01f, 0.25f, 0.02f};
+				vec3 light_dir = glm::normalize(pos - light_pos);
+				
+				if (find_reachability(light_pos, light_dir, pos) > 0.01f) continue;
+				
 				l.Blit(col, line, {glm::max(0.0f, 5.5f - glm::length(pos)) * vec3(1.0f, 1.0f, 1.0f)});
 			}
 

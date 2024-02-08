@@ -3,3 +3,4 @@
 #include <framework/logging.cpp>
 #include <framework/system.cpp>
 #include <framework/uid.cpp>
+#include <framework/math.cpp>
