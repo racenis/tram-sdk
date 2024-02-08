@@ -58,6 +58,12 @@ struct Lightmap {
 	int w, h;
 };
 
+struct Light {
+	vec3 pos;
+	vec3 color;
+	float radius;
+};
+
 static vec3 TriangleAABBMin (Triangle t) {
     return {
         t.v1.pos.x < t.v2.pos.x ? (t.v1.pos.x < t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x < t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
@@ -80,8 +86,6 @@ int main(int argc, const char** argv) {
 	stbi_flip_vertically_on_write(true);
 	
 	File file("../../data/models/movs.stmdl", MODE_READ);
-	//File file("../../data/models/movs2.stmdl", MODE_READ);
-	//File file("../../data/models/tepik.stmdl", MODE_READ);
 	
 	if (!file.is_open()) {
 		std::cout << "ERROR OPENING FILE" << std::endl;
@@ -124,6 +128,11 @@ int main(int argc, const char** argv) {
 	}
 	
 	
+	std::vector<Light> lights = {
+		{{0.0f, 5.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, 10.0f},
+		{{0.0f, 1.0f, -8.0f}, {1.0f, 0.0f, 0.0f}, 15.0f}
+	};
+	
 	// this tree here will contain all of the triangles in the scene, at the
 	// of the radiosity computation.
 	// we will use it to determine if there is a clear path between two points
@@ -150,20 +159,30 @@ int main(int argc, const char** argv) {
 		return closest;
 	};
 	
-	auto find_color = [&](vec3 pos) {
-		vec3 light_pos = {0.01f, 0.25f, 0.02f};
-		vec3 light_dir = glm::normalize(light_pos - pos);
+	auto find_color = [&](vec3 pos, vec3 normal) {
+		vec3 color = {0.0f, 0.0f, 0.0f};
+		
+		// because of floating-point errors, we might get a collision with the
+		// triangle, on which the texel is located on, so we move it off of the
+		// surface a little bit
+		pos += 0.01f * normal;
+		
+		for (const auto& light : lights) {
+			vec3 light_dir = glm::normalize(light.pos - pos);
+			
+			vec3 nearest = find_reachability(pos, light_dir);
 
-		vec3 nearest = find_reachability(pos, light_dir);
-
-		if (glm::distance(nearest, pos) < glm::distance(light_pos, pos)) {
-			return vec3(0.1f, 0.1f, 0.1f);
-		} else {
-			return glm::max(0.0f, 5.5f - glm::length(pos)) * vec3(1.0f, 1.0f, 1.0f);
+			if (glm::distance(nearest, pos) > glm::distance(light.pos, pos)) {
+				float distance1 = glm::length(light.pos - pos);
+				
+				color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * distance1 + 0.032f * (distance1 * distance1)));
+			} 
 		}
+		
+		return color;
 	};
 	
-	Lightmap l(256, 256);
+	Lightmap l(1024, 1024);
 	
 	const float scanline = 1.0f/l.h;
 	const float column = 1.0f/l.w;
@@ -228,8 +247,9 @@ int main(int argc, const char** argv) {
 				const float d1 = 1.0f - d2 - d3;
 			
 				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
+				vec3 nrm = d1 * tri.v1.nrm + d2 * tri.v2.nrm + d3 * tri.v3.nrm;
 				
-				l.Blit(col, line, {find_color(pos)});
+				l.Blit(col, line, {find_color(pos, nrm)});
 			}
 
 			line++;
@@ -258,8 +278,9 @@ int main(int argc, const char** argv) {
 				const float d1 = 1.0f - d2 - d3;
 			
 				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
-
-				l.Blit(col, line, {find_color(pos)});
+				vec3 nrm = d1 * tri.v1.nrm + d2 * tri.v2.nrm + d3 * tri.v3.nrm;
+				
+				l.Blit(col, line, {find_color(pos, nrm)});
 			}
 
 			line++;
