@@ -28,6 +28,7 @@
 
 #include <entities/crate.h>
 #include <entities/staticworldobject.h>
+#include <entities/light.h>
 #include <entities/player.h>
 
 #include <components/render.h>
@@ -392,6 +393,7 @@ int main() {
     // register the entity types, so that they can be loaded from level files
     //Entity::RegisterType("staticwobj", [](std::string_view& params) -> Entity* {return new StaticWorldObject(params);});
     //Entity::RegisterType("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
+    Light::Register();
     Crate::Register();
     StaticWorldObject::Register();
     Ext::Design::Button::Register();

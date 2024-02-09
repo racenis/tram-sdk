@@ -2,7 +2,7 @@
 // All rights reserved.
 
 #include <framework/core.h>
-#include <entities/lamp.h>
+#include <entities/light.h>
 #include <components/light.h>
 
 #include <framework/serialization.h>
@@ -23,17 +23,17 @@ static const uint32_t fields[4] = {
     TYPE_FLOAT32
 }; 
 
-void Lamp::Register() {
+void Light::Register() {
     Entity::RegisterType(
-        "lamp", 
-        [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Lamp(a, b); },
+        "light", 
+        [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Light(a, b); },
         [](Entity* a) { delete a; },
         fields,
         4
     );
 }
 
-Lamp::Lamp(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
+Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     color_r = field_array[FIELD_COLOR_R];
     color_g = field_array[FIELD_COLOR_G];
     color_b = field_array[FIELD_COLOR_B];
@@ -41,16 +41,16 @@ Lamp::Lamp(const SharedEntityData& shared_data, const ValueArray& field_array) :
 }
 
 
-void Lamp::UpdateParameters () {
+void Light::UpdateParameters () {
     if (!is_loaded) return;
     light->SetLocation(location);
 }
 
-void Lamp::SetParameters () {
+void Light::SetParameters () {
     UpdateParameters();
 }
 
-void Lamp::Load () {
+void Light::Load () {
     light.make();
     light->SetColor({color_r, color_g, color_b});
     light->SetDistance(distance);
@@ -61,7 +61,7 @@ void Lamp::Load () {
     UpdateParameters();
 }
 
-void Lamp::Unload () {
+void Light::Unload () {
     is_loaded = false;
 
     Serialize();
@@ -69,7 +69,7 @@ void Lamp::Unload () {
     light.clear();
 }
 
-void Lamp::Serialize () {
+void Light::Serialize () {
     glm::vec3 light_color;
     float light_distance;
     
@@ -82,7 +82,7 @@ void Lamp::Serialize () {
     distance = light_distance;
 }
 
-void Lamp::MessageHandler (Message& msg) {
+void Light::MessageHandler (Message& msg) {
     return;
 }
 

@@ -193,15 +193,15 @@
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
+      <File Name="src/entities/light.h"/>
+      <File Name="src/entities/light.cpp"/>
       <File Name="src/entities/marker.h"/>
       <File Name="src/entities/marker.cpp"/>
       <File Name="src/entities/crate.h"/>
-      <File Name="src/entities/lamp.h"/>
       <File Name="src/entities/player.h"/>
       <File Name="src/entities/staticworldobject.h"/>
       <File Name="src/entities/staticworldobject.cpp"/>
       <File Name="src/entities/player.cpp"/>
-      <File Name="src/entities/lamp.cpp"/>
       <File Name="src/entities/crate.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>

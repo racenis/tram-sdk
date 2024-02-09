@@ -1,8 +1,8 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#ifndef TRAM_SDK_ENTITIES_LAMP_H
-#define TRAM_SDK_ENTITIES_LAMP_H
+#ifndef TRAM_SDK_ENTITIES_LIGHT_H
+#define TRAM_SDK_ENTITIES_LIGHT_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -12,9 +12,9 @@ namespace tram {
 
 class LightComponent;
 
-class Lamp : public Entity {
+class Light : public Entity {
 public:
-    Lamp(const SharedEntityData&, const ValueArray&);
+    Light(const SharedEntityData&, const ValueArray&);
     void UpdateParameters();
     void SetParameters();
     void Load();
@@ -33,4 +33,4 @@ protected:
 
 }
 
-#endif // TRAM_SDK_ENTITIES_LAMP_H
+#endif // TRAM_SDK_ENTITIES_LIGHT_H

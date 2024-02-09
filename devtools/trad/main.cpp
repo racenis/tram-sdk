@@ -1,3 +1,15 @@
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
+// Tramway SDK -- Radiosity tool
+
+// TODO:
+// - add option to use multiple worldcells in the same bake
+// - allow loading multiple models in the same bake
+// - make program go vroom vroom
+// - add indirect lighting
+// - add emissive materials
+
 #include <iostream>
 #include <vector>
 
@@ -95,11 +107,34 @@ int main(int argc, const char** argv) {
 	
 	std::cout << "Tramway SDK -- Radiosity lightmapper" << std::endl;
 	
-	const char* entity = "paliktnis";
-	const char* worldcell = "demo_mov";
+	if (argc != 5) {
+		std::cout << "Usage: trad worldcell entity width height";
+		std::cout << "\n\tworldcell is the name of the worldcell, that contains the entity and";
+		std::cout << "\n\t\tthe light with which it will be illuminated with";
+		std::cout << "\n\tentity is the name or the id of an entity, for which the lightmap will";
+		std::cout << "\n\t\tbe baked";
+		std::cout << "\n\twidth is the width of the lightmap, in texels";
+		std::cout << "\n\theight is the height of the lightmap, in texels" << std::endl;
+		return 0;
+	}
 	
-	int lightmap_width = 256;
-	int lightmap_height = 256; 
+	
+	
+	const char* entity = argv[2];
+	const char* worldcell = argv[1];
+	
+	int lightmap_width = atoi(argv[3]);
+	int lightmap_height = atoi(argv[4]); 
+	
+	if (lightmap_width < 1 || lightmap_height < 1) {
+		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
+		return 0;
+	}
+	
+	if ((lightmap_width & (lightmap_width - 1)) != 0 || (lightmap_height & (lightmap_height - 1)) != 0) {
+		std::cout << "Lightmap size has to be a power of two." << std::endl;
+		return 0;
+	}
 	
 	std::vector<Entity> entities;
 	std::vector<Light> lights; /*= {
@@ -115,7 +150,7 @@ int main(int argc, const char** argv) {
 	
 	std::cout << "Loading worldcell " << worldcell << "... " << std::flush;
 	
-	std::string worldcell_path = "../../data/worldcells/";
+	std::string worldcell_path = "data/worldcells/";
 	worldcell_path += worldcell;
 	worldcell_path += ".cell";
 	
@@ -152,7 +187,7 @@ int main(int argc, const char** argv) {
 			entities.push_back(entity);
 		}
 		
-		if (entity_type == "lamp") {
+		if (entity_type == "light") {
 			Light light;
 			
 			cell.read_name();
@@ -172,7 +207,7 @@ int main(int argc, const char** argv) {
 	
 	int entity_index = -1;
 	for (int i = 0; i < entities.size(); i++) {
-		if (entities[i].name == entity) entity_index = i;
+		if (entities[i].name == entity || entities[i].id == entity) entity_index = i;
 	}
 	
 	if (entity_index == -1) {
@@ -180,15 +215,23 @@ int main(int argc, const char** argv) {
 		return 0;
 	}
 	
+	name_t model_name = entities[entity_index].model;
+	name_t lightmap_name = entities[entity_index].lightmap;
+	vec3 inv_pos = -entities[entity_index].pos;
+	quat inv_rot = glm::inverse(entities[entity_index].rot);
+	
+	for (auto& light : lights) {
+		light.pos = inv_pos + light.pos;
+		light.pos = inv_rot * light.pos;
+	}
+	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                             MODEL LOADER                              +
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
-	
-	name_t model_name = entities[entity_index].model;
-	
-	std::string model_path = "../../data/models/";
+		
+	std::string model_path = "data/models/";
 	model_path += (const char*)model_name;
 	model_path += ".stmdl";
 	
@@ -290,19 +333,19 @@ int main(int argc, const char** argv) {
 		return color;
 	};
 	
-	std::cout << "Baking a lightmap with " << lights.size() <<" lights, " << lightmap_width << " by " << lightmap_height << " pixels in size." << std::endl;
+	std::cout << "Baking a lightmap with " << lights.size() <<" lights, " << lightmap_width << " by " << lightmap_height << " texels in size." << std::endl;
 	
 	Lightmap l(lightmap_width, lightmap_height);
 	
 	const float scanline = 1.0f/l.h;
 	const float column = 1.0f/l.w;
 	
-	//std::cout << "1";
+	std::cout << "Computing " << std::flush;
 	
 	int tri_index = 0;
 	for (const auto& tri : triangles) {
-		if (tri_index++ % (triangles.size() / 50) == 0) {
-			std::cout << "tri: " << tri_index << std::endl;
+		if (tri_index++ % (triangles.size() / 60) == 0) {
+			std::cout << "." << std::flush;
 		}
 		
 		Vertex lowest = tri.v1;
@@ -405,10 +448,8 @@ int main(int argc, const char** argv) {
 		//blit(middle.map.x, middle.map.y, {1.0f, 1.0f, 0.0f});
 	}
 	
-	
-	
-	
-	
+	std::cout << " done!" << std::endl;
+	std::cout << "Saving to disk... " << std::flush;
 	
 	// convert finished lightmap from floating-point to byte
 	unsigned char* img = new unsigned char[l.w*l.h*3];
@@ -431,7 +472,13 @@ int main(int argc, const char** argv) {
 	}
 	
 	// then write it to a png
-	stbi_write_png("output.png", l.w, l.h, 3, img, 0);
+	std::string output_path = "data/textures/lightmap/";
+	output_path += (const char*)lightmap_name;
+	output_path += ".png";
+	
+	stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0);
+	
+	std::cout << "done!" << std::endl;
 	
 	return 0;
 }
