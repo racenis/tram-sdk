@@ -315,6 +315,8 @@ int main(int argc, const char** argv) {
 	};
 	
 	auto find_color = [&](vec3 pos, vec3 normal) {
+		return vec3{0.5f, 0.5f, 0.5f};
+		
 		vec3 color = {0.0f, 0.0f, 0.0f};
 		
 		// because of floating-point errors, we might get a collision with the
@@ -372,36 +374,75 @@ int main(int argc, const char** argv) {
 		if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
 		if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 		
-		// first convert y values into ints, only then subtract!!!!
-		int low_high_lines = ceil((highest.map.y - lowest.map.y) / scanline);
-		int low_mid_lines = ceil((middle.map.y - lowest.map.y) / scanline);
-		int mid_high_lines = ceil((highest.map.y - middle.map.y) / scanline);
+		int lowest_y = lowest.map.y * (float)l.h;
+		int middle_y = middle.map.y * (float)l.h;
+		int highest_y = highest.map.y * (float)l.h;
 		
-		vec2 low_high_dir = (highest.map - lowest.map) / (float)low_high_lines;
-		vec2 low_mid_dir = (middle.map - lowest.map) / (float)low_mid_lines;
-		vec2 mid_high_dir = (highest.map - middle.map) / (float)mid_high_lines;
+		/*if (middle_line == highest_line) {
+			middle_line++;
+			highest_line++;
+		} else {
+			highest_line++;
+		}*/
 		
-		vec3 low_high_dir_wrd = (highest.pos - lowest.pos) / (float)low_high_lines;
-		vec3 low_mid_dir_wrd = (middle.pos - lowest.pos) / (float)low_mid_lines;
-		vec3 mid_high_dir_wrd = (highest.pos - middle.pos) / (float)mid_high_lines;
 		
-		vec2 left_pos = lowest.map;
-		vec2 right_pos = lowest.map;
 		
-		int line = lowest.map.y * (float)l.h;
+		//if (middle_line == lowest_line) {
+		//	highest_line++;
+		//}
 		
-		for (int i = 0; i < low_mid_lines; i++) {
+		int low_high_lines = highest_y - lowest_y;
+		int low_mid_lines = middle_y - lowest_y;
+		int mid_high_lines = highest_y - middle_y;
+		
+		//std::cout << lowest_line << " " << middle_line << " " << highest_line << std::endl;
+		
+		//int low_high_lines = (int)(highest.map.y * (float)l.h) - (int)(lowest.map.y * (float)l.h);
+		//int low_mid_lines = (int)(middle.map.y * (float)l.h) - (int)(lowest.map.y * (float)l.h);
+		//int mid_high_lines = (int)(highest.map.y * (float)l.h) - (int)(middle.map.y * (float)l.h);
+		
+		//std::cout << low_high_lines << " " << low_mid_lines << " " << mid_high_lines << " " << (low_mid_lines + mid_high_lines) << std::endl;
+
+		
+		//static int i = 0;
+		//i++;
+		//if (i > 5) return 0;
+		
+		//float low_high_dir = (highest.map.x - lowest.map.x) / (float)low_high_lines * (float)l.w;
+		//float low_mid_dir = (middle.map.x - lowest.map.x) / (float)low_mid_lines * (float)l.w;
+		//float mid_high_dir = (highest.map.x - middle.map.x) / (float)mid_high_lines * (float)l.w;
+		
+		int highest_x = highest.map.x * (float)l.w;
+		int middle_x = middle.map.x * (float)l.w;
+		int lowest_x = lowest.map.x * (float)l.w;
+		
+		float low_high_dir = (float)(highest_x - lowest_x) / (float)low_high_lines;
+		float low_mid_dir = (float)(middle_x - lowest_x) / (float)low_mid_lines;
+		float mid_high_dir = (float)(highest_x - middle_x) / (float)mid_high_lines;
+		
+		float left_pos = lowest.map.x * (float)l.w;
+		float right_pos = lowest.map.x * (float)l.w;
+		
+		
+		
+		for (int row = lowest_y; row < middle_y; row++) {
 			left_pos += low_high_dir;
 			right_pos += low_mid_dir;
+
+			int from = left_pos;
+			int to = right_pos;
 			
-			int from = left_pos.x * (float)l.w;
-			int to = right_pos.x * (float)l.w;
-			
+			// TODO :remove this check!!!
 			if (from > to) std::swap(from, to);
+			
+			//if (from < 0) from = 0;
+			//if (to >= l.w) to = l.w;
+			
+			//std::cout << from << " " << to << std::endl;
 			
 			for (int col = from; col < to; col++) {
 				const float x = (float)col / (float)l.w;
-				const float y = (float)line / (float)l.h;
+				const float y = (float)row / (float)l.h;
 				const vec2 v1 = tri.v2.map - tri.v1.map;
 				const vec2 v2 = tri.v3.map - tri.v1.map;
 				const vec2 v3 = vec2(x, y) - tri.v1.map;
@@ -413,26 +454,32 @@ int main(int argc, const char** argv) {
 				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
 				vec3 nrm = d1 * tri.v1.nrm + d2 * tri.v2.nrm + d3 * tri.v3.nrm;
 				
-				l.Blit(col, line, {find_color(pos, nrm)});
+				//l.Blit(col, line, {find_color(pos, nrm)});
+				l.BlitMix(col, row, {find_color(pos, nrm)});
 			}
-
-			line++;
 		}
 		
-		right_pos = middle.map;
 		
-		for (int i = low_mid_lines; i < low_high_lines; i++) {
+		right_pos = middle.map.x * (float)l.w;
+		
+		for (int row = middle_y; row < highest_y; row++) {
 			left_pos += low_high_dir;
 			right_pos += mid_high_dir;
 			
-			int from = left_pos.x * (float)l.w;
-			int to = right_pos.x * (float)l.w;
+			//int from = left_pos.x * (float)l.w;
+			//int to = right_pos.x * (float)l.w;
+			
+			int from = left_pos;
+			int to = right_pos;
 			
 			if (from > to) std::swap(from, to);
+
+			
+			//if (from > to) continue;
 			
 			for (int col = from; col < to; col++) {
 				const float x = (float)col / (float)l.w;
-				const float y = (float)line / (float)l.h;
+				const float y = (float)row / (float)l.h;
 				const vec2 v1 = tri.v2.map - tri.v1.map;
 				const vec2 v2 = tri.v3.map - tri.v1.map;
 				const vec2 v3 = vec2(x, y) - tri.v1.map;
@@ -444,10 +491,9 @@ int main(int argc, const char** argv) {
 				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
 				vec3 nrm = d1 * tri.v1.nrm + d2 * tri.v2.nrm + d3 * tri.v3.nrm;
 				
-				l.Blit(col, line, {find_color(pos, nrm)});
+				//l.Blit(col, line, {find_color(pos, nrm)});
+				l.BlitMix(col, row, {find_color(pos, nrm)});
 			}
-
-			line++;
 		}
 		
 		l.Blit(lowest.map.x * (float)l.w, lowest.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
