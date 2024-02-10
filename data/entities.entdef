@@ -16,7 +16,7 @@ end
 
 begin
 	name light
-	model dev/lamp
+	model dev/light
 	field float color-r
 	field float color-g
 	field float color-b

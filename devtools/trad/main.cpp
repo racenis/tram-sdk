@@ -4,6 +4,10 @@
 // Tramway SDK -- Radiosity tool
 
 // TODO:
+// - add flag to texel color ing point where coords
+// - add flag that skips ray-casting
+// - if no lights, then generate fullbright
+// - also flag? for fullbright?
 // - add option to use multiple worldcells in the same bake
 // - allow loading multiple models in the same bake
 // - make program go vroom vroom
@@ -154,7 +158,7 @@ int main(int argc, const char** argv) {
 	worldcell_path += worldcell;
 	worldcell_path += ".cell";
 	
-	File cell(worldcell_path.c_str(), MODE_READ);
+	File cell(worldcell_path.c_str(), MODE_READ | MODE_PAUSE_LINE);
 	
 	if (!cell.is_open()) {
 		std::cout << "\nError opening file: " << worldcell_path << "!" <<std::endl;
@@ -319,6 +323,8 @@ int main(int argc, const char** argv) {
 		pos += 0.01f * normal;
 		
 		for (const auto& light : lights) {
+			if (light.radius < glm::distance(pos, light.pos)) continue;
+			
 			vec3 light_dir = glm::normalize(light.pos - pos);
 			
 			vec3 nearest = find_reachability(pos, light_dir);
@@ -366,6 +372,7 @@ int main(int argc, const char** argv) {
 		if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
 		if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 		
+		// first convert y values into ints, only then subtract!!!!
 		int low_high_lines = ceil((highest.map.y - lowest.map.y) / scanline);
 		int low_mid_lines = ceil((middle.map.y - lowest.map.y) / scanline);
 		int mid_high_lines = ceil((highest.map.y - middle.map.y) / scanline);
@@ -443,9 +450,9 @@ int main(int argc, const char** argv) {
 			line++;
 		}
 		
-		//blit(lowest.map.x, lowest.map.y, {0.0f, 1.0f, 0.0f});
-		//blit(highest.map.x, highest.map.y, {1.0f, 0.0f, 0.0f});
-		//blit(middle.map.x, middle.map.y, {1.0f, 1.0f, 0.0f});
+		l.Blit(lowest.map.x * (float)l.w, lowest.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+		l.Blit(highest.map.x * (float)l.w, highest.map.y * (float)l.h, {{1.0f, 0.0f, 0.0f}});
+		l.Blit(middle.map.x * (float)l.w, middle.map.y * (float)l.h, {{1.0f, 1.0f, 0.0f}});
 	}
 	
 	std::cout << " done!" << std::endl;
