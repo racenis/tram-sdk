@@ -4,10 +4,6 @@
 // Tramway SDK -- Radiosity tool
 
 // TODO:
-// - add flag to texel color ing point where coords
-// - add flag that skips ray-casting
-// - if no lights, then generate fullbright
-// - also flag? for fullbright?
 // - add option to use multiple worldcells in the same bake
 // - allow loading multiple models in the same bake
 // - make program go vroom vroom
@@ -116,6 +112,151 @@ static vec3 TriangleAABBMax (Triangle t) {
     };
 }
 
+vec3 FindNearestIntersection(AABBTree& tree, std::vector<Triangle>& tris, vec3 pos, vec3 dir) {
+	std::vector<uint32_t> results;
+	tree.FindIntersection(pos, dir, tree.root, results);
+
+	vec3 closest = {INFINITY, INFINITY, INFINITY};
+	
+	for (auto res : results) {
+		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].v1.pos, tris[res].v2.pos, tris[res].v3.pos);
+		if (intr.x == INFINITY) continue;			
+		if(glm::dot(tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
+		if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
+	}
+	
+	return closest;
+};
+
+vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<Triangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal) {
+	vec3 color = {0.0f, 0.0f, 0.0f};
+	
+	// we might get a collision with the triangle, on which the texel is located
+	// on, so we move it off of the surface a little bit
+	pos += 0.01f * normal;
+	
+	for (const auto& light : lights) {
+		if (light.radius < glm::distance(pos, light.pos)) continue;
+		
+		vec3 light_dir = glm::normalize(light.pos - pos);
+		
+		vec3 nearest = FindNearestIntersection(tree, tris, pos, light_dir);
+
+		if (glm::distance(nearest, pos) > glm::distance(light.pos, pos)) {
+			float distance1 = glm::length(light.pos - pos);
+			color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * distance1 + 0.032f * (distance1 * distance1)));
+		} 
+	}
+	
+	return color;
+};
+
+struct RasterParams {
+	int l_w;
+	int l_h;
+	int stretch_low_x;
+	int stretch_low_y;
+	int stretch_high_x;
+	int stretch_high_y;
+};
+
+void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
+	// find the lowest, highest and middle vertices
+	Vertex lowest = tri.v1;
+	if (tri.v1.map.y < lowest.map.y) lowest = tri.v1;
+	if (tri.v2.map.y < lowest.map.y) lowest = tri.v2;
+	if (tri.v3.map.y < lowest.map.y) lowest = tri.v3;
+	
+	Vertex highest = tri.v1;
+	if (tri.v1.map.y > highest.map.y) highest = tri.v1;
+	if (tri.v2.map.y > highest.map.y) highest = tri.v2;
+	if (tri.v3.map.y > highest.map.y) highest = tri.v3;
+	
+	// this should not happen!
+	if (lowest == highest) std::cout << "what the fuck" << std::endl;
+	
+	Vertex middle;
+	if ((tri.v2 == lowest || tri.v3 == lowest) && (tri.v2 == highest || tri.v3 == highest)) middle = tri.v1;
+	if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
+	if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
+	
+	// position of vertices on the raster image
+	int lowest_y = lowest.map.y * (float)p.l_h;
+	int middle_y = middle.map.y * (float)p.l_h;
+	int highest_y = highest.map.y * (float)p.l_h;
+	
+	// stretch the triangle a little bit
+	if (middle_y == highest_y) {
+		middle_y += p.stretch_high_y;
+		highest_y += p.stretch_high_y;
+		lowest_y -= p.stretch_low_y;
+	} else {
+		highest_y += p.stretch_high_y;
+		lowest_y -= p.stretch_low_y;
+	}
+
+	int low_high_lines = highest_y - lowest_y;
+	int low_mid_lines = middle_y - lowest_y;
+	int mid_high_lines = highest_y - middle_y;
+	
+	int highest_x = highest.map.x * (float)p.l_w;
+	int middle_x = middle.map.x * (float)p.l_w;
+	int lowest_x = lowest.map.x * (float)p.l_w;
+	
+	if (highest_x > middle_x || highest_x > lowest_x) highest_x += p.stretch_high_x;
+	if (middle_x > highest_x || middle_x > lowest_x) middle_x += p.stretch_high_x;
+	if (lowest_x > middle_x || lowest_x > highest_x) lowest_x += p.stretch_high_x;
+
+	if (highest_x < middle_x || highest_x < lowest_x) highest_x -= p.stretch_low_x;
+	if (middle_x < highest_x || middle_x < lowest_x) middle_x -= p.stretch_low_x;
+	if (lowest_x < middle_x || lowest_x < highest_x) lowest_x -= p.stretch_low_x;
+
+	float low_high_dir = (float)(highest_x - lowest_x) / (float)low_high_lines;
+	float low_mid_dir = (float)(middle_x - lowest_x) / (float)low_mid_lines;
+	float mid_high_dir = (float)(highest_x - middle_x) / (float)mid_high_lines;
+	
+	float left_pos = lowest_x;
+	float right_pos = lowest_x;
+			
+	for (int row = lowest_y; row < middle_y; row++) {
+		left_pos += low_high_dir;
+		right_pos += low_mid_dir;
+
+		int from = left_pos;
+		int to = right_pos;
+		
+		if (from > to) std::swap(from, to);
+		
+		for (int col = from; col < to; col++) {
+			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
+			
+			vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
+			vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
+			
+			raster_f(col, row, pos, nrm);
+		}
+	}
+	
+	for (int row = middle_y; row < highest_y; row++) {
+		left_pos += low_high_dir;
+		right_pos += mid_high_dir;
+		
+		int from = left_pos;
+		int to = right_pos;
+		
+		if (from > to) std::swap(from, to);
+
+		for (int col = from; col < to; col++) {
+			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
+			
+			vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
+			vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
+			
+			raster_f(col, row, pos, nrm);
+		}
+	}
+}
+
 int main(int argc, const char** argv) {
 	stbi_flip_vertically_on_write(true);
 	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
@@ -142,6 +283,14 @@ int main(int argc, const char** argv) {
 	bool paint_coords = false;
 	bool paint_verts = false;
 	
+	bool force_fullbright = false;
+	
+	// stretch the raster a little bit, to help with color bleeding
+	int stretch_low_x = 1;
+	int stretch_low_y = 1;
+	int stretch_high_x = 2;
+	int stretch_high_y = 2;
+	
 	if (lightmap_width < 1 || lightmap_height < 1) {
 		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
 		return 0;
@@ -155,24 +304,31 @@ int main(int argc, const char** argv) {
 	for (int i = 5; i < argc; i++) {
 		if (strcmp(argv[i], "-coords") == 0) {
 			paint_coords = true;
-			std::cout << "CORDS" << std::endl;
 		}
 		
 		if (strcmp(argv[i], "-verts") == 0) {
 			paint_verts = true;
-			std::cout << "VETTS" << std::endl;
 		}
+		
+		if (strcmp(argv[i], "-pad") == 0) {
+			int ammount = atoi(argv[++i]);
+			stretch_low_x = ammount;
+			stretch_low_y = ammount;
+			stretch_high_x = ammount + 1;
+			stretch_high_y = ammount + 1;
+		}
+		
+		if (strcmp(argv[i], "-fullbright") == 0) {
+			force_fullbright = true;
+		}
+		
 	}
 	
 	
 	std::vector<Entity> entities;
 	std::vector<Light> lights;
 	
-	// stretch the raster a little bit, to help with color bleeding
-	const int stretch_low_x = 1;
-	const int stretch_low_y = 1;
-	const int stretch_high_x = 2;
-	const int stretch_high_y = 2;
+	
 	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -327,171 +483,66 @@ int main(int argc, const char** argv) {
 		all_tris.push_back(tri);
 	}
 	
-	auto find_reachability = [&](vec3 pos, vec3 dir) {
-		std::vector<uint32_t> results;
-		all_tree.FindIntersection(pos, dir, all_tree.root, results);
-
-		vec3 closest = {INFINITY, INFINITY, INFINITY};
-		
-		for (auto res : results) {
-			vec3 intr = RayTriangleIntersection(pos, dir, all_tris[res].v1.pos, all_tris[res].v2.pos, all_tris[res].v3.pos);
-			if (intr.x == INFINITY) continue;			
-			if(glm::dot(all_tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
-			if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
-		}
-		
-		return closest;
-	};
 	
-	auto find_color = [&](vec3 pos, vec3 normal) {
-		vec3 color = {0.0f, 0.0f, 0.0f};
-		
-		// because of floating-point errors, we might get a collision with the
-		// triangle, on which the texel is located on, so we move it off of the
-		// surface a little bit
-		pos += 0.01f * normal;
-		
-		for (const auto& light : lights) {
-			if (light.radius < glm::distance(pos, light.pos)) continue;
-			
-			vec3 light_dir = glm::normalize(light.pos - pos);
-			
-			vec3 nearest = find_reachability(pos, light_dir);
-
-			if (glm::distance(nearest, pos) > glm::distance(light.pos, pos)) {
-				float distance1 = glm::length(light.pos - pos);
-				color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * distance1 + 0.032f * (distance1 * distance1)));
-			} 
-		}
-		
-		return color;
-	};
 	
 	std::cout << "Baking a lightmap with " << lights.size() <<" lights, " << lightmap_width << " by " << lightmap_height << " texels in size." << std::endl;
 	
-	Lightmap l(lightmap_width, lightmap_height);
+	if (lights.size() == 0) {
+		std::cout << "Scene contains no lights!" << std::endl;
+		force_fullbright = true;
+	}
 	
-	const float scanline = 1.0f/l.h;
-	const float column = 1.0f/l.w;
+	Lightmap l(lightmap_width, lightmap_height);
+		
+	RasterParams image_params = {
+		l.w,
+		l.h,
+		stretch_low_x,
+		stretch_low_y,
+		stretch_high_x,
+		stretch_high_y
+	};
 	
 	std::cout << "Computing " << std::flush;
 	
+	// iterate through each triangle in the lightmap and rasterize it
 	int tri_index = 0;
 	for (const auto& tri : triangles) {
 		if (tri_index++ % (triangles.size() / 60) == 0) {
 			std::cout << "." << std::flush;
 		}
 		
-		// find the lowest, highest and middle vertices
-		Vertex lowest = tri.v1;
-		if (tri.v1.map.y < lowest.map.y) lowest = tri.v1;
-		if (tri.v2.map.y < lowest.map.y) lowest = tri.v2;
-		if (tri.v3.map.y < lowest.map.y) lowest = tri.v3;
-		
-		Vertex highest = tri.v1;
-		if (tri.v1.map.y > highest.map.y) highest = tri.v1;
-		if (tri.v2.map.y > highest.map.y) highest = tri.v2;
-		if (tri.v3.map.y > highest.map.y) highest = tri.v3;
-		
-		// this should not happen!
-		if (lowest == highest) std::cout << "what the fuck" << std::endl;
-		
-		Vertex middle;
-		if ((tri.v2 == lowest || tri.v3 == lowest) && (tri.v2 == highest || tri.v3 == highest)) middle = tri.v1;
-		if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
-		if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
-		
-		// position of vertices on the raster image
-		int lowest_y = lowest.map.y * (float)l.h;
-		int middle_y = middle.map.y * (float)l.h;
-		int highest_y = highest.map.y * (float)l.h;
-		
-		// stretch the triangle a little bit
-		if (middle_y == highest_y) {
-			middle_y += stretch_high_y;
-			highest_y += stretch_high_y;
-			lowest_y -= stretch_low_y;
+		if (paint_coords) {
+			
+			// rasterize triangle and set color to position
+			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm){
+				l.Blit(col, row, {pos});
+			});
+			
+		} else if (force_fullbright) {
+			
+			// rasterize triangle to fullbright
+			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm){
+				l.Blit(col, row, {{1.0f, 1.0f, 1.0f}});
+			});
+			
 		} else {
-			highest_y += stretch_high_y;
-			lowest_y -= stretch_low_y;
-		}
-
-		
-		int low_high_lines = highest_y - lowest_y;
-		int low_mid_lines = middle_y - lowest_y;
-		int mid_high_lines = highest_y - middle_y;
-		
-		int highest_x = highest.map.x * (float)l.w;
-		int middle_x = middle.map.x * (float)l.w;
-		int lowest_x = lowest.map.x * (float)l.w;
-		
-		if (highest_x > middle_x || highest_x > lowest_x) highest_x += stretch_high_x;
-		if (middle_x > highest_x || middle_x > lowest_x) middle_x += stretch_high_x;
-		if (lowest_x > middle_x || lowest_x > highest_x) lowest_x += stretch_high_x;
-
-		if (highest_x < middle_x || highest_x < lowest_x) highest_x -= stretch_low_x;
-		if (middle_x < highest_x || middle_x < lowest_x) middle_x -= stretch_low_x;
-		if (lowest_x < middle_x || lowest_x < highest_x) lowest_x -= stretch_low_x;
-
-		
-		
-		float low_high_dir = (float)(highest_x - lowest_x) / (float)low_high_lines;
-		float low_mid_dir = (float)(middle_x - lowest_x) / (float)low_mid_lines;
-		float mid_high_dir = (float)(highest_x - middle_x) / (float)mid_high_lines;
-		
-		float left_pos = lowest_x;
-		float right_pos = lowest_x;
-		
-		
-		
-		for (int row = lowest_y; row < middle_y; row++) {
-			left_pos += low_high_dir;
-			right_pos += low_mid_dir;
-
-			int from = left_pos;
-			int to = right_pos;
 			
-			if (from > to) std::swap(from, to);
+			// rasterize triangle and set color to light value
+			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm){
+				vec3 color = FindTexelColorFromLights(all_tree, all_tris, lights, pos, nrm);
+				l.Blit(col, row, {color});
+			});
 			
-			for (int col = from; col < to; col++) {
-				vec3 d = GetBarycentric(tri, (float)col / (float)l.w, (float)row / (float)l.h);
-				
-				vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
-				vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
-				
-				l.Blit(col, row, {find_color(pos, nrm)});
-			}
 		}
 		
-		for (int row = middle_y; row < highest_y; row++) {
-			left_pos += low_high_dir;
-			right_pos += mid_high_dir;
-			
-			int from = left_pos;
-			int to = right_pos;
-			
-			if (from > to) std::swap(from, to);
-
-			for (int col = from; col < to; col++) {
-				vec3 d = GetBarycentric(tri, (float)col / (float)l.w, (float)row / (float)l.h);
-				
-				vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
-				vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
-				
-				if (paint_coords) {
-					l.Blit(col, row, {pos});
-				} else {
-					l.Blit(col, row, {find_color(pos, nrm)});
-				}
-				
-			}
-		}
-		
+		// paint in green dots in the triangle vertex positions
 		if (paint_verts) {
-			l.Blit(lowest.map.x * (float)l.w, lowest.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
-			l.Blit(highest.map.x * (float)l.w, highest.map.y * (float)l.h, {{1.0f, 0.0f, 0.0f}});
-			l.Blit(middle.map.x * (float)l.w, middle.map.y * (float)l.h, {{1.0f, 1.0f, 0.0f}});
+			l.Blit(tri.v1.map.x * (float)l.w, tri.v1.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+			l.Blit(tri.v2.map.x * (float)l.w, tri.v2.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+			l.Blit(tri.v3.map.x * (float)l.w, tri.v3.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
 		}
+		
 	}
 	
 	std::cout << " done!" << std::endl;
