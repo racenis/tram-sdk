@@ -1,7 +1,7 @@
-default: engine_libs trad
+default: engine_libs tmap
 
-trad: main.cpp
-	g++ -std=c++20 main.cpp engine_libs.o -o trad.exe -I../../src/ -I../../libraries/
+tmap: main.cpp
+	g++ -std=c++20 main.cpp engine_libs.o -o tmap.exe -I../../src/ -I../../libraries/
 
 engine_libs: engine_libs.cpp
 	gcc -std=c++20 -c engine_libs.cpp -o engine_libs.o -I../../src/ -I../../libraries/
