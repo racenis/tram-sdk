@@ -89,6 +89,17 @@ struct Entity {
 	name_t lightmap;
 };
 
+vec3 GetBarycentric(Triangle tri, float x, float y) {
+	const vec2 v1 = tri.v2.map - tri.v1.map;
+	const vec2 v2 = tri.v3.map - tri.v1.map;
+	const vec2 v3 = vec2(x, y) - tri.v1.map;
+	const float dominator = v1.x * v2.y - v2.x * v1.y;
+	const float d2 = (v3.x * v2.y - v2.x * v3.y) / dominator;
+	const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
+	const float d1 = 1.0f - d2 - d3;
+	return {d1, d2, d3};
+}
+
 static vec3 TriangleAABBMin (Triangle t) {
     return {
         t.v1.pos.x < t.v2.pos.x ? (t.v1.pos.x < t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x < t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
@@ -111,7 +122,7 @@ int main(int argc, const char** argv) {
 	
 	std::cout << "Tramway SDK -- Radiosity lightmapper" << std::endl;
 	
-	if (argc != 5) {
+	if (argc < 5) {
 		std::cout << "Usage: trad worldcell entity width height";
 		std::cout << "\n\tworldcell is the name of the worldcell, that contains the entity and";
 		std::cout << "\n\t\tthe light with which it will be illuminated with";
@@ -122,13 +133,14 @@ int main(int argc, const char** argv) {
 		return 0;
 	}
 	
-	
-	
 	const char* entity = argv[2];
 	const char* worldcell = argv[1];
 	
 	int lightmap_width = atoi(argv[3]);
 	int lightmap_height = atoi(argv[4]); 
+	
+	bool paint_coords = false;
+	bool paint_verts = false;
 	
 	if (lightmap_width < 1 || lightmap_height < 1) {
 		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
@@ -140,11 +152,27 @@ int main(int argc, const char** argv) {
 		return 0;
 	}
 	
+	for (int i = 5; i < argc; i++) {
+		if (strcmp(argv[i], "-coords") == 0) {
+			paint_coords = true;
+			std::cout << "CORDS" << std::endl;
+		}
+		
+		if (strcmp(argv[i], "-verts") == 0) {
+			paint_verts = true;
+			std::cout << "VETTS" << std::endl;
+		}
+	}
+	
+	
 	std::vector<Entity> entities;
-	std::vector<Light> lights; /*= {
-		{{0.0f, 5.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, 10.0f},
-		{{0.0f, 1.0f, -8.0f}, {1.0f, 0.0f, 0.0f}, 15.0f}
-	};*/
+	std::vector<Light> lights;
+	
+	// stretch the raster a little bit, to help with color bleeding
+	const int stretch_low_x = 1;
+	const int stretch_low_y = 1;
+	const int stretch_high_x = 2;
+	const int stretch_high_y = 2;
 	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -307,7 +335,8 @@ int main(int argc, const char** argv) {
 		
 		for (auto res : results) {
 			vec3 intr = RayTriangleIntersection(pos, dir, all_tris[res].v1.pos, all_tris[res].v2.pos, all_tris[res].v3.pos);
-			if (intr.x == INFINITY) continue;
+			if (intr.x == INFINITY) continue;			
+			if(glm::dot(all_tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
 			if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
 		}
 		
@@ -315,8 +344,6 @@ int main(int argc, const char** argv) {
 	};
 	
 	auto find_color = [&](vec3 pos, vec3 normal) {
-		return vec3{0.5f, 0.5f, 0.5f};
-		
 		vec3 color = {0.0f, 0.0f, 0.0f};
 		
 		// because of floating-point errors, we might get a collision with the
@@ -333,7 +360,6 @@ int main(int argc, const char** argv) {
 
 			if (glm::distance(nearest, pos) > glm::distance(light.pos, pos)) {
 				float distance1 = glm::length(light.pos - pos);
-				
 				color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * distance1 + 0.032f * (distance1 * distance1)));
 			} 
 		}
@@ -356,6 +382,7 @@ int main(int argc, const char** argv) {
 			std::cout << "." << std::flush;
 		}
 		
+		// find the lowest, highest and middle vertices
 		Vertex lowest = tri.v1;
 		if (tri.v1.map.y < lowest.map.y) lowest = tri.v1;
 		if (tri.v2.map.y < lowest.map.y) lowest = tri.v2;
@@ -366,7 +393,7 @@ int main(int argc, const char** argv) {
 		if (tri.v2.map.y > highest.map.y) highest = tri.v2;
 		if (tri.v3.map.y > highest.map.y) highest = tri.v3;
 		
-		
+		// this should not happen!
 		if (lowest == highest) std::cout << "what the fuck" << std::endl;
 		
 		Vertex middle;
@@ -374,54 +401,46 @@ int main(int argc, const char** argv) {
 		if ((tri.v1 == lowest || tri.v3 == lowest) && (tri.v1 == highest || tri.v3 == highest)) middle = tri.v2;
 		if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 		
+		// position of vertices on the raster image
 		int lowest_y = lowest.map.y * (float)l.h;
 		int middle_y = middle.map.y * (float)l.h;
 		int highest_y = highest.map.y * (float)l.h;
 		
-		/*if (middle_line == highest_line) {
-			middle_line++;
-			highest_line++;
+		// stretch the triangle a little bit
+		if (middle_y == highest_y) {
+			middle_y += stretch_high_y;
+			highest_y += stretch_high_y;
+			lowest_y -= stretch_low_y;
 		} else {
-			highest_line++;
-		}*/
-		
-		
-		
-		//if (middle_line == lowest_line) {
-		//	highest_line++;
-		//}
+			highest_y += stretch_high_y;
+			lowest_y -= stretch_low_y;
+		}
+
 		
 		int low_high_lines = highest_y - lowest_y;
 		int low_mid_lines = middle_y - lowest_y;
 		int mid_high_lines = highest_y - middle_y;
 		
-		//std::cout << lowest_line << " " << middle_line << " " << highest_line << std::endl;
-		
-		//int low_high_lines = (int)(highest.map.y * (float)l.h) - (int)(lowest.map.y * (float)l.h);
-		//int low_mid_lines = (int)(middle.map.y * (float)l.h) - (int)(lowest.map.y * (float)l.h);
-		//int mid_high_lines = (int)(highest.map.y * (float)l.h) - (int)(middle.map.y * (float)l.h);
-		
-		//std::cout << low_high_lines << " " << low_mid_lines << " " << mid_high_lines << " " << (low_mid_lines + mid_high_lines) << std::endl;
-
-		
-		//static int i = 0;
-		//i++;
-		//if (i > 5) return 0;
-		
-		//float low_high_dir = (highest.map.x - lowest.map.x) / (float)low_high_lines * (float)l.w;
-		//float low_mid_dir = (middle.map.x - lowest.map.x) / (float)low_mid_lines * (float)l.w;
-		//float mid_high_dir = (highest.map.x - middle.map.x) / (float)mid_high_lines * (float)l.w;
-		
 		int highest_x = highest.map.x * (float)l.w;
 		int middle_x = middle.map.x * (float)l.w;
 		int lowest_x = lowest.map.x * (float)l.w;
+		
+		if (highest_x > middle_x || highest_x > lowest_x) highest_x += stretch_high_x;
+		if (middle_x > highest_x || middle_x > lowest_x) middle_x += stretch_high_x;
+		if (lowest_x > middle_x || lowest_x > highest_x) lowest_x += stretch_high_x;
+
+		if (highest_x < middle_x || highest_x < lowest_x) highest_x -= stretch_low_x;
+		if (middle_x < highest_x || middle_x < lowest_x) middle_x -= stretch_low_x;
+		if (lowest_x < middle_x || lowest_x < highest_x) lowest_x -= stretch_low_x;
+
+		
 		
 		float low_high_dir = (float)(highest_x - lowest_x) / (float)low_high_lines;
 		float low_mid_dir = (float)(middle_x - lowest_x) / (float)low_mid_lines;
 		float mid_high_dir = (float)(highest_x - middle_x) / (float)mid_high_lines;
 		
-		float left_pos = lowest.map.x * (float)l.w;
-		float right_pos = lowest.map.x * (float)l.w;
+		float left_pos = lowest_x;
+		float right_pos = lowest_x;
 		
 		
 		
@@ -432,73 +451,47 @@ int main(int argc, const char** argv) {
 			int from = left_pos;
 			int to = right_pos;
 			
-			// TODO :remove this check!!!
 			if (from > to) std::swap(from, to);
 			
-			//if (from < 0) from = 0;
-			//if (to >= l.w) to = l.w;
-			
-			//std::cout << from << " " << to << std::endl;
-			
 			for (int col = from; col < to; col++) {
-				const float x = (float)col / (float)l.w;
-				const float y = (float)row / (float)l.h;
-				const vec2 v1 = tri.v2.map - tri.v1.map;
-				const vec2 v2 = tri.v3.map - tri.v1.map;
-				const vec2 v3 = vec2(x, y) - tri.v1.map;
-				const float dominator = v1.x * v2.y - v2.x * v1.y;
-				const float d2 = (v3.x * v2.y - v2.x * v3.y) / dominator;
-				const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
-				const float d1 = 1.0f - d2 - d3;
-			
-				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
-				vec3 nrm = d1 * tri.v1.nrm + d2 * tri.v2.nrm + d3 * tri.v3.nrm;
+				vec3 d = GetBarycentric(tri, (float)col / (float)l.w, (float)row / (float)l.h);
 				
-				//l.Blit(col, line, {find_color(pos, nrm)});
-				l.BlitMix(col, row, {find_color(pos, nrm)});
+				vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
+				vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
+				
+				l.Blit(col, row, {find_color(pos, nrm)});
 			}
 		}
-		
-		
-		right_pos = middle.map.x * (float)l.w;
 		
 		for (int row = middle_y; row < highest_y; row++) {
 			left_pos += low_high_dir;
 			right_pos += mid_high_dir;
-			
-			//int from = left_pos.x * (float)l.w;
-			//int to = right_pos.x * (float)l.w;
 			
 			int from = left_pos;
 			int to = right_pos;
 			
 			if (from > to) std::swap(from, to);
 
-			
-			//if (from > to) continue;
-			
 			for (int col = from; col < to; col++) {
-				const float x = (float)col / (float)l.w;
-				const float y = (float)row / (float)l.h;
-				const vec2 v1 = tri.v2.map - tri.v1.map;
-				const vec2 v2 = tri.v3.map - tri.v1.map;
-				const vec2 v3 = vec2(x, y) - tri.v1.map;
-				const float dominator = v1.x * v2.y - v2.x * v1.y;
-				const float d2 = (v3.x * v2.y - v2.x * v3.y) / dominator;
-				const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
-				const float d1 = 1.0f - d2 - d3;
-			
-				vec3 pos = d1 * tri.v1.pos + d2 * tri.v2.pos + d3 * tri.v3.pos;
-				vec3 nrm = d1 * tri.v1.nrm + d2 * tri.v2.nrm + d3 * tri.v3.nrm;
+				vec3 d = GetBarycentric(tri, (float)col / (float)l.w, (float)row / (float)l.h);
 				
-				//l.Blit(col, line, {find_color(pos, nrm)});
-				l.BlitMix(col, row, {find_color(pos, nrm)});
+				vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
+				vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
+				
+				if (paint_coords) {
+					l.Blit(col, row, {pos});
+				} else {
+					l.Blit(col, row, {find_color(pos, nrm)});
+				}
+				
 			}
 		}
 		
-		l.Blit(lowest.map.x * (float)l.w, lowest.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
-		l.Blit(highest.map.x * (float)l.w, highest.map.y * (float)l.h, {{1.0f, 0.0f, 0.0f}});
-		l.Blit(middle.map.x * (float)l.w, middle.map.y * (float)l.h, {{1.0f, 1.0f, 0.0f}});
+		if (paint_verts) {
+			l.Blit(lowest.map.x * (float)l.w, lowest.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+			l.Blit(highest.map.x * (float)l.w, highest.map.y * (float)l.h, {{1.0f, 0.0f, 0.0f}});
+			l.Blit(middle.map.x * (float)l.w, middle.map.y * (float)l.h, {{1.0f, 1.0f, 0.0f}});
+		}
 	}
 	
 	std::cout << " done!" << std::endl;
@@ -529,7 +522,10 @@ int main(int argc, const char** argv) {
 	output_path += (const char*)lightmap_name;
 	output_path += ".png";
 	
-	stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0);
+	if (!stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0)) {
+		std::cout << "failed! Couldn't write file to disk." << std::endl;
+		return 0;
+	}
 	
 	std::cout << "done!" << std::endl;
 	
