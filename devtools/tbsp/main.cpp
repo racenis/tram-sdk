@@ -35,24 +35,25 @@ struct Plane {
 	vec3 p1, p2, p3;
 	
 	std::string material;
-	
-	bool operator== (const Plane& pp) {
-		return p1 == pp.p1 && p2 == pp.p2 && p3 == pp.p3
-			&& x_offset == pp.x_offset && y_offset == pp.y_offset 
-			&& x_scale == pp.x_scale && y_scale == pp.y_scale 
-			&& rotation == pp.rotation && material == pp.material;
-	}
 };
 
 struct Brush {
-	std::vector<int> planes;
+	std::vector<Plane> planes;
 };
 
 struct Entity {
-	std::vector<Plane> planes;
 	std::vector<Brush> brushes;
-	
 	std::string name;
+};
+
+
+struct Edge {
+	vec3 p1, p2;
+};
+
+struct Polygon {
+	std::vector<Edge> edges;
+	int plane;
 };
 
 int main(int argc, const char** argv) {
@@ -191,20 +192,7 @@ int main(int argc, const char** argv) {
 					while (isspace(*file.cursor)) file.cursor++;
 					while (!isspace(*file.cursor)) file.cursor++;
 					
-					int plane_index = -1;
-					for (int i = 0; i < entity.planes.size(); i++) {
-						if (entity.planes[i] == plane) {
-							plane_index = i;
-							break;
-						}
-					}
-					
-					if (plane_index == -1) {
-						plane_index = entity.planes.size();
-						entity.planes.push_back(plane);
-					}
-					
-					brush.planes.push_back(plane_index);
+					brush.planes.push_back(plane);
 					
 					while (isspace(*file.cursor)) file.cursor++;
 					
@@ -224,26 +212,84 @@ int main(int argc, const char** argv) {
 	}
 	
 	
+	const vec3 low_lft_bak = {-1.0f, -1.0f, -1.0f};
+	const vec3 low_rgt_bak = { 1.0f, -1.0f, -1.0f};
+	const vec3 low_rgt_frt = { 1.0f, -1.0f,  1.0f};
+	const vec3 low_lft_frt = {-1.0f, -1.0f,  1.0f};
+	const vec3 hgh_lft_bak = {-1.0f,  1.0f, -1.0f};
+	const vec3 hgh_rgt_bak = { 1.0f,  1.0f, -1.0f};
+	const vec3 hgh_rgt_frt = { 1.0f,  1.0f,  1.0f};
+	const vec3 hgh_lft_frt = {-1.0f,  1.0f,  1.0f};
 	
-	/*
+	const std::vector<Polygon> initial {
+		{{{low_lft_bak, hgh_lft_bak}, {hgh_lft_bak, hgh_rgt_bak}, {hgh_rgt_bak, low_rgt_bak}, {low_rgt_bak, low_lft_bak}}, -1},
+		{{{low_rgt_bak, hgh_rgt_bak}, {hgh_rgt_bak, hgh_rgt_frt}, {hgh_rgt_frt, low_rgt_frt}, {low_rgt_frt, low_rgt_bak}}, -1},
+		{{{low_rgt_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_lft_frt}, {hgh_lft_frt, low_lft_frt}, {low_lft_frt, low_rgt_frt}}, -1},
+		{{{low_lft_frt, hgh_lft_frt}, {hgh_lft_frt, hgh_lft_bak}, {hgh_lft_bak, low_lft_bak}, {low_lft_bak, low_lft_frt}}, -1},
+		
+		{{{low_lft_bak, low_rgt_bak}, {low_rgt_bak, low_rgt_frt}, {low_rgt_frt, low_lft_frt}, {low_lft_frt, low_lft_bak}}, -1},
+		{{{hgh_lft_bak, hgh_lft_frt}, {hgh_lft_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_rgt_bak}, {hgh_rgt_bak, hgh_lft_bak}}, -1},
+		
+		
+		
+	};
+	
+	
+
 	Entity& ent = entities[0];
 	std::cout << "printing " << ent.name << std::endl;
+	std::vector<Polygon> mesh;
 	for (auto& brush: ent.brushes) {
-		std::cout << "new" << std::endl;
-		for (int plane : brush.planes) {
-			Plane p = ent.planes[plane];
+		// make initial brush
+		std::vector<Polygon> b = initial;
+		
+		// do clipping
+		
+		// ...
+		
+		for (auto& p : b) {
+			mesh.push_back(p);
+		}
+		break;
+		/*std::cout << "new" << std::endl;
+		for (auto& p : brush.planes) {
 			std::cout << p.p1.x << " " << p.p1.y << " " << p.p1.z << " ";
 			std::cout << p.p2.x << " " << p.p2.y << " " << p.p2.z << " ";
 			std::cout << p.p3.x << " " << p.p3.y << " " << p.p3.z << " ";
 			std::cout << p.material << std::endl;
+		}*/
+	}
+
+	
+	
+	std::vector<name_t> materials = {"dev/wall32x32"};
+	std::vector<Vertex> vertices;
+	std::vector<Triangle> indices;
+	
+	for (auto& poly : mesh) {
+		vec3 dir1 = glm::normalize(poly.edges[1].p1 - poly.edges[0].p1);
+		vec3 dir2 = glm::normalize(poly.edges[2].p1 - poly.edges[0].p1);
+		vec3 normal = glm::normalize(glm::cross(dir1, dir2));
+		
+		std::cout << "outputting polygon" << std::endl;
+		
+		uint32_t v_index = vertices.size();
+		
+		for (auto& edge : poly.edges) {
+			vertices.push_back({
+				edge.p1,
+				normal,
+				{edge.p1.x, edge.p1.y},
+				{edge.p1.x, edge.p1.y}
+			});
 		}
-	}*/
-	
-	
-	
-	
-	
-	
+		
+		for (int i = 1; i < poly.edges.size() - 1; i++) {
+			indices.push_back({v_index, v_index+i, v_index+i+1, 0});
+		}
+		
+		
+	}
 	
 	/*
 	if (argc < 3) {
@@ -275,20 +321,18 @@ int main(int argc, const char** argv) {
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
 	
-	/*File output(model_path.c_str(), MODE_WRITE);
+	File output("../../data/models/paliktnis.stmdl", MODE_WRITE);
 	
 	if (!output.is_open()) {
-		std::cout << "Error writing to model file " << model_path << std::endl;
+		std::cout << "Error writing to model file " << "../../data/models/paliktnis.stmdl" << std::endl;
 		return 0;
 	}
 
-	std::cout << "Lightmap packed! Writing to disk..." << std::flush;
+	std::cout << "MODEL packed! Writing to disk..." << std::flush;
 	
-	const xatlas::Mesh& new_mesh = atlas->meshes[0];
-	
-	output.write_uint32(new_mesh.vertexCount);
-	output.write_uint32(new_mesh.indexCount / 3);
-	output.write_uint32(mat_c);
+	output.write_uint32(vertices.size());
+	output.write_uint32(indices.size());
+	output.write_uint32(materials.size());
 	
 	output.write_newline();
 	
@@ -297,36 +341,33 @@ int main(int argc, const char** argv) {
 		output.write_newline();
 	}
 	
-	for (uint32_t i = 0; i < new_mesh.vertexCount; i++) {
-		uint32_t input = new_mesh.vertexArray[i].xref;
+	for (auto& vertex : vertices) {
+		output.write_float32(vertex.pos.x);
+		output.write_float32(vertex.pos.y);
+		output.write_float32(vertex.pos.z);
 		
-		output.write_float32(vertices[input].pos.x);
-		output.write_float32(vertices[input].pos.y);
-		output.write_float32(vertices[input].pos.z);
+		output.write_float32(vertex.nrm.x);
+		output.write_float32(vertex.nrm.y);
+		output.write_float32(vertex.nrm.z);
 		
-		output.write_float32(vertices[input].nrm.x);
-		output.write_float32(vertices[input].nrm.y);
-		output.write_float32(vertices[input].nrm.z);
+		output.write_float32(vertex.tex.x);
+		output.write_float32(vertex.tex.y);
 		
-		output.write_float32(vertices[input].tex.x);
-		output.write_float32(vertices[input].tex.y);
-		
-		output.write_float32(new_mesh.vertexArray[i].uv[0] / atlas->width);
-		output.write_float32(new_mesh.vertexArray[i].uv[1] / atlas->height);
+		output.write_float32(vertex.map.x);
+		output.write_float32(vertex.map.x);
 
 		output.write_newline();
 	}
 	
-	for (uint32_t i = 0; i < new_mesh.indexCount; i++) {
-		output.write_uint32(new_mesh.indexArray[i]);
+	for (auto& index : indices) {
+		output.write_uint32(index.v1);
+		output.write_uint32(index.v2);
+		output.write_uint32(index.v3);
 		
-		if (i % 3 != 2) continue;
+		output.write_uint32(index.mat);
 		
-		uint32_t input = new_mesh.vertexArray[new_mesh.indexArray[i]].xref;
-		
-		output.write_uint32(vertices[input].mat);
 		output.write_newline();
-	}*/
+	}
 	
 	std::cout << "done!" << std::endl;
 	
