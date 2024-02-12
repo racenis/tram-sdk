@@ -147,8 +147,8 @@ void mainloop() {
     //}
     
     if (tick % 4 == 0) {
-        auto aaa = Entity::Find("muca");
-        derp_player->SetLocation(aaa->GetLocation() + vec3(0.0f, 1.0f, 0.0f));
+        //auto aaa = Entity::Find("muca");
+        //derp_player->SetLocation(aaa->GetLocation() + vec3(0.0f, 1.0f, 0.0f));
     }
     
     if (tick == 300) {
@@ -161,55 +161,16 @@ void mainloop() {
         tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
     }
     
-    vec3 cast_from = player->GetLocation() + vec3(0.0f, 0.7f, 0.0f);
-    vec3 cast_to = cast_from + (GetCameraRotation() * DIRECTION_FORWARD * 10.0f);
-    
-    auto ray_all = Physics::Raycast(cast_from, cast_to);
-    auto ray_world = Physics::Raycast(cast_from, cast_to, Physics::COLL_WORLDOBJ);
-    
-    if (ray_world.collider) {
-        //AddLineMarker(ray_world.point, COLOR_PINK);
-    } else if (ray_all.collider) {
-        //AddLineMarker(ray_all.point, COLOR_GREEN);
-    }
-    
-    /*bool is_use = PollKeyboardKey(KEY_E);
-    static bool was_use = false;
-    
-    if (is_use) {
-        vec3 start = Render::GetCameraPosition();
-        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
-        
-        auto result = Physics::Raycast(start, start + 2.0f * direction);
-        
-        if (result.collider) {
-            if (!was_use) {
-                Message::Send({Message::ACTIVATE_ONCE, 0, result.collider->GetParent()->GetID(), 0});
-            }
-            Message::Send({Message::ACTIVATE, 0, result.collider->GetParent()->GetID(), 0});
-        }
-    }
-    
-    was_use = is_use;*/
-    
-    //if (tick > 300 && tick % 100 == 0) {
-    //    auto aaa = Entity::FindByName(UID("estijs"));
-    //    aaa->SetLocation(player.GetLocation() + vec3(0.0f, 5.0f, 0.0f));
-    //}
-    
-    //trigga->SetRotation(player.GetRotation());
-    //trigga->SetLocation(player.GetLocation() + (player.GetRotation() * vec3(0.0f, 0.0f, -2.0f)));
-    
     // this will make the light spin
-    vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
-    quat litrot;
-    QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
-    binguser->SetLocation(litloc);
-    binguser->SetRotation(litrot);
-    lit->SetLocation(litloc);
+    //vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
+    //quat litrot;
+    //QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
+    //binguser->SetLocation(litloc);
+    //binguser->SetRotation(litrot);
+    //lit->SetLocation(litloc);
     
     // this makes the mongus model bob up and down
-    monguser->SetLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
+    //monguser->SetLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
     
     //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
     //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
@@ -448,65 +409,61 @@ int main() {
     
 
     // create the createdwdww model
-    binguser = PoolProxy<RenderComponent>::New();
-    binguser->SetModel(UID("bingus"));
-    binguser->Init();
-    binguser->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
-    binguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //binguser = PoolProxy<RenderComponent>::New();
+    //binguser->SetModel(UID("bingus"));
+    //binguser->Init();
+    //binguser->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
+    //binguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create the mongus model
-    monguser = PoolProxy<RenderComponent>::New();
-    monguser->SetModel(UID("mongus"));
-    //monguser->SetPose(poseList.begin().ptr);
-    monguser->Init();
-    monguser->SetLocation(glm::vec3(0.0f, 10.0f, 0.0f));
-    monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //monguser = PoolProxy<RenderComponent>::New();
+    //monguser->SetModel(UID("mongus"));
+    //monguser->Init();
+    //monguser->SetLocation(glm::vec3(0.0f, 10.0f, 0.0f));
+    //monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
-    lit = PoolProxy<LightComponent>::New();
-    lit->Init();
-    lit->SetColor({1.0f, 0.0f, 1.0f});
-    lit->SetDistance(100.0f);
+    //lit = PoolProxy<LightComponent>::New();
+    //lit->Init();
+    //lit->SetColor({1.0f, 0.0f, 1.0f});
+    //lit->SetDistance(100.0f);
 
     // create the animation player for the mongus model
-    monguser_armature = PoolProxy<AnimationComponent>::New();
-    monguser_armature->SetModel(Render::Model::Find(UID("mongus")));
-    monguser_armature->Init();
-    monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 1.0f);
+    //monguser_armature = PoolProxy<AnimationComponent>::New();
+    //monguser_armature->SetModel(Render::Model::Find(UID("mongus")));
+    //monguser_armature->Init();
+    //monguser_armature->PlayAnimation(UID("mongus-run"), 100, 1.0f, 1.0f);
     //monguser_armature->SetOnAnimationFinishCallback([](ArmatureComponent* comp, name_t name) { std::cout << "ANIMATION " << name << " IS FINISH!" << std::endl; });
 
     // link the mongus model and his animation player
-    //monguser->SetPose(monguser_armature->GetPosePtr());
-    monguser->SetArmature(monguser_armature);
+    //monguser->SetArmature(monguser_armature);
     
     // turn on physics drawing
     //DRAW_PHYSICS_DEBUG = true;
     
-    tolet_sprite = new Sprite(UID("poland"));
-    //tolet_sprite->SetMaterial(Material::Find(UID("poland")));
-    //tolet_sprite->AutogenTiledFrames(0, 0, 40, 40, 6, 24, 15.0f, 1.0f);
+    //tolet_sprite = new Sprite(UID("poland"));
     
-    tolet_spinner = PoolProxy<SpriteComponent>::New();
-    tolet_spinner->SetSprite(tolet_sprite);
-    tolet_spinner->UpdateLocation(glm::vec3(3.0f, 1.2f, -1.0f));
-    tolet_spinner->Init();
-    tolet_spinner->Play();
+    //tolet_spinner = PoolProxy<SpriteComponent>::New();
+    //tolet_spinner->SetSprite(tolet_sprite);
+    //tolet_spinner->UpdateLocation(glm::vec3(3.0f, 1.2f, -1.0f));
+    //tolet_spinner->Init();
+    //tolet_spinner->Play();
     
-    tolet_emitter = PoolProxy<ParticleComponent>::New();
-    tolet_emitter->SetSprite(tolet_sprite);
-    tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -7.0f));
-    tolet_emitter->Init();
+    //tolet_emitter = PoolProxy<ParticleComponent>::New();
+    //tolet_emitter->SetSprite(tolet_sprite);
+    //tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -7.0f));
+    //tolet_emitter->Init();
     
-    derp = Audio::Sound::Find(UID("apelsin"));
-    eerp = Audio::Sound::Find(UID("dekpunkta"));
-    derp->Load();
-    eerp->Load();
+    //derp = Audio::Sound::Find(UID("apelsin"));
+    //eerp = Audio::Sound::Find(UID("dekpunkta"));
+    //derp->Load();
+    //eerp->Load();
     
-    derp_player = PoolProxy<AudioComponent>::New();
-    derp_player->SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
-    derp_player->SetSound("apelsin");
-    derp_player->SetRepeating(true);
-    derp_player->Init();
+    //derp_player = PoolProxy<AudioComponent>::New();
+    //derp_player->SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
+    //derp_player->SetSound("apelsin");
+    //derp_player->SetRepeating(true);
+    //derp_player->Init();
     
     //derp_player->Play();
     
