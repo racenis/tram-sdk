@@ -56,6 +56,17 @@ struct Polygon {
 	int plane;
 };
 
+vec4 PlaneToEquation(const Plane& plane) {
+	vec3 dir1 = glm::normalize(plane.p2 - plane.p1);
+	vec3 dir2 = glm::normalize(plane.p3 - plane.p1);
+	vec3 cros = glm::cross(dir1, dir2);
+	
+	//float dist = cros.x * plane.p1.x + cros.y * plane.p1.y + cros.z * plane.p1.z;
+	float dist = glm::dot(cros, plane.p1);
+	
+	return {cros, -dist};
+}
+
 int main(int argc, const char** argv) {
 	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
 
@@ -211,27 +222,31 @@ int main(int argc, const char** argv) {
 		file.cursor++;
 	}
 	
+	//const vec3 low_lft_bak = {-1.0f, -1.0f, -1.0f};
+	//const vec3 low_rgt_bak = { 1.0f, -1.0f, -1.0f};
+	//const vec3 low_rgt_frt = { 1.0f, -1.0f,  1.0f};
+	//const vec3 low_lft_frt = {-1.0f, -1.0f,  1.0f};
+	//const vec3 hgh_lft_bak = {-1.0f,  1.0f, -1.0f};
+	//const vec3 hgh_rgt_bak = { 1.0f,  1.0f, -1.0f};
+	//const vec3 hgh_rgt_frt = { 1.0f,  1.0f,  1.0f};
+	//const vec3 hgh_lft_frt = {-1.0f,  1.0f,  1.0f};
 	
-	const vec3 low_lft_bak = {-1.0f, -1.0f, -1.0f};
-	const vec3 low_rgt_bak = { 1.0f, -1.0f, -1.0f};
-	const vec3 low_rgt_frt = { 1.0f, -1.0f,  1.0f};
-	const vec3 low_lft_frt = {-1.0f, -1.0f,  1.0f};
-	const vec3 hgh_lft_bak = {-1.0f,  1.0f, -1.0f};
-	const vec3 hgh_rgt_bak = { 1.0f,  1.0f, -1.0f};
-	const vec3 hgh_rgt_frt = { 1.0f,  1.0f,  1.0f};
-	const vec3 hgh_lft_frt = {-1.0f,  1.0f,  1.0f};
+	const vec3 low_lft_bak = {-1000.0f, -1000.0f, -1000.0f};
+	const vec3 low_rgt_bak = { 1000.0f, -1000.0f, -1000.0f};
+	const vec3 low_rgt_frt = { 1000.0f, -1000.0f,  1000.0f};
+	const vec3 low_lft_frt = {-1000.0f, -1000.0f,  1000.0f};
+	const vec3 hgh_lft_bak = {-1000.0f,  1000.0f, -1000.0f};
+	const vec3 hgh_rgt_bak = { 1000.0f,  1000.0f, -1000.0f};
+	const vec3 hgh_rgt_frt = { 1000.0f,  1000.0f,  1000.0f};
+	const vec3 hgh_lft_frt = {-1000.0f,  1000.0f,  1000.0f};
 	
 	const std::vector<Polygon> initial {
 		{{{low_lft_bak, hgh_lft_bak}, {hgh_lft_bak, hgh_rgt_bak}, {hgh_rgt_bak, low_rgt_bak}, {low_rgt_bak, low_lft_bak}}, -1},
 		{{{low_rgt_bak, hgh_rgt_bak}, {hgh_rgt_bak, hgh_rgt_frt}, {hgh_rgt_frt, low_rgt_frt}, {low_rgt_frt, low_rgt_bak}}, -1},
 		{{{low_rgt_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_lft_frt}, {hgh_lft_frt, low_lft_frt}, {low_lft_frt, low_rgt_frt}}, -1},
 		{{{low_lft_frt, hgh_lft_frt}, {hgh_lft_frt, hgh_lft_bak}, {hgh_lft_bak, low_lft_bak}, {low_lft_bak, low_lft_frt}}, -1},
-		
 		{{{low_lft_bak, low_rgt_bak}, {low_rgt_bak, low_rgt_frt}, {low_rgt_frt, low_lft_frt}, {low_lft_frt, low_lft_bak}}, -1},
 		{{{hgh_lft_bak, hgh_lft_frt}, {hgh_lft_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_rgt_bak}, {hgh_rgt_bak, hgh_lft_bak}}, -1},
-		
-		
-		
 	};
 	
 	
@@ -239,18 +254,41 @@ int main(int argc, const char** argv) {
 	Entity& ent = entities[0];
 	std::cout << "printing " << ent.name << std::endl;
 	std::vector<Polygon> mesh;
-	for (auto& brush: ent.brushes) {
+	for (auto& brush : ent.brushes) {
 		// make initial brush
-		std::vector<Polygon> b = initial;
+		std::vector<Polygon> brush_polys = initial;
 		
 		// do clipping
-		
-		// ...
-		
-		for (auto& p : b) {
-			mesh.push_back(p);
+		for (auto& plane : brush.planes) {
+			//std::vector<Polygon> clipped_polys;
+			
+			vec4 eq = PlaneToEquation(plane);
+			
+			//std::cout << eq.x << " " << eq.y << " " << eq.z << " " << eq.w << std::endl;
+			
+			for (auto& poly : brush_polys) {
+				for (auto& edge : poly.edges) {
+					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
+					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
+					
+					if (dist1 < 0.0f) edge.p1 -= vec3(eq) * dist1;
+					if (dist1 < 0.0f) edge.p2 -= vec3(eq) * dist2;
+					
+					std::cout << dist1 << " ";
+				}
+			}
+			
+			std::cout << std::endl;
 		}
-		break;
+		
+		
+		
+		for (auto& poly : brush_polys) {
+			mesh.push_back(poly);
+		}
+		
+		//break;
+		
 		/*std::cout << "new" << std::endl;
 		for (auto& p : brush.planes) {
 			std::cout << p.p1.x << " " << p.p1.y << " " << p.p1.z << " ";
@@ -276,11 +314,14 @@ int main(int argc, const char** argv) {
 		uint32_t v_index = vertices.size();
 		
 		for (auto& edge : poly.edges) {
+			vec3 pos = edge.p1 * (1.0f/32.0f);
+			vec2 tex = vec2{edge.p1.x, edge.p1.y} * (1.0f/32.0f);
+			
 			vertices.push_back({
-				edge.p1,
-				normal,
-				{edge.p1.x, edge.p1.y},
-				{edge.p1.x, edge.p1.y}
+				{pos.x, pos.z, -pos.y},
+				{normal.x, normal.z, -normal.y},
+				tex,
+				tex
 			});
 		}
 		
