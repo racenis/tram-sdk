@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include <algorithm>
 
 #include <framework/logging.h>
 #include <framework/file.h>
@@ -53,7 +55,7 @@ struct Edge {
 
 struct Polygon {
 	std::vector<Edge> edges;
-	int plane;
+	Plane plane;
 };
 
 vec4 PlaneToEquation(const Plane& plane) {
@@ -240,16 +242,25 @@ int main(int argc, const char** argv) {
 	const vec3 hgh_rgt_frt = { 1000.0f,  1000.0f,  1000.0f};
 	const vec3 hgh_lft_frt = {-1000.0f,  1000.0f,  1000.0f};
 	
-	const std::vector<Polygon> initial {
-		{{{low_lft_bak, hgh_lft_bak}, {hgh_lft_bak, hgh_rgt_bak}, {hgh_rgt_bak, low_rgt_bak}, {low_rgt_bak, low_lft_bak}}, -1},
-		{{{low_rgt_bak, hgh_rgt_bak}, {hgh_rgt_bak, hgh_rgt_frt}, {hgh_rgt_frt, low_rgt_frt}, {low_rgt_frt, low_rgt_bak}}, -1},
-		{{{low_rgt_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_lft_frt}, {hgh_lft_frt, low_lft_frt}, {low_lft_frt, low_rgt_frt}}, -1},
-		{{{low_lft_frt, hgh_lft_frt}, {hgh_lft_frt, hgh_lft_bak}, {hgh_lft_bak, low_lft_bak}, {low_lft_bak, low_lft_frt}}, -1},
-		{{{low_lft_bak, low_rgt_bak}, {low_rgt_bak, low_rgt_frt}, {low_rgt_frt, low_lft_frt}, {low_lft_frt, low_lft_bak}}, -1},
-		{{{hgh_lft_bak, hgh_lft_frt}, {hgh_lft_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_rgt_bak}, {hgh_rgt_bak, hgh_lft_bak}}, -1},
+	const Plane blank = {
+		0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+		{0.0f, 0.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f},
+		"none"
 	};
 	
+	const std::vector<Polygon> initial {
+		{{{low_lft_bak, hgh_lft_bak}, {hgh_lft_bak, hgh_rgt_bak}, {hgh_rgt_bak, low_rgt_bak}, {low_rgt_bak, low_lft_bak}}, blank},
+		{{{low_rgt_bak, hgh_rgt_bak}, {hgh_rgt_bak, hgh_rgt_frt}, {hgh_rgt_frt, low_rgt_frt}, {low_rgt_frt, low_rgt_bak}}, blank},
+		{{{low_rgt_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_lft_frt}, {hgh_lft_frt, low_lft_frt}, {low_lft_frt, low_rgt_frt}}, blank},
+		{{{low_lft_frt, hgh_lft_frt}, {hgh_lft_frt, hgh_lft_bak}, {hgh_lft_bak, low_lft_bak}, {low_lft_bak, low_lft_frt}}, blank},
+		{{{low_lft_bak, low_rgt_bak}, {low_rgt_bak, low_rgt_frt}, {low_rgt_frt, low_lft_frt}, {low_lft_frt, low_lft_bak}}, blank},
+		{{{hgh_lft_bak, hgh_lft_frt}, {hgh_lft_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_rgt_bak}, {hgh_rgt_bak, hgh_lft_bak}}, blank},
+	};
 	
+	std::map<vec4, int> plane_eq_to_plane;
+	std::vector<Plane> planes;
 
 	Entity& ent = entities[0];
 	std::cout << "printing " << ent.name << std::endl;
@@ -260,25 +271,133 @@ int main(int argc, const char** argv) {
 		
 		// do clipping
 		for (auto& plane : brush.planes) {
-			//std::vector<Polygon> clipped_polys;
+			std::vector<Polygon> clipped_polys;
 			
 			vec4 eq = PlaneToEquation(plane);
+			std::cout << eq.x << " " << eq.y << " " << eq.z << " " << eq.w << std::endl;
 			
-			//std::cout << eq.x << " " << eq.y << " " << eq.z << " " << eq.w << std::endl;
+			
+			Polygon new_polygon = {.plane = -1}; // may or may not be filled
 			
 			for (auto& poly : brush_polys) {
+				int inside_vertices = 0;
+				int outside_vertices = 0;
+				
 				for (auto& edge : poly.edges) {
 					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
 					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
 					
+					if (dist1 < 0.0f) outside_vertices++; else inside_vertices++;
+					if (dist2 < 0.0f) outside_vertices++; else inside_vertices++;
+				}
+				
+				std::cout << inside_vertices <<  " " << outside_vertices << std::endl;
+				
+				static int i =0;
+				i++;
+				
+				if (outside_vertices == 0 /*|| i != 1*/) {
+					clipped_polys.push_back(poly);
+					std::cout << "kept" << std::endl;
+					continue;
+				}
+				
+				if (inside_vertices == 0) {
+					//clipped_polys.push_back(poly);
+					std::cout << "skip" << std::endl;
+					continue;
+				}
+				
+				std::cout << "clip" << std::endl;
+				
+				std::vector<Edge> new_edges;
+				Edge new_edge = {{INFINITY, INFINITY, INFINITY}, {0, 0, 0}};
+				for (auto& edge : poly.edges) {
+					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
+					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
+					
+					std::cout << "p1: " << edge.p1.x << " " << edge.p1.y << " " << edge.p1.z << std::endl;
+					std::cout << "p2: " << edge.p2.x << " " << edge.p2.y << " " << edge.p2.z << std::endl;
+					
+					if (dist1 < 0.0f && dist2 < 0.0f) {
+						std::cout << "skipping" << std::endl;
+						continue;
+					}
+					
+					if (dist1 < 0.0f) {
+						std::cout << "clipping p1" << std::endl;
+						
+						edge.p1 -= vec3(eq) * dist1; // TODO: fix
+						if (new_edge.p1.x == INFINITY) {
+							new_edge.p1 = edge.p1;
+						} else {
+							new_edge.p2 = edge.p1;
+							new_edges.push_back(new_edge);
+							new_polygon.edges.push_back(new_edge);
+							std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
+							std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
+						}
+					}
+					
+					if (dist2 < 0.0f) {
+						std::cout << "clipping p2" << std::endl;
+						
+						edge.p2 -= vec3(eq) * dist2; // TODO: fix
+						if (new_edge.p1.x == INFINITY) {
+							new_edge.p1 = edge.p2;
+						} else {
+							new_edge.p2 = edge.p2;
+							
+							std::swap(new_edge.p1, new_edge.p2);
+							
+							new_edges.push_back(new_edge);
+							new_polygon.edges.push_back(new_edge);
+							std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
+							std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
+						}
+					}
+					
+					new_edges.push_back(edge);
+					
+					//std::cout << dist1 << " ";
+				}
+				
+				poly.edges = new_edges;
+				
+				clipped_polys.push_back(poly);
+				
+				/*for (auto& edge : poly.edges) {
+					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
+					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
+					
 					if (dist1 < 0.0f) edge.p1 -= vec3(eq) * dist1;
-					if (dist1 < 0.0f) edge.p2 -= vec3(eq) * dist2;
+					if (dist2 < 0.0f) edge.p2 -= vec3(eq) * dist2;
 					
 					std::cout << dist1 << " ";
-				}
+				}*/
 			}
 			
+			std::cout << "new poly: " << new_polygon.edges.size() << std::endl;
+			
+			/*auto plane_id = plane_eq_to_plane.find(eq);
+			
+			if (plane_id == plane_eq_to_plane.end()) {
+				int id = planes.size();
+				planes.push_back(plane);
+				plane_eq_to_plane[eq] = id;
+				new_polygon.plane = id;
+			} else {
+				new_polygon.plane = *plane_id;
+			}*/
+
+			new_polygon.plane = plane;
+			
+			clipped_polys.push_back(new_polygon);
+			
+			brush_polys = clipped_polys;
+			
 			std::cout << std::endl;
+			//break;
 		}
 		
 		
@@ -296,26 +415,41 @@ int main(int argc, const char** argv) {
 			std::cout << p.p3.x << " " << p.p3.y << " " << p.p3.z << " ";
 			std::cout << p.material << std::endl;
 		}*/
+		
+		//break;
 	}
 
 	
 	
-	std::vector<name_t> materials = {"dev/wall32x32"};
+	std::vector<std::string> materials;
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> indices;
 	
 	for (auto& poly : mesh) {
-		vec3 dir1 = glm::normalize(poly.edges[1].p1 - poly.edges[0].p1);
-		vec3 dir2 = glm::normalize(poly.edges[2].p1 - poly.edges[0].p1);
+		std::vector<vec3> poly_verts;
+		for (auto edge : poly.edges) {
+			if (std::find(poly_verts.begin(), poly_verts.end(), edge.p1) == poly_verts.end()) {
+				poly_verts.push_back(edge.p1);
+			}
+			if (std::find(poly_verts.begin(), poly_verts.end(), edge.p2) == poly_verts.end()) {
+				poly_verts.push_back(edge.p2);
+			}
+		}
+		
+		vec3 dir1 = glm::normalize(poly_verts[1] - poly_verts[0]);
+		vec3 dir2 = glm::normalize(poly_verts[2] - poly_verts[0]);
 		vec3 normal = glm::normalize(glm::cross(dir1, dir2));
 		
 		std::cout << "outputting polygon" << std::endl;
 		
 		uint32_t v_index = vertices.size();
 		
-		for (auto& edge : poly.edges) {
-			vec3 pos = edge.p1 * (1.0f/32.0f);
-			vec2 tex = vec2{edge.p1.x, edge.p1.y} * (1.0f/32.0f);
+		for (auto vert : poly_verts) {
+			//std::cout << vert.x << " " << vert.y << " " << vert.z << " " <<std::endl;
+			
+			
+			vec3 pos = vert * (1.0f/32.0f);
+			vec2 tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
 			
 			vertices.push_back({
 				{pos.x, pos.z, -pos.y},
@@ -325,10 +459,34 @@ int main(int argc, const char** argv) {
 			});
 		}
 		
-		for (int i = 1; i < poly.edges.size() - 1; i++) {
-			indices.push_back({v_index, v_index+i, v_index+i+1, 0});
+		//for (int i = 1; i < poly.edges.size() - 1; i++) {
+		//	indices.push_back({v_index, v_index+i, v_index+i+1, 0});
+		//}
+		
+		//for (int i = 1; i < poly_verts.size()-1; i++) {
+		//	indices.push_back({v_index, v_index+i, v_index+i+1, 0});
+		//}
+		
+		//std::cout << "AAAAAAAA " << poly_verts.size() <<std::endl;
+		
+		
+		int mat = -1;
+		for (int i = 0 ; i < materials.size(); i++) {
+			if (materials[i] == poly.plane.material) mat = i;
+		}
+		if (mat == -1) {
+			mat = materials.size();
+			materials.push_back(poly.plane.material);
 		}
 		
+		
+		for (int i = 0; i < poly_verts.size()-2; i++) {
+			for (int j = 1; j < poly_verts.size()-1; j++) {
+				for (int k = 2; k < poly_verts.size(); k++) {
+					indices.push_back({v_index+i, v_index+j, v_index+k, (uint32_t)mat});
+				}
+			}
+		}
 		
 	}
 	
