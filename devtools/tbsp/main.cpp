@@ -69,6 +69,111 @@ vec4 PlaneToEquation(const Plane& plane) {
 	return {cros, -dist};
 }
 
+// returns 0 if needs clipped, -1 if thrown away, 1 if kept
+int NeedsClipped(Polygon poly, vec4 eq) {
+	int inside_vertices = 0;
+	int outside_vertices = 0;
+
+	for (auto& edge : poly.edges) {
+		float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
+		float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
+
+		if (dist1 < 0.0f) outside_vertices++; else inside_vertices++;
+		if (dist2 < 0.0f) outside_vertices++; else inside_vertices++;
+	}
+
+	//std::cout << inside_vertices <<  " " << outside_vertices << std::endl;
+
+	static int i =0;
+	i++;
+
+	if (outside_vertices == 0) {
+		return 1;
+	}
+
+	if (inside_vertices == 0) {
+		return -1;
+	}
+	
+	return 0;
+}
+
+std::pair<Polygon, Edge> Clip(Polygon poly, vec4 eq) {
+	std::vector<Edge> new_edges;
+	Edge new_edge = {{INFINITY, INFINITY, INFINITY}, {0, 0, 0}};
+	for (auto& edge : poly.edges) {
+		float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
+		float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
+		
+		//std::cout << "p1: " << edge.p1.x << " " << edge.p1.y << " " << edge.p1.z << std::endl;
+		//std::cout << "p2: " << edge.p2.x << " " << edge.p2.y << " " << edge.p2.z << std::endl;
+		
+		//std::cout << "dist1: " << dist1 << "dist2: " << dist2 << std::endl;
+		
+		if (dist1 < 0.0f && dist2 < 0.0f) {
+			//std::cout << "skipping" << std::endl;
+			continue;
+		}
+		
+		if (dist1 < 0.0f) {
+			//std::cout << "clipping p1" << std::endl;
+			
+			vec3 l0 = edge.p1;
+			vec3 l = glm::normalize(edge.p2 - edge.p1);
+			vec3 n = vec3(eq);
+			vec3 p0 = n * -eq.w;
+			float d = glm::dot((p0-l0), n) / glm::dot(l, n);
+			edge.p1 = l0 + l*d;
+			
+			
+			if (new_edge.p1.x == INFINITY) {
+				new_edge.p1 = edge.p1;
+			} else {
+				new_edge.p2 = edge.p1;
+				new_edges.push_back(new_edge);
+				//new_polygon.edges.push_back(new_edge);
+				//std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
+				//std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
+			}
+		}
+		
+		if (dist2 < 0.0f) {
+			//std::cout << "clipping p2" << std::endl;
+			
+			edge.p2 -= vec3(eq) * dist2; // TODO: fix
+			
+			
+			vec3 l0 = edge.p1;
+			vec3 l = glm::normalize(edge.p2 - edge.p1);
+			vec3 n = vec3(eq);
+			vec3 p0 = n * -eq.w;
+
+			float d = glm::dot((p0-l0), n) / glm::dot(l, n);
+
+			edge.p2 = l0 + l*d;
+			
+			if (new_edge.p1.x == INFINITY) {
+				new_edge.p1 = edge.p2;
+			} else {
+				new_edge.p2 = edge.p2;
+				
+				//std::swap(new_edge.p1, new_edge.p2);
+				
+				new_edges.push_back(new_edge);
+				//new_polygon.edges.push_back(new_edge);
+				//std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
+				//std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
+			}
+		}
+		
+		new_edges.push_back(edge);
+		
+		//std::cout << dist1 << " ";
+	}
+	poly.edges = new_edges;
+	return {poly, new_edge};
+}
+
 int main(int argc, const char** argv) {
 	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
 
@@ -296,29 +401,14 @@ int main(int argc, const char** argv) {
 			Polygon new_polygon = {.plane = -1}; // may or may not be filled
 			
 			for (auto& poly : brush.polys) {
-				int inside_vertices = 0;
-				int outside_vertices = 0;
-				
-				for (auto& edge : poly.edges) {
-					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
-					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
-					
-					if (dist1 < 0.0f) outside_vertices++; else inside_vertices++;
-					if (dist2 < 0.0f) outside_vertices++; else inside_vertices++;
-				}
-				
-				std::cout << inside_vertices <<  " " << outside_vertices << std::endl;
-				
-				static int i =0;
-				i++;
-				
-				if (outside_vertices == 0 /*|| i != 1*/) {
+				int needs_clipped = NeedsClipped(poly, eq);
+				if (needs_clipped == 1) {
 					clipped_polys.push_back(poly);
 					std::cout << "kept" << std::endl;
 					continue;
 				}
 				
-				if (inside_vertices == 0) {
+				if (needs_clipped == -1) {
 					//clipped_polys.push_back(poly);
 					std::cout << "skip" << std::endl;
 					continue;
@@ -326,81 +416,10 @@ int main(int argc, const char** argv) {
 				
 				std::cout << "clip" << std::endl;
 				
-				std::vector<Edge> new_edges;
-				Edge new_edge = {{INFINITY, INFINITY, INFINITY}, {0, 0, 0}};
-				for (auto& edge : poly.edges) {
-					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
-					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
-					
-					std::cout << "p1: " << edge.p1.x << " " << edge.p1.y << " " << edge.p1.z << std::endl;
-					std::cout << "p2: " << edge.p2.x << " " << edge.p2.y << " " << edge.p2.z << std::endl;
-					
-					if (dist1 < 0.0f && dist2 < 0.0f) {
-						std::cout << "skipping" << std::endl;
-						continue;
-					}
-					
-					if (dist1 < 0.0f) {
-						std::cout << "clipping p1" << std::endl;
-						
-						vec3 l0 = edge.p1;
-						vec3 l = glm::normalize(edge.p2 - edge.p1);
-						vec3 n = vec3(eq);
-						vec3 p0 = n * -eq.w;
-
-						float d = glm::dot((p0-l0), n) / glm::dot(l, n);
-
-						edge.p1 = l0 + l*d;
-						
-						
-						if (new_edge.p1.x == INFINITY) {
-							new_edge.p1 = edge.p1;
-						} else {
-							new_edge.p2 = edge.p1;
-							new_edges.push_back(new_edge);
-							new_polygon.edges.push_back(new_edge);
-							std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
-							std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
-						}
-					}
-					
-					if (dist2 < 0.0f) {
-						std::cout << "clipping p2" << std::endl;
-						
-						edge.p2 -= vec3(eq) * dist2; // TODO: fix
-						
-						
-						vec3 l0 = edge.p1;
-						vec3 l = glm::normalize(edge.p2 - edge.p1);
-						vec3 n = vec3(eq);
-						vec3 p0 = n * -eq.w;
-
-						float d = glm::dot((p0-l0), n) / glm::dot(l, n);
-
-						edge.p2 = l0 + l*d;
-						
-						if (new_edge.p1.x == INFINITY) {
-							new_edge.p1 = edge.p2;
-						} else {
-							new_edge.p2 = edge.p2;
-							
-							//std::swap(new_edge.p1, new_edge.p2);
-							
-							new_edges.push_back(new_edge);
-							new_polygon.edges.push_back(new_edge);
-							std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
-							std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
-						}
-					}
-					
-					new_edges.push_back(edge);
-					
-					//std::cout << dist1 << " ";
-				}
+				auto[clipped_poly, new_edge] = Clip(poly, eq);
 				
-				poly.edges = new_edges;
-				
-				clipped_polys.push_back(poly);
+				clipped_polys.push_back(clipped_poly);
+				new_polygon.edges.push_back(new_edge);
 				
 				/*for (auto& edge : poly.edges) {
 					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
@@ -462,8 +481,11 @@ int main(int argc, const char** argv) {
 	int miss = 0;
 	int pass = 0;
 	
+	std::vector<Brush> new_brushes;
+	
 	// iterate through all brushes of an entity
 	for (auto& brush : ent.brushes) {
+		Brush new_brush = {.planes = brush.planes};
 		
 		// then iterate through all polygons of a brush
 		for (auto& poly : brush.polys) {
@@ -504,8 +526,55 @@ int main(int argc, const char** argv) {
 			if (adjacent.size()) {
 				poly.plane.material="dev/nodraw";
 			}
+			
+			new_brush.polys.push_back(poly);
+			
+			/*
+			bool yeeted = false;
+			Polygon clip_poly = poly;
+			for (Brush* brush_clip : adjacent) {
+				for (auto& plane : brush_clip->planes) {
+					vec4 eq = PlaneToEquation(plane);
+					//std::cout << NeedsClipped(poly, eq) << " ";
+					
+					bool skip = false;
+					for (auto& e : clip_poly.edges) {
+						if (abs(glm::dot(vec3(eq), e.p1) + eq.w) < 0.1f ||
+							abs(glm::dot(vec3(eq), e.p2) + eq.w) < 0.1f
+						) {
+							skip = true;
+						}
+					}
+					if (skip) continue;
+					
+					
+					auto[new_poly, _] = Clip(clip_poly, eq);
+					
+					for (auto& e : new_poly.edges) {
+						std::cout << e.p1.x << " " << e.p1.y << " " << e.p1.z << " " << " -> " << e.p2.x << " " << e.p2.y << " " << e.p2.z << "; ";
+					}
+					std::cout << std::endl;
+					
+					//poly = new_poly;
+					new_polys.push_back(clip_poly);
+					clip_poly = new_poly;
+					
+					yeeted = true;
+				}
+				
+				if (yeeted) goto here;
+				//std::cout << std::endl;
+			}
+			
+			if (!yeeted) new_polys.push_back(poly);
+			
+			here:;*/
 		}
+		
+		new_brushes.push_back(new_brush);
 	}
+	
+	ent.brushes = new_brushes;
 	
 	std::cout << "miss: " << miss << std::endl;
 	std::cout << "pass: " << pass << std::endl;
@@ -523,6 +592,7 @@ int main(int argc, const char** argv) {
 	
 	for (auto& brush : ent.brushes)
 	for (auto& poly : brush.polys) {
+		if (poly.edges.size() < 3) continue;
 		std::vector<vec3> poly_verts;
 		for (auto edge : poly.edges) {
 			if (std::find(poly_verts.begin(), poly_verts.end(), edge.p1) == poly_verts.end()) {
