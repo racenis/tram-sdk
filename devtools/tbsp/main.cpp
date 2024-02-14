@@ -327,7 +327,16 @@ int main(int argc, const char** argv) {
 					if (dist1 < 0.0f) {
 						std::cout << "clipping p1" << std::endl;
 						
-						edge.p1 -= vec3(eq) * dist1; // TODO: fix
+						vec3 l0 = edge.p1;
+						vec3 l = glm::normalize(edge.p2 - edge.p1);
+						vec3 n = vec3(eq);
+						vec3 p0 = n * -eq.w;
+
+						float d = glm::dot((p0-l0), n) / glm::dot(l, n);
+
+						edge.p1 = l0 + l*d;
+						
+						
 						if (new_edge.p1.x == INFINITY) {
 							new_edge.p1 = edge.p1;
 						} else {
@@ -343,12 +352,23 @@ int main(int argc, const char** argv) {
 						std::cout << "clipping p2" << std::endl;
 						
 						edge.p2 -= vec3(eq) * dist2; // TODO: fix
+						
+						
+						vec3 l0 = edge.p1;
+						vec3 l = glm::normalize(edge.p2 - edge.p1);
+						vec3 n = vec3(eq);
+						vec3 p0 = n * -eq.w;
+
+						float d = glm::dot((p0-l0), n) / glm::dot(l, n);
+
+						edge.p2 = l0 + l*d;
+						
 						if (new_edge.p1.x == INFINITY) {
 							new_edge.p1 = edge.p2;
 						} else {
 							new_edge.p2 = edge.p2;
 							
-							std::swap(new_edge.p1, new_edge.p2);
+							//std::swap(new_edge.p1, new_edge.p2);
 							
 							new_edges.push_back(new_edge);
 							new_polygon.edges.push_back(new_edge);
@@ -450,6 +470,23 @@ int main(int argc, const char** argv) {
 			
 			vec3 pos = vert * (1.0f/32.0f);
 			vec2 tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
+			
+			if (abs(glm::dot(vec3(1.0f, 0.0f, 0.0f), normal))>0.5f) {
+				//std::cout << "1 0 0" << std::endl;
+				tex = vec2{vert.y, vert.z} * (1.0f/32.0f);
+			}
+			
+			if (abs(glm::dot(vec3(0.0f, 1.0f, 0.0f), normal))>0.5f) {
+				//std::cout << "0 1 0" << std::endl;
+				tex = vec2{vert.x, vert.z} * (1.0f/32.0f);
+			}
+			
+			if (abs(glm::dot(vec3(0.0f, 0.0f, 1.0f), normal))>0.5f) {
+				//std::cout << "0 0 1" << std::endl;
+				tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
+			}
+			
+			//std::cout << "" << std::endl;
 			
 			vertices.push_back({
 				{pos.x, pos.z, -pos.y},
