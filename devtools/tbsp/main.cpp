@@ -538,11 +538,13 @@ int main(int argc, const char** argv) {
 			}
 			
 			if (adjacent.size()) {
-				poly.plane.material="dev/nodraw";
+				//poly.plane.material="dev/nodraw";
 			}
 			
 			std::vector<Polygon> soup = {poly};
 			//new_brush.polys.push_back(poly);
+			
+			int clips = 0;
 			
 			for (Brush* brush_clip : adjacent) {
 				std::vector<Polygon> new_soup;
@@ -557,15 +559,6 @@ int main(int argc, const char** argv) {
 						vec4 plane_eq = PlaneToEquation(plane);
 
 						// this skips planes that have the same plane as polygon
-						/*bool skip = false;
-						for (auto& e : remainder.edges) {
-							if (abs(glm::dot(vec3(plane_eq), e.p1) + plane_eq.w) < 0.1f ||
-								abs(glm::dot(vec3(plane_eq), e.p2) + plane_eq.w) < 0.1f
-							) {
-								skip = true;
-							}
-						}
-						if (skip) continue;*/
 						if (abs(glm::dot(vec3(eq), vec3(plane_eq))) >0.9f) continue;
 						
 						
@@ -594,52 +587,20 @@ int main(int argc, const char** argv) {
 						speculative_soup.push_back(clipped_off.first);
 						remainder = new_remainder.first;
 						
-						/*
-						
-						auto[new_poly, _] = Clip(clip_poly, eq);
-						
-						for (auto& e : new_poly.edges) {
-							std::cout << e.p1.x << " " << e.p1.y << " " << e.p1.z << " " << " -> " << e.p2.x << " " << e.p2.y << " " << e.p2.z << "; ";
-						}
-						std::cout << std::endl;
-						
-						//poly = new_poly;
-						new_polys.push_back(clip_poly);
-						clip_poly = new_poly;
-						
-						yeeted = true;*/
+					
 					}
 					
 					if (what_the_fuck) {
-						new_soup.push_back(poly);
+						new_soup.push_back(soup_poly);
 						continue;
 					}
 					
 					if (!clipped /*|| true*/) speculative_soup.push_back(remainder);
-					//if (clipped) {
-						/*for (auto& edge : remainder.edges) {
-							for (auto& plane : brush_clip->planes) {
-								vec4 eq = PlaneToEquation(plane);
-								float dist1 = glm::dot(vec3(eq), plane.p1) + eq.w;
-								float dist2 = glm::dot(vec3(eq), plane.p2) + eq.w;
-								std::cout << dist1 << " " << dist2 << " ";
-							}
-						}
-						std::cout << std::endl;*/
-						
-						//if (!what_the_fuck) remainder.plane.material="dev/light";
-						
-						
-						//speculative_soup.push_back(remainder);
-					//}
 					
 					for (auto& poly : speculative_soup) {
 						new_soup.push_back(poly);
 					}
-					
-					
-					//if (yeeted) goto here;
-					//std::cout << std::endl;
+
 				}
 				
 				soup = new_soup;
