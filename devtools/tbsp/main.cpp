@@ -70,16 +70,16 @@ vec4 PlaneToEquation(const Plane& plane) {
 }
 
 // returns 0 if needs clipped, -1 if thrown away, 1 if kept
-int NeedsClipped(Polygon poly, vec4 eq) {
+int NeedsClipped(Polygon poly, vec4 eq, float bias = 0.0f) {
 	int inside_vertices = 0;
 	int outside_vertices = 0;
 
 	for (auto& edge : poly.edges) {
 		float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
-		float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
+		float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w; 
 
-		if (dist1 < 0.0f) outside_vertices++; else inside_vertices++;
-		if (dist2 < 0.0f) outside_vertices++; else inside_vertices++;
+		if (dist1 < bias) outside_vertices++; else inside_vertices++;
+		if (dist2 < bias) outside_vertices++; else inside_vertices++;
 	}
 
 	//std::cout << inside_vertices <<  " " << outside_vertices << std::endl;
@@ -508,11 +508,25 @@ int main(int argc, const char** argv) {
 						if (abs(glm::dot(vec3(eq), edge_clip.p1) + eq.w) > 0.1f ||
 							abs(glm::dot(vec3(eq), edge_clip.p2) + eq.w) > 0.1f
 						) {
-							on_plane = false;
+							//std::cout << "glm::dot(eq1, eq2) " << glm::dot(eq1, eq2) << std::endl;
+							
+							//if (glm::dot(eq1, eq2) > 0.0f) {
+								on_plane = false;
+							//}
 						}
 					}
 					
-					if (on_plane) shared_plane = true;
+					if (on_plane) {
+						vec4 poly_eq = PlaneToEquation(poly_clip.plane);
+							
+						vec3 eq1 = eq;
+						vec3 eq2 = poly_eq;
+						
+						if (glm::dot(eq1, eq2) < 0.0f) {
+							shared_plane = true;
+						}
+						
+					}
 				}
 				
 				if (shared_plane) {
@@ -527,7 +541,84 @@ int main(int argc, const char** argv) {
 				poly.plane.material="dev/nodraw";
 			}
 			
-			new_brush.polys.push_back(poly);
+			std::vector<Polygon> soup = {poly};
+			//new_brush.polys.push_back(poly);
+			
+			for (Brush* brush_clip : adjacent) {
+				std::vector<Polygon> new_soup;
+				
+				for (auto& soup_poly : soup) {
+					Polygon remainder = soup_poly;
+					bool clipped = false;
+					
+					for (auto& plane : brush_clip->planes) {
+						vec4 eq = PlaneToEquation(plane);
+
+						// this skips planes that have the same plane as polygon
+						bool skip = false;
+						for (auto& e : remainder.edges) {
+							if (abs(glm::dot(vec3(eq), e.p1) + eq.w) < 0.1f ||
+								abs(glm::dot(vec3(eq), e.p2) + eq.w) < 0.1f
+							) {
+								skip = true;
+							}
+						}
+						if (skip) continue;
+						
+						
+						int needs_clipped = NeedsClipped(remainder, eq, 0.1f);
+						
+						if (needs_clipped == -1) {
+							std::cout << "what the fuck" << std::endl;
+							continue;
+						}
+						
+						if (needs_clipped == 1) {
+							continue;
+						}
+						
+						std::cout << "clipping" << std::endl;
+						
+						//continue;
+						
+						clipped = true;
+						
+						auto clipped_off = Clip(remainder, -eq);
+						auto new_remainder = Clip(remainder, eq);
+						
+						new_soup.push_back(clipped_off.first);
+						remainder = new_remainder.first;
+						
+						/*
+						
+						auto[new_poly, _] = Clip(clip_poly, eq);
+						
+						for (auto& e : new_poly.edges) {
+							std::cout << e.p1.x << " " << e.p1.y << " " << e.p1.z << " " << " -> " << e.p2.x << " " << e.p2.y << " " << e.p2.z << "; ";
+						}
+						std::cout << std::endl;
+						
+						//poly = new_poly;
+						new_polys.push_back(clip_poly);
+						clip_poly = new_poly;
+						
+						yeeted = true;*/
+					}
+					
+					if (!clipped || true) new_soup.push_back(remainder);
+					
+					
+					
+					//if (yeeted) goto here;
+					//std::cout << std::endl;
+				}
+				
+				soup = new_soup;
+			}
+			
+			for (auto& soup_polygon : soup) {
+				new_brush.polys.push_back(soup_polygon);
+			}
 			
 			/*
 			bool yeeted = false;
@@ -590,7 +681,7 @@ int main(int argc, const char** argv) {
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> indices;
 	
-	for (auto& brush : ent.brushes)
+	for (auto& brush : ent.brushes) {
 	for (auto& poly : brush.polys) {
 		if (poly.edges.size() < 3) continue;
 		std::vector<vec3> poly_verts;
@@ -672,6 +763,8 @@ int main(int argc, const char** argv) {
 			}
 		}
 		
+	}
+	
 	}
 	
 	/*
