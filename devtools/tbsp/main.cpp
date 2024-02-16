@@ -70,9 +70,9 @@ struct Entity {
 };
 
 vec4 PlaneToEquation(const Plane& plane) {
-	vec3 dir1 = glm::normalize(plane.p2 - plane.p1);
-	vec3 dir2 = glm::normalize(plane.p3 - plane.p1);
-	vec3 cros = glm::cross(dir1, dir2);
+	vec3 dir1 = plane.p2 - plane.p1;
+	vec3 dir2 = plane.p3 - plane.p1;
+	vec3 cros = glm::normalize(glm::cross(dir1, dir2));
 	
 	float dist = glm::dot(cros, plane.p1);
 	
@@ -150,7 +150,7 @@ std::pair<Polygon, Edge> Clip(Polygon poly, vec4 eq) {
 		if (dist2 < 0.0f) {
 			//std::cout << "clipping p2" << std::endl;
 			
-			edge.p2 -= vec3(eq) * dist2; // TODO: fix
+			//edge.p2 -= vec3(eq) * dist2; // TODO: fix
 			
 			
 			vec3 l0 = edge.p1;
@@ -393,12 +393,17 @@ int main(int argc, const char** argv) {
 	
 	Entity& ent = entities[0];
 	std::cout << "printing " << ent.name << std::endl;
-	//std::vector<Polygon> mesh;
+	
+	int toot = 0;
+	
 	for (auto& brush : ent.brushes) {
-		
 		// make initial polygonal mega-cube
-		//std::vector<Polygon> brush_polys = initial;
 		brush.polys = initial;
+		
+		int yeet = 0;
+		toot++;
+		
+		std::cout << "BRUSH " << toot << std::endl;
 		
 		// clip it down with brush planes
 		for (auto& plane : brush.planes) {
@@ -408,9 +413,16 @@ int main(int argc, const char** argv) {
 			std::cout << eq.x << " " << eq.y << " " << eq.z << " " << eq.w << std::endl;
 			
 			
-			Polygon new_polygon = {.plane = -1}; // may or may not be filled
+			Polygon new_polygon = {.plane = {.material="none"}}; // may or may not be filled
+			
+			yeet++;
 			
 			for (auto& poly : brush.polys) {
+				if (yeet > 6 && toot != 1) {
+					/*if (poly.plane.material != "none")*/ clipped_polys.push_back(poly);
+					continue;
+				}
+				
 				int needs_clipped = NeedsClipped(poly, eq);
 				if (needs_clipped == 1) {
 					clipped_polys.push_back(poly);
@@ -665,7 +677,7 @@ int main(int argc, const char** argv) {
 		new_brushes.push_back(new_brush);
 	}
 	
-	//ent.brushes = new_brushes;
+	ent.brushes = new_brushes;
 	
 	std::cout << "miss: " << miss << std::endl;
 	std::cout << "pass: " << pass << std::endl;
@@ -944,7 +956,7 @@ int main(int argc, const char** argv) {
 		output.write_newline();
 	}
 	
-	
+	return 0;
 	{
 		File file("../../data/models/paliktnis.collmdl", MODE_WRITE);
 		
