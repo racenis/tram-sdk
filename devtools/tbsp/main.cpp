@@ -67,6 +67,10 @@ struct Brush {
 struct Entity {
 	std::vector<Brush> brushes;
 	std::string name;
+	
+	std::vector<Material> materials;
+	std::vector<Vertex> vertices;
+	std::vector<Triangle> indices;
 };
 
 vec4 PlaneToEquation(const Plane& plane) {
@@ -92,11 +96,6 @@ int NeedsClipped(Polygon poly, vec4 eq, float bias = 0.0f) {
 		if (dist2 < bias) outside_vertices++; else inside_vertices++;
 	}
 
-	//std::cout << inside_vertices <<  " " << outside_vertices << std::endl;
-
-	static int i =0;
-	i++;
-
 	if (outside_vertices == 0) {
 		return 1;
 	}
@@ -115,19 +114,11 @@ std::pair<Polygon, Edge> Clip(Polygon poly, vec4 eq) {
 		float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
 		float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
 		
-		//std::cout << "p1: " << edge.p1.x << " " << edge.p1.y << " " << edge.p1.z << std::endl;
-		//std::cout << "p2: " << edge.p2.x << " " << edge.p2.y << " " << edge.p2.z << std::endl;
-		
-		//std::cout << "dist1: " << dist1 << "dist2: " << dist2 << std::endl;
-		
 		if (dist1 < 0.0f && dist2 < 0.0f) {
-			//std::cout << "skipping" << std::endl;
 			continue;
 		}
 		
 		if (dist1 < 0.0f) {
-			//std::cout << "clipping p1" << std::endl;
-			
 			vec3 l0 = edge.p1;
 			vec3 l = glm::normalize(edge.p2 - edge.p1);
 			vec3 n = vec3(eq);
@@ -135,24 +126,15 @@ std::pair<Polygon, Edge> Clip(Polygon poly, vec4 eq) {
 			float d = glm::dot((p0-l0), n) / glm::dot(l, n);
 			edge.p1 = l0 + l*d;
 			
-			
 			if (new_edge.p1.x == INFINITY) {
 				new_edge.p1 = edge.p1;
 			} else {
 				new_edge.p2 = edge.p1;
 				new_edges.push_back(new_edge);
-				//new_polygon.edges.push_back(new_edge);
-				//std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
-				//std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
 			}
 		}
 		
 		if (dist2 < 0.0f) {
-			//std::cout << "clipping p2" << std::endl;
-			
-			//edge.p2 -= vec3(eq) * dist2; // TODO: fix
-			
-			
 			vec3 l0 = edge.p1;
 			vec3 l = glm::normalize(edge.p2 - edge.p1);
 			vec3 n = vec3(eq);
@@ -166,21 +148,15 @@ std::pair<Polygon, Edge> Clip(Polygon poly, vec4 eq) {
 				new_edge.p1 = edge.p2;
 			} else {
 				new_edge.p2 = edge.p2;
-				
-				//std::swap(new_edge.p1, new_edge.p2);
-				
 				new_edges.push_back(new_edge);
-				//new_polygon.edges.push_back(new_edge);
-				//std::cout << "n1: " << new_edge.p1.x << " " << new_edge.p1.y << " " << new_edge.p1.z << std::endl;
-				//std::cout << "n2: " << new_edge.p2.x << " " << new_edge.p2.y << " " << new_edge.p2.z << std::endl;
 			}
 		}
 		
 		new_edges.push_back(edge);
-		
-		//std::cout << dist1 << " ";
 	}
+	
 	poly.edges = new_edges;
+	
 	return {poly, new_edge};
 }
 
@@ -391,107 +367,46 @@ int main(int argc, const char** argv) {
 		{{{hgh_lft_bak, hgh_lft_frt}, {hgh_lft_frt, hgh_rgt_frt}, {hgh_rgt_frt, hgh_rgt_bak}, {hgh_rgt_bak, hgh_lft_bak}}, blank},
 	};
 	
-	Entity& ent = entities[0];
-	std::cout << "printing " << ent.name << std::endl;
-	
-	int toot = 0;
-	
-	for (auto& brush : ent.brushes) {
-		// make initial polygonal mega-cube
-		brush.polys = initial;
+	for (auto& entity : entities) {
+		std::cout << "Processing " << entity.name << std::endl;
 		
-		int yeet = 0;
-		toot++;
 		
-		std::cout << "BRUSH " << toot << std::endl;
-		
-		// clip it down with brush planes
-		for (auto& plane : brush.planes) {
-			std::vector<Polygon> clipped_polys;
-			
-			vec4 eq = PlaneToEquation(plane);
-			std::cout << eq.x << " " << eq.y << " " << eq.z << " " << eq.w << std::endl;
-			
-			
-			Polygon new_polygon = {.plane = {.material="none"}}; // may or may not be filled
-			
-			yeet++;
-			
-			for (auto& poly : brush.polys) {
-				if (yeet > 6 && toot != 1) {
-					/*if (poly.plane.material != "none")*/ clipped_polys.push_back(poly);
-					continue;
-				}
-				
-				int needs_clipped = NeedsClipped(poly, eq);
-				if (needs_clipped == 1) {
-					clipped_polys.push_back(poly);
-					std::cout << "kept" << std::endl;
-					continue;
-				}
-				
-				if (needs_clipped == -1) {
-					//clipped_polys.push_back(poly);
-					std::cout << "skip" << std::endl;
-					continue;
-				}
-				
-				std::cout << "clip" << std::endl;
-				
-				auto[clipped_poly, new_edge] = Clip(poly, eq);
-				
-				clipped_polys.push_back(clipped_poly);
-				new_polygon.edges.push_back(new_edge);
-				
-				/*for (auto& edge : poly.edges) {
-					float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
-					float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w;
-					
-					if (dist1 < 0.0f) edge.p1 -= vec3(eq) * dist1;
-					if (dist2 < 0.0f) edge.p2 -= vec3(eq) * dist2;
-					
-					std::cout << dist1 << " ";
-				}*/
-			}
-			
-			std::cout << "new poly: " << new_polygon.edges.size() << std::endl;
-			
-			/*auto plane_id = plane_eq_to_plane.find(eq);
-			
-			if (plane_id == plane_eq_to_plane.end()) {
-				int id = planes.size();
-				planes.push_back(plane);
-				plane_eq_to_plane[eq] = id;
-				new_polygon.plane = id;
-			} else {
-				new_polygon.plane = *plane_id;
-			}*/
+		for (auto& brush : entity.brushes) {
+			// make initial polygonal mega-cube
+			brush.polys = initial;
 
-			new_polygon.plane = plane;
-			
-			clipped_polys.push_back(new_polygon);
-			
-			brush.polys = clipped_polys;
-			
-			std::cout << std::endl;
-			//break;
+			// clip it down with brush planes
+			for (auto& plane : brush.planes) {
+				std::vector<Polygon> clipped_polys;
+				
+				vec4 eq = PlaneToEquation(plane);
+				std::cout << eq.x << " " << eq.y << " " << eq.z << " " << eq.w << std::endl;
+				
+				
+				Polygon new_polygon = {.plane = plane}; // may or may not be filled
+
+				for (auto& poly : brush.polys) {
+					int needs_clipped = NeedsClipped(poly, eq);
+					if (needs_clipped == 1) {
+						clipped_polys.push_back(poly);
+						continue;
+					}
+					
+					if (needs_clipped == -1) {
+						continue;
+					}
+					
+					auto[clipped_poly, new_edge] = Clip(poly, eq);
+					
+					clipped_polys.push_back(clipped_poly);
+					new_polygon.edges.push_back(new_edge);
+				}
+				
+				clipped_polys.push_back(new_polygon);
+				
+				brush.polys = clipped_polys;
+			}
 		}
-		
-		//for (auto& poly : brush_polys) {
-			//mesh.push_back(poly);
-		//}
-		
-		//break;
-		
-		/*std::cout << "new" << std::endl;
-		for (auto& p : brush.planes) {
-			std::cout << p.p1.x << " " << p.p1.y << " " << p.p1.z << " ";
-			std::cout << p.p2.x << " " << p.p2.y << " " << p.p2.z << " ";
-			std::cout << p.p3.x << " " << p.p3.y << " " << p.p3.z << " ";
-			std::cout << p.material << std::endl;
-		}*/
-		
-		//break;
 	}
 
 	// + --------------------------------------------------------------------- +
@@ -500,188 +415,129 @@ int main(int argc, const char** argv) {
 	// |                                                                       |
 	// + --------------------------------------------------------------------- +
 	
-	int miss = 0;
-	int pass = 0;
 	
-	std::vector<Brush> new_brushes;
-	
-	// iterate through all brushes of an entity
-	for (auto& brush : ent.brushes) {
-		Brush new_brush = {.planes = brush.planes};
+	for (auto& entity : entities) {
+		std::cout << "Clipping " << entity.name << std::endl;
 		
-		// then iterate through all polygons of a brush
-		for (auto& poly : brush.polys) {
+		std::vector<Brush> new_brushes;
+		
+		// iterate through all brushes of an entity
+		for (auto& brush : entity.brushes) {
+			Brush new_brush = {.planes = brush.planes};
 			
-			// compute the plane equation of the polygon
-			vec4 eq = PlaneToEquation(poly.plane);
-			
-			// now find all of the brushes that are adjacent to the polygon
-			std::vector<Brush*> adjacent;
-			
-			for (auto& brush_clip : ent.brushes) {
-				if (&brush == &brush_clip) continue;
+			// then iterate through all polygons of a brush
+			for (auto& poly : brush.polys) {
 				
-				bool shared_plane = false;
+				// compute the plane equation of the polygon
+				vec4 eq = PlaneToEquation(poly.plane);
 				
-				for (auto& poly_clip : brush_clip.polys) {
-					bool on_plane = true;
+				// now find all of the brushes that are adjacent to the polygon
+				std::vector<Brush*> adjacent;
+				
+				for (auto& brush_clip : entity.brushes) {
+					if (&brush == &brush_clip) continue;
 					
-					for (auto& edge_clip : poly_clip.edges) {
-						if (abs(glm::dot(vec3(eq), edge_clip.p1) + eq.w) > 0.1f ||
-							abs(glm::dot(vec3(eq), edge_clip.p2) + eq.w) > 0.1f
-						) {
-							//std::cout << "glm::dot(eq1, eq2) " << glm::dot(eq1, eq2) << std::endl;
-							
-							//if (glm::dot(eq1, eq2) > 0.0f) {
+					bool shared_plane = false;
+					
+					for (auto& poly_clip : brush_clip.polys) {
+						bool on_plane = true;
+						
+						for (auto& edge_clip : poly_clip.edges) {
+							if (abs(glm::dot(vec3(eq), edge_clip.p1) + eq.w) > 0.1f ||
+								abs(glm::dot(vec3(eq), edge_clip.p2) + eq.w) > 0.1f
+							) {
 								on_plane = false;
-							//}
+							}
 						}
-					}
-					
-					if (on_plane) {
-						vec4 poly_eq = PlaneToEquation(poly_clip.plane);
+						
+						if (on_plane) {
+							vec4 poly_eq = PlaneToEquation(poly_clip.plane);
+								
+							vec3 eq1 = eq;
+							vec3 eq2 = poly_eq;
 							
-						vec3 eq1 = eq;
-						vec3 eq2 = poly_eq;
-						
-						if (glm::dot(eq1, eq2) < 0.0f) {
-							shared_plane = true;
+							if (glm::dot(eq1, eq2) < 0.0f) {
+								shared_plane = true;
+							}
+							
 						}
-						
+					}
+					
+					if (shared_plane) {
+						adjacent.push_back(&brush_clip);
 					}
 				}
 				
-				if (shared_plane) {
-					adjacent.push_back(&brush_clip);
-					pass++;
-				} else {
-					miss++;
-				}
-			}
-			
-			if (adjacent.size()) {
-				//poly.plane.material="dev/nodraw";
-			}
-			
-			std::vector<Polygon> soup = {poly};
-			//new_brush.polys.push_back(poly);
-			
-			int clips = 0;
-			
-			for (Brush* brush_clip : adjacent) {
-				std::vector<Polygon> new_soup;
+				std::vector<Polygon> soup = {poly};
 				
-				for (auto& soup_poly : soup) {
-					std::vector<Polygon> speculative_soup;
-					Polygon remainder = soup_poly;
-					bool clipped = false;
-					bool what_the_fuck = false;
+				for (Brush* brush_clip : adjacent) {
+					std::vector<Polygon> new_soup;
 					
-					for (auto& plane : brush_clip->planes) {
-						vec4 plane_eq = PlaneToEquation(plane);
+					for (auto& soup_poly : soup) {
+						std::vector<Polygon> speculative_soup;
+						Polygon remainder = soup_poly;
+						bool clipped = false;
+						bool what_the_fuck = false;
+						
+						for (auto& plane : brush_clip->planes) {
+							vec4 plane_eq = PlaneToEquation(plane);
 
-						// this skips planes that have the same plane as polygon
-						if (abs(glm::dot(vec3(eq), vec3(plane_eq))) >0.9f) continue;
-						
-						
-						int needs_clipped = NeedsClipped(remainder, plane_eq, 0.1f);
-						
-						if (needs_clipped == -1) {
-							std::cout << "what the fuck" << std::endl;
-							what_the_fuck = true;
-							continue;
-						}
-						
-						if (needs_clipped == 1) {
+							// this skips planes that have the same plane as polygon
+							if (abs(glm::dot(vec3(eq), vec3(plane_eq))) >0.9f) continue;
+							
+							
+							int needs_clipped = NeedsClipped(remainder, plane_eq, 0.1f);
+							
+							if (needs_clipped == -1) {
+								std::cout << "what the fuck" << std::endl;
+								what_the_fuck = true;
+								continue;
+							}
+							
+							if (needs_clipped == 1) {
+								clipped = true;
+								continue;
+							}
+							
+							std::cout << "clipping" << std::endl;
+							
 							clipped = true;
+							
+							auto clipped_off = Clip(remainder, -plane_eq);
+							auto new_remainder = Clip(remainder, plane_eq);
+							
+							speculative_soup.push_back(clipped_off.first);
+							remainder = new_remainder.first;
+							
+						
+						}
+						
+						if (what_the_fuck) {
+							new_soup.push_back(soup_poly);
 							continue;
 						}
 						
-						std::cout << "clipping" << std::endl;
+						if (!clipped) speculative_soup.push_back(remainder);
 						
-						//continue;
-						
-						clipped = true;
-						
-						auto clipped_off = Clip(remainder, -plane_eq);
-						auto new_remainder = Clip(remainder, plane_eq);
-						
-						speculative_soup.push_back(clipped_off.first);
-						remainder = new_remainder.first;
-						
-					
-					}
-					
-					if (what_the_fuck) {
-						new_soup.push_back(soup_poly);
-						continue;
-					}
-					
-					if (!clipped /*|| true*/) speculative_soup.push_back(remainder);
-					
-					for (auto& poly : speculative_soup) {
-						new_soup.push_back(poly);
-					}
-
-				}
-				
-				soup = new_soup;
-			}
-			
-			for (auto& soup_polygon : soup) {
-				new_brush.polys.push_back(soup_polygon);
-			}
-			
-			/*
-			bool yeeted = false;
-			Polygon clip_poly = poly;
-			for (Brush* brush_clip : adjacent) {
-				for (auto& plane : brush_clip->planes) {
-					vec4 eq = PlaneToEquation(plane);
-					//std::cout << NeedsClipped(poly, eq) << " ";
-					
-					bool skip = false;
-					for (auto& e : clip_poly.edges) {
-						if (abs(glm::dot(vec3(eq), e.p1) + eq.w) < 0.1f ||
-							abs(glm::dot(vec3(eq), e.p2) + eq.w) < 0.1f
-						) {
-							skip = true;
+						for (auto& poly : speculative_soup) {
+							new_soup.push_back(poly);
 						}
+
 					}
-					if (skip) continue;
 					
-					
-					auto[new_poly, _] = Clip(clip_poly, eq);
-					
-					for (auto& e : new_poly.edges) {
-						std::cout << e.p1.x << " " << e.p1.y << " " << e.p1.z << " " << " -> " << e.p2.x << " " << e.p2.y << " " << e.p2.z << "; ";
-					}
-					std::cout << std::endl;
-					
-					//poly = new_poly;
-					new_polys.push_back(clip_poly);
-					clip_poly = new_poly;
-					
-					yeeted = true;
+					soup = new_soup;
 				}
 				
-				if (yeeted) goto here;
-				//std::cout << std::endl;
+				for (auto& soup_polygon : soup) {
+					new_brush.polys.push_back(soup_polygon);
+				}
 			}
 			
-			if (!yeeted) new_polys.push_back(poly);
-			
-			here:;*/
+			new_brushes.push_back(new_brush);
 		}
 		
-		new_brushes.push_back(new_brush);
+		entity.brushes = new_brushes;
 	}
-	
-	ent.brushes = new_brushes;
-	
-	std::cout << "miss: " << miss << std::endl;
-	std::cout << "pass: " << pass << std::endl;
-	
 	
 	// + --------------------------------------------------------------------- +
 	// |                                                                       |
@@ -697,161 +553,118 @@ int main(int argc, const char** argv) {
 	// triangulate our polygons, using the texture dimensions to help with
 	// texture projection.
 	
-	std::vector<Material> materials;
-	std::vector<Vertex> vertices;
-	std::vector<Triangle> indices;
+	//std::vector<Material> materials;
+	//std::vector<Vertex> vertices;
+	//std::vector<Triangle> indices;
 	
-	// iterate through all planes and find all of the materials
-	for (auto& brush : ent.brushes) {
-		for (auto& plane : brush.planes) {
-			bool already_in_list = false;
-			for (int i = 0 ; i < materials.size(); i++) {
-				if (materials[i].name == plane.material) {
-					already_in_list = true;
-					break;
+	for (auto& entity : entities) {
+		std::cout << "Triangulating " << entity.name << std::endl; 
+		
+		// iterate through all planes and find all of the materials
+		for (auto& brush : entity.brushes) {
+			for (auto& plane : brush.planes) {
+				bool already_in_list = false;
+				for (int i = 0 ; i < entity.materials.size(); i++) {
+					if (entity.materials[i].name == plane.material) {
+						already_in_list = true;
+						break;
+					}
 				}
+				
+				if (!already_in_list) entity.materials.push_back({.name=plane.material});
+			}
+		}
+		
+		// find the parameters of the materials
+		for (auto& mat : entity.materials) {
+			std::string path = "../../data/textures/";
+			path += mat.name;
+			path += ".png";
+			
+			int x, y, n;
+			
+			if (!stbi_info(path.c_str(), &x, &y, &n)) {
+				std::cout << "File " << path << " not found!" << std::endl;
+				
+				// this is a sane resolution for a texture
+				x = 32;
+				y = 32;
 			}
 			
-			if (!already_in_list) materials.push_back({.name=plane.material});
+			mat.width = x;
+			mat.height = y;
 		}
-	}
-	
-	// find the parameters of the materials
-	for (auto& mat : materials) {
-		std::string path = "../../data/textures/";
-		path += mat.name;
-		path += ".png";
-		
-		int x, y, n;
-		
-		if (!stbi_info(path.c_str(), &x, &y, &n)) {
-			std::cout << "File " << path << " not found!" << std::endl;
 			
-			// this is a sane resolution for a texture
-			x = 32;
-			y = 32;
-		}
 		
-		mat.width = x;
-		mat.height = y;
-	}
-		
-	
-	auto make_vertex = [](Plane plane, Material mat, vec3 vert, vec3 normal) -> Vertex {
-		vec3 pos = vert * (1.0f/32.0f);
-		vec2 tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
-		
-		if (abs(glm::dot(vec3(1.0f, 0.0f, 0.0f), normal))>0.5f) {
-			//tex = vec2{vert.y, vert.z} * (1.0f/32.0f);
-			tex = vec2{vert.y * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
-		}
-		
-		if (abs(glm::dot(vec3(0.0f, 1.0f, 0.0f), normal))>0.5f) {
-			//tex = vec2{vert.x, vert.z} * (1.0f/32.0f);
-			tex = vec2{vert.x * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
-		}
-		
-		if (abs(glm::dot(vec3(0.0f, 0.0f, 1.0f), normal))>0.5f) {
-			//tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
-			tex = vec2{vert.x * (1.0f/(float)mat.width), vert.y * (1.0f/(float)mat.height)};
-		}
-		
-		
-		return {
-			{pos.x, pos.z, -pos.y},
-			{normal.x, normal.z, -normal.y},
-			tex,
-			tex
+		auto make_vertex = [](Plane plane, Material mat, vec3 vert, vec3 normal) -> Vertex {
+			vec3 pos = vert * (1.0f/32.0f);
+			vec2 tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
+			
+			if (abs(glm::dot(vec3(1.0f, 0.0f, 0.0f), normal))>0.5f) {
+				tex = vec2{vert.y * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
+			}
+			
+			if (abs(glm::dot(vec3(0.0f, 1.0f, 0.0f), normal))>0.5f) {
+				tex = vec2{vert.x * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
+			}
+			
+			if (abs(glm::dot(vec3(0.0f, 0.0f, 1.0f), normal))>0.5f) {
+				tex = vec2{vert.x * (1.0f/(float)mat.width), vert.y * (1.0f/(float)mat.height)};
+			}
+			
+			
+			return {
+				{pos.x, pos.z, -pos.y},
+				{normal.x, normal.z, -normal.y},
+				tex,
+				tex
+			};
 		};
-	};
-	
-	for (auto& brush : ent.brushes) {
-	for (auto& poly : brush.polys) {
-		if (poly.edges.size() < 3) continue;
+		
+		for (auto& brush : entity.brushes) {
+		for (auto& poly : brush.polys) {
+			if (poly.edges.size() < 3) continue;
 
-		
-		//vec3 dir1 = glm::normalize(poly_verts[1] - poly_verts[0]);
-		//vec3 dir2 = glm::normalize(poly_verts[2] - poly_verts[0]);
-		//vec3 normal = glm::normalize(glm::cross(dir1, dir2));
-		
-		//std::cout << "outputting polygon" << std::endl;
-	
-		uint32_t mat = 0;
-		for (int i = 0 ; i < materials.size(); i++) {
-			if (materials[i].name == poly.plane.material) mat = i;
-		}
-	
-		vec3 eq = PlaneToEquation(poly.plane);
-		vec3 pivot = poly.edges[0].p1;
-		
-		uint32_t p0 = vertices.size();
-		
-		vertices.push_back(make_vertex(poly.plane, materials[mat], pivot, eq));
-		
-
-
-		
-		
-		int drops = 0;
-		
-		for (auto& edge : poly.edges) {
-			if (edge.p1 == pivot || edge.p2 == pivot) {
-				drops++;
-				if (drops < 3) continue;
+			uint32_t mat = 0;
+			for (int i = 0 ; i < entity.materials.size(); i++) {
+				if (entity.materials[i].name == poly.plane.material) mat = i;
 			}
+		
+			vec3 eq = PlaneToEquation(poly.plane);
+			vec3 pivot = poly.edges[0].p1;
 			
+			uint32_t p0 = entity.vertices.size();
 			
-			uint32_t p1 = vertices.size();
-			uint32_t p2 = vertices.size() + 1;
+			entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], pivot, eq));
 			
-			vertices.push_back(make_vertex(poly.plane, materials[mat], edge.p1, eq));
-			vertices.push_back(make_vertex(poly.plane, materials[mat], edge.p2, eq));
-			
-			if (glm::dot(glm::normalize(glm::cross(edge.p1-pivot, edge.p2-pivot)), vec3(eq)) < 0.0f) {
-				indices.push_back({p0, p1, p2, mat});
-			} else {
-				indices.push_back({p0, p2, p1, mat});
-			}
-			
-			
-			
-			//std::cout << "" << std::endl;
 
-		}
-		
-		if (drops != 2) {
-			std::cout << "AAAAAA" << std::endl;
-			//for (auto& edge : poly.edges) {
-			//	std::cout << edge.p1.x << " " << edge.p1.y << " " << edge.p1.z << "\t" //<< edge.p2.x << " " << edge.p2.y << " " << edge.p2.z << " " << std::endl;
-			//}
-		}
 
-		//for (int i = 1; i < poly.edges.size() - 1; i++) {
-		//	indices.push_back({v_index, v_index+i, v_index+i+1, 0});
-		//}
-		
-		//for (int i = 1; i < poly_verts.size()-1; i++) {
-		//	indices.push_back({v_index, v_index+i, v_index+i+1, 0});
-		//}
-		
-		//std::cout << "AAAAAAAA " << poly_verts.size() <<std::endl;
-		
-		
+			
+			
 
-		
-		
-		/*for (int i = 0; i < poly_verts.size()-2; i++) {
-			for (int j = 1; j < poly_verts.size()-1; j++) {
-				for (int k = 2; k < poly_verts.size(); k++) {
-					indices.push_back({v_index+i, v_index+j, v_index+k, (uint32_t)mat});
+			for (auto& edge : poly.edges) {
+				if (edge.p1 == pivot || edge.p2 == pivot) {
+					continue;
+				}
+				
+				
+				uint32_t p1 = entity.vertices.size();
+				uint32_t p2 = entity.vertices.size() + 1;
+				
+				entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], edge.p1, eq));
+				entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], edge.p2, eq));
+				
+				if (glm::dot(glm::normalize(glm::cross(edge.p1-pivot, edge.p2-pivot)), vec3(eq)) < 0.0f) {
+					entity.indices.push_back({p0, p1, p2, mat});
+				} else {
+					entity.indices.push_back({p0, p2, p1, mat});
 				}
 			}
-		}*/
-		
+
+			
+		}
+		}
 	}
-	//break;
-	}
-	
 	
 	// + --------------------------------------------------------------------- +
 	// |                                                                       |
@@ -859,22 +672,25 @@ int main(int argc, const char** argv) {
 	// |                                                                       |
 	// + --------------------------------------------------------------------- +
 	
-	for (auto& brush : ent.brushes) {
-		for (const auto& poly : brush.polys) {
-		for (const auto& edge : poly.edges) {
-			bool found_p1 = false;
-			bool found_p2 = false;
-			for (const auto& point : brush.hull) {
-				if (point == edge.p1) found_p1 = true;
-				if (point == edge.p2) found_p2 = true;
+	for (auto& entity : entities) {
+		std::cout << "Generating hulls " << entity.name << std::endl; 
+		for (auto& brush : entity.brushes) {
+			for (const auto& poly : brush.polys) {
+			for (const auto& edge : poly.edges) {
+				bool found_p1 = false;
+				bool found_p2 = false;
+				for (const auto& point : brush.hull) {
+					if (point == edge.p1) found_p1 = true;
+					if (point == edge.p2) found_p2 = true;
+				}
+				if (!found_p1 && !std::isnan(edge.p1.x) && !std::isinf(edge.p1.x)) brush.hull.push_back(edge.p1);
+				if (!found_p2 && !std::isnan(edge.p2.x) && !std::isinf(edge.p2.x)) brush.hull.push_back(edge.p2);
+			}}
+			
+			for (auto& point : brush.hull) {
+				point = {point.x, point.z, -point.y};
+				point *= 1.0f/32.0f;
 			}
-			if (!found_p1 && !std::isnan(edge.p1.x) && !std::isinf(edge.p1.x)) brush.hull.push_back(edge.p1);
-			if (!found_p2 && !std::isnan(edge.p2.x) && !std::isinf(edge.p2.x)) brush.hull.push_back(edge.p2);
-		}}
-		
-		for (auto& point : brush.hull) {
-			point = {point.x, point.z, -point.y};
-			point *= 1.0f/32.0f;
 		}
 	}
 	
@@ -908,64 +724,77 @@ int main(int argc, const char** argv) {
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
 	
-	File output("../../data/models/paliktnis.stmdl", MODE_WRITE);
 	
-	if (!output.is_open()) {
-		std::cout << "Error writing to model file " << "../../data/models/paliktnis.stmdl" << std::endl;
-		return 0;
-	}
+	for (auto& entity : entities) {
+		std::string path = "../../data/models/";
+		path += entity.name;
+		path += ".stmdl";
+		
+		File output(path.c_str(), MODE_WRITE);
+		
+		if (!output.is_open()) {
+			std::cout << "Error writing to model file " << path << std::endl;
+			continue;
+		}
 
-	std::cout << "MODEL packed! Writing to disk..." << std::flush;
-	
-	output.write_uint32(vertices.size());
-	output.write_uint32(indices.size());
-	output.write_uint32(materials.size());
-	
-	output.write_newline();
-	
-	for (auto& mat : materials) {
-		output.write_name(mat.name);
-		output.write_newline();
-	}
-	
-	for (auto& vertex : vertices) {
-		output.write_float32(vertex.pos.x);
-		output.write_float32(vertex.pos.y);
-		output.write_float32(vertex.pos.z);
+		std::cout << "MODEL packed! Writing to disk..." << std::flush;
 		
-		output.write_float32(vertex.nrm.x);
-		output.write_float32(vertex.nrm.y);
-		output.write_float32(vertex.nrm.z);
-		
-		output.write_float32(vertex.tex.x);
-		output.write_float32(vertex.tex.y);
-		
-		output.write_float32(vertex.map.x);
-		output.write_float32(vertex.map.x);
-
-		output.write_newline();
-	}
-	
-	for (auto& index : indices) {
-		output.write_uint32(index.v1);
-		output.write_uint32(index.v2);
-		output.write_uint32(index.v3);
-		
-		output.write_uint32(index.mat);
+		output.write_uint32(entity.vertices.size());
+		output.write_uint32(entity.indices.size());
+		output.write_uint32(entity.materials.size());
 		
 		output.write_newline();
-	}
-	
-	return 0;
-	{
-		File file("../../data/models/paliktnis.collmdl", MODE_WRITE);
 		
-		if (!file.is_open()) {
-			std::cout << "Error writing to model file " << "../../data/models/paliktnis.COLLMDL" << std::endl;
-			return 0;
+		for (auto& mat : entity.materials) {
+			output.write_name(mat.name);
+			output.write_newline();
 		}
 		
-		for (const auto& brush : ent.brushes) {
+		for (auto& vertex : entity.vertices) {
+			output.write_float32(vertex.pos.x);
+			output.write_float32(vertex.pos.y);
+			output.write_float32(vertex.pos.z);
+			
+			output.write_float32(vertex.nrm.x);
+			output.write_float32(vertex.nrm.y);
+			output.write_float32(vertex.nrm.z);
+			
+			output.write_float32(vertex.tex.x);
+			output.write_float32(vertex.tex.y);
+			
+			output.write_float32(vertex.map.x);
+			output.write_float32(vertex.map.x);
+
+			output.write_newline();
+		}
+		
+		for (auto& index : entity.indices) {
+			output.write_uint32(index.v1);
+			output.write_uint32(index.v2);
+			output.write_uint32(index.v3);
+			
+			output.write_uint32(index.mat);
+			
+			output.write_newline();
+		}
+		
+	}
+	
+	std::cout << "EEEE" << std::endl;
+	
+	for (auto& entity : entities) {
+		std::string path = "../../data/models/";
+		path += entity.name;
+		path += ".collmdl";
+		
+		File file(path.c_str(), MODE_WRITE);
+		
+		if (!file.is_open()) {
+			std::cout << "Error writing to model file " << path << std::endl;
+			continue;
+		}
+		
+		for (const auto& brush : entity.brushes) {
 			if (!brush.hull.size()) continue;
 			
 			file.write_name("cloud");
