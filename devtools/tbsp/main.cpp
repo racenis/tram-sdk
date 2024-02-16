@@ -3,6 +3,11 @@
 
 // Tramway SDK -- Map converter
 
+// TODO:
+
+// - mesh simplification(?) sometimes generates edges with NaN vertices
+//		- this is not good and should be fixed.
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -33,9 +38,6 @@ struct Material {
 	int width, height;
 };
 
-
-
-
 struct Plane {
 	float x_offset, y_offset;
 	float x_scale, y_scale;
@@ -58,6 +60,8 @@ struct Polygon {
 struct Brush {
 	std::vector<Plane> planes;
 	std::vector<Polygon> polys;
+	
+	std::vector<vec3> hull;
 };
 
 struct Entity {
@@ -70,7 +74,6 @@ vec4 PlaneToEquation(const Plane& plane) {
 	vec3 dir2 = glm::normalize(plane.p3 - plane.p1);
 	vec3 cros = glm::cross(dir1, dir2);
 	
-	//float dist = cros.x * plane.p1.x + cros.y * plane.p1.y + cros.z * plane.p1.z;
 	float dist = glm::dot(cros, plane.p1);
 	
 	return {cros, -dist};
@@ -662,7 +665,7 @@ int main(int argc, const char** argv) {
 		new_brushes.push_back(new_brush);
 	}
 	
-	ent.brushes = new_brushes;
+	//ent.brushes = new_brushes;
 	
 	std::cout << "miss: " << miss << std::endl;
 	std::cout << "pass: " << pass << std::endl;
@@ -673,6 +676,14 @@ int main(int argc, const char** argv) {
 	// |                     POLYGON TO TRIANGLE CONVERTER                     |
 	// |                                                                       |
 	// + --------------------------------------------------------------------- +
+	
+	// This part here will convert our polygons, which are defined as a set of
+	// edges, into little indexed traingles, that can be saved to a disk file.
+	
+	// First it will find a list of unique materials, then it will load in the
+	// dimensions of the textures of these materials, and finally it will 
+	// triangulate our polygons, using the texture dimensions to help with
+	// texture projection.
 	
 	std::vector<Material> materials;
 	std::vector<Vertex> vertices;
@@ -829,6 +840,32 @@ int main(int argc, const char** argv) {
 	//break;
 	}
 	
+	
+	// + --------------------------------------------------------------------- +
+	// |                                                                       |
+	// |                    POLYGON TO CONVEX HULL CONVERTER                   |
+	// |                                                                       |
+	// + --------------------------------------------------------------------- +
+	
+	for (auto& brush : ent.brushes) {
+		for (const auto& poly : brush.polys) {
+		for (const auto& edge : poly.edges) {
+			bool found_p1 = false;
+			bool found_p2 = false;
+			for (const auto& point : brush.hull) {
+				if (point == edge.p1) found_p1 = true;
+				if (point == edge.p2) found_p2 = true;
+			}
+			if (!found_p1 && !std::isnan(edge.p1.x) && !std::isinf(edge.p1.x)) brush.hull.push_back(edge.p1);
+			if (!found_p2 && !std::isnan(edge.p2.x) && !std::isinf(edge.p2.x)) brush.hull.push_back(edge.p2);
+		}}
+		
+		for (auto& point : brush.hull) {
+			point = {point.x, point.z, -point.y};
+			point *= 1.0f/32.0f;
+		}
+	}
+	
 	/*
 	if (argc < 3) {
 		std::cout << "Usage: tmap model size [padding]";
@@ -852,7 +889,7 @@ int main(int argc, const char** argv) {
 			packing = true;
 		}
 	}*/
-		
+	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                             MODEL WRITER                              +
@@ -906,6 +943,35 @@ int main(int argc, const char** argv) {
 		
 		output.write_newline();
 	}
+	
+	
+	{
+		File file("../../data/models/paliktnis.collmdl", MODE_WRITE);
+		
+		if (!file.is_open()) {
+			std::cout << "Error writing to model file " << "../../data/models/paliktnis.COLLMDL" << std::endl;
+			return 0;
+		}
+		
+		for (const auto& brush : ent.brushes) {
+			if (!brush.hull.size()) continue;
+			
+			file.write_name("cloud");
+			file.write_uint64(brush.hull.size());
+			
+			file.write_newline();
+			
+			for (const auto& point : brush.hull) {
+				file.write_float32(point.x);
+				file.write_float32(point.y);
+				file.write_float32(point.z);
+				
+				file.write_newline();
+			}
+		}
+		
+	}
+	
 	
 	std::cout << "done!" << std::endl;
 	
