@@ -12,6 +12,8 @@
 #include <framework/file.h>
 #include <framework/math.h>
 
+#include <stb_image.h>
+
 using namespace tram;
 
 struct Vertex {
@@ -24,6 +26,11 @@ struct Vertex {
 struct Triangle {
 	uint32_t v1, v2, v3;
 	uint32_t mat;
+};
+
+struct Material {
+	std::string name;
+	int width, height;
 };
 
 
@@ -667,24 +674,63 @@ int main(int argc, const char** argv) {
 	// |                                                                       |
 	// + --------------------------------------------------------------------- +
 	
-	std::vector<std::string> materials;
+	std::vector<Material> materials;
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> indices;
 	
-	auto make_vertex = [](Plane plane, vec3 vert, vec3 normal) -> Vertex {
+	// iterate through all planes and find all of the materials
+	for (auto& brush : ent.brushes) {
+		for (auto& plane : brush.planes) {
+			bool already_in_list = false;
+			for (int i = 0 ; i < materials.size(); i++) {
+				if (materials[i].name == plane.material) {
+					already_in_list = true;
+					break;
+				}
+			}
+			
+			if (!already_in_list) materials.push_back({.name=plane.material});
+		}
+	}
+	
+	// find the parameters of the materials
+	for (auto& mat : materials) {
+		std::string path = "../../data/textures/";
+		path += mat.name;
+		path += ".png";
+		
+		int x, y, n;
+		
+		if (!stbi_info(path.c_str(), &x, &y, &n)) {
+			std::cout << "File " << path << " not found!" << std::endl;
+			
+			// this is a sane resolution for a texture
+			x = 32;
+			y = 32;
+		}
+		
+		mat.width = x;
+		mat.height = y;
+	}
+		
+	
+	auto make_vertex = [](Plane plane, Material mat, vec3 vert, vec3 normal) -> Vertex {
 		vec3 pos = vert * (1.0f/32.0f);
 		vec2 tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
 		
 		if (abs(glm::dot(vec3(1.0f, 0.0f, 0.0f), normal))>0.5f) {
-			tex = vec2{vert.y, vert.z} * (1.0f/32.0f);
+			//tex = vec2{vert.y, vert.z} * (1.0f/32.0f);
+			tex = vec2{vert.y * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
 		}
 		
 		if (abs(glm::dot(vec3(0.0f, 1.0f, 0.0f), normal))>0.5f) {
-			tex = vec2{vert.x, vert.z} * (1.0f/32.0f);
+			//tex = vec2{vert.x, vert.z} * (1.0f/32.0f);
+			tex = vec2{vert.x * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
 		}
 		
 		if (abs(glm::dot(vec3(0.0f, 0.0f, 1.0f), normal))>0.5f) {
-			tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
+			//tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
+			tex = vec2{vert.x * (1.0f/(float)mat.width), vert.y * (1.0f/(float)mat.height)};
 		}
 		
 		
@@ -707,22 +753,20 @@ int main(int argc, const char** argv) {
 		
 		//std::cout << "outputting polygon" << std::endl;
 	
+		uint32_t mat = 0;
+		for (int i = 0 ; i < materials.size(); i++) {
+			if (materials[i].name == poly.plane.material) mat = i;
+		}
+	
 		vec3 eq = PlaneToEquation(poly.plane);
 		vec3 pivot = poly.edges[0].p1;
 		
 		uint32_t p0 = vertices.size();
 		
-		vertices.push_back(make_vertex(poly.plane, pivot, eq));
+		vertices.push_back(make_vertex(poly.plane, materials[mat], pivot, eq));
 		
 
-		int mat = -1;
-		for (int i = 0 ; i < materials.size(); i++) {
-			if (materials[i] == poly.plane.material) mat = i;
-		}
-		if (mat == -1) {
-			mat = materials.size();
-			materials.push_back(poly.plane.material);
-		}
+
 		
 		
 		int drops = 0;
@@ -737,13 +781,13 @@ int main(int argc, const char** argv) {
 			uint32_t p1 = vertices.size();
 			uint32_t p2 = vertices.size() + 1;
 			
-			vertices.push_back(make_vertex(poly.plane, edge.p1, eq));
-			vertices.push_back(make_vertex(poly.plane, edge.p2, eq));
+			vertices.push_back(make_vertex(poly.plane, materials[mat], edge.p1, eq));
+			vertices.push_back(make_vertex(poly.plane, materials[mat], edge.p2, eq));
 			
 			if (glm::dot(glm::normalize(glm::cross(edge.p1-pivot, edge.p2-pivot)), vec3(eq)) < 0.0f) {
-				indices.push_back({p0, p1, p2, (uint32_t)mat});
+				indices.push_back({p0, p1, p2, mat});
 			} else {
-				indices.push_back({p0, p2, p1, (uint32_t)mat});
+				indices.push_back({p0, p2, p1, mat});
 			}
 			
 			
@@ -831,7 +875,7 @@ int main(int argc, const char** argv) {
 	output.write_newline();
 	
 	for (auto& mat : materials) {
-		output.write_name(mat);
+		output.write_name(mat.name);
 		output.write_newline();
 	}
 	
