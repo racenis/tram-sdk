@@ -189,7 +189,7 @@ int main(int argc, const char** argv) {
 	bool skip_hidden = false;
 	bool skip_nodraw = false;
 	
-	for (int i = 3; i < argc; i++) {
+	for (int i = 2; i < argc; i++) {
 		if (strcmp(argv[i], "-nostmdl") == 0)		skip_model = true;
 		if (strcmp(argv[i], "-nocollmdl") == 0)		skip_collision = true;
 		if (strcmp(argv[i], "-nohidden") == 0)		skip_hidden = true;
@@ -220,7 +220,7 @@ int main(int argc, const char** argv) {
 		strcpy(map_path, map_name);
 		strcat(map_path, ".map");
 	} else {
-		strcpy(map_path, "");
+		strcpy(map_path, "assets/");
 		strcat(map_path, map_name);
 		strcat(map_path, ".map");
 	}
@@ -392,14 +392,14 @@ int main(int argc, const char** argv) {
 	// we will start clipping it with each brush plane, until we have clipped it
 	// into the shape of the brush.
 	
-	const vec3 low_lft_bak = {-1000.0f, -1000.0f, -1000.0f};
-	const vec3 low_rgt_bak = { 1000.0f, -1000.0f, -1000.0f};
-	const vec3 low_rgt_frt = { 1000.0f, -1000.0f,  1000.0f};
-	const vec3 low_lft_frt = {-1000.0f, -1000.0f,  1000.0f};
-	const vec3 hgh_lft_bak = {-1000.0f,  1000.0f, -1000.0f};
-	const vec3 hgh_rgt_bak = { 1000.0f,  1000.0f, -1000.0f};
-	const vec3 hgh_rgt_frt = { 1000.0f,  1000.0f,  1000.0f};
-	const vec3 hgh_lft_frt = {-1000.0f,  1000.0f,  1000.0f};
+	const vec3 low_lft_bak = {-4096.0f, -4096.0f, -4096.0f};
+	const vec3 low_rgt_bak = { 4096.0f, -4096.0f, -4096.0f};
+	const vec3 low_rgt_frt = { 4096.0f, -4096.0f,  4096.0f};
+	const vec3 low_lft_frt = {-4096.0f, -4096.0f,  4096.0f};
+	const vec3 hgh_lft_bak = {-4096.0f,  4096.0f, -4096.0f};
+	const vec3 hgh_rgt_bak = { 4096.0f,  4096.0f, -4096.0f};
+	const vec3 hgh_rgt_frt = { 4096.0f,  4096.0f,  4096.0f};
+	const vec3 hgh_lft_frt = {-4096.0f,  4096.0f,  4096.0f};
 	
 	const Plane blank = {
 		0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
@@ -627,7 +627,7 @@ int main(int argc, const char** argv) {
 		
 		// find the parameters of the materials
 		for (auto& mat : entity.materials) {
-			std::string path = "../../data/textures/";
+			std::string path = "data/textures/";
 			path += mat.name;
 			path += ".png";
 			
@@ -674,6 +674,7 @@ int main(int argc, const char** argv) {
 		for (auto& brush : entity.brushes) {
 		for (auto& poly : brush.polys) {
 			if (poly.edges.size() < 3) continue;
+			if (!skip_nodraw && poly.plane.material == "dev/nodraw") continue;
 
 			uint32_t mat = 0;
 			for (int i = 0 ; i < entity.materials.size(); i++) {
@@ -685,7 +686,7 @@ int main(int argc, const char** argv) {
 			
 			uint32_t p0 = entity.vertices.size();
 			
-			entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], pivot, eq));
+			entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], pivot, -eq));
 			
 			for (auto& edge : poly.edges) {
 				if (edge.p1 == pivot || edge.p2 == pivot) {
@@ -696,8 +697,8 @@ int main(int argc, const char** argv) {
 				uint32_t p1 = entity.vertices.size();
 				uint32_t p2 = entity.vertices.size() + 1;
 				
-				entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], edge.p1, eq));
-				entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], edge.p2, eq));
+				entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], edge.p1, -eq));
+				entity.vertices.push_back(make_vertex(poly.plane, entity.materials[mat], edge.p2, -eq));
 				
 				if (glm::dot(glm::normalize(glm::cross(edge.p1-pivot, edge.p2-pivot)), vec3(eq)) < 0.0f) {
 					entity.indices.push_back({p0, p1, p2, mat});
@@ -748,7 +749,7 @@ int main(int argc, const char** argv) {
 	
 	if (!skip_model) for (size_t i = 0; i < entities.size(); i++) {
 		auto& entity = entities[i];
-		std::string path = "../../data/models/";
+		std::string path = "data/models/";
 		path += entity.name;
 		path += ".stmdl";
 		
@@ -800,14 +801,12 @@ int main(int argc, const char** argv) {
 			output.write_newline();
 		}
 		
-		std::cout << "\n";
+		std::cout << "done!" << std::endl;
 	}
-	
-	std::cout << "EEEE" << std::endl;
 	
 	if (!skip_collision) for (size_t i = 0; i < entities.size(); i++) {
 		auto& entity = entities[i];
-		std::string path = "../../data/models/";
+		std::string path = "data/models/";
 		path += entity.name;
 		path += ".collmdl";
 		
@@ -818,7 +817,7 @@ int main(int argc, const char** argv) {
 			continue;
 		}
 		
-		std::cout << "[" << (i + 1) << "/" << entities.size() << "] Writing " << entity.name << " 3D model to disk..." << std::flush;
+		std::cout << "[" << (i + 1) << "/" << entities.size() << "] Writing " << entity.name << " collision model to disk..." << std::flush;
 		
 		for (const auto& brush : entity.brushes) {
 			if (!brush.hull.size()) continue;

@@ -143,9 +143,9 @@ File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
         disk_writer = new FileWriter(path, SOURCE_ANY);
         
         if (disk_writer->is_open()) {
-            buffer = new char [1024 * 1024]; // this is stupid. we need autoflush
+            buffer = new char [4 * 1024 * 1024]; // this is stupid. we need autoflush
             buffer_cursor = buffer;
-            buffer_end = buffer + (1024 * 1024);
+            buffer_end = buffer + (4 * 1024 * 1024);
         }
     } else {
         abort();
