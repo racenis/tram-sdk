@@ -173,7 +173,8 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 	if (tri.v3.map.y > highest.map.y) highest = tri.v3;
 	
 	// this should not happen!
-	if (lowest == highest) std::cout << "what the fuck" << std::endl;
+	//if (lowest == highest) std::cout << "what the fuck" << std::endl;
+	if (lowest == highest) return;
 	
 	Vertex middle;
 	if ((tri.v2 == lowest || tri.v3 == lowest) && (tri.v2 == highest || tri.v3 == highest)) middle = tri.v1;
@@ -503,13 +504,21 @@ int main(int argc, const char** argv) {
 		stretch_high_y
 	};
 	
-	std::cout << "Computing " << std::flush;
+	int last_dots = -1;
 	
 	// iterate through each triangle in the lightmap and rasterize it
-	int tri_index = 0;
-	for (const auto& tri : triangles) {
-		if (tri_index++ % (triangles.size() / 60) == 0) {
-			std::cout << "." << std::flush;
+	for (size_t i = 0; i < triangles.size(); i++) {
+		const auto& tri = triangles[i];
+		
+		// draw a progress bar in the command line
+		float progress = (float)i / (float)triangles.size();
+		int dots = ceil(progress * 62.0f);
+		
+		if (last_dots != dots) {
+			std::cout << "\rComputing [";
+			for (int k = 0; k < 62; k++) std::cout << (k < dots ? (k % 9 == 8 ? ':' : '.') : ' ');
+			std::cout << "] " << ceil(progress*100.0f) << "%" << std::flush;
+			last_dots = dots;
 		}
 		
 		if (paint_coords) {
@@ -545,7 +554,7 @@ int main(int argc, const char** argv) {
 		
 	}
 	
-	std::cout << " done!" << std::endl;
+	std::cout << "\rComputing... done!\t\t\t\t\t\t\t      " << std::endl;
 	std::cout << "Saving to disk... " << std::flush;
 	
 	// convert finished lightmap from floating-point to byte

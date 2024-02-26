@@ -85,16 +85,19 @@ vec4 PlaneToEquation(const Plane& plane) {
 }
 
 // returns 0 if needs clipped, -1 if thrown away, 1 if kept
-int NeedsClipped(Polygon poly, vec4 eq, float bias = 0.0f) {
+int NeedsClipped(Polygon poly, vec4 eq, float bias = 0.01f) {
 	int inside_vertices = 0;
 	int outside_vertices = 0;
 
 	for (auto& edge : poly.edges) {
 		float dist1 = glm::dot(vec3(eq), edge.p1) + eq.w;
 		float dist2 = glm::dot(vec3(eq), edge.p2) + eq.w; 
-
-		if (dist1 < bias) outside_vertices++; else inside_vertices++;
-		if (dist2 < bias) outside_vertices++; else inside_vertices++;
+		
+		if (dist1 > bias) inside_vertices++; 
+		if (dist2 > bias) inside_vertices++;
+		
+		if (dist1 < -bias) outside_vertices++; 
+		if (dist2 < -bias) outside_vertices++;
 	}
 
 	if (outside_vertices == 0) {
@@ -463,6 +466,33 @@ int main(int argc, const char** argv) {
 
 	// + --------------------------------------------------------------------- +
 	// |                                                                       |
+	// |                    POLYGON TO CONVEX HULL CONVERTER                   |
+	// |                                                                       |
+	// + --------------------------------------------------------------------- +
+	
+	for (auto& entity : entities) {
+		for (auto& brush : entity.brushes) {
+			for (const auto& poly : brush.polys) {
+			for (const auto& edge : poly.edges) {
+				bool found_p1 = false;
+				bool found_p2 = false;
+				for (const auto& point : brush.hull) {
+					if (point == edge.p1) found_p1 = true;
+					if (point == edge.p2) found_p2 = true;
+				}
+				if (!found_p1 && !std::isnan(edge.p1.x) && !std::isinf(edge.p1.x)) brush.hull.push_back(edge.p1);
+				if (!found_p2 && !std::isnan(edge.p2.x) && !std::isinf(edge.p2.x)) brush.hull.push_back(edge.p2);
+			}}
+			
+			for (auto& point : brush.hull) {
+				point = {point.x, point.z, -point.y};
+				point *= 1.0f/32.0f;
+			}
+		}
+	}
+	
+	// + --------------------------------------------------------------------- +
+	// |                                                                       |
 	// |                         HIDDEN SURFACE REMOVAL                        |
 	// |                                                                       |
 	// + --------------------------------------------------------------------- +
@@ -536,7 +566,7 @@ int main(int argc, const char** argv) {
 							vec4 plane_eq = PlaneToEquation(plane);
 
 							// this skips planes that have the same plane as polygon
-							if (abs(glm::dot(vec3(eq), vec3(plane_eq))) >0.9f) continue;
+							if (abs(glm::dot(vec3(eq), vec3(plane_eq))) > 0.99f) continue;
 							
 							
 							int needs_clipped = NeedsClipped(remainder, plane_eq, 0.1f);
@@ -693,6 +723,15 @@ int main(int argc, const char** argv) {
 					continue;
 				}
 				
+				// dumb hack. sometimes we generate polygons with no area, so
+				// this part should yeet them before they get written to disk
+				vec3 pp1 = glm::normalize(edge.p1 - pivot);
+				vec3 pp2 = glm::normalize(edge.p2 - pivot);
+				
+				if (glm::dot(pp1, pp2) == 1.0f) {
+					continue;
+				}
+				
 				
 				uint32_t p1 = entity.vertices.size();
 				uint32_t p2 = entity.vertices.size() + 1;
@@ -713,34 +752,7 @@ int main(int argc, const char** argv) {
 		
 		std::cout << "done!" << std::endl;
 	}
-	
-	// + --------------------------------------------------------------------- +
-	// |                                                                       |
-	// |                    POLYGON TO CONVEX HULL CONVERTER                   |
-	// |                                                                       |
-	// + --------------------------------------------------------------------- +
-	
-	for (auto& entity : entities) {
-		for (auto& brush : entity.brushes) {
-			for (const auto& poly : brush.polys) {
-			for (const auto& edge : poly.edges) {
-				bool found_p1 = false;
-				bool found_p2 = false;
-				for (const auto& point : brush.hull) {
-					if (point == edge.p1) found_p1 = true;
-					if (point == edge.p2) found_p2 = true;
-				}
-				if (!found_p1 && !std::isnan(edge.p1.x) && !std::isinf(edge.p1.x)) brush.hull.push_back(edge.p1);
-				if (!found_p2 && !std::isnan(edge.p2.x) && !std::isinf(edge.p2.x)) brush.hull.push_back(edge.p2);
-			}}
-			
-			for (auto& point : brush.hull) {
-				point = {point.x, point.z, -point.y};
-				point *= 1.0f/32.0f;
-			}
-		}
-	}
-	
+		
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                             MODEL WRITER                              +
