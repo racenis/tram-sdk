@@ -10,7 +10,7 @@ namespace tram::Render {
     
 class Material : public Resource {
 public:
-    Material(name_t name, materialtype_t type) : Resource(name), type(type) {}
+    Material(name_t name, materialtype_t type, MaterialFilter filter) : Resource(name), type(type), filter(filter) {}
     
     inline texturehandle_t GetTexture() const { return texture; }
     inline uint32_t GetWidth() const { return width; }
@@ -32,6 +32,7 @@ public:
 protected:
     texturehandle_t texture = 0;
     materialtype_t type = MATERIAL_TEXTURE;
+    MaterialFilter filter = FILTER_NEAREST;
     
     uint32_t width = 0;
     uint32_t height = 0;

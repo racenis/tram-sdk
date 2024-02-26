@@ -1,181 +1,181 @@
-MATv1
-brick001 flat
-brick002 flat
-brick006 flat
-brick010 flat
-brick011 flat
-brick015 flat
-brick020 flat
-brick021 flat
-brick025 flat
-brick046 flat
-brick050 flat
-brick051 flat
-brick052 flat
-bush007 flat
-concrete018 flat
-concrete019 flat
-concrete027 flat
-concrete027b flat
-detail004 flat
-detail004b flat
-detail015 flat
-detail016 flat
-detail019 flat
-detail020 flat
-detail020b flat
-detail046 flat
-detail048 flat
-detail049 flat
-door001 flat
-metal009 flat
-metal003 flat
-plank005 flat
-plank049 flat
-plaster004 flat
-plaster013 flat
-plaster014 flat
-plaster014b flat
-plaster016 flat
-plaster017 flat
-plaster019 flat
-plaster021 flat
-plaster021b flat
-plaster021c flat
-plaster025 flat
-plaster049 flat
-rail011 alpha
-roof004 flat
-roof006 flat
-roof018 flat
-roof046 flat
-roof047 flat
-terrain003 flat
-terrain005 flat
-terrain006 flat
-terrain007 flat
-terrain008 flat
-terrain009 flat
-terrain010 alpha
-terrain011 alpha
-terrain012 flat
-vent001 flat
-window003 flat
-window004 flat
-window012 flat
-window012b flat
-window014 flat
-window015 flat
-window016 flat
-window017 flat
-window017b flat
-window018 flat
-window019 flat
-window020 flat
-window022 flat
-window023 flat
-window024 flat
-window026 flat
-window046 flat
-window047 flat
-window054 flat
-pinkdick flat
-pinko flat
-monkemap lightmap
-dingaling lightmap
-dingadong lightmap
-eye flat
-tiger flat
-debug flat
-errortexture flat
-texcom_obamabinladen flat
-texcom_obamabinladen2 flat
-texcom_obamabinladen3 flat
-mongus flat
-tatra flat
-raf flat
-texcom_rail flat
-texcom_grass flat
-texcom_road flat
-water water
-floppa flat
-bingus flat
-pienapaka flat
-pienaveikals flat
-concrete067 flat
-concrete090 flat
-rail006 flat
-texcom_veneer flat
-texcom_cloth flat
-jurmala alpha
-street flat
-grass flat
-path flat
-minima flat
-metal107 flat
-detail106 flat
-concrete105 flat
-metal104 flat
-concrete103 flat
-window102 flat
-metal101 flat
-brick100 flat
-detail099 flat
-window098 flat
-window097 flat
-door096 flat
-door094 flat
-door093 flat
-plank092 flat
-metal091 flat
-plank080 flat
-window090 flat
-metal088b flat
-metal089 flat
-metal088a flat
-window087c flat
-window087b flat
-window087a flat
-window086 flat
-window085 flat
-metal084 flat
-metal083 flat
-window081 flat
-voltaza alpha
-hes alpha
-door095 flat
-texcom_chain alpha
-ciemsziime flat
-concrete110 flat
-kugge/akmeni flat
-kugge/klajs flat
-kugge/markeris water
-kugge/metals flat
-kugge/palmalapa alpha
-kugge/palmamize flat
-kugge/palmarieksts flat
-kugge/skrejcels flat
-kugge/smiltis flat
-kugge/trapits water
-kugge/udenis water
-stolentoilet flat
-poland alpha
-kjeems flat
-skavotaajs flat
-metalakaste flat
-metalareste alpha
-dev/nodraw flat
-dev/light flat
-dev/button16x16 flat
-dev/floor32x32 flat
-dev/floor128x128 flat
-dev/scaffold32x32 alpha
-dev/scale128x128 flat
-dev/vent16x16 flat
-dev/wall8x8 flat
-dev/wall16x16 flat
-dev/wall32x32 flat
-dev/wall64x64 flat
-dev/wall128x128 flat
-dev/wallstair32x32 flat
-dev/window128x128 flat
+MATv2
+brick001 flat linear
+brick002 flat linear
+brick006 flat linear
+brick010 flat linear
+brick011 flat linear
+brick015 flat linear
+brick020 flat linear
+brick021 flat linear
+brick025 flat linear
+brick046 flat linear
+brick050 flat linear
+brick051 flat linear
+brick052 flat linear
+bush007 flat linear
+concrete018 flat linear
+concrete019 flat linear
+concrete027 flat linear
+concrete027b flat linear
+detail004 flat linear
+detail004b flat linear
+detail015 flat linear
+detail016 flat linear
+detail019 flat linear
+detail020 flat linear
+detail020b flat linear
+detail046 flat linear
+detail048 flat linear
+detail049 flat linear
+door001 flat linear
+metal009 flat linear
+metal003 flat linear
+plank005 flat linear
+plank049 flat linear
+plaster004 flat linear
+plaster013 flat linear
+plaster014 flat linear
+plaster014b flat linear
+plaster016 flat linear
+plaster017 flat linear
+plaster019 flat linear
+plaster021 flat linear
+plaster021b flat linear
+plaster021c flat linear
+plaster025 flat linear
+plaster049 flat linear
+rail011 alpha linear
+roof004 flat linear
+roof006 flat linear
+roof018 flat linear
+roof046 flat linear
+roof047 flat linear
+terrain003 flat linear
+terrain005 flat linear
+terrain006 flat linear
+terrain007 flat linear
+terrain008 flat linear
+terrain009 flat linear
+terrain010 alpha linear
+terrain011 alpha linear
+terrain012 flat linear
+vent001 flat linear
+window003 flat linear
+window004 flat linear
+window012 flat linear
+window012b flat linear
+window014 flat linear
+window015 flat linear
+window016 flat linear
+window017 flat linear
+window017b flat linear
+window018 flat linear
+window019 flat linear
+window020 flat linear
+window022 flat linear
+window023 flat linear
+window024 flat linear
+window026 flat linear
+window046 flat linear
+window047 flat linear
+window054 flat linear
+pinkdick flat linear
+pinko flat linear
+monkemap lightmap linear
+dingaling lightmap linear
+dingadong lightmap linear
+eye flat linear
+tiger flat linear
+debug flat linear
+errortexture flat linear
+texcom_obamabinladen flat linear
+texcom_obamabinladen2 flat linear
+texcom_obamabinladen3 flat linear
+mongus flat linear
+tatra flat linear
+raf flat linear
+texcom_rail flat linear
+texcom_grass flat linear
+texcom_road flat linear
+water water linear
+floppa flat linear
+bingus flat linear
+pienapaka flat linear
+pienaveikals flat linear
+concrete067 flat linear
+concrete090 flat linear
+rail006 flat linear
+texcom_veneer flat linear
+texcom_cloth flat linear
+jurmala alpha linear
+street flat linear
+grass flat linear
+path flat linear
+minima flat linear
+metal107 flat linear
+detail106 flat linear
+concrete105 flat linear
+metal104 flat linear
+concrete103 flat linear
+window102 flat linear
+metal101 flat linear
+brick100 flat linear
+detail099 flat linear
+window098 flat linear
+window097 flat linear
+door096 flat linear
+door094 flat linear
+door093 flat linear
+plank092 flat linear
+metal091 flat linear
+plank080 flat linear
+window090 flat linear
+metal088b flat linear
+metal089 flat linear
+metal088a flat linear
+window087c flat linear
+window087b flat linear
+window087a flat linear
+window086 flat linear
+window085 flat linear
+metal084 flat linear
+metal083 flat linear
+window081 flat linear
+voltaza alpha linear
+hes alpha linear
+door095 flat linear
+texcom_chain alpha linear
+ciemsziime flat linear
+concrete110 flat linear
+kugge/akmeni flat linear
+kugge/klajs flat linear
+kugge/markeris water linear
+kugge/metals flat linear
+kugge/palmalapa alpha linear
+kugge/palmamize flat linear
+kugge/palmarieksts flat linear
+kugge/skrejcels flat linear
+kugge/smiltis flat linear
+kugge/trapits water linear
+kugge/udenis water linear
+stolentoilet flat linear
+poland alpha linear
+kjeems flat linear
+skavotaajs flat linear
+metalakaste flat linear
+metalareste alpha linear
+dev/nodraw flat nearest
+dev/light flat nearest
+dev/button16x16 flat nearest
+dev/floor32x32 flat nearest
+dev/floor128x128 flat nearest
+dev/scaffold32x32 alpha nearest
+dev/scale128x128 flat nearest
+dev/vent16x16 flat nearest
+dev/wall8x8 flat nearest
+dev/wall16x16 flat nearest
+dev/wall32x32 flat nearest
+dev/wall64x64 flat nearest
+dev/wall128x128 flat nearest
+dev/wallstair32x32 flat nearest
+dev/window128x128 flat nearest

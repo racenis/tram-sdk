@@ -62,11 +62,7 @@ void Camera::SetBobbingDistance (float bobbing_distance) {
 }
 
 void Camera::Update () {
-    if (UI::GetInputState() == UI::STATE_FLYING ||
-        UI::GetInputState() == UI::STATE_MENU_OPEN
-    ) {
-        return;
-    }
+    if (UI::GetInputState() == UI::STATE_FLYING) return;
     
     // move tilt towards tilt goal
     if (abs(tilt_goal - tilt) <= TILT_SPEED && abs(tilt_goal) <= TILT_SPEED) {

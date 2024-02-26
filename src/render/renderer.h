@@ -31,6 +31,7 @@ enum ColorMode {
 
 /// Texture filters.
 enum TextureFilter {
+    TEXTUREFILTER_NEAREST,
     TEXTUREFILTER_LINEAR,           //< Textures use linear filtering.
     TEXTUREFILTER_LINEAR_MIPMAPPED  //< Textures use linear filtering and are mipmapped.
 };

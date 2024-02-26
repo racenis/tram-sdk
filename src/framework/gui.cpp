@@ -13,17 +13,27 @@
 #include <render/sprite.h>
 #include <render/material.h>
 
+// This whole file is a mess.
+// TODO: fix
+
+// A thing that could be done is that all of the floating-point coordinates
+// could be converted to integers, so that it is easier to work with them.
+
+// Also doing const float& all over the place wasn't the best idea.
+
 namespace tram::GUI {
 
 struct FrameObject {
-    float offset_x;
-    float offset_y;
-    float width;
-    float height;
-    float cursor_x;
-    float cursor_y;
-    float cursor_s;
+    float offset_x = 0.0f;
+    float offset_y = 0.0f;
+    float width = 0.0f;
+    float height = 0.0f;
+    float cursor_x = 0.0f;
+    float cursor_y = 0.0f;
+    float cursor_s = 0.0f;
     float* scroll_h = nullptr;
+    
+    int stack_height = 0;
 };
 
 const float LINE_HEIGHT = 24.0f;
@@ -66,7 +76,7 @@ void Init() {
     glyphvertices_entry = InsertDrawListEntry();
     SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
     SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
-    SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST);
+    SetFlags(glyphvertices_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
     
     System::SetInitialized(System::SYSTEM_GUI, true);
 }
@@ -132,7 +142,7 @@ font_t RegisterFont (Render::Sprite* sprite) {
 /// Adds a glyph to rendering list.
 /// Triangularizes a glyph from its params and then it get sent off to
 /// rendering via the glyph rendering list.
-void SetGlyph (float x, float y, float w, float h, float tex_x, float tex_y, float tex_w, float tex_h, const glm::vec3& color, font_t font) {
+void SetGlyph(float x, float y, float z, float w, float h, float tex_x, float tex_y, float tex_w, float tex_h, const glm::vec3& color, font_t font) {
     Render::SpriteVertex tleft;   // top left
     Render::SpriteVertex tright;  // top right
     Render::SpriteVertex bleft;   // bottom left
@@ -140,21 +150,25 @@ void SetGlyph (float x, float y, float w, float h, float tex_x, float tex_y, flo
 
     tleft.co.x = x;
     tleft.co.y = y;
+    tleft.co.z = z;
     tleft.texco.x = tex_x;
     tleft.texco.y = tex_y;
     
     tright.co.x = x + w;
     tright.co.y = y;
+    tright.co.z = z;
     tright.texco.x = tex_x + tex_w;
     tright.texco.y = tex_y;
     
     bleft.co.x = x;
     bleft.co.y = y + h;
+    bleft.co.z = z;
     bleft.texco.x = tex_x;
     bleft.texco.y = tex_y + tex_h;
     
     bright.co.x = x + w;
     bright.co.y = y + h;
+    bright.co.z = z;
     bright.texco.x = tex_x + tex_w;
     bright.texco.y = tex_y + tex_h;
     
@@ -202,17 +216,17 @@ void Glyph (const float& x, const float& y, const float& w, const float& h, cons
             float off = (y + h) - t.height;
             n_h -= off; //n_tex_h -= off;
         }
-        SetGlyph(n_x + t.offset_x, n_y + t.offset_y, n_w, n_h, n_tex_x, n_tex_y, n_w, n_h, color, tex);
+        SetGlyph(n_x + t.offset_x, n_y + t.offset_y, FrameStack.top().stack_height, n_w, n_h, n_tex_x, n_tex_y, n_w, n_h, color, tex);
         return;
     }
     
     // send off to rendering
-    SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, w, h, color, tex);
+    SetGlyph(x + t.offset_x, y + t.offset_y, FrameStack.top().stack_height, w, h, tex_x, tex_y, w, h, color, tex);
 }
 
 void GlyphNoclip(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
     auto& t = FrameStack.top();
-    SetGlyph(x + t.offset_x, y + t.offset_y, w, h, tex_x, tex_y, tex_w, tex_h, color, tex);
+    SetGlyph(x + t.offset_x, y + t.offset_y, FrameStack.top().stack_height, w, h, tex_x, tex_y, tex_w, tex_h, color, tex);
 }
 
 void Glyph(const uint32_t& symbol, const float& x, const float& y) {
@@ -224,7 +238,7 @@ void Glyph(const uint32_t& symbol, const float& x, const float& y) {
 void Begin() {
     // reset the frames
     FrameStack.Reset();
-    *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, UI::GetScreenWidth(), UI::GetScreenHeight(), 0.0f, 0.0f};
+    *FrameStack.AddNew() = FrameObject {.width = UI::GetScreenWidth(), .height = UI::GetScreenHeight()};
     
     // reset the cursor
     cursor = UI::CURSOR_DEFAULT;
@@ -263,6 +277,7 @@ void End() {
 
 void Frame(orientation frame_orient, float offset) {
     auto& last = FrameStack.top();
+
     switch (frame_orient) {
         case FRAME_LEFT:
             *FrameStack.AddNew() = FrameObject {last.offset_x, last.offset_y, offset, last.height, 0.0f, 0.0f};
@@ -279,6 +294,8 @@ void Frame(orientation frame_orient, float offset) {
         default:
             abort();
     }
+    
+    FrameStack.top().stack_height = last.stack_height + 1;
 }
 
 void Frame(orientation frame_orient, float width, float height) {
@@ -293,9 +310,11 @@ void Frame(orientation frame_orient, float width, float height) {
     *FrameStack.AddNew() = FrameObject {((size_x - width) / 2.0f) + pos_x, ((size_y - height) / 2.0f) + pos_y, width, height, 0.0f, 0.0f};
 }
 
-// idk what this is used, maybe can be yeeted
 void Frame() {
-    *FrameStack.AddNew() = FrameObject {0.0f, 0.0f, UI::GetScreenWidth(), UI::GetScreenHeight(), 0.0f, 0.0f};
+    auto& last = FrameStack.top();
+    FrameObject new_frame = last;
+    new_frame.stack_height += 1;
+    *FrameStack.AddNew() = new_frame;
 }
 
 void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
@@ -544,9 +563,6 @@ void Text(char const* text, font_t font, orientation alignment, const glm::vec3&
 }
 
 bool Button(char const* text) {
-    //auto& l = UI::glyphinfo[0][BUTTON_TEXT + LEFT];
-    //auto& m = UI::glyphinfo[0][BUTTON_TEXT + MIDDLE];
-    //auto& r = UI::glyphinfo[0][BUTTON_TEXT + RIGHT];        
     auto& l = fonts[0]->GetFrames()[BUTTON_TEXT + LEFT];
     auto& m = fonts[0]->GetFrames()[BUTTON_TEXT + MIDDLE];
     auto& r = fonts[0]->GetFrames()[BUTTON_TEXT + RIGHT];
@@ -578,7 +594,9 @@ bool Button(char const* text) {
     for (uint32_t i = 0; i < segs; i++)
         Glyph(BUTTON_TEXT + MIDDLE + mode, x + l.width + (m.width * i) , y);
         
+    FrameStack.top().stack_height++; // hack
     GlyphText(text, text_end, 2, std::round(x + ((total_w - text_w) / SPACE_WIDTH)) , y-1.0f, 2.0f/*, glm::vec3(0.667f, 0.667f, 0.667f)*/);
+    FrameStack.top().stack_height--; // hack
     
     //std::cout << "total_w: " << total_w << " text_w: " << text_w << " x: " << x << " bongo: " << ((total_w - text_w) / 2.0f) << std::endl;
     
@@ -627,15 +645,11 @@ void TextBox(char* text, uint32_t max_len) {
 }
 
 void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
-    //auto& l = UI::glyphinfo[0][BUTTON_DROPDOWN + LEFT];
-    //auto& m = UI::glyphinfo[0][BUTTON_DROPDOWN + MIDDLE];
-    //auto& r = UI::glyphinfo[0][BUTTON_DROPDOWN + RIGHT];
     auto& l = fonts[0]->GetFrames()[BUTTON_DROPDOWN + LEFT];
     auto& m = fonts[0]->GetFrames()[BUTTON_DROPDOWN + MIDDLE];
     auto& r = fonts[0]->GetFrames()[BUTTON_DROPDOWN + RIGHT];
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y + ((LINE_HEIGHT - l.height) / SPACE_WIDTH);
-    //bool isclick = false;
     
     float text_w; uint32_t text_sp; char const* text_end;
     GlyphMetrics(texts[0], 1, text_w, text_sp, text_end);
@@ -654,16 +668,9 @@ void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
         mode = SELECTED;
     }
     
-    if (current_dropdown == texts) {
-        //auto& tl = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP_LEFT];
-        //auto& tr = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP_RIGHT];
-        //auto& bl = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM_LEFT];
-        //auto& br = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM_RIGHT];
-        //auto& l = UI::glyphinfo[0][BOX_PLAIN + CORNER_LEFT];
-        //auto& r = UI::glyphinfo[0][BOX_PLAIN + CORNER_RIGHT];
-        //auto& t = UI::glyphinfo[0][BOX_PLAIN + CORNER_TOP];
-        //auto& b = UI::glyphinfo[0][BOX_PLAIN + CORNER_BOTTOM];
-        //auto& c = UI::glyphinfo[0][BOX_PLAIN + CORNER_CENTER];            
+    FrameStack.top().stack_height++; // hack
+    FrameStack.top().stack_height++; // hack
+    if (current_dropdown == texts) {          
         auto& tl = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_TOP_LEFT];
         auto& tr = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_TOP_RIGHT];
         auto& bl = fonts[0]->GetFrames()[BOX_PLAIN + CORNER_BOTTOM_LEFT];
@@ -691,6 +698,7 @@ void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
         
         GlyphNoclip(x+tl.width, b_y+tl.height, mid_w, mid_h, c.offset_x, c.offset_y, c.width, c.height, Render::COLOR_WHITE, 0);
         
+        FrameStack.top().stack_height++; // hack
         for (uint32_t i = 0; i < len; i++) {
             float text_w; uint32_t text_sp; char const* text_end;
             GlyphMetrics(texts[i], 1, text_w, text_sp, text_end);
@@ -701,9 +709,11 @@ void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
                 if (is_mouse_left) selected = i;
             }
         }
+        FrameStack.top().stack_height--; // hack
         
         mode = PRESSED;
     }
+    FrameStack.top().stack_height--; // hack
     
     Glyph(BUTTON_DROPDOWN + LEFT, x, y);
     Glyph(BUTTON_DROPDOWN + RIGHT + mode, x + total_w - r.width , y);
@@ -711,7 +721,11 @@ void DropdownBox(char const** texts, uint32_t len, uint32_t& selected) {
         Glyph(BUTTON_DROPDOWN + MIDDLE, x + l.width + (m.width * i) , y);
         
     GlyphMetrics(texts[selected], 1, text_w, text_sp, text_end);
+    FrameStack.top().stack_height++; // hack
     GlyphText(texts[selected], text_end, 1, x+5.0f , y-1.0f, 2.0f);
+    FrameStack.top().stack_height--; // hack
+    
+    FrameStack.top().stack_height--; // hack
     
     FrameStack.top().cursor_x += total_w;
 }

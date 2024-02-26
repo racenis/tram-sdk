@@ -49,16 +49,18 @@ void Material::LoadMaterialInfo(const char* filename){
     
     name_t file_type = file.read_name();
     
-    if (file_type != UID("MATv1")) {
+    if (file_type != "MATv2") {
         std::cout << "Invalid material file type " << path << std::endl;
-        return;
+        abort();
     }
 
     while(file.is_continue()){
         materialtype_t mat_type;
+        MaterialFilter mat_filter;
 
         name_t mat_name = file.read_name();
         name_t mat_type_name = file.read_name();
+        name_t mat_filter_name = file.read_name();
 
         if(mat_type_name == UID("flat")){
             mat_type = MATERIAL_TEXTURE;
@@ -76,19 +78,25 @@ void Material::LoadMaterialInfo(const char* filename){
             std::cout << "Error material list material: " << mat_name << std::endl;
             continue;
         }
+        
+        if (mat_filter_name == "linear") {
+            mat_filter = FILTER_LINEAR;
+        } else {
+            mat_filter = FILTER_NEAREST;
+        }
 
-        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type));
+        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter));
     }
 }
 
 /// Creates a material.
 /// If a Material already exists with that name, then the existing Material is returned.
 /// @return Always returns a pointer to a Material.
-Material* Material::Make (name_t name, materialtype_t type) {
+Material* Material::Make(name_t name, materialtype_t type) {
     Material* material = material_list.Find(name);
     
     if (!material) {
-        material = PoolProxy<Material>::New(name, type);
+        material = PoolProxy<Material>::New(name, type, FILTER_NEAREST);
         material_list.Insert(UID(name), material);
     }
     
@@ -108,7 +116,7 @@ Material* Material::Find(name_t name){
     Material* material = material_list.Find(name);
     
     if (!material) {
-        material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP);
+        material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP, FILTER_LINEAR);
         material_list.Insert(UID(name), material);
     }
     
@@ -131,26 +139,32 @@ void Material::MakePattern(vec3 color1, vec3 color2) {
     status = LOADED;
 }
 
-void Material::LoadFromDisk(){
+void Material::LoadFromDisk() {
     assert(status == UNLOADED);
 
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
-    char path[100];
+    char path[100] = "data/textures/";
     int channels;
-
-    if(type == MATERIAL_LIGHTMAP){
-        strcpy(path, "data/textures/lightmap/");
-        channels = 3;
-    } else if(type == MATERIAL_TEXTURE_ALPHA){
-        strcpy(path, "data/textures/");
-        channels = 4;
-    } else if(type == MATERIAL_MSDF || type == MATERIAL_GLYPH){
-        strcpy(path, "data/textures/ui/");
-        channels = 4;
-    } else {
-        strcpy(path, "data/textures/");
-        channels = 3;
+    
+    switch (type) {
+        case MATERIAL_LIGHTMAP:
+            filter = FILTER_LINEAR;
+            channels = 3;
+            break;
+        case MATERIAL_TEXTURE_ALPHA:
+            channels = 4;
+            break;
+        case MATERIAL_MSDF:
+            filter = FILTER_LINEAR;
+            channels = 4;
+            break;
+        case MATERIAL_GLYPH:
+            filter = FILTER_NEAREST;
+            channels = 4;
+            break;
+        default:
+            channels = 3;
     }
 
     strcat(path, name);
@@ -186,9 +200,9 @@ void Material::LoadFromMemory(){
     assert(status == LOADED);
 
     if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
-        texture = CreateTexture(COLORMODE_RGBA, TEXTUREFILTER_LINEAR, width, height, texture_data);
+        texture = CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     } else {
-        texture = CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, texture_data);
+        texture = CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     }
 
     float approx_memory = width * height * channels;  // image size

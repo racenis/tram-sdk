@@ -232,7 +232,7 @@ void Update() {
     
     // generate keypress events. these need to be generated every tick that the
     // keyboard key is being pressed down.
-    for (auto& b : key_action_bindings) {
+    if (input_state == STATE_DEFAULT) for (auto& b : key_action_bindings) {
         if (PollKeyboardKey(b.first) && b.second.action) {
             Event::Post({Event::KEYPRESS, b.second.action, 0, nullptr});
         }

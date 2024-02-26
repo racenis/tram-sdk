@@ -43,10 +43,10 @@ void Init() {
     assert(System::IsInitialized(System::SYSTEM_GUI) && "GUI system needs to be initialized first!");
     assert(MENU_SYSTEM == -1u && "Menu system is already initialized!");
     
-    Material::Make(UID("font_symbols"),     MATERIAL_GLYPH)->Load();
-    Material::Make(UID("font_text"),        MATERIAL_GLYPH)->Load();
-    Material::Make(UID("font_text_bold"),   MATERIAL_GLYPH)->Load();
-    Material::Make(UID("font_headers"),     MATERIAL_GLYPH)->Load();
+    Material::Make(UID("ui/font_symbols"),     MATERIAL_GLYPH)->Load();
+    Material::Make(UID("ui/font_text"),        MATERIAL_GLYPH)->Load();
+    Material::Make(UID("ui/font_text_bold"),   MATERIAL_GLYPH)->Load();
+    Material::Make(UID("ui/font_headers"),     MATERIAL_GLYPH)->Load();
 
     Sprite* font_symbols =      Sprite::Find(UID("font_symbols"));
     Sprite* font_text =         Sprite::Find(UID("font_text"));

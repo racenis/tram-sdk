@@ -85,6 +85,11 @@ enum MaterialTypes : materialtype_t {
     MATERIAL_LAST
 };
 
+enum MaterialFilter {
+    FILTER_NEAREST,
+    FILTER_LINEAR
+};
+
 vertexformat_t RegisterVertexFormat(const char* name);
 materialtype_t RegisterMaterialType(const char* name);
 
