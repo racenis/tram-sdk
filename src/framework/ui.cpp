@@ -188,20 +188,21 @@ void Init(){
         Render::SetScreenSize(width, height);
     });
 
-    glfwSetKeyCallback (WINDOW, KeyCallback);
-    glfwSetCursorPosCallback (WINDOW, MouseCallback);
-    glfwSetMouseButtonCallback (WINDOW, MouseKeyCallback);
-    glfwSetScrollCallback (WINDOW, ScrollCallback);
+    glfwSetKeyCallback(WINDOW, KeyCallback);
+    glfwSetCursorPosCallback(WINDOW, MouseCallback);
+    glfwSetMouseButtonCallback(WINDOW, MouseKeyCallback);
+    glfwSetScrollCallback(WINDOW, ScrollCallback);
 
-    glfwSetWindowSizeLimits (WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
+    glfwSetWindowSizeLimits(WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
-    glfwSetInputMode (WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(WINDOW, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
     cursors[CURSOR_DEFAULT] = glfwCreateStandardCursor (GLFW_ARROW_CURSOR);
     cursors[CURSOR_TEXT] = glfwCreateStandardCursor (GLFW_IBEAM_CURSOR);
     cursors[CURSOR_CLICK] = glfwCreateStandardCursor (GLFW_HAND_CURSOR);
     
-    System::SetInitialized (System::SYSTEM_UI, true);
+    System::SetInitialized(System::SYSTEM_UI, true);
 }
 
 void Uninit() {
@@ -240,8 +241,8 @@ void Update() {
     
     keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
     
-    keyboard_axis_deltas[KEY_MOUSE_X] = 0.0f;
-    keyboard_axis_deltas[KEY_MOUSE_Y] = 0.0f;
+    //keyboard_axis_deltas[KEY_MOUSE_X] = 0.0f;
+    //keyboard_axis_deltas[KEY_MOUSE_Y] = 0.0f;
     
     glfwPollEvents();
 }

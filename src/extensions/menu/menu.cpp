@@ -21,6 +21,7 @@ font_t FONT_SYMBOL = 0;     //< Font that contains sprites for GUI widgets.
 font_t FONT_TEXT = 0;       //< Basic sans-serif font.
 font_t FONT_TEXT_BOLD = 0;  //< Basic bold sans-serif font.
 font_t FONT_HEADER = 0;     //< Font that contains some image headers.
+font_t FONT_PIXELART = 0;   //< Large pixel-art font.
 
 uint32_t MENU_SYSTEM = -1;
 
@@ -47,21 +48,25 @@ void Init() {
     Material::Make(UID("ui/font_text"),        MATERIAL_GLYPH)->Load();
     Material::Make(UID("ui/font_text_bold"),   MATERIAL_GLYPH)->Load();
     Material::Make(UID("ui/font_headers"),     MATERIAL_GLYPH)->Load();
+    Material::Make(UID("ui/font_pixelart"),    MATERIAL_GLYPH)->Load();
 
     Sprite* font_symbols =      Sprite::Find(UID("font_symbols"));
     Sprite* font_text =         Sprite::Find(UID("font_text"));
     Sprite* font_text_bold =    Sprite::Find(UID("font_text_bold"));
     Sprite* font_headers =      Sprite::Find(UID("font_headers"));
+    Sprite* font_pixelart =     Sprite::Find(UID("font_pixelart"));
 
     font_symbols->Load();
     font_text->Load();
     font_text_bold->Load();
     font_headers->Load();
+    font_pixelart->Load();
 
     FONT_SYMBOL =       GUI::RegisterFont(font_symbols);
     FONT_TEXT =         GUI::RegisterFont(font_text);
     FONT_TEXT_BOLD =    GUI::RegisterFont(font_text_bold);
     FONT_HEADER =       GUI::RegisterFont(font_headers);
+    FONT_PIXELART =     GUI::RegisterFont(font_pixelart);
     
     UI::BindKeyboardKey(UI::KEY_ESCAPE, EscapeMenuKeyboard);
     UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, DebugMenuKeyboard);

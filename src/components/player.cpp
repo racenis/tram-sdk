@@ -40,6 +40,9 @@ void PlayerComponent::EventHandler(Event &event) {
         quat look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
         quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
         
+        //std::cout << yaw <<" " << pitch << std::endl;
+        //std::cout << PollKeyboardAxisDelta(KEY_MOUSE_X) <<" delta " << PollKeyboardAxisDelta(KEY_MOUSE_Y) << std::endl;
+        
         controller->SetLookDirection(look_rotation);
         parent->UpdateTransform(parent->GetLocation(), parent_rotation);
     }

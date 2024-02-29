@@ -15,6 +15,7 @@ namespace tram::Ext::Menu {
     extern GUI::font_t FONT_TEXT;
     extern GUI::font_t FONT_TEXT_BOLD;
     extern GUI::font_t FONT_HEADER;
+    extern GUI::font_t FONT_PIXELART;
 }
 
 #endif

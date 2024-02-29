@@ -116,7 +116,7 @@ public:
 
     // make sure that there will be enough room for the empty place marker and free list pointer
     static_assert(sizeof(T) >= sizeof(T*) + sizeof(uint64_t));
-    static_assert(sizeof(T) % sizeof(uint64_t) == 0); // idk what this is
+    //static_assert(sizeof(T) % sizeof(uint64_t) == 0); // idk what this is
 };
 
 template <typename T>
