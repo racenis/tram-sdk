@@ -12,6 +12,8 @@ out vec2 vert_uv;
 out vec3 vert_color;
 flat out uint vert_tex_index;
 
+uniform sampler2D sampler[16];
+
 layout (std140) uniform ModelMatrices {
     mat4 model;
 	uvec4 model_lights;
@@ -39,8 +41,9 @@ void main() {
 	// then we can output these coordinates
     gl_Position = vec4(pos_x, pos_y, depth, 1.0);
 	
-	// what the fuck
-	vert_uv = vec2(TexCoord.x / 256.0, TexCoord.y / -256.0);
+	// and scale the UVs based on the texture size
+	vec2 tex_size = textureSize(sampler[Texture], 0);
+	vert_uv = vec2(TexCoord.x/tex_size.x, TexCoord.y/-tex_size.y);
 		
 	vert_color = VertColor;
 	vert_tex_index = Texture;

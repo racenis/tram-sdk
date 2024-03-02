@@ -42,7 +42,7 @@ struct Material {
 struct Plane {
 	float x_offset, y_offset;
 	float x_scale, y_scale;
-	float rotation;
+	float angle;
 	
 	vec3 p1, p2, p3;
 	
@@ -348,7 +348,7 @@ int main(int argc, const char** argv) {
 					plane.y_offset = atof(file.cursor);
 					while (isspace(*file.cursor)) file.cursor++;
 					while (!isspace(*file.cursor)) file.cursor++;
-					plane.rotation = atof(file.cursor);
+					plane.angle = atof(file.cursor);
 					while (isspace(*file.cursor)) file.cursor++;
 					while (!isspace(*file.cursor)) file.cursor++;
 					plane.x_scale = atof(file.cursor);
@@ -506,7 +506,7 @@ int main(int argc, const char** argv) {
 		
 		// iterate through all brushes of an entity
 		for (auto& brush : entity.brushes) {
-			Brush new_brush = {.planes = brush.planes};
+			Brush new_brush = {.planes = brush.planes, .hull = brush.hull};
 			
 			// then iterate through all polygons of a brush
 			for (auto& poly : brush.polys) {
@@ -678,20 +678,27 @@ int main(int argc, const char** argv) {
 		
 		auto make_vertex = [](Plane plane, Material mat, vec3 vert, vec3 normal) -> Vertex {
 			vec3 pos = vert * (1.0f/32.0f);
-			vec2 tex = vec2{vert.x, vert.y} * (1.0f/32.0f);
+			vec2 tex = vec2{0.0f, 0.0f};
 			
+			vec2 scl = {1.0f/plane.x_scale, 1.0f/plane.y_scale};
+			vec2 off = {plane.x_offset * plane.x_scale, -plane.y_offset * plane.y_scale};
+
 			if (abs(glm::dot(vec3(1.0f, 0.0f, 0.0f), normal))>0.5f) {
-				tex = vec2{vert.y * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
+				vert = quat(vec3(-plane.angle * std::numbers::pi/180.0f, 0.0f, 0.0f)) * vert;
+				tex = vec2{scl.x * (vert.y+off.x) * (1.0f/(float)mat.width), scl.y * (vert.z+off.y) * (1.0f/(float)mat.height)};
 			}
 			
 			if (abs(glm::dot(vec3(0.0f, 1.0f, 0.0f), normal))>0.5f) {
-				tex = vec2{vert.x * (1.0f/(float)mat.width), vert.z * (1.0f/(float)mat.height)};
+				vert = quat(vec3(0.0f, plane.angle * std::numbers::pi/180.0f, 0.0f)) * vert;
+				
+				tex = vec2{scl.x * (vert.x+off.x) * (1.0f/(float)mat.width), scl.y * (vert.z+off.y) * (1.0f/(float)mat.height)};
 			}
 			
 			if (abs(glm::dot(vec3(0.0f, 0.0f, 1.0f), normal))>0.5f) {
-				tex = vec2{vert.x * (1.0f/(float)mat.width), vert.y * (1.0f/(float)mat.height)};
+				vert = quat(vec3(0.0f, 0.0f, -plane.angle * std::numbers::pi/180.0f)) * vert;
+				
+				tex = vec2{scl.x * (vert.x+off.x) * (1.0f/(float)mat.width), scl.y * (vert.y+off.y) * (1.0f/(float)mat.height)};
 			}
-			
 			
 			return {
 				{pos.x, pos.z, -pos.y},
@@ -798,7 +805,7 @@ int main(int argc, const char** argv) {
 			output.write_float32(vertex.tex.y);
 			
 			output.write_float32(vertex.map.x);
-			output.write_float32(vertex.map.x);
+			output.write_float32(vertex.map.y);
 
 			output.write_newline();
 		}
