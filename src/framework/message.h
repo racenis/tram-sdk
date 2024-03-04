@@ -29,7 +29,9 @@ struct Message {
         STOP,
         ACTIVATE,
         ACTIVATE_ONCE,
+        SELECT,
         SET_PROGRESS,
+        SET_ANIMATION,
         LAST_MESSAGE
     };
 

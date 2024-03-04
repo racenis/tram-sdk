@@ -18,10 +18,12 @@ class Entity;
 
 struct Event {
     enum Type : event_t {
-        KEYPRESS,
-        KEYDOWN,
-        KEYUP,
-        CURSORPOS,
+        KEYPRESS,       // keyboard key still pressed
+        KEYDOWN,        // keyboard key pressed
+        KEYUP,          // keyboard key released
+        CURSORPOS,      // cursor moved
+        INTERACTION,    // cursor on top of an interactable object
+        LOOK_AT,        // entity is looking in a direction
         LAST_EVENT
     };
 

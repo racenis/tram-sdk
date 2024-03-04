@@ -29,6 +29,10 @@ void AudioComponent::Start() {
     
     SetAudioSourceBuffer(source, sound->sound_buffers, sound->sound_buffer_count);
     
+    if (play_on_start) {
+        PlayAudioSource(source);
+    }
+    
     is_ready = true;
 }
 
@@ -58,7 +62,11 @@ void AudioComponent::SetRepeating(bool is_repeating) {
 /// Plays the sound.
 /// Plays the sound that the component has been set to play.
 void AudioComponent::Play() {
-    if (is_ready) PlayAudioSource(source);
+    if (is_ready) {
+        PlayAudioSource(source);
+    } else {
+        play_on_start = true;
+    }
 }
 
 /// Pauses the sound.
@@ -72,7 +80,11 @@ void AudioComponent::Pause() {
 /// Stops the sound that the component is playing, or does nothing, if no sound
 /// is playing.
 void AudioComponent::Stop() {
-    if (is_ready) StopAudioSource(source);
+    if (is_ready) {
+        StopAudioSource(source);
+    } else {
+        play_on_start = false;
+    }
 }
 
 /// Checks if component is playing a sound.
@@ -81,7 +93,7 @@ bool AudioComponent::IsPlaying() {
     if (is_ready) {
         return IsAudioSourcePlaying(source);
     } else {
-        return false;
+        return play_on_start;
     }
 }
 

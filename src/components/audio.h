@@ -30,6 +30,7 @@ protected:
     Audio::audiosource_t source;
     vec3 location = {0.0f, 0.0f, 0.0f};
     bool repeat = false;
+    bool play_on_start = false;
 };
 
 }

@@ -48,6 +48,22 @@ protected:
     int last_activate;
 };
 
+class Decoration : public Entity {
+public:
+    Decoration(const SharedEntityData&, const ValueArray&);
+    void UpdateParameters(); void SetParameters();
+    void Load(); void Unload(); void Serialize();
+    void MessageHandler(Message& msg);
+    static void Register();
+protected:
+    Component<RenderComponent> rendercomponent;
+    Component<PhysicsComponent> physicscomponent;
+    
+    name_t model;
+    name_t lightmap;
+};
+
+
 class Breakable : public Entity {
 public:
     Breakable(const SharedEntityData&, const ValueArray&);
@@ -78,39 +94,9 @@ protected:
     name_t collmodel;
 };
 
-class Door : public Entity {
-public:
-    Door(const SharedEntityData&, const ValueArray&);
-    void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
-    void MessageHandler(Message& msg);
-    static void Register();
-protected:
-    Component<RenderComponent> rendercomponent;
-    Component<PhysicsComponent> physicscomponent;
-    
-    name_t model;
-    name_t collmodel;
-};
-
 class Train : public Entity {
 public:
     Train(const SharedEntityData&, const ValueArray&);
-    void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
-    void MessageHandler(Message& msg);
-    static void Register();
-protected:
-    Component<RenderComponent> rendercomponent;
-    Component<PhysicsComponent> physicscomponent;
-    
-    name_t model;
-    name_t collmodel;
-};
-
-class Rotating : public Entity {
-public:
-    Rotating(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
     void Load(); void Unload(); void Serialize();
     void MessageHandler(Message& msg);

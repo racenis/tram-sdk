@@ -6,21 +6,21 @@
     <File Name="src/config.h"/>
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
-      <VirtualDirectory Name="design">
-        <File Name="src/extensions/design/entities.cpp"/>
-        <File Name="src/extensions/design/entities.h"/>
-        <File Name="src/extensions/design/quest.h"/>
-        <File Name="src/extensions/design/quest.cpp"/>
-        <File Name="src/extensions/design/dialog.cpp"/>
-        <File Name="src/extensions/design/dialog.h"/>
-        <File Name="src/extensions/design/character.h"/>
-        <File Name="src/extensions/design/character.cpp"/>
-        <File Name="src/extensions/design/design.h"/>
-        <File Name="src/extensions/design/design.cpp"/>
-        <File Name="src/extensions/design/inventory.cpp"/>
-        <File Name="src/extensions/design/attributes.cpp"/>
-        <File Name="src/extensions/design/inventory.h"/>
-        <File Name="src/extensions/design/attributes.h"/>
+      <VirtualDirectory Name="kitchensink">
+        <File Name="src/extensions/kitchensink/quest.h"/>
+        <File Name="src/extensions/kitchensink/quest.cpp"/>
+        <File Name="src/extensions/kitchensink/inventory.h"/>
+        <File Name="src/extensions/kitchensink/inventory.cpp"/>
+        <File Name="src/extensions/kitchensink/entities.h"/>
+        <File Name="src/extensions/kitchensink/entities.cpp"/>
+        <File Name="src/extensions/kitchensink/dialog.h"/>
+        <File Name="src/extensions/kitchensink/dialog.cpp"/>
+        <File Name="src/extensions/kitchensink/design.h"/>
+        <File Name="src/extensions/kitchensink/design.cpp"/>
+        <File Name="src/extensions/kitchensink/character.h"/>
+        <File Name="src/extensions/kitchensink/character.cpp"/>
+        <File Name="src/extensions/kitchensink/attributes.h"/>
+        <File Name="src/extensions/kitchensink/attributes.cpp"/>
       </VirtualDirectory>
       <VirtualDirectory Name="camera">
         <File Name="src/extensions/camera/camera.cpp"/>
@@ -193,6 +193,10 @@
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
+      <File Name="src/entities/decoration.h"/>
+      <File Name="src/entities/decoration.cpp"/>
+      <File Name="src/entities/sound.h"/>
+      <File Name="src/entities/sound.cpp"/>
       <File Name="src/entities/light.h"/>
       <File Name="src/entities/light.cpp"/>
       <File Name="src/entities/marker.h"/>

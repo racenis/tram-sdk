@@ -30,6 +30,8 @@
 #include <entities/staticworldobject.h>
 #include <entities/light.h>
 #include <entities/player.h>
+#include <entities/sound.h>
+#include <entities/decoration.h>
 
 #include <components/render.h>
 #include <components/animation.h>
@@ -47,8 +49,8 @@
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>
 
-#include <extensions/design/design.h>
-#include <extensions/design/entities.h>
+#include <extensions/kitchensink/design.h>
+#include <extensions/kitchensink/entities.h>
 #include <extensions/scripting/lua.h>
 
 #include <render/api.h>
@@ -357,6 +359,8 @@ int main() {
     //Entity::RegisterType("crate", [](std::string_view& params) -> Entity* {return new Crate(params);});
     Light::Register();
     Crate::Register();
+    Sound::Register();
+    Decoration::Register();
     StaticWorldObject::Register();
     Ext::Design::Button::Register();
 
