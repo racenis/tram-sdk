@@ -113,6 +113,7 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::ACTIVATE_ONCE:
             FireSignal(Signal::ACTIVATE);
+            FireSignal(Signal::USE);
             break;
         case Message::TOGGLE:
             if (animation) {

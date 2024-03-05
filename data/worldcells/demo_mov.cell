@@ -1,20 +1,8 @@
-CELLv2 cell 0 1
-#staticwobj 0 worldspawn 0.000000 0.000000 0.000000 0.0 0.0 0.0 worldspawn fullbright
-#staticwobj 0 platforma 0.000000 0.000000 0.000000 0.0 0.0 0.0 platforma fullbright
-staticwobj 0 paliktnis 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 movs lightmap/movs
-#staticwobj 0 ftft 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 ftft fullbright
-#staticwobj 0 apliktnis 0.000000 0.000000 3.000000 -3.141593 0.058408 -3.141593 tepik fullbright
-#crate 0 muca -1.400000 0.600000 3.800000 0.000000 0.785398 0.000000 crate_ligma crate
-#crate 0 none -1.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
-#crate 0 none -2.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
-#crate 0 none -3.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
-#crate 0 muca -4.000000 0.600000 6.800000 0.000000 0.785398 0.000000 crate_ligma crate
-crate 0 none -1.400000 2.600000 2.800000 0.000000 0.785398 0.000000 metalakaste crate 
-light 0 none 0.0 1.0 7.0 0.0 0.0 0.0 1.0 1.0 0.0 15.0
-#sound 0 none 0.0 1.0 0.0 0.0 0.0 0.0 3 derp 1.0
-decoration 114 none 0.0 1.0 0.0 0.0 0.0 0.0 mongus mongus-run
-#button 111 podzins 0.0 1.0 -1.0 0.0 0.0 0.0 7 dev/button dev/button 0.0 1.25 -1.0 0.0 0.0 -1.0 1.0 0.0 3.14 none tosnins
-#button 112 tosnins 0.0 0.0 0.0 0.0 0.76 0.0 14 dev/button dev/button -1.5 1.25 -1.5 0.0 0.0 1.0 1.0 0.1 5.0 none none
-#crate 0 estijs 0.800000 1.000000 2.000000 0.000000 0.000000 0.000000 kadbusest crate
-transition transition1 demo_mov 8 10.000000 -10.000000 10.000000 -10.000000 -10.000000 10.000000 10.000000 -10.000000 -10.000000 -10.000000 -10.000000 -10.000000 10.000000 10.000000 10.000000 -10.000000 10.000000 10.000000 10.000000 10.000000 -10.000000 -10.000000 10.000000 -10.000000
-#signal 111 progress tosnins 0.0 -1 set-progress none
+CELLv2 demo_mov 0 1 
+staticwobj 0 paliktnis 0 0 0 -3.141593 0.058408 -3.141593 movs lightmap/movs 
+crate 0 none -1.4 2.6 2.8 0 0.785398 0 metalakaste crate 
+light 0 none 0 1 7 0 0 0 1 1 0 15 
+decoration 114 mongus-decoration 0 1 0 0 0 0 mongus mongus-run 
+signal 114 activate mongus-decoration 1 -1 kill none 
+signal 114 activate mongus-decoration 0 -1 stop none 
+transition transition1 demo_mov 8 10 -10 10 -10 -10 10 10 -10 -10 -10 -10 -10 10 10 10 -10 10 10 10 10 -10 -10 10 -10 

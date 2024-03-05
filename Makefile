@@ -43,6 +43,9 @@ src_components_trigger.o: ./src/components/trigger.cpp
 src_entities_crate.o: ./src/entities/crate.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/crate.cpp -o src_entities_crate.o
 
+src_entities_decoration.o: ./src/entities/decoration.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/decoration.cpp -o src_entities_decoration.o
+
 src_entities_light.o: ./src/entities/light.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/light.cpp -o src_entities_light.o
 
@@ -52,32 +55,35 @@ src_entities_marker.o: ./src/entities/marker.cpp
 src_entities_player.o: ./src/entities/player.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/player.cpp -o src_entities_player.o
 
+src_entities_sound.o: ./src/entities/sound.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/sound.cpp -o src_entities_sound.o
+
 src_entities_staticworldobject.o: ./src/entities/staticworldobject.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/entities/staticworldobject.cpp -o src_entities_staticworldobject.o
 
 src_extensions_camera_camera.o: ./src/extensions/camera/camera.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/camera/camera.cpp -o src_extensions_camera_camera.o
 
-src_extensions_design_attributes.o: ./src/extensions/design/attributes.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/attributes.cpp -o src_extensions_design_attributes.o
+src_extensions_kitchensink_attributes.o: ./src/extensions/kitchensink/attributes.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/attributes.cpp -o src_extensions_kitchensink_attributes.o
 
-src_extensions_design_character.o: ./src/extensions/design/character.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/character.cpp -o src_extensions_design_character.o
+src_extensions_kitchensink_character.o: ./src/extensions/kitchensink/character.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/character.cpp -o src_extensions_kitchensink_character.o
 
-src_extensions_design_design.o: ./src/extensions/design/design.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/design.cpp -o src_extensions_design_design.o
+src_extensions_kitchensink_design.o: ./src/extensions/kitchensink/design.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/design.cpp -o src_extensions_kitchensink_design.o
 
-src_extensions_design_dialog.o: ./src/extensions/design/dialog.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/dialog.cpp -o src_extensions_design_dialog.o
+src_extensions_kitchensink_dialog.o: ./src/extensions/kitchensink/dialog.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/dialog.cpp -o src_extensions_kitchensink_dialog.o
 
-src_extensions_design_entities.o: ./src/extensions/design/entities.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/entities.cpp -o src_extensions_design_entities.o
+src_extensions_kitchensink_entities.o: ./src/extensions/kitchensink/entities.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/entities.cpp -o src_extensions_kitchensink_entities.o
 
-src_extensions_design_inventory.o: ./src/extensions/design/inventory.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/inventory.cpp -o src_extensions_design_inventory.o
+src_extensions_kitchensink_inventory.o: ./src/extensions/kitchensink/inventory.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/inventory.cpp -o src_extensions_kitchensink_inventory.o
 
-src_extensions_design_quest.o: ./src/extensions/design/quest.cpp
-	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/design/quest.cpp -o src_extensions_design_quest.o
+src_extensions_kitchensink_quest.o: ./src/extensions/kitchensink/quest.cpp
+	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/kitchensink/quest.cpp -o src_extensions_kitchensink_quest.o
 
 src_extensions_menu_menu.o: ./src/extensions/menu/menu.cpp
 	gcc -c -g -O0 -std=c++20 -I./src -Ilibraries -Ilibraries/bullet -Ilibraries/glad -Ilibraries/glfw3 -Ilibraries/openal ./src/extensions/menu/menu.cpp -o src_extensions_menu_menu.o
@@ -221,18 +227,20 @@ clean:
 	del src_components_sprite.o
 	del src_components_trigger.o
 	del src_entities_crate.o
+	del src_entities_decoration.o
 	del src_entities_light.o
 	del src_entities_marker.o
 	del src_entities_player.o
+	del src_entities_sound.o
 	del src_entities_staticworldobject.o
 	del src_extensions_camera_camera.o
-	del src_extensions_design_attributes.o
-	del src_extensions_design_character.o
-	del src_extensions_design_design.o
-	del src_extensions_design_dialog.o
-	del src_extensions_design_entities.o
-	del src_extensions_design_inventory.o
-	del src_extensions_design_quest.o
+	del src_extensions_kitchensink_attributes.o
+	del src_extensions_kitchensink_character.o
+	del src_extensions_kitchensink_design.o
+	del src_extensions_kitchensink_dialog.o
+	del src_extensions_kitchensink_entities.o
+	del src_extensions_kitchensink_inventory.o
+	del src_extensions_kitchensink_quest.o
 	del src_extensions_menu_menu.o
 	del src_extensions_scripting_lua.o
 	del src_framework_async.o
@@ -276,5 +284,5 @@ clean:
 	del src_render_opengl_renderer.o
 	del src_render_opengl_shader.o
 
-library: src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_animation.o src_components_audio.o src_components_controller.o src_components_light.o src_components_particle.o src_components_physics.o src_components_player.o src_components_render.o src_components_sprite.o src_components_trigger.o src_entities_crate.o src_entities_light.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_design_attributes.o src_extensions_design_character.o src_extensions_design_design.o src_extensions_design_dialog.o src_extensions_design_entities.o src_extensions_design_inventory.o src_extensions_design_quest.o src_extensions_menu_menu.o src_extensions_scripting_lua.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_script.o src_framework_signal.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_aabb.o src_render_animation.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
-	ar -crf libtramsdk.a src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_animation.o src_components_audio.o src_components_controller.o src_components_light.o src_components_particle.o src_components_physics.o src_components_player.o src_components_render.o src_components_sprite.o src_components_trigger.o src_entities_crate.o src_entities_light.o src_entities_marker.o src_entities_player.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_design_attributes.o src_extensions_design_character.o src_extensions_design_design.o src_extensions_design_dialog.o src_extensions_design_entities.o src_extensions_design_inventory.o src_extensions_design_quest.o src_extensions_menu_menu.o src_extensions_scripting_lua.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_script.o src_framework_signal.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_aabb.o src_render_animation.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+library: src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_animation.o src_components_audio.o src_components_controller.o src_components_light.o src_components_particle.o src_components_physics.o src_components_player.o src_components_render.o src_components_sprite.o src_components_trigger.o src_entities_crate.o src_entities_decoration.o src_entities_light.o src_entities_marker.o src_entities_player.o src_entities_sound.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_kitchensink_attributes.o src_extensions_kitchensink_character.o src_extensions_kitchensink_design.o src_extensions_kitchensink_dialog.o src_extensions_kitchensink_entities.o src_extensions_kitchensink_inventory.o src_extensions_kitchensink_quest.o src_extensions_menu_menu.o src_extensions_scripting_lua.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_script.o src_framework_signal.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_aabb.o src_render_animation.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 
+	ar -crf libtramsdk.a src_audio_api.o src_audio_audio.o src_audio_sound.o src_audio_openal_openal.o src_components_animation.o src_components_audio.o src_components_controller.o src_components_light.o src_components_particle.o src_components_physics.o src_components_player.o src_components_render.o src_components_sprite.o src_components_trigger.o src_entities_crate.o src_entities_decoration.o src_entities_light.o src_entities_marker.o src_entities_player.o src_entities_sound.o src_entities_staticworldobject.o src_extensions_camera_camera.o src_extensions_kitchensink_attributes.o src_extensions_kitchensink_character.o src_extensions_kitchensink_design.o src_extensions_kitchensink_dialog.o src_extensions_kitchensink_entities.o src_extensions_kitchensink_inventory.o src_extensions_kitchensink_quest.o src_extensions_menu_menu.o src_extensions_scripting_lua.o src_framework_async.o src_framework_core.o src_framework_entity.o src_framework_entitycomponent.o src_framework_event.o src_framework_file.o src_framework_gui.o src_framework_language.o src_framework_loader.o src_framework_logging.o src_framework_math.o src_framework_message.o src_framework_navigation.o src_framework_navmesh.o src_framework_path.o src_framework_script.o src_framework_signal.o src_framework_stats.o src_framework_system.o src_framework_transition.o src_framework_ui.o src_framework_uid.o src_framework_worldcell.o src_physics_collisionmodel.o src_physics_physics.o src_physics_bullet_bullet.o src_platform_file.o src_platform_time.o src_render_aabb.o src_render_animation.o src_render_error.o src_render_material.o src_render_model.o src_render_render.o src_render_renderer.o src_render_sprite.o src_render_vertices.o src_render_opengl_error.o src_render_opengl_renderer.o src_render_opengl_shader.o 

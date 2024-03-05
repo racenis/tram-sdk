@@ -24,7 +24,7 @@ struct Message {
         UNLOCK,
         TOGGLE,
         KILL,
-        USE,
+        TRIGGER,
         START,
         STOP,
         ACTIVATE,
