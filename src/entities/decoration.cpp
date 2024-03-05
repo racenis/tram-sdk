@@ -101,9 +101,52 @@ void Decoration::Serialize() {
 
 }
 
-void Decoration::MessageHandler(Message& msg){
-    if (msg.type != Message::MOVE_PICK_UP) {
-        return;
+void Decoration::MessageHandler(Message& msg) {
+    switch (msg.type) {
+        case Message::SELECT:
+            Event::Post({
+                .type = Event::SELECTED,
+                .poster_id = this->id
+            });
+            break;
+        case Message::ACTIVATE:
+            break;
+        case Message::ACTIVATE_ONCE:
+            FireSignal(Signal::ACTIVATE);
+            break;
+        case Message::TOGGLE:
+            if (animation) {
+                if (animationcomponent->IsPlayingAnimation(animation)) {
+                    animationcomponent->StopAnimation(animation);
+                } else {
+                    animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
+                }
+            }
+            break;
+        case Message::KILL:
+            delete this;
+            break;
+        case Message::START:
+            if (animation) {
+                animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
+            }
+            break;
+        case Message::STOP:
+            if (animation) {
+                animationcomponent->StopAnimation(animation);
+            }
+            break;
+        case Message::SET_ANIMATION:
+            if (animation && animationcomponent->IsPlayingAnimation(animation)) {
+                animationcomponent->StopAnimation(animation);
+                animation = *(name_t*)msg.data_value;
+                animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f); 
+            } else {
+                animation = *(name_t*)msg.data_value;
+            }
+            break;
+        default:
+            std::cout << "Decoration " << name << " does not understand message " << Message::GetName(msg.type) << std::endl;  
     }
 }
 

@@ -28,7 +28,20 @@ begin
 	model dev/marker
 end
 
+begin
+	name sound
+	model dev/sound
+	field uint flags
+	field string sound
+	field float volume
+end
 
+begin
+	name decoration
+	model none
+	field string model
+	field string animation
+end
 
 # additional extension entities
 

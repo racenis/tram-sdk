@@ -500,6 +500,21 @@ int main() {
         }
     });
     
+    Event::AddListener(Event::TICK, [](Event& event) {
+        vec3 start = Render::GetCameraPosition();
+        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        
+        auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
+
+        if (result.collider) {
+            Message::Send({Message::SELECT, 0, result.collider->GetParent()->GetID(), 0});
+        }
+    });
+    
+    Event::AddListener(Event::SELECTED, [](Event& event) {
+        AddLineMarker(Entity::Find(event.poster_id)->GetLocation(), COLOR_PINK);
+    });
+    
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
         camera->SetFollowing(nullptr);
         camera->SetMouselook(false);

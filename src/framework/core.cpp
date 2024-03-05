@@ -44,6 +44,11 @@ void Core::Init() {
 void Core::Update() {
     frame_time = GetTime();
     frame_tick++;
+
+    Event::Post({
+        .type = Event::TICK,
+        .poster_id = 0
+    });
     
     for (System::system_t i = 0; i < System::GetSystemCount(); i++) {
         System::SetUpdated(i, false);

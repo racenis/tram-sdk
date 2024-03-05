@@ -22,7 +22,8 @@ struct Event {
         KEYDOWN,        // keyboard key pressed
         KEYUP,          // keyboard key released
         CURSORPOS,      // cursor moved
-        INTERACTION,    // cursor on top of an interactable object
+        TICK,           // emitted every tick
+        SELECTED,       // cursor on top of an interactable object
         LOOK_AT,        // entity is looking in a direction
         LAST_EVENT
     };
