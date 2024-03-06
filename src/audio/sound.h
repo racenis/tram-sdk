@@ -23,8 +23,11 @@ public:
     void LoadFromDisk();
     void LoadFromMemory(){}
     void Unload();
-    static Sound* Find (name_t name);
     
+    /// Returns sound length in seconds.
+    inline float GetLength() { return (float)sound_length/(float)sample_rate; }
+    
+    static Sound* Find (name_t name);
 protected:
     Sound(name_t name) : Resource(name) {}
     template <typename> friend class tram::Pool;

@@ -36,12 +36,33 @@ void Sound::Register() {
     );
 }
 
+/// Regular map file constructor.
 Sound::Sound(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     sound = field_array[FIELD_SOUND];
     volume = field_array[FIELD_VOLUME];
     flags = field_array[FIELD_FLAGS];
 }
 
+/// PLays a sound, then removes itself.
+Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
+    Audio::Sound* s = Audio::Sound::Find(sound);
+    
+    this->sound = sound;
+    this->volume = volume;
+    this->flags = SOUND_START_ON_LOAD;
+    
+    this->location = position;
+    
+    Message msg = {
+        .type = Message::KILL,
+        .sender = this->id,
+        .receiver = this->id
+    };
+    
+    Message::Send(msg, s->GetLength() * 60.0f);
+    
+    Load();
+}
 
 void Sound::UpdateParameters () {
     if (!is_loaded) return;
@@ -83,7 +104,13 @@ void Sound::Serialize () {
 }
 
 void Sound::MessageHandler (Message& msg) {
-    return;
+    switch (msg.type) {
+        case Message::KILL:
+            delete this;
+            break;
+        default:
+            return;
+    }
 }
 
 }

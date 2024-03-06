@@ -21,6 +21,7 @@ public:
     void SetRotateFollowing(bool rotate_following);
     void SetBobbing(float bobbing_weight);
     void SetBobbingDistance(float bobbing_distance);
+    void SetBobbingCallback(void (*bob_callback)(Camera*));
     
     inline void SetLocation(vec3 location) { this->location = location; }
     inline void SetRotation(quat rotation) { this->rotation = rotation; }
@@ -39,6 +40,7 @@ protected:
     float bobbing_weight_goal = 0.0f;
     float bobbing_weight = 0.0f;
     float bobbing_distance = 0.2f;
+    void (*bob_callback)(Camera*) = nullptr;
     
     bool mouselook = false;
     bool rotate_following = false;

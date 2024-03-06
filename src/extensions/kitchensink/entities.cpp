@@ -281,7 +281,13 @@ void Button::Update() {
 }
 
 void Button::MessageHandler(Message& msg){
-        
+    if (msg.type == Message::SELECT) {
+        Event::Post({
+            .type = Event::SELECTED,
+            .poster_id = this->id
+        });
+    }
+    
     // button is pressed and it is not momentary
     if (msg.type == Message::ACTIVATE_ONCE /*&& !(flags & BUTTON_FLAG_MOMENTARY)*/ && !(flags & BUTTON_FLAG_LOCKED)) {
         switch (state) {

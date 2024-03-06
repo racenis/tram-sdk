@@ -49,7 +49,7 @@ void Material::LoadMaterialInfo(const char* filename){
     
     name_t file_type = file.read_name();
     
-    if (file_type != "MATv2") {
+    if (file_type != "MATv3") {
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
@@ -57,10 +57,12 @@ void Material::LoadMaterialInfo(const char* filename){
     while(file.is_continue()){
         materialtype_t mat_type;
         MaterialFilter mat_filter;
+        MaterialProperty mat_property;
 
         name_t mat_name = file.read_name();
         name_t mat_type_name = file.read_name();
         name_t mat_filter_name = file.read_name();
+        name_t mat_property_name = file.read_name();
 
         if(mat_type_name == UID("flat")){
             mat_type = MATERIAL_TEXTURE;
@@ -84,8 +86,36 @@ void Material::LoadMaterialInfo(const char* filename){
         } else {
             mat_filter = FILTER_NEAREST;
         }
+        
+        if (mat_filter_name == "metal") {
+            mat_property = PROPERTY_METAL;
+        } else if (mat_filter_name == "metal-thin") {
+            mat_property = PROPERTY_METAL_THIN;
+        } else if (mat_filter_name == "slime") {
+            mat_property = PROPERTY_SLIME;
+        } else if (mat_filter_name == "tile") {
+            mat_property = PROPERTY_TILE;
+        } else if (mat_filter_name == "grate") {
+            mat_property = PROPERTY_GRATE;
+        } else if (mat_filter_name == "wood") {
+            mat_property = PROPERTY_WOOD;
+        } else if (mat_filter_name == "computer") {
+            mat_property = PROPERTY_COMPUTER;
+        } else if (mat_filter_name == "glass") {
+            mat_property = PROPERTY_GLASS;
+        } else if (mat_filter_name == "snow") {
+            mat_property = PROPERTY_SNOW;
+        } else if (mat_filter_name == "grass") {
+            mat_property = PROPERTY_GRASS;
+        } else if (mat_filter_name == "concrete") {
+            mat_property = PROPERTY_CONCRETE;
+        } else if (mat_filter_name == "flesh") {
+            mat_property = PROPERTY_FLESH;
+        } else {
+            mat_property = PROPERTY_METAL;
+        }
 
-        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter));
+        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property));
     }
 }
 

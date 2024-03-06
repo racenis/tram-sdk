@@ -412,6 +412,20 @@ int main() {
     
     Ext::Camera::SetCamera(camera);
     
+    camera->SetBobbingCallback([](Ext::Camera::Camera* c){
+        auto res = Render::AABB::FindNearestFromRay(GetCameraPosition(), vec3(0.0f, -1.0f, 0.0f), -1);
+        
+        if (res.data) {
+            auto comp = (RenderComponent*)res.data;
+            auto mat = comp->GetModel()->GetMaterials()[res.triangle.material];
+            std::cout << mat->GetName() << std::endl;
+            
+            new Sound("step", 1.0f, GetCameraPosition() - vec3(0.0f, 1.0f, 0.0f));
+        } else {
+            std::cout << "No intersection." << std::endl;
+        }
+    });
+    
 
     // create the createdwdww model
     //binguser = PoolProxy<RenderComponent>::New();
@@ -535,8 +549,7 @@ int main() {
         
         std::cout << v.x << " " << v.y << " " << v.z << std::endl;
     });
-    
-    
+        
     //auto crate_ent = Entity::Find(UID("estijs"));
     
 #ifdef __EMSCRIPTEN__

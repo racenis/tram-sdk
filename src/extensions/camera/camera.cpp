@@ -18,11 +18,6 @@ const float TILT_SPEED = 0.01f;
 const float BOB_SPEED = 0.15f;
 const float BOB_CHANGE_SPEED = 0.05f;
 
-float cursorchangex = 0.0f;
-float cursorchangey = 0.0f;
-float cursorx_last = 0.0f;
-float cursory_last = 0.0f;
-
 void Init() {
     assert(System::IsInitialized(System::SYSTEM_RENDER) && "Render system needs to be initialized first!");
     assert(System::IsInitialized(System::SYSTEM_AUDIO) && "Audio system needs to be initialized first!");
@@ -61,6 +56,10 @@ void Camera::SetBobbingDistance (float bobbing_distance) {
     this->bobbing_distance = bobbing_distance;
 }
 
+void Camera::SetBobbingCallback(void (*bob_callback)(Camera*)) {
+    this->bob_callback = bob_callback;
+}
+
 void Camera::Update () {
     if (UI::GetInputState() == UI::STATE_FLYING) return;
     
@@ -82,10 +81,18 @@ void Camera::Update () {
         bobbing_weight += BOB_CHANGE_SPEED;
     }
     
+    // process the bobbing
     if (bobbing_weight > 0.0f) {
         bob += BOB_SPEED;
+        
+        // do callback
+        if (bob >= 2.0f*glm::pi<float>()) {
+            bob = fmodf(bob, 2.0f*glm::pi<float>());
+            if (bob_callback) bob_callback(this);
+        }
     }
     
+    // update position to entity that is being followed
     if (following) {
         location = following->GetLocation();
         rotation = following->Query(QUERY_LOOK_DIRECTION);

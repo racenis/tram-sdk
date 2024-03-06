@@ -140,10 +140,10 @@ void Decoration::MessageHandler(Message& msg) {
         case Message::SET_ANIMATION:
             if (animation && animationcomponent->IsPlayingAnimation(animation)) {
                 animationcomponent->StopAnimation(animation);
-                animation = *(name_t*)msg.data_value;
+                animation = *(Value*)msg.data_value;
                 animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f); 
             } else {
-                animation = *(name_t*)msg.data_value;
+                animation = *(Value*)msg.data_value;
             }
             break;
         default:

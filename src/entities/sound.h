@@ -15,6 +15,7 @@ class AudioComponent;
 class Sound : public Entity {
 public:
     Sound(const SharedEntityData&, const ValueArray&);
+    Sound(name_t sound, float volume, vec3 position);
     void UpdateParameters();
     void SetParameters();
     void Load();
