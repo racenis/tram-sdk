@@ -166,6 +166,7 @@ metalakaste flat linear metal
 metalareste alpha linear metal
 dev/nodraw flat nearest metal
 dev/light flat nearest metal
+dev/sound flat nearest metal
 dev/button16x16 flat nearest metal
 dev/floor32x32 flat nearest metal
 dev/floor128x128 flat nearest metal

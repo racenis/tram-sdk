@@ -280,8 +280,8 @@ void Button::Update() {
     last_activate++;
 }
 
-void Button::MessageHandler(Message& msg){
-    if (msg.type == Message::SELECT) {
+void Button::MessageHandler(Message& msg) {
+    if (msg.type == Message::SELECT && !(flags & BUTTON_FLAG_LOCKED)) {
         Event::Post({
             .type = Event::SELECTED,
             .poster_id = this->id

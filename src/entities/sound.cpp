@@ -105,8 +105,21 @@ void Sound::Serialize () {
 
 void Sound::MessageHandler (Message& msg) {
     switch (msg.type) {
+        case Message::TOGGLE:
+            if (audio->IsPlaying()) {
+                audio->Stop();
+            } else {
+                audio->Play();
+            }
+            break;
         case Message::KILL:
             delete this;
+            break;
+        case Message::START:
+            audio->Play();
+            break;
+        case Message::STOP:
+            audio->Stop();
             break;
         default:
             return;
