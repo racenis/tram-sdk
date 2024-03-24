@@ -39,8 +39,17 @@ end
 begin
 	name decoration
 	model none
+	field uint flags
 	field string model
 	field string animation
+end
+
+begin
+	name trigger
+	model none
+	field uint flags
+	field uint collision-mask
+	field string model
 end
 
 # additional extension entities

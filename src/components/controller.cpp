@@ -71,6 +71,16 @@ void ControllerComponent::TurnRight() {
 
 void ControllerComponent::ApplyDynamics() {
     
+    // if in air, apply gravity; otherwise apply ground friction
+    if (is_in_air) {
+        // check for terminal velocity
+        if (velocity.y > -0.12f) {
+            velocity.y -= 0.0053f;
+        }
+    } else {
+        velocity *= friction;
+    }
+    
     // first we will apply the move direction to the current velocity
     if (glm::length(move_direction) > 0.0f) {
         
@@ -78,6 +88,9 @@ void ControllerComponent::ApplyDynamics() {
         float target_speed = walk_speed;
         if (running) target_speed = run_speed;
         if (crouching) target_speed = crouch_speed;
+
+        // helps with floaty feeling
+        if (is_in_air) target_speed *= 0.33f;
 
         // convert local space direction into global space direction and normalize it
         glm::vec3 wish_dir = glm::normalize(parent->GetRotation() * move_direction);
@@ -94,16 +107,6 @@ void ControllerComponent::ApplyDynamics() {
         
         velocity.x += add_velocity.x;
         velocity.z += add_velocity.z;
-    }
-    
-    // if in air, apply gravity; otherwise apply ground friction
-    if (is_in_air) {
-        // check for terminal velocity
-        if (velocity.y > -0.12f) {
-            velocity.y -= 0.0053f;
-        }
-    } else {
-        velocity *= 0.89f;
     }
 }
 

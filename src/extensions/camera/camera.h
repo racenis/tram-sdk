@@ -30,6 +30,7 @@ public:
     inline quat GetRotation() { return rotation; }
     
     inline void SetFollowing(Entity* following) { this->following = following; }
+    inline void SetFollowingInterpolation(float following_interpolation) { this->following_interpolation = following_interpolation; }
     inline void SetFollowingOffset(vec3 offset) { this->following_offset = offset; }
     
 protected:
@@ -51,6 +52,7 @@ protected:
     quat rotation = quat (vec3 (0.0f, 0.0f, 0.0f));
     
     vec3 following_offset = vec3 (0.0f, 0.0f, 0.0f);
+    float following_interpolation = 1.0f;
     Entity* following = nullptr;
 };
 

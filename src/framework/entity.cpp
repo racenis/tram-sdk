@@ -11,7 +11,8 @@
 
 #include <iostream>
 #include <unordered_map>
-#include <set>
+
+#include <algorithm>
 
 namespace tram {
 
@@ -107,18 +108,18 @@ Entity* Entity::Find(name_t entityName) {
     return entity_name_list.Find(entityName);
 }
 
-static std::set<Entity*> update_list;
+static std::vector<Entity*> update_list;
 
 /// Adds entity to update list.
 /// After being added to the update list, the entity's Update() method will be
 /// called every time UpdateFromList() is called.
 void Entity::AddUpdate() {
-    update_list.insert(this);
+    update_list.push_back(this);
 }
 
 /// Remove entity from the update list.
 void Entity::RemoveUpdate() {
-    update_list.erase(update_list.find(this));
+    update_list.erase(std::find(update_list.begin(), update_list.end(), this));
 }
 
 /// Updates all of the entities in the update list.

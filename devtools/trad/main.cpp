@@ -46,7 +46,8 @@ struct Lightmap {
 	Lightmap(int width, int height) {
 		t = new Texel[width*height];
 		for (int i = 0; i < width*height; i++) {
-			t[i] = Texel {.color = {0.0f, 0.0f, 0.0f}};
+			//t[i] = Texel {.color = {0.0f, 0.0f, 0.0f}};
+			t[i] = Texel {.color = {1.0f, 0.5f, 0.5f}};
 		}
 		w = width;
 		h = height;
@@ -121,7 +122,7 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<Triangle>& tris, vec3 p
 	for (auto res : results) {
 		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].v1.pos, tris[res].v2.pos, tris[res].v3.pos);
 		if (intr.x == INFINITY) continue;			
-		if(glm::dot(tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
+		//if(glm::dot(tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
 		if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
 	}
 	
@@ -182,43 +183,64 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 	if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 	
 	// position of vertices on the raster image
-	int lowest_y = lowest.map.y * (float)p.l_h;
-	int middle_y = middle.map.y * (float)p.l_h;
-	int highest_y = highest.map.y * (float)p.l_h;
+	int lowest_y = ceilf(lowest.map.y * (float)p.l_h);
+	int middle_y = ceilf(middle.map.y * (float)p.l_h);
+	int highest_y = ceilf(highest.map.y * (float)p.l_h);
 	
-	// stretch the triangle a little bit
-	if (middle_y == highest_y) {
-		middle_y += p.stretch_high_y;
-		highest_y += p.stretch_high_y;
-		lowest_y -= p.stretch_low_y;
-	} else {
-		highest_y += p.stretch_high_y;
-		lowest_y -= p.stretch_low_y;
+	int lowest_x = ceilf(lowest.map.x * (float)p.l_w);
+	int middle_x = ceilf(middle.map.x * (float)p.l_w);
+	int highest_x = ceilf(highest.map.x * (float)p.l_w);
+	
+	// push stuff
+	/*if (lowest_y + 1 != highest_y) {
+		if (lowest_y == middle_y) {
+			lowest_y += 1;
+			middle_y += 1;
+		} else {
+			lowest_y += 1;
+		}
 	}
-
+	
+	if (lowest_x == middle_x && lowest_x < highest_x) {
+		lowest_x 
+	}*/
+	
+	
+	
+	
+	
+	// compute raster line counts
 	int low_high_lines = highest_y - lowest_y;
 	int low_mid_lines = middle_y - lowest_y;
 	int mid_high_lines = highest_y - middle_y;
 	
-	int highest_x = highest.map.x * (float)p.l_w;
-	int middle_x = middle.map.x * (float)p.l_w;
-	int lowest_x = lowest.map.x * (float)p.l_w;
-	
-	if (highest_x > middle_x || highest_x > lowest_x) highest_x += p.stretch_high_x;
-	if (middle_x > highest_x || middle_x > lowest_x) middle_x += p.stretch_high_x;
-	if (lowest_x > middle_x || lowest_x > highest_x) lowest_x += p.stretch_high_x;
-
-	if (highest_x < middle_x || highest_x < lowest_x) highest_x -= p.stretch_low_x;
-	if (middle_x < highest_x || middle_x < lowest_x) middle_x -= p.stretch_low_x;
-	if (lowest_x < middle_x || lowest_x < highest_x) lowest_x -= p.stretch_low_x;
-
+	// compute raster directions
 	float low_high_dir = (float)(highest_x - lowest_x) / (float)low_high_lines;
 	float low_mid_dir = (float)(middle_x - lowest_x) / (float)low_mid_lines;
 	float mid_high_dir = (float)(highest_x - middle_x) / (float)mid_high_lines;
 	
 	float left_pos = lowest_x;
 	float right_pos = lowest_x;
+	
+	// stupid bug fix
+	if (!low_mid_lines) {
+		
+		left_pos = lowest_x;
+		right_pos = middle_x;
+		
+		/*if (lowest_x > middle_x) {
+			left_pos = lowest_x;
+			right_pos = middle_x;
+		} else {
+			left_pos = middle_x;
+			right_pos = lowest_x;
 			
+			std::swap(low_high_dir, mid_high_dir);
+		}*/
+	}
+	
+	
+	
 	for (int row = lowest_y; row < middle_y; row++) {
 		left_pos += low_high_dir;
 		right_pos += low_mid_dir;
@@ -287,10 +309,10 @@ int main(int argc, const char** argv) {
 	bool force_fullbright = false;
 	
 	// stretch the raster a little bit, to help with color bleeding
-	int stretch_low_x = 1;
-	int stretch_low_y = 1;
-	int stretch_high_x = 2;
-	int stretch_high_y = 2;
+	//int stretch_low_x = -1;
+	//int stretch_low_y = -1;
+	//int stretch_high_x = 2;
+	//int stretch_high_y = 2;
 	
 	if (lightmap_width < 1 || lightmap_height < 1) {
 		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
@@ -313,10 +335,10 @@ int main(int argc, const char** argv) {
 		
 		if (strcmp(argv[i], "-pad") == 0) {
 			int ammount = atoi(argv[++i]);
-			stretch_low_x = ammount;
-			stretch_low_y = ammount;
-			stretch_high_x = ammount + 1;
-			stretch_high_y = ammount + 1;
+			//stretch_low_x = ammount;
+			//stretch_low_y = ammount;
+			//stretch_high_x = ammount + 1;
+			//stretch_high_y = ammount + 1;
 		}
 		
 		if (strcmp(argv[i], "-fullbright") == 0) {
@@ -498,10 +520,11 @@ int main(int argc, const char** argv) {
 	RasterParams image_params = {
 		l.w,
 		l.h,
-		stretch_low_x,
-		stretch_low_y,
-		stretch_high_x,
-		stretch_high_y
+		//stretch_low_x,
+		//stretch_low_y,
+		//stretch_high_x,
+		//stretch_high_y
+		0, 0, 0, 0
 	};
 	
 	int last_dots = -1;
@@ -578,7 +601,7 @@ int main(int argc, const char** argv) {
 	}
 	
 	// then write it to a png
-	std::string output_path = "data/textures/lightmap/";
+	std::string output_path = "data/textures/";
 	output_path += (const char*)lightmap_name;
 	output_path += ".png";
 	

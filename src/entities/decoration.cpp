@@ -16,12 +16,18 @@ namespace tram {
 
 using namespace tram::Physics;
 
+enum : uint32_t {
+    FLAG_LOCKED = 1
+};
+
 enum {
+    FIELD_FLAGS,
     FIELD_MODEL,
     FIELD_ANIMATION
 };
 
-static const uint32_t fields[2] = {
+static const uint32_t fields[3] = {
+    TYPE_UINT32,
     TYPE_NAME,
     TYPE_NAME
 }; 
@@ -32,11 +38,12 @@ void Decoration::Register() {
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Decoration(a, b); },
         [](Entity* a) { delete a; },
         fields,
-        2
+        3
     );
 }
 
 Decoration::Decoration(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
+    flags = field_array[FIELD_FLAGS];
     model = field_array[FIELD_MODEL];
     animation = field_array[FIELD_ANIMATION];
 }
@@ -78,8 +85,8 @@ void Decoration::Load(){
     rendercomponent->SetArmature(animationcomponent);
     
     if (animation) {
+        std::cout << "PLAYING " << animation << std::endl;
         animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
-        std::cout << "PLAYING" << std::endl;
     }
     
     is_loaded = true;
@@ -104,6 +111,7 @@ void Decoration::Serialize() {
 void Decoration::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::SELECT:
+            if (flags & FLAG_LOCKED) return;
             Event::Post({
                 .type = Event::SELECTED,
                 .poster_id = this->id
@@ -112,15 +120,24 @@ void Decoration::MessageHandler(Message& msg) {
         case Message::ACTIVATE:
             break;
         case Message::ACTIVATE_ONCE:
+            if (flags & FLAG_LOCKED) return;
             FireSignal(Signal::ACTIVATE);
             FireSignal(Signal::USE);
+            break;
+        case Message::LOCK:
+            flags |= FLAG_LOCKED;
+            break;
+        case Message::UNLOCK:
+            flags &= ~FLAG_LOCKED;
             break;
         case Message::TOGGLE:
             if (animation) {
                 if (animationcomponent->IsPlayingAnimation(animation)) {
-                    animationcomponent->StopAnimation(animation);
+                    //animationcomponent->StopAnimation(animation);
+                    animationcomponent->FadeAnimation(animation, false, 0.05f);
                 } else {
                     animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
+                    animationcomponent->FadeAnimation(animation, true, 0.05f);
                 }
             }
             break;
@@ -130,18 +147,22 @@ void Decoration::MessageHandler(Message& msg) {
         case Message::START:
             if (animation) {
                 animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
+                animationcomponent->FadeAnimation(animation, true, 0.05f);
             }
             break;
         case Message::STOP:
             if (animation) {
-                animationcomponent->StopAnimation(animation);
+                //animationcomponent->StopAnimation(animation);
+                animationcomponent->FadeAnimation(animation, false, 0.05f);
             }
             break;
         case Message::SET_ANIMATION:
             if (animation && animationcomponent->IsPlayingAnimation(animation)) {
-                animationcomponent->StopAnimation(animation);
+                //animationcomponent->StopAnimation(animation);
+                animationcomponent->FadeAnimation(animation, false, 0.05f);
                 animation = *(Value*)msg.data_value;
-                animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f); 
+                animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
+                animationcomponent->FadeAnimation(animation, true, 0.05f);
             } else {
                 animation = *(Value*)msg.data_value;
             }

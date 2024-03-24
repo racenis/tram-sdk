@@ -107,6 +107,10 @@ void Camera::Update () {
     term_loc += following_offset;
     term_loc += vec3(0.0f, 1.0f, 0.0f) * (float) sin(bob) * bobbing_distance * bobbing_weight;
     
+    if (following_interpolation != 1.0f) {
+        term_loc = glm::mix(Render::GetCameraPosition(), term_loc, following_interpolation);
+    }
+    
     Render::SetCameraPosition(term_loc, 0);
     Render::SetCameraRotation(term_rot, 0);
     

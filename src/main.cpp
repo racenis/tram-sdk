@@ -32,6 +32,7 @@
 #include <entities/player.h>
 #include <entities/sound.h>
 #include <entities/decoration.h>
+#include <entities/trigger.h>
 
 #include <components/render.h>
 #include <components/animation.h>
@@ -361,6 +362,7 @@ int main() {
     Crate::Register();
     Sound::Register();
     Decoration::Register();
+    Trigger::Register();
     StaticWorldObject::Register();
     Ext::Design::Button::Register();
 
@@ -386,6 +388,7 @@ int main() {
     Material::LoadMaterialInfo("material");
 
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
+    Animation::Find(UID("mongus-jump"))->LoadFromDisk();
 
     //UID bepitong;
     
@@ -404,15 +407,22 @@ int main() {
     player->SetLocation(vec3(0.0f, (1.85f/2.0f) + 0.05f, 0.0f));
     player->Load();
     
+    player->controllercomponent->SetFriction(0.82f);
+    player->controllercomponent->SetWalkSpeed(0.2f);
+    player->controllercomponent->SetRunSpeed(0.3f);
+    
     camera = new Ext::Camera::Camera;
     camera->SetMouselook(true);
     camera->SetRotateFollowing(true);
     camera->SetFollowingOffset({0.0f, 0.5f, 0.0f});
     camera->SetFollowing(player);
     
+    camera->SetBobbingDistance(0.0f); // why does removing this make camera not work?????
+    //camera->SetFollowingInterpolation(0.2f);
+    
     Ext::Camera::SetCamera(camera);
     
-    camera->SetBobbingCallback([](Ext::Camera::Camera* c){
+    /*camera->SetBobbingCallback([](Ext::Camera::Camera* c){
         auto res = Render::AABB::FindNearestFromRay(GetCameraPosition(), vec3(0.0f, -1.0f, 0.0f), -1);
         
         if (res.data) {
@@ -420,11 +430,11 @@ int main() {
             auto mat = comp->GetModel()->GetMaterials()[res.triangle.material];
             std::cout << mat->GetName() << std::endl;
             
-            new Sound("step", 1.0f, GetCameraPosition() - vec3(0.0f, 1.0f, 0.0f));
+            //new Sound("step", 1.0f, GetCameraPosition() - vec3(0.0f, 1.0f, 0.0f));
         } else {
             std::cout << "No intersection." << std::endl;
         }
-    });
+    });*/
     
 
     // create the createdwdww model

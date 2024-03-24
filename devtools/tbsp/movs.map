@@ -4,7 +4,7 @@
 {
 "classname" "worldspawn"
 "_tb_mod" "textures"
-"_tb_textures" "textures;textures/lightmap"
+"_tb_textures" "textures;textures/dev;textures/lightmap"
 // brush 0
 {
 ( -128 -32 0 ) ( -128 -31.75 0 ) ( -128 -32 0.25 ) concrete067 0 0 0 0.5 0.5
@@ -574,5 +574,21 @@
 ( -256 256 80 ) ( -256 256.25 80 ) ( -255.75 256 80 ) concrete103 0 0 180 0.5 0.5
 ( -256 240 80 ) ( -255.75 240 80 ) ( -256 240 80.25 ) concrete103 0 0 0 0.5 0.5
 ( -128 256 80 ) ( -128 256 80.25 ) ( -128 256.25 80 ) concrete103 0 0 180 0.5 0.5
+}
+}
+// entity 1
+{
+"classname" "func_group"
+"_tb_type" "_tb_group"
+"_tb_name" "trigger"
+"_tb_id" "1"
+// brush 0
+{
+( 0 64 48 ) ( 0 65 48 ) ( 0 64 49 ) dev/trigger 0 0 0 1 1
+( 0 64 48 ) ( 0 64 49 ) ( 1 64 48 ) dev/trigger 0 0 0 1 1
+( 0 64 16 ) ( 1 64 16 ) ( 0 65 16 ) dev/trigger 0 0 0 1 1
+( 64 128 64 ) ( 64 129 64 ) ( 65 128 64 ) dev/trigger 0 0 0 1 1
+( 64 128 64 ) ( 65 128 64 ) ( 64 128 65 ) dev/trigger 0 0 0 1 1
+( 64 128 64 ) ( 64 128 65 ) ( 64 129 64 ) dev/trigger 0 0 0 1 1
 }
 }

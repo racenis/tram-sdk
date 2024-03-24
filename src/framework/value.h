@@ -25,6 +25,41 @@ public:
         type = other.type; return *this;
     }
     
+    bool operator==(const Value& other) {
+        switch (type) {
+            case TYPE_BOOL:
+                if (other.GetType() != TYPE_BOOL) return false; else return bool_value == other.bool_value;
+            case TYPE_INT:
+            case TYPE_UINT:
+            case TYPE_INT8:
+            case TYPE_INT16:
+            case TYPE_INT32:
+            case TYPE_INT64:
+            case TYPE_UINT8:
+            case TYPE_UINT16:
+            case TYPE_UINT32:
+            case TYPE_UINT64:
+                if (!other.IsInt() && !other.IsFloat()) return false; else return GetInt() == other.GetInt();
+            case TYPE_FLOAT:
+            case TYPE_FLOAT32:
+            case TYPE_FLOAT64:
+                if (!other.IsInt() && !other.IsFloat()) return false; else return GetFloat() == other.GetFloat();
+            case TYPE_NAME:
+                if (other.GetType() != TYPE_NAME) return false; else return name_value == other.name_value;
+            case TYPE_STRING:
+                return false; // TODO: fix this
+            case TYPE_VEC2:
+                if (other.GetType() != TYPE_VEC2) return false; else return vec2_value == other.vec2_value;
+            case TYPE_VEC3:
+                if (other.GetType() != TYPE_VEC3) return false; else return vec3_value == other.vec3_value;
+            case TYPE_VEC4:
+                if (other.GetType() != TYPE_VEC4) return false; else return vec4_value == other.vec4_value;
+            case TYPE_QUAT:
+                if (other.GetType() != TYPE_QUAT) return false; else return quat_value == other.quat_value;
+            default: return false;
+        }
+    }
+    
     Value(bool value) : bool_value(value) { type = TYPE_BOOL; }
     Value(name_t value) : name_value(value) { type = TYPE_NAME; }
     Value(const char* value) : string_value(value) { type = TYPE_STRING; }

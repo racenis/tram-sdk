@@ -14,6 +14,9 @@ class RenderComponent;
 class AnimationComponent;
 class PhysicsComponent;
 
+// TODO: add a field that lets you set how fast the animation fades
+// TODO: don't create animation component if there is no animation?
+
 class Decoration : public Entity {
 public:
     Decoration(const SharedEntityData&, const ValueArray&);
@@ -31,6 +34,8 @@ protected:
     
     name_t model;
     name_t animation;
+    
+    uint32_t flags;
 };
 
 }

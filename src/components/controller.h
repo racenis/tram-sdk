@@ -47,7 +47,12 @@ public:
     inline void SetWallCollisionCallback(void (*callback)(Physics::Collision)) {
         wallbonk_callback = callback;
     }
-
+    
+    inline void SetWalkSpeed(float walk_speed) { this->walk_speed = walk_speed; }
+    inline void SetRunSpeed(float run_speed) { this->run_speed = run_speed; }
+    inline void SetCrouchSpeed(float crouch_speed) { this->crouch_speed = crouch_speed; }
+    inline void SetFriction(float friction) { this->friction = friction; }
+    
     static void Update();
 protected:
     ControllerComponent() = default;
@@ -78,6 +83,8 @@ protected:
     float walk_speed = 0.1f;
     float run_speed = 0.2f;
     float crouch_speed = 0.05f;
+    
+    float friction = 0.89f;
     
     bool crouching = false;
     bool running = false;

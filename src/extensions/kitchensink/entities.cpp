@@ -281,7 +281,7 @@ void Button::Update() {
 }
 
 void Button::MessageHandler(Message& msg) {
-    if (msg.type == Message::SELECT && !(flags & BUTTON_FLAG_LOCKED)) {
+    if (msg.type == Message::SELECT && !(flags & BUTTON_FLAG_LOCKED) && (state == BUTTON_STATE_NADIR_READY || state == BUTTON_STATE_ZENITH_READY)) {
         Event::Post({
             .type = Event::SELECTED,
             .poster_id = this->id

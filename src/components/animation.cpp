@@ -146,11 +146,11 @@ void AnimationComponent::FindKeyframePointers (size_t animation_index) {
 
 /// Stops an animation if its playing.
 /// Will do nothing, if the animation is not playing.
-void AnimationComponent::StopAnimation (name_t animation_name) {
-    for (size_t i = 0; i < ANIM_COUNT; i++){
-        if(anim_playing[i] == animation_name){
+void AnimationComponent::StopAnimation(name_t animation_name) {
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if(anim_playing[i] == animation_name) {
             anim_playing[i] = UID();
-            
+
             // reset headers
             for (size_t j = 0; j < Render::BONE_COUNT; j++) {
                 anim_info[i].keyframe_headers[j] = nullptr;
@@ -246,6 +246,17 @@ void AnimationComponent::Refresh() {
         float frames_since_update = (GetTickTime() - last_update) * 24.0f;
         if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
         
+        // do fade-ins/fade-outs
+        if (anim.fade_in) {
+            anim.fade_ammount += frames_since_update * anim.fade_speed;
+            if (anim.fade_ammount > 1.0f) anim.fade_in = false;
+        } else if (anim.fade_out) {
+            anim.fade_ammount -= frames_since_update * anim.fade_speed;
+            if (anim.fade_ammount < 0.0f) {
+                StopAnimation(anim.animation_header->first);
+            }
+        }
+        
         // find the first keyframe header
         for (size_t k = 0; k < armature_bone_count; k++){
             Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
@@ -268,14 +279,6 @@ void AnimationComponent::Refresh() {
                         continue;
                     }
                 }
-            }
-            
-            if (anim.fade_in) {
-                anim.fade_ammount += frames_since_update * anim.fade_speed;
-                if (anim.fade_ammount > 1.0f) anim.fade_in = false;
-            } else if (anim.fade_out) {
-                anim.fade_ammount -= frames_since_update * anim.fade_speed;
-                if (anim.fade_ammount < 0.0f) StopAnimation(anim.animation_header->first);
             }
         }
     }

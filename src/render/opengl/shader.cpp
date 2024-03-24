@@ -256,7 +256,7 @@ uint32_t FindShader(vertexformat_t format, materialtype_t type) {
 }
 
 void CompileShaders(){
-    std::cout << "loading shaders" << std::endl;
+    std::cout << "Loading shaders... " << std::flush;
 
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "normal_static",     "normal_static");
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    "normal_static",     "normal_static_alpha");
@@ -267,6 +267,8 @@ void CompileShaders(){
     RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       "line",              "line");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,             "text",              "text");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,            "glyph",             "glyph");
+    
+    std::cout << "done!" << std::endl;
 }
 
 }
