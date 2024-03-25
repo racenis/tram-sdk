@@ -105,11 +105,12 @@ void mainloop() {
     }
 
     if (UI::GetInputState() != STATE_DEFAULT) {
+        for (int i = 0; i < 20; i ++){
         float x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
         float y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
         
-        vec3 far_point = Render::ProjectInverse({x, y, 0.0f});
-        vec3 near_point = Render::ProjectInverse({x, y, 1000.0f});
+        vec3 far_point = Render::ProjectInverse({x, y+ i*20, 0.0f});
+        vec3 near_point = Render::ProjectInverse({x, y+ i*20, 1000.0f});
         
         vec3 look_direction = glm::normalize(far_point - near_point);
         vec3 look_position = near_point;
@@ -130,7 +131,7 @@ void mainloop() {
             Render::AddLine(res.triangle.point1, res.triangle.point2, Render::COLOR_WHITE);
             Render::AddLine(res.triangle.point2, res.triangle.point3, Render::COLOR_WHITE);
             Render::AddLine(res.triangle.point3, res.triangle.point1, Render::COLOR_WHITE);
-        }
+        }}
         
         
 

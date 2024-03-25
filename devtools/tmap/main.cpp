@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include <cstdarg>
 
@@ -28,6 +29,14 @@ struct Vertex {
 struct Triangle {
 	uint32_t v1, v2, v3;
 };
+
+bool VertexCanMerge(const Vertex& a, const Vertex& b) {
+	return
+		a.pos == b.pos &&
+		a.nrm == b.nrm &&
+		a.tex == b.tex &&
+		a.mat == b.mat;
+}
 
 int XAtlasPrint(const char* format, ...) {
 	va_list arg;
@@ -123,6 +132,44 @@ int main(int argc, const char** argv) {
 	
 	std::cout << "Loaded model " << model_name << ", it has " << vrt_c << " verts, " << tri_c << " tris, " << mat_c << " materials." << std::endl;
 	
+	
+	
+	std::vector<Vertex> merged_vertices;	// similar vertices merged
+	std::map<int, int> merged_mapping;		// mapping from unmerged to merged
+	
+	for (int v = 0; v < vertices.size(); v++) {
+		int merge_index = -1;
+		
+		for (int m = 0; m < merged_vertices.size(); m++) {
+			if (VertexCanMerge(vertices[v], merged_vertices[m])) {
+				merge_index = m;
+				break;
+			}
+		}
+		
+		if (merge_index == -1) {
+			merge_index = merged_vertices.size();
+			merged_vertices.push_back(vertices[v]);
+		}
+		
+		merged_mapping[v] = merge_index;
+	}
+	
+	int vert_decrease = vertices.size() - merged_vertices.size();
+	float vert_decrese_prop = (float)vert_decrease / (float)vertices.size();
+	std::cout << "Merged " << vert_decrease << " vertices, " << vert_decrese_prop * 100.0f << "% decrease." << std::endl;
+	
+	for (auto& tri : triangles) {
+		tri.v1 = merged_mapping[tri.v1];
+		tri.v2 = merged_mapping[tri.v2];
+		tri.v3 = merged_mapping[tri.v3];
+	}
+	
+	std::swap(merged_vertices, vertices);
+	
+	
+	
+	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                                PACKER                                 +
@@ -142,7 +189,7 @@ int main(int argc, const char** argv) {
 	meshDecl.vertexNormalData = &vertices[0].nrm;
 	meshDecl.vertexNormalStride = sizeof(Vertex);
 	
-	meshDecl.vertexUvData = &vertices[0].tex;
+	meshDecl.vertexUvData = &vertices[0].map;
 	meshDecl.vertexUvStride = sizeof(Vertex);
 
 	meshDecl.indexCount = triangles.size() * 3;
@@ -157,6 +204,12 @@ int main(int argc, const char** argv) {
 	}
 
 	xatlas::AddMeshJoin(atlas);
+
+	xatlas::ChartOptions chart_options = xatlas::ChartOptions();
+	//chart_options.useInputMeshUvs = true;
+	//chart_options.maxCost = 100000.0f;
+	//chart_options.maxIterations = 160;
+	xatlas::ComputeCharts(atlas, chart_options);
 	
 	xatlas::PackOptions pack_options = xatlas::PackOptions();
 	//pack_options.texelsPerUnit = 16.0f;
@@ -165,16 +218,16 @@ int main(int argc, const char** argv) {
 	pack_options.texelsPerUnit = 4;
 	//pack_options.bilinear = true;
 	//pack_options.blockAlign = true;
+	//pack_options.bruteForce = true;
+	//pack_options.rotateChartsToAxis = false;
+	//pack_options.rotateCharts = false;
 	
-	xatlas::ChartOptions chart_options = xatlas::ChartOptions();
-	chart_options.useInputMeshUvs = true;
-	chart_options.maxCost = 1000.0f;
-	chart_options.maxIterations = 160;
-	
-	xatlas::ComputeCharts(atlas, chart_options);
 	xatlas::PackCharts(atlas, pack_options);
 	//xatlas::Generate(atlas, chart_options, pack_options);
 
+	
+	
+	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                             MODEL WRITER                              +

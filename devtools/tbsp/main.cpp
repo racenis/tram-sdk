@@ -679,22 +679,30 @@ int main(int argc, const char** argv) {
 		auto make_vertex = [](Plane plane, Material mat, vec3 vert, vec3 normal) -> Vertex {
 			vec3 pos = vert * (1.0f/32.0f);
 			vec2 tex = vec2{0.0f, 0.0f};
+			vec2 map = vec2{0.0f, 0.0f};
 			
 			vec2 scl = {1.0f/plane.x_scale, 1.0f/plane.y_scale};
 			vec2 off = {plane.x_offset * plane.x_scale, -plane.y_offset * plane.y_scale};
 
 			if (abs(glm::dot(vec3(1.0f, 0.0f, 0.0f), normal))>0.5f) {
+				map = {vert.y, vert.z};
+				
 				vert = quat(vec3(-plane.angle * std::numbers::pi/180.0f, 0.0f, 0.0f)) * vert;
+				
 				tex = vec2{scl.x * (vert.y+off.x) * (1.0f/(float)mat.width), scl.y * (vert.z+off.y) * (1.0f/(float)mat.height)};
 			}
 			
 			if (abs(glm::dot(vec3(0.0f, 1.0f, 0.0f), normal))>0.5f) {
+				map = {vert.x, vert.z};
+				
 				vert = quat(vec3(0.0f, plane.angle * std::numbers::pi/180.0f, 0.0f)) * vert;
 				
 				tex = vec2{scl.x * (vert.x+off.x) * (1.0f/(float)mat.width), scl.y * (vert.z+off.y) * (1.0f/(float)mat.height)};
 			}
 			
 			if (abs(glm::dot(vec3(0.0f, 0.0f, 1.0f), normal))>0.5f) {
+				map = {vert.x, vert.y};
+				
 				vert = quat(vec3(0.0f, 0.0f, -plane.angle * std::numbers::pi/180.0f)) * vert;
 				
 				tex = vec2{scl.x * (vert.x+off.x) * (1.0f/(float)mat.width), scl.y * (vert.y+off.y) * (1.0f/(float)mat.height)};
@@ -704,7 +712,7 @@ int main(int argc, const char** argv) {
 				{pos.x, pos.z, -pos.y},
 				{normal.x, normal.z, -normal.y},
 				tex,
-				tex
+				map
 			};
 		};
 		
