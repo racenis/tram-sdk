@@ -179,7 +179,7 @@ void Material::LoadFromDisk() {
     
     switch (type) {
         case MATERIAL_LIGHTMAP:
-            filter = FILTER_LINEAR;
+            //filter = FILTER_LINEAR;
             channels = 3;
             break;
         case MATERIAL_TEXTURE_ALPHA:

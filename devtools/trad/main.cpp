@@ -45,9 +45,11 @@ struct Texel {
 struct Lightmap {
 	Lightmap(int width, int height) {
 		t = new Texel[width*height];
+		b = new bool[width*height];
 		for (int i = 0; i < width*height; i++) {
 			//t[i] = Texel {.color = {0.0f, 0.0f, 0.0f}};
 			t[i] = Texel {.color = {1.0f, 0.5f, 0.5f}};
+			b[i] = false;
 		}
 		w = width;
 		h = height;
@@ -56,18 +58,78 @@ struct Lightmap {
 	void Blit(int x, int y, Texel tex) {
 		if (x < 0 || y < 0 || x >= w || y >= h) return;
 		t[y*w+x] = tex;
+		b[y*w+x] = true;
 	}
 	
 	void BlitMix(int x, int y, Texel tex) {
 		if (x < 0 || y < 0 || x >= w || y >= h) return;
 		t[y*w+x].color += tex.color;
+		b[y*w+x] = true;
 	}
 	
 	Texel Sample(int x, int y) {
+		if (x < 0) x = 0;
+		if (y < 0) y = 0;
+		if (x >= w) x = w - 1;
+		if (y >= h) y = h - 1;
 		return t[y*w+x];
 	}
 	
+	bool Blitted(int x, int y) {
+		if (x < 0) x = 0;
+		if (y < 0) y = 0;
+		if (x >= w) x = w - 1;
+		if (y >= h) y = h - 1;
+		return b[y*w+x];
+	}
+	
+	void Fill() {
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				
+				if (Blitted(x, y)) continue;
+				
+				float nearest = INFINITY;
+				vec3 color = {0.0f, 0.0f, 0.0f};
+				
+				for (int s_x = x-1; s_x < x+3; s_x++) {
+					for (int s_y = y-1; s_y < y+3; s_y++) {
+						if (!Blitted(s_x, s_y)) continue;
+						
+						float dist = glm::distance(vec2(x, y), vec2(s_x, s_y));
+						
+						if (dist < nearest) {
+							nearest = dist;
+							color = Sample(s_x, s_y).color;
+						}
+					}
+				}
+				
+				if (nearest == INFINITY) continue;
+				
+				t[y*w+x].color = color;
+				
+				/*
+				vec3 color = {0.0f, 0.0f, 0.0f};
+				int count = 0;
+				
+				for (int s_x = x-1; s_x < x+3; s_x++) {
+					for (int s_y = y-1; s_y < y+3; s_y++) {
+						if (!Blitted(s_x, s_y)) continue;
+						color += Sample(s_x, s_y).color;
+						count++;
+					}
+				}
+
+				if (!count) continue;
+				
+				t[y*w+x].color = color / (float)count;*/
+			}
+		}
+	}
+	
 	Texel* t;
+	bool* b;
 	int w, h;
 };
 
@@ -578,6 +640,11 @@ int main(int argc, const char** argv) {
 	}
 	
 	std::cout << "\rComputing... done!\t\t\t\t\t\t\t      " << std::endl;
+	
+	std::cout << "Filling gaps... " << std::flush;
+	l.Fill();
+	std::cout << "done!" << std::endl;
+	
 	std::cout << "Saving to disk... " << std::flush;
 	
 	// convert finished lightmap from floating-point to byte

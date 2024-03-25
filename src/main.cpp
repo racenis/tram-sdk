@@ -116,6 +116,16 @@ void mainloop() {
         
         auto res = Render::AABB::FindNearestFromRay(look_position, look_direction, -1);
         
+        //std::cout << res.triangle.point1.x << " ";
+        //std::cout << res.triangle.point1.y << " ";
+        //std::cout << res.triangle.point1.z << "\t";
+        //std::cout << res.triangle.point2.x << " ";
+        //std::cout << res.triangle.point2.y << " ";
+        //std::cout << res.triangle.point2.z << "\t";
+        //std::cout << res.triangle.point3.x << " ";
+        //std::cout << res.triangle.point3.y << " ";
+        //std::cout << res.triangle.point3.z << std::endl;
+        
         if (res.data) {
             Render::AddLine(res.triangle.point1, res.triangle.point2, Render::COLOR_WHITE);
             Render::AddLine(res.triangle.point2, res.triangle.point3, Render::COLOR_WHITE);
@@ -220,7 +230,7 @@ void mainloop() {
     
     GUI::Text(tickstr.c_str(), 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
     GUI::Text(tickstr2.c_str(), 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
-    GUI::Text("AAAAAAAAAA", 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
+    //GUI::Text("AAAAAAAAAA", 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
     //GUI::Text(tickstr3.c_str(), 2, tram::GUI::TEXT_CENTER);
     
     if (dingus_menu) {

@@ -162,8 +162,18 @@ int main(int argc, const char** argv) {
 	//pack_options.texelsPerUnit = 16.0f;
 	pack_options.padding = lightmap_padding;
 	pack_options.resolution = lightmap_size;
+	pack_options.texelsPerUnit = 4;
+	//pack_options.bilinear = true;
+	//pack_options.blockAlign = true;
 	
-	xatlas::Generate(atlas, xatlas::ChartOptions(), pack_options);
+	xatlas::ChartOptions chart_options = xatlas::ChartOptions();
+	chart_options.useInputMeshUvs = true;
+	chart_options.maxCost = 1000.0f;
+	chart_options.maxIterations = 160;
+	
+	xatlas::ComputeCharts(atlas, chart_options);
+	xatlas::PackCharts(atlas, pack_options);
+	//xatlas::Generate(atlas, chart_options, pack_options);
 
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -207,8 +217,8 @@ int main(int argc, const char** argv) {
 		output.write_float32(vertices[input].tex.x);
 		output.write_float32(vertices[input].tex.y);
 		
-		output.write_float32(new_mesh.vertexArray[i].uv[0] / atlas->width);
-		output.write_float32(new_mesh.vertexArray[i].uv[1] / atlas->height);
+		output.write_float32((new_mesh.vertexArray[i].uv[0]) / (float)atlas->width);
+		output.write_float32((new_mesh.vertexArray[i].uv[1]) / (float)atlas->height);
 
 		output.write_newline();
 	}
