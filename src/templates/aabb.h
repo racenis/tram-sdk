@@ -160,6 +160,24 @@ public:
         Node* left_child = node->left;
         Node* right_child = node->right;
         
+        if (!left_child || !right_child) {
+            assert(node == root);
+            
+            if (!left_child && right_child) {
+                node->min = right_child->min;
+                node->max = right_child->max;
+            } else if (left_child && !right_child) {
+                node->min = left_child->min;
+                node->max = left_child->max;
+            } else {
+                node->min = {0.0f, 0.0f, 0.0f};
+                node->max = {0.0f, 0.0f, 0.0f};
+            }
+            
+            return;
+        }
+        
+        
         node->min = MergeAABBMin(left_child->min, right_child->min);
         node->max = MergeAABBMax(left_child->max, right_child->max);
         

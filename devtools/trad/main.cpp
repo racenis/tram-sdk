@@ -83,7 +83,7 @@ struct Lightmap {
 		return b[y*w+x];
 	}
 	
-	void Fill() {
+	void Fill(int pad) {
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
 				
@@ -92,8 +92,8 @@ struct Lightmap {
 				float nearest = INFINITY;
 				vec3 color = {0.0f, 0.0f, 0.0f};
 				
-				for (int s_x = x-1; s_x < x+3; s_x++) {
-					for (int s_y = y-1; s_y < y+3; s_y++) {
+				for (int s_x = x-pad; s_x < x+pad+1; s_x++) {
+					for (int s_y = y-pad; s_y < y+pad+1; s_y++) {
 						if (!Blitted(s_x, s_y)) continue;
 						
 						float dist = glm::distance(vec2(x, y), vec2(s_x, s_y));
@@ -191,12 +191,25 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<Triangle>& tris, vec3 p
 	return closest;
 };
 
-vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<Triangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal) {
+vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<Triangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal, vec3 mid) {
 	vec3 color = {0.0f, 0.0f, 0.0f};
 	
 	// we might get a collision with the triangle, on which the texel is located
 	// on, so we move it off of the surface a little bit
 	pos += 0.01f * normal;
+	mid += 0.01f * normal;
+	
+	// check if clear path to center
+	
+	vec3 mid_dir = glm::normalize(mid - pos);
+	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir);
+	if (glm::distance(nearest, pos) < glm::distance(mid, pos)) {
+		//return {1.0f, 0.0f, 0.0f};
+		//pos += mid_dir * 0.3f;
+		//pos = nearest + 0.01f * normal;
+		//pos += mid_dir * (glm::distance(nearest, pos) + 0.02f);
+		pos = nearest + (mid_dir * 0.1f);
+	}
 	
 	for (const auto& light : lights) {
 		if (light.radius < glm::distance(pos, light.pos)) continue;
@@ -245,28 +258,21 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 	if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 	
 	// position of vertices on the raster image
-	int lowest_y = ceilf(lowest.map.y * (float)p.l_h);
-	int middle_y = ceilf(middle.map.y * (float)p.l_h);
-	int highest_y = ceilf(highest.map.y * (float)p.l_h);
+	int lowest_y = floor(lowest.map.y * (float)p.l_h);
+	int middle_y = floor(middle.map.y * (float)p.l_h);
+	int highest_y = floor(highest.map.y * (float)p.l_h);
 	
-	int lowest_x = ceilf(lowest.map.x * (float)p.l_w);
-	int middle_x = ceilf(middle.map.x * (float)p.l_w);
-	int highest_x = ceilf(highest.map.x * (float)p.l_w);
+	int lowest_x = floor(lowest.map.x * (float)p.l_w);
+	int middle_x = floor(middle.map.x * (float)p.l_w);
+	int highest_x = floor(highest.map.x * (float)p.l_w);
 	
-	// push stuff
-	/*if (lowest_y + 1 != highest_y) {
-		if (lowest_y == middle_y) {
-			lowest_y += 1;
-			middle_y += 1;
-		} else {
-			lowest_y += 1;
-		}
+	// push
+	if (middle_y == highest_y) {
+		//middle_y++;
+		//highest_y++;
+	} else {
+		//highest_y++;
 	}
-	
-	if (lowest_x == middle_x && lowest_x < highest_x) {
-		lowest_x 
-	}*/
-	
 	
 	
 	
@@ -312,13 +318,16 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 		
 		if (from > to) std::swap(from, to);
 		
-		for (int col = from; col < to; col++) {
+		for (int col = from; col < /*<=*/ /* push */ to; col++) {
 			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
+			
+			const float thr = 1.0f/3.0f;
 			
 			vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
 			vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
+			vec3 mid = thr * tri.v1.pos + thr * tri.v2.pos + thr * tri.v3.pos;
 			
-			raster_f(col, row, pos, nrm);
+			raster_f(col, row, pos, nrm, mid);
 		}
 	}
 	
@@ -331,13 +340,16 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 		
 		if (from > to) std::swap(from, to);
 
-		for (int col = from; col < to; col++) {
+		for (int col = from; col < /*<=*/ /* push */ to; col++) {
 			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
+			
+			const float thr = 1.0f/3.0f;
 			
 			vec3 pos = d.x * tri.v1.pos + d.y * tri.v2.pos + d.z * tri.v3.pos;
 			vec3 nrm = d.x * tri.v1.nrm + d.y * tri.v2.nrm + d.z * tri.v3.nrm;
+			vec3 mid = thr * tri.v1.pos + thr * tri.v2.pos + thr * tri.v3.pos;
 			
-			raster_f(col, row, pos, nrm);
+			raster_f(col, row, pos, nrm, mid);
 		}
 	}
 }
@@ -375,6 +387,7 @@ int main(int argc, const char** argv) {
 	//int stretch_low_y = -1;
 	//int stretch_high_x = 2;
 	//int stretch_high_y = 2;
+	int padding = 1;
 	
 	if (lightmap_width < 1 || lightmap_height < 1) {
 		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
@@ -396,7 +409,7 @@ int main(int argc, const char** argv) {
 		}
 		
 		if (strcmp(argv[i], "-pad") == 0) {
-			int ammount = atoi(argv[++i]);
+			padding = atoi(argv[++i]);
 			//stretch_low_x = ammount;
 			//stretch_low_y = ammount;
 			//stretch_high_x = ammount + 1;
@@ -598,7 +611,6 @@ int main(int argc, const char** argv) {
 		// draw a progress bar in the command line
 		float progress = (float)i / (float)triangles.size();
 		int dots = ceil(progress * 62.0f);
-		
 		if (last_dots != dots) {
 			std::cout << "\rComputing [";
 			for (int k = 0; k < 62; k++) std::cout << (k < dots ? (k % 9 == 8 ? ':' : '.') : ' ');
@@ -606,25 +618,26 @@ int main(int argc, const char** argv) {
 			last_dots = dots;
 		}
 		
+		
 		if (paint_coords) {
 			
 			// rasterize triangle and set color to position
-			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm){
+			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
 				l.Blit(col, row, {pos});
 			});
 			
 		} else if (force_fullbright) {
 			
 			// rasterize triangle to fullbright
-			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm){
+			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
 				l.Blit(col, row, {{1.0f, 1.0f, 1.0f}});
 			});
 			
 		} else {
 			
 			// rasterize triangle and set color to light value
-			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm){
-				vec3 color = FindTexelColorFromLights(all_tree, all_tris, lights, pos, nrm);
+			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
+				vec3 color = FindTexelColorFromLights(all_tree, all_tris, lights, pos, nrm, mid);
 				l.Blit(col, row, {color});
 			});
 			
@@ -642,7 +655,7 @@ int main(int argc, const char** argv) {
 	std::cout << "\rComputing... done!\t\t\t\t\t\t\t      " << std::endl;
 	
 	std::cout << "Filling gaps... " << std::flush;
-	l.Fill();
+	l.Fill(padding);
 	std::cout << "done!" << std::endl;
 	
 	std::cout << "Saving to disk... " << std::flush;

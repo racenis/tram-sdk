@@ -551,6 +551,9 @@ int main() {
     });
     
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
+        WorldCell::Find(UID("demo_mov"))->Unload();
+        
+        /*
         camera->SetFollowing(nullptr);
         camera->SetMouselook(false);
         camera->SetLocation({0.0f, 25.0f, 0.0f});
@@ -568,7 +571,7 @@ int main() {
         
         vec3 v = Script::CallFunction("give_vector", {1, 2, 3});
         
-        std::cout << v.x << " " << v.y << " " << v.z << std::endl;
+        std::cout << v.x << " " << v.y << " " << v.z << std::endl;*/
     });
         
     //auto crate_ent = Entity::Find(UID("estijs"));
