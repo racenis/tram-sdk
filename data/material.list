@@ -1,184 +1,184 @@
-MATv3
-brick001 flat linear metal
-brick002 flat linear metal
-brick006 flat linear metal
-brick010 flat linear metal
-brick011 flat linear metal
-brick015 flat linear metal
-brick020 flat linear metal
-brick021 flat linear metal
-brick025 flat linear metal
-brick046 flat linear metal
-brick050 flat linear metal
-brick051 flat linear metal
-brick052 flat linear metal
-bush007 flat linear metal
-concrete018 flat linear metal
-concrete019 flat linear metal
-concrete027 flat linear metal
-concrete027b flat linear metal
-detail004 flat linear metal
-detail004b flat linear metal
-detail015 flat linear metal
-detail016 flat linear metal
-detail019 flat linear metal
-detail020 flat linear metal
-detail020b flat linear metal
-detail046 flat linear metal
-detail048 flat linear metal
-detail049 flat linear metal
-door001 flat linear metal
-metal009 flat linear metal
-metal003 flat linear metal
-plank005 flat linear metal
-plank049 flat linear metal
-plaster004 flat linear metal
-plaster013 flat linear metal
-plaster014 flat linear metal
-plaster014b flat linear metal
-plaster016 flat linear metal
-plaster017 flat linear metal
-plaster019 flat linear metal
-plaster021 flat linear metal
-plaster021b flat linear metal
-plaster021c flat linear metal
-plaster025 flat linear metal
-plaster049 flat linear metal
-rail011 alpha linear metal
-roof004 flat linear metal
-roof006 flat linear metal
-roof018 flat linear metal
-roof046 flat linear metal
-roof047 flat linear metal
-terrain003 flat linear metal
-terrain005 flat linear metal
-terrain006 flat linear metal
-terrain007 flat linear metal
-terrain008 flat linear metal
-terrain009 flat linear metal
-terrain010 alpha linear metal
-terrain011 alpha linear metal
-terrain012 flat linear metal
-vent001 flat linear metal
-window003 flat linear metal
-window004 flat linear metal
-window012 flat linear metal
-window012b flat linear metal
-window014 flat linear metal
-window015 flat linear metal
-window016 flat linear metal
-window017 flat linear metal
-window017b flat linear metal
-window018 flat linear metal
-window019 flat linear metal
-window020 flat linear metal
-window022 flat linear metal
-window023 flat linear metal
-window024 flat linear metal
-window026 flat linear metal
-window046 flat linear metal
-window047 flat linear metal
-window054 flat linear metal
-pinkdick flat linear metal
-pinko flat linear metal
-monkemap lightmap linear metal
-dingaling lightmap linear metal
-dingadong lightmap linear metal
-eye flat linear metal
-tiger flat linear metal
-debug flat linear metal
-errortexture flat linear metal
-texcom_obamabinladen flat linear metal
-texcom_obamabinladen2 flat linear metal
-texcom_obamabinladen3 flat linear metal
-mongus flat linear metal
-tatra flat linear metal
-raf flat linear metal
-texcom_rail flat linear metal
-texcom_grass flat linear metal
-texcom_road flat linear metal
-water water linear metal
-floppa flat linear metal
-bingus flat linear metal
-pienapaka flat linear metal
-pienaveikals flat linear metal
-concrete067 flat linear metal
-concrete090 flat linear metal
-rail006 flat linear metal
-texcom_veneer flat linear metal
-texcom_cloth flat linear metal
-jurmala alpha linear metal
-street flat linear metal
-grass flat linear metal
-path flat linear metal
-minima flat linear metal
-metal107 flat linear metal
-detail106 flat linear metal
-concrete105 flat linear metal
-metal104 flat linear metal
-concrete103 flat linear metal
-window102 flat linear metal
-metal101 flat linear metal
-brick100 flat linear metal
-detail099 flat linear metal
-window098 flat linear metal
-window097 flat linear metal
-door096 flat linear metal
-door094 flat linear metal
-door093 flat linear metal
-plank092 flat linear metal
-metal091 flat linear metal
-plank080 flat linear metal
-window090 flat linear metal
-metal088b flat linear metal
-metal089 flat linear metal
-metal088a flat linear metal
-window087c flat linear metal
-window087b flat linear metal
-window087a flat linear metal
-window086 flat linear metal
-window085 flat linear metal
-metal084 flat linear metal
-metal083 flat linear metal
-window081 flat linear metal
-voltaza alpha linear metal
-hes alpha linear metal
-door095 flat linear metal
-texcom_chain alpha linear metal
-ciemsziime flat linear metal
-concrete110 flat linear metal
-kugge/akmeni flat linear metal
-kugge/klajs flat linear metal
-kugge/markeris water linear metal
-kugge/metals flat linear metal
-kugge/palmalapa alpha linear metal
-kugge/palmamize flat linear metal
-kugge/palmarieksts flat linear metal
-kugge/skrejcels flat linear metal
-kugge/smiltis flat linear metal
-kugge/trapits water linear metal
-kugge/udenis water linear metal
-stolentoilet flat linear metal
-poland alpha linear metal
-kjeems flat linear metal
-skavotaajs flat linear metal
-metalakaste flat linear metal
-metalareste alpha linear metal
-dev/nodraw flat nearest metal
-dev/light flat nearest metal
-dev/sound flat nearest metal
-dev/trigger flat nearest metal
-dev/button16x16 flat nearest metal
-dev/floor32x32 flat nearest metal
-dev/floor128x128 flat nearest metal
-dev/scaffold32x32 alpha nearest metal
-dev/scale128x128 flat nearest metal
-dev/vent16x16 flat nearest metal
-dev/wall8x8 flat nearest metal
-dev/wall16x16 flat nearest metal
-dev/wall32x32 flat nearest metal
-dev/wall64x64 flat nearest metal
-dev/wall128x128 flat nearest metal
-dev/wallstair32x32 flat nearest metal
-dev/window128x128 flat nearest metal
-#lightmap/movs lightmap nearest metal
+MATv4
+brick001 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick002 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick006 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick010 flat linear metal 1.0 1.0 1.0 0.0 1.0 
+brick011 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick015 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick020 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick021 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick025 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick046 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick050 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick051 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick052 flat linear metal 1.0 1.0 1.0 0.0 1.0
+bush007 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete018 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete019 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete027 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete027b flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail004 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail004b flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail015 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail016 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail019 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail020 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail020b flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail046 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail048 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail049 flat linear metal 1.0 1.0 1.0 0.0 1.0
+door001 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal009 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal003 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plank005 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plank049 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster004 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster013 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster014 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster014b flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster016 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster017 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster019 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster021 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster021b flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster021c flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster025 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plaster049 flat linear metal 1.0 1.0 1.0 0.0 1.0
+rail011 alpha linear metal 1.0 1.0 1.0 0.0 1.0
+roof004 flat linear metal 1.0 1.0 1.0 0.0 1.0
+roof006 flat linear metal 1.0 1.0 1.0 0.0 1.0
+roof018 flat linear metal 1.0 1.0 1.0 0.0 1.0
+roof046 flat linear metal 1.0 1.0 1.0 0.0 1.0
+roof047 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain003 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain005 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain006 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain007 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain008 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain009 flat linear metal 1.0 1.0 1.0 0.0 1.0
+terrain010 alpha linear metal 1.0 1.0 1.0 0.0 1.0
+terrain011 alpha linear metal 1.0 1.0 1.0 0.0 1.0
+terrain012 flat linear metal 1.0 1.0 1.0 0.0 1.0
+vent001 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window003 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window004 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window012 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window012b flat linear metal 1.0 1.0 1.0 0.0 1.0
+window014 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window015 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window016 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window017 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window017b flat linear metal 1.0 1.0 1.0 0.0 1.0
+window018 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window019 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window020 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window022 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window023 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window024 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window026 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window046 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window047 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window054 flat linear metal 1.0 1.0 1.0 0.0 1.0
+pinkdick flat linear metal 1.0 1.0 1.0 0.0 1.0
+pinko flat linear metal 1.0 1.0 1.0 0.0 1.0
+monkemap lightmap linear metal 1.0 1.0 1.0 0.0 1.0
+dingaling lightmap linear metal 1.0 1.0 1.0 0.0 1.0
+dingadong lightmap linear metal 1.0 1.0 1.0 0.0 1.0
+eye flat linear metal 1.0 1.0 1.0 0.0 1.0
+tiger flat linear metal 1.0 1.0 1.0 0.0 1.0
+debug flat linear metal 1.0 1.0 1.0 0.0 1.0
+errortexture flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_obamabinladen flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_obamabinladen2 flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_obamabinladen3 flat linear metal 1.0 1.0 1.0 0.0 1.0
+mongus flat linear metal 1.0 1.0 1.0 1.0 16.0
+tatra flat linear metal 1.0 1.0 1.0 1.0 1.0
+raf flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_rail flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_grass flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_road flat linear metal 1.0 1.0 1.0 0.0 1.0
+water water linear metal 1.0 1.0 1.0 0.0 1.0
+floppa flat linear metal 1.0 1.0 1.0 0.0 1.0
+bingus flat linear metal 1.0 1.0 1.0 0.0 1.0
+pienapaka flat linear metal 1.0 1.0 1.0 0.0 1.0
+pienaveikals flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete067 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete090 flat linear metal 1.0 1.0 1.0 0.0 1.0
+rail006 flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_veneer flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_cloth flat linear metal 1.0 1.0 1.0 0.0 1.0
+jurmala alpha linear metal 1.0 1.0 1.0 0.0 1.0
+street flat linear metal 1.0 1.0 1.0 0.0 1.0
+grass flat linear metal 1.0 1.0 1.0 0.0 1.0
+path flat linear metal 1.0 1.0 1.0 0.0 1.0
+minima flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal107 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail106 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete105 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal104 flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete103 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window102 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal101 flat linear metal 1.0 1.0 1.0 0.0 1.0
+brick100 flat linear metal 1.0 1.0 1.0 0.0 1.0
+detail099 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window098 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window097 flat linear metal 1.0 1.0 1.0 0.0 1.0
+door096 flat linear metal 1.0 1.0 1.0 0.0 1.0
+door094 flat linear metal 1.0 1.0 1.0 0.0 1.0
+door093 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plank092 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal091 flat linear metal 1.0 1.0 1.0 0.0 1.0
+plank080 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window090 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal088b flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal089 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal088a flat linear metal 1.0 1.0 1.0 0.0 1.0
+window087c flat linear metal 1.0 1.0 1.0 0.0 1.0
+window087b flat linear metal 1.0 1.0 1.0 0.0 1.0
+window087a flat linear metal 1.0 1.0 1.0 0.0 1.0
+window086 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window085 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal084 flat linear metal 1.0 1.0 1.0 0.0 1.0
+metal083 flat linear metal 1.0 1.0 1.0 0.0 1.0
+window081 flat linear metal 1.0 1.0 1.0 0.0 1.0
+voltaza alpha linear metal 1.0 1.0 1.0 0.0 1.0
+hes alpha linear metal 1.0 1.0 1.0 0.0 1.0
+door095 flat linear metal 1.0 1.0 1.0 0.0 1.0
+texcom_chain alpha linear metal 1.0 1.0 1.0 0.0 1.0
+ciemsziime flat linear metal 1.0 1.0 1.0 0.0 1.0
+concrete110 flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/akmeni flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/klajs flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/markeris water linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/metals flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/palmalapa alpha linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/palmamize flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/palmarieksts flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/skrejcels flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/smiltis flat linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/trapits water linear metal 1.0 1.0 1.0 0.0 1.0
+kugge/udenis water linear metal 1.0 1.0 1.0 0.0 1.0
+stolentoilet flat linear metal 1.0 1.0 1.0 0.0 1.0
+poland alpha linear metal 1.0 1.0 1.0 0.0 1.0
+kjeems flat linear metal 1.0 1.0 1.0 0.0 1.0
+skavotaajs flat linear metal 1.0 1.0 1.0 0.0 1.0
+metalakaste flat linear metal 1.0 1.0 1.0 1.0 32.0
+metalareste alpha linear metal 1.0 1.0 1.0 1.0 32.0
+dev/nodraw flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/light flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/sound flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/trigger flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/button16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/floor32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/floor128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/scaffold32x32 alpha nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/scale128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/vent16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/wall8x8 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/wall16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/wall32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/wall64x64 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/wall128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/wallstair32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/window128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+#lightmap/movs lightmap nearest metal 1.0 1.0 1.0 0.0 1.0

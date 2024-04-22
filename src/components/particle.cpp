@@ -9,6 +9,7 @@
 namespace tram {
 
 using namespace tram::Render;
+using namespace tram::Render::API;
 
 template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool ("particle component pool", 100, false);
 
@@ -133,7 +134,7 @@ void ParticleComponent::UpdateRenderListObject(){
     UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
     SetDrawListIndexRange(draw_list_entry, 0, /*6 * */vertices.size());
     
-    Render::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
+    Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
 }
     
 }

@@ -15,7 +15,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace tram::Render::OpenGL {
+namespace tram::Render::API {
 
 Pool<DrawListEntry> draw_list ("render list", 500, false);
 Pool<LightListEntry> light_list ("light list", 200, false);
@@ -25,9 +25,10 @@ std::vector<uint32_t> light_tree_ids (200);
 struct ShaderUniformMatrices {
     glm::mat4 projection;       /// Projection matrix.
     glm::mat4 view;             /// View matrix.
+    glm::vec3 view_pos;
 };
 
-struct ShaderUniformModelMatrices{
+struct ShaderUniformModelMatrices {
     glm::mat4 model;        /// Model -> world space matrix. Rotates and translates vertices from how they are defined in the model to where they will appear in the world.
     glm::uvec4 modelLights; /// Indices for lights in the light list. The shader will use these 4 indices to determine with which lights the model should be lit up.
     glm::vec4 sunDirection; /// Normalized vector. Sunlight direction.
@@ -37,6 +38,8 @@ struct ShaderUniformModelMatrices{
     float sunWeight;
     float screenWidth;
     float screenHeight;
+    glm::vec4 colors[15];
+    glm::vec2 specular[15];
 };
 
 struct LayerParameters {
@@ -162,6 +165,7 @@ void RenderFrame() {
     modelMatrices.screenHeight =    SCREEN_HEIGHT;
     
     matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
+    matrices.view_pos = LAYER[0].camera_position;
 
     if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * glm::vec3(0.0f, 0.0f, -5.0f));
 
@@ -202,6 +206,11 @@ void RenderFrame() {
             UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(robj->pose->pose[0]));
         }
 
+        for (int i = 0; i < 15; i++) {
+            modelMatrices.colors[i] = robj->colors[i];
+            modelMatrices.specular[i].x = robj->specular_weights[i];
+            modelMatrices.specular[i].y = robj->specular_powers[i];
+        }
 
         modelMatrices.modelLights.x = robj->lights[0];
         modelMatrices.modelLights.y = robj->lights[1];
@@ -266,12 +275,29 @@ void SetFlags(drawlistentry_t entry, uint32_t flags) {
     ((DrawListEntry*) entry)->flags = flags;
 }
 
+void SetLayer(drawlistentry_t entry, uint32_t layer) {
+    ((DrawListEntry*) entry)->layer = layer;
+}
+
 void SetPose(drawlistentry_t entry, Pose* pose) {
     ((DrawListEntry*) entry)->pose = pose;
 }
 
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
     ((DrawListEntry*) entry)->lightmap = lightmap;
+}
+
+void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
+    for (size_t i = 0; i < count; i++) {
+        ((DrawListEntry*) entry)->colors[i] = colors[i];
+    }
+}
+
+void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* powers) {
+    for (size_t i = 0; i < count; i++) {
+        ((DrawListEntry*) entry)->specular_weights[i] = weights[i];
+        ((DrawListEntry*) entry)->specular_powers[i] = powers[i];
+    }
 }
 
 void SetLights(drawlistentry_t entry, uint32_t* lights) {
@@ -460,13 +486,13 @@ void UpdateVertexArray(vertexhandle_t vertex_buffer_handle, size_t data_size, vo
 
 // why is this implemented in here
 void tram::Render::Project(const glm::vec3& point, glm::vec3& result) {
-    result = glm::project(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, OpenGL::SCREEN_WIDTH, OpenGL::SCREEN_HEIGHT));
-    result.y = OpenGL::SCREEN_HEIGHT - result.y;
+    result = glm::project(point, API::matrices.view, API::matrices.projection, glm::vec4 (0.0f, 0.0f, API::SCREEN_WIDTH, API::SCREEN_HEIGHT));
+    result.y = API::SCREEN_HEIGHT - result.y;
 }
 
 tram::vec3 tram::Render::ProjectInverse(tram::vec3 point) {
-    point.y =  OpenGL::SCREEN_HEIGHT - point.y;
-    vec3 result = glm::unProject(point, OpenGL::matrices.view, OpenGL::matrices.projection, glm::vec4 (0.0f, 0.0f, OpenGL::SCREEN_WIDTH, OpenGL::SCREEN_HEIGHT));
+    point.y =  API::SCREEN_HEIGHT - point.y;
+    vec3 result = glm::unProject(point, API::matrices.view, API::matrices.projection, glm::vec4 (0.0f, 0.0f, API::SCREEN_WIDTH, API::SCREEN_HEIGHT));
     //result.y = OpenGL::SCREEN_HEIGHT - result.y;
     
     return result;

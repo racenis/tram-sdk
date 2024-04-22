@@ -49,12 +49,12 @@ void Material::LoadMaterialInfo(const char* filename){
     
     name_t file_type = file.read_name();
     
-    if (file_type != "MATv3") {
+    if (file_type != "MATv4") {
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
 
-    while(file.is_continue()){
+    while (file.is_continue()) {
         materialtype_t mat_type;
         MaterialFilter mat_filter;
         MaterialProperty mat_property;
@@ -63,6 +63,9 @@ void Material::LoadMaterialInfo(const char* filename){
         name_t mat_type_name = file.read_name();
         name_t mat_filter_name = file.read_name();
         name_t mat_property_name = file.read_name();
+        vec3 mat_color = {file.read_float32(), file.read_float32(), file.read_float32()};
+        float mat_spec_weight = file.read_float32();
+        float mat_spec_power = file.read_float32();
 
         if(mat_type_name == UID("flat")){
             mat_type = MATERIAL_TEXTURE;
@@ -77,8 +80,12 @@ void Material::LoadMaterialInfo(const char* filename){
         } else if(mat_type_name == UID("water")){
             mat_type = MATERIAL_WATER;
         } else {
-            std::cout << "Error material list material: " << mat_name << std::endl;
-            continue;
+            mat_type = FindMaterialType(mat_type_name);
+            
+            if (mat_type == (materialtype_t)-1) {
+                std::cout << "Error material list material: " << mat_name << std::endl;
+                continue;
+            }
         }
         
         if (mat_filter_name == "linear") {
@@ -87,35 +94,35 @@ void Material::LoadMaterialInfo(const char* filename){
             mat_filter = FILTER_NEAREST;
         }
         
-        if (mat_filter_name == "metal") {
+        if (mat_property_name == "metal") {
             mat_property = PROPERTY_METAL;
-        } else if (mat_filter_name == "metal-thin") {
+        } else if (mat_property_name == "metal-thin") {
             mat_property = PROPERTY_METAL_THIN;
-        } else if (mat_filter_name == "slime") {
+        } else if (mat_property_name == "slime") {
             mat_property = PROPERTY_SLIME;
-        } else if (mat_filter_name == "tile") {
+        } else if (mat_property_name == "tile") {
             mat_property = PROPERTY_TILE;
-        } else if (mat_filter_name == "grate") {
+        } else if (mat_property_name == "grate") {
             mat_property = PROPERTY_GRATE;
-        } else if (mat_filter_name == "wood") {
+        } else if (mat_property_name == "wood") {
             mat_property = PROPERTY_WOOD;
-        } else if (mat_filter_name == "computer") {
+        } else if (mat_property_name == "computer") {
             mat_property = PROPERTY_COMPUTER;
-        } else if (mat_filter_name == "glass") {
+        } else if (mat_property_name == "glass") {
             mat_property = PROPERTY_GLASS;
-        } else if (mat_filter_name == "snow") {
+        } else if (mat_property_name == "snow") {
             mat_property = PROPERTY_SNOW;
-        } else if (mat_filter_name == "grass") {
+        } else if (mat_property_name == "grass") {
             mat_property = PROPERTY_GRASS;
-        } else if (mat_filter_name == "concrete") {
+        } else if (mat_property_name == "concrete") {
             mat_property = PROPERTY_CONCRETE;
-        } else if (mat_filter_name == "flesh") {
+        } else if (mat_property_name == "flesh") {
             mat_property = PROPERTY_FLESH;
         } else {
             mat_property = PROPERTY_METAL;
         }
 
-        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property));
+        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property, mat_color, mat_spec_weight, mat_spec_power));
     }
 }
 
@@ -230,9 +237,9 @@ void Material::LoadFromMemory(){
     assert(status == LOADED);
 
     if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
-        texture = CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
+        texture = API::CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     } else {
-        texture = CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
+        texture = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     }
 
     float approx_memory = width * height * channels;  // image size

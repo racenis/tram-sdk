@@ -176,12 +176,12 @@ void mainloop() {
     }
     
     // this will make the light spin
-    //vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
+    vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
     //quat litrot;
     //QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
     //binguser->SetLocation(litloc);
     //binguser->SetRotation(litrot);
-    //lit->SetLocation(litloc);
+    lit->SetLocation(litloc);
     
     // this makes the mongus model bob up and down
     //monguser->SetLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
@@ -392,6 +392,9 @@ int main() {
     
     Ext::Scripting::Lua::Init();
 
+    //static materialtype_t special_material = RegisterMaterialType("special");
+    //API::RegisterShader(VERTEX_DYNAMIC, special_material, "normal_dynamic", "special_dynamic");
+
     // load all of the language strings
     Language::Load("lv");
 
@@ -406,7 +409,7 @@ int main() {
     UIDFunc("bepito");
 
     //Render::SetScreenClear({0.0f, 0.0f, 0.0f}, false);
-    Render::SetScreenClear({0.0f, 0.0f, 0.0f}, true);
+    Render::API::SetScreenClear({0.0f, 0.0f, 0.0f}, true);
 
     // loading the demo level
     WorldCell::Make(UID("demo_mov"))->LoadFromDisk();
@@ -463,10 +466,10 @@ int main() {
     //monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
-    //lit = PoolProxy<LightComponent>::New();
-    //lit->Init();
-    //lit->SetColor({1.0f, 0.0f, 1.0f});
-    //lit->SetDistance(100.0f);
+    lit = PoolProxy<LightComponent>::New();
+    lit->Init();
+    lit->SetColor({1.0f, 0.0f, 1.0f});
+    lit->SetDistance(100.0f);
 
     // create the animation player for the mongus model
     //monguser_armature = PoolProxy<AnimationComponent>::New();

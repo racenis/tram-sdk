@@ -12,6 +12,10 @@
 
 #include <render/api.h>
 
+#include <config.h>
+
+#include <cstring>
+
 using namespace tram;
 using namespace tram::Render;
 
@@ -41,14 +45,16 @@ drawlistentry_t colorlines_entry;
 
 std::vector<LineVertex> colorlines;
 
+using namespace API;
+
 /// Initializes the rendering system.
 /// @note Core and UI systems need to be initialized before initializing the render system.
 void Init () {
     assert(System::IsInitialized(System::SYSTEM_CORE));
     assert(System::IsInitialized(System::SYSTEM_UI));
     
-    // since we only have the OpenGL renderer, we'll init that one
-    OpenGL::Init();
+    API::Init();
+    
     
     
     // this is for rendering lines
@@ -57,6 +63,7 @@ void Init () {
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
     SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
+    SetLayer(colorlines_entry, 1);
     
     // generating fullbright lightmap
     Material* fullbright = Material::Make("fullbright", MATERIAL_LIGHTMAP);
@@ -91,7 +98,7 @@ void Render () {
 /// @param layer        Rendering layer to which the sun direction will be applied.
 void SetSunDirection (color_t direction, layer_t layer) {
     SUN_DIRECTION [layer] = direction;
-    SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    API::SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
 }
 
 /// Sets the sun color.
@@ -99,7 +106,7 @@ void SetSunDirection (color_t direction, layer_t layer) {
 /// @param layer    Rendering layer to which the sun color will be applied.
 void SetSunColor (color_t color, layer_t layer) {
     SUN_COLOR [layer] = color;
-    SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    API::SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
 }
 
 /// Sets the ambient color.
@@ -107,7 +114,7 @@ void SetSunColor (color_t color, layer_t layer) {
 /// @param layer    Rendering layer to which the ambient color will be applied.
 void SetAmbientColor (color_t color, layer_t layer) {
     AMBIENT_COLOR [layer] = color;
-    SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    API::SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
 }
 
 /// Sets the camera position.
@@ -115,7 +122,7 @@ void SetAmbientColor (color_t color, layer_t layer) {
 /// @param layer    Rendering layer to which the camera position will be applied.
 void SetCameraPosition (vec3 position, layer_t layer) {
     CAMERA_POSITION [layer] = position;
-    SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    API::SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
 }
 
 /// Sets the camera rotation.
@@ -123,7 +130,7 @@ void SetCameraPosition (vec3 position, layer_t layer) {
 /// @param layer    Rendering layer to which the camera rotation will be applied.
 void SetCameraRotation (quat rotation, layer_t layer) {
     CAMERA_ROTATION [layer] = rotation;
-    SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    API::SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
 }
 
 /// Returns the camera position for a given layer.
@@ -203,20 +210,17 @@ void AddCube(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
 }
 
-const uint32_t MAX_MATERIAL_TYPES = 10;
-const uint32_t MAX_VERTEX_FORMATS = 10;
-
 static uint32_t last_material_type = MATERIAL_LAST;
 static uint32_t last_vertex_format = MATERIAL_LAST;
 
-static const char* material_type_names[MAX_MATERIAL_TYPES] = {
+static const char* vertex_format_names[MAX_VERTEX_FORMATS] = {
     "VERTEX_STATIC",
     "VERTEX_DYNAMIC",
     "VERTEX_SPRITE",
     "VERTEX_LINE"
 };
 
-static const char* vertex_format_names[MAX_VERTEX_FORMATS] = {
+static const char* material_type_names[MAX_MATERIAL_TYPES] = {
     "MATERIAL_TEXTURE",
     "MATERIAL_TEXTURE_ALPHA",
     "MATERIAL_LIGHTMAP",
@@ -240,6 +244,22 @@ materialtype_t RegisterMaterialType(const char* name) {
     material_type_names[last_material_type] = name;
     
     return last_material_type++;
+}
+
+vertexformat_t FindVertexFormat(const char* name) {
+    for (uint32_t i = 0; i < last_vertex_format; i++) {
+        if (strcmp(vertex_format_names[i], name) == 0) return i;
+    }
+    
+    return -1;
+}
+
+materialtype_t FindMaterialType(const char* name) {
+    for (uint32_t i = 0; i < last_material_type; i++) {
+        if (strcmp(material_type_names[i], name) == 0) return i;
+    }
+    
+    return -1;
 }
 
 const char* GetVertexFormatName(vertexformat_t type) {

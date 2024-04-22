@@ -133,6 +133,12 @@ struct Lightmap {
 	int w, h;
 };
 
+struct Model {
+	std::vector<name_t> materials;
+	std::vector<Vertex> vertices;
+	std::vector<Triangle> triangles;
+};
+
 struct Light {
 	vec3 pos;
 	vec3 color;
@@ -147,6 +153,56 @@ struct Entity {
 	name_t model;
 	name_t lightmap;
 };
+
+Model LoadModel(const char* model_name) {
+	std::string model_path = "data/models/";
+	model_path += (const char*)model_name;
+	model_path += ".stmdl";
+	
+	File file(model_path.c_str(), MODE_READ);
+	
+	if (!file.is_open()) {
+		std::cout << "Error opening model file " << model_path << std::endl;
+		abort();
+	}
+	
+	int vrt_c = file.read_int32();
+	int tri_c = file.read_int32();
+	int mat_c = file.read_int32();
+		
+	std::vector<name_t> materials;
+	for (int i = 0; i < mat_c; i++) {
+		materials.push_back(file.read_name());
+	}
+	
+	std::vector<Vertex> vertices;
+	for (int i = 0; i < vrt_c; i++) {
+		Vertex v;
+		
+		v.pos = {file.read_float32(), file.read_float32(), file.read_float32()};
+		v.nrm = {file.read_float32(), file.read_float32(), file.read_float32()};
+		v.tex = {file.read_float32(), file.read_float32()};
+		v.map = {file.read_float32(), file.read_float32()};
+		
+		vertices.push_back(v);
+	}
+	
+	std::vector<Triangle> triangles;
+	for (int i = 0; i < tri_c; i++) {
+		Triangle t;
+		
+		t.v1 = vertices[file.read_int32()];
+		t.v2 = vertices[file.read_int32()];
+		t.v3 = vertices[file.read_int32()];
+		t.mat = materials[file.read_int32()];
+		
+		triangles.push_back(t);
+	}
+	
+	std::cout << "Loaded model " << model_name << ", it has " << vrt_c << " verts, " << tri_c << " tris, " << mat_c << " materials." << std::endl;
+	
+	return {materials, vertices, triangles};
+}
 
 vec3 GetBarycentric(Triangle tri, float x, float y) {
 	const vec2 v1 = tri.v2.map - tri.v1.map;
@@ -389,6 +445,8 @@ int main(int argc, const char** argv) {
 	//int stretch_high_y = 2;
 	int padding = 1;
 	
+	std::vector<std::string> worldspawns;
+	
 	if (lightmap_width < 1 || lightmap_height < 1) {
 		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
 		return 0;
@@ -418,6 +476,10 @@ int main(int argc, const char** argv) {
 		
 		if (strcmp(argv[i], "-fullbright") == 0) {
 			force_fullbright = true;
+		}
+		
+		if (strcmp(argv[i], "-worldspawn") == 0) {
+			worldspawns.push_back(argv[++i]);
 		}
 		
 	}
@@ -473,6 +535,21 @@ int main(int argc, const char** argv) {
 			entities.push_back(entity);
 		}
 		
+		if (entity_type == "button") {
+			Entity entity;
+			
+			entity.id = cell.read_name();
+			entity.name = cell.read_name();
+			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			
+			cell.read_int32();
+			entity.model = cell.read_name();
+			entity.lightmap = cell.read_name();
+			
+			entities.push_back(entity);
+		}
+		
 		if (entity_type == "light") {
 			Light light;
 			
@@ -517,71 +594,62 @@ int main(int argc, const char** argv) {
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
 		
-	std::string model_path = "data/models/";
-	model_path += (const char*)model_name;
-	model_path += ".stmdl";
-	
-	File file(model_path.c_str(), MODE_READ);
-	
-	if (!file.is_open()) {
-		std::cout << "Error opening model file " << model_path << std::endl;
-		return 0;
-	}
-	
-	int vrt_c = file.read_int32();
-	int tri_c = file.read_int32();
-	int mat_c = file.read_int32();
-		
-	std::vector<name_t> materials;
-	for (int i = 0; i < mat_c; i++) {
-		materials.push_back(file.read_name());
-	}
-	
-	std::vector<Vertex> vertices;
-	for (int i = 0; i < vrt_c; i++) {
-		Vertex v;
-		
-		v.pos = {file.read_float32(), file.read_float32(), file.read_float32()};
-		v.nrm = {file.read_float32(), file.read_float32(), file.read_float32()};
-		v.tex = {file.read_float32(), file.read_float32()};
-		v.map = {file.read_float32(), file.read_float32()};
-		
-		vertices.push_back(v);
-	}
-	
-	std::vector<Triangle> triangles;
-	for (int i = 0; i < tri_c; i++) {
-		Triangle t;
-		
-		t.v1 = vertices[file.read_int32()];
-		t.v2 = vertices[file.read_int32()];
-		t.v3 = vertices[file.read_int32()];
-		t.mat = materials[file.read_int32()];
-		
-		triangles.push_back(t);
-	}
-	
-	std::cout << "Loaded model " << model_name << ", it has " << vrt_c << " verts, " << tri_c << " tris, " << mat_c << " materials." << std::endl;
-	
-	
-	// +-----------------------------------------------------------------------+
-	// +                                                                       +
-	// +                        RADIOSITY CALCULATIONS                         +
-	// +                                                                       +
-	// +-----------------------------------------------------------------------+
-	
 	// this tree here will contain all of the triangles in the scene, at the
 	// time of the radiosity computation.
 	// we will use it to determine if there is a clear path between two points
 	AABBTree all_tree;
 	std::vector<Triangle> all_tris;
 	
+	// first we will load the model for which we bake the lightmap
+	auto [materials, vertices, triangles] = LoadModel(model_name);
+	
+	// and we put all of its triangles into the tree
 	for (const auto& tri : triangles) {
 		all_tree.InsertLeaf(all_tris.size(), TriangleAABBMin(tri), TriangleAABBMax(tri));
 		all_tris.push_back(tri);
 	}
 	
+	// finally we load in all of the other entities 
 	
+	// ----- //
+	for (const auto& entity: entities) {
+		bool found = false;
+		for (auto worldspawn: worldspawns) {
+			if (worldspawn == entity.name) found = true;
+		}
+		
+		if (!found) continue;
+		
+		auto [_yeet1, _yeet2, triangles] = LoadModel(entity.model);
+		
+		auto local_to_global_to_local = [&](Vertex& v){
+			v.pos = entity.rot * v.pos;
+			v.pos = entity.pos + v.pos;
+			
+			v.pos = inv_pos + v.pos;
+			v.pos = inv_rot * v.pos;
+			
+			// TODO: do the same for normals I guess?
+		};
+		
+		for (auto& triangle : triangles) {
+			local_to_global_to_local(triangle.v1);
+			local_to_global_to_local(triangle.v2);
+			local_to_global_to_local(triangle.v3);
+		}
+		
+		for (const auto& tri : triangles) {
+			all_tree.InsertLeaf(all_tris.size(), TriangleAABBMin(tri), TriangleAABBMax(tri));
+			all_tris.push_back(tri);
+		}
+	}
+	// ----- //
+	
+	// +-----------------------------------------------------------------------+
+	// +                                                                       +
+	// +                        RADIOSITY CALCULATIONS                         +
+	// +                                                                       +
+	// +-----------------------------------------------------------------------+
 	
 	std::cout << "Baking a lightmap with " << lights.size() <<" lights, " << lightmap_width << " by " << lightmap_height << " texels in size." << std::endl;
 	

@@ -12,8 +12,8 @@ layout (location = 5) in uint TexIndex;		// texture index
 
 // what the fuck
 struct Light {
-	vec4 aa;
-	vec4 bb;
+	vec4 aa; // light position
+	vec4 bb; // light color
 	vec4 cc;
 	vec4 dd;
 };
@@ -21,6 +21,7 @@ struct Light {
 layout (std140) uniform Matrices {
     mat4 projection;
     mat4 view;
+	vec3 view_pos;
 };
 
 layout (std140) uniform ModelMatrices {
@@ -33,6 +34,8 @@ layout (std140) uniform ModelMatrices {
 	float sun_weight;
 	float screen_width;
 	float screen_height;
+	vec4 colors[15];
+	vec2 specular[15];
 };
 
 layout (std140) uniform Lights {
@@ -90,6 +93,20 @@ void main() {
 	vert_color += vec3(scene_lights[model_lights.y].bb) * max(dot(n, normalize(vec3(scene_lights[model_lights.y].aa) - v)), 0.0)* (1.0 / (1.0 + 0.09 * distance2 + 0.032 * (distance2 * distance2)));
 	vert_color += vec3(scene_lights[model_lights.z].bb) * max(dot(n, normalize(vec3(scene_lights[model_lights.z].aa) - v)), 0.0)* (1.0 / (1.0 + 0.09 * distance3 + 0.032 * (distance3 * distance3)));
 	vert_color += vec3(scene_lights[model_lights.w].bb) * max(dot(n, normalize(vec3(scene_lights[model_lights.w].aa) - v)), 0.0)* (1.0 / (1.0 + 0.09 * distance4 + 0.032 * (distance4 * distance4)));
+	
+	// do specular stuff
+	vec3 view_dir = normalize(view_pos - v);
+	float specular1 = pow(max(dot(view_dir, reflect(-normalize(vec3(scene_lights[model_lights.x].aa) - v), n)), 0.0), specular[TexIndex].y);
+	float specular2 = pow(max(dot(view_dir, reflect(-normalize(vec3(scene_lights[model_lights.y].aa) - v), n)), 0.0), specular[TexIndex].y);
+	float specular3 = pow(max(dot(view_dir, reflect(-normalize(vec3(scene_lights[model_lights.z].aa) - v), n)), 0.0), specular[TexIndex].y);
+	float specular4 = pow(max(dot(view_dir, reflect(-normalize(vec3(scene_lights[model_lights.w].aa) - v), n)), 0.0), specular[TexIndex].y);
+	vert_color += specular[TexIndex].x * specular1 * vec3(scene_lights[model_lights.x].bb);
+	vert_color += specular[TexIndex].x * specular2 * vec3(scene_lights[model_lights.y].bb);
+	vert_color += specular[TexIndex].x * specular3 * vec3(scene_lights[model_lights.z].bb);
+	vert_color += specular[TexIndex].x * specular4 * vec3(scene_lights[model_lights.w].bb);
+	
+	// add material color
+	vert_color *= vec3(colors[TexIndex]);
 	
     vert_uv = VertUV;
 	vert_tex_index = TexIndex;

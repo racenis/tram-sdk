@@ -185,7 +185,7 @@ void Init(){
         screen_width = width;
         screen_height = height;
         
-        Render::SetScreenSize(width, height);
+        Render::API::SetScreenSize(width, height);
     });
 
     glfwSetKeyCallback(WINDOW, KeyCallback);
@@ -242,8 +242,12 @@ void Update() {
     
     keyboard_axis_values[KEY_MOUSE_SCROLL] = 0.0f;
     
-    //keyboard_axis_deltas[KEY_MOUSE_X] = 0.0f;
-    //keyboard_axis_deltas[KEY_MOUSE_Y] = 0.0f;
+    // idk why, but these two lines make the mouse break on emscripten
+    // TODO: figure out why and fix
+#ifndef __EMSCRIPTEN__
+    keyboard_axis_deltas[KEY_MOUSE_X] = 0.0f;
+    keyboard_axis_deltas[KEY_MOUSE_Y] = 0.0f;
+#endif
     
     glfwPollEvents();
 }

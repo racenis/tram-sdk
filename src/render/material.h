@@ -29,12 +29,31 @@ public:
     Material(name_t name, materialtype_t type) : Resource(name), type(type) {}
     Material(name_t name, materialtype_t type, MaterialFilter filter) : Resource(name), type(type), filter(filter) {}
     Material(name_t name, materialtype_t type, MaterialFilter filter, MaterialProperty property) : Resource(name), type(type), filter(filter), property(property) {}
+    Material(
+        name_t name, 
+        materialtype_t type, 
+        MaterialFilter filter, 
+        MaterialProperty property, 
+        vec3 color, 
+        float specular_weight, 
+        float specular_power
+    ) : 
+        Resource(name), 
+        type(type), 
+        filter(filter), 
+        property(property), 
+        color(color), 
+        specular_weight(specular_weight), 
+        specular_power(specular_power) {}
     
     inline texturehandle_t GetTexture() const { return texture; }
     inline uint32_t GetWidth() const { return width; }
     inline uint32_t GetHeight() const { return height; }
     inline materialtype_t GetType() const { return type; }
     inline MaterialProperty GetProperty() const { return property; }
+    inline vec3 GetColor() const { return color; }
+    inline float GetSpecularWeight() const { return specular_weight; }
+    inline float GetSpecularPower() const { return specular_power; }
 
     void MakePattern (vec3 color1, vec3 color2);
     
@@ -53,6 +72,10 @@ protected:
     materialtype_t type = MATERIAL_TEXTURE;
     MaterialFilter filter = FILTER_NEAREST;
     MaterialProperty property = PROPERTY_METAL;
+    
+    vec3 color;
+    float specular_weight;
+    float specular_power;
     
     uint32_t width = 0;
     uint32_t height = 0;

@@ -93,6 +93,9 @@ enum MaterialFilter {
 vertexformat_t RegisterVertexFormat(const char* name);
 materialtype_t RegisterMaterialType(const char* name);
 
+vertexformat_t FindVertexFormat(const char* name);
+materialtype_t FindMaterialType(const char* name);
+
 const char* GetVertexFormatName(vertexformat_t type);
 const char* GetMaterialTypeName(materialtype_t type);
 

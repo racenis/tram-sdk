@@ -17,7 +17,9 @@ namespace tram {
 class AABBTree {
 public:
     AABBTree() {}
-    ~AABBTree() {}
+    ~AABBTree() {
+        RemoveHierarchy(root);
+    }
     
     vec3 GetAABBMin() { return root->min; }
     vec3 GetAABBMax() { return root->max; }
@@ -137,6 +139,16 @@ public:
         delete parent;
         
         ValidateTree(root);
+    }
+    
+    void RemoveHierarchy(Node* node) {
+        if (node->IsLeaf()) {
+            delete node;
+        } else {
+            RemoveHierarchy(node->left);
+            RemoveHierarchy(node->right);
+            delete node;
+        }
     }
     
     void FindIntersection (vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) {

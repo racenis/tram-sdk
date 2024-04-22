@@ -62,6 +62,8 @@ Render::drawlistentry_t glyphvertices_entry;
 
 std::vector<Render::SpriteVertex> glyphvertices;
 
+using namespace tram::Render::API;
+
 /// Performs initialization of the GUI system.
 /// Render system must be initialized first.
 void Init() {

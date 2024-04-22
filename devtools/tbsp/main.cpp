@@ -525,6 +525,8 @@ int main(int argc, const char** argv) {
 					for (auto& poly_clip : brush_clip.polys) {
 						bool on_plane = true;
 						
+						if (poly_clip.plane.material == "dev/noclip") continue;
+						
 						for (auto& edge_clip : poly_clip.edges) {
 							if (abs(glm::dot(vec3(eq), edge_clip.p1) + eq.w) > 0.1f ||
 								abs(glm::dot(vec3(eq), edge_clip.p2) + eq.w) > 0.1f
@@ -712,7 +714,7 @@ int main(int argc, const char** argv) {
 				{pos.x, pos.z, -pos.y},
 				{normal.x, normal.z, -normal.y},
 				tex,
-				map
+				map / 32.0f
 			};
 		};
 		

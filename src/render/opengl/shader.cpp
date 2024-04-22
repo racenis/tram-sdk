@@ -7,6 +7,8 @@
 #include <sstream>
 #include <cstring>
 
+#include <config.h>
+
 #ifdef __EMSCRIPTEN__
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
@@ -20,7 +22,7 @@
 
 #include <render/opengl/renderer.h>
 
-namespace tram::Render::OpenGL {
+namespace tram::Render::API {
 
 struct VertexShader {
     name_t name;
@@ -41,13 +43,6 @@ struct LinkedShader {
     name_t vertex_shader;
     name_t fragment_shader;
 };
-
-const uint32_t MAX_MATERIAL_TYPES = 10;
-const uint32_t MAX_VERTEX_FORMATS = 10;
-
-const uint32_t MAX_VERTEX_SHADERS = 20;
-const uint32_t MAX_FRAGMENT_SHADERS = 20;
-const uint32_t MAX_LINKED_SHADERS = 40;
 
 static VertexShader vertex_shaders[MAX_VERTEX_SHADERS];
 static FragmentShader fragment_shaders[MAX_FRAGMENT_SHADERS];
@@ -228,6 +223,9 @@ void RegisterShader(vertexformat_t format, materialtype_t type, const char* vert
     
     uint32_t linked = LinkShader(vertex, fragment);
     
+    //std::cout << vertex_shader << " and " << fragment_shader << " for " << GetVertexFormatName(format) << " and " << GetMaterialTypeName(type) << std::endl;
+    //std::cout << vertex << " and " << fragment << " to " << linked << std::endl;
+    
     linked_shaders[last_linked_shader].material_type = type;
     linked_shaders[last_linked_shader].vertex_format = format;
     
@@ -255,7 +253,7 @@ uint32_t FindShader(vertexformat_t format, materialtype_t type) {
     return shader.linked_shader;
 }
 
-void CompileShaders(){
+void CompileShaders() {
     std::cout << "Loading shaders... " << std::flush;
 
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "normal_static",     "normal_static");

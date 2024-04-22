@@ -7,6 +7,13 @@
 #ifndef TRAM_SDK_CONFIG_H
 #define TRAM_SDK_CONFIG_H
 
+#include <cstdint>
 
+const uint32_t MAX_MATERIAL_TYPES = 20;
+const uint32_t MAX_VERTEX_FORMATS = 20;
+
+const uint32_t MAX_VERTEX_SHADERS = 20;
+const uint32_t MAX_FRAGMENT_SHADERS = 20;
+const uint32_t MAX_LINKED_SHADERS = 40;
 
 #endif // TRAM_SDK_CONFIG_H

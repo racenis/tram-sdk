@@ -12,6 +12,8 @@ using namespace tram::Render;
 
 template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("sprite component pool", 100, false);
 
+using namespace API;
+
 SpriteComponent::~SpriteComponent() {
     is_ready = false;
 
@@ -105,7 +107,7 @@ void SpriteComponent::UpdateRenderListObject() {
 
     UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
     
-    Render::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
+    Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
 }
 
         

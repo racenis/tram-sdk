@@ -46,7 +46,7 @@ void Model::LoadFromMemory() {
     if (vertex_format == VERTEX_STATIC){
         StaticModelData* data = (StaticModelData*) model_data;
 
-        CreateIndexedVertexArray(
+        API::CreateIndexedVertexArray(
             GetVertexDefinition(VERTEX_STATIC),
             vertex_buffer_handle,
             index_buffer_handle,
@@ -70,7 +70,7 @@ void Model::LoadFromMemory() {
     } else if (vertex_format == VERTEX_DYNAMIC){
         DynamicModelData* data = (DynamicModelData*) model_data;
 
-        CreateIndexedVertexArray(
+        API::CreateIndexedVertexArray(
             GetVertexDefinition(VERTEX_DYNAMIC),
             vertex_buffer_handle,
             index_buffer_handle,

@@ -11,6 +11,7 @@
 
 namespace tram {
 using namespace tram::Render;
+using namespace tram::Render::API;
 
 template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render component pool", 250, false);
 
@@ -41,7 +42,7 @@ void RenderComponent::SetLightmap (name_t name) {
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
+                Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
             }
         }
     }
@@ -62,7 +63,7 @@ void RenderComponent::SetArmature (AnimationComponent* armature) {
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetPose(entry, pose);
+                Render::API::SetPose(entry, pose);
             }
         }
     }
@@ -78,7 +79,7 @@ RenderComponent::~RenderComponent() {
     
     for (auto entry : draw_list_entries) {
         if (entry) {
-            Render::RemoveDrawListEntry(entry);
+            Render::API::RemoveDrawListEntry(entry);
         }
     }
     
@@ -98,7 +99,7 @@ void RenderComponent::SetWorldParameters (bool interior_lighting) {
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetFlags(entry, render_flags);
+                Render::API::SetFlags(entry, render_flags);
             }
         }
     }
@@ -111,7 +112,7 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
+                Render::API::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
             }
         }
         
@@ -126,7 +127,7 @@ void RenderComponent::SetRotation(glm::quat nrotation){
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
+                Render::API::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
             }
         }
         
@@ -159,24 +160,32 @@ void RenderComponent::InsertDrawListEntries() {
     auto& index_ranges = model->GetIndexRanges();
     
     for (size_t i = 0; i < index_ranges.size(); i++) {
-        drawlistentry_t entry = Render::InsertDrawListEntry();
+        drawlistentry_t entry = Render::API::InsertDrawListEntry();
     
-        texturehandle_t textures [15];
+        texturehandle_t textures[15];
+        vec4 colors[15];
+        float specular_weights[15];
+        float specular_powers[15];
         for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
-            textures [j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
+            textures[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
+            colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor(), 1.0f);
+            specular_weights[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularWeight();
+            specular_powers[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularPower();
         }
 
-        Render::SetDrawListVertexArray(entry, model->GetVertexArray());
-        Render::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
-        Render::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
-        Render::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
+        Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
+        Render::API::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
+        Render::API::SetDrawListColors(entry, index_ranges[i].material_count, colors);
+        Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_powers);
+        Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
+        Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
-        Render::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
-        Render::SetFlags(entry, render_flags);
+        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
+        Render::API::SetFlags(entry, render_flags);
 
-        Render::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
+        Render::API::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
 
-        Render::SetPose(entry, pose);
+        Render::API::SetPose(entry, pose);
         
         draw_list_entries [i] = entry;
     }

@@ -30,7 +30,7 @@ protected:
     
     uint32_t flags;
     name_t model;
-    name_t collmodel;
+    name_t lightmap;
     vec3 origin;
     vec3 direction;
     float speed;

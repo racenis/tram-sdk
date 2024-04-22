@@ -24,6 +24,8 @@ layout (std140) uniform ModelMatrices {
 	float sun_weight;
 	float screen_width;
 	float screen_height;
+	vec4 colors[15];
+	vec2 specular[15];
 };
 
 void main() {

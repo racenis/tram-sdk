@@ -41,7 +41,7 @@ void UpdateHierarchy(id_t parent_id) {
 enum {
     BUTTON_FIELD_FLAGS,
     BUTTON_FIELD_MODEL,
-    BUTTON_FIELD_COLLMODEL,
+    BUTTON_FIELD_LIGHTMAP,
     BUTTON_FIELD_ORIGIN,
     BUTTON_FIELD_DIRECTION,
     BUTTON_FIELD_SPEED,
@@ -98,7 +98,7 @@ void Button::Register() {
 Button::Button(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     flags =         field_array[BUTTON_FIELD_FLAGS];
     model =         field_array[BUTTON_FIELD_MODEL];
-    collmodel =     field_array[BUTTON_FIELD_COLLMODEL];
+    lightmap =     field_array[BUTTON_FIELD_LIGHTMAP];
     origin =        field_array[BUTTON_FIELD_ORIGIN];
     direction =     glm::normalize((vec3)field_array[BUTTON_FIELD_DIRECTION]);
     speed =         field_array[BUTTON_FIELD_SPEED];
@@ -181,10 +181,11 @@ void Button::Load(){
     
     rendercomponent->SetParent(this);
     rendercomponent->SetModel(model);
+    rendercomponent->SetLightmap(lightmap);
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(Physics::COLL_DYNAMICOBJ);
-    physicscomponent->SetModel(collmodel);
+    physicscomponent->SetModel(model);
     physicscomponent->SetMass(0.0f);
     physicscomponent->SetUpdateParentTransform(false);
     

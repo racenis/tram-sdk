@@ -7,7 +7,7 @@
 #include <render/render.h>
 #include <render/renderer.h>
 
-namespace tram::Render::OpenGL {
+namespace tram::Render::API {
     
 void CompileShaders();
 
@@ -43,9 +43,19 @@ struct DrawListEntry {
     uint32_t shader = 0;
     uint32_t texCount = 0;
     uint32_t textures[15] = {0};
+    vec4 colors[15];
+    float specular_weights[15];
+    float specular_powers[15];
     
     char padding [4];
 
+    DrawListEntry() {
+        for (int i = 0; i < 15; i++) {
+            colors[i] = {1.0f, 1.0f, 1.0f, 1.0f};
+            specular_weights[i] = 0.0f;
+            specular_powers[i] = 1.0f;
+        }
+    }
 
     /// Assembles a key for sorting
     uint64_t CalcSortKey (const glm::vec3& cameraPosition) {

@@ -60,7 +60,7 @@ begin
 	
 	field uint button-flags
 	field string model
-	field string collision-model
+	field string lightmap
 	field origin origin
 	field direction direction
 	field float speed

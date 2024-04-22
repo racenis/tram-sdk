@@ -1,11 +1,13 @@
 #include <components/light.h>
 
+#include <render/api.h>
+
 namespace tram {
 
 template <> Pool<LightComponent> PoolProxy<LightComponent>::pool ("light component pool", 250, false);   
 
 void LightComponent::Init () {
-    light = Render::MakeLight();
+    light = Render::API::MakeLight();
     
     is_init = true;
     is_ready = true;
@@ -14,7 +16,7 @@ void LightComponent::Init () {
 }
 
 LightComponent::~LightComponent () {
-    Render::DeleteLight(light);
+    Render::API::DeleteLight(light);
     
     light = nullptr;
     is_ready = false;
@@ -22,7 +24,7 @@ LightComponent::~LightComponent () {
 
 void LightComponent::Update () {
     if (is_ready) {
-        Render::SetLightParameters(light, location, color, distance);
+        Render::API::SetLightParameters(light, location, color, distance);
     }
 }
 
