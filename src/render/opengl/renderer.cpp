@@ -212,6 +212,11 @@ void RenderFrame() {
             modelMatrices.specular[i].y = robj->specular_powers[i];
         }
 
+        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[0]].location, light_list.GetFirst()[robj->lights[0]].color);
+        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[1]].location, light_list.GetFirst()[robj->lights[1]].color);
+        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[2]].location, light_list.GetFirst()[robj->lights[2]].color);
+        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[3]].location, light_list.GetFirst()[robj->lights[3]].color);
+
         modelMatrices.modelLights.x = robj->lights[0];
         modelMatrices.modelLights.y = robj->lights[1];
         modelMatrices.modelLights.z = robj->lights[2];

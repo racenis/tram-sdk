@@ -15,7 +15,7 @@ uint32_t CAMERA_SYSTEM = -1u;
 Camera* selected_camera = nullptr;
 
 const float TILT_SPEED = 0.01f;
-const float BOB_SPEED = 0.15f;
+//const float BOB_SPEED = 0.2f;
 const float BOB_CHANGE_SPEED = 0.05f;
 
 void Init() {
@@ -56,6 +56,14 @@ void Camera::SetBobbingDistance (float bobbing_distance) {
     this->bobbing_distance = bobbing_distance;
 }
 
+void Camera::SetBobbingTilt(float bobbing_tilt) {
+    this->bobbing_tilt_goal = bobbing_tilt;
+}
+
+void Camera::SetBobSpeed(float bob_speed) {
+    this->bob_speed = bob_speed;
+}
+
 void Camera::SetBobbingCallback(void (*bob_callback)(Camera*)) {
     this->bob_callback = bob_callback;
 }
@@ -73,7 +81,7 @@ void Camera::Update () {
     }
     
     // do some bobbing
-    if (abs(bobbing_weight_goal - bobbing_weight) <= BOB_CHANGE_SPEED) {
+    if (fabsf(bobbing_weight_goal - bobbing_weight) <= BOB_CHANGE_SPEED) {
         bobbing_weight = bobbing_weight_goal;
     } else if (bobbing_weight > bobbing_weight_goal) {
         bobbing_weight -= BOB_CHANGE_SPEED;
@@ -81,14 +89,29 @@ void Camera::Update () {
         bobbing_weight += BOB_CHANGE_SPEED;
     }
     
+    if (fabsf(bobbing_tilt - bobbing_tilt_goal) <= TILT_SPEED) {
+        bobbing_tilt = bobbing_tilt_goal;
+    } else if (bobbing_tilt > bobbing_tilt_goal) {
+        bobbing_tilt -= TILT_SPEED;
+    } else if (bobbing_tilt < bobbing_tilt_goal) {
+        bobbing_tilt += TILT_SPEED;
+    }
+    
     // process the bobbing
     if (bobbing_weight > 0.0f) {
-        bob += BOB_SPEED;
+        bob += bob_speed;
         
-        // do callback
+        // first callback
+        if (bob > glm::pi<float>() && callback_count % 2 == 0) {
+            if (bob_callback) bob_callback(this);
+            callback_count++;
+        }
+        
+        // second callback
         if (bob >= 2.0f*glm::pi<float>()) {
             bob = fmodf(bob, 2.0f*glm::pi<float>());
             if (bob_callback) bob_callback(this);
+            callback_count++;
         }
     }
     
@@ -102,10 +125,10 @@ void Camera::Update () {
     vec3 term_loc = location;
     quat term_rot = rotation;
     
-    term_rot *= quat(vec3(0.0f, 0.0f, tilt));
+    term_rot *= quat(vec3(0.0f, 0.0f, tilt + (sinf(bob) * bobbing_tilt * bobbing_weight)));
     
     term_loc += following_offset;
-    term_loc += vec3(0.0f, 1.0f, 0.0f) * (float) sin(bob) * bobbing_distance * bobbing_weight;
+    term_loc += vec3(0.0f, 1.0f, 0.0f) * fabsf(sinf(bob)) * bobbing_distance * bobbing_weight;
     
     if (following_interpolation != 1.0f) {
         term_loc = glm::mix(Render::GetCameraPosition(), term_loc, following_interpolation);

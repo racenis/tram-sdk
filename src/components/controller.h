@@ -44,7 +44,7 @@ public:
         step_height_crouch = crouch_height;
     }
     
-    inline void SetWallCollisionCallback(void (*callback)(Physics::Collision)) {
+    inline void SetWallCollisionCallback(void (*callback)(ControllerComponent*, Physics::Collision)) {
         wallbonk_callback = callback;
     }
     
@@ -52,6 +52,7 @@ public:
     inline void SetRunSpeed(float run_speed) { this->run_speed = run_speed; }
     inline void SetCrouchSpeed(float crouch_speed) { this->crouch_speed = crouch_speed; }
     inline void SetFriction(float friction) { this->friction = friction; }
+    inline void SetCollisionGroup(uint32_t group) { this->collision_group = group; }
     
     static void Update();
 protected:
@@ -93,7 +94,9 @@ protected:
     id_t standing_on_prev = 0;
     vec3 standing_pos;
     
-    void (*wallbonk_callback)(Physics::Collision) = nullptr;
+    uint32_t collision_group = Physics::COLL_PLAYER;
+    
+    void (*wallbonk_callback)(ControllerComponent*, Physics::Collision) = nullptr;
     
     template <typename> friend class Pool;
 };

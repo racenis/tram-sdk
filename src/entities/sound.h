@@ -15,6 +15,10 @@ class AudioComponent;
 class Sound : public Entity {
 public:
     Sound(const SharedEntityData&, const ValueArray&);
+    
+    // this should be a static method!!!
+    // and even better, the audiocomponent should have callbacks when the
+    // audio is finished playing, so that it can delete itself.. idk
     Sound(name_t sound, float volume, vec3 position);
     void UpdateParameters();
     void SetParameters();

@@ -3,6 +3,8 @@
 
 #include <extensions/kitchensink/entities.h>
 
+#include <extensions/kitchensink/soundtable.h>
+
 #include <components/render.h>
 #include <components/physics.h>
 
@@ -37,6 +39,8 @@ void UpdateHierarchy(id_t parent_id) {
 /*                             FUNC_BUTTON                                    */
 /*                                                                            */
 /******************************************************************************/
+
+#define PlaySound(TYPE) if (sound) SoundTable::Find(sound)->PlaySound(TYPE, origin, 1.0f);
 
 enum {
     BUTTON_FIELD_FLAGS,
@@ -235,10 +239,12 @@ void Button::Update() {
             if (progress >= 1.0f) {
                 progress = 1.0f;
                 state = BUTTON_STATE_ZENITH_WAITING;
+                PlaySound(SOUND_END_OPEN)
                 FireSignal(Signal::END_OPEN);
             }
             if (last_activate > 10 && (flags & BUTTON_FLAG_MOMENTARY)) {
                 state = BUTTON_STATE_ZENITH_WAITING;
+                PlaySound(SOUND_END_OPEN)
                 FireSignal(Signal::END_OPEN);
             }
             
@@ -257,6 +263,7 @@ void Button::Update() {
                 RemoveUpdate();
             } else {
                 state = BUTTON_STATE_LOWERING;
+                PlaySound(SOUND_CLOSE)
                 FireSignal(Signal::CLOSE);
             }
             break;
@@ -267,10 +274,12 @@ void Button::Update() {
             if (progress <= 0.0f) {
                 progress = 0.0f;
                 state = BUTTON_STATE_NADIR_WAITING;
+                PlaySound(SOUND_END_CLOSE)
                 FireSignal(Signal::END_CLOSE);
             }
             if (last_activate > 10 && (flags & BUTTON_FLAG_MOMENTARY) && (flags & BUTTON_FLAG_TOGGLE)) {
                 state = BUTTON_STATE_NADIR_WAITING;
+                PlaySound(SOUND_END_CLOSE)
                 FireSignal(Signal::END_CLOSE);
             }
             break;
@@ -292,12 +301,17 @@ void Button::MessageHandler(Message& msg) {
     // button is pressed and it is not momentary
     if (msg.type == Message::ACTIVATE_ONCE /*&& !(flags & BUTTON_FLAG_MOMENTARY)*/ && !(flags & BUTTON_FLAG_LOCKED)) {
         switch (state) {
-            case BUTTON_STATE_NADIR_READY:  AddUpdate(); state = BUTTON_STATE_RISING;   FireSignal(Signal::OPEN);   break;
-            case BUTTON_STATE_ZENITH_READY: AddUpdate(); state = BUTTON_STATE_LOWERING; FireSignal(Signal::CLOSE);  break;
+            case BUTTON_STATE_NADIR_READY:  AddUpdate(); state = BUTTON_STATE_RISING;   PlaySound(SOUND_OPEN)   FireSignal(Signal::OPEN);   break;
+            case BUTTON_STATE_ZENITH_READY: AddUpdate(); state = BUTTON_STATE_LOWERING; PlaySound(SOUND_CLOSE)  FireSignal(Signal::CLOSE);  break;
             default:                                                                                                break;
         }
         
         last_activate = 0;
+    }
+    
+    // play locked sound
+    if (msg.type == Message::ACTIVATE_ONCE && (flags & BUTTON_FLAG_LOCKED)) {
+        PlaySound(SOUND_LOCKED)
     }
     
     // button is being pressed and it is momentary
@@ -312,10 +326,12 @@ void Button::MessageHandler(Message& msg) {
     
     // opening and closing
     if ((msg.type == Message::OPEN || msg.type == Message::TOGGLE) && state == BUTTON_STATE_NADIR_READY) {
+        PlaySound(SOUND_OPEN)
         state = BUTTON_STATE_RISING;
         AddUpdate(); 
     }
     if ((msg.type == Message::CLOSE || msg.type == Message::TOGGLE) && state == BUTTON_STATE_ZENITH_READY) {
+        PlaySound(SOUND_CLOSE)
         state = BUTTON_STATE_LOWERING;
         AddUpdate(); 
     }

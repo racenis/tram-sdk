@@ -16,19 +16,19 @@ void ControllerComponent::Start() {
     crouch_collision.make();
     physics_body.make();
     
-    walk_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    walk_collision->SetCollisionMask(-1 ^ collision_group);
     walk_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
     walk_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height));
     walk_collision->SetStoreCollisions(true);
     
-    crouch_collision->SetCollisionMask(-1 ^ Physics::COLL_PLAYER);
+    crouch_collision->SetCollisionMask(-1 ^ collision_group);
     crouch_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
     crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
     crouch_collision->SetStoreCollisions(true);
     
     physics_body->SetParent(parent);
     physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
-    physics_body->SetCollisionGroup(Physics::COLL_PLAYER);
+    physics_body->SetCollisionGroup(collision_group);
     physics_body->SetKinematic(true);
     physics_body->DisableDeactivation();
     
@@ -126,7 +126,7 @@ void ControllerComponent::RecoverFromCollisions() {
         Physics::CollisionShape::Cylinder(width, half_height),
         new_pos + vec3(0.0f, step, 0.0f),
         new_pos - vec3(0.0f, 0.1f, 0.0f),
-        -1 ^ Physics::COLL_PLAYER
+        -1 ^ collision_group
     );
     
     if (ground_collisions.size()) {
@@ -217,7 +217,7 @@ void ControllerComponent::RecoverFromCollisions() {
         
         // call the wallbonk callback
         if (wallbonk_callback) {
-            wallbonk_callback(col);
+            wallbonk_callback(this, col);
         }
         
         did_v = true;

@@ -25,7 +25,8 @@ enum CollisionGroup : uint32_t {
     COLL_DYNAMICOBJ = 4, //< Crates
     COLL_VEHICLE = 8,    //< Trams & busses
     COLL_PLAYER = 16,    //< Player
-    COLL_TRIGGER = 32
+    COLL_TRIGGER = 32,
+    COLL_MONSTER = 64
 };
 
 struct Collision {

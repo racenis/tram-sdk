@@ -52,6 +52,7 @@
 
 #include <extensions/kitchensink/design.h>
 #include <extensions/kitchensink/entities.h>
+#include <extensions/kitchensink/soundtable.h>
 #include <extensions/scripting/lua.h>
 
 #include <render/api.h>
@@ -431,7 +432,8 @@ int main() {
     camera->SetFollowingOffset({0.0f, 0.5f, 0.0f});
     camera->SetFollowing(player);
     
-    camera->SetBobbingDistance(0.0f); // why does removing this make camera not work?????
+    camera->SetBobbingDistance(0.1f); // why does removing this make camera not work?????
+    camera->SetBobbingTilt(0.1f);
     //camera->SetFollowingInterpolation(0.2f);
     
     Ext::Camera::SetCamera(camera);
