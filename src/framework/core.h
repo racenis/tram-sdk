@@ -16,7 +16,8 @@ extern char const* ENGINE_VERSION;
 id_t GenerateID();
 
 uint32_t GetTick();
-float GetTickTime();
+double GetTickTime();
+float GetDeltaTime();
 
 namespace Core {
     void Init();

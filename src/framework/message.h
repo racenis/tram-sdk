@@ -41,7 +41,7 @@ struct Message {
     
     
     static void Send(const Message& message);
-    static void Send(const Message& message, uint32_t when);
+    static void Send(const Message& message, float delay);
     static void Dispatch();
     static void* AllocateData(size_t ammount);
 

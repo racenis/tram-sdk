@@ -29,6 +29,8 @@ public:
 
     void SetLocation(glm::vec3 nlocation);
     void SetRotation(glm::quat nrotation);
+    void SetScale(vec3 scale);
+    void SetColor(vec3 color);
     void SetWorldParameters (bool interior_lighting);
 
     void EventHandler(Event &event){return;}
@@ -45,6 +47,8 @@ protected:
 
     vec3 location = {0.0f, 0.0f, 0.0f};
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+    vec3 scale = {1.0f, 1.0f, 1.0f};
+    vec3 color = {1.0f, 1.0f, 1.0f};
 
     void* aabb_tree_leaf = 0;
 

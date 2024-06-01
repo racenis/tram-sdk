@@ -102,8 +102,8 @@ enum CursorType {
     CURSOR_CLICK
 };
 
-const float CAMERA_SENSITIVITY = 0.1f;
-const float CAMERA_SPEED = 0.1f;
+const float CAMERA_SENSITIVITY = 6.0f;
+const float CAMERA_SPEED = 6.0f;
 
 void Init();
 void Uninit();
@@ -112,6 +112,9 @@ void EndFrame();
 
 float GetScreenWidth();
 float GetScreenHeight();
+
+void SetWindowTitle(const char* title);
+void SetWindowSize(int w, int h);
 
 void SetCursor(CursorType cursor);
 void SetTextInput(char* text, uint32_t len);

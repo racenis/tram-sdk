@@ -15,12 +15,13 @@ namespace tram {
     
 /// Engine version string.
 /// If you fork the engine, you should probably change this.
-char const* ENGINE_VERSION = "Tramway SDK v0.0.7";
+char const* ENGINE_VERSION = "Tramway SDK v0.0.9";
 
 /// If set to true, then the main loop should stop and animation should exit.
 bool EXIT = false;
 
-static float frame_time = 0.0f;
+static double frame_time = 0.0f;
+static float delta_time = 0.0f;
 static uint32_t frame_tick = 0;
 
 /// Generates a unique ID number.
@@ -42,7 +43,9 @@ void Core::Init() {
 /// Updates the core system.
 /// @note This should be called only once per update cycle.
 void Core::Update() {
+    double last_frame_time = frame_time;
     frame_time = GetTime();
+    delta_time = frame_time - last_frame_time;
     frame_tick++;
 
     Event::Post({
@@ -65,8 +68,12 @@ uint32_t GetTick() {
 /// Returns the time at the start of the current tick.
 /// This value changes only once per update cycle.
 /// @return Time, in seconds, since the application was started.
-float GetTickTime() {
+double GetTickTime() {
     return frame_time;
+}
+
+float GetDeltaTime() {
+    return delta_time;
 }
 
 }

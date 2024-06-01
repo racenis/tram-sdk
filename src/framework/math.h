@@ -29,6 +29,7 @@ vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point
 void RotateAABB(vec3& min, vec3& max, quat rotation);
 
 mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation);
+mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, const vec3& scale);
 
 }
 

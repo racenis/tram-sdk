@@ -14,17 +14,17 @@ enum Resource : uint32_t {
     RESOURCE_VRAM
 };
 
-void Start (System::system_t system);
-void Stop (System::system_t system);
+void Start(System::system_t system);
+void Stop(System::system_t system);
 
-void Add (Resource resource, size_t ammount);
-void Remove (Resource resource, size_t ammount);
+void Add(Resource resource, size_t ammount);
+void Remove(Resource resource, size_t ammount);
 
-void Collate ();
+void Collate();
 
-size_t GetStat (Resource resource);
-double GetStat (System::system_t system);
-double GetStatUncollated (System::system_t system);
+size_t GetStat(Resource resource);
+double GetStat(System::system_t system);
+double GetStatUncollated(System::system_t system);
 
 }
 

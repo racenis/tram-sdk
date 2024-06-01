@@ -218,9 +218,12 @@ void RegisterShader(vertexformat_t format, materialtype_t type, const char* vert
     
     assert(last_linked_shader < MAX_LINKED_SHADERS);
     
+    std::cout << "Vertex: " << vertex_shader << std::endl;
     uint32_t vertex = LoadVertexShader(vertex_shader);
+    std::cout << "Fragment: " << fragment_shader << std::endl;
     uint32_t fragment = LoadFragmentShader(fragment_shader);
     
+    std::cout << "Linking..." << std::endl;
     uint32_t linked = LinkShader(vertex, fragment);
     
     //std::cout << vertex_shader << " and " << fragment_shader << " for " << GetVertexFormatName(format) << " and " << GetMaterialTypeName(type) << std::endl;

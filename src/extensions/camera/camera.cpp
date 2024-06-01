@@ -68,38 +68,46 @@ void Camera::SetBobbingCallback(void (*bob_callback)(Camera*)) {
     this->bob_callback = bob_callback;
 }
 
+float Camera::GetBob() {
+    return this->bob;
+}
+
+float Camera::GetWeight() {
+    return this->bobbing_weight;
+}
+
 void Camera::Update () {
     if (UI::GetInputState() == UI::STATE_FLYING) return;
     
     // move tilt towards tilt goal
-    if (abs(tilt_goal - tilt) <= TILT_SPEED && abs(tilt_goal) <= TILT_SPEED) {
+    if (abs(tilt_goal - tilt) <= TILT_SPEED * GetDeltaTime() * 60.0f && abs(tilt_goal) <= TILT_SPEED * GetDeltaTime() * 60.0f) {
         tilt = 0.0f;
     } else if (tilt_goal >= 0.0f && tilt < tilt_goal) {
-        tilt += TILT_SPEED;
+        tilt += TILT_SPEED * GetDeltaTime() * 60.0f;
     } else if (tilt_goal <= 0.0f && tilt > tilt_goal) {
-        tilt -= TILT_SPEED;
+        tilt -= TILT_SPEED * GetDeltaTime() * 60.0f;
     }
     
     // do some bobbing
-    if (fabsf(bobbing_weight_goal - bobbing_weight) <= BOB_CHANGE_SPEED) {
+    if (fabsf(bobbing_weight_goal - bobbing_weight) <= BOB_CHANGE_SPEED * GetDeltaTime() * 60.0f) {
         bobbing_weight = bobbing_weight_goal;
     } else if (bobbing_weight > bobbing_weight_goal) {
-        bobbing_weight -= BOB_CHANGE_SPEED;
+        bobbing_weight -= BOB_CHANGE_SPEED * GetDeltaTime() * 60.0f;
     } else if (bobbing_weight < bobbing_weight_goal) {
-        bobbing_weight += BOB_CHANGE_SPEED;
+        bobbing_weight += BOB_CHANGE_SPEED * GetDeltaTime() * 60.0f;
     }
     
-    if (fabsf(bobbing_tilt - bobbing_tilt_goal) <= TILT_SPEED) {
+    if (fabsf(bobbing_tilt - bobbing_tilt_goal) <= TILT_SPEED * GetDeltaTime() * 60.0f) {
         bobbing_tilt = bobbing_tilt_goal;
     } else if (bobbing_tilt > bobbing_tilt_goal) {
-        bobbing_tilt -= TILT_SPEED;
+        bobbing_tilt -= TILT_SPEED * GetDeltaTime() * 60.0f;
     } else if (bobbing_tilt < bobbing_tilt_goal) {
-        bobbing_tilt += TILT_SPEED;
+        bobbing_tilt += TILT_SPEED * GetDeltaTime() * 60.0f;
     }
     
     // process the bobbing
     if (bobbing_weight > 0.0f) {
-        bob += bob_speed;
+        bob += bob_speed * GetDeltaTime() * 60.0f;
         
         // first callback
         if (bob > glm::pi<float>() && callback_count % 2 == 0) {

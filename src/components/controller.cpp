@@ -260,11 +260,28 @@ void ControllerComponent::ResetMove() {
 /// Updates all of the ControllerComponents. Should be called once per
 /// update cycle.
 void ControllerComponent::Update() {
-    for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
-        component.ApplyDynamics();
-        component.RecoverFromCollisions();
-        component.ResetMove();
+    if (GetTick() < 10) return; // helps with not falling through the floor!!!
+        
+    static float update_counter = 0.0f;
+    update_counter += GetDeltaTime();
+
+    int needed_updates = floorf(update_counter / (1.0f / 60.0f));
+    
+    update_counter = fmodf(update_counter, 1.0f / 60.0f);
+
+    for (int i = 0; i < needed_updates; i++) {
+        for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+            component.ApplyDynamics();
+            component.RecoverFromCollisions();;
+        }
     }
+
+    if (needed_updates) {
+        for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+            component.ResetMove();
+        }
+    }
+    
 }
 
 /// Performs the action.

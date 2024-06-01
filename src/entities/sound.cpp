@@ -59,7 +59,7 @@ Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
         .receiver = this->id
     };
     
-    Message::Send(msg, s->GetLength() * 60.0f);
+    Message::Send(msg, s->GetLength());
     
     Load();
 }
@@ -84,7 +84,6 @@ void Sound::Load () {
     audio->Init();
     
     if (flags & SOUND_START_ON_LOAD) {
-        std::cout << "PLAYING!" << std::endl;
         audio->Play();
     }
     

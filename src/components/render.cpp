@@ -112,7 +112,7 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::API::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
+                Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
             }
         }
         
@@ -127,11 +127,45 @@ void RenderComponent::SetRotation(glm::quat nrotation){
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry) {
-                Render::API::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
+                Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
             }
         }
         
         RefreshAABB();
+    }
+}
+
+/// Sets the scale of the model.
+void RenderComponent::SetScale(vec3 scale) {
+    this->scale = scale;
+    
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (entry) {
+                Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
+            }
+        }
+        
+        RefreshAABB();
+    }
+}
+
+/// Sets the scale of the model.
+void RenderComponent::SetColor(vec3 color) {
+    this->color = color;
+    
+    if (is_ready) {
+        auto& index_ranges = model->GetIndexRanges();
+    
+        for (size_t i = 0; i < index_ranges.size(); i++) {
+            vec4 colors[15];
+
+            for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
+                colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor() * color, 1.0f);
+            }
+
+            Render::API::SetDrawListColors(draw_list_entries[i], index_ranges[i].material_count, colors);
+        }
     }
 }
 
@@ -168,7 +202,7 @@ void RenderComponent::InsertDrawListEntries() {
         float specular_powers[15];
         for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
             textures[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
-            colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor(), 1.0f);
+            colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor() * color, 1.0f);
             specular_weights[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularWeight();
             specular_powers[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularPower();
         }
@@ -183,7 +217,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
         Render::API::SetFlags(entry, render_flags);
 
-        Render::API::SetMatrix(entry, PositionRotationToMatrix(location, rotation));
+        Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
 
         Render::API::SetPose(entry, pose);
         

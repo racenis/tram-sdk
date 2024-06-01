@@ -30,7 +30,7 @@ struct SharedEntityData {
     quat rotation;
 };
 
-static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", 500);
+static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", 5000);
 static Hashmap<Entity*> entity_name_list ("Entity name hashmap", 500);
 static Hashmap<EntityTypeInfo> registered_entity_types ("Entity type hashmap", 50);
 
@@ -59,7 +59,8 @@ Entity::~Entity() {
 
     if (id) {
         if (entity_id_list.Find(id)) {
-            entity_id_list.Insert(id, nullptr);
+            entity_id_list.Insert(id, nullptr); // this eventually causes overflow
+            // TODO: fix
         }
     }
 

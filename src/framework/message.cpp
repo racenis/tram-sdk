@@ -19,7 +19,7 @@ static Queue<Message> message_queue ("message queue", 500);
 static Pool<Message> message_pool ("message pool", 250);
 static StackPool<char> data_pool ("message data pool", 2000);
 
-std::priority_queue <std::pair<uint32_t, Message*>, std::vector<std::pair<uint32_t, Message*>>, std::greater<std::pair<uint32_t, Message*>>> future_messages;
+std::priority_queue <std::pair<double, Message*>, std::vector<std::pair<double, Message*>>, std::greater<std::pair<double, Message*>>> future_messages;
 
 static Hashmap<message_t> name_t_to_message_t("name_t_to_message_t", (MAX_MESSAGE_TYPES*2)+11);
 
@@ -76,13 +76,14 @@ name_t Message::GetName(message_t type) {
 /// Dispatches sent messsages.
 /// Dispatches the messages that have been sent using the Message::Send() function.
 void Message::Dispatch() {
-    auto now = GetTick();
+    auto now = GetTickTime();
     
     while (!future_messages.empty() && future_messages.top().first < now) {
         auto message = future_messages.top().second;
         auto receiver = Entity::Find(message->receiver);
         if (receiver) receiver->MessageHandler(*message);
         
+        message_pool.Remove(message);
         future_messages.pop();
     }
     
@@ -111,9 +112,9 @@ void Message::Send (const Message& message) {
 /// @param when     How many ticks need to pass until the message will be sent
 ///                 out, i.e. if you want to send a message out in 1 secons,
 ///                 set this parameter to 60.
-void Message::Send (const Message& message, uint32_t when) {
+void Message::Send (const Message& message, float delay) {
     auto message_copy = message_pool.AddNew(message);
-    auto abs_when = GetTick() + when;
+    auto abs_when = GetTickTime() + delay;
     
     future_messages.push({abs_when, message_copy});
 }

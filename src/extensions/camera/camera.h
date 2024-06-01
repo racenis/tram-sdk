@@ -25,6 +25,9 @@ public:
     void SetBobbingCallback(void (*bob_callback)(Camera*));
     void SetBobSpeed(float speed);
     
+    float GetBob();
+    float GetWeight();
+    
     inline void SetLocation(vec3 location) { this->location = location; }
     inline void SetRotation(quat rotation) { this->rotation = rotation; }
     
@@ -45,7 +48,7 @@ protected:
     float bobbing_distance = 0.2f;
     float bobbing_tilt_goal = 0.0f;
     float bobbing_tilt = 0.0f;
-    float bob_speed = 0.0f;
+    float bob_speed = 0.1f;
     int callback_count = 0;
     void (*bob_callback)(Camera*) = nullptr;
     

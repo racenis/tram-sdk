@@ -24,7 +24,7 @@ static std::vector<size_t> all_resources (100);
 static uint32_t last_collate = -1;
 
 /// Starts counting time spent on a system.
-void Start (System::system_t system) {
+void Start(System::system_t system) {
     if (all_stats.size() <= system) {
         all_stats.resize(system + 1);
     }
@@ -35,7 +35,7 @@ void Start (System::system_t system) {
 }
 
 /// Stops counting time spent on a system.
-void Stop (System::system_t system) {
+void Stop(System::system_t system) {
     assert(all_stats.size() > system && "System does not exist.");
     assert(all_stats[system].time_started != -1.0f && "System statistics was not started.");
     
@@ -44,21 +44,21 @@ void Stop (System::system_t system) {
 }
 
 /// Adds an ammount of a resource.
-void Add (Resource resource, size_t ammount) {
+void Add(Resource resource, size_t ammount) {
     assert(all_resources.size() > resource && "Resource does not exist.");
     
     all_resources[resource] += ammount;
 }
 
 /// Removes an ammount of a resource.
-void Remove (Resource resource, size_t ammount) {
+void Remove(Resource resource, size_t ammount) {
     assert(all_resources.size() > resource && "Resource does not exist.");
     
     all_resources[resource] -= ammount;
 }
 
 /// Collates all of the time statistics.
-void Collate () {
+void Collate() {
     assert(last_collate != GetTick() && "Don't call Collate() twice in an update cycle.");
     
     last_collate = GetTick();
@@ -74,19 +74,19 @@ void Collate () {
 }
 
 /// Returns the uncollated ammount of a resource.
-size_t GetStat (Resource resource) {
+size_t GetStat(Resource resource) {
     assert(all_resources.size() > resource);
     return all_resources[resource];
 }
 
 /// Returns the collated time of a system.
-double GetStat (System::system_t system) {
+double GetStat(System::system_t system) {
     assert(all_stats.size() > system);
     return all_stats[system].time_spent_collated;
 }
 
 /// Returns the uncollated time of a system.
-double GetStatUncollated (System::system_t system) {
+double GetStatUncollated(System::system_t system) {
     assert(all_stats.size() > system);
     return all_stats[system].time_spent;
 }

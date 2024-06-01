@@ -434,6 +434,7 @@ int main() {
     
     camera->SetBobbingDistance(0.1f); // why does removing this make camera not work?????
     camera->SetBobbingTilt(0.1f);
+    //camera->SetBobSpeed(0.1f);
     //camera->SetFollowingInterpolation(0.2f);
     
     Ext::Camera::SetCamera(camera);

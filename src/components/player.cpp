@@ -34,8 +34,8 @@ void PlayerComponent::EventHandler(Event &event) {
 
     // Map cursor position into camera and entity orientation.
     if (event.type == Event::CURSORPOS) {
-        yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * UI::CAMERA_SENSITIVITY;
-        pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * UI::CAMERA_SENSITIVITY;
+        yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * UI::CAMERA_SENSITIVITY * GetDeltaTime();
+        pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * UI::CAMERA_SENSITIVITY * GetDeltaTime();
         pitch = pitch > 89.0f ? 89.0f : pitch < -89.0f ? -89.0f : pitch;
         quat look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
         quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));

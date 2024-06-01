@@ -158,7 +158,7 @@ void Init(){
 
     glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
     
-    WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.8", nullptr, nullptr);
+    WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", nullptr, nullptr);
     if (WINDOW == nullptr){
         std::cout << "GLFW window didn't open!" << std::endl;
         glfwTerminate();
@@ -216,16 +216,16 @@ void Update() {
         quat camera_rotation = GetCameraRotation();
         
         if (glfwGetKey(WINDOW, GLFW_KEY_W) == GLFW_PRESS)
-            camera_position += camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED;
+            camera_position += camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED * GetDeltaTime();
         if (glfwGetKey(WINDOW, GLFW_KEY_S) == GLFW_PRESS)
-            camera_position -= camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED;
+            camera_position -= camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED * GetDeltaTime();
         if (glfwGetKey(WINDOW, GLFW_KEY_A) == GLFW_PRESS)
-            camera_position -= camera_rotation * DIRECTION_SIDE * CAMERA_SPEED;
+            camera_position -= camera_rotation * DIRECTION_SIDE * CAMERA_SPEED * GetDeltaTime();
         if (glfwGetKey(WINDOW, GLFW_KEY_D) == GLFW_PRESS)
-            camera_position += camera_rotation * DIRECTION_SIDE * CAMERA_SPEED;
+            camera_position += camera_rotation * DIRECTION_SIDE * CAMERA_SPEED * GetDeltaTime();
             
-        camera_yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_SENSITIVITY;
-        camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY;
+        camera_yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_SENSITIVITY * GetDeltaTime();
+        camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY * GetDeltaTime();
         camera_pitch = camera_pitch > 90.0f ? 90.0f : camera_pitch < -90.0f ? -90.0f : camera_pitch;
         
         SetCameraPosition (camera_position);
@@ -336,6 +336,16 @@ float GetScreenWidth() {
     
 float GetScreenHeight() {
     return screen_height;
+}
+
+void SetWindowTitle(const char* title) {
+    assert(WINDOW);
+    glfwSetWindowTitle (WINDOW, title);
+}
+
+void SetWindowSize(int w, int h) {
+    assert(WINDOW);
+    glfwSetWindowSize (WINDOW, w, h);
 }
 
 void SetCursor(CursorType cursor) {

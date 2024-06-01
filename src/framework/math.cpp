@@ -114,4 +114,12 @@ mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation) {
     return matrix;
 }
 
+mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, const vec3& scale) {
+    mat4 matrix = glm::mat4(1.0f);
+    matrix = glm::translate(matrix, position);
+    matrix *= glm::toMat4(rotation);
+    matrix = glm::scale(matrix, scale);
+    return matrix;
+}
+
 }

@@ -39,7 +39,8 @@ struct ShaderUniformModelMatrices {
     float screenWidth;
     float screenHeight;
     glm::vec4 colors[15];
-    glm::vec2 specular[15];
+    glm::vec4 specular[15];
+    float padding[30];
 };
 
 struct LayerParameters {

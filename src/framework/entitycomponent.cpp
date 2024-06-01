@@ -7,7 +7,7 @@
 
 namespace tram {
 
-static Hashmap<EntityComponent*> component_id_list ("Component ID hashmap", 500);
+static Hashmap<EntityComponent*> component_id_list("Component ID hashmap", 2000);
 
 EntityComponent::EntityComponent() {
     id = GenerateID();
@@ -16,7 +16,8 @@ EntityComponent::EntityComponent() {
 }
 
 EntityComponent::~EntityComponent() {
-    component_id_list.Insert(id, nullptr);
+    component_id_list.Insert(id, nullptr); // this eventually causes overflow
+    // TODO: fix
 }
 
 

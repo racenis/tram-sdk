@@ -81,7 +81,7 @@ void SignalTable::Fire(signal_t signal, id_t sender) {
         }
         
         if (signals[i].delay != 0.0f) {
-            Message::Send(msg, signals[i].delay * 60.0f);
+            Message::Send(msg, signals[i].delay);
         } else {
             Message::Send(msg);
         }
@@ -111,7 +111,7 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
         
         
         if (signals[i].delay != 0.0f) {
-            Message::Send(msg, signals[i].delay * 60.0f);
+            Message::Send(msg, signals[i].delay);
         } else {
             Message::Send(msg);
         }
