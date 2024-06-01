@@ -173,7 +173,7 @@ void mainloop() {
     }
     
     if (UI::PollKeyboardKey(UI::KEY_Y)) {
-        tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
+        //tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
     }
     
     // this will make the light spin
@@ -349,7 +349,7 @@ void mainloop() {
     
     Loader::Update();
     
-    ControllerComponent::Update();
+    if (tick > 10) ControllerComponent::Update();
     AnimationComponent::Update();
     //RenderComponent::DrawAllAABB();
 

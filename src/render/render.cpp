@@ -39,8 +39,9 @@ bool DRAW_RENDER_DEBUG = false;
 //Pool<LightListObject> lightPool("lightpool", 100, true);
 //Octree<uint32_t> lightTree;
 
-uint32_t colorlines_vertex_array = 0;
-uint32_t colorlines_vertex_buffer = 0;
+//uint32_t colorlines_vertex_array = 0;
+//uint32_t colorlines_vertex_buffer = 0;
+vertexarray_t colorlines_vertex_array = {.generic = 0};
 drawlistentry_t colorlines_entry;
 
 std::vector<LineVertex> colorlines;
@@ -58,7 +59,7 @@ void Init () {
     
     
     // this is for rendering lines
-    CreateVertexArray (GetVertexDefinition(VERTEX_LINE), colorlines_vertex_buffer, colorlines_vertex_array);
+    CreateVertexArray (GetVertexDefinition(VERTEX_LINE), colorlines_vertex_array);
     colorlines_entry = InsertDrawListEntry ();
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
@@ -86,7 +87,7 @@ void Render () {
     for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
 #endif // ENGINE_EDITOR_MODE
     
-    UpdateVertexArray(colorlines_vertex_buffer, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
+    UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
     SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
     colorlines.clear();
     

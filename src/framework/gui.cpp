@@ -56,8 +56,9 @@ char const** current_dropdown = nullptr;
 
 Render::Sprite* fonts [16] = {nullptr};
 
-uint32_t glyphvertices_vertex_array = 0;
-uint32_t glyphvertices_vertex_buffer = 0;
+//uint32_t glyphvertices_vertex_array = 0;
+//uint32_t glyphvertices_vertex_buffer = 0;
+Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
 Render::drawlistentry_t glyphvertices_entry;
 
 std::vector<Render::SpriteVertex> glyphvertices;
@@ -74,7 +75,7 @@ void Init() {
     
     using namespace tram::Render;
     
-    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), glyphvertices_vertex_buffer, glyphvertices_vertex_array);
+    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), glyphvertices_vertex_array);
     glyphvertices_entry = InsertDrawListEntry();
     SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
     SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
@@ -85,7 +86,7 @@ void Init() {
 
 /// Submits registered fonts to the renderer.
 void UpdateDrawListFonts () {
-    uint32_t glyphvertices_textures[16];
+    Render::texturehandle_t glyphvertices_textures[16];
     font_t font_count = 0;
     
     for (font_t i = 0; i < 16; i++) {
@@ -109,7 +110,7 @@ void UpdateDrawListFonts () {
 /// Submits all of the glyphs for rendering.
 void Update () {
     using namespace tram::Render;
-    UpdateVertexArray(glyphvertices_vertex_buffer, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
+    UpdateVertexArray(glyphvertices_vertex_array, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
     SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size());
     glyphvertices.clear();
 }

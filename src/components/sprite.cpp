@@ -23,7 +23,7 @@ SpriteComponent::~SpriteComponent() {
 void SpriteComponent::Start() {
     assert(!is_ready);
 
-    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_buffer, vertex_array);
+    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
     
     auto texture_handle = sprite->GetMaterial()->GetTexture();
     
@@ -105,7 +105,7 @@ void SpriteComponent::UpdateRenderListObject() {
     vertices.push_back(bottom_left);
     vertices.push_back(bottom_right);
 
-    UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+    UpdateVertexArray(vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
 }

@@ -19,9 +19,54 @@ extern bool THIRD_PERSON;
 // these are for the OpenGL renderer only.
 // when more renderers will be added, we'll
 // probably switch these from int to void*
-typedef uint32_t vertexhandle_t;
-typedef uint32_t texturehandle_t;
-typedef void* drawlistentry_t;
+//typedef uint32_t vertexhandle_t;
+//typedef uint32_t texturehandle_t;
+//typedef void* drawlistentry_t;
+
+
+// TODO: move these into api.h
+struct vertexarray_t {
+    union {
+        struct {
+            uint32_t gl_vertex_array;
+            uint32_t gl_vertex_buffer;
+        };
+        void* generic;
+    };
+};
+
+struct indexarray_t {
+    union {
+        uint32_t gl_index_buffer;
+        void* generic;
+    };
+};
+
+namespace API { struct GLDrawListEntry; }
+
+struct drawlistentry_t {
+    union {
+        API::GLDrawListEntry* gl;
+        void* generic;
+    };
+};
+
+struct texturehandle_t {
+    union {
+        uint32_t gl_texture_handle;
+        void* generic;
+    };
+};
+
+namespace API { struct GLLight; }
+
+struct light_t {
+    union {
+        API::GLLight* gl;
+        
+        void* generic;
+    };
+};
 
 typedef vec3 color_t;
 typedef uint32_t layer_t;
@@ -29,7 +74,7 @@ typedef uint32_t layer_t;
 typedef uint32_t vertexformat_t;
 typedef uint32_t materialtype_t;
 
-typedef void* light_t;
+//typedef void* light_t;
 
 void Init();
 void Render();

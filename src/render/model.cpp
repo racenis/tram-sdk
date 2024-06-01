@@ -48,9 +48,8 @@ void Model::LoadFromMemory() {
 
         API::CreateIndexedVertexArray(
             GetVertexDefinition(VERTEX_STATIC),
-            vertex_buffer_handle,
-            index_buffer_handle,
-            vertex_array_handle, 
+            vertex_array,
+            index_array,
             data->vertices.size() * sizeof(StaticModelVertex),
             &data->vertices[0],
             data->indices.size() * sizeof(Triangle),
@@ -72,9 +71,8 @@ void Model::LoadFromMemory() {
 
         API::CreateIndexedVertexArray(
             GetVertexDefinition(VERTEX_DYNAMIC),
-            vertex_buffer_handle,
-            index_buffer_handle,
-            vertex_array_handle, 
+            vertex_array,
+            index_array, 
             data->vertices.size() * sizeof(DynamicModelVertex),
             &data->vertices[0],
             data->indices.size() * sizeof(Triangle),

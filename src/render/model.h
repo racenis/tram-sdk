@@ -35,9 +35,9 @@ public:
     void Unload() {}
     
     vertexformat_t GetVertexFormat() const { return vertex_format; } 
-    vertexhandle_t GetVertexBuffer() const { return vertex_buffer_handle; }
-    vertexhandle_t GetIndexBuffer() const { return index_buffer_handle; }
-    vertexhandle_t GetVertexArray() const { return vertex_array_handle; }
+
+    vertexarray_t GetVertexArray() const { return vertex_array; }
+    indexarray_t GetIndexArray() const { return index_array; }
     
     const std::vector<Bone>& GetArmature() const { return armature; }
     const std::vector<Material*>& GetMaterials() const { return materials; }
@@ -54,9 +54,8 @@ public:
 protected:
     vertexformat_t vertex_format = VERTEX_STATIC;
     
-    vertexhandle_t vertex_buffer_handle = 0;
-    vertexhandle_t index_buffer_handle = 0;
-    vertexhandle_t vertex_array_handle = 0;
+    vertexarray_t vertex_array = {.generic = 0};
+    indexarray_t index_array = {.generic = 0};
     
     std::vector<IndexRange> index_ranges;
     

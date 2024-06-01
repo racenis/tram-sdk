@@ -18,7 +18,7 @@ void BindUniformBlock (const char* name, uint32_t binding);
 
 
 
-struct LightListEntry {
+struct GLLight {
     vec3 location = {0.0f, 0.0f, 0.0f};
     float padding;
     vec3 color = {0.0f, 0.0f, 0.0f};
@@ -26,7 +26,7 @@ struct LightListEntry {
     float padding2[8];
 };
 
-struct DrawListEntry {
+struct GLDrawListEntry {
     uint32_t flags = 0;
 
     Pose* pose = nullptr;
@@ -49,7 +49,7 @@ struct DrawListEntry {
     
     char padding [4];
 
-    DrawListEntry() {
+    GLDrawListEntry() {
         for (int i = 0; i < 15; i++) {
             colors[i] = {1.0f, 1.0f, 1.0f, 1.0f};
             specular_weights[i] = 0.0f;

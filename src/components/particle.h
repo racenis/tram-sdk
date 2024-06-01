@@ -54,8 +54,7 @@ protected:
     
     vec3 location;
     
-    uint32_t vertex_array;
-    uint32_t vertex_buffer;
+    Render::vertexarray_t vertex_array;
 };
 
 }

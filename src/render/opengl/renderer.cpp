@@ -17,8 +17,8 @@
 
 namespace tram::Render::API {
 
-Pool<DrawListEntry> draw_list ("render list", 500, false);
-Pool<LightListEntry> light_list ("light list", 200, false);
+Pool<GLDrawListEntry> draw_list ("render list", 500, false);
+Pool<GLLight> light_list ("light list", 200, false);
 Octree<uint32_t> light_tree;
 std::vector<uint32_t> light_tree_ids (200);
 
@@ -131,7 +131,7 @@ void Init() {
     
     CompileShaders();
 
-    light_uniform_buffer = MakeUniformBuffer("Lights", light_uniform_binding, sizeof(LightListEntry)*50);
+    light_uniform_buffer = MakeUniformBuffer("Lights", light_uniform_binding, sizeof(GLLight)*50);
     matrix_uniform_buffer = MakeUniformBuffer("Matrices", matrix_uniform_binding, sizeof(ShaderUniformMatrices));
     model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
     bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
@@ -171,31 +171,31 @@ void RenderFrame() {
     if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * glm::vec3(0.0f, 0.0f, -5.0f));
 
     UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
-    UploadUniformBuffer(light_uniform_buffer, sizeof(LightListEntry)*50, light_list.begin().ptr);
+    UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight)*50, light_list.begin().ptr);
 
     static uint32_t layer; layer = 0;
 
-    static std::vector<std::pair<uint64_t, DrawListEntry*>> rvec;
+    static std::vector<std::pair<uint64_t, GLDrawListEntry*>> rvec;
 
     rvec.clear();
 
 
     // TODO: change this to using iterators
-    DrawListEntry* robj = draw_list.GetFirst();
-    DrawListEntry* rlast = draw_list.GetLast();
+    GLDrawListEntry* robj = draw_list.GetFirst();
+    GLDrawListEntry* rlast = draw_list.GetLast();
 
     for(;robj < rlast; robj++){
         if(*((uint64_t*)robj) == 0) continue;
 
         // TODO: do view culling in here
 
-        rvec.push_back(std::pair<uint64_t, DrawListEntry*>(robj->CalcSortKey(LAYER[0].camera_position), robj));
+        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj->CalcSortKey(LAYER[0].camera_position), robj));
     }
 
     sort(rvec.begin(), rvec.end());
 
-    for (std::pair<uint64_t, DrawListEntry*>& pp : rvec){
-        DrawListEntry* robj = pp.second;
+    for (std::pair<uint64_t, GLDrawListEntry*>& pp : rvec){
+        GLDrawListEntry* robj = pp.second;
 
         /*glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(robj->location[0], robj->location[1], robj->location[2]));
@@ -266,94 +266,92 @@ void RenderFrame() {
 }
 
 drawlistentry_t InsertDrawListEntry() {
-    return draw_list.AddNew();
+    return {.generic = draw_list.AddNew()};
 }
 
 void RemoveDrawListEntry(drawlistentry_t entry) {
-    draw_list.Remove((DrawListEntry*) entry);
+    draw_list.Remove(entry.gl);
 }
 
 uint32_t GetFlags(drawlistentry_t entry) {
-    return ((DrawListEntry*) entry)->flags;
+    return entry.gl->flags;
 }
 
 void SetFlags(drawlistentry_t entry, uint32_t flags) {
-    ((DrawListEntry*) entry)->flags = flags;
+    entry.gl->flags = flags;
 }
 
 void SetLayer(drawlistentry_t entry, uint32_t layer) {
-    ((DrawListEntry*) entry)->layer = layer;
+    entry.gl->layer = layer;
 }
 
 void SetPose(drawlistentry_t entry, Pose* pose) {
-    ((DrawListEntry*) entry)->pose = pose;
+    entry.gl->pose = pose;
 }
 
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
-    ((DrawListEntry*) entry)->lightmap = lightmap;
+    entry.gl->lightmap = lightmap.gl_texture_handle;
 }
 
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
     for (size_t i = 0; i < count; i++) {
-        ((DrawListEntry*) entry)->colors[i] = colors[i];
+        entry.gl->colors[i] = colors[i];
     }
 }
 
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* powers) {
     for (size_t i = 0; i < count; i++) {
-        ((DrawListEntry*) entry)->specular_weights[i] = weights[i];
-        ((DrawListEntry*) entry)->specular_powers[i] = powers[i];
+        entry.gl->specular_weights[i] = weights[i];
+        entry.gl->specular_powers[i] = powers[i];
     }
 }
 
 void SetLights(drawlistentry_t entry, uint32_t* lights) {
     for (size_t i = 0; i < 4; i++) {
-        ((DrawListEntry*) entry)->lights[i] = lights[i];
+        entry.gl->lights[i] = lights[i];
     }
 }
 
 void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
-    DrawListEntry* entry_ptr = (DrawListEntry*) entry;
-    
     vec4 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
     
-    entry_ptr->matrix = matrix;
+    entry.gl->matrix = matrix;
     
-    light_tree.FindNearest(entry_ptr->lights, origin.x, origin.y, origin.z);
+    light_tree.FindNearest(entry.gl->lights, origin.x, origin.y, origin.z);
 }
 
-void SetDrawListVertexArray(drawlistentry_t entry, vertexhandle_t vertex_array_handle) {
-    ((DrawListEntry*) entry)->vao = vertex_array_handle;
+void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
+    entry.gl->vao = vertex_array_handle.gl_vertex_array;
 }
 
 void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length) {
-    ((DrawListEntry*) entry)->eboOff = index_offset;
-    ((DrawListEntry*) entry)->eboLen = index_length;
+    entry.gl->eboOff = index_offset;
+    entry.gl->eboLen = index_length;
 }
 
 void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
-    ((DrawListEntry*) entry)->shader = FindShader(vertex_format, material_type);
+    entry.gl->shader = FindShader(vertex_format, material_type);
 }
 
-void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, uint32_t* textures) {
+void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* textures) {
     for (size_t i = 0; i < texture_count; i++) {
-        ((DrawListEntry*) entry)->textures[i] = textures[i];
+        entry.gl->textures[i] = textures[i].gl_texture_handle;
     }
-    ((DrawListEntry*) entry)->texCount = texture_count;
+    entry.gl->texCount = texture_count;
 }
 
 light_t MakeLight() {
-    LightListEntry* light = light_list.AddNew();
+    GLLight* light = light_list.AddNew();
     uint32_t light_id = light - light_list.GetFirst();
     uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
     
     light_tree_ids [light_id] = leaf_id;
         
-    return light;
+    return { .gl = light };
 }
 
 void DeleteLight(light_t light) {
-    LightListEntry* light_ptr = (LightListEntry*) light;
+    GLLight* light_ptr = light.gl;
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];
     
@@ -364,7 +362,7 @@ void DeleteLight(light_t light) {
 }
 
 void SetLightParameters (light_t light, vec3 location, vec3 color, float distance) {
-    LightListEntry* light_ptr = (LightListEntry*) light;
+    GLLight* light_ptr = light.gl;
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];
     
@@ -423,21 +421,21 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
         
     glGenerateMipmap(GL_TEXTURE_2D);
     
-    return texture;
+    return {.gl_texture_handle = texture};
 }
 
-void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle, vertexhandle_t& index_buffer_handle,  vertexhandle_t& vertex_array_handle, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
-    glGenBuffers(1, &vertex_buffer_handle);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
+void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+    glGenBuffers(1, &vertex_array.gl_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &index_buffer_handle);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_handle);
+    glGenBuffers(1, &index_array.gl_index_buffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, index_data, GL_STATIC_DRAW);
 
-    glGenVertexArrays(1, &vertex_array_handle);
+    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
 
-    glBindVertexArray(vertex_array_handle);
+    glBindVertexArray(vertex_array.gl_vertex_array);
 
     for (size_t i = 0; i < vertex_format.attribute_count; i++) {
         uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
@@ -451,21 +449,21 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexhandle_t& ve
         glEnableVertexAttribArray(i);
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer_handle);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
     
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void CreateVertexArray(VertexDefinition vertex_format, vertexhandle_t& vertex_buffer_handle,  vertexhandle_t& vertex_array_handle) {
-    glGenBuffers(1, &vertex_buffer_handle);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
+void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
+    glGenBuffers(1, &vertex_array.gl_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
-    glGenVertexArrays(1, &vertex_array_handle);
+    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
 
-    glBindVertexArray(vertex_array_handle);
+    glBindVertexArray(vertex_array.gl_vertex_array);
 
     for (size_t i = 0; i < vertex_format.attribute_count; i++) {
         uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
@@ -483,8 +481,8 @@ void CreateVertexArray(VertexDefinition vertex_format, vertexhandle_t& vertex_bu
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void UpdateVertexArray(vertexhandle_t vertex_buffer_handle, size_t data_size, void* data) {
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_handle);
+void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data) {
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

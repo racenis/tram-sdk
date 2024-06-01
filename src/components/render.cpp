@@ -23,7 +23,7 @@ void RenderComponent::SetModel (name_t name) {
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
+            if (entry.generic) {
                 RemoveDrawListEntry(entry);
             }
         }
@@ -41,8 +41,8 @@ void RenderComponent::SetLightmap (name_t name) {
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
-                Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
+            if (entry.generic) {
+                Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t{.generic = 0});
             }
         }
     }
@@ -62,7 +62,7 @@ void RenderComponent::SetArmature (AnimationComponent* armature) {
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
+            if (entry.generic) {
                 Render::API::SetPose(entry, pose);
             }
         }
@@ -78,7 +78,7 @@ RenderComponent::~RenderComponent() {
     is_ready = false;
     
     for (auto entry : draw_list_entries) {
-        if (entry) {
+        if (entry.generic) {
             Render::API::RemoveDrawListEntry(entry);
         }
     }
@@ -98,7 +98,7 @@ void RenderComponent::SetWorldParameters (bool interior_lighting) {
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
+            if (entry.generic) {
                 Render::API::SetFlags(entry, render_flags);
             }
         }
@@ -111,7 +111,7 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
+            if (entry.generic) {
                 Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
             }
         }
@@ -126,7 +126,7 @@ void RenderComponent::SetRotation(glm::quat nrotation){
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
+            if (entry.generic) {
                 Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
             }
         }
@@ -141,7 +141,7 @@ void RenderComponent::SetScale(vec3 scale) {
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry) {
+            if (entry.generic) {
                 Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
             }
         }
@@ -214,7 +214,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
-        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : 0);
+        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t{.generic = 0});
         Render::API::SetFlags(entry, render_flags);
 
         Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));

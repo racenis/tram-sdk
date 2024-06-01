@@ -62,16 +62,16 @@
       <File Name="src/components/trigger.h"/>
       <File Name="src/components/trigger.cpp"/>
       <File Name="src/components/template.h"/>
-      <File Name="src/components/sprite.h"/>
-      <File Name="src/components/sprite.cpp"/>
+      <File Name="src/components/sprite.h" ExcludeProjConfig=""/>
+      <File Name="src/components/sprite.cpp" ExcludeProjConfig=""/>
       <File Name="src/components/render.h"/>
       <File Name="src/components/render.cpp"/>
       <File Name="src/components/player.h"/>
       <File Name="src/components/player.cpp"/>
       <File Name="src/components/physics.h"/>
       <File Name="src/components/physics.cpp"/>
-      <File Name="src/components/particle.h"/>
-      <File Name="src/components/particle.cpp"/>
+      <File Name="src/components/particle.h" ExcludeProjConfig=""/>
+      <File Name="src/components/particle.cpp" ExcludeProjConfig=""/>
       <File Name="src/components/light.h"/>
       <File Name="src/components/light.cpp"/>
       <File Name="src/components/controller.h"/>

@@ -18,7 +18,7 @@ void LightComponent::Init () {
 LightComponent::~LightComponent () {
     Render::API::DeleteLight(light);
     
-    light = nullptr;
+    light.generic = nullptr;
     is_ready = false;
 }
 

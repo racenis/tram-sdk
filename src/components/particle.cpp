@@ -26,7 +26,7 @@ void ParticleComponent::EmitParticle (const Particle& particle) {
 void ParticleComponent::Start(){
     if(is_ready) return;
 
-    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_buffer, vertex_array);
+    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
 
     auto texture_handle = sprite->GetMaterial()->GetTexture();
     
@@ -131,7 +131,7 @@ void ParticleComponent::UpdateRenderListObject(){
         vertices.push_back(bottom_right);
     }
     
-    UpdateVertexArray(vertex_buffer, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+    UpdateVertexArray(vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
     SetDrawListIndexRange(draw_list_entry, 0, /*6 * */vertices.size());
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
