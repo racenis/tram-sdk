@@ -10,9 +10,25 @@ It does what Godoesn't.
 
 Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022 and similar applications.
 
+It's meant to work sort of like Quake, GoldSrc or Source engines, but it uses
+polygonal soup instead of BSPs and supports level streaming.
+
 ![Software Development Kit logo](/docs/screen11.png)
 
+## Features
+- Polygonal soup graphics
+- Non-hierarchical scene ordering
+- Ambient lighting
+- Lambertian reflection
+- Light source attenuation
+- Colored lights and surfaces
+- Phong illumination
+- Point lights
+<!--- - Warn's lighting for directional lights --->
 
+
+- Level streaming
+- Allows use of Quake level editors to create level geometry
 
 ### Links
 
@@ -23,6 +39,8 @@ More information and also screenshots can be found on the [github.io page](https
 - FPS ([source code](https://github.com/racenis/jam-game) / [itch.io](https://racenis.itch.io/dziiviibas-partikula))
 
 - Platformer ([source code](https://github.com/racenis/jam-game-ii) / [itch.io](https://racenis.itch.io/sulas-glaaze))
+
+- Adventure ([source code](https://github.com/racenis/jam-game-iii) / [itch.io](https://racenis.itch.io/froggy-garden))
 
 ### Dependencies
 Right now I'm using glad for OpenGL pointer acquisition, glfw for windowing, glm for vector math, Bullet for physics simulation. Maybe will change in the future.
@@ -46,49 +64,113 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 
-#### Should do sooner
-- Selecting the error model through model AABBs makes a crash
-	- Maybe error model doesn't build AABB tree properly?
-	- Even with no AABB tree there shouldn't be a crash
-- Better UX
-	- Scripts
-		- Setup script
-		- Project creation script
-	- Make level editor not bad
-- Fix the editor
-- Model conversion tool
-- Lightmap tool
-	- Generates layouts
-	- Bakes lightmaps
-- Brush map importer
 
-#### Should do later
-- Keybinding menu
-- Graphics menu
-- Make Raycast that returns multiple points
+#### Should do sooner
+
+- Add indices to pools
+- Add directional lights
+- Add a additive/mix blend for specular lights
+- Move view and projection matrices into Render
+	- They are currently in Renderer
+	- They would work better in Render
+	- Also could allow changing FOV and stuff
 - Models with different sets of materials
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
-- Multiple player inputs
+- Allow adding of custom keypress actions.
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- Add a callback function for updating
 - Replace Bezier curves with Catmull-Roms
-- Finish menu extension
-	- Add ability to add more buttons
+
+- Refactor GLFW from UI to Platform
+	- Also make it so that GLFW can be swapped for SDL
+
+- Selecting the error model through model AABBs makes a crash
+	- Maybe error model doesn't build AABB tree properly?
+	- Even with no AABB tree there shouldn't be a crash
+
+- Add command-line argument parser.
+	- Should parse command-line arguments.
+	- Also should allow setting of settings through command-line.
+	- Probably can think of other useful command-line commands.
+
+- Add a settings system.
+	- Should allow saving of various settings.
+	- Settings should be key-value pairs.
+	- Should also allow saving of keybindings.
+
+- Fix GUI system
+	- Current GUI system was written in 3 days.
+	- Add more time so that it isn't a spaghetti.
+
+- Fix Maketool
+	- Should properly seperate web and desktop builds.
+
+- Sound table does not play if only one sound
+- Add logging during render initialization end especially shader loading
+- Add option to change mouse sensitivity
+- Split tick event into fixed tick event and frame event
+
+- Overhaul shader system
+	- Add some kind of flags to shaders
+	- These flags would inject glsl preprocessor #define's into the shader code 
+
+- If can't find shader for a material, then print material name	
+
+- What if the event caller gets deleted while events are being dispatched?
+	- Or if messages are getting dispatched? Is it segfault?
+
+- If you don't RegisterShader() before Render::Init(), then the Uniform blocks won't be bound and you will get pancake models
+	- Add some kind of a code to bind 
+	
+- Add assert to ASYNC if emscirpten
+	- Starting threads on emscripten causes crashies!
+	
+- Put triangle definition into math.h
+- Put MinAABB MaxAABB into there too
+- And also switch traingle intersection thingy
+- AddLine() drawlistentry is not being drawn on top
+ - Get Calc Key things does not work?? at least the distance part
+ 
+ 
+#### Should do later
+
+- Python scripting
+	- Should allow accessing basic library functionality through Python.
+	- Probably should have OOP abstractions and stuff.
+
+- Object Pascal data library
+	- A base that could be used for various GUI utilities in the future.
+	- Should allow parsing of various library text file formats.
+	- Also editing and saving.
+	
+- Project manager tool
+	- Should allow editing of all the various library text file formats.
+	- Should allow generation of new projects.
+
+- Model conversion tools
+	- Leverage the free Assimp library to parse various 3D model formats.
+	- Convert said model formats to tram-sdk .stmdl and .dymdl formats.
+	- Perhaps write Blender importers in addition to existing exporters.
+
+- Add a better disk abstraction
+	- File() should also open files that are located in compressed archives.
+	- Also should open and be able to write files through HTTP.
+
+- Default menus
+	- Keybinding menu
+	- Graphics menu
+	
 - Finish particles
 	- Steal ideas from various particle editors
 - Finish sprites
 	- Make them not be distorted horizontally in the shader
-- Additional serialized data fields
-	- Position XYZ
-	- Color RGB
-- Refactor GLFW from UI to Platform
-	- Also make it so that GLFW can be swapped for SDL
+	
 - Swapable physics engine?
-- Script abstraction
-	- Add a LUA integration
+	
+
 	
 #### For very later versions
 - Occlusion/frustrum culling
@@ -99,7 +181,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add some more asserts to the GUI system.
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
-- Add scripting
 - Add more rendering stuff
 	- Single drawlistthingy can be in mutliple layers
 	- Layers have different cameras
@@ -108,12 +189,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Maybe rename camera? camera is extension and in render:: there is view
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
-- Additional scripts
-	- Project generation script
 - Fix animation scaling translation
 	- There's something weird going on if you both scale and translate in an animation
-- Fix animation exporter
-
+- Make Raycast that returns multiple points
+	
 ### New features that would be nice to have, but are not very important
 - ControllerComponents have configurable transitions between animations
 	- In the form of:
@@ -125,8 +204,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - ControllerComponents have fake IK
 	- Leg placement for creatures with legs
 	- Ability to look at (turn head/etc. towards) something
-- ArmatureComponents have different blending modes for animations
-	- Might take some time to figure out
+- Actually it might be a better idea to delegate this functionality to a seperate component.
+- Input recording and playback
 - AudioComponents can play more than 128 sounds at the same time
 - Split animation into animation and StreamableAnimation
 	- Animations that need to be streamed in and later removed have their own keyframe pools
