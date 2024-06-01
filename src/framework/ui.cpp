@@ -80,8 +80,8 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_RIGHT, KeyBinding {.action = KEY_ACTION_RIGHT}},
 
     {KEY_F1, KeyBinding {.special_option = [](){ EXIT = true; glfwSetWindowShouldClose(WINDOW, EXIT); }}},
-    {KEY_F5, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
-    {KEY_F6, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
+    //{KEY_F5, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
+    //{KEY_F6, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
     {KEY_F9, KeyBinding {.special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
     {KEY_BACKSPACE, KeyBinding {.special_option = [](){ CharacterBackspaceCallback(); }}}
 };

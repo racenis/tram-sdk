@@ -10,71 +10,11 @@
 
 namespace tram::Render {
 
-class Model;
-
-extern bool DRAW_RENDER_DEBUG;
-
-extern bool THIRD_PERSON;
-
-// these are for the OpenGL renderer only.
-// when more renderers will be added, we'll
-// probably switch these from int to void*
-//typedef uint32_t vertexhandle_t;
-//typedef uint32_t texturehandle_t;
-//typedef void* drawlistentry_t;
-
-
-// TODO: move these into api.h
-struct vertexarray_t {
-    union {
-        struct {
-            uint32_t gl_vertex_array;
-            uint32_t gl_vertex_buffer;
-        };
-        void* generic;
-    };
-};
-
-struct indexarray_t {
-    union {
-        uint32_t gl_index_buffer;
-        void* generic;
-    };
-};
-
-namespace API { struct GLDrawListEntry; }
-
-struct drawlistentry_t {
-    union {
-        API::GLDrawListEntry* gl;
-        void* generic;
-    };
-};
-
-struct texturehandle_t {
-    union {
-        uint32_t gl_texture_handle;
-        void* generic;
-    };
-};
-
-namespace API { struct GLLight; }
-
-struct light_t {
-    union {
-        API::GLLight* gl;
-        
-        void* generic;
-    };
-};
-
 typedef vec3 color_t;
 typedef uint32_t layer_t;
 
 typedef uint32_t vertexformat_t;
 typedef uint32_t materialtype_t;
-
-//typedef void* light_t;
 
 void Init();
 void Render();
@@ -91,8 +31,6 @@ void SetCameraRotation(quat rotation, layer_t layer = 0);
 
 vec3 GetCameraPosition(layer_t layer = 0);
 quat GetCameraRotation(layer_t layer = 0);
-
-void SetSun(float timeOfDay);
 
 void AddLine(vec3 from, vec3 to, color_t color);
 void AddLineMarker(vec3 location, color_t color);
@@ -143,6 +81,49 @@ materialtype_t FindMaterialType(const char* name);
 
 const char* GetVertexFormatName(vertexformat_t type);
 const char* GetMaterialTypeName(materialtype_t type);
+
+struct vertexarray_t {
+    union {
+        struct {
+            uint32_t gl_vertex_array;
+            uint32_t gl_vertex_buffer;
+        };
+        void* generic;
+    };
+};
+
+struct indexarray_t {
+    union {
+        uint32_t gl_index_buffer;
+        void* generic;
+    };
+};
+
+namespace API { struct GLDrawListEntry; }
+
+struct drawlistentry_t {
+    union {
+        API::GLDrawListEntry* gl;
+        void* generic;
+    };
+};
+
+struct texturehandle_t {
+    union {
+        uint32_t gl_texture_handle;
+        void* generic;
+    };
+};
+
+namespace API { struct GLLight; }
+
+struct light_t {
+    union {
+        API::GLLight* gl;
+        
+        void* generic;
+    };
+};
 
 }
 

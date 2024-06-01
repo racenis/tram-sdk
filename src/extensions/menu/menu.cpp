@@ -124,7 +124,7 @@ void DebugMenu() {
         EndFrame();
         
         Frame(FRAME_RIGHT, 320-100);
-        CheckBox(Render::DRAW_RENDER_DEBUG); FrameBreakLine();
+        //CheckBox(Render::DRAW_RENDER_DEBUG); FrameBreakLine();
         CheckBox(Physics::DRAW_PHYSICS_DEBUG); FrameBreakLine();
         CheckBox(debugdraw_trans); FrameBreakLine();
         CheckBox(debugdraw_paths); FrameBreakLine();

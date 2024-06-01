@@ -69,7 +69,6 @@ void Crate::Load(){
     
     rendercomponent->SetParent(this);
     rendercomponent->SetModel(model);
-rendercomponent->SetScale({0.0f, 1.0f, 1.0f});
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);
