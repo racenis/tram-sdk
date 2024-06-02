@@ -21,26 +21,21 @@ using namespace tram::Render;
 
 namespace tram::Render {
 
-// cached values for the renderer
-// TODO: maybe put all of these in a struct?
-static vec3 CAMERA_POSITION [7] = {{0.0f, 0.0f, 0.0f}};
-static quat CAMERA_ROTATION [7] = {{1.0f, 0.0f, 0.0f, 0.0f}};
+struct {
+    vec3 view_position = {0.0f, 0.0f, 0.0f};
+    quat view_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+    
+    vec3 sun_direction = {0.0f, 1.0f, 0.0f};
+    vec3 sun_color = {1.0f, 1.0f, 1.0f};
+    vec3 ambient_color = {0.0f, 0.0f, 0.0f};
+} view_properties[7];
 
-static vec3 SUN_DIRECTION [7] = {{0.0f, 1.0f, 0.0f}};
-static vec3 SUN_COLOR [7] = {{1.0f, 1.0f, 1.0f}};
-static vec3 AMBIENT_COLOR [7] = {{0.0f, 0.0f, 0.0f}};
-
-float SCREEN_WIDTH = 800.0f;
-float SCREEN_HEIGHT = 600.0f;
+static float screen_width = 800.0f;
+static float screen_height = 600.0f;
 
 bool THIRD_PERSON = false;
 bool DRAW_RENDER_DEBUG = false;
 
-//Pool<LightListObject> lightPool("lightpool", 100, true);
-//Octree<uint32_t> lightTree;
-
-//uint32_t colorlines_vertex_array = 0;
-//uint32_t colorlines_vertex_buffer = 0;
 vertexarray_t colorlines_vertex_array = {.generic = 0};
 drawlistentry_t colorlines_entry;
 
@@ -98,50 +93,73 @@ void Render () {
 /// @param direction    Normal vector pointing towards the sun.
 /// @param layer        Rendering layer to which the sun direction will be applied.
 void SetSunDirection (color_t direction, layer_t layer) {
-    SUN_DIRECTION [layer] = direction;
-    API::SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    view_properties[layer].sun_direction = direction;
+    API::SetLightingParameters(view_properties[layer].sun_direction, view_properties[layer].sun_color, view_properties[layer].ambient_color, layer);
 }
 
 /// Sets the sun color.
 /// @param color    Color of the sun.
 /// @param layer    Rendering layer to which the sun color will be applied.
 void SetSunColor (color_t color, layer_t layer) {
-    SUN_COLOR [layer] = color;
-    API::SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    view_properties[layer].sun_color = color;
+    API::SetLightingParameters(view_properties[layer].sun_direction, view_properties[layer].sun_color, view_properties[layer].ambient_color, layer);
 }
 
 /// Sets the ambient color.
 /// @param color    Ambient color.
 /// @param layer    Rendering layer to which the ambient color will be applied.
 void SetAmbientColor (color_t color, layer_t layer) {
-    AMBIENT_COLOR [layer] = color;
-    API::SetLightingParameters(SUN_DIRECTION[layer], SUN_COLOR[layer], AMBIENT_COLOR[layer], layer);
+    view_properties[layer].ambient_color = color;
+    API::SetLightingParameters(view_properties[layer].sun_direction, view_properties[layer].sun_color, view_properties[layer].ambient_color, layer);
+}
+
+void SetScreenSize(float width, float height) {
+    screen_width = width;
+    screen_height = height;
+    
+    mat4 projection = glm::perspective(glm::radians(60.0f), screen_width / screen_height, 0.1f, 1000.0f);
+    
+    for (int i = 0; i < 7; i++) {
+        API::SetProjectionMatrix(projection, i);
+    }
 }
 
 /// Sets the camera position.
 /// @param position Camera position.
 /// @param layer    Rendering layer to which the camera position will be applied.
 void SetCameraPosition (vec3 position, layer_t layer) {
-    CAMERA_POSITION [layer] = position;
-    API::SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    view_properties[layer].view_position = position;
+    //API::SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    
+    mat4 view = glm::inverse(glm::translate(glm::mat4(1.0f), view_properties[layer].view_position) * glm::toMat4(view_properties[layer].view_rotation));
+    
+    //mat4 view = glm::lookAt(position, position + (view_properties[layer].view_rotation * DIRECTION_FORWARD), DIRECTION_UP);
+    
+    //std::cout << "pos: " << position.x << " " << position.y << " " << position.z << std::endl;
+    
+    for (int i = 0; i < 7; i++) {
+        API::SetViewMatrix(view, i);
+    }
+    
+    //std::cout << "done!" << std::endl;
 }
 
 /// Sets the camera rotation.
 /// @param rotation Camera rotation.
 /// @param layer    Rendering layer to which the camera rotation will be applied.
 void SetCameraRotation (quat rotation, layer_t layer) {
-    CAMERA_ROTATION [layer] = rotation;
-    API::SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
+    view_properties[layer].view_rotation = rotation;
+    //API::SetCameraParameters(CAMERA_POSITION[layer], CAMERA_ROTATION[layer], layer);
 }
 
 /// Returns the camera position for a given layer.
 vec3 GetCameraPosition (layer_t layer) {
-    return CAMERA_POSITION [layer];
+    return view_properties[layer].view_position;
 }
 
 /// Returns the camera rotation for a given layer.
 quat GetCameraRotation (layer_t layer) {
-    return CAMERA_ROTATION [layer];
+    return view_properties[layer].view_rotation;
 }
 
 void AddLine(vec3 from, vec3 to, vec3 color) {

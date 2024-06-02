@@ -44,8 +44,12 @@ struct ShaderUniformModelMatrices {
 };
 
 struct LayerParameters {
-    vec3 camera_position = {0.0f, 0.0f, 0.0f};
-    quat camera_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+    //vec3 camera_position = {0.0f, 0.0f, 0.0f};
+    //quat camera_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+    
+    mat4 projection_matrix = mat4(1.0f);
+    mat4 view_matrix = mat4(1.0f);
+    vec3 view_position = {1.0f, 1.0f, 1.0f};
     
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
@@ -104,8 +108,8 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetCameraParameters (vec3 position, quat rotation, uint32_t layer) {
-    LAYER[layer].camera_position = position;
-    LAYER[layer].camera_rotation = rotation;
+    //LAYER[layer].camera_position = position;
+    //LAYER[layer].camera_rotation = rotation;
 }
 
 void SetScreenSize(float width, float height) {
@@ -114,7 +118,7 @@ void SetScreenSize(float width, float height) {
     
     glViewport(0, 0, width, height);
     
-    matrices.projection = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 1000.0f);
+    //matrices.projection = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 1000.0f);
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
@@ -136,7 +140,7 @@ void Init() {
     model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
     bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
     
-    matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+    //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
     // initialize the default pose
     BLANK_POSE = PoolProxy<Render::Pose>::New();
@@ -164,9 +168,12 @@ void RenderFrame() {
     modelMatrices.ambientColor =    glm::vec4(LAYER[0].ambient_color, 1.0f);
     modelMatrices.screenWidth =     SCREEN_WIDTH;
     modelMatrices.screenHeight =    SCREEN_HEIGHT;
-    
-    matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
-    matrices.view_pos = LAYER[0].camera_position;
+
+    matrices.projection = LAYER[0].projection_matrix;
+    matrices.view = LAYER[0].view_matrix;
+    matrices.view_pos = LAYER[0].view_position;
+    //matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
+    //matrices.view_pos = LAYER[0].camera_position;
 
     //if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * glm::vec3(0.0f, 0.0f, -5.0f));
 
@@ -189,7 +196,7 @@ void RenderFrame() {
 
         // TODO: do view culling in here
 
-        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj->CalcSortKey(LAYER[0].camera_position), robj));
+        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj->CalcSortKey(LAYER[0].view_position), robj));
     }
 
     sort(rvec.begin(), rvec.end());
@@ -490,6 +497,16 @@ void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data)
     glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+void SetViewMatrix(const mat4& matrix, layer_t layer) {
+    LAYER[layer].view_matrix = matrix;
+    LAYER[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
+    LAYER[layer].projection_matrix = matrix;
+}
+
 }
 
 // why is this implemented in here

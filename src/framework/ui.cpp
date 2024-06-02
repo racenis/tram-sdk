@@ -185,7 +185,8 @@ void Init(){
         screen_width = width;
         screen_height = height;
         
-        Render::API::SetScreenSize(width, height);
+        //Render::API::SetScreenSize(width, height);
+        Render::SetScreenSize(width, height);
     });
 
     glfwSetKeyCallback(WINDOW, KeyCallback);

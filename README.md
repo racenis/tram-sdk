@@ -24,9 +24,7 @@ polygonal soup instead of BSPs and supports level streaming.
 - Colored lights and surfaces
 - Phong illumination
 - Point lights
-<!--- - Warn's lighting for directional lights --->
-
-
+- Warn's lighting for directional lights
 - Level streaming
 - Allows use of Quake level editors to create level geometry
 

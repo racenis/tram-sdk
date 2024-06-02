@@ -26,6 +26,8 @@ void SetSunDirection(vec3 direction, layer_t layer = 0);
 void SetSunColor(color_t color, layer_t layer = 0);
 void SetAmbientColor(color_t color, layer_t layer = 0);
 
+void SetScreenSize(float width, float height);
+
 void SetCameraPosition(vec3 position, layer_t layer = 0);
 void SetCameraRotation(quat rotation, layer_t layer = 0);
 
