@@ -96,30 +96,16 @@ void main() {
 	float attenuation3 = max(dot(n, v_to_light3), 0.0) * (1.0 / (1.0 + 0.09 * distance3 + 0.032 * (distance3 * distance3)));
 	float attenuation4 = max(dot(n, v_to_light4), 0.0) * (1.0 / (1.0 + 0.09 * distance4 + 0.032 * (distance4 * distance4)));
 	
-
-
-	//attenuation1 *= pow(max(dot(vec3(scene_lights[model_lights.x].cc), -n), 0.0), scene_lights[model_lights.x].cc.w);
 	float directionality1 = clamp(pow(max(dot(vec3(scene_lights[model_lights.x].cc), -v_to_light1), 0.0), scene_lights[model_lights.x].cc.w), 0.0, 1.0);
 	float directionality2 = clamp(pow(max(dot(vec3(scene_lights[model_lights.y].cc), -v_to_light2), 0.0), scene_lights[model_lights.y].cc.w), 0.0, 1.0);
 	float directionality3 = clamp(pow(max(dot(vec3(scene_lights[model_lights.z].cc), -v_to_light3), 0.0), scene_lights[model_lights.z].cc.w), 0.0, 1.0);
 	float directionality4 = clamp(pow(max(dot(vec3(scene_lights[model_lights.w].cc), -v_to_light4), 0.0), scene_lights[model_lights.w].cc.w), 0.0, 1.0);
-	//attenuation1 *= pow(max(dot(vec3(scene_lights[model_lights.x].cc), -n), 0.0), 8.0);
-	//attenuation2 *= pow(max(dot(vec3(scene_lights[model_lights.y].cc), -n), 0.0), 8.0);
-	//attenuation3 *= pow(max(dot(vec3(scene_lights[model_lights.z].cc), -n), 0.0), 8.0);
-	//attenuation4 *= pow(max(dot(vec3(scene_lights[model_lights.w].cc), -n), 0.0), 8.0);
-	//directionality1 = scene_lights[model_lights.x].cc.w;
-	//directionality2 = scene_lights[model_lights.y].cc.w;
-	//directionality3 = scene_lights[model_lights.z].cc.w;
-	//directionality4 = scene_lights[model_lights.w].cc.w;
 
-	
 	// take in ambient color and add sun color
 	vert_color = vec3(ambient_color);
 	vert_color += sun_color * max(dot(n, normalize(sun_direction)), 0.0);
 	vert_color *= sun_weight;
-	
-	
-	
+		
 	// add in light colors
 	vert_color += vec3(scene_lights[model_lights.x].bb) * attenuation1 * directionality1;
 	vert_color += vec3(scene_lights[model_lights.y].bb) * attenuation2 * directionality2;
