@@ -11,8 +11,8 @@ trigger 0 trigeris 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 0 16 
 #crate 0 none -3.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
 #crate 0 muca -4.000000 0.600000 6.800000 0.000000 0.785398 0.000000 crate_ligma crate
 crate 0 none -1.400000 2.600000 2.800000 0.000000 0.785398 0.000000 metalakaste crate 
-light 0 none 0.0 1.0 7.0 0.0 0.0 0.0 1.0 1.0 0.0 15.0
-light 0 none 0.0 4.0 -3.0 0.0 0.0 0.0 0.0 1.0 1.0 15.0
+light 0 none 0.0 1.0 7.0 0.0 0.0 0.0 1.0 1.0 0.0 15.0 0.0 0.0 -1.0 16.0
+light 0 none 0.0 4.0 -3.0 0.0 0.0 0.0 0.0 1.0 1.0 15.0 0.0 -1.0 1.0 16.0
 sound 0 derp 0.0 1.0 0.0 0.0 0.0 0.0 1 derp 1.0
 decoration 114 mongus 0.0 1.0 0.0 0.0 0.0 0.0 0 mongus mongus-run
 #signal 114 use derp 0.0 -1 toggle none
@@ -22,3 +22,4 @@ signal 114 use mongus 0.0 -1 set-animation name mongus-jump
 #crate 0 estijs 0.800000 1.000000 2.000000 0.000000 0.000000 0.000000 kadbusest crate
 transition transition1 demo_mov 8 10.000000 -10.000000 10.000000 -10.000000 -10.000000 10.000000 10.000000 -10.000000 -10.000000 -10.000000 -10.000000 -10.000000 10.000000 10.000000 10.000000 -10.000000 10.000000 10.000000 10.000000 10.000000 -10.000000 -10.000000 10.000000 -10.000000
 #signal 111 progress tosnins 0.0 -1 set-progress none
+decoration 151 plane 0.0 2.0 0.0 0.0 0.0 0.0 0 dev/plane none

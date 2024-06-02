@@ -177,12 +177,12 @@ void mainloop() {
     }
     
     // this will make the light spin
-    vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
+    //vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
     //quat litrot;
     //QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
     //binguser->SetLocation(litloc);
     //binguser->SetRotation(litrot);
-    lit->SetLocation(litloc);
+    //lit->SetLocation(litloc);
     
     // this makes the mongus model bob up and down
     //monguser->SetLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
@@ -469,10 +469,10 @@ int main() {
     //monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
-    lit = PoolProxy<LightComponent>::New();
-    lit->Init();
-    lit->SetColor({1.0f, 0.0f, 1.0f});
-    lit->SetDistance(100.0f);
+    //lit = PoolProxy<LightComponent>::New();
+    //lit->Init();
+    //lit->SetColor({1.0f, 0.0f, 1.0f});
+    //lit->SetDistance(100.0f);
 
     // create the animation player for the mongus model
     //monguser_armature = PoolProxy<AnimationComponent>::New();

@@ -21,9 +21,6 @@ protected:
     T* lastfree;
 public:
     struct iterator {
-        using iterator_category = std::forward_iterator_tag;
-        using difference_type   = std::ptrdiff_t;
-        
         iterator(T* ptr) : ptr(ptr) {}
         
         T& operator*() const { return *ptr; }

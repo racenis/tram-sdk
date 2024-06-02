@@ -23,7 +23,9 @@ struct GLLight {
     float padding;
     vec3 color = {0.0f, 0.0f, 0.0f};
     float distance = 0.0f;
-    float padding2[8];
+    vec3 direction = {0.0f, 0.0f, -1.0f};
+    float exponent = 0.0f;
+    float padding2[4];
 };
 
 struct GLDrawListEntry {

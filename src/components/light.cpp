@@ -24,7 +24,7 @@ LightComponent::~LightComponent () {
 
 void LightComponent::Update () {
     if (is_ready) {
-        Render::API::SetLightParameters(light, location, color, distance);
+        Render::API::SetLightParameters(light, location, color, distance, direction, exponent);
     }
 }
 
@@ -43,7 +43,17 @@ void LightComponent::SetColor (Render::color_t color) {
 /// Sets the distance of the light.
 /// Sets how far the light will travel.
 void LightComponent::SetDistance (float dist) {
-    distance = dist;
+    this->distance = dist;
+    Update();
+}
+
+void LightComponent::SetDirection(vec3 direction) {
+    this->direction = glm::normalize(direction);
+    Update();
+}
+
+void LightComponent::SetExponent(float exponent) {
+    this->exponent = exponent;
     Update();
 }
 

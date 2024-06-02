@@ -67,8 +67,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
-- Add indices to pools
-- Add directional lights
+
 - Add a additive/mix blend for specular lights
 - Move view and projection matrices into Render
 	- They are currently in Renderer
@@ -133,7 +132,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - And also switch traingle intersection thingy
 - AddLine() drawlistentry is not being drawn on top
  - Get Calc Key things does not work?? at least the distance part
- 
+
+ - Add screenshotting
+- Add directional lights to lightmapper
  
 #### Should do later
 

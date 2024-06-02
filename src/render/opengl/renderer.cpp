@@ -361,7 +361,7 @@ void DeleteLight(light_t light) {
     light_tree.RemoveLeaf(leaf_id);
 }
 
-void SetLightParameters (light_t light, vec3 location, vec3 color, float distance) {
+void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
     GLLight* light_ptr = light.gl;
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];
@@ -369,6 +369,8 @@ void SetLightParameters (light_t light, vec3 location, vec3 color, float distanc
     light_ptr->location = location;
     light_ptr->color = color;
     light_ptr->distance = distance;
+    light_ptr->direction = direction;
+    light_ptr->exponent = exponent;
     
     light_tree.RemoveLeaf(leaf_id);
     leaf_id = light_tree.AddLeaf(light_id, light_ptr->location.x, light_ptr->location.y, light_ptr->location.z);

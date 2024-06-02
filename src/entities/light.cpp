@@ -13,10 +13,18 @@ enum {
     FIELD_COLOR_R,
     FIELD_COLOR_G,
     FIELD_COLOR_B,
-    FIELD_DISTANCE
+    FIELD_DISTANCE,
+    FIELD_DIRECTION_X,
+    FIELD_DIRECTION_Y,
+    FIELD_DIRECTION_Z,
+    FIELD_EXPONENT
 };
 
-static const uint32_t fields[4] = {
+static const uint32_t fields[8] = {
+    TYPE_FLOAT32,
+    TYPE_FLOAT32,
+    TYPE_FLOAT32,
+    TYPE_FLOAT32,
     TYPE_FLOAT32,
     TYPE_FLOAT32,
     TYPE_FLOAT32,
@@ -29,7 +37,7 @@ void Light::Register() {
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Light(a, b); },
         [](Entity* a) { delete a; },
         fields,
-        4
+        8
     );
 }
 
@@ -38,6 +46,11 @@ Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array)
     color_g = field_array[FIELD_COLOR_G];
     color_b = field_array[FIELD_COLOR_B];
     distance = field_array[FIELD_DISTANCE];
+    direction_x = field_array[FIELD_DIRECTION_X];
+    direction_y = field_array[FIELD_DIRECTION_Y];
+    direction_z = field_array[FIELD_DIRECTION_Z];
+    exponent = field_array[FIELD_EXPONENT];
+    
 }
 
 
@@ -54,6 +67,8 @@ void Light::Load () {
     light.make();
     light->SetColor({color_r, color_g, color_b});
     light->SetDistance(distance);
+    light->SetDirection({direction_x, direction_y, direction_z});
+    light->SetExponent(exponent);
 
     light->Init();
     is_loaded = true;

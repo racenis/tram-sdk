@@ -29,6 +29,10 @@ protected:
     float color_g;
     float color_b;
     float distance;
+    float direction_x;
+    float direction_y;
+    float direction_z;
+    float exponent;
 };
 
 }

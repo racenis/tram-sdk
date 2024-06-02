@@ -30,7 +30,7 @@ void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_colo
 void SetCameraParameters(vec3 position, quat rotation, layer_t layer);
 light_t MakeLight();
 void DeleteLight(light_t light);
-void SetLightParameters(light_t light, vec3 location, vec3 color, float distance);
+void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent);
 void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader);
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color);
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weight, float* power);

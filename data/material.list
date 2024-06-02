@@ -181,4 +181,5 @@ dev/wall64x64 flat nearest metal 1.0 1.0 1.0 0.0 1.0
 dev/wall128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0
 dev/wallstair32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0
 dev/window128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0
+dev/white flat nearest metal 1.0 1.0 1.0 0.0 1.0
 #lightmap/movs lightmap nearest metal 1.0 1.0 1.0 0.0 1.0
