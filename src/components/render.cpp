@@ -199,18 +199,20 @@ void RenderComponent::InsertDrawListEntries() {
         texturehandle_t textures[15];
         vec4 colors[15];
         float specular_weights[15];
-        float specular_powers[15];
+        float specular_exponents[15];
+        float specular_transparencies[15];
         for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
             textures[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
             colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor() * color, 1.0f);
             specular_weights[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularWeight();
-            specular_powers[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularPower();
+            specular_exponents[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularExponent();
+            specular_transparencies[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularTransparency();
         }
 
         Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
         Render::API::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
         Render::API::SetDrawListColors(entry, index_ranges[i].material_count, colors);
-        Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_powers);
+        Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_exponents, specular_transparencies);
         Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 

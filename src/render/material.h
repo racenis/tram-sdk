@@ -36,7 +36,8 @@ public:
         MaterialProperty property, 
         vec3 color, 
         float specular_weight, 
-        float specular_power
+        float specular_exponent,
+        float specular_transparency
     ) : 
         Resource(name), 
         type(type), 
@@ -44,7 +45,8 @@ public:
         property(property), 
         color(color), 
         specular_weight(specular_weight), 
-        specular_power(specular_power) {}
+        specular_exponent(specular_exponent),
+        specular_transparency(specular_transparency) {}
     
     inline texturehandle_t GetTexture() const { return texture; }
     inline uint32_t GetWidth() const { return width; }
@@ -53,7 +55,8 @@ public:
     inline MaterialProperty GetProperty() const { return property; }
     inline vec3 GetColor() const { return color; }
     inline float GetSpecularWeight() const { return specular_weight; }
-    inline float GetSpecularPower() const { return specular_power; }
+    inline float GetSpecularExponent() const { return specular_exponent; }
+    inline float GetSpecularTransparency() const { return specular_transparency; }
 
     void MakePattern (vec3 color1, vec3 color2);
     
@@ -73,9 +76,10 @@ protected:
     MaterialFilter filter = FILTER_NEAREST;
     MaterialProperty property = PROPERTY_METAL;
     
-    vec3 color;
-    float specular_weight;
-    float specular_power;
+    vec3 color = {1.0f, 1.0f, 1.0f};
+    float specular_weight = 0.0f;
+    float specular_exponent = 0.0f;
+    float specular_transparency = 0.0f;
     
     uint32_t width = 0;
     uint32_t height = 0;

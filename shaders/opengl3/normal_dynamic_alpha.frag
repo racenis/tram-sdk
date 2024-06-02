@@ -7,6 +7,7 @@ out vec4 fragment;
 
 in vec2 vert_uv;
 in vec3 vert_color;
+in vec3 vert_color_add;
 flat in uint vert_tex_index;
 
 uniform sampler2D sampler[16];
@@ -17,4 +18,5 @@ void main() {
 	if (fragment.a < 0.5) discard;
 	
     fragment *= vec4(vert_color, 1.0);
+	fragment += vec4(vert_color_add, 1.0);
 }

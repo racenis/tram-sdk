@@ -49,7 +49,7 @@ void Material::LoadMaterialInfo(const char* filename){
     
     name_t file_type = file.read_name();
     
-    if (file_type != "MATv4") {
+    if (file_type != "MATv5") {
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
@@ -65,7 +65,8 @@ void Material::LoadMaterialInfo(const char* filename){
         name_t mat_property_name = file.read_name();
         vec3 mat_color = {file.read_float32(), file.read_float32(), file.read_float32()};
         float mat_spec_weight = file.read_float32();
-        float mat_spec_power = file.read_float32();
+        float mat_spec_exponent = file.read_float32();
+        float mat_spec_transparency = file.read_float32();
 
         if(mat_type_name == UID("flat")){
             mat_type = MATERIAL_TEXTURE;
@@ -122,7 +123,7 @@ void Material::LoadMaterialInfo(const char* filename){
             mat_property = PROPERTY_METAL;
         }
 
-        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property, mat_color, mat_spec_weight, mat_spec_power));
+        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property, mat_color, mat_spec_weight, mat_spec_exponent, mat_spec_transparency));
     }
 }
 

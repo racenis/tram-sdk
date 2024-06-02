@@ -68,7 +68,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 #### Should do sooner
 
 
-- Add a additive/mix blend for specular lights
 - Move view and projection matrices into Render
 	- They are currently in Renderer
 	- They would work better in Render

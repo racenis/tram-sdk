@@ -210,7 +210,8 @@ void RenderFrame() {
         for (int i = 0; i < 15; i++) {
             modelMatrices.colors[i] = robj->colors[i];
             modelMatrices.specular[i].x = robj->specular_weights[i];
-            modelMatrices.specular[i].y = robj->specular_powers[i];
+            modelMatrices.specular[i].y = robj->specular_exponents[i];
+            modelMatrices.specular[i].z = robj->specular_transparencies[i];
         }
 
         //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[0]].location, light_list.GetFirst()[robj->lights[0]].color);
@@ -299,10 +300,11 @@ void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
     }
 }
 
-void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* powers) {
+void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies) {
     for (size_t i = 0; i < count; i++) {
         entry.gl->specular_weights[i] = weights[i];
-        entry.gl->specular_powers[i] = powers[i];
+        entry.gl->specular_exponents[i] = exponents[i];
+        entry.gl->specular_transparencies[i] = transparencies[i];
     }
 }
 
