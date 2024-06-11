@@ -24,6 +24,7 @@ namespace tram::Render {
 struct {
     vec3 view_position = {0.0f, 0.0f, 0.0f};
     quat view_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+    float view_fov = 60.0f;
     
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
@@ -53,7 +54,7 @@ static void update_view(layer_t layer) {
 }
 
 static void update_projection(layer_t layer) {
-    mat4 projection = glm::perspective(glm::radians(60.0f), screen_width / screen_height, 0.1f, 1000.0f);
+    mat4 projection = glm::perspective(glm::radians(view_properties[layer].view_fov), screen_width / screen_height, 0.1f, 1000.0f);
     API::SetProjectionMatrix(projection, layer);
 }
 
@@ -143,6 +144,13 @@ void SetScreenSize(float width, float height) {
     for (int i = 0; i < 7; i++) {
         update_projection(i);
     }
+    
+    API::SetScreenSize(width, height);
+}
+
+void SetViewFov(float fov, layer_t layer) {
+    view_properties[layer].view_fov = fov;
+    update_projection(layer);
 }
 
 /// Sets the camera position.

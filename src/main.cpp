@@ -176,6 +176,18 @@ void mainloop() {
         //tolet_emitter->EmitParticle({{0.0f, 3.0f, 0.0f}, {0.0f, 0.25f, 0.5f}, 15});
     }
     
+    static float fov = 60.0f;
+    if (UI::PollKeyboardKey(UI::KEY_EQUAL)) {
+        fov += 1.0f;
+        SetViewFov(fov);
+        std::cout << "fov: " << fov << std::endl;
+    }
+    if (UI::PollKeyboardKey(UI::KEY_MINUS)) {
+        fov -= 1.0f;
+        SetViewFov(fov);
+        std::cout << "fov: " << fov << std::endl;
+    }
+    
     // this will make the light spin
     //vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
     //quat litrot;
