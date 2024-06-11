@@ -125,34 +125,6 @@ void SetScreenClear (vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
 }
-    
-void Init() {
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    
-    CompileShaders();
-
-    light_uniform_buffer = MakeUniformBuffer("Lights", light_uniform_binding, sizeof(GLLight)*50);
-    matrix_uniform_buffer = MakeUniformBuffer("Matrices", matrix_uniform_binding, sizeof(ShaderUniformMatrices));
-    model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
-    bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
-    
-    //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
-
-    // initialize the default pose
-    BLANK_POSE = PoolProxy<Render::Pose>::New();
-    for (size_t i = 0; i < BONE_COUNT; i++) {
-        BLANK_POSE->pose[i] = mat4(1.0f);
-    }
-    
-    // initialize the default light
-    //new (light_list.begin().ptr) LightListEntry;
-    light_list.AddNew();
-}
-
 
 void RenderFrame() {
     if (clear_screen) {
@@ -506,6 +478,78 @@ void SetViewMatrix(const mat4& matrix, layer_t layer) {
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
     LAYER[layer].projection_matrix = matrix;
 }
+
+#ifndef __EMSCRIPTEN__
+void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void*) {
+    // apparently these are spammy, or something
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
+
+    const char* source_str =    "UNKNOWN";
+    const char* type_str =      "UNKNOWN";
+    const char* severity_str =  "UNKNOWN";
+
+    switch (source) {
+        case GL_DEBUG_SOURCE_API_ARB:               source_str = "API";                 break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:     source_str = "WINDOW_SYSTEM";       break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:   source_str = "SHADER_COMPILER";     break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:       source_str = "THIRD_PARTY";         break;
+        case GL_DEBUG_SOURCE_APPLICATION_ARB:       source_str = "APPLICATION";         break;
+        case GL_DEBUG_SOURCE_OTHER_ARB:             source_str = "OTHER";               break;
+    }
+
+    switch (type) {
+        case GL_DEBUG_TYPE_ERROR_ARB:               type_str = "ERROR";                 break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: type_str = "DEPRECATED_BEHAVIOR";   break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:  type_str = "UNDEFINED_BEHAVIOR";    break; 
+        case GL_DEBUG_TYPE_PORTABILITY_ARB:         type_str = "PORTABILITY";           break;
+        case GL_DEBUG_TYPE_PERFORMANCE_ARB:         type_str = "PERFORMANCE";           break;
+        case GL_DEBUG_TYPE_OTHER_ARB:               type_str = "OTHER";                 break;
+    }
+
+    switch (severity) {
+        case GL_DEBUG_SEVERITY_HIGH_ARB:            severity_str = "HIGH";              break;
+        case GL_DEBUG_SEVERITY_MEDIUM_ARB:          severity_str = "MEDIUM";            break;
+        case GL_DEBUG_SEVERITY_LOW_ARB:             severity_str = "LOW";               break;
+    }
+
+    std::cout << "OpenGL Debug Message: " << source_str << " " << type_str << " " << severity_str << " " << id << std::endl;
+    std::cout << message << std::endl;
+}
+#endif
+
+void Init() {
+    #ifndef __EMSCRIPTEN__
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB); 
+        glDebugMessageCallbackARB(RenderErrorCallback, nullptr);
+        glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+    #endif
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
+    CompileShaders();
+
+    light_uniform_buffer = MakeUniformBuffer("Lights", light_uniform_binding, sizeof(GLLight)*50);
+    matrix_uniform_buffer = MakeUniformBuffer("Matrices", matrix_uniform_binding, sizeof(ShaderUniformMatrices));
+    model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
+    bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
+    
+    //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+
+    // initialize the default pose
+    BLANK_POSE = PoolProxy<Render::Pose>::New();
+    for (size_t i = 0; i < BONE_COUNT; i++) {
+        BLANK_POSE->pose[i] = mat4(1.0f);
+    }
+    
+    // initialize the default light
+    //new (light_list.begin().ptr) LightListEntry;
+    light_list.AddNew();
+}
+
 
 }
 

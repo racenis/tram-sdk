@@ -131,6 +131,15 @@ float PollKeyboardAxisDelta(KeyboardAxis key);
 void SetInputState(InputState state);
 InputState GetInputState();
 
+void KeyPress(KeyboardKey key);
+void KeyRelease(KeyboardKey key);
+void KeyMouse(float x_value, float y_value);
+void KeyScroll(float value);
+void ScreenResize(int w, int h);
+void ScreenClose();
+
+bool ShouldExit();
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_UI_H

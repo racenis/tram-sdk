@@ -147,6 +147,10 @@
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
+      <VirtualDirectory Name="glfw">
+        <File Name="src/platform/glfw/glfw.cpp"/>
+      </VirtualDirectory>
+      <File Name="src/platform/api.h"/>
       <File Name="src/platform/time.cpp"/>
       <File Name="src/platform/time.h"/>
       <File Name="src/platform/file.h"/>
