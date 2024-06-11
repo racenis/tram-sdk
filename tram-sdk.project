@@ -48,7 +48,6 @@
         <File Name="src/audio/spatial/spatial.h"/>
       </VirtualDirectory>
       <File Name="src/audio/api.h"/>
-      <File Name="src/audio/api.cpp"/>
       <File Name="src/audio/sound.h"/>
       <File Name="src/audio/sound.cpp"/>
       <VirtualDirectory Name="openal">

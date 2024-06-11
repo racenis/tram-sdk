@@ -26,6 +26,7 @@ struct EntityTypeInfo {
 struct SharedEntityData {
     uint64_t id;
     name_t name;
+    uint32_t flags;
     vec3 position;
     quat rotation;
 };
@@ -43,6 +44,7 @@ Entity::Entity (name_t name) {
 Entity::Entity(const SharedEntityData& shared_data) {
     id = shared_data.id;
     name = shared_data.name;
+    flags = shared_data.flags;
     location = shared_data.position;
     rotation = shared_data.rotation;
     
@@ -139,6 +141,7 @@ Entity* Entity::Make(name_t type, File* file) {
     SharedEntityData shared_data {
         file->read_uint64(),
         file->read_name(),
+        file->read_uint32(),
         vec3 {file->read_float32(), file->read_float32(), file->read_float32()},
         vec3 {file->read_float32(), file->read_float32(), file->read_float32()}
     };

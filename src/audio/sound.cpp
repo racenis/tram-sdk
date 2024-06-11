@@ -17,7 +17,7 @@ template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::
 
 namespace tram::Audio {
 
-Hashmap<Sound*> SOUND_MAP ("Sound hash map", 500);
+static Hashmap<Sound*> sound_map("Sound hash map", 500);
 
 /// Loads the sound from the disk.
 void Sound::LoadFromDisk() {
@@ -28,10 +28,10 @@ void Sound::LoadFromDisk() {
     if (sound_length < 0) {
         Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
     } else {
-        sound_buffers = MakeAudioBuffer(sound_data, sound_length, sample_rate, channels, sound_buffer_count);
+        sound_buffers = API::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels, sound_buffer_count);
     }
     
-    free (sound_data);
+    free(sound_data);
     sound_data = nullptr;
     
     status = READY;
@@ -39,7 +39,7 @@ void Sound::LoadFromDisk() {
 
 /// Removes the sound from memory.
 void Sound::Unload() {
-    RemoveAudioBuffer(sound_buffers, sound_buffer_count);
+    API::RemoveAudioBuffer(sound_buffers, sound_buffer_count);
     status = UNLOADED;
 }
 
@@ -47,11 +47,11 @@ void Sound::Unload() {
 /// If a sound by that name doesn't exist, then it will be created.
 /// @return Always returns a pointer to a Sound.
 Sound* Sound::Find (name_t name) {
-    auto sound = SOUND_MAP.Find(name);
+    auto sound = sound_map.Find(name);
     
     if (!sound) {
         sound = PoolProxy<Sound>::New(name);
-        SOUND_MAP.Insert(name, sound);
+        sound_map.Insert(name, sound);
     }
     
     return sound;

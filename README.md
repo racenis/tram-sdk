@@ -65,20 +65,17 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
-
+- Add flags to entities
 - Models with different sets of materials
 	- Introduce a new model format .mdmdl
 	- This format contains a reference to a .stmdl or a .dymdl
 	- It also contains a new set of materials
-	
 - Materials can have multiple texture images
 	- Materials can have single texture (as is now)
 	- Materials can have a texure and a normal map
 	- Materials can have a texture, a normal map and some other map
 	- Materials can use textures and maps from another material
-	
 - Will probably have to overthink the texture bindings...
-	
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
@@ -87,58 +84,44 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Add an option to not create a MotionState
 	- Add a callback function for updating
 - Replace Bezier curves with Catmull-Roms
-
-- Refactor GLFW from UI to Platform
+- ~~Refactor GLFW from UI to Platform~~
 	- Also make it so that GLFW can be swapped for SDL
-
 - Selecting the error model through model AABBs makes a crash
 	- Maybe error model doesn't build AABB tree properly?
 	- Even with no AABB tree there shouldn't be a crash
-
 - Add command-line argument parser.
 	- Should parse command-line arguments.
 	- Also should allow setting of settings through command-line.
 	- Probably can think of other useful command-line commands.
-
 - Add a settings system.
 	- Should allow saving of various settings.
 	- Settings should be key-value pairs.
 	- Should also allow saving of keybindings.
-
 - Fix GUI system
 	- Current GUI system was written in 3 days.
 	- Add more time so that it isn't a spaghetti.
-
 - Fix Maketool
 	- Should properly seperate web and desktop builds.
-
 - Sound table does not play if only one sound
 - Add logging during render initialization end especially shader loading
 - Add option to change mouse sensitivity
 - Split tick event into fixed tick event and frame event
-
 - Overhaul shader system
 	- Add some kind of flags to shaders
 	- These flags would inject glsl preprocessor #define's into the shader code 
-
 - If can't find shader for a material, then print material name	
-
 - What if the event caller gets deleted while events are being dispatched?
 	- Or if messages are getting dispatched? Is it segfault?
-
 - If you don't RegisterShader() before Render::Init(), then the Uniform blocks won't be bound and you will get pancake models
 	- Add some kind of a code to bind 
-	
 - Add assert to ASYNC if emscirpten
 	- Starting threads on emscripten causes crashies!
-	
 - Put triangle definition into math.h
 - Put MinAABB MaxAABB into there too
 - And also switch traingle intersection thingy
 - AddLine() drawlistentry is not being drawn on top
- - Get Calc Key things does not work?? at least the distance part
-
- - Add screenshotting
+- Get Calc Key things does not work?? at least the distance part
+- Add screenshotting
 - Add directional lights to lightmapper
  
 #### Should do later
@@ -146,38 +129,29 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Python scripting
 	- Should allow accessing basic library functionality through Python.
 	- Probably should have OOP abstractions and stuff.
-
 - Object Pascal data library
 	- A base that could be used for various GUI utilities in the future.
 	- Should allow parsing of various library text file formats.
 	- Also editing and saving.
-	
 - Project manager tool
 	- Should allow editing of all the various library text file formats.
 	- Should allow generation of new projects.
-
 - Model conversion tools
 	- Leverage the free Assimp library to parse various 3D model formats.
 	- Convert said model formats to tram-sdk .stmdl and .dymdl formats.
 	- Perhaps write Blender importers in addition to existing exporters.
-
 - Add a better disk abstraction
 	- File() should also open files that are located in compressed archives.
 	- Also should open and be able to write files through HTTP.
-
 - Default menus
 	- Keybinding menu
 	- Graphics menu
-	
 - Finish particles
 	- Steal ideas from various particle editors
 - Finish sprites
 	- Make them not be distorted horizontally in the shader
-	
 - Swapable physics engine?
-	
 
-	
 #### For very later versions
 - Occlusion/frustrum culling
 - Add rotations to sprites

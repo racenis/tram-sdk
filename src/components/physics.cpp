@@ -113,7 +113,7 @@ void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
 }
 
 /// Sets the collision shape of the physics object.
-void PhysicsComponent::SetShape (Physics::CollisionShape shape) {
+void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
     collision_shape = CollisionShapeToConvexShape(shape);
 }
 
@@ -133,11 +133,25 @@ void PhysicsComponent::SetMass(float mass) {
 /// I have no idea what the units are. Direction of direction is the
 /// direction into which the object will be pushed and the length of
 /// the vector is the force of the push.
-void PhysicsComponent::Push (const glm::vec3& direction){
+void PhysicsComponent::Push(vec3 direction) {
     if (!is_ready) return;
     
     rigidbody->activate(); // force awake, sleeping objects won't move
     rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
+}
+
+void PhysicsComponent::Push(vec3 direction, vec3 local) {
+    if (!is_ready) return;
+    
+    rigidbody->activate();
+    rigidbody->applyImpulse(btVector3(direction.x, direction.y, direction.z), btVector3(local.x, local.y, local.z));
+}
+
+void PhysicsComponent::Spin(vec3 direction) {
+    if (!is_ready) return;
+    
+    rigidbody->activate();
+    rigidbody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
 }
 
 /// Awakens the object.
@@ -200,7 +214,7 @@ void PhysicsComponent::SetUpdateParentTransform(bool update) {
 }
 
 /// Sets the position of the physics object.
-void PhysicsComponent::SetLocation (const glm::vec3& position) {
+void PhysicsComponent::SetLocation(vec3 position) {
     if (rigidbody) {
         btTransform trans = rigidbody->getWorldTransform();
         trans.setOrigin(btVector3 (position.x, position.y, position.z));
@@ -211,7 +225,7 @@ void PhysicsComponent::SetLocation (const glm::vec3& position) {
 }
 
 /// Sets the rotation of the physics object.
-void PhysicsComponent::SetRotation (const glm::quat& rotation) {
+void PhysicsComponent::SetRotation (quat rotation) {
     if (rigidbody) {
         btTransform trans = rigidbody->getWorldTransform();
         trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
@@ -224,7 +238,7 @@ void PhysicsComponent::SetRotation (const glm::quat& rotation) {
 /// Sets the angular factor of the physics object.
 /// Changes how much the object will rotate around the x, y, z axes. Can be
 /// used to restrict rotation around certain axes.
-void PhysicsComponent::SetAngularFactor (const glm::vec3& factor) {
+void PhysicsComponent::SetAngularFactor(vec3 factor) {
     rigidbody_angular_factor = factor;
     
     if (is_ready) {
@@ -235,7 +249,7 @@ void PhysicsComponent::SetAngularFactor (const glm::vec3& factor) {
 /// Sets the angular factor of the physics object.
 /// Changes how much the object will move along the x, y, z axes. Can be
 /// used to restrict movement along certain axes.
-void PhysicsComponent::SetLinearFactor (const glm::vec3& factor) {
+void PhysicsComponent::SetLinearFactor(vec3 factor) {
     rigidbody_linear_factor = factor;
     
     if (is_ready) {

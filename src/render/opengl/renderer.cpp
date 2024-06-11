@@ -59,7 +59,7 @@ struct LayerParameters {
 ShaderUniformMatrices matrices;
 ShaderUniformModelMatrices modelMatrices;
 
-static LayerParameters LAYER [7];
+static LayerParameters LAYER[7];
 
 class ShaderBuffer {};
 

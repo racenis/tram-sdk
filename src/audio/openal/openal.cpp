@@ -1,4 +1,4 @@
-#include <audio/openal/openal.h>
+#include <audio/api.h>
 
 #include <framework/logging.h>
 #include <framework/system.h>
@@ -12,7 +12,7 @@
 #endif
 
 
-namespace tram::Audio::OpenAL {
+namespace tram::Audio::API {
 
 ALCdevice* sound_device = nullptr;
 ALCcontext* sound_context = nullptr;
@@ -39,11 +39,17 @@ void Uninit() {
     alcCloseDevice(sound_device);
 }
 
-void SetListenerPosition(const glm::vec3& position) {
+/// Sets the listener position.
+/// @param position Listener position. Under normal circumstances, it should be
+///                 the same as render view position.
+void SetListenerPosition(vec3 position) {
     alListener3f(AL_POSITION, position.x, position.y, position.z);
 }
 
-void SetListenerOrientation(const glm::quat& orientation) {
+/// Sets the listener orientation.
+/// @param orientation  Listener orientation. Under normal circumstances, it should be
+///                     the same as render view rotation.
+void SetListenerOrientation(quat orientation) {
     vec3 combined_orientation[2] = {
         orientation * DIRECTION_FORWARD, 
         DIRECTION_UP
@@ -52,6 +58,10 @@ void SetListenerOrientation(const glm::quat& orientation) {
     alListenerfv(AL_ORIENTATION, &combined_orientation[0][0]);
 }
 
+/// Creates audio buffers from raw audio data.
+/// @param audio_data       Pointer to the raw audio data, stored as 16 bit PCM.
+/// @param length           Length of the raw audio data, in samples.
+/// @param buffer_count     Created buffer count will be stored in this variable.
 audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels, int32_t& buffer_count) {
     static const int32_t buffer_size = 64 * 1024;
     buffer_count = (length + buffer_size - 1) / buffer_size;
@@ -82,43 +92,53 @@ audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_
     return generated_buffers;
 }
 
+/// Deletes audio buffers.
 void RemoveAudioBuffer(audiobuffer_t* buffers, int32_t buffer_count) {
     alDeleteBuffers(buffer_count, buffers);
     delete[] buffers;
 }
 
+/// Creates an audio source.
+/// @return A new audio source handle.
 audiosource_t MakeAudioSource() {
     audiosource_t source;
     alGenSources(1, &source);
     return source;
 }
 
-
+/// Sets the pitch of an audio source.
+/// @param pitch    1.0f is the regular pitch. Halving the value decreases the
+///                 pitch by an octave. Doubling the value increases the pitch
+///                 by an octave.
 void SetAudioSourcePitch (audiosource_t source, float pitch) {
     alSourcef(source, AL_PITCH, pitch);
 }
 
-
+/// Sets the gain of an audio source.
+/// @param gain     1.0f is the regular gain. Halving the value decreases the
+///                 gain by 6dB.
 void SetAudioSourceGain (audiosource_t source, float gain) {
     alSourcef(source, AL_GAIN, gain);
 }
 
-
+/// Sets the position of an audio source.
 void SetAudioSourcePosition (audiosource_t source, vec3 position) {
     alSource3f(source, AL_POSITION, position.x, position.y, position.z);
 }
 
-
+/// Sets the velocity of an audio source.
 void SetAudioSourceVelocity (audiosource_t source, vec3 velocity) {
     alSource3f(source, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 }
 
-
+/// Sets the repetition of an audio source.
+/// @param repeating    True if the sound repeats after playing, false if
+///                     it just stops.
 void SetAudioSourceRepeating (audiosource_t source, bool repeating) {
     alSourcei(source, AL_LOOPING, repeating ? AL_TRUE : AL_FALSE);
 }
 
-
+/// Sets the buffers that the audio source will play.
 void SetAudioSourceBuffer(audiosource_t source, const audiobuffer_t* buffers, int32_t buffer_count) {
     if (buffer_count == 1) {
         alSourcei(source, AL_BUFFER, *buffers);
@@ -127,29 +147,32 @@ void SetAudioSourceBuffer(audiosource_t source, const audiobuffer_t* buffers, in
     }
 }
 
-
+/// Plays an audio source.
 void PlayAudioSource (audiosource_t source) {
     alSourcePlay(source);
 }
 
-
+/// Pauses the audio source.
 void PauseAudioSource (audiosource_t source) {
     alSourcePause(source);
 }
 
-
+/// Stops the audio source.
 void StopAudioSource (audiosource_t source) {
     alSourceStop(source);
 }
 
-
+/// Checks if an audio source is playing.
+/// @return True if the audio source is playing a sound, false otherwise.
 bool IsAudioSourcePlaying (audiosource_t source) {
     int32_t state;
     alGetSourcei (source, AL_SOURCE_STATE, &state);
     return state == AL_PLAYING;
 }
 
-
+/// Deletes an audio source.
+/// If you do this, then the audio source handle will become invalid.
+/// Call MakeAudioSource() to get a new one.
 void RemoveAudioSource (audiosource_t source) {
     alDeleteSources(1, &source);
 }

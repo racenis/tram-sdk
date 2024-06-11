@@ -75,6 +75,8 @@ public:
 protected:
     id_t id = 0;
     name_t name;
+    
+    uint32_t flags = 0;
 
     bool is_persistent = true;
     bool is_loaded = false;

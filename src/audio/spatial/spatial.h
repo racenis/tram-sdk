@@ -4,7 +4,7 @@
 #ifndef TRAM_SDK_AUDIO_SPATIAL_SPATIAL_H
 #define TRAM_SDK_AUDIO_SPATIAL_SPATIAL_H
 
-#include <audio/audio.h>
+/*#include <audio/audio.h>
 
 namespace tram::Audio::Spatial {
 
@@ -36,6 +36,6 @@ bool IsAudioSourcePlaying (audiosource_t source);
 
 void RemoveAudioSource (audiosource_t source);    
 
-}
+}*/
 
 #endif // TRAM_SDK_AUDIO_SPATIAL_SPATIAL_H

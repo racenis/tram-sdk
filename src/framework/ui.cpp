@@ -178,7 +178,23 @@ void SetWindowSize(int w, int h) {
 }
 
 void SetCursor(CursorType cursor) {
-    Platform::Window::SetCursor((Platform::Window::CursorType)cursor);
+    switch (cursor) {
+        case CURSOR_NONE:
+            Platform::Window::DisableCursor();
+            break;
+        case CURSOR_DEFAULT:
+            Platform::Window::EnableCursor();
+            Platform::Window::SetCursor(Platform::Window::CURSOR_DEFAULT);
+            break;
+        case CURSOR_TEXT:
+            Platform::Window::EnableCursor();
+            Platform::Window::SetCursor(Platform::Window::CURSOR_TEXT);
+            break;
+        case CURSOR_CLICK:
+            Platform::Window::EnableCursor();
+            Platform::Window::SetCursor(Platform::Window::CURSOR_CLICK);
+            break;
+    };
 }
 
 void SetInputState (InputState state) {

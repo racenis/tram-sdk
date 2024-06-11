@@ -148,6 +148,7 @@ struct Light {
 struct Entity {
 	vec3 pos;
 	quat rot;
+	uint32_t flags;
 	name_t id;
 	name_t name;
 	name_t model;
@@ -511,7 +512,7 @@ int main(int argc, const char** argv) {
 	
 	name_t file_version = cell.read_name(); cell.skip_linebreak();
 	
-	if (file_version != "CELLv2") {
+	if (file_version != "CELLv3") {
 		std::cout << "\nUnrecognized worldcell file version: " << file_version << "!" << std::endl;
 		return 0;
 	}
@@ -527,6 +528,7 @@ int main(int argc, const char** argv) {
 			
 			entity.id = cell.read_name();
 			entity.name = cell.read_name();
+			entity.flags = cell.read_uint64();
 			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			entity.model = cell.read_name();
@@ -540,6 +542,7 @@ int main(int argc, const char** argv) {
 			
 			entity.id = cell.read_name();
 			entity.name = cell.read_name();
+			entity.flags = cell.read_uint64();
 			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			
@@ -555,6 +558,7 @@ int main(int argc, const char** argv) {
 			
 			cell.read_name();
 			cell.read_name();
+			cell.read_uint64();
 			light.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			cell.read_float32(); cell.read_float32(); cell.read_float32();
 			light.color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};

@@ -18,8 +18,8 @@ void Init();
 void Update();
 void Uninit();
 
-void SetListenerPosition (vec3 position);
-void SetListenerOrientation (quat orientation);
+void SetListenerPosition(vec3 position);
+void SetListenerOrientation(quat orientation);
 
 }
 

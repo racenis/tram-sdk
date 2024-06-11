@@ -6,7 +6,14 @@
 
 #include <audio/audio.h>
 
-namespace tram::Audio {
+namespace tram::Audio::API {
+
+void Init();
+void Update();
+void Uninit();
+
+void SetListenerPosition(vec3 position);
+void SetListenerOrientation(quat orientation);
 
 audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels, int32_t& buffer_count);
 void RemoveAudioBuffer(audiobuffer_t* buffer, int32_t buffer_count);

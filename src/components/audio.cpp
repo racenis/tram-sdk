@@ -6,6 +6,7 @@
 namespace tram {
     
 using namespace tram::Audio;
+using namespace tram::Audio::API;
 
 template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("audio component pool", 150);
 

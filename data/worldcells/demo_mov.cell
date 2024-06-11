@@ -1,25 +1,25 @@
-CELLv2 cell 0 1
-#staticwobj 0 worldspawn 0.000000 0.000000 0.000000 0.0 0.0 0.0 worldspawn fullbright
-#staticwobj 0 platforma 0.000000 0.000000 0.000000 0.0 0.0 0.0 platforma fullbright
-staticwobj 0 paliktnis 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 movs lightmap/movs
+CELLv3 cell 0 1
+#staticwobj 0 worldspawn 0 0.000000 0.000000 0.000000 0.0 0.0 0.0 worldspawn fullbright
+#staticwobj 0 platforma 0 0.000000 0.000000 0.000000 0.0 0.0 0.0 platforma fullbright
+staticwobj 0 paliktnis 0 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 movs lightmap/movs
 trigger 0 trigeris 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 0 16 trigger 
-#staticwobj 0 ftft 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 ftft fullbright
-#staticwobj 0 apliktnis 0.000000 0.000000 3.000000 -3.141593 0.058408 -3.141593 tepik fullbright
-#crate 0 muca -1.400000 0.600000 3.800000 0.000000 0.785398 0.000000 crate_ligma crate
-#crate 0 none -1.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
-#crate 0 none -2.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
-#crate 0 none -3.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
-#crate 0 muca -4.000000 0.600000 6.800000 0.000000 0.785398 0.000000 crate_ligma crate
-crate 0 none -1.400000 2.600000 2.800000 0.000000 0.785398 0.000000 metalakaste crate 
-light 0 none 0.0 1.0 7.0 0.0 0.0 0.0 1.0 1.0 0.0 15.0 0.0 0.0 -1.0 16.0
-light 0 none 0.0 4.0 -3.0 0.0 0.0 0.0 0.0 1.0 1.0 15.0 0.0 -1.0 1.0 16.0
-sound 0 derp 0.0 1.0 0.0 0.0 0.0 0.0 1 derp 1.0
-decoration 114 mongus 0.0 1.0 0.0 0.0 0.0 0.0 0 mongus mongus-run
+#staticwobj 0 ftft 0 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 ftft fullbright
+#staticwobj 0 apliktnis 0 0.000000 0.000000 3.000000 -3.141593 0.058408 -3.141593 tepik fullbright
+#crate 0 muca 0 -1.400000 0.600000 3.800000 0.000000 0.785398 0.000000 crate_ligma crate
+#crate 0 none 0 -1.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
+#crate 0 none 0 -2.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
+#crate 0 none 0 -3.400000 0.600000 3.800000 0.000000 0.0 0.000000 crate_ligma crate
+#crate 0 muca 0 -4.000000 0.600000 6.800000 0.000000 0.785398 0.000000 crate_ligma crate
+crate 0 none 0 -1.400000 2.600000 2.800000 0.000000 0.785398 0.000000 metalakaste crate 
+light 0 none 0 0.0 1.0 7.0 0.0 0.0 0.0 1.0 1.0 0.0 15.0 0.0 0.0 -1.0 16.0
+light 0 none 0 0.0 4.0 -3.0 0.0 0.0 0.0 0.0 1.0 1.0 15.0 0.0 -1.0 1.0 16.0
+sound 0 derp 0 0.0 1.0 0.0 0.0 0.0 0.0 1 derp 1.0
+decoration 114 mongus 0 0.0 1.0 0.0 0.0 0.0 0.0 0 mongus mongus-run
 #signal 114 use derp 0.0 -1 toggle none
 signal 114 use mongus 0.0 -1 set-animation name mongus-jump
-#button 111 podzins 0.0 1.0 -1.0 0.0 0.0 0.0 7 dev/button dev/button 0.0 1.25 -1.0 0.0 0.0 -1.0 1.0 0.0 3.14 none tosnins
-#button 112 tosnins 0.0 0.0 0.0 0.0 0.76 0.0 14 dev/button dev/button -1.5 1.25 -1.5 0.0 0.0 1.0 1.0 0.1 5.0 none none
-#crate 0 estijs 0.800000 1.000000 2.000000 0.000000 0.000000 0.000000 kadbusest crate
+#button 111 podzins 0 0.0 1.0 -1.0 0.0 0.0 0.0 7 dev/button dev/button 0.0 1.25 -1.0 0.0 0.0 -1.0 1.0 0.0 3.14 none tosnins
+#button 112 tosnins 0 0.0 0.0 0.0 0.0 0.76 0.0 14 dev/button dev/button -1.5 1.25 -1.5 0.0 0.0 1.0 1.0 0.1 5.0 none none
+#crate 0 estijs 0 0.800000 1.000000 2.000000 0.000000 0.000000 0.000000 kadbusest crate
 transition transition1 demo_mov 8 10.000000 -10.000000 10.000000 -10.000000 -10.000000 10.000000 10.000000 -10.000000 -10.000000 -10.000000 -10.000000 -10.000000 10.000000 10.000000 10.000000 -10.000000 10.000000 10.000000 10.000000 10.000000 -10.000000 -10.000000 10.000000 -10.000000
 #signal 111 progress tosnins 0.0 -1 set-progress none
-decoration 151 plane 0.0 2.0 0.0 0.0 0.0 0.0 0 dev/plane none
+decoration 151 plane 0 0.0 2.0 0.0 0.0 0.0 0.0 0 dev/plane none

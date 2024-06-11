@@ -23,12 +23,6 @@ static GLFWcursor* cursors[4] = {nullptr};
 
 static KeyboardKey GLFWKeyToKeyboardKey(int keycode);
 
-static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
-static void MouseKeyCallback(GLFWwindow* window, int button, int action, int mods);
-static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-static void CharacterBackspaceCallback();
-
 void Window::Init() {
     glfwInit();
 
@@ -80,10 +74,35 @@ void Window::Init() {
         UI::ScreenClose();
     });
 
-    glfwSetKeyCallback(WINDOW, KeyCallback);
-    glfwSetCursorPosCallback(WINDOW, MouseCallback);
-    glfwSetMouseButtonCallback(WINDOW, MouseKeyCallback);
-    glfwSetScrollCallback(WINDOW, ScrollCallback);
+    glfwSetKeyCallback(WINDOW, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (action == GLFW_PRESS) {
+            KeyPress(GLFWKeyToKeyboardKey(key));
+        }
+        
+        if (action == GLFW_RELEASE) {
+            KeyRelease(GLFWKeyToKeyboardKey(key));
+        }
+    });
+    
+    glfwSetCursorPosCallback(WINDOW, [](GLFWwindow* window, double xpos, double ypos) {
+        KeyMouse(xpos, ypos);
+    });
+    
+    glfwSetMouseButtonCallback(WINDOW, [](GLFWwindow* window, int button, int action, int mods) {
+        if (action == GLFW_PRESS) {
+            KeyPress(GLFWKeyToKeyboardKey(button));
+        }
+        
+        if (action == GLFW_RELEASE) {
+            KeyRelease(GLFWKeyToKeyboardKey(button));
+        }
+    });
+    
+    glfwSetScrollCallback(WINDOW, [](GLFWwindow* window, double xoffset, double yoffset) {
+        KeyScroll(yoffset);
+    });
+
+
 
     //glfwSetWindowSizeLimits(WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
     glfwSetWindowSizeLimits(WINDOW, 160, 120, GLFW_DONT_CARE, GLFW_DONT_CARE);
@@ -115,15 +134,20 @@ void Window::SetSize(int w, int h) {
 }
 
 void Window::SetCursor(CursorType cursor) {
-    if (cursor == CURSOR_NONE) {
-        glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        //glfwSetCursorPos(WINDOW, cursorx_last, cursory_last);
-    } else {
-        glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        glfwSetCursor(WINDOW, cursors[cursor]);
-    }
+    glfwSetCursor(WINDOW, cursors[cursor]);
 }
-    
+
+void Window::SetCursorPosition(float x, float y) {
+    glfwSetCursorPos(WINDOW, x, y);
+}
+
+void Window::EnableCursor() {
+    glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void Window::DisableCursor() {
+    glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
     
 void Input::Init() {
     
@@ -136,31 +160,15 @@ void Input::Update() {
 void Input::Uninit() {
 
 }
-    
-    
-    
-    
-    
-    
-    
-static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        KeyPress(GLFWKeyToKeyboardKey(key));
-    }
-    
-    if (action == GLFW_RELEASE) {
-        KeyRelease(GLFWKeyToKeyboardKey(key));
-    }
-}
 
-static void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
+/*static void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
     std::cout << "Character callback: " << codepoint << std::endl;
-    /*auto len = strlen(input_text);
+    auto len = strlen(input_text);
     if (len < input_text_len-1) {
         input_text[len] = codepoint;
         input_text[len+1] = '\0';
-    }*/
-}
+    }
+}*/
 
 /*static void CharacterBackspaceCallback() {
     std::cout << "Backspace callback! " << std::endl;
@@ -170,18 +178,6 @@ static void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
         input_text[len-1] = '\0';
     }
 }*/
-
-static void MouseCallback (GLFWwindow* window, double xpos, double ypos) {
-    KeyMouse(xpos, ypos);
-}
-
-static void MouseKeyCallback (GLFWwindow* window, int button, int action, int mods) {
-    KeyCallback(window, button, button, action, mods);
-}
-
-static void ScrollCallback (GLFWwindow* window, double xoffset, double yoffset) {
-    KeyScroll(yoffset);
-}
 
 /// Maps a glfw keycode to a KeyboardKey.
 static KeyboardKey GLFWKeyToKeyboardKey (int keycode) {

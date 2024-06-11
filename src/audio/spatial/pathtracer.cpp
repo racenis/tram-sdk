@@ -1,3 +1,6 @@
+
+#if false
+
 #include <audio/spatial/pathtracer.h>
 
 #include <components/render.h>
@@ -566,3 +569,5 @@ void InitExplorationPaths(PathExplorationResult* paths) {
 }
 
 }
+
+#endif

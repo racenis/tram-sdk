@@ -128,12 +128,12 @@ void WorldCell::LoadFromDisk() {
 
     if (!file.is_open()) {
         std::cout << "Worldcell file " << path << " not found!" << std::endl;
-        return;
+        abort();
     }
 
-    if (file.read_name() != "CELLv2") {
+    if (file.read_name() != "CELLv3") {
         std::cout << "Cell format unrecognized " << path << "!" << std::endl;
-        return;
+        abort();
     }
     
     file.read_name(); // skip over cell name in file

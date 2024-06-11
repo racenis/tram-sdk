@@ -16,13 +16,16 @@ void SetTitle(const char*);
 void SetSize(int w, int h);
 
 enum CursorType {
-    CURSOR_NONE,
     CURSOR_DEFAULT,
     CURSOR_TEXT,
     CURSOR_CLICK
 };
 
 void SetCursor(CursorType);
+void SetCursorPosition(float x, float y);
+
+void EnableCursor();
+void DisableCursor();
 
 }
 

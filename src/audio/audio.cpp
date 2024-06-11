@@ -10,12 +10,7 @@
 #include <components/audio.h>
 #include <unordered_map>
 
-#include <audio/openal/openal.h>
-#include <audio/spatial/spatial.h>
-
-
-#define AUDIO_SYSTEM OpenAL
-//#define AUDIO_SYSTEM Spatial
+#include <audio/api.h>
 
 namespace tram::Audio {
 
@@ -24,14 +19,14 @@ void Init() {
     assert(System::IsInitialized(System::SYSTEM_CORE));
     assert(System::IsInitialized(System::SYSTEM_UI));
     
-    AUDIO_SYSTEM::Init();
+    API::Init();
     
     System::SetInitialized(System::SYSTEM_AUDIO, true);
 }
 
 /// Updates the Audio system.
 void Update() {        
-    AUDIO_SYSTEM::Update();
+    API::Update();
 }
 
 // Stops the Audio system.
@@ -39,7 +34,17 @@ void Uninit() {
     for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
     for (auto& it : PoolProxy<Sound>::GetPool()) it.Unload();
     
-    AUDIO_SYSTEM::Uninit();
+    API::Uninit();
+}
+
+/// See Audio::API::SetListenerPosition().
+void SetListenerPosition(vec3 position) {
+    API::SetListenerOrientation(position);
+}
+
+/// See Audio::API::SetListenerOrientation().
+void SetListenerOrientation(quat orientation) {
+    API::SetListenerOrientation(orientation);
 }
 
 }

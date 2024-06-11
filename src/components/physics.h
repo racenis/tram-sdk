@@ -38,7 +38,9 @@ public:
     void SetMass(float mass);
     void SetShape(Physics::CollisionShape shape);
 
-    void Push(const glm::vec3& direction);
+    void Push(vec3 direction);
+    void Push(vec3 direction, vec3 local_position);
+    void Spin(vec3 direction);
 
     void SetCollisionMask(uint32_t flags);
     void SetCollisionGroup(uint32_t flags);
@@ -50,16 +52,16 @@ public:
     void SetKinematic(bool kinematic);
     void SetUpdateParentTransform(bool update);
 
-    void SetRotation(const glm::quat& rotation);
-    void SetLocation(const glm::vec3& location);
+    void SetRotation(quat rotation);
+    void SetLocation(vec3 location);
 
     void DisableDeactivation();
     
     void Awaken();
     void Sleep();
     
-    void SetAngularFactor(const glm::vec3& factor);
-    void SetLinearFactor(const glm::vec3& factor);
+    void SetAngularFactor(vec3 factor);
+    void SetLinearFactor(vec3 factor);
 
     void SetVelocity(const vec3& velocity);
     vec3 GetVelocity();

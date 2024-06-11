@@ -1,3 +1,5 @@
+#if false
+
 #include <audio/spatial/spatial.h>
 
 #include <audio/spatial/definitions.h>
@@ -326,3 +328,5 @@ void RemoveAudioSource (audiosource_t source) {
 }
 
 }
+
+#endif
