@@ -26,6 +26,7 @@ public:
 
     virtual void Serialize() = 0;
 
+    Entity();
     Entity(name_t name);
     Entity(const SharedEntityData&);
     

@@ -35,7 +35,12 @@ static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", 5000);
 static Hashmap<Entity*> entity_name_list ("Entity name hashmap", 500);
 static Hashmap<EntityTypeInfo> registered_entity_types ("Entity type hashmap", 50);
 
-Entity::Entity (name_t name) {
+Entity::Entity() {
+    this->id = GenerateID();
+    Register();
+}
+
+Entity::Entity(name_t name) {
     this->id = GenerateID();
     this->name = name;
     Register();
