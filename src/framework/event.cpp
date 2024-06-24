@@ -137,6 +137,8 @@ void Event::Dispatch() {
 
         event_queue.pop();
     }
+    
+    data_pool.Reset();
 }
 
 /// Adds an event to the event queue.

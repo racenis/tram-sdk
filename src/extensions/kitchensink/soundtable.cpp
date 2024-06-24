@@ -32,7 +32,7 @@ name_t SoundTable::GetSound(SoundAction type) {
 }
 
 void SoundTable::PlaySound(SoundAction type) {
-    this->PlaySound(type, Render::GetCameraPosition(), 1.0f);
+    this->PlaySound(type, Render::GetViewPosition(), 1.0f);
 }
 
 void SoundTable::PlaySound(SoundAction type, vec3 position, float volume) {

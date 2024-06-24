@@ -350,9 +350,9 @@ void mainloop() {
     Audio::Update();
     
     // this loads the models and textures into video memory
-    Async::ResourceLoader1stStage();
-    Async::ResourceLoader2ndStage();
-    Async::FinishResource();
+    Async::LoadResourcesFromDisk();
+    Async::LoadResourcesFromMemory();
+    Async::FinishResources();
 
     Event::Dispatch();
     Message::Dispatch();
@@ -528,8 +528,8 @@ int main() {
     Event::AddListener(Event::KEYPRESS, [](Event& event) {
         if (event.subtype != KEY_ACTION_ACTIVATE) return;
         
-        vec3 start = Render::GetCameraPosition();
-        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        vec3 start = Render::GetViewPosition();
+        vec3 direction = Render::GetViewRotation() * DIRECTION_FORWARD;
         
         auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
         
@@ -541,8 +541,8 @@ int main() {
     Event::AddListener(Event::KEYDOWN, [](Event& event) {
         if (event.subtype != KEY_ACTION_ACTIVATE) return;
         
-        vec3 start = Render::GetCameraPosition();
-        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        vec3 start = Render::GetViewPosition();
+        vec3 direction = Render::GetViewRotation() * DIRECTION_FORWARD;
         
         auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
         
@@ -554,8 +554,8 @@ int main() {
     });
     
     Event::AddListener(Event::TICK, [](Event& event) {
-        vec3 start = Render::GetCameraPosition();
-        vec3 direction = Render::GetCameraRotation() * DIRECTION_FORWARD;
+        vec3 start = Render::GetViewPosition();
+        vec3 direction = Render::GetViewRotation() * DIRECTION_FORWARD;
         
         auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
 
@@ -590,6 +590,10 @@ int main() {
         vec3 v = Script::CallFunction("give_vector", {1, 2, 3});
         
         std::cout << v.x << " " << v.y << " " << v.z << std::endl;*/
+    });
+    
+    Event::AddListener(Event::LOOK_AT, [](Event& event) {
+        AddLine(vec3(0, 0, 0), vec3(0, 0, 0) + (quat)*(Value*)event.data * DIRECTION_FORWARD, COLOR_CYAN);
     });
         
     //auto crate_ent = Entity::Find(UID("estijs"));

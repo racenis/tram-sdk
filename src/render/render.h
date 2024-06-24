@@ -30,11 +30,11 @@ void SetScreenSize(float width, float height);
 
 void SetViewFov(float fov, layer_t layer = 0);
 
-void SetCameraPosition(vec3 position, layer_t layer = 0);
-void SetCameraRotation(quat rotation, layer_t layer = 0);
+void SetViewPosition(vec3 position, layer_t layer = 0);
+void SetViewRotation(quat rotation, layer_t layer = 0);
 
-vec3 GetCameraPosition(layer_t layer = 0);
-quat GetCameraRotation(layer_t layer = 0);
+vec3 GetViewPosition(layer_t layer = 0);
+quat GetViewRotation(layer_t layer = 0);
 
 void AddLine(vec3 from, vec3 to, color_t color);
 void AddLineMarker(vec3 location, color_t color);

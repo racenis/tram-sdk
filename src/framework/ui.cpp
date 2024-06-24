@@ -95,8 +95,8 @@ void Uninit() {
 
 void Update() {
     if (input_state == STATE_FLYING) {
-        vec3 camera_position = GetCameraPosition();
-        quat camera_rotation = GetCameraRotation();
+        vec3 camera_position = GetViewPosition();
+        quat camera_rotation = GetViewRotation();
         
         if (keyboard_keys_values[KEY_W])
             camera_position += camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED * GetDeltaTime();
@@ -111,8 +111,8 @@ void Update() {
         camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY * GetDeltaTime();
         camera_pitch = camera_pitch > 90.0f ? 90.0f : camera_pitch < -90.0f ? -90.0f : camera_pitch;
         
-        SetCameraPosition(camera_position);
-        SetCameraRotation(quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f)));
+        SetViewPosition(camera_position);
+        SetViewRotation(quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f)));
     }
     
     // generate keypress events. these need to be generated every tick that the

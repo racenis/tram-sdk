@@ -153,29 +153,29 @@ void SetViewFov(float fov, layer_t layer) {
     update_projection(layer);
 }
 
-/// Sets the camera position.
-/// @param position Camera position.
-/// @param layer    Rendering layer to which the camera position will be applied.
-void SetCameraPosition (vec3 position, layer_t layer) {
+/// Sets the view position.
+/// @param position View position.
+/// @param layer    Rendering layer to which the view position will be applied.
+void SetViewPosition (vec3 position, layer_t layer) {
     view_properties[layer].view_position = position;
     update_view(layer);
 }
 
-/// Sets the camera rotation.
-/// @param rotation Camera rotation.
-/// @param layer    Rendering layer to which the camera rotation will be applied.
-void SetCameraRotation (quat rotation, layer_t layer) {
+/// Sets the view rotation.
+/// @param rotation View rotation.
+/// @param layer    Rendering layer to which the view rotation will be applied.
+void SetViewRotation (quat rotation, layer_t layer) {
     view_properties[layer].view_rotation = rotation;
     update_view(layer);
 }
 
-/// Returns the camera position for a given layer.
-vec3 GetCameraPosition (layer_t layer) {
+/// Returns the view position for a given layer.
+vec3 GetViewPosition (layer_t layer) {
     return view_properties[layer].view_position;
 }
 
-/// Returns the camera rotation for a given layer.
-quat GetCameraRotation (layer_t layer) {
+/// Returns the view rotation for a given layer.
+quat GetViewRotation (layer_t layer) {
     return view_properties[layer].view_rotation;
 }
 

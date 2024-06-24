@@ -42,7 +42,7 @@ protected:
     void ResourceReady() { resources_waiting--; if (resources_waiting == 0 && is_init) Start(); }
 
     virtual void Start() = 0;
-    friend void Async::FinishResource();
+    friend void Async::FinishResources();
     template <typename T> friend class ResourceProxy;
 };
 

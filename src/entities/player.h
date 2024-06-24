@@ -24,7 +24,6 @@ public:
     void UpdateParameters();
     void SetParameters();
     void MessageHandler(Message& msg);
-    value_t Query(query_t query);
 protected:
     Component<PlayerComponent> plomp;
 public:

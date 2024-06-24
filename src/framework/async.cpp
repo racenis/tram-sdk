@@ -33,7 +33,7 @@ static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 500);
 /// @param requester EntityComponent that will be notified when the resource is loaded.
 /// Can be set to nullptr, in which case nothing will be notified.
 /// @param requested_resource The resource that will be loaded.
-void RequestResource (EntityComponent* requester, Resource* resource) {
+void RequestResource(EntityComponent* requester, Resource* resource) {
     assert(System::IsInitialized(System::SYSTEM_ASYNC));
     
     disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
@@ -78,7 +78,7 @@ void LoadDependency(Resource* res) {
 /// Should only be used by through the Async::Init() function.
 static void ResourceLoader() {
     while (!loaders_should_stop) {
-        ResourceLoader1stStage();
+        LoadResourcesFromDisk();
         
         disk_loader_queue.lock();
         auto len = disk_loader_queue.size();
@@ -95,7 +95,7 @@ static void ResourceLoader() {
 /// Processes the first resource queue.
 /// If you started the Async system with at least one thread, you don't
 /// need to call this function.
-void ResourceLoader1stStage() {        
+void LoadResourcesFromDisk() {        
     if (ResourceRequest* req; disk_loader_queue.try_pop(req)) {
         if (req->resource->GetStatus() == Resource::UNLOADED) {
             req->resource->LoadFromDisk();
@@ -111,7 +111,7 @@ void ResourceLoader1stStage() {
 
 /// Processes the second resource queue.
 /// @warning This function should only be called from the rendering thread.
-void ResourceLoader2ndStage() {
+void LoadResourcesFromMemory() {
     ResourceRequest* req;
 
     while (memory_loader_queue.try_pop(req)) {
@@ -125,7 +125,7 @@ void ResourceLoader2ndStage() {
 }
 
 /// Notifies EntityComponents about finished resources.
-void FinishResource () {
+void FinishResources() {
     ResourceRequest* req;
 
     while (finished_queue.try_pop(req)) {
@@ -137,14 +137,14 @@ void FinishResource () {
 
 /// Starts the async resource loader thread.
 /// @param Number of threads for async loading.
-void Init (size_t threads) {
+void Init(size_t threads) {
     assert(System::IsInitialized(System::SYSTEM_CORE));
     
     if (threads) {
         loaders_should_stop = false;
         
         for (size_t i = 0; i < threads; i++) {
-            resource_loaders.push_back (std::thread(ResourceLoader));
+            resource_loaders.push_back(std::thread(ResourceLoader));
         }
     }
     
@@ -152,7 +152,7 @@ void Init (size_t threads) {
 }
 
 /// Stops the async resource loader thread.
-void Yeet () {
+void Yeet() {
     assert(System::IsInitialized(System::SYSTEM_ASYNC));
     
     loaders_should_stop = true;
@@ -165,7 +165,7 @@ void Yeet () {
 }
 
 /// Returns number of resources in queues.
-size_t GetWaitingResources () {
+size_t GetWaitingResources() {
     size_t sum = 0;
     disk_loader_queue.lock();
     memory_loader_queue.lock();

@@ -27,7 +27,7 @@
 //void SetScreenClear (vec3 clear_color, bool clear);
 
 //void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer);
-//void SetCameraParameters (vec3 position, quat rotation, uint32_t layer);
+//void SetViewParameters (vec3 position, quat rotation, uint32_t layer);
 
 //light_t MakeLight ();
 //void DeleteLight (light_t light);

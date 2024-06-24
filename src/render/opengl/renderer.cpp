@@ -107,7 +107,7 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
     LAYER[layer].ambient_color = ambient_color;
 }
 
-void SetCameraParameters (vec3 position, quat rotation, uint32_t layer) {
+void SetViewParameters (vec3 position, quat rotation, uint32_t layer) {
     //LAYER[layer].camera_position = position;
     //LAYER[layer].camera_rotation = rotation;
 }

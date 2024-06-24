@@ -18,6 +18,9 @@ const float TILT_SPEED = 0.01f;
 //const float BOB_SPEED = 0.2f;
 const float BOB_CHANGE_SPEED = 0.05f;
 
+id_t look_at_entity = 0;
+quat look_at_direction = {1.0f, 0.0f, 0.0f, 0.0f};
+
 void Init() {
     assert(System::IsInitialized(System::SYSTEM_RENDER) && "Render system needs to be initialized first!");
     assert(System::IsInitialized(System::SYSTEM_AUDIO) && "Audio system needs to be initialized first!");
@@ -25,6 +28,11 @@ void Init() {
     
     CAMERA_SYSTEM = System::Register("Camera control system", "CAMERA");
     System::SetInitialized(CAMERA_SYSTEM, true);
+    
+    Event::AddListener(Event::LOOK_AT, [](Event& event) {
+        if (event.poster_id != look_at_entity) return;
+        look_at_direction = (quat)*(Value*)event.data;
+    });
 }
 
 void Update() {
@@ -126,7 +134,9 @@ void Camera::Update () {
     // update position to entity that is being followed
     if (following) {
         location = following->GetLocation();
-        rotation = following->Query(QUERY_LOOK_DIRECTION);
+        //rotation = following->Query(QUERY_LOOK_DIRECTION);
+        rotation = look_at_direction;
+        look_at_entity = following->GetID();
     }
     
     // putting everything together
@@ -139,11 +149,11 @@ void Camera::Update () {
     term_loc += vec3(0.0f, 1.0f, 0.0f) * fabsf(sinf(bob)) * bobbing_distance * bobbing_weight;
     
     if (following_interpolation != 1.0f) {
-        term_loc = glm::mix(Render::GetCameraPosition(), term_loc, following_interpolation);
+        term_loc = glm::mix(Render::GetViewPosition(), term_loc, following_interpolation);
     }
     
-    Render::SetCameraPosition(term_loc, 0);
-    Render::SetCameraRotation(term_rot, 0);
+    Render::SetViewPosition(term_loc, 0);
+    Render::SetViewRotation(term_rot, 0);
     
     Audio::SetListenerPosition(term_loc);
     Audio::SetListenerOrientation(term_rot);

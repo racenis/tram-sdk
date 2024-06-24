@@ -20,9 +20,9 @@ void CancelRequest(EntityComponent* requester, Resource* resource);
 void LoadDependency(Resource* res);
 void Init(size_t threads = 1);
 void Yeet();
-void ResourceLoader1stStage();
-void ResourceLoader2ndStage();
-void FinishResource();
+void LoadResourcesFromDisk();
+void LoadResourcesFromMemory();
+void FinishResources();
 size_t GetWaitingResources();
     
 }

@@ -43,6 +43,12 @@ void PlayerComponent::EventHandler(Event &event) {
         //std::cout << yaw <<" " << pitch << std::endl;
         //std::cout << PollKeyboardAxisDelta(KEY_MOUSE_X) <<" delta " << PollKeyboardAxisDelta(KEY_MOUSE_Y) << std::endl;
         
+        Event::Post({
+            .type = Event::LOOK_AT,
+            .poster_id = parent->GetID(),
+            .data = Event::AllocateData<Value>(look_rotation)
+        });
+        
         controller->SetLookDirection(look_rotation);
         parent->UpdateTransform(parent->GetLocation(), parent_rotation);
     }

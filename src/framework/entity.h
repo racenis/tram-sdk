@@ -8,7 +8,6 @@
 #include <framework/core.h>
 #include <framework/math.h>
 #include <framework/value.h>
-#include <framework/query.h>
 #include <framework/signal.h>
 
 namespace tram {
@@ -64,7 +63,6 @@ public:
 
     virtual void MessageHandler(Message& msg) = 0;
     virtual void EventHandler(Event &event) {};
-    virtual value_t Query(query_t query) { return Value(); }
 
     void CheckTransition();
 

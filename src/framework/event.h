@@ -35,7 +35,9 @@ struct Event {
     static listener_t AddListener(event_t type, Entity* entity);
     static listener_t AddListener(event_t type, void (*handler)(Event& event));
     static void RemoveListener(listener_t listener_id);
-    static void* AllocateData (size_t ammount);
+    static void* AllocateData(size_t ammount);
+    template <typename T> static T* AllocateData() {return (T*)AllocateData(sizeof(T));};
+    template <typename T> static T* AllocateData(const T& data) { T* ptr = (T*)AllocateData(sizeof(T)); *ptr = data; return ptr; };
 
     event_t type;
     event_t subtype;

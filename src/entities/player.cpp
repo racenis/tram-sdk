@@ -61,15 +61,4 @@ void Player::MessageHandler(Message& msg) {
     }
 }
 
-value_t Player::Query(query_t query) {
-    switch(query) {
-        case QUERY_LOOK_DIRECTION:
-            return controllercomponent->GetLookDirection();
-        default:
-            break;
-    }
-    
-    return {};
-}
-
 }

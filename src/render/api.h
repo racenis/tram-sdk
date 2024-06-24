@@ -27,7 +27,7 @@ void RenderFrame();
 void SetScreenSize(float width, float height);
 void SetScreenClear(vec3 clear_color, bool clear);
 void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, layer_t layer);
-void SetCameraParameters(vec3 position, quat rotation, layer_t layer);
+void SetViewParameters(vec3 position, quat rotation, layer_t layer);
 light_t MakeLight();
 void DeleteLight(light_t light);
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent);
