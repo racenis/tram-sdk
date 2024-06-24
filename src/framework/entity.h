@@ -62,6 +62,7 @@ public:
     inline const quat& GetRotation() { return rotation; }
 
     virtual void MessageHandler(Message& msg) = 0;
+    virtual void EventHandler(Event &event) {};
     virtual value_t Query(query_t query) { return Value(); }
 
     void CheckTransition();

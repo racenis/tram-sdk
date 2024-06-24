@@ -7,6 +7,7 @@
 #include <templates/stackpool.h>
 
 #include <framework/event.h>
+#include <framework/entity.h>
 #include <framework/entitycomponent.h>
 
 namespace tram {
@@ -126,8 +127,7 @@ void Event::Dispatch() {
                     listener.component->EventHandler(event);
                     break;
                 case ListenerInfo::LISTENER_ENTITY:
-                    std::cout << "NO HANDLERS FOR ENTITIES YET!!" << std::endl;
-                    abort();
+                    listener.entity->EventHandler(event);
                     break;
                 case ListenerInfo::LISTENER_FUNCTION:
                     listener.function(event);
