@@ -435,7 +435,7 @@ void Model::LoadFromDisk() {
 
         for (size_t i = 0; i < materials.size(); i++){
             materials[i]->AddReference();
-            Async::ForceLoadResource(materials[i]);
+            Async::LoadDependency(materials[i]);
         }
 
         aabb_min = model_aabb->tree.GetAABBMin();
@@ -653,7 +653,7 @@ void Model::LoadFromDisk() {
         status = LOADED;
         for (size_t i = 0; i < materials.size(); i++){
             materials[i]->AddReference();
-            Async::ForceLoadResource(materials[i]);
+            Async::LoadDependency(materials[i]);
         }
         
         aabb_min = model_aabb->tree.GetAABBMin();

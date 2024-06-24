@@ -83,7 +83,7 @@ void Sprite::LoadFromDisk() {
     }
     
     material->AddReference();
-    Async::ForceLoadResource(material);
+    Async::LoadDependency(material);
     
     status = LOADED;
 }

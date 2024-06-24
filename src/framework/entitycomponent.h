@@ -33,11 +33,7 @@ public:
     inline Entity* GetParent() { return parent; }
     inline void SetParent(Entity* parent) { this->parent = parent; }
 
-    inline id_t GetID() { return id; }
-
-    static EntityComponent* Find (id_t component_id);
 protected:
-    id_t id = 0;
     size_t resources_waiting = 0;
     bool is_ready = false;
     bool is_init = false;

@@ -2,6 +2,7 @@
 // All rights reserved.
 
 #include <templates/queue.h>
+#include <templates/pool.h>
 
 #include <framework/core.h>
 #include <framework/async.h>
@@ -14,34 +15,68 @@
 
 namespace tram::Async {
 
-static std::vector<std::thread> resource_loaders;
+static std::vector<std::thread>resource_loaders;
 static bool loaders_should_stop = false;
 
 struct ResourceRequest {
-    id_t requester_id;
-    Resource* requested_res;
+    EntityComponent* requester;
+    Resource* resource;
 };
 
-static Queue<ResourceRequest> disk_loader_queue ("resource request queue", 500);
-static Queue<ResourceRequest> memory_loader_queue ("resource request queue 2nd stage", 500);
-static Queue<ResourceRequest> finished_queue ("finished resource request queue", 500);
+static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", 500);
+static Queue<ResourceRequest*> memory_loader_queue("Async::LoadResourcesFromMemory() queue", 500);
+static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", 500);
+
+static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 500);
 
 /// Adds a resource to the loading queue.
 /// @param requester EntityComponent that will be notified when the resource is loaded.
 /// Can be set to nullptr, in which case nothing will be notified.
 /// @param requested_resource The resource that will be loaded.
-void RequestResource (EntityComponent* requester, Resource* requested_resource) {
+void RequestResource (EntityComponent* requester, Resource* resource) {
     assert(System::IsInitialized(System::SYSTEM_ASYNC));
     
-    disk_loader_queue.push(ResourceRequest {
-        .requester_id = requester ? requester->GetID() : 0,
-        .requested_res = requested_resource
+    disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
+        .requester = requester,
+        .resource = resource
+    }));
+}
+
+/// Cancels a resource load request.
+/// Should be called if the EntityComponent that requested a Resource to be
+/// loaded will be destructed before the Resource has finished loading.
+/// @note The resource will be fully loaded anyway, but the requester will not
+///       be notified.
+void CancelRequest(EntityComponent* requester, Resource* resource) {
+    for (auto& req : request_pool) {
+        if (req.requester == requester && req.resource == resource) {
+            req.requester = nullptr;
+        }
+    }
+}
+
+/// Loads a resource from disk, skipping the queue.
+/// Shouldn't be used outside of resource LoadFromDisk() methods. 
+void LoadDependency(Resource* res) {
+    if (res->GetStatus() == Resource::UNLOADED) {
+        res->LoadFromDisk();
+    }
+
+    ResourceRequest* req = request_pool.AddNew(ResourceRequest {
+        .requester = nullptr,
+        .resource = res
     });
+
+    if (res->GetStatus() == Resource::READY) {
+        finished_queue.push(req);
+    } else {
+        memory_loader_queue.push(req);
+    }
 }
 
 /// Resource loading function.
 /// Should only be used by through the Async::Init() function.
-void ResourceLoader() {
+static void ResourceLoader() {
     while (!loaders_should_stop) {
         ResourceLoader1stStage();
         
@@ -57,16 +92,16 @@ void ResourceLoader() {
     }
 }
 
-/// Porcesses the first resource queue.
+/// Processes the first resource queue.
 /// If you started the Async system with at least one thread, you don't
 /// need to call this function.
 void ResourceLoader1stStage() {        
-    if (ResourceRequest req; disk_loader_queue.try_pop(req)) {
-        if (req.requested_res->GetStatus() == Resource::UNLOADED) {
-            req.requested_res->LoadFromDisk();
+    if (ResourceRequest* req; disk_loader_queue.try_pop(req)) {
+        if (req->resource->GetStatus() == Resource::UNLOADED) {
+            req->resource->LoadFromDisk();
         }
 
-        if (req.requested_res->GetStatus() == Resource::READY) {
+        if (req->resource->GetStatus() == Resource::READY) {
             finished_queue.push(req);
         } else {
             memory_loader_queue.push(req);
@@ -77,11 +112,11 @@ void ResourceLoader1stStage() {
 /// Processes the second resource queue.
 /// @warning This function should only be called from the rendering thread.
 void ResourceLoader2ndStage() {
-    ResourceRequest req;
+    ResourceRequest* req;
 
     while (memory_loader_queue.try_pop(req)) {
-        if (req.requested_res->GetStatus() == Resource::LOADED) {
-            req.requested_res->LoadFromMemory();
+        if (req->resource->GetStatus() == Resource::LOADED) {
+            req->resource->LoadFromMemory();
         }
 
         finished_queue.push(req);
@@ -89,36 +124,13 @@ void ResourceLoader2ndStage() {
 
 }
 
-/// Loads a resource from disk, skipping the queue.
-/// Shouldn't be used outside of resource LoadFromDisk() methods. 
-void ForceLoadResource (Resource* res) {
-    if (res->GetStatus() == Resource::UNLOADED) {
-        res->LoadFromDisk();
-    }
-
-    ResourceRequest req {
-        .requester_id = 0,
-        .requested_res = res
-    };
-
-    if (res->GetStatus() == Resource::READY) {
-        finished_queue.push(req);
-    } else {
-        memory_loader_queue.push(req);
-    }
-}
-
 /// Notifies EntityComponents about finished resources.
 void FinishResource () {
-    ResourceRequest req;
+    ResourceRequest* req;
 
     while (finished_queue.try_pop(req)) {
-        if (req.requester_id) {
-            auto requester = EntityComponent::Find(req.requester_id);
-            
-            if (requester) {
-                requester->ResourceReady();
-            }
+        if (req->requester) {
+            req->requester->ResourceReady();
         }
     }
 }

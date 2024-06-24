@@ -74,7 +74,6 @@ RenderComponent::RenderComponent() : model(this), lightmap(this) {
 }
 
 RenderComponent::~RenderComponent() {
-    assert(is_ready);
     is_ready = false;
     
     for (auto entry : draw_list_entries) {

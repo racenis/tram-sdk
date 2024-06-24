@@ -41,8 +41,8 @@ static float keyboard_axis_deltas[KEY_LASTAXIS] = {0.0f};
 
 static double cursorx_last = 0.0f, cursory_last = 0.0f;
 
-static char* input_text = nullptr;
-static uint32_t input_text_len = 0;
+// static char* input_text = nullptr;
+// static uint32_t input_text_len = 0;
 
 
 

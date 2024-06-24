@@ -57,10 +57,12 @@ void PhysicsComponent::Start(){
 PhysicsComponent::~PhysicsComponent(){
     RemoveAllConstraints();
     
-    DYNAMICS_WORLD->removeRigidBody(rigidbody);
+    if (rigidbody) {
+        DYNAMICS_WORLD->removeRigidBody(rigidbody);
     
-    delete rigidbody;
-    delete motion_state;
+        delete rigidbody;
+        delete motion_state;
+    }
 }
 
 /// Returns the name of the collision model.
