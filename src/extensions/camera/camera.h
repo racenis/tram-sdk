@@ -5,67 +5,37 @@
 #define TRAM_SDK_EXTENSIONS_CAMERA_CAMERA_H
 
 #include <framework/math.h>
-
-namespace tram {
-    class Entity;
-}
+#include <framework/core.h>
+#include <framework/event.h>
 
 namespace tram::Ext::Camera {
 
 class Camera {
 public:
-    void Update ();
+    void SetActive();
+    void SetFollowing(Entity*);
+    id_t GetFollowing();
     
-    void SetTilt(float tilt);
-    void SetMouselook(bool mouselook);
-    void SetRotateFollowing(bool rotate_following);
-    void SetBobbing(float bobbing_weight);
-    void SetBobbingDistance(float bobbing_distance);
-    void SetBobbingTilt(float bobbing_tilt);
-    void SetBobbingCallback(void (*bob_callback)(Camera*));
-    void SetBobSpeed(float speed);
-    
-    float GetBob();
-    float GetWeight();
-    
-    inline void SetLocation(vec3 location) { this->location = location; }
+    inline void SetPosition(vec3 position) { this->position = position; }
     inline void SetRotation(quat rotation) { this->rotation = rotation; }
     
-    inline vec3 GetLocation() { return location; }
+    inline vec3 GetPosition() { return position; }
     inline quat GetRotation() { return rotation; }
     
-    inline void SetFollowing(Entity* following) { this->following = following; }
-    inline void SetFollowingInterpolation(float following_interpolation) { this->following_interpolation = following_interpolation; }
-    inline void SetFollowingOffset(vec3 offset) { this->following_offset = offset; }
+    void SetFollowingLookat(quat new_lookat);
     
+    virtual void Update() = 0;
+    virtual ~Camera();
 protected:
-    float tilt = 0.0f;
-    float tilt_goal = 0.0f;
-    float tilt_last = 0.0f;
-    float bob = 0.0f;
-    float bobbing_weight_goal = 0.0f;
-    float bobbing_weight = 0.0f;
-    float bobbing_distance = 0.2f;
-    float bobbing_tilt_goal = 0.0f;
-    float bobbing_tilt = 0.0f;
-    float bob_speed = 0.1f;
-    int callback_count = 0;
-    void (*bob_callback)(Camera*) = nullptr;
+    vec3 position = {0.0f, 0.0f, 0.0f};
+    quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+
+    listener_t following_listener = 0;
     
-    bool mouselook = false;
-    bool rotate_following = false;
-    float yaw = 0.0f;
-    float pitch = 0.0f;
-    
-    vec3 location = vec3 (0.0f, 0.0f, 0.0f);
-    quat rotation = quat (vec3 (0.0f, 0.0f, 0.0f));
-    
-    vec3 following_offset = vec3 (0.0f, 0.0f, 0.0f);
-    float following_interpolation = 1.0f;
-    Entity* following = nullptr;
+    id_t following = 0;
+    quat following_lookat = {1.0f, 0.0f, 0.0f, 0.0f};
 };
 
-void SetCamera (Camera* camera);
 void Init();
 void Update();
 

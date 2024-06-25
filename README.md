@@ -65,7 +65,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
-- Add flags to entities
 - Models with different sets of materials
 	- Introduce a new model format .mdmdl
 	- This format contains a reference to a .stmdl or a .dymdl
@@ -79,7 +78,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Flat shaded color material
 - Textured material with alpha test but with flat color
 	- Instead of dropping the fragment it would make it a flat color
-- Allow adding of custom keypress actions.
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- Add a callback function for updating

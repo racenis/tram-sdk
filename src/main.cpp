@@ -49,6 +49,7 @@
 
 #include <extensions/menu/menu.h>
 #include <extensions/camera/camera.h>
+#include <extensions/camera/firstperson.h>
 
 #include <extensions/kitchensink/design.h>
 #include <extensions/kitchensink/entities.h>
@@ -68,7 +69,7 @@ void UIDFunc(UID thing) {
     Log ("//////// {}", thing);
 }
 
-Ext::Camera::Camera* camera = nullptr;
+Ext::Camera::FirstPersonCamera* camera = nullptr;
 Player* player = nullptr;
 LightComponent* lit = nullptr;
 Sprite* tolet_sprite = nullptr;
@@ -438,7 +439,7 @@ int main() {
     player->controllercomponent->SetWalkSpeed(0.2f);
     player->controllercomponent->SetRunSpeed(0.3f);
     
-    camera = new Ext::Camera::Camera;
+    camera = new Ext::Camera::FirstPersonCamera;
     camera->SetMouselook(true);
     camera->SetRotateFollowing(true);
     camera->SetFollowingOffset({0.0f, 0.5f, 0.0f});
@@ -449,7 +450,8 @@ int main() {
     //camera->SetBobSpeed(0.1f);
     //camera->SetFollowingInterpolation(0.2f);
     
-    Ext::Camera::SetCamera(camera);
+    //Ext::Camera::SetCamera(camera);
+    camera->SetActive();
     
     /*camera->SetBobbingCallback([](Ext::Camera::Camera* c){
         auto res = Render::AABB::FindNearestFromRay(GetCameraPosition(), vec3(0.0f, -1.0f, 0.0f), -1);

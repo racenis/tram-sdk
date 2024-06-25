@@ -33,6 +33,7 @@ struct Event {
     static void Dispatch();
     static listener_t AddListener(event_t type, EntityComponent* component);
     static listener_t AddListener(event_t type, Entity* entity);
+    static listener_t AddListener(event_t type, void* data, void (*handler)(Event& event, void* data));
     static listener_t AddListener(event_t type, void (*handler)(Event& event));
     static void RemoveListener(listener_t listener_id);
     static void* AllocateData(size_t ammount);

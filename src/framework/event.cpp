@@ -16,14 +16,18 @@ struct ListenerInfo {
     enum ListenerType : int64_t {
         LISTENER_COMPONENT,
         LISTENER_ENTITY,
+        LISTENER_DATA_FUNCTION,
         LISTENER_FUNCTION
     };
     
     union {
         EntityComponent* component = nullptr;
         Entity* entity;
+        void (*data_function)(Event& event, void* data);
         void (*function)(Event& event);
     };
+
+    void* data;
 
     listener_t handle = -1;
     ListenerType type = LISTENER_COMPONENT;
@@ -70,6 +74,20 @@ listener_t Event::AddListener(event_t type, Entity* entity) {
     
     new_listener.entity = entity;
     new_listener.type = ListenerInfo::LISTENER_ENTITY;
+    new_listener.handle = NewListenerHandle(type);
+    
+    listener_table[type].push_back(new_listener);
+    
+    return new_listener.handle;
+}
+
+/// Registers a listener
+listener_t Event::AddListener(event_t type, void* data, void (*data_function)(Event& event, void* data)) {
+    ListenerInfo new_listener;
+    
+    new_listener.data = data;
+    new_listener.data_function = data_function;
+    new_listener.type = ListenerInfo::LISTENER_DATA_FUNCTION;
     new_listener.handle = NewListenerHandle(type);
     
     listener_table[type].push_back(new_listener);
@@ -128,6 +146,9 @@ void Event::Dispatch() {
                     break;
                 case ListenerInfo::LISTENER_ENTITY:
                     listener.entity->EventHandler(event);
+                    break;
+                case ListenerInfo::LISTENER_DATA_FUNCTION:
+                    listener.data_function(event, listener.data);
                     break;
                 case ListenerInfo::LISTENER_FUNCTION:
                     listener.function(event);

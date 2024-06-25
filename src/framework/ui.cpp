@@ -47,7 +47,7 @@ static double cursorx_last = 0.0f, cursory_last = 0.0f;
 
 
 struct KeyBinding {
-    KeyboardAction action = KEY_ACTION_NONE;
+    keyboardaction_t action = KEY_ACTION_NONE;
     void (*special_option)(void) = nullptr;
 };
 
@@ -73,7 +73,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     //{KEY_BACKSPACE, KeyBinding {.special_option = [](){ CharacterBackspaceCallback(); }}}
 };
 
-void BindKeyboardKey (KeyboardKey key, KeyboardAction action) {
+void BindKeyboardKey (KeyboardKey key, keyboardaction_t action) {
     key_action_bindings[key] = {.action = action};
 }
 
@@ -286,5 +286,10 @@ void ScreenClose() {
 bool ShouldExit() {
     return EXIT;
 }
-    
+
+keyboardaction_t RegisterKeyboardAction() {
+    static keyboardaction_t last = KEY_ACTION_LAST;
+    return last++;
+}
+
 }

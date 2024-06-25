@@ -25,6 +25,12 @@
         <File Name="src/extensions/kitchensink/attributes.cpp"/>
       </VirtualDirectory>
       <VirtualDirectory Name="camera">
+        <File Name="src/extensions/camera/following.h"/>
+        <File Name="src/extensions/camera/following.cpp"/>
+        <File Name="src/extensions/camera/thirdperson.h"/>
+        <File Name="src/extensions/camera/thirdperson.cpp"/>
+        <File Name="src/extensions/camera/firstperson.h"/>
+        <File Name="src/extensions/camera/firstperson.cpp"/>
         <File Name="src/extensions/camera/camera.cpp"/>
         <File Name="src/extensions/camera/camera.h"/>
       </VirtualDirectory>

@@ -79,7 +79,9 @@ enum InputState {
     STATE_MENU_OPEN //< Input gets registered, but no events are generated.
 };
 
-enum KeyboardAction : uint16_t {
+typedef uint16_t keyboardaction_t;
+
+enum KeyboardAction : keyboardaction_t {
     KEY_ACTION_NONE,
     KEY_ACTION_FORWARD,
     KEY_ACTION_BACKWARD,
@@ -92,7 +94,8 @@ enum KeyboardAction : uint16_t {
     KEY_ACTION_UP,
     KEY_ACTION_DOWN,
     KEY_ACTION_LEFT,
-    KEY_ACTION_RIGHT
+    KEY_ACTION_RIGHT,
+    KEY_ACTION_LAST
 };
 
 enum CursorType {
@@ -121,7 +124,7 @@ void SetTextInput(char* text, uint32_t len);
 
 void SetWebMainLoop(void(*loop_function)(void));
 
-void BindKeyboardKey(KeyboardKey key, KeyboardAction action);
+void BindKeyboardKey(KeyboardKey key, keyboardaction_t action);
 void BindKeyboardKey(KeyboardKey key, void (*action)());
 
 bool PollKeyboardKey(KeyboardKey key);
@@ -137,6 +140,8 @@ void KeyMouse(float x_value, float y_value);
 void KeyScroll(float value);
 void ScreenResize(int w, int h);
 void ScreenClose();
+
+keyboardaction_t RegisterKeyboardAction();
 
 bool ShouldExit();
 
