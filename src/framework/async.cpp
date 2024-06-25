@@ -140,6 +140,10 @@ void FinishResources() {
 void Init(size_t threads) {
     assert(System::IsInitialized(System::SYSTEM_CORE));
     
+#ifdef __EMSCRIPTEN__
+        threads = 0;
+#endif
+    
     if (threads) {
         loaders_should_stop = false;
         

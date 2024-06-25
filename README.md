@@ -109,8 +109,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Or if messages are getting dispatched? Is it segfault?
 - If you don't RegisterShader() before Render::Init(), then the Uniform blocks won't be bound and you will get pancake models
 	- Add some kind of a code to bind 
-- Add assert to ASYNC if emscirpten
-	- Starting threads on emscripten causes crashies!
 - Put triangle definition into math.h
 - Put MinAABB MaxAABB into there too
 - And also switch traingle intersection thingy

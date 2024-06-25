@@ -351,7 +351,9 @@ void mainloop() {
     Audio::Update();
     
     // this loads the models and textures into video memory
+#ifdef __EMSCRIPTEN__
     Async::LoadResourcesFromDisk();
+#endif
     Async::LoadResourcesFromMemory();
     Async::FinishResources();
 
@@ -397,7 +399,7 @@ int main() {
     UI::Init();
     Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities
     Render::Init();         // render init must always come after the ui inited
-    Async::Init(0);          // async init must always come after render init
+    Async::Init();          // async init must always come after render init
     Audio::Init();
     GUI::Init();
 
