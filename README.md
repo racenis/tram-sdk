@@ -65,19 +65,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
-- Models with different sets of materials
-	- Introduce a new model format .mdmdl
-	- This format contains a reference to a .stmdl or a .dymdl
-	- It also contains a new set of materials
-- Materials can have multiple texture images
-	- Materials can have single texture (as is now)
-	- Materials can have a texure and a normal map
-	- Materials can have a texture, a normal map and some other map
-	- Materials can use textures and maps from another material
-- Will probably have to overthink the texture bindings...
-- Flat shaded color material
-- Textured material with alpha test but with flat color
-	- Instead of dropping the fragment it would make it a flat color
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- Add a callback function for updating

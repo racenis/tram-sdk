@@ -43,7 +43,19 @@ Model* Model::Find (name_t name) {
 void Model::LoadFromMemory() {
     assert(status == LOADED);
     
-    if (vertex_format == VERTEX_STATIC){
+    if (source) {
+        this->vertex_format = source->vertex_format;
+        this->vertex_array = source->vertex_array;
+        this->index_array = source->index_array;
+        this->index_ranges = source->index_ranges;
+        this->aabb_min = source->aabb_min;
+        this->aabb_max = source->aabb_max;
+        this->armature = source->armature;
+        this->model_data = source->model_data;
+        this->model_aabb = source->model_aabb;
+        
+        status = READY;
+    } else if (vertex_format == VERTEX_STATIC) {
         StaticModelData* data = (StaticModelData*) model_data;
 
         API::CreateIndexedVertexArray(
@@ -659,6 +671,55 @@ void Model::LoadFromDisk() {
         aabb_min = model_aabb->tree.GetAABBMin();
         aabb_max = model_aabb->tree.GetAABBMax();
 
+        return;
+    }
+
+    // try opening it as a mod model
+
+    strcpy(path, "data/models/");
+    strcat(path, name);
+    strcat(path, ".mdmdl");
+
+    if (File file (path, MODE_READ); file.is_open()) {
+        name_t file_version = file.read_name();
+        
+        if (file_version != UID("MDMDLv1")) {
+            std::cout << "Model " << path << " is not using right MDMDLv1 version!" << std::endl;
+        }
+        
+        std::cout << "Loading: " << path << std::endl;
+        
+        name_t source_model = file.read_name();
+        
+        this->source = Model::Find(source_model);
+        
+        this->source->AddReference();
+        Async::LoadDependency(this->source);
+        
+        std::vector<std::pair<name_t, name_t>> mappings;
+        
+        while (file.is_continue()) {
+            mappings.push_back({file.read_name(), file.read_name()});
+        }
+        
+        for (Material* mat : this->source->materials) {
+            for (auto mapping : mappings) {
+                if (mapping.first == mat->GetName()) {
+                    materials.push_back(Material::Find(mapping.second));
+                    goto next;
+                }
+            }
+            materials.push_back(mat);
+            next:;
+        }
+        
+        for (Material* mat : this->materials) {
+            mat->AddReference();
+            Async::LoadDependency(mat);
+        }
+        
+        status = LOADED;
+        
         return;
     }
 

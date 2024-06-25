@@ -64,6 +64,8 @@ protected:
     
     std::vector<Material*> materials;
 
+    Model* source = nullptr;
+
     std::vector<Bone> armature;
     ModelData* model_data = nullptr;
     ModelAABB* model_aabb = nullptr;

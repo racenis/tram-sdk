@@ -23,6 +23,12 @@ enum MaterialProperty {
     PROPERTY_FLESH
 };    
 
+enum TextureType {
+    TEXTURE_NONE,
+    TEXTURE_SAME,
+    TEXTURE_SOURCE
+};
+
 class Material : public Resource {
 public:
     Material(name_t name) : Resource(name) {}
@@ -37,12 +43,16 @@ public:
         vec3 color, 
         float specular_weight, 
         float specular_exponent,
-        float specular_transparency
+        float specular_transparency,
+        TextureType texture_type,
+        Material* source
     ) : 
         Resource(name), 
         type(type), 
         filter(filter), 
-        property(property), 
+        property(property),
+        texture_type(texture_type),
+        source(source),
         color(color), 
         specular_weight(specular_weight), 
         specular_exponent(specular_exponent),
@@ -58,23 +68,26 @@ public:
     inline float GetSpecularExponent() const { return specular_exponent; }
     inline float GetSpecularTransparency() const { return specular_transparency; }
 
-    void MakePattern (vec3 color1, vec3 color2);
+    void MakePattern(vec3 color1, vec3 color2);
     
     void LoadFromDisk();
     void LoadFromMemory();
     
     void Unload() {}
     
-    static Material* Find (name_t name);
-    static Material* Make (name_t name, materialtype_t type);
+    static Material* Find(name_t name);
+    static Material* Make(name_t name, materialtype_t type);
     
-    static void LoadMaterialInfo (const char* filename);
+    static void LoadMaterialInfo(const char* filename);
     
 protected:
     texturehandle_t texture = {.generic = 0};
     materialtype_t type = MATERIAL_TEXTURE;
     MaterialFilter filter = FILTER_NEAREST;
     MaterialProperty property = PROPERTY_METAL;
+    TextureType texture_type = TEXTURE_SAME;
+    
+    Material* source = nullptr;
     
     vec3 color = {1.0f, 1.0f, 1.0f};
     float specular_weight = 0.0f;

@@ -49,7 +49,7 @@ void Material::LoadMaterialInfo(const char* filename){
     
     name_t file_type = file.read_name();
     
-    if (file_type != "MATv5") {
+    if (file_type != "MATv6") {
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
@@ -58,6 +58,7 @@ void Material::LoadMaterialInfo(const char* filename){
         materialtype_t mat_type;
         MaterialFilter mat_filter;
         MaterialProperty mat_property;
+        TextureType mat_tex_type;
 
         name_t mat_name = file.read_name();
         name_t mat_type_name = file.read_name();
@@ -67,6 +68,8 @@ void Material::LoadMaterialInfo(const char* filename){
         float mat_spec_weight = file.read_float32();
         float mat_spec_exponent = file.read_float32();
         float mat_spec_transparency = file.read_float32();
+        name_t mat_tex_type_name = file.read_name();
+        Material* mat_source = nullptr;
 
         if(mat_type_name == UID("flat")){
             mat_type = MATERIAL_TEXTURE;
@@ -123,7 +126,24 @@ void Material::LoadMaterialInfo(const char* filename){
             mat_property = PROPERTY_METAL;
         }
 
-        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property, mat_color, mat_spec_weight, mat_spec_exponent, mat_spec_transparency));
+        if (mat_tex_type_name == "none") {
+            mat_tex_type = TEXTURE_NONE;
+        } else if (mat_tex_type_name == "same") {
+            mat_tex_type = TEXTURE_SAME;
+        } else {
+            mat_tex_type = TEXTURE_SOURCE;
+            mat_source = Material::Find(mat_tex_type_name);
+        }
+
+        // this might break!!
+        if (material_list.Find(mat_name)) PoolProxy<Material>::Delete(material_list.Find(mat_name));
+
+        // a better way to do this would be to create a protexted method
+        // called SetMaterialProperties(...) or something like that and
+        // then you could use Material::Find() to construct a new material
+        // and then use SetMaterialProperties(...) method to set its
+        // properties
+        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property, mat_color, mat_spec_weight, mat_spec_exponent, mat_spec_transparency, mat_tex_type, mat_source));
     }
 }
 
@@ -180,6 +200,17 @@ void Material::MakePattern(vec3 color1, vec3 color2) {
 void Material::LoadFromDisk() {
     assert(status == UNLOADED);
 
+    if (texture_type == TEXTURE_NONE) {
+        MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
+        status = LOADED;
+        return;
+    } else if (texture_type == TEXTURE_SOURCE) {
+        source->AddReference();
+        Async::LoadDependency(source);
+        status = LOADED;
+        return;
+    }
+
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
     char path[100] = "data/textures/";
@@ -227,7 +258,7 @@ void Material::LoadFromDisk() {
     } else {
         std::cout << "Texture " << name << " (" << path << ") couldn't be loaded!" << std::endl;
 
-        MakePattern ({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
+        MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
         
         load_fail = true;
     }
@@ -236,6 +267,12 @@ void Material::LoadFromDisk() {
 
 void Material::LoadFromMemory(){
     assert(status == LOADED);
+
+    if (texture_type == TEXTURE_SOURCE) {
+        texture = source->texture;
+        status = READY;
+        return;
+    }
 
     if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
         texture = API::CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
