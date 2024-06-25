@@ -152,6 +152,8 @@
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
+      <File Name="src/platform/image.h"/>
+      <File Name="src/platform/image.cpp"/>
       <VirtualDirectory Name="glfw">
         <File Name="src/platform/glfw/glfw.cpp"/>
       </VirtualDirectory>

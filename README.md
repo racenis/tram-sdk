@@ -13,7 +13,7 @@ Software library and tools for making the Tramway Drifting and Dungeon Explorati
 It's meant to work sort of like Quake, GoldSrc or Source engines, but it uses
 polygonal soup instead of BSPs and supports level streaming.
 
-![Software Development Kit logo](/docs/screen11.png)
+![Screenshot11](/docs/screens/screen11.png)
 
 ## Features
 - Polygonal soup graphics
@@ -28,9 +28,11 @@ polygonal soup instead of BSPs and supports level streaming.
 - Level streaming
 - Allows use of Quake level editors to create level geometry
 
+![Demo1](/docs/demo1.gif)
+
 ### Links
 
-More information and also screenshots can be found on the [github.io page](https://racenis.github.io/tram-sdk/). 
+More information can be found on the [github.io page](https://racenis.github.io/tram-sdk/). 
 
 #### Demos
 
@@ -101,7 +103,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - And also switch traingle intersection thingy
 - AddLine() drawlistentry is not being drawn on top
 - Get Calc Key things does not work?? at least the distance part
-- Add screenshotting
 - Add directional lights to lightmapper
  
 #### Should do later

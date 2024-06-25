@@ -36,6 +36,7 @@ void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color);
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies);
 void SetViewMatrix(const mat4& matrix, layer_t layer);
 void SetProjectionMatrix(const mat4& matrix, layer_t layer);
+void GetScreen(char* buffer, int w, int h);
 
 }
 

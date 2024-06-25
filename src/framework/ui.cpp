@@ -2,6 +2,7 @@
 // All rights reserved.
 
 #include <platform/platform.h>
+#include <platform/image.h>
 #include <platform/api.h>
 
 #include <framework/core.h>
@@ -71,6 +72,13 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     //{KEY_F6, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
     {KEY_F9, KeyBinding {.special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
     //{KEY_BACKSPACE, KeyBinding {.special_option = [](){ CharacterBackspaceCallback(); }}}
+    {KEY_F12, KeyBinding {.special_option = [](){
+        char* buffer = (char*)malloc(screen_width * screen_height * 3);
+        std::string filename = std::string("screenshot") + std::to_string(GetTickTime()) + ".png";
+        Render::API::GetScreen(buffer, screen_width, screen_height);
+        Platform::SaveImageToDisk(filename.c_str(), screen_width, screen_height, buffer);
+        free(buffer);
+    }}},
 };
 
 void BindKeyboardKey (KeyboardKey key, keyboardaction_t action) {

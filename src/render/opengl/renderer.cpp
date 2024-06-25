@@ -479,6 +479,10 @@ void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
     LAYER[layer].projection_matrix = matrix;
 }
 
+void GetScreen(char* buffer, int w, int h) {
+    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+}
+
 #ifndef __EMSCRIPTEN__
 void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void*) {
     // apparently these are spammy, or something

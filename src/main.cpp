@@ -60,6 +60,7 @@
 #include <render/aabb.h>
 
 #include <platform/platform.h>
+#include <platform/image.h>
 
 using namespace tram;
 using namespace tram::Render;
@@ -82,6 +83,7 @@ RenderComponent* binguser = nullptr;
 RenderComponent* monguser = nullptr;
 AnimationComponent* monguser_armature = nullptr;
 
+bool record = false;
 
 void mainloop() {
     Core::Update();
@@ -345,6 +347,16 @@ void mainloop() {
     
     //AABB::DebugDrawTree();
     
+    if (record && GetTick() % 4 == 0) {
+        char* buffer = (char*)malloc(GetScreenWidth() * GetScreenHeight() * 3);
+        std::string filename = std::string("screenshot") + std::to_string(GetTick()) + ".png";
+        Render::API::GetScreen(buffer, GetScreenWidth(), GetScreenHeight());
+        Platform::SaveImageToDisk(filename.c_str(), GetScreenWidth(), GetScreenHeight(), buffer);
+        free(buffer);
+    }
+    
+    
+    
     GUI::End();
     GUI::Update();
     
@@ -599,6 +611,13 @@ int main() {
     Event::AddListener(Event::LOOK_AT, [](Event& event) {
         AddLine(vec3(0, 0, 0), vec3(0, 0, 0) + (quat)*(Value*)event.data * DIRECTION_FORWARD, COLOR_CYAN);
     });
+        
+        
+    UI::BindKeyboardKey(UI::KEY_R, [](){
+        record = !record;
+    });
+    
+    UI::SetWindowSize(320, 240);
         
     //auto crate_ent = Entity::Find(UID("estijs"));
     
