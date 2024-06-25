@@ -691,9 +691,28 @@ void Model::LoadFromDisk() {
         .roll = 0.0f
     });
     
-    aabb_min = {1.0f, 1.0f, 1.0f};
-    aabb_max = {-1.0f, -1.0f, -1.0f};
+    model_aabb = new ModelAABB;
 
+    for (auto index : data->indices) {
+        const auto& point1 = data->vertices[index.indices.x];
+        const auto& point2 = data->vertices[index.indices.y];
+        const auto& point3 = data->vertices[index.indices.z];
+        
+        vec3 triangle_normal = glm::normalize(point1.normal + point2.normal + point3.normal);
+        
+        uint32_t aabb_triangle_index = model_aabb->triangles.size();
+        
+        model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, 0});
+        
+        vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
+        vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
+        
+        model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+    }
+    
+    aabb_min = model_aabb->tree.GetAABBMin();
+    aabb_max = model_aabb->tree.GetAABBMax();
+    
     status = LOADED;
     
     load_fail = true;

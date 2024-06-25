@@ -84,9 +84,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Replace Bezier curves with Catmull-Roms
 - ~~Refactor GLFW from UI to Platform~~
 	- Also make it so that GLFW can be swapped for SDL
-- Selecting the error model through model AABBs makes a crash
-	- Maybe error model doesn't build AABB tree properly?
-	- Even with no AABB tree there shouldn't be a crash
 - Add command-line argument parser.
 	- Should parse command-line arguments.
 	- Also should allow setting of settings through command-line.
