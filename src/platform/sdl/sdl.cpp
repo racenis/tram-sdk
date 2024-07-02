@@ -11,7 +11,14 @@ using namespace tram::UI;
 namespace tram::Platform {
 
 static SDL_Window* window;
-    
+
+static int screen_width = 800;
+static int screen_height = 600;
+static int relpos_x = screen_width/2;
+static int relpos_y = screen_height/2;
+bool cursor_enabled = false;
+
+
 void Window::Init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cout << "SDL2 window didn't open!" << std::endl;
@@ -21,14 +28,12 @@ void Window::Init() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-    //Create window
-    window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         std::cout << "SDL2 window didn't open! " << SDL_GetError() << std::endl;
         abort();
     }
     
-    //Create context
     void* context = SDL_GL_CreateContext(window);
     if (context == nullptr) {
         std::cout << "SDL2 context didn't open! " << SDL_GetError() << std::endl;
@@ -41,6 +46,9 @@ void Window::Init() {
     }
     
     SDL_GL_SetSwapInterval(1);
+    
+    //SDL_SetWindowGrab(window, SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     
     //glClearColor(0.f, 1.f, 0.f, 1.f);
 }
@@ -55,11 +63,15 @@ void Window::Uninit() {
 }
 
 void Window::SetTitle(const char* title) {
-    
+    SDL_SetWindowTitle(window, title);
 }
 
 void Window::SetSize(int w, int h) {
+    SDL_SetWindowSize(window, w, h);
+    UI::ScreenResize(w, h);
     
+    screen_width = w;
+    screen_height = h;
 }
 
 void Window::SetCursor(CursorType cursor) {
@@ -67,19 +79,30 @@ void Window::SetCursor(CursorType cursor) {
 }
 
 void Window::SetCursorPosition(float x, float y) {
-    
+    SDL_WarpMouseInWindow(window, x, y);
 }
 
 void Window::EnableCursor() {
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     
+    cursor_enabled = true;
 }
 
 void Window::DisableCursor() {
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     
+    cursor_enabled = false;
+    
+    relpos_x = screen_width/2;
+    relpos_y = screen_height/2;
 }
 
+double Window::GetTime() {
+    return (float)SDL_GetTicks() / 1000.0f;
+}
 
 static KeyboardKey SDLKeyToKeyboardKey(SDL_Keysym keycode);
+static KeyboardKey SDLMouseKeyToKeyboardKey(uint8_t button);
 
 void Input::Init() {
     
@@ -91,9 +114,18 @@ void Input::Update() {
         switch (event.type) {
             case SDL_WINDOWEVENT:
                 switch (event.window.event) {
-                    case SDL_WINDOWEVENT_RESIZED:
-                        UI::ScreenResize(event.window.data1, event.window.data2);
-                        break;
+                    case SDL_WINDOWEVENT_RESIZED: {
+                        int off_x = relpos_x - screen_width/2;
+                        int off_y = relpos_y - screen_height/2;
+                    
+                        screen_width = event.window.data1;
+                        screen_height = event.window.data2;
+                    
+                        relpos_x = off_x + screen_width/2;
+                        relpos_y = off_y + screen_height/2;
+
+                        UI::ScreenResize(screen_width, screen_height);
+                        } break;
                     default:
                         break;
                 }
@@ -104,20 +136,28 @@ void Input::Update() {
             case SDL_KEYUP:
                 KeyRelease(SDLKeyToKeyboardKey(event.key.keysym));
                 break;
-    
             case SDL_MOUSEMOTION:
+                if (cursor_enabled) {
+                    KeyMouse(event.motion.x, event.motion.y);
+                } else {
+                    relpos_x += event.motion.xrel;
+                    relpos_y += event.motion.yrel;
+                    
+                    KeyMouse(relpos_x, relpos_y);
+                }
                 break;
             case SDL_MOUSEBUTTONDOWN:
+                KeyPress(SDLMouseKeyToKeyboardKey(event.button.button));
                 break;
             case SDL_MOUSEBUTTONUP:
+                KeyRelease(SDLMouseKeyToKeyboardKey(event.button.button));
                 break;
             case SDL_MOUSEWHEEL:
+                KeyScroll(event.wheel.y);
                 break;
-            
             case SDL_QUIT:
                 UI::ScreenClose();
                 break;
-            
             default:
                 break;
         }
@@ -126,6 +166,15 @@ void Input::Update() {
 
 void Input::Uninit() {
 
+}
+
+static KeyboardKey SDLMouseKeyToKeyboardKey(uint8_t button) {
+    switch (button) {
+        case SDL_BUTTON_LEFT: return UI::KEY_LEFTMOUSE;
+        case SDL_BUTTON_MIDDLE: return UI::KEY_MIDDLEMOUSE;
+        case SDL_BUTTON_RIGHT: return UI::KEY_RIGHTMOUSE;
+        default: return KEY_SPACE;
+    }
 }
 
 static KeyboardKey SDLKeyToKeyboardKey(SDL_Keysym keycode) {

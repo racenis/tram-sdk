@@ -6,7 +6,7 @@
 #include <framework/system.h>
 #include <framework/uid.h>
 
-#include <platform/time.h>
+#include <platform/api.h>
 
 #include <iostream>
 #include <cassert>
@@ -44,7 +44,7 @@ void Core::Init() {
 /// @note This should be called only once per update cycle.
 void Core::Update() {
     double last_frame_time = frame_time;
-    frame_time = GetTime();
+    frame_time = Platform::Window::GetTime();
     delta_time = frame_time - last_frame_time;
     frame_tick++;
 

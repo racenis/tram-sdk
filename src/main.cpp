@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-//#define NEKADEEE
+#define NEKADEEE
 
 #ifdef NEKADEEE
 
@@ -109,7 +109,7 @@ void mainloop() {
     }
 
     if (UI::GetInputState() != STATE_DEFAULT) {
-        for (int i = 0; i < 20; i ++){
+        for (int i = 0; i < 1; i ++){
         float x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
         float y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
         

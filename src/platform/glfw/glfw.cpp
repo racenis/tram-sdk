@@ -130,7 +130,7 @@ void Window::SetTitle(const char* title) {
 
 void Window::SetSize(int w, int h) {
     assert(WINDOW);
-    glfwSetWindowSize (WINDOW, w, h);
+    glfwSetWindowSize(WINDOW, w, h);
 }
 
 void Window::SetCursor(CursorType cursor) {
@@ -147,6 +147,10 @@ void Window::EnableCursor() {
 
 void Window::DisableCursor() {
     glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+double Window::GetTime() {
+    return glfwGetTime();
 }
     
 void Input::Init() {

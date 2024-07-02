@@ -4,7 +4,7 @@
 #include <framework/stats.h>
 #include <framework/core.h>
 
-#include <platform/time.h>
+#include <platform/api.h>
 
 #include <vector>
 #include <cassert>
@@ -31,7 +31,7 @@ void Start(System::system_t system) {
     
     assert(all_stats[system].time_started == -1.0f && "System has already been started.");
     
-    all_stats[system].time_started = GetTime();
+    all_stats[system].time_started = Platform::Window::GetTime();
 }
 
 /// Stops counting time spent on a system.
@@ -39,7 +39,7 @@ void Stop(System::system_t system) {
     assert(all_stats.size() > system && "System does not exist.");
     assert(all_stats[system].time_started != -1.0f && "System statistics was not started.");
     
-    all_stats[system].time_spent += GetTime() - all_stats[system].time_started;
+    all_stats[system].time_spent += Platform::Window::GetTime() - all_stats[system].time_started;
     all_stats[system].time_started = -1.0f;
 }
 
