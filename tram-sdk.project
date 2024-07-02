@@ -152,10 +152,13 @@
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
+      <VirtualDirectory Name="sdl">
+        <File Name="src/platform/sdl/sdl.cpp"/>
+      </VirtualDirectory>
       <File Name="src/platform/image.h"/>
       <File Name="src/platform/image.cpp"/>
       <VirtualDirectory Name="glfw">
-        <File Name="src/platform/glfw/glfw.cpp"/>
+        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/platform/api.h"/>
       <File Name="src/platform/time.cpp"/>
@@ -246,7 +249,7 @@
         <IncludePath Value="./libraries/glfw3"/>
         <IncludePath Value="./libraries/openal"/>
       </Compiler>
-      <Linker Options="-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
+      <Linker Options="-lSDL2.dll;-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
         <LibraryPath Value="libraries/binaries/win64"/>
         <Library Value="libBulletSoftBody.a"/>
         <Library Value="libBulletDynamics.a"/>

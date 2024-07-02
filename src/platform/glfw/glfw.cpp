@@ -48,7 +48,7 @@ void Window::Init() {
     glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
     
     WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", nullptr, nullptr);
-    if (WINDOW == nullptr){
+    if (WINDOW == nullptr) {
         std::cout << "GLFW window didn't open!" << std::endl;
         glfwTerminate();
         abort();
@@ -58,7 +58,7 @@ void Window::Init() {
     
     // random settings that we don't need on web platform
 #ifndef __EMSCRIPTEN__
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();
         }

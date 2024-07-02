@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define NEKADEEE
+//#define NEKADEEE
 
 #ifdef NEKADEEE
 
@@ -652,37 +652,104 @@ int main() {
 using namespace tram;
 using namespace tram::UI;
 
+#include <framework/core.h>
+#include <framework/async.h>
+#include <framework/ui.h>
+#include <framework/entity.h>
+#include <framework/worldcell.h>
+#include <framework/loader.h>
+#include <framework/event.h>
+#include <framework/message.h>
+#include <framework/language.h>
+#include <framework/script.h>
+#include <physics/physics.h>
+#include <audio/audio.h>
+
+#include <framework/gui.h>
+
+#include <framework/system.h>
+#include <framework/logging.h>
+
+#include <entities/crate.h>
+#include <entities/staticworldobject.h>
+#include <entities/light.h>
+#include <entities/player.h>
+#include <entities/sound.h>
+#include <entities/decoration.h>
+#include <entities/trigger.h>
+
+#include <components/render.h>
+#include <components/animation.h>
+#include <components/light.h>
+
+#include <components/sprite.h>
+#include <components/particle.h>
+#include <components/audio.h>
+
+#include <components/controller.h>
+
+#include <components/trigger.h>
+#include <components/player.h>
+
+#include <extensions/menu/menu.h>
+#include <extensions/camera/camera.h>
+#include <extensions/camera/firstperson.h>
+
+#include <extensions/kitchensink/design.h>
+#include <extensions/kitchensink/entities.h>
+#include <extensions/kitchensink/soundtable.h>
+#include <extensions/scripting/lua.h>
+
+#include <render/api.h>
+#include <render/aabb.h>
+
+#include <platform/platform.h>
+#include <platform/image.h>
+
 int main() {
+    Light::Register();
+    Crate::Register();
+    Sound::Register();
+    Decoration::Register();
+    Trigger::Register();
+    StaticWorldObject::Register();
+    Ext::Design::Button::Register();
+
+    SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
+    
 	Core::Init();
 	UI::Init();
 	Render::Init();
-	Physics::Init();
+	//Physics::Init();
 	
-	Player* player = new Player();
-	player->SetLocation({0.0f, 1.0f, 0.0f});
-	player->Load();
+	//Player* player = new Player();
+	//player->SetLocation({0.0f, 1.0f, 0.0f});
+	//player->Load();
 	
-	Physics::DRAW_PHYSICS_DEBUG = true;
+	//Physics::DRAW_PHYSICS_DEBUG = true;
 	
 	while (!EXIT) {
 		Core::Update();
 		UI::Update();
-		Physics::Update();
+		//Physics::Update();
 		
-		vec3 v1 = {1.0f, 0.0f, 1.0f};
-		vec3 v2 = {-1.0f, 0.0f, 1.0f};
-		vec3 v3 = {1.0f, 0.0f, -1.0f};
-		vec3 v4 = {-1.0f, 0.0f, -1.0f};
+		//vec3 v1 = {1.0f, 0.0f, 1.0f};
+		//vec3 v2 = {-1.0f, 0.0f, 1.0f};
+		//vec3 v3 = {1.0f, 0.0f, -1.0f};
+		//vec3 v4 = {-1.0f, 0.0f, -1.0f};
 		
-		Render::AddLine(v1, v2, Render::COLOR_WHITE);
-		Render::AddLine(v2, v4, Render::COLOR_WHITE);
-		Render::AddLine(v3, v4, Render::COLOR_WHITE);
-		Render::AddLine(v3, v1, Render::COLOR_WHITE);
+		//Render::AddLine(v1, v2, Render::COLOR_WHITE);
+		//Render::AddLine(v2, v4, Render::COLOR_WHITE);
+		//Render::AddLine(v3, v4, Render::COLOR_WHITE);
+		//Render::AddLine(v3, v1, Render::COLOR_WHITE);
 		
 		//ControllerComponent::Update();
 		
+        Event::Dispatch();
+        Message::Dispatch();
+        
 		Render::Render();
-		UI:EndFrame();
+		UI::EndFrame();
 	}
 }
 
