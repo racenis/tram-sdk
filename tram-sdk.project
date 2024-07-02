@@ -182,6 +182,10 @@
       <File Name="src/physics/collisionmodel.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
+      <VirtualDirectory Name="direct3d">
+        <File Name="src/render/direct3d/renderer.cpp"/>
+        <File Name="src/render/direct3d/direct3d.h"/>
+      </VirtualDirectory>
       <File Name="src/render/aabb.h"/>
       <File Name="src/render/aabb.cpp"/>
       <File Name="src/render/api.h"/>

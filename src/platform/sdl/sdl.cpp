@@ -57,6 +57,10 @@ void Window::Init() {
         SDL_GL_SetSwapInterval(1);
     }
     
+    if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
+        
+    }
+    
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 

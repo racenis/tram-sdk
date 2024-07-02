@@ -29,6 +29,9 @@ struct {
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.0f, 0.0f, 0.0f};
+    
+    mat4 projection = mat4(1.0f);
+    mat4 view = mat4(1.0f);
 } view_properties[7];
 
 static float screen_width = 800.0f;
@@ -48,14 +51,14 @@ static void update_view(layer_t layer) {
     const vec3 pos = view_properties[layer].view_position;
     const quat rot = view_properties[layer].view_rotation;
     
-    const mat4 view = glm::inverse(glm::translate(mat4(1.0f), pos) * glm::toMat4(rot));
+    view_properties[layer].view = glm::inverse(glm::translate(mat4(1.0f), pos) * glm::toMat4(rot));
     
-    API::SetViewMatrix(view, layer);
+    API::SetViewMatrix(view_properties[layer].view, layer);
 }
 
 static void update_projection(layer_t layer) {
-    mat4 projection = glm::perspective(glm::radians(view_properties[layer].view_fov), screen_width / screen_height, 0.1f, 1000.0f);
-    API::SetProjectionMatrix(projection, layer);
+    view_properties[layer].projection = glm::perspective(glm::radians(view_properties[layer].view_fov), screen_width / screen_height, 0.1f, 1000.0f);
+    API::SetProjectionMatrix(view_properties[layer].projection, layer);
 }
 
 static void update_light(layer_t layer) {
@@ -244,6 +247,23 @@ void AddCylinder(vec3 pos, float height, float radius, color_t color) {
 
 void AddCube(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
+}
+
+void Project(const vec3& point, vec3& result, layer_t layer) {
+    result = glm::project(point, 
+                          view_properties[layer].view, 
+                          view_properties[layer].projection,
+                          vec4(0.0f, 0.0f, screen_width, screen_height));
+    result.y = screen_height - result.y;
+}
+
+vec3 ProjectInverse(vec3 point, layer_t layer) {
+    point.y =  screen_height - point.y;
+    vec3 result = glm::unProject(point,
+                                 view_properties[layer].view,
+                                 view_properties[layer].projection,
+                                 vec4(0.0f, 0.0f, screen_width, screen_height));
+    return result;
 }
 
 static uint32_t last_material_type = MATERIAL_LAST;

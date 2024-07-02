@@ -19,8 +19,8 @@ typedef uint32_t materialtype_t;
 void Init();
 void Render();
 
-void Project(const glm::vec3& point, glm::vec3& result);
-vec3 ProjectInverse(vec3 point);
+void Project(const glm::vec3& point, glm::vec3& result, layer_t layer = 0);
+vec3 ProjectInverse(vec3 point, layer_t layer = 0);
 
 void SetSunDirection(vec3 direction, layer_t layer = 0);
 void SetSunColor(color_t color, layer_t layer = 0);
