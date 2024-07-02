@@ -38,6 +38,15 @@ void SetViewMatrix(const mat4& matrix, layer_t layer);
 void SetProjectionMatrix(const mat4& matrix, layer_t layer);
 void GetScreen(char* buffer, int w, int h);
 
+enum ContextType {
+    CONTEXT_OPENGL,
+    CONTEXT_WEBGL,
+    CONTEXT_DIRECT3D,
+    CONTEXT_NONE
+};
+
+ContextType GetContext();
+
 }
 
 #endif // TRAM_SDK_RENDER_API_H

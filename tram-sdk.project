@@ -153,12 +153,12 @@
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
       <VirtualDirectory Name="sdl">
-        <File Name="src/platform/sdl/sdl.cpp"/>
+        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/platform/image.h"/>
       <File Name="src/platform/image.cpp"/>
       <VirtualDirectory Name="glfw">
-        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/platform/api.h"/>
       <File Name="src/platform/time.cpp"/>

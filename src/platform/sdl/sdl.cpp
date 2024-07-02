@@ -3,6 +3,8 @@
 #include <platform/platform.h>
 #include <framework/ui.h>
 
+#include <render/api.h>
+
 #include <sdl2/SDL.h>
 #include <glad.c>
 
@@ -25,36 +27,43 @@ void Window::Init() {
         abort();
     }
     
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
-    window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    uint32_t window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
+    
+    if (Render::API::GetContext() == Render::API::CONTEXT_OPENGL) {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+        
+        window_flags |= SDL_WINDOW_OPENGL;
+    }
+    
+    window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, window_flags);
     if (window == nullptr) {
         std::cout << "SDL2 window didn't open! " << SDL_GetError() << std::endl;
         abort();
     }
     
-    void* context = SDL_GL_CreateContext(window);
-    if (context == nullptr) {
-        std::cout << "SDL2 context didn't open! " << SDL_GetError() << std::endl;
-        abort();
+    if (Render::API::GetContext() == Render::API::CONTEXT_OPENGL) {
+        void* context = SDL_GL_CreateContext(window);
+        if (context == nullptr) {
+            std::cout << "SDL2 context didn't open! " << SDL_GetError() << std::endl;
+            abort();
+        }
+        
+        if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+            std::cout << "OpenGL context didn't open!" << std::endl;
+            abort();
+        }
+        
+        SDL_GL_SetSwapInterval(1);
     }
     
-    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-        std::cout << "OpenGL context didn't open!" << std::endl;
-        abort();
-    }
-    
-    SDL_GL_SetSwapInterval(1);
-    
-    //SDL_SetWindowGrab(window, SDL_TRUE);
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    
-    //glClearColor(0.f, 1.f, 0.f, 1.f);
 }
 
 void Window::Update() {
-    SDL_GL_SwapWindow(window);
+    if (Render::API::GetContext() == Render::API::CONTEXT_OPENGL) {
+        SDL_GL_SwapWindow(window);
+    }
 }
 
 void Window::Uninit() {

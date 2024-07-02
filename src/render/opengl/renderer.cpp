@@ -2,7 +2,7 @@
 // All rights reserved.
 
 #include <render/opengl/renderer.h>
-#include <render/opengl/api.h>
+#include <render/api.h>
 
 #include <templates/octree.h>
 
@@ -554,6 +554,13 @@ void Init() {
     light_list.AddNew();
 }
 
+ContextType GetContext() {
+#ifndef __EMSCRIPTEN__
+    return CONTEXT_OPENGL;
+#else
+    return CONTEXT_WEBGL;
+#endif
+}
 
 }
 
