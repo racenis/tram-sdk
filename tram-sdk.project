@@ -153,12 +153,12 @@
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
       <VirtualDirectory Name="sdl">
-        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/platform/image.h"/>
       <File Name="src/platform/image.cpp"/>
       <VirtualDirectory Name="glfw">
-        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig=""/>
+        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/platform/api.h"/>
       <File Name="src/platform/time.cpp"/>
@@ -183,8 +183,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <VirtualDirectory Name="direct3d">
-        <File Name="src/render/direct3d/renderer.cpp"/>
-        <File Name="src/render/direct3d/direct3d.h"/>
+        <File Name="src/render/direct3d/renderer.cpp" ExcludeProjConfig=""/>
+        <File Name="src/render/direct3d/direct3d.h" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/render/aabb.h"/>
       <File Name="src/render/aabb.cpp"/>
@@ -198,10 +198,10 @@
       <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
-        <File Name="src/render/opengl/api.h"/>
-        <File Name="src/render/opengl/renderer.h"/>
-        <File Name="src/render/opengl/shader.cpp"/>
-        <File Name="src/render/opengl/renderer.cpp"/>
+        <File Name="src/render/opengl/api.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/render/render.h"/>
       <File Name="src/render/animation.h"/>
@@ -253,7 +253,7 @@
         <IncludePath Value="./libraries/glfw3"/>
         <IncludePath Value="./libraries/openal"/>
       </Compiler>
-      <Linker Options="-lSDL2.dll;-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
+      <Linker Options="-ld3d9;-lSDL2.dll;-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
         <LibraryPath Value="libraries/binaries/win64"/>
         <Library Value="libBulletSoftBody.a"/>
         <Library Value="libBulletDynamics.a"/>

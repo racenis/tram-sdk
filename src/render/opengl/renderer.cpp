@@ -562,4 +562,8 @@ ContextType GetContext() {
 #endif
 }
 
+void SetDevice(void*) {
+    // OpenGL doesn't need a device!
+}
+
 }

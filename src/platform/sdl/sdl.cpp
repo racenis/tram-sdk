@@ -6,7 +6,10 @@
 #include <render/api.h>
 
 #include <sdl2/SDL.h>
+#include <sdl2/SDL_syswm.h>
 #include <glad.c>
+
+#include <d3dx9.h>
 
 using namespace tram::UI;
 
@@ -18,8 +21,9 @@ static int screen_width = 800;
 static int screen_height = 600;
 static int relpos_x = screen_width/2;
 static int relpos_y = screen_height/2;
-bool cursor_enabled = false;
+static bool cursor_enabled = false;
 
+static IDirect3DDevice9* d3d_device = nullptr;
 
 void Window::Init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -58,7 +62,72 @@ void Window::Init() {
     }
     
     if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
+        IDirect3D9* d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
+        if (!d3d9) {
+            std::cout << "Direct3D didn't open!" << std::endl;
+            abort();
+        }
         
+        D3DCAPS9 caps;
+        d3d9->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
+
+        int vertex_processing = 0;
+        if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
+            vertex_processing = D3DCREATE_HARDWARE_VERTEXPROCESSING;
+            std::cout << "Hardware transform and light available." << std::endl;
+        } else {
+            vertex_processing = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+            std::cout << "Hardware transform and light unavailable." << std::endl;
+        }
+   
+        SDL_SysWMinfo wm_info;
+        SDL_VERSION(&wm_info.version);
+        SDL_GetWindowWMInfo(window, &wm_info);
+   
+        D3DPRESENT_PARAMETERS d3dpp;
+        d3dpp.BackBufferWidth               = screen_width;
+        d3dpp.BackBufferHeight              = screen_height;
+        d3dpp.BackBufferFormat              = D3DFMT_A8R8G8B8;
+        d3dpp.BackBufferCount               = 1;
+        d3dpp.MultiSampleType               = D3DMULTISAMPLE_NONE;
+        d3dpp.MultiSampleQuality            = 0;
+        d3dpp.SwapEffect                    = D3DSWAPEFFECT_DISCARD; 
+        d3dpp.hDeviceWindow                 = wm_info.info.win.window;
+        d3dpp.Windowed                      = true;
+        d3dpp.EnableAutoDepthStencil        = true; 
+        d3dpp.AutoDepthStencilFormat        = D3DFMT_D24S8;
+        d3dpp.Flags                         = 0;
+        d3dpp.FullScreen_RefreshRateInHz    = D3DPRESENT_RATE_DEFAULT;
+        d3dpp.PresentationInterval          = D3DPRESENT_INTERVAL_IMMEDIATE;
+   
+
+        HRESULT hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT,
+                                        D3DDEVTYPE_HAL,
+                                        wm_info.info.win.window,
+                                        vertex_processing,
+                                        &d3dpp,
+                                        &d3d_device);
+                                   
+        if (FAILED(hr)) {
+            d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+
+            hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT,
+                                    D3DDEVTYPE_HAL,
+                                    wm_info.info.win.window,
+                                    vertex_processing,
+                                    &d3dpp,
+                                    &d3d_device);
+
+            if (FAILED(hr)) {
+                d3d9->Release();
+                std::cout << "Direct3D device didn't get created!" << std::endl;
+                abort();
+            }
+        }
+    
+        d3d9->Release();
+
+        Render::API::SetDevice(d3d_device);
     }
     
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -67,6 +136,10 @@ void Window::Init() {
 void Window::Update() {
     if (Render::API::GetContext() == Render::API::CONTEXT_OPENGL) {
         SDL_GL_SwapWindow(window);
+    }
+    
+    if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
+        d3d_device->Present(0, 0, 0, 0);
     }
 }
 

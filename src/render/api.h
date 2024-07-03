@@ -46,6 +46,7 @@ enum ContextType {
 };
 
 ContextType GetContext();
+void SetDevice(void*);
 
 }
 
