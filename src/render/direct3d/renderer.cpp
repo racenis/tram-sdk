@@ -2,10 +2,11 @@
 // All rights reserved.
 
 #include <render/api.h>
+#include <render/direct3d/direct3d.h>
 
 #include <d3dx9.h>
 
-//#include <templates/octree.h>
+#include <templates/octree.h>
 
 //#include <glm/gtc/type_ptr.hpp>
 
@@ -13,11 +14,11 @@ namespace tram::Render::API {
 
 static IDirect3DDevice9* device = nullptr;
     
-/*Pool<GLDrawListEntry> draw_list ("render list", 500, false);
-Pool<GLLight> light_list ("light list", 200, false);
+Pool<D3DDrawListEntry> draw_list("render list", 500, false);
+Pool<D3DLight> light_list("light list", 200, false);
 Octree<uint32_t> light_tree;
 std::vector<uint32_t> light_tree_ids (200);
-
+/*
 struct ShaderUniformMatrices {
     glm::mat4 projection;       /// Projection matrix.
     glm::mat4 view;             /// View matrix.
@@ -37,12 +38,9 @@ struct ShaderUniformModelMatrices {
     glm::vec4 colors[15];
     glm::vec4 specular[15];
     float padding[30];
-};
+};*/
 
 struct LayerParameters {
-    //vec3 camera_position = {0.0f, 0.0f, 0.0f};
-    //quat camera_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
-    
     mat4 projection_matrix = mat4(1.0f);
     mat4 view_matrix = mat4(1.0f);
     vec3 view_position = {1.0f, 1.0f, 1.0f};
@@ -51,12 +49,12 @@ struct LayerParameters {
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.3f, 0.3f, 0.3f};
 };
-
+/*
 ShaderUniformMatrices matrices;
 ShaderUniformModelMatrices modelMatrices;
-
-static LayerParameters LAYER[7];
-
+*/
+static LayerParameters layers[7];
+/*
 class ShaderBuffer {};
 
 const uint32_t matrix_uniform_binding = 0;
@@ -80,9 +78,9 @@ static float SCREEN_HEIGHT = 600.0f;*/
 
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
-    /*LAYER[layer].sun_direction = sun_direction;
-    LAYER[layer].sun_color = sun_color;
-    LAYER[layer].ambient_color = ambient_color;*/
+    layers[layer].sun_direction = sun_direction;
+    layers[layer].sun_color = sun_color;
+    layers[layer].ambient_color = ambient_color;
 }
 
 void SetScreenSize(float width, float height) {
@@ -95,15 +93,124 @@ void SetScreenSize(float width, float height) {
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
-    //clear_screen = clear;
-    //screen_clear_color = clear_color;
+    clear_screen = clear;
+    screen_clear_color = clear_color;
 }
 
+static UINT FVFToStride(DWORD fvf);
+
 void RenderFrame() {
-    int r = screen_clear_color.r * 255.0f;
-    int g = screen_clear_color.g * 255.0f;
-    int b = screen_clear_color.b * 255.0f;
-    device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(r, g, b, 0), 1.0f, 0);
+    if (clear_screen) {
+        int r = screen_clear_color.r * 255.0f;
+        int g = screen_clear_color.g * 255.0f;
+        int b = screen_clear_color.b * 255.0f;
+        device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_RGBA(r, g, b, 0), 1.0f, 0);
+    } else {
+        device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
+    }
+    
+    //device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+    const vec3 a = layers[0].ambient_color;
+    const vec3 c = layers[0].sun_color;
+    const vec3 d = -layers[0].sun_direction;
+
+    D3DLIGHT9 light;
+    ::ZeroMemory(&light, sizeof(light));
+    light.Type      = D3DLIGHT_DIRECTIONAL;
+    light.Ambient   = D3DXCOLOR(a.r, a.g, a.b, 1.0f);
+    light.Diffuse   = D3DXCOLOR(c.r, c.g, c.b, 1.0f);
+    light.Specular  = D3DXCOLOR(c.r, c.g, c.b, 1.0f);
+    light.Direction = D3DXVECTOR3(d.x, d.y, d.z);
+    device->SetLight(4, &light);
+    device->LightEnable(4, true);
+
+
+    device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&layers[0].view_matrix);
+    device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&layers[0].projection_matrix);
+    
+    device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
+    device->BeginScene();
+
+    for (auto& entry : draw_list) {
+        if (!entry.vertex_buffer) continue;
+        if (!entry.index_buffer) continue;
+        
+        if (entry.flags & FLAG_INTERIOR_LIGHTING) {
+            device->LightEnable(4, false);
+        } else {
+            device->LightEnable(4, true);
+        }
+        
+        if (entry.lightmap) {
+            device->SetRenderState(D3DRS_LIGHTING, FALSE); 
+        } else {
+            device->SetRenderState(D3DRS_LIGHTING, TRUE); 
+        }
+        
+        for (int i = 0; i < 4; i++) {
+            if (entry.lights[i]) {
+                const auto& params = light_list[entry.lights[i]];
+                
+                D3DLIGHT9 light;
+                ::ZeroMemory(&light, sizeof(light));
+
+                light.Type      = D3DLIGHT_POINT;
+                light.Ambient   = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+                light.Diffuse   = D3DXCOLOR(params.color.r, params.color.g, params.color.b, 1.0f);
+                light.Specular  = D3DXCOLOR(params.color.r, params.color.g, params.color.b, 1.0f);
+                light.Position  = {params.location.x, params.location.y, params.location.z};
+                light.Range        = params.distance;
+                light.Falloff      = 1.0f;
+                light.Attenuation0 = 1.0f;
+                light.Attenuation1 = 0.09f;
+                light.Attenuation2 = 0.032f;
+                
+                device->SetLight(i, &light);
+                device->LightEnable(i, true);
+            } else {
+                device->LightEnable(i, false);
+            }
+        }
+        
+        device->SetStreamSource(0, entry.vertex_buffer, 0, FVFToStride(entry.fvf));
+		device->SetIndices(entry.index_buffer);
+		device->SetFVF(entry.fvf);
+        
+        D3DMATERIAL9 mtrl;
+        mtrl.Ambient  = D3DXCOLOR(D3DCOLOR_XRGB(255, 255, 255));
+        mtrl.Diffuse  = D3DXCOLOR(D3DCOLOR_XRGB(255, 255, 255));
+        mtrl.Specular = D3DXCOLOR(D3DCOLOR_XRGB(255, 255, 255));
+        mtrl.Emissive = D3DXCOLOR(D3DCOLOR_XRGB(0, 0, 0));
+        mtrl.Power    = 2.0f;
+        
+        device->SetMaterial(&mtrl);
+        
+        device->SetTexture(0, entry.texture);
+       // device->SetTexture(1, entry.lightmap);
+        
+        device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry.matrix);
+        
+        
+        
+        // what's up with the 8?
+        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, entry.vertex_count, entry.index_offset * 3, entry.index_length);
+    }
+
+
+
+		device->EndScene();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*if (clear_screen) {
         glClearColor(screen_clear_color.x, screen_clear_color.y, screen_clear_color.z, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -219,68 +326,70 @@ void RenderFrame() {
 }
 
 drawlistentry_t InsertDrawListEntry() {
-    //return {.generic = draw_list.AddNew()};
+    return drawlistentry_t{.d3d = draw_list.AddNew()};
 }
 
 void RemoveDrawListEntry(drawlistentry_t entry) {
-    //draw_list.Remove(entry.gl);
+    draw_list.Remove(entry.d3d);
 }
 
 uint32_t GetFlags(drawlistentry_t entry) {
-    //return entry.gl->flags;
+    return entry.d3d->flags;
 }
 
 void SetFlags(drawlistentry_t entry, uint32_t flags) {
-    //entry.gl->flags = flags;
+    entry.d3d->flags = flags;
 }
 
 void SetLayer(drawlistentry_t entry, uint32_t layer) {
-    //entry.gl->layer = layer;
+    entry.d3d->layer = layer;
 }
 
 void SetPose(drawlistentry_t entry, Pose* pose) {
-    //entry.gl->pose = pose;
+    entry.d3d->pose = pose;
 }
 
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
-    //entry.gl->lightmap = lightmap.gl_texture_handle;
+    entry.d3d->lightmap = lightmap.d3d_texture_handle;
 }
 
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
-    /*for (size_t i = 0; i < count; i++) {
-        entry.gl->colors[i] = colors[i];
-    }*/
+    entry.d3d->color = *colors;
 }
 
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies) {
-    /*for (size_t i = 0; i < count; i++) {
-        entry.gl->specular_weights[i] = weights[i];
-        entry.gl->specular_exponents[i] = exponents[i];
-        entry.gl->specular_transparencies[i] = transparencies[i];
-    }*/
+    entry.d3d->specular_weight = *weights;
+    entry.d3d->specular_exponent = *exponents;
+    entry.d3d->specular_transparency = *transparencies;
 }
 
 void SetLights(drawlistentry_t entry, uint32_t* lights) {
-    /*for (size_t i = 0; i < 4; i++) {
-        entry.gl->lights[i] = lights[i];
-    }*/
+    for (size_t i = 0; i < 4; i++) {
+        entry.d3d->lights[i] = lights[i];
+    }
 }
 
 void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
-    /*vec4 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    vec4 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
     
-    entry.gl->matrix = matrix;
+    entry.d3d->matrix = matrix;
     
-    light_tree.FindNearest(entry.gl->lights, origin.x, origin.y, origin.z);*/
+    light_tree.FindNearest(entry.d3d->lights, origin.x, origin.y, origin.z);
 }
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
-    //entry.gl->vao = vertex_array_handle.gl_vertex_array;
+    entry.d3d->vertex_buffer = vertex_array_handle.d3d_vertex_buffer;
+    entry.d3d->fvf = vertex_array_handle.d3d_fvf;
+    entry.d3d->vertex_count = vertex_array_handle.d3d_vertex_count;
+}
+
+void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle) {
+    entry.d3d->index_buffer = index_array_handle.d3d_index_buffer;
 }
 
 void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length) {
-    //entry.gl->eboOff = index_offset;
-    //entry.gl->eboLen = index_length;
+    entry.d3d->index_offset = index_offset;
+    entry.d3d->index_length = index_length;
 }
 
 void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
@@ -288,35 +397,30 @@ void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, mate
 }
 
 void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* textures) {
-    /*for (size_t i = 0; i < texture_count; i++) {
-        entry.gl->textures[i] = textures[i].gl_texture_handle;
-    }
-    entry.gl->texCount = texture_count;*/
+    entry.d3d->texture = textures->d3d_texture_handle;
 }
 
 light_t MakeLight() {
-    /*GLLight* light = light_list.AddNew();
+    D3DLight* light = light_list.AddNew();
     uint32_t light_id = light - light_list.GetFirst();
     uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
     
     light_tree_ids [light_id] = leaf_id;
         
-    return { .gl = light };*/
+    return light_t{ .d3d = light };
 }
 
 void DeleteLight(light_t light) {
-    /*GLLight* light_ptr = light.gl;
+    D3DLight* light_ptr = light.d3d;
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];
-    
-    std::cout << "yeeted light with id " << light_id << std::endl;
-    
+
     light_list.Remove(light_ptr);
-    light_tree.RemoveLeaf(leaf_id);*/
+    light_tree.RemoveLeaf(leaf_id);
 }
 
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
-    /*GLLight* light_ptr = light.gl;
+    D3DLight* light_ptr = light.d3d;
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];
     
@@ -328,91 +432,194 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
     
     light_tree.RemoveLeaf(leaf_id);
     leaf_id = light_tree.AddLeaf(light_id, light_ptr->location.x, light_ptr->location.y, light_ptr->location.z);
-    light_tree_ids [light_id] = leaf_id;*/
+    light_tree_ids [light_id] = leaf_id;
 }
 
 
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
-    /*uint32_t texture;
-    uint32_t opengl_tex_format;
+    IDirect3DTexture9* texture = nullptr;
+    D3DFORMAT texture_format;
     
     switch (color_mode) {
         case COLORMODE_R:
-            opengl_tex_format = GL_RED;
+            texture_format = D3DFMT_L8;
             break;
         case COLORMODE_RG:
-            opengl_tex_format = GL_RG;
+            texture_format = D3DFMT_A8L8;
             break;
         case COLORMODE_RGB:
-            opengl_tex_format = GL_RGB;
+            // we should be using D3DFMT_R8G8B8, but it fails on my computer
+            texture_format = D3DFMT_A8R8G8B8;
             break;
         case COLORMODE_RGBA:
-            opengl_tex_format = GL_RGBA;
+            texture_format = D3DFMT_A8R8G8B8;
     }
     
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    switch (texture_filter) {
-        case TEXTUREFILTER_NEAREST:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            break;
-        case TEXTUREFILTER_LINEAR:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            break;
-        case TEXTUREFILTER_LINEAR_MIPMAPPED:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            break;
+    texture_format = D3DFMT_A8R8G8B8;
+    
+    HRESULT result = device->CreateTexture(width, height, 1, 0, texture_format, D3DPOOL_MANAGED, &texture, 0);
+    if (!texture) {
+        switch (result) {
+            case D3DERR_INVALIDCALL:
+                std::cout << "Texture creation failed! (D3DERR_INVALIDCALL)" << std::endl;
+                break;
+            case D3DERR_OUTOFVIDEOMEMORY:
+                std::cout << "Texture creation failed! (D3DERR_OUTOFVIDEOMEMORY)" << std::endl;
+                break;
+            case E_OUTOFMEMORY:
+                std::cout << "Texture creation failed! (E_OUTOFMEMORY)" << std::endl;
+                break;
+            default:
+                std::cout << "Texture creation failed! Error code: " << result << std::endl;
+            } 
+        abort();
     }
 
-    assert(data);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, opengl_tex_format, width, height, 0, opengl_tex_format, GL_UNSIGNED_BYTE, data);
-        
-    glGenerateMipmap(GL_TEXTURE_2D);
+    D3DLOCKED_RECT rect;
+    texture->LockRect(0, &rect, 0, D3DLOCK_DISCARD);
+    unsigned char* dst = (unsigned char*)rect.pBits;
+    unsigned char* src = (unsigned char*)data;
     
-    return {.gl_texture_handle = texture};*/
+    switch (color_mode) {
+        case COLORMODE_R:
+            memcpy(dst, src, width * height * 1);
+            break;
+        case COLORMODE_RG:
+            memcpy(dst, src, width * height * 2);
+            break;
+        case COLORMODE_RGB:
+            // conversion from RGB to ARGB
+            for (uint32_t i = 0; i < width * height; i++) {
+                dst[i * 4 + 0] = src[i * 3 + 2];
+                dst[i * 4 + 1] = src[i * 3 + 1];
+                dst[i * 4 + 2] = src[i * 3 + 0];
+                dst[i * 4 + 3] =  255;
+            }
+            break;
+        case COLORMODE_RGBA:
+            // conversion from RGBA to ARGB
+            for (uint32_t i = 0; i < width * height; i++) {
+                dst[i * 4 + 0] = src[i * 4 + 2];
+                dst[i * 4 + 1] = src[i * 4 + 1];
+                dst[i * 4 + 2] = src[i * 4 + 0];
+                dst[i * 4 + 3] = src[i * 4 + 3];
+            }
+    }
+    
+    texture->UnlockRect(0);
+    
+    return texturehandle_t {.d3d_texture_handle = texture};
+}
+
+struct FVFHelper {
+    int position = -1;
+    int normal = -1;
+    int texture = -1;
+    int lightmap = -1;
+    int bone_index = -1;
+    int bone_weight = -1;
+};
+
+struct StaticVertex {
+    float pos_x, pos_y, pos_z;
+    float nrm_x, nrm_y, nrm_z;
+    float tex_x, tex_y;
+};
+const DWORD STATIC_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
+
+static UINT FVFToStride(DWORD fvf) {
+    switch (fvf) {
+        case STATIC_VERTEX_FVF: return sizeof(StaticVertex);
+        default:                return sizeof(float) * 3;
+    }
 }
 
 void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
-    /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
+    FVFHelper helper;
+    for (int i = 0; i < (int)vertex_format.attribute_count; i++) {
+        switch (vertex_format.attributes[i].ffp_type) {
+            case VertexAttribute::FFP_POSITION:     helper.position = i;    break;
+            case VertexAttribute::FFP_NORMAL:       helper.normal = i;      break;
+            case VertexAttribute::FFP_TEXTURE:      helper.texture = i;     break;
+            case VertexAttribute::FFP_LIGHTMAP:     helper.lightmap = i;    break;
+            case VertexAttribute::FFP_BONE_INDEX:   helper.bone_index = i;  break;
+            case VertexAttribute::FFP_BONE_WEIGHT:  helper.bone_weight = i; break;
+            case VertexAttribute::FFP_IGNORE:                               break;
+        }
+    }
+    
+    DWORD fvf = 0;
+    if (helper.position != -1 && helper.normal != -1 && helper.texture != -1) {
+        fvf = STATIC_VERTEX_FVF;
+        vertex_array.d3d_fvf = STATIC_VERTEX_FVF;
+    }
+    
+    if (fvf == 0) {
+        std::cout << "FVF could not be determined!" << std::endl;
+        return;
+    }
+    
+    const size_t vertex_count = vertex_size / vertex_format.attributes->stride;
+    vertex_array.d3d_vertex_count = vertex_count;
+    
+    if (fvf == STATIC_VERTEX_FVF) {
+        device->CreateVertexBuffer(
+            vertex_count * sizeof(StaticVertex), 
+            D3DUSAGE_WRITEONLY,
+            fvf,
+            D3DPOOL_MANAGED,
+            &vertex_array.d3d_vertex_buffer,
+            0);
 
-    glGenBuffers(1, &index_array.gl_index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, index_data, GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
-
-    glBindVertexArray(vertex_array.gl_vertex_array);
-
-    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
-        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
+        device->CreateIndexBuffer(
+            index_size,
+            D3DUSAGE_WRITEONLY,
+            D3DFMT_INDEX32,
+            D3DPOOL_MANAGED,
+            &index_array.d3d_index_buffer,
+            0);
         
-        if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        } else {
-            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
+        
+        StaticVertex* parsed_data;
+        vertex_array.d3d_vertex_buffer->Lock(0, 0, (void**)&parsed_data, 0);
+
+        VertexAttribute pos_attrib = vertex_format.attributes[helper.position];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + pos_attrib.offset + pos_attrib.stride * i);
+            parsed_data[i].pos_x = *param++;
+            parsed_data[i].pos_y = *param++;
+            parsed_data[i].pos_z = *param;
         }
         
-        glEnableVertexAttribArray(i);
-    }
+        VertexAttribute nrm_attrib = vertex_format.attributes[helper.normal];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + nrm_attrib.offset + nrm_attrib.stride * i);
+            parsed_data[i].nrm_x = *param++;
+            parsed_data[i].nrm_y = *param++;
+            parsed_data[i].nrm_z = *param;
+        }
+        
+        VertexAttribute tex_attrib = vertex_format.attributes[helper.texture];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + tex_attrib.offset + tex_attrib.stride * i);
+            parsed_data[i].tex_x = *param++;
+            parsed_data[i].tex_y = *param;
+        }
+        
+        vertex_array.d3d_vertex_buffer->Unlock();
+        
+        
+        uint32_t* indices;
+        index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
+        memcpy(indices, index_data, index_size);
+        index_array.d3d_index_buffer->Unlock();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
+        
+    }
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
+    vertex_array.d3d_vertex_buffer = nullptr;
     /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
@@ -444,12 +651,12 @@ void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data)
 }
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
-    //LAYER[layer].view_matrix = matrix;
-    //LAYER[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    layers[layer].view_matrix = matrix;
+    layers[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
-    //LAYER[layer].projection_matrix = matrix;
+    layers[layer].projection_matrix = matrix;
 }
 
 void GetScreen(char* buffer, int w, int h) {
@@ -459,22 +666,13 @@ void GetScreen(char* buffer, int w, int h) {
 void Init() {
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
     
-    /*
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
     
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+    device->SetRenderState(D3DRS_SPECULARENABLE, true);
     
-    CompileShaders();
-
-    light_uniform_buffer = MakeUniformBuffer("Lights", light_uniform_binding, sizeof(GLLight)*50);
-    matrix_uniform_buffer = MakeUniformBuffer("Matrices", matrix_uniform_binding, sizeof(ShaderUniformMatrices));
-    model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
-    bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
-    
-    //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
-
     // initialize the default pose
     BLANK_POSE = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
@@ -482,12 +680,15 @@ void Init() {
     }
     
     // initialize the default light
-    //new (light_list.begin().ptr) LightListEntry;
-    light_list.AddNew();*/
+    light_list.AddNew();
 }
 
 ContextType GetContext() {
     return CONTEXT_DIRECT3D;
+}
+
+uint32_t GetMaxIndexRangeLength() {
+    return 1;
 }
 
 void SetDevice(void* new_device) {

@@ -376,7 +376,7 @@ void mainloop() {
     
     Loader::Update();
     
-    if (tick > 10) ControllerComponent::Update();
+    if (tick > 100) ControllerComponent::Update();
     AnimationComponent::Update();
     //RenderComponent::DrawAllAABB();
 
@@ -617,7 +617,7 @@ int main() {
         record = !record;
     });
     
-    UI::SetWindowSize(320, 240);
+    //UI::SetWindowSize(320, 240);
         
     //auto crate_ent = Entity::Find(UID("estijs"));
     

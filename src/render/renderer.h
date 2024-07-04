@@ -43,6 +43,15 @@ struct VertexAttribute {
         INT32,
         UINT32
     } type;
+    enum {
+        FFP_IGNORE,
+        FFP_POSITION,
+        FFP_NORMAL,
+        FFP_TEXTURE,
+        FFP_LIGHTMAP,
+        FFP_BONE_INDEX,
+        FFP_BONE_WEIGHT
+    } ffp_type;         //< Tells the FFP how to interpret this attribute.
     uint32_t size;      //< Size of the attribute, in bytes.
     uint32_t stride;    //< Distance between same attribute in different vertices, in bytes.
     uint64_t offset;    //< Offset of beginning of attribute in vertex buffer.

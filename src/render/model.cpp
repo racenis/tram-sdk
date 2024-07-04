@@ -245,7 +245,7 @@ static uint32_t PutTriangleInBucket (
     // check if there is already a bucket with the same type as material
     for (size_t i = 0; i < buckets.size(); i++) {
         if (buckets[i].material_type == materials[material_index]->GetType()
-            && buckets[i].materials.size() < 15
+            && buckets[i].materials.size() < API::GetMaxIndexRangeLength()
         ) {
             uint32_t bucket_index = buckets[i].materials.size();
             
@@ -260,7 +260,8 @@ static uint32_t PutTriangleInBucket (
     }
     
     // check if allowed to make another bucket
-    assert(buckets.size() < 3);
+    // TODO: check why this assertion was needed?
+    //assert(buckets.size() < 3);
     
     // insert a new bucket
     buckets.push_back({

@@ -8,6 +8,10 @@
 
 #include <render/animation.h>
 
+struct IDirect3DVertexBuffer9;
+struct IDirect3DIndexBuffer9;
+struct IDirect3DTexture9;
+
 namespace tram::Render {
 
 typedef vec3 color_t;
@@ -92,6 +96,11 @@ struct vertexarray_t {
             uint32_t gl_vertex_array;
             uint32_t gl_vertex_buffer;
         };
+        struct {
+            IDirect3DVertexBuffer9* d3d_vertex_buffer;
+            uint32_t d3d_fvf;
+            uint32_t d3d_vertex_count;
+        };
         void* generic;
     };
 };
@@ -99,15 +108,18 @@ struct vertexarray_t {
 struct indexarray_t {
     union {
         uint32_t gl_index_buffer;
+        IDirect3DIndexBuffer9* d3d_index_buffer;
         void* generic;
     };
 };
 
 namespace API { struct GLDrawListEntry; }
+namespace API { struct D3DDrawListEntry; }
 
 struct drawlistentry_t {
     union {
         API::GLDrawListEntry* gl;
+        API::D3DDrawListEntry* d3d;
         void* generic;
     };
 };
@@ -115,16 +127,18 @@ struct drawlistentry_t {
 struct texturehandle_t {
     union {
         uint32_t gl_texture_handle;
+        IDirect3DTexture9* d3d_texture_handle;
         void* generic;
     };
 };
 
 namespace API { struct GLLight; }
+namespace API { struct D3DLight; }
 
 struct light_t {
     union {
         API::GLLight* gl;
-        
+        API::D3DLight* d3d;
         void* generic;
     };
 };

@@ -41,7 +41,7 @@ protected:
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Material> lightmap;
 
-    Render::drawlistentry_t draw_list_entries [3] = {nullptr};
+    std::vector<Render::drawlistentry_t> draw_list_entries;
 
     Render::Pose* pose = nullptr;
 

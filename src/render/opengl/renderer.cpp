@@ -562,6 +562,10 @@ ContextType GetContext() {
 #endif
 }
 
+uint32_t GetMaxIndexRangeLength() {
+    return 15;
+}
+
 void SetDevice(void*) {
     // OpenGL doesn't need a device!
 }

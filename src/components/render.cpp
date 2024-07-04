@@ -28,6 +28,8 @@ void RenderComponent::SetModel (name_t name) {
             }
         }
         
+        draw_list_entries.clear();
+        
         InsertDrawListEntries();
         RefreshAABB();
     }
@@ -209,6 +211,7 @@ void RenderComponent::InsertDrawListEntries() {
         }
 
         Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
+        Render::API::SetDrawListIndexArray(entry, model->GetIndexArray());
         Render::API::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
         Render::API::SetDrawListColors(entry, index_ranges[i].material_count, colors);
         Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_exponents, specular_transparencies);
@@ -222,7 +225,7 @@ void RenderComponent::InsertDrawListEntries() {
 
         Render::API::SetPose(entry, pose);
         
-        draw_list_entries [i] = entry;
+        draw_list_entries.push_back(entry);
     }
 }
 

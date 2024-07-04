@@ -15,6 +15,7 @@ void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap);
 void SetLights(drawlistentry_t entry, uint32_t* lights);
 void SetMatrix(drawlistentry_t entry, const mat4& matrix);
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle);
+void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle);
 void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length);
 void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type);
 void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* textures);
@@ -46,6 +47,7 @@ enum ContextType {
 };
 
 ContextType GetContext();
+uint32_t GetMaxIndexRangeLength();
 void SetDevice(void*);
 
 }
