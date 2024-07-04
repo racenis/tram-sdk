@@ -179,26 +179,23 @@ void RenderFrame() {
 		device->SetFVF(entry.fvf);
         
         D3DMATERIAL9 mtrl;
-        mtrl.Ambient  = D3DXCOLOR(D3DCOLOR_XRGB(255, 255, 255));
-        mtrl.Diffuse  = D3DXCOLOR(D3DCOLOR_XRGB(255, 255, 255));
-        mtrl.Specular = D3DXCOLOR(D3DCOLOR_XRGB(255, 255, 255));
+        mtrl.Ambient  = D3DXCOLOR(entry.color.r, entry.color.g, entry.color.b, 1.0f);
+        mtrl.Diffuse  = D3DXCOLOR(entry.color.r, entry.color.g, entry.color.b, 1.0f);
+        mtrl.Specular = D3DXCOLOR(entry.specular_weight * entry.color.r, entry.specular_weight * entry.color.g, entry.specular_weight * entry.color.b, 1.0f);
         mtrl.Emissive = D3DXCOLOR(D3DCOLOR_XRGB(0, 0, 0));
-        mtrl.Power    = 2.0f;
+        mtrl.Power    = entry.specular_exponent;
         
         device->SetMaterial(&mtrl);
         
         device->SetTexture(0, entry.texture);
-       // device->SetTexture(1, entry.lightmap);
+        device->SetTexture(1, entry.lightmap);
+        
+        //device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+        device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
         
         device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry.matrix);
-        
-        
-        
-        // what's up with the 8?
         device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, entry.vertex_count, entry.index_offset * 3, entry.index_length);
     }
-
-
 
 		device->EndScene();
     
@@ -524,13 +521,22 @@ struct StaticVertex {
     float pos_x, pos_y, pos_z;
     float nrm_x, nrm_y, nrm_z;
     float tex_x, tex_y;
+    float lit_x, lit_y;
 };
-const DWORD STATIC_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
+const DWORD STATIC_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX2;
+
+struct DynamicVertex {
+    float pos_x, pos_y, pos_z;
+    float nrm_x, nrm_y, nrm_z;
+    float tex_x, tex_y;
+};
+const DWORD DYNAMIC_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
 
 static UINT FVFToStride(DWORD fvf) {
     switch (fvf) {
-        case STATIC_VERTEX_FVF: return sizeof(StaticVertex);
-        default:                return sizeof(float) * 3;
+        case STATIC_VERTEX_FVF:     return sizeof(StaticVertex);
+        case DYNAMIC_VERTEX_FVF:    return sizeof(DynamicVertex);
+        default:                    return sizeof(float) * 3;
     }
 }
 
@@ -550,6 +556,10 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
     
     DWORD fvf = 0;
     if (helper.position != -1 && helper.normal != -1 && helper.texture != -1) {
+        fvf = DYNAMIC_VERTEX_FVF;
+        vertex_array.d3d_fvf = DYNAMIC_VERTEX_FVF;
+    }
+    if (helper.position != -1 && helper.normal != -1 && helper.texture != -1 && helper.lightmap != -1) {
         fvf = STATIC_VERTEX_FVF;
         vertex_array.d3d_fvf = STATIC_VERTEX_FVF;
     }
@@ -606,6 +616,13 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
             parsed_data[i].tex_y = *param;
         }
         
+        VertexAttribute lit_attrib = vertex_format.attributes[helper.lightmap];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + lit_attrib.offset + lit_attrib.stride * i);
+            parsed_data[i].lit_x = *param++;
+            parsed_data[i].lit_y = *param;
+        }
+        
         vertex_array.d3d_vertex_buffer->Unlock();
         
         
@@ -613,8 +630,58 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
         index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
         memcpy(indices, index_data, index_size);
         index_array.d3d_index_buffer->Unlock();
+    }
+    
+    if (fvf == DYNAMIC_VERTEX_FVF) {
+        device->CreateVertexBuffer(
+            vertex_count * sizeof(DynamicVertex), 
+            D3DUSAGE_WRITEONLY,
+            fvf,
+            D3DPOOL_MANAGED,
+            &vertex_array.d3d_vertex_buffer,
+            0);
 
+        device->CreateIndexBuffer(
+            index_size,
+            D3DUSAGE_WRITEONLY,
+            D3DFMT_INDEX32,
+            D3DPOOL_MANAGED,
+            &index_array.d3d_index_buffer,
+            0);
         
+        DynamicVertex* parsed_data;
+        vertex_array.d3d_vertex_buffer->Lock(0, 0, (void**)&parsed_data, 0);
+
+        VertexAttribute pos_attrib = vertex_format.attributes[helper.position];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + pos_attrib.offset + pos_attrib.stride * i);
+            parsed_data[i].pos_x = *param++;
+            parsed_data[i].pos_y = *param++;
+            parsed_data[i].pos_z = *param;
+        }
+        
+        VertexAttribute nrm_attrib = vertex_format.attributes[helper.normal];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + nrm_attrib.offset + nrm_attrib.stride * i);
+            parsed_data[i].nrm_x = *param++;
+            parsed_data[i].nrm_y = *param++;
+            parsed_data[i].nrm_z = *param;
+        }
+        
+        VertexAttribute tex_attrib = vertex_format.attributes[helper.texture];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + tex_attrib.offset + tex_attrib.stride * i);
+            parsed_data[i].tex_x = *param++;
+            parsed_data[i].tex_y = *param;
+        }
+        
+        vertex_array.d3d_vertex_buffer->Unlock();
+        
+        
+        uint32_t* indices;
+        index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
+        memcpy(indices, index_data, index_size);
+        index_array.d3d_index_buffer->Unlock();
     }
 }
 
@@ -669,6 +736,10 @@ void Init() {
     device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
     device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+    
+    device->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
     
     device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
     device->SetRenderState(D3DRS_SPECULARENABLE, true);
