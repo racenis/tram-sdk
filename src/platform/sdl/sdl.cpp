@@ -71,6 +71,9 @@ void Window::Init() {
         D3DCAPS9 caps;
         d3d9->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
 
+        std::cout << "MaxVertexBlendMatrices: " << caps.MaxVertexBlendMatrices << std::endl;
+        std::cout << "MaxVertexBlendMatrixIndex: " << caps.MaxVertexBlendMatrixIndex << std::endl;
+
         int vertex_processing = 0;
         if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
             vertex_processing = D3DCREATE_HARDWARE_VERTEXPROCESSING;
@@ -79,6 +82,10 @@ void Window::Init() {
             vertex_processing = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
             std::cout << "Hardware transform and light unavailable." << std::endl;
         }
+        
+        // TODO: figure how to best do this?
+        //vertex_processing = D3DCREATE_MIXED_VERTEXPROCESSING;
+        //device->SetSoftwareVertexProcessing(true);
    
         SDL_SysWMinfo wm_info;
         SDL_VERSION(&wm_info.version);

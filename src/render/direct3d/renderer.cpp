@@ -193,7 +193,18 @@ void RenderFrame() {
         //device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
         device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
         
-        device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry.matrix);
+        if (!entry.pose) {
+            device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, false);
+            device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry.matrix);
+        } else {
+            device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, true);
+            device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_3WEIGHTS);
+            for (int i = 0; i < 30; i++) {
+                mat4 matrix = entry.matrix * entry.pose->pose[i];
+                device->SetTransform(D3DTS_WORLDMATRIX(i), (D3DMATRIX*)&matrix);
+            }
+        }
+        
         device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, entry.vertex_count, entry.index_offset * 3, entry.index_length);
     }
 
@@ -527,10 +538,12 @@ const DWORD STATIC_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX2;
 
 struct DynamicVertex {
     float pos_x, pos_y, pos_z;
+    float wgt_1, wgt_2, wgt_3;
+    DWORD wgt_i;
     float nrm_x, nrm_y, nrm_z;
     float tex_x, tex_y;
 };
-const DWORD DYNAMIC_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
+const DWORD DYNAMIC_VERTEX_FVF = D3DFVF_XYZB4 | D3DFVF_LASTBETA_UBYTE4 | D3DFVF_NORMAL | D3DFVF_TEX1;
 
 static UINT FVFToStride(DWORD fvf) {
     switch (fvf) {
@@ -555,7 +568,7 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
     }
     
     DWORD fvf = 0;
-    if (helper.position != -1 && helper.normal != -1 && helper.texture != -1) {
+    if (helper.position != -1 && helper.normal != -1 && helper.texture != -1 && helper.bone_index != -1 && helper.bone_weight != -1) {
         fvf = DYNAMIC_VERTEX_FVF;
         vertex_array.d3d_fvf = DYNAMIC_VERTEX_FVF;
     }
@@ -675,6 +688,25 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
             parsed_data[i].tex_y = *param;
         }
         
+        VertexAttribute wgt_attrib = vertex_format.attributes[helper.bone_weight];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + wgt_attrib.offset + wgt_attrib.stride * i);
+            parsed_data[i].wgt_1 = *param++;
+            parsed_data[i].wgt_2 = *param++;
+            parsed_data[i].wgt_3 = *param;
+        }
+        
+        VertexAttribute ind_attrib = vertex_format.attributes[helper.bone_index];
+        for (size_t i = 0; i < vertex_count; i++) {
+            uint32_t* param = (uint32_t*)((char*)vertex_data + ind_attrib.offset + ind_attrib.stride * i);
+            
+            uint8_t* wgt_a = (uint8_t*)&parsed_data[i].wgt_i;
+            wgt_a[0] = *param++;
+            wgt_a[1] = *param++;
+            wgt_a[2] = *param++;
+            wgt_a[3] = *param;
+        }
+        
         vertex_array.d3d_vertex_buffer->Unlock();
         
         
@@ -727,7 +759,28 @@ void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
 }
 
 void GetScreen(char* buffer, int w, int h) {
-    //glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+    IDirect3DSurface9* surface = nullptr;
+    IDirect3DSurface9* target = nullptr;
+    device->CreateOffscreenPlainSurface(w, h, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surface, NULL);
+    device->GetRenderTarget(0, &target);
+    device->GetRenderTargetData(target, surface);
+    
+    
+    D3DLOCKED_RECT rect;
+    surface->LockRect(&rect, NULL, D3DLOCK_NO_DIRTY_UPDATE|D3DLOCK_NOSYSLOCK|D3DLOCK_READONLY);
+    
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            buffer[((h - y - 1) * w + x) * 3 + 0] = ((char*)rect.pBits)[(y * w + x) * 4 + 2];
+            buffer[((h - y - 1) * w + x) * 3 + 1] = ((char*)rect.pBits)[(y * w + x) * 4 + 1];
+            buffer[((h - y - 1) * w + x) * 3 + 2] = ((char*)rect.pBits)[(y * w + x) * 4 + 0];
+        }
+        
+    }
+    
+    surface->UnlockRect();
+    surface->Release();
+    target->Release();
 }
 
 void Init() {
