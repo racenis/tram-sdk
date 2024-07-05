@@ -98,8 +98,7 @@ struct vertexarray_t {
         };
         struct {
             IDirect3DVertexBuffer9* d3d_vertex_buffer;
-            uint32_t d3d_fvf;
-            uint32_t d3d_vertex_count;
+            uint32_t d3d_metadata;
         };
         void* generic;
     };

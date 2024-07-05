@@ -18,6 +18,15 @@ Pool<D3DDrawListEntry> draw_list("render list", 500, false);
 Pool<D3DLight> light_list("light list", 200, false);
 Octree<uint32_t> light_tree;
 std::vector<uint32_t> light_tree_ids (200);
+
+struct VertexBufferMetadata {
+    VertexDefinition vertex_format;
+    DWORD fvf;
+    size_t current_vertex_count;
+    size_t allocated_vertex_count;
+};
+Pool<VertexBufferMetadata> vertex_buffer_metadata("vertex buffer metadata", 500, false);
+
 /*
 struct ShaderUniformMatrices {
     glm::mat4 projection;       /// Projection matrix.
@@ -387,8 +396,9 @@ void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
     entry.d3d->vertex_buffer = vertex_array_handle.d3d_vertex_buffer;
-    entry.d3d->fvf = vertex_array_handle.d3d_fvf;
-    entry.d3d->vertex_count = vertex_array_handle.d3d_vertex_count;
+    const auto& metadata = vertex_buffer_metadata[vertex_array_handle.d3d_metadata];
+    entry.d3d->fvf = metadata.fvf;
+    entry.d3d->vertex_count = metadata.current_vertex_count;
 }
 
 void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle) {
@@ -522,10 +532,12 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
 struct FVFHelper {
     int position = -1;
     int normal = -1;
+    int color = -1;
     int texture = -1;
     int lightmap = -1;
     int bone_index = -1;
     int bone_weight = -1;
+    DWORD fvf = 0;
 };
 
 struct StaticVertex {
@@ -545,20 +557,29 @@ struct DynamicVertex {
 };
 const DWORD DYNAMIC_VERTEX_FVF = D3DFVF_XYZB4 | D3DFVF_LASTBETA_UBYTE4 | D3DFVF_NORMAL | D3DFVF_TEX1;
 
+struct LineVertex {
+    float pos_x, pos_y, pos_z;
+    float col_r, col_g, col_b;
+};
+const DWORD LINE_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+
 static UINT FVFToStride(DWORD fvf) {
     switch (fvf) {
         case STATIC_VERTEX_FVF:     return sizeof(StaticVertex);
         case DYNAMIC_VERTEX_FVF:    return sizeof(DynamicVertex);
+        case LINE_VERTEX_FVF:       return sizeof(LineVertex);
         default:                    return sizeof(float) * 3;
     }
 }
 
-void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+FVFHelper VertexDefinitionToFVF(VertexDefinition vertex_format) {
     FVFHelper helper;
+    
     for (int i = 0; i < (int)vertex_format.attribute_count; i++) {
         switch (vertex_format.attributes[i].ffp_type) {
             case VertexAttribute::FFP_POSITION:     helper.position = i;    break;
             case VertexAttribute::FFP_NORMAL:       helper.normal = i;      break;
+            case VertexAttribute::FFP_COLOR:        helper.color = i;      break;
             case VertexAttribute::FFP_TEXTURE:      helper.texture = i;     break;
             case VertexAttribute::FFP_LIGHTMAP:     helper.lightmap = i;    break;
             case VertexAttribute::FFP_BONE_INDEX:   helper.bone_index = i;  break;
@@ -567,42 +588,23 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
         }
     }
     
-    DWORD fvf = 0;
+    if (helper.position != -1 && helper.color != -1) {
+        helper.fvf = LINE_VERTEX_FVF;
+    }
+    
     if (helper.position != -1 && helper.normal != -1 && helper.texture != -1 && helper.bone_index != -1 && helper.bone_weight != -1) {
-        fvf = DYNAMIC_VERTEX_FVF;
-        vertex_array.d3d_fvf = DYNAMIC_VERTEX_FVF;
+        helper.fvf = DYNAMIC_VERTEX_FVF;
     }
+    
     if (helper.position != -1 && helper.normal != -1 && helper.texture != -1 && helper.lightmap != -1) {
-        fvf = STATIC_VERTEX_FVF;
-        vertex_array.d3d_fvf = STATIC_VERTEX_FVF;
+        helper.fvf = STATIC_VERTEX_FVF;
     }
     
-    if (fvf == 0) {
-        std::cout << "FVF could not be determined!" << std::endl;
-        return;
-    }
-    
-    const size_t vertex_count = vertex_size / vertex_format.attributes->stride;
-    vertex_array.d3d_vertex_count = vertex_count;
-    
-    if (fvf == STATIC_VERTEX_FVF) {
-        device->CreateVertexBuffer(
-            vertex_count * sizeof(StaticVertex), 
-            D3DUSAGE_WRITEONLY,
-            fvf,
-            D3DPOOL_MANAGED,
-            &vertex_array.d3d_vertex_buffer,
-            0);
+    return helper;
+}
 
-        device->CreateIndexBuffer(
-            index_size,
-            D3DUSAGE_WRITEONLY,
-            D3DFMT_INDEX32,
-            D3DPOOL_MANAGED,
-            &index_array.d3d_index_buffer,
-            0);
-        
-        
+void PackVertexBuffer(vertexarray_t& vertex_array, VertexDefinition vertex_format, FVFHelper helper, size_t vertex_count, void* vertex_data) {
+    if (helper.fvf == STATIC_VERTEX_FVF) {                  
         StaticVertex* parsed_data;
         vertex_array.d3d_vertex_buffer->Lock(0, 0, (void**)&parsed_data, 0);
 
@@ -637,31 +639,10 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
         }
         
         vertex_array.d3d_vertex_buffer->Unlock();
-        
-        
-        uint32_t* indices;
-        index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
-        memcpy(indices, index_data, index_size);
-        index_array.d3d_index_buffer->Unlock();
+        return;
     }
     
-    if (fvf == DYNAMIC_VERTEX_FVF) {
-        device->CreateVertexBuffer(
-            vertex_count * sizeof(DynamicVertex), 
-            D3DUSAGE_WRITEONLY,
-            fvf,
-            D3DPOOL_MANAGED,
-            &vertex_array.d3d_vertex_buffer,
-            0);
-
-        device->CreateIndexBuffer(
-            index_size,
-            D3DUSAGE_WRITEONLY,
-            D3DFMT_INDEX32,
-            D3DPOOL_MANAGED,
-            &index_array.d3d_index_buffer,
-            0);
-        
+    if (helper.fvf == DYNAMIC_VERTEX_FVF) {
         DynamicVertex* parsed_data;
         vertex_array.d3d_vertex_buffer->Lock(0, 0, (void**)&parsed_data, 0);
 
@@ -699,7 +680,6 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
         VertexAttribute ind_attrib = vertex_format.attributes[helper.bone_index];
         for (size_t i = 0; i < vertex_count; i++) {
             uint32_t* param = (uint32_t*)((char*)vertex_data + ind_attrib.offset + ind_attrib.stride * i);
-            
             uint8_t* wgt_a = (uint8_t*)&parsed_data[i].wgt_i;
             wgt_a[0] = *param++;
             wgt_a[1] = *param++;
@@ -708,17 +688,86 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
         }
         
         vertex_array.d3d_vertex_buffer->Unlock();
-        
-        
-        uint32_t* indices;
-        index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
-        memcpy(indices, index_data, index_size);
-        index_array.d3d_index_buffer->Unlock();
+        return;
     }
+    
+    if (helper.fvf == LINE_VERTEX_FVF) {
+        LineVertex* parsed_data;
+        vertex_array.d3d_vertex_buffer->Lock(0, 0, (void**)&parsed_data, 0);
+
+        VertexAttribute pos_attrib = vertex_format.attributes[helper.position];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + pos_attrib.offset + pos_attrib.stride * i);
+            parsed_data[i].pos_x = *param++;
+            parsed_data[i].pos_y = *param++;
+            parsed_data[i].pos_z = *param;
+        }
+        
+        VertexAttribute col_attrib = vertex_format.attributes[helper.color];
+        for (size_t i = 0; i < vertex_count; i++) {
+            float* param = (float*)((char*)vertex_data + col_attrib.offset + col_attrib.stride * i);
+            parsed_data[i].col_r = *param++;
+            parsed_data[i].col_g = *param++;
+            parsed_data[i].col_b = *param;
+        }
+        
+        vertex_array.d3d_vertex_buffer->Unlock();
+    }
+    
+}
+
+void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+    FVFHelper helper = VertexDefinitionToFVF(vertex_format);
+    
+    if (helper.fvf == 0) {
+        std::cout << "FVF could not be determined!" << std::endl;
+        return;
+    }
+    
+    const size_t vertex_count = vertex_size / vertex_format.attributes->stride;
+    
+    VertexBufferMetadata* metadata = vertex_buffer_metadata.AddNew();
+    
+    metadata->vertex_format = vertex_format;
+    metadata->current_vertex_count = vertex_count;
+    metadata->allocated_vertex_count = vertex_count;
+    metadata->fvf = helper.fvf;
+    
+    vertex_array.d3d_metadata = vertex_buffer_metadata.index(metadata);
+    
+    device->CreateVertexBuffer(vertex_count * FVFToStride(helper.fvf),
+                               D3DUSAGE_WRITEONLY,
+                               helper.fvf,
+                               D3DPOOL_MANAGED,
+                               &vertex_array.d3d_vertex_buffer,
+                               0);
+    
+    PackVertexBuffer(vertex_array, vertex_format, helper, vertex_count, vertex_data);
+    
+    device->CreateIndexBuffer(index_size,
+                              D3DUSAGE_WRITEONLY,
+                              D3DFMT_INDEX32,
+                              D3DPOOL_MANAGED,
+                              &index_array.d3d_index_buffer,
+                              0);
+    
+    uint32_t* indices;
+    index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
+    memcpy(indices, index_data, index_size);
+    index_array.d3d_index_buffer->Unlock();
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
+    VertexBufferMetadata* metadata = vertex_buffer_metadata.AddNew();
+    
+    metadata->vertex_format = vertex_format;
+    metadata->current_vertex_count = 0;
+    metadata->allocated_vertex_count = 0;
+    metadata->fvf = VertexDefinitionToFVF(vertex_format).fvf;
+    
     vertex_array.d3d_vertex_buffer = nullptr;
+    vertex_array.d3d_metadata = vertex_buffer_metadata.index(metadata);
+    
     /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
@@ -744,6 +793,41 @@ void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_arr
 }
 
 void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data) {
+    auto& metadata = vertex_buffer_metadata[vertex_array.d3d_metadata];
+    FVFHelper helper = VertexDefinitionToFVF(metadata.vertex_format);
+    
+    if (helper.fvf == 0) {
+        //std::cout << "FVF could not be determined!" << std::endl;
+        return;
+    }
+    
+    if (data_size == 0) {
+        return;
+    }
+    
+    const size_t vertex_count = data_size / metadata.vertex_format.attributes->stride;
+    
+    metadata.current_vertex_count = vertex_count;
+    metadata.allocated_vertex_count = vertex_count;
+
+    // what we should do here is to check if vertex_count is less or equal to
+    // allocated_vertex_count, in which case we could simply re-use the buffer
+    // as-is, instead of releasing it and creating a new one.
+    
+    if (vertex_array.d3d_vertex_buffer) {
+        vertex_array.d3d_vertex_buffer->Release();
+        vertex_array.d3d_vertex_buffer = nullptr;
+    }
+
+    device->CreateVertexBuffer(vertex_count * FVFToStride(helper.fvf),
+                               D3DUSAGE_WRITEONLY,
+                               helper.fvf,
+                               D3DPOOL_MANAGED,
+                               &vertex_array.d3d_vertex_buffer,
+                               0);
+
+    PackVertexBuffer(vertex_array, metadata.vertex_format, helper, vertex_count, data);
+    
     /*glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);*/
@@ -765,17 +849,16 @@ void GetScreen(char* buffer, int w, int h) {
     device->GetRenderTarget(0, &target);
     device->GetRenderTargetData(target, surface);
     
-    
     D3DLOCKED_RECT rect;
     surface->LockRect(&rect, NULL, D3DLOCK_NO_DIRTY_UPDATE|D3DLOCK_NOSYSLOCK|D3DLOCK_READONLY);
     
+    // convert from Direct3D ARGB to OpenGL RGB
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
             buffer[((h - y - 1) * w + x) * 3 + 0] = ((char*)rect.pBits)[(y * w + x) * 4 + 2];
             buffer[((h - y - 1) * w + x) * 3 + 1] = ((char*)rect.pBits)[(y * w + x) * 4 + 1];
             buffer[((h - y - 1) * w + x) * 3 + 2] = ((char*)rect.pBits)[(y * w + x) * 4 + 0];
         }
-        
     }
     
     surface->UnlockRect();

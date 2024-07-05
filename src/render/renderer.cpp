@@ -36,8 +36,8 @@ const static VertexAttribute vertex_sprite_definition[6] = {
 };
 
 const static VertexAttribute vertex_line_definition[2] = {
-    {VertexAttribute::FLOAT32,  VertexAttribute::FFP_IGNORE,     3, sizeof(LineVertex), 0},
-    {VertexAttribute::FLOAT32,  VertexAttribute::FFP_IGNORE,     3, sizeof(LineVertex), offsetof(LineVertex, color)}
+    {VertexAttribute::FLOAT32,  VertexAttribute::FFP_POSITION,   3, sizeof(LineVertex), 0},
+    {VertexAttribute::FLOAT32,  VertexAttribute::FFP_COLOR,      3, sizeof(LineVertex), offsetof(LineVertex, color)}
 };
     
 static const uint32_t MAX_VERTEX_TYPES = 10; // TODO: put this in config?

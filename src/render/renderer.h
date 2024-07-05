@@ -47,6 +47,7 @@ struct VertexAttribute {
         FFP_IGNORE,
         FFP_POSITION,
         FFP_NORMAL,
+        FFP_COLOR,
         FFP_TEXTURE,
         FFP_LIGHTMAP,
         FFP_BONE_INDEX,

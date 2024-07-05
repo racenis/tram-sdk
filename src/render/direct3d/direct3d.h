@@ -30,11 +30,11 @@ namespace tram::Render::API {
         IDirect3DTexture9* lightmap = nullptr;
         IDirect3DTexture9* texture = nullptr;
 
-        vec4 color;
+        vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
         
-        float specular_weight;
-        float specular_exponent;
-        float specular_transparency;
+        float specular_weight = 0.0f;
+        float specular_exponent = 1.0f;
+        float specular_transparency = 1.0f;
     };
     
     struct D3DLight {

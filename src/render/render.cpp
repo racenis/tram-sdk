@@ -109,8 +109,8 @@ void Render () {
     for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
 #endif // ENGINE_EDITOR_MODE
     
-    UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
-    SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
+    if (GetTick() > 100)UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
+    if (GetTick() > 100)SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
     colorlines.clear();
     
     RenderFrame();
