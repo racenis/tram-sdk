@@ -13,12 +13,13 @@ enum renderflags: uint32_t {
     FLAG_NO_RENDER = 0,         //< Object is not rendered.
     FLAG_RENDER = 1,            //< Object is rendered.
 
-    FLAG_DRAW_INDEXED = 4,      //< Vertex buffer has indicies.
+    FLAG_DRAW_INDEXED = 4,      //< Vertex buffer has indices.
     FLAG_REVERSE_SORT = 8,      //< Furthest objects are rendered first.
     FLAG_TRANSPARENT = 16,      //< Object is transparent and is rendered last.
     FLAG_NO_DEPTH_TEST = 32,    //< Object is rendered on top of other objects.
-    FLAG_INTERIOR_LIGHTING = 64,//< Object is rendered with interior lighting.
-    FLAG_DRAW_LINES = 128       //< Object is rendered as lines. Otherwise rendered as triangles.
+    FLAG_NO_DIRECTIONAL = 64,   //< Object is not lit by directional lighting.
+    FLAG_DRAW_LINES = 128,      //< Object is rendered as lines. Otherwise rendered as triangles.
+    FLAG_DISABLE_LIGHTING = 256 //< Object is rendered without lighting.
 };
 
 /// Texture color mode.

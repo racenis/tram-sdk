@@ -85,7 +85,7 @@ void Init () {
     colorlines_entry = InsertDrawListEntry ();
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
-    SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES);
+    SetFlags(colorlines_entry, FLAG_RENDER | FLAG_NO_DEPTH_TEST | FLAG_DRAW_LINES | FLAG_DISABLE_LIGHTING);
     SetLayer(colorlines_entry, 1);
     
     // generating fullbright lightmap
@@ -109,8 +109,9 @@ void Render () {
     for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
 #endif // ENGINE_EDITOR_MODE
     
-    if (GetTick() > 100)UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
-    if (GetTick() > 100)SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
+    UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
+    SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
+    SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
     colorlines.clear();
     
     RenderFrame();

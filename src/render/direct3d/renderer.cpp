@@ -93,12 +93,7 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetScreenSize(float width, float height) {
-    /*SCREEN_WIDTH = width;
-    SCREEN_HEIGHT = height;
-    
-    glViewport(0, 0, width, height);*/
-    
-    //matrices.projection = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 1000.0f);
+    // TODO: implement
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
@@ -109,6 +104,15 @@ void SetScreenClear (vec3 clear_color, bool clear) {
 static UINT FVFToStride(DWORD fvf);
 
 void RenderFrame() {
+    std::vector<std::pair<uint32_t, D3DDrawListEntry*>> draw_list_sorted;
+    
+    for (auto& entry : draw_list) {
+        uint32_t sort_key = entry.layer;
+        draw_list_sorted.push_back({sort_key, &entry});
+    }
+    
+    sort(draw_list_sorted.begin(), draw_list_sorted.end());
+    
     if (clear_screen) {
         int r = screen_clear_color.r * 255.0f;
         int g = screen_clear_color.g * 255.0f;
@@ -142,33 +146,45 @@ void RenderFrame() {
 
     device->BeginScene();
 
-    for (auto& entry : draw_list) {
-        if (!entry.vertex_buffer) continue;
-        if (!entry.index_buffer) continue;
+    uint32_t current_layer = 0;
+
+    for (auto [_, entry] : draw_list_sorted) {
+        if (!(entry->flags & FLAG_RENDER)) continue;
+        if (!entry->vertex_buffer) continue;
+        //if (!entry->index_buffer) continue;
         
-        if (entry.flags & FLAG_INTERIOR_LIGHTING) {
+        if (current_layer != entry->layer) {
+            // we have a new layer and idk what we are supposed to do here?
+        }
+        
+        current_layer = entry->layer;
+        
+        // check if the object needs to be lit by the sun
+        if (entry->flags & FLAG_NO_DIRECTIONAL) {
             device->LightEnable(4, false);
         } else {
             device->LightEnable(4, true);
         }
         
-        if (entry.lightmap) {
+        // lightmapped objects are already lit, disable lighting for them
+        if (entry->flags & FLAG_DISABLE_LIGHTING || entry->lightmap) {
             device->SetRenderState(D3DRS_LIGHTING, FALSE); 
         } else {
             device->SetRenderState(D3DRS_LIGHTING, TRUE); 
         }
         
+        // set up the lights with which the object is lit up with
         for (int i = 0; i < 4; i++) {
-            if (entry.lights[i]) {
-                const auto& params = light_list[entry.lights[i]];
+            if (entry->lights[i]) {
+                const auto& params = light_list[entry->lights[i]];
                 
                 D3DLIGHT9 light;
                 ::ZeroMemory(&light, sizeof(light));
 
                 light.Type      = D3DLIGHT_POINT;
-                light.Ambient   = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-                light.Diffuse   = D3DXCOLOR(params.color.r, params.color.g, params.color.b, 1.0f);
-                light.Specular  = D3DXCOLOR(params.color.r, params.color.g, params.color.b, 1.0f);
+                light.Ambient   = {0.0f, 0.0f, 0.0f, 1.0f};
+                light.Diffuse   = {params.color.r, params.color.g, params.color.b, 1.0f};
+                light.Specular  = {params.color.r, params.color.g, params.color.b, 1.0f};
                 light.Position  = {params.location.x, params.location.y, params.location.z};
                 light.Range        = params.distance;
                 light.Falloff      = 1.0f;
@@ -183,163 +199,72 @@ void RenderFrame() {
             }
         }
         
-        device->SetStreamSource(0, entry.vertex_buffer, 0, FVFToStride(entry.fvf));
-		device->SetIndices(entry.index_buffer);
-		device->SetFVF(entry.fvf);
+        // this sets the 3d mesh for the object and its format
+        device->SetStreamSource(0, entry->vertex_buffer, 0, FVFToStride(entry->fvf));
+        device->SetIndices(entry->index_buffer);
+        device->SetFVF(entry->fvf);
         
+        // setting up the material
         D3DMATERIAL9 mtrl;
-        mtrl.Ambient  = D3DXCOLOR(entry.color.r, entry.color.g, entry.color.b, 1.0f);
-        mtrl.Diffuse  = D3DXCOLOR(entry.color.r, entry.color.g, entry.color.b, 1.0f);
-        mtrl.Specular = D3DXCOLOR(entry.specular_weight * entry.color.r, entry.specular_weight * entry.color.g, entry.specular_weight * entry.color.b, 1.0f);
+        mtrl.Ambient  = D3DXCOLOR(entry->color.r, entry->color.g, entry->color.b, 1.0f);
+        mtrl.Diffuse  = D3DXCOLOR(entry->color.r, entry->color.g, entry->color.b, 1.0f);
+        mtrl.Specular = D3DXCOLOR(entry->specular_weight * entry->color.r, entry->specular_weight * entry->color.g, entry->specular_weight * entry->color.b, 1.0f);
         mtrl.Emissive = D3DXCOLOR(D3DCOLOR_XRGB(0, 0, 0));
-        mtrl.Power    = entry.specular_exponent;
+        mtrl.Power    = entry->specular_exponent;
         
         device->SetMaterial(&mtrl);
         
-        device->SetTexture(0, entry.texture);
-        device->SetTexture(1, entry.lightmap);
+        device->SetTexture(0, entry->texture);
+        device->SetTexture(1, entry->lightmap);
         
-        //device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
-        device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
-        
-        if (!entry.pose) {
+        if (!entry->pose) {
             device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, false);
-            device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry.matrix);
+            device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry->matrix);
         } else {
             device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, true);
             device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_3WEIGHTS);
             for (int i = 0; i < 30; i++) {
-                mat4 matrix = entry.matrix * entry.pose->pose[i];
+                mat4 matrix = entry->matrix * entry->pose->pose[i];
                 device->SetTransform(D3DTS_WORLDMATRIX(i), (D3DMATRIX*)&matrix);
             }
         }
         
-        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, entry.vertex_count, entry.index_offset * 3, entry.index_length);
+        
+        
+        
+        if (entry->flags & FLAG_NO_DEPTH_TEST) {
+            device->SetRenderState(D3DRS_ZENABLE, false);
+        } else {
+            device->SetRenderState(D3DRS_ZENABLE, true);
+        }
+
+        if (entry->flags & FLAG_DRAW_INDEXED) {
+            device->DrawIndexedPrimitive(entry->flags & FLAG_DRAW_LINES ? D3DPT_LINELIST : D3DPT_TRIANGLELIST, 
+                                         0,
+                                         0,
+                                         entry->vertex_count,
+                                         entry->index_offset * 3, // hmm
+                                         entry->index_length);
+            //std::cout << "drawing index" << std::endl;
+            
+            //glDrawElements(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
+        } else {
+            device->DrawPrimitive(entry->flags & FLAG_DRAW_LINES ? D3DPT_LINELIST : D3DPT_TRIANGLELIST,
+                                  0,
+                                  entry->vertex_count);
+                                  
+            //std::cout << "drawing primitive" << std::endl;
+            //glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
+        }
+
+        
+        
     }
 
 		device->EndScene();
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    /*if (clear_screen) {
-        glClearColor(screen_clear_color.x, screen_clear_color.y, screen_clear_color.z, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    } else {
-        glClear(GL_DEPTH_BUFFER_BIT);
-    }
-    
-    modelMatrices.time = GetTickTime();
-    modelMatrices.sunDirection =    glm::vec4(LAYER[0].sun_direction, 1.0f);
-    modelMatrices.sunColor =        glm::vec4(LAYER[0].sun_color, 1.0f);
-    modelMatrices.ambientColor =    glm::vec4(LAYER[0].ambient_color, 1.0f);
-    modelMatrices.screenWidth =     SCREEN_WIDTH;
-    modelMatrices.screenHeight =    SCREEN_HEIGHT;
 
-    matrices.projection = LAYER[0].projection_matrix;
-    matrices.view = LAYER[0].view_matrix;
-    matrices.view_pos = LAYER[0].view_position;
-    //matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
-    //matrices.view_pos = LAYER[0].camera_position;
-
-    //if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * glm::vec3(0.0f, 0.0f, -5.0f));
-
-    UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
-    UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight)*50, light_list.begin().ptr);
-
-    static uint32_t layer; layer = 0;
-
-    static std::vector<std::pair<uint64_t, GLDrawListEntry*>> rvec;
-
-    rvec.clear();
-
-
-    // TODO: change this to using iterators
-    GLDrawListEntry* robj = draw_list.GetFirst();
-    GLDrawListEntry* rlast = draw_list.GetLast();
-
-    for(;robj < rlast; robj++){
-        if(*((uint64_t*)robj) == 0) continue;
-
-        // TODO: do view culling in here
-
-        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj->CalcSortKey(LAYER[0].view_position), robj));
-    }
-
-    sort(rvec.begin(), rvec.end());
-
-    for (std::pair<uint64_t, GLDrawListEntry*>& pp : rvec){
-        GLDrawListEntry* robj = pp.second;
-
-        glUseProgram(robj->shader);
-
-        if(robj->pose != nullptr){
-            UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(robj->pose->pose[0]));
-        }
-
-        for (int i = 0; i < 15; i++) {
-            modelMatrices.colors[i] = robj->colors[i];
-            modelMatrices.specular[i].x = robj->specular_weights[i];
-            modelMatrices.specular[i].y = robj->specular_exponents[i];
-            modelMatrices.specular[i].z = robj->specular_transparencies[i];
-        }
-
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[0]].location, light_list.GetFirst()[robj->lights[0]].color);
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[1]].location, light_list.GetFirst()[robj->lights[1]].color);
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[2]].location, light_list.GetFirst()[robj->lights[2]].color);
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[3]].location, light_list.GetFirst()[robj->lights[3]].color);
-
-        modelMatrices.modelLights.x = robj->lights[0];
-        modelMatrices.modelLights.y = robj->lights[1];
-        modelMatrices.modelLights.z = robj->lights[2];
-        modelMatrices.modelLights.w = robj->lights[3];
-
-        if (robj->flags & FLAG_INTERIOR_LIGHTING) {
-            modelMatrices.sunWeight = 0.0f;
-        } else {
-            modelMatrices.sunWeight = 1.0f;
-        }
-
-        //modelMatrices.model = model;
-        modelMatrices.model = robj->matrix;
-        UploadUniformBuffer(model_matrix_uniform_buffer, sizeof(ShaderUniformModelMatrices), &modelMatrices);
-
-
-
-        for (unsigned int j = 0; j < robj->texCount; j++){
-            glActiveTexture(GL_TEXTURE0 + j);
-            glBindTexture(GL_TEXTURE_2D, robj->textures[j]);
-        }
-
-        if(robj->lightmap != 0){
-            glActiveTexture(GL_TEXTURE15);
-            glBindTexture(GL_TEXTURE_2D, robj->lightmap);
-        }
-        
-        
-        if (layer != robj->layer) {
-            // *whatever opengl call clears the depth buffer*
-            layer = robj->layer;
-        }
-
-        if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
-        if (robj->flags & FLAG_DRAW_INDEXED) {
-            glBindVertexArray(robj->vao);
-            glDrawElements(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
-        } else {
-            glBindVertexArray(robj->vao);
-            glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
-        }
-        if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);
-
-
-    }*/
 }
 
 drawlistentry_t InsertDrawListEntry() {
@@ -559,7 +484,7 @@ const DWORD DYNAMIC_VERTEX_FVF = D3DFVF_XYZB4 | D3DFVF_LASTBETA_UBYTE4 | D3DFVF_
 
 struct LineVertex {
     float pos_x, pos_y, pos_z;
-    float col_r, col_g, col_b;
+    D3DCOLOR color;
 };
 const DWORD LINE_VERTEX_FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
 
@@ -706,9 +631,9 @@ void PackVertexBuffer(vertexarray_t& vertex_array, VertexDefinition vertex_forma
         VertexAttribute col_attrib = vertex_format.attributes[helper.color];
         for (size_t i = 0; i < vertex_count; i++) {
             float* param = (float*)((char*)vertex_data + col_attrib.offset + col_attrib.stride * i);
-            parsed_data[i].col_r = *param++;
-            parsed_data[i].col_g = *param++;
-            parsed_data[i].col_b = *param;
+            float r, g, b;
+            r = *param++; g = *param++; b = *param;
+            parsed_data[i].color = D3DCOLOR_COLORVALUE(r, g, b, 1.0f);
         }
         
         vertex_array.d3d_vertex_buffer->Unlock();
@@ -792,7 +717,7 @@ void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_arr
     glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 }
 
-void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data) {
+void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data) {
     auto& metadata = vertex_buffer_metadata[vertex_array.d3d_metadata];
     FVFHelper helper = VertexDefinitionToFVF(metadata.vertex_format);
     
@@ -802,6 +727,7 @@ void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data)
     }
     
     if (data_size == 0) {
+        metadata.current_vertex_count = 0;
         return;
     }
     
@@ -869,18 +795,27 @@ void GetScreen(char* buffer, int w, int h) {
 void Init() {
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
     
+    // maybe in the future I'll add back in the option to switch the filtering
+    // mode based on the texture, but for now I'll leave it as a linear filter
     device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
     device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
     
+    // lightmaps should probably always be linearly filtered
     device->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
     device->SetSamplerState(1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     device->SetSamplerState(1, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
     
+    // mix lightmap with base texture using multiplication?
+    device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    
+    // I have no idea what this does, but I like shiny stuff
     device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
     device->SetRenderState(D3DRS_SPECULARENABLE, true);
     
-    // initialize the default pose
+    // I have no idea why this is being initialized in here? this could probably
+    // be yeeted out anyway
+    // TODO: check if can yeet
     BLANK_POSE = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         BLANK_POSE->pose[i] = mat4(1.0f);
