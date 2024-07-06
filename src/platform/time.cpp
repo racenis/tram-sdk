@@ -15,11 +15,11 @@ namespace tram {
 /// @note   If you want to use this time for game logic, then it might be better
 ///         to use GetTickTime() function.
 double GetTime() {
-#ifndef ENGINE_EDITOR_MODE
-    return glfwGetTime();
-#else
+//#ifndef ENGINE_EDITOR_MODE
+//    return glfwGetTime();
+//#else
     return 0.0f;
-#endif
+//#endif
 }
     
 }

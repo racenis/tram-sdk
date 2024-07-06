@@ -21,6 +21,9 @@ static bool loaders_should_stop = false;
 struct ResourceRequest {
     EntityComponent* requester;
     Resource* resource;
+#ifndef __x86_64__
+    void* padding[2];
+#endif
 };
 
 static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", 500);
