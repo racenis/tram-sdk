@@ -99,6 +99,7 @@ void SetScreenSize(float width, float height) {
 void SetScreenClear (vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
+	screen_clear_color = COLOR_WHITE * 0.8f;
 }
 
 static UINT FVFToStride(DWORD fvf);
@@ -137,8 +138,8 @@ void RenderFrame() {
     light.Direction = D3DXVECTOR3(d.x, d.y, d.z);
     device->SetLight(4, &light);
     device->LightEnable(4, true);
-
-
+	
+	
     device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&layers[0].view_matrix);
     device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&layers[0].projection_matrix);
     
@@ -220,12 +221,17 @@ void RenderFrame() {
         if (!entry->pose) {
             device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, false);
             device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry->matrix);
+			device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_DISABLE);
         } else {
             device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, true);
             device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_3WEIGHTS);
             for (int i = 0; i < 30; i++) {
                 mat4 matrix = entry->matrix * entry->pose->pose[i];
                 device->SetTransform(D3DTS_WORLDMATRIX(i), (D3DMATRIX*)&matrix);
+				D3DXMATRIX  Worlds;
+				D3DXMatrixTranslation(&Worlds , 0.0f,  0.0f, 0.0f);
+				//device->SetTransform(D3DTS_WORLD, &Worlds);
+				//device->SetTransform(D3DTS_WORLDMATRIX(i), &Worlds);
             }
         }
         
@@ -251,7 +257,8 @@ void RenderFrame() {
         } else {
             device->DrawPrimitive(entry->flags & FLAG_DRAW_LINES ? D3DPT_LINELIST : D3DPT_TRIANGLELIST,
                                   0,
-                                  entry->vertex_count);
+                                  //entry->vertex_count);
+                                  entry->vertex_count / 2);
                                   
             //std::cout << "drawing primitive" << std::endl;
             //glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
@@ -765,7 +772,9 @@ void SetViewMatrix(const mat4& matrix, layer_t layer) {
 }
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
-    layers[layer].projection_matrix = matrix;
+	mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, 0.5f));
+	mat4 transl = glm::translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.5f));
+    layers[layer].projection_matrix = transl * squish * matrix;
 }
 
 void GetScreen(char* buffer, int w, int h) {
@@ -794,6 +803,8 @@ void GetScreen(char* buffer, int w, int h) {
 
 void Init() {
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+    //device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    //device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     
     // maybe in the future I'll add back in the option to switch the filtering
     // mode based on the texture, but for now I'll leave it as a linear filter

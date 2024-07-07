@@ -188,9 +188,9 @@ void RenderComponent::RefreshAABB() {
 }
 
 void RenderComponent::InsertDrawListEntries() {
-    if (!pose) {
+    /*if (!pose) {
         pose = BLANK_POSE;
-    }
+    }*/
     
     auto& index_ranges = model->GetIndexRanges();
     
