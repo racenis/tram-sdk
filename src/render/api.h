@@ -43,6 +43,7 @@ enum ContextType {
     CONTEXT_OPENGL,
     CONTEXT_WEBGL,
     CONTEXT_DIRECT3D,
+    CONTEXT_SOFTWARE,
     CONTEXT_NONE
 };
 

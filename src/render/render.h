@@ -90,6 +90,8 @@ materialtype_t FindMaterialType(const char* name);
 const char* GetVertexFormatName(vertexformat_t type);
 const char* GetMaterialTypeName(materialtype_t type);
 
+namespace API { struct SWVertexArray; }
+
 struct vertexarray_t {
     union {
         struct {
@@ -100,44 +102,55 @@ struct vertexarray_t {
             IDirect3DVertexBuffer9* d3d_vertex_buffer;
             uint32_t d3d_metadata;
         };
+        API::SWVertexArray* sw_vertex_array;
         void* generic;
     };
 };
+
+namespace API { struct SWIndexArray; }
 
 struct indexarray_t {
     union {
         uint32_t gl_index_buffer;
         IDirect3DIndexBuffer9* d3d_index_buffer;
+        API::SWIndexArray* sw_index_array;
         void* generic;
     };
 };
 
 namespace API { struct GLDrawListEntry; }
 namespace API { struct D3DDrawListEntry; }
+namespace API { struct SWDrawListEntry; }
 
 struct drawlistentry_t {
     union {
         API::GLDrawListEntry* gl;
         API::D3DDrawListEntry* d3d;
+        API::SWDrawListEntry* sw;
         void* generic;
     };
 };
+
+namespace API { struct SWTexture; }
 
 struct texturehandle_t {
     union {
         uint32_t gl_texture_handle;
         IDirect3DTexture9* d3d_texture_handle;
+        API::SWTexture* sw_texture;
         void* generic;
     };
 };
 
 namespace API { struct GLLight; }
 namespace API { struct D3DLight; }
+namespace API { struct SWLight; }
 
 struct light_t {
     union {
         API::GLLight* gl;
         API::D3DLight* d3d;
+        API::SWLight* sw;
         void* generic;
     };
 };

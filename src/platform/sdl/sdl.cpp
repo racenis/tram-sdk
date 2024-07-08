@@ -15,7 +15,11 @@ using namespace tram::UI;
 
 namespace tram::Platform {
 
-static SDL_Window* window;
+static SDL_Window* window = nullptr;
+
+static SDL_Renderer* renderer = nullptr;
+static SDL_Texture* frame_texture = nullptr;
+static uint32_t* frame_buffer = nullptr;
 
 static int screen_width = 800;
 static int screen_height = 600;
@@ -136,6 +140,27 @@ void Window::Init() {
         Render::API::SetDevice(d3d_device);
     }
     
+    if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
+        renderer = SDL_CreateRenderer(window, -1, 0 /*SDL_RENDERER_SOFTWARE*/);
+        
+        if (!renderer) {
+            std::cout << "SDL_Renderer didn't open! " << std::endl;
+            abort();
+        }
+
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+        SDL_RenderSetLogicalSize(renderer, 800, 600);
+        
+        frame_texture = SDL_CreateTexture(renderer,
+                               SDL_PIXELFORMAT_ARGB8888,
+                               SDL_TEXTUREACCESS_STREAMING,
+                               800, 600);
+        
+        frame_buffer = (uint32_t*)malloc(800 * 600 * sizeof(uint32_t));
+        
+        Render::API::SetDevice(frame_buffer);
+    }
+    
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
@@ -146,6 +171,14 @@ void Window::Update() {
     
     if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
         d3d_device->Present(0, 0, 0, 0);
+    }
+    
+    if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
+        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, 800 * sizeof(uint32_t));
+        
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, frame_texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
     }
 }
 
