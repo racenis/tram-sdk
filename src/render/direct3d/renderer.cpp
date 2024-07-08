@@ -140,8 +140,16 @@ void RenderFrame() {
     device->LightEnable(4, true);
 	
 	
-    device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&layers[0].view_matrix);
-    device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&layers[0].projection_matrix);
+    D3DMATRIX view_matrix = *(D3DMATRIX*)&layers[0].view_matrix;
+    D3DMATRIX proj_matrix = *(D3DMATRIX*)&layers[0].projection_matrix;
+    
+    /*view_matrix._31 = -view_matrix._31;
+    view_matrix._32 = -view_matrix._32;
+    view_matrix._33 = -view_matrix._33;
+    view_matrix._34 = -view_matrix._34;*/
+    
+    device->SetTransform(D3DTS_VIEW, &view_matrix);
+    device->SetTransform(D3DTS_PROJECTION, &proj_matrix);
     
     device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
@@ -229,7 +237,7 @@ void RenderFrame() {
                 mat4 matrix = entry->matrix * entry->pose->pose[i];
                 device->SetTransform(D3DTS_WORLDMATRIX(i), (D3DMATRIX*)&matrix);
 				D3DXMATRIX  Worlds;
-				D3DXMatrixTranslation(&Worlds , 0.0f,  0.0f, 0.0f);
+				//D3DXMatrixTranslation(&Worlds , 0.0f,  0.0f, 0.0f);
 				//device->SetTransform(D3DTS_WORLD, &Worlds);
 				//device->SetTransform(D3DTS_WORLDMATRIX(i), &Worlds);
             }
@@ -684,8 +692,14 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
                               0);
     
     uint32_t* indices;
+    size_t index_count = index_size / sizeof(uint32_t);
     index_array.d3d_index_buffer->Lock(0, 0, (void**)&indices, 0);
-    memcpy(indices, index_data, index_size);
+    for (size_t i = 0; i < index_count / 3; i++) {
+        indices[i * 3 + 0] = ((uint32_t*)index_data)[i * 3 + 0];
+        indices[i * 3 + 1] = ((uint32_t*)index_data)[i * 3 + 2];
+        indices[i * 3 + 2] = ((uint32_t*)index_data)[i * 3 + 1];
+    }
+    //memcpy(indices, index_data, index_size);
     index_array.d3d_index_buffer->Unlock();
 }
 
@@ -773,6 +787,7 @@ void SetViewMatrix(const mat4& matrix, layer_t layer) {
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
 	mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, 0.5f));
+	//mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, -0.5f));
 	mat4 transl = glm::translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.5f));
     layers[layer].projection_matrix = transl * squish * matrix;
 }
@@ -802,8 +817,8 @@ void GetScreen(char* buffer, int w, int h) {
 }
 
 void Init() {
-    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
-    //device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+    //device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
     //device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     
     // maybe in the future I'll add back in the option to switch the filtering

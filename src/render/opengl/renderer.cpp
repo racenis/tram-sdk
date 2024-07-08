@@ -203,7 +203,7 @@ void RenderFrame() {
         modelMatrices.modelLights.z = robj->lights[2];
         modelMatrices.modelLights.w = robj->lights[3];
 
-        if (robj->flags & FLAG_INTERIOR_LIGHTING) {
+        if (robj->flags & FLAG_NO_DIRECTIONAL) {
             modelMatrices.sunWeight = 0.0f;
         } else {
             modelMatrices.sunWeight = 1.0f;
@@ -303,6 +303,10 @@ void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
     entry.gl->vao = vertex_array_handle.gl_vertex_array;
+}
+
+void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle) {
+    // the index array is already bound to the vao
 }
 
 void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length) {
@@ -464,7 +468,7 @@ void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_arr
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void UpdateVertexArray(vertexarray_t vertex_array, size_t data_size, void* data) {
+void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data) {
     glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

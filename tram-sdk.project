@@ -183,8 +183,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <VirtualDirectory Name="direct3d">
-        <File Name="src/render/direct3d/renderer.cpp" ExcludeProjConfig=""/>
-        <File Name="src/render/direct3d/direct3d.h" ExcludeProjConfig=""/>
+        <File Name="src/render/direct3d/renderer.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/direct3d/direct3d.h" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/render/aabb.h"/>
       <File Name="src/render/aabb.cpp"/>
@@ -198,10 +198,10 @@
       <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
-        <File Name="src/render/opengl/api.h" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/api.h" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/render/render.h"/>
       <File Name="src/render/animation.h"/>
