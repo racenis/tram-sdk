@@ -37,6 +37,8 @@ static uint16_t screen_height = 600.0f;
 static uint16_t* screen_buffer = nullptr;
 static float* depth_buffer = nullptr;
 
+static std::pair<uint16_t, uint16_t> spans[1000];
+
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
     layers[layer].sun_color = sun_color;
@@ -143,6 +145,221 @@ void BlitLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint16_t color) {
 
 
 
+struct Point2D {
+  int32_t x;
+  int32_t y;
+};
+
+template <bool set_span_first>
+void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t skip_first, std::pair<uint16_t, uint16_t>** span_array) {
+    std::pair<uint16_t, uint16_t>* span = *span_array;
+
+    int32_t delta_x = x1 - x0;
+    int32_t advance = delta_x > 0 ? 1 : -1;
+
+    int32_t width = abs(delta_x);
+    int32_t height = y1 - y0;
+
+    if (height <= 0) return;
+
+    if (width == 0) {
+        for (int32_t i = height - skip_first; i-- > 0; span++) {
+            if (set_span_first) {
+                span->first = x0;
+            } else {
+                span->second = x0;
+            }
+        }
+    } else if (width == height) {
+        if (skip_first) {
+            x0 += advance; 
+        }
+
+        for (int32_t i = height - skip_first; i-- > 0; span++) {
+            if (set_span_first) {
+                span->first = x0;
+            } else {
+                span->second = x0;
+            }
+            x0 += advance; 
+        }
+    } else if (height > width) {
+        int32_t error = 0;
+        if (delta_x < 0) {
+            error = -height + 1;
+        }
+
+        if (skip_first) {
+            error += width;
+            if (error > 0) {
+                x0 += advance; 
+                error -= height; 
+            }
+        }
+
+        for (int32_t i = height - skip_first; i-- > 0; span++) {
+            if (set_span_first) {
+                span->first = x0;
+            } else {
+                span->second = x0;
+            }
+
+            error += width;
+            if (error > 0) {
+                x0 += advance; 
+                error -= height; 
+            }
+        }
+    } else {
+        int32_t major_advance = (width / height) * advance;
+        int32_t error_advance = width % height;
+
+        int32_t error = 0;
+        if (delta_x < 0) {
+            error = -height + 1;
+        }
+
+        if (skip_first) {   
+            x0 += major_advance;    
+
+            error += error_advance;
+            if (error > 0) {
+                x0 += advance;   
+                error -= height; 
+            }
+        }
+
+        for (int32_t i = height - skip_first; i-- > 0; span++) {
+            if (set_span_first) {
+                span->first = x0;
+            } else {
+                span->second = x0;
+            }
+            x0 += major_advance;    
+
+            error += error_advance;
+            if (error > 0) {
+                x0 += advance;      
+                error -= height; 
+            }
+        }
+    }
+
+    *span_array = span;
+}
+
+void RasterizeTriangle(Point2D* vertices, uint16_t color) {
+    std::pair<uint16_t, uint16_t>* span_ptr;
+
+    int32_t min_index = 0;
+    int32_t max_index = 0;
+
+    int32_t max_point_y = vertices->y;
+    int32_t min_point_y = vertices->y;
+
+    for (int32_t i = 1; i < 3; i++) {
+        if (vertices[i].y < min_point_y) {
+            min_index = i;
+            min_point_y = vertices[min_index].y;
+        } else if (vertices[i].y > max_point_y) {
+            max_index = i;
+            max_point_y = vertices[max_index].y;
+        }
+    }
+
+    if (min_point_y == max_point_y) return;
+
+    int32_t min_index_r = min_index;
+    int32_t min_index_l = min_index;
+
+    if (int32_t next_index = (min_index_r + 1) % 3; vertices[next_index].y == min_point_y) {
+        min_index_r = next_index;
+    }
+
+    if (int32_t prev_index = (min_index_l - 1 + 3) % 3; vertices[prev_index].y == min_point_y) {
+        min_index_l = prev_index;
+    }
+
+    int32_t left_edge_dir = -1;
+    bool top_is_flat = vertices[min_index_l].x != vertices[min_index_r].x;
+    if (top_is_flat) {
+        if (vertices[min_index_l].x > vertices[min_index_r].x) {
+            left_edge_dir = 1;
+            std::swap(min_index_l, min_index_r);
+        }
+    } else {
+        int32_t next_index = (min_index_r + 1) % 3;
+        int32_t prev_index = (min_index_l - 1 + 3) % 3;
+
+        int32_t delta_xn = vertices[next_index].x - vertices[min_index_l].x;
+        int32_t delta_yn = vertices[next_index].y - vertices[min_index_l].y;
+        int32_t delta_xp = vertices[prev_index].x - vertices[min_index_l].x;
+        int32_t delta_yp = vertices[prev_index].y - vertices[min_index_l].y;
+        
+        if (delta_xn * delta_yp - delta_yn * delta_xp < 0) {
+            left_edge_dir = 1;
+            std::swap(min_index_l, min_index_r);
+        }
+    }
+
+    int32_t span_length = max_point_y - min_point_y - 1 + top_is_flat;
+    int32_t start_y = min_point_y + 1 - top_is_flat;
+
+    if (span_length <= 0) return;
+
+    span_ptr = spans;
+    int32_t prev_index = min_index_l;
+    int32_t this_index = min_index_l;
+    bool skip_first = !top_is_flat;
+
+    do {                                
+        if (left_edge_dir > 0) {
+            this_index = (this_index + 1) % 3;
+        } else {
+            this_index = (this_index - 1 + 3) % 3;
+        }
+
+        MakeSpans<true>(vertices[prev_index].x,
+                 vertices[prev_index].y,
+                 vertices[this_index].x,
+                 vertices[this_index].y,
+                 skip_first,
+                 &span_ptr);
+                 
+         prev_index = this_index;
+         skip_first = 0;
+    } while (this_index != max_index);
+
+    span_ptr = spans;
+    prev_index = min_index_r;
+    this_index = min_index_r;
+    skip_first = !top_is_flat;
+
+    do {
+        if (left_edge_dir < 0) {
+            this_index = (this_index + 1) % 3;
+        } else {
+            this_index = (this_index - 1 + 3) % 3;
+        }
+        
+        MakeSpans<false>(vertices[prev_index].x - 1,
+                 vertices[prev_index].y,
+                 vertices[this_index].x - 1,
+                 vertices[this_index].y,
+                 skip_first,
+                 &span_ptr);
+                 
+        prev_index = this_index;
+        skip_first = 0; 
+    } while (this_index != max_index);
+
+    span_ptr = spans;
+    for (int32_t y = start_y; y < (start_y + span_length); y++, span_ptr++) {
+        for (int32_t x = span_ptr->first; x <= span_ptr->second; x++) {
+            BlitDot(x, y, color);
+        }
+    }
+}
 
 
 
@@ -160,15 +377,48 @@ void RenderFrame() {
     
     for (int i = 0; i < 500; i++) {
         uint16_t color = IntColor(COLOR_PINK);
-        uint16_t x = sinf(i) * 100.0f + 200.0f;
-        uint16_t y = cosf(i) * 100.0f + 200.0f;
+        uint16_t x = sinf(i + GetTickTime()) * 100.0f + 200.0f;
+        uint16_t y = cosf(i + GetTickTime()) * 100.0f + 200.0f;
         BlitDot(x, y, color);
     }
     
+    float turn = 3.14f / 2.5f;
+    for (float r = 0.0f; r < 3.14f * 2.0f; r += turn) {
+        uint16_t x0 = sinf(r + GetTickTime()) * 50.0f + 420.0f;
+        uint16_t y0 = cosf(r + GetTickTime()) * 50.0f + 200.0f;
+        uint16_t x1 = sinf(r + turn + GetTickTime()) * 50.0f + 420.0f;
+        uint16_t y1 = cosf(r + turn + GetTickTime()) * 50.0f + 200.0f;
+        BlitLine(x0, y0, x1, y1, IntColor(COLOR_YELLOW));
+    }
     
     float spin = GetTickTime() * 2.0f;
     
     BlitLine(420, 420, sinf(spin) * 100 + 420, cosf(spin) * 100 + 420, IntColor(COLOR_CYAN));
+    
+    float spin1 = GetTickTime() * 2.0f + 0.0f;
+    float spin2 = GetTickTime() * 2.0f + 2.1f;
+    float spin3 = GetTickTime() * 2.0f + 2.1f + 2.1f;
+    int x0 = 200 * sinf(spin1) + 300;
+    int y0 = 200 * cosf(spin1) + 300;
+    int x1 = 200 * sinf(spin2) + 300;
+    int y1 = 200 * cosf(spin2) + 300;
+    int x2 = fabsf(sinf(GetTickTime() * 1.76f)) * 200 * sinf(spin3) + 300;
+    int y2 = fabsf(sinf(GetTickTime() * 1.76f)) * 200 * cosf(spin3) + 300;
+    int x3 = 200 * sinf(spin3 + 0.4f) + 300;
+    int y3 = 200 * cosf(spin3+ 0.4f) + 300;
+    
+    //BlitLine(x0, y0, x1, y1, IntColor(COLOR_CYAN));
+    //BlitLine(x1, y1, x2, y2, IntColor(COLOR_CYAN));
+    //BlitLine(x2, y2, x0, y0, IntColor(COLOR_CYAN));
+    
+    Point2D plist[4] = {{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}};
+    
+    RasterizeTriangle(plist, IntColor(COLOR_GREEN));
+    
+    
+    Point2D plist2[3] = {{0, 0}, {0, 100}, {100, 0}};
+    
+    RasterizeTriangle(plist2, IntColor(COLOR_BLUE));
 }
 
 drawlistentry_t InsertDrawListEntry() {
