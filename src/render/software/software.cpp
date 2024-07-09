@@ -6,6 +6,9 @@
 
 #include <templates/octree.h>
 
+#include <cstdlib>
+#include <cstring>
+
 namespace tram::Render::API {
 
 Pool<SWDrawListEntry> draw_list ("render list", 500, false);
@@ -28,10 +31,11 @@ static LayerParameters layers[7];
 static vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
 static bool clear_screen = true;
 
-static float screen_width = 800.0f;
-static float screen_height = 600.0f;
+static uint16_t screen_width = 800.0f;
+static uint16_t screen_height = 600.0f;
 
-static unsigned char* screen_buffer = nullptr;
+static uint16_t* screen_buffer = nullptr;
+static float* depth_buffer = nullptr;
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
@@ -40,8 +44,8 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetScreenSize(float width, float height) {
-    screen_width = width;
-    screen_height = height;
+    //screen_width = width;
+    //screen_height = height;
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
@@ -49,10 +53,122 @@ void SetScreenClear (vec3 clear_color, bool clear) {
     screen_clear_color = clear_color;
 }
 
-void RenderFrame() {
-    for (int i = 0; i <800 * 100;i++) {
-        screen_buffer[i] = 255;
+uint16_t IntColor(vec3 color) {
+    return (((uint16_t)(31.0f * color.r)) << 11)
+         | (((uint16_t)(63.0f * color.g)) << 5)
+         | (((uint16_t)(31.0f * color.b)));
+}
+
+vec3 RGBColor(uint16_t color) {
+    float r = (color & 0xf800) >> 11;
+    float g = (color & 0x07e0) >> 5;
+    float b = color & 0x001f;
+    
+    return {r/31.0f, g/63.0f, b/31.0f};
+}
+
+void BlitDot(uint32_t x, uint32_t y, uint16_t color) {
+    if (x < 0 || x >= screen_width) return;
+    if (y < 0 || y >= screen_height) return;
+    screen_buffer[screen_width * y + x] = color;
+}
+
+// TODO: replace color parameter with a blitting function object
+void BlitLineOctant0(uint32_t x0, uint32_t y0, uint32_t delta_x, uint32_t delta_y, int32_t direction, uint32_t color) {
+    int32_t delta_y2 = delta_y * 2;
+    int32_t delta_y2_x2 = delta_y2 - (int32_t) ( delta_x * 2 );
+    int32_t error = delta_y2 - (int32_t) delta_x;
+
+    BlitDot(x0, y0, color);
+
+    while (delta_x--) {
+        if (error >= 0) {
+            y0++;
+            error += delta_y2_x2;
+        } else {
+            error += delta_y2;
+        }
+        
+        x0 += direction;
+        
+        BlitDot(x0, y0, color);
     }
+}
+
+void BlitLineOctant1(uint32_t x0, uint32_t y0, uint32_t delta_x, uint32_t delta_y, int32_t direction, uint32_t color) {
+    int32_t delta_x2 = delta_x * 2;
+    int32_t delta_x2_y2 = delta_x2 - (int32_t) ( delta_y * 2 );
+    int32_t error = delta_x2 - (int32_t) delta_y;
+
+    BlitDot(x0, y0, color);
+    
+    while (delta_y--) {
+        if (error >= 0) {
+            x0 += direction;
+            error += delta_x2_y2;
+        } else {
+            error += delta_x2;
+        }
+        
+        y0++;
+        
+        BlitDot(x0, y0, color);
+    }
+}
+
+void BlitLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint16_t color) {
+    if (y0 > y1) {
+        std::swap(y0, y1);
+        std::swap(x0, x1);
+    }
+
+    int32_t delta_x = x1 - x0;
+    int32_t delta_y = y1 - y0;
+    
+    if (delta_x > 0) {
+        if (delta_x > delta_y) {
+            BlitLineOctant0(x0, y0, delta_x, delta_y, 1, color);
+        } else {
+            BlitLineOctant1(x0, y0, delta_x, delta_y, 1, color);
+        }
+    } else {
+        delta_x = -delta_x;
+        if (delta_x > delta_y) {
+            BlitLineOctant0(x0, y0, delta_x, delta_y, -1, color);
+        } else {
+            BlitLineOctant1(x0, y0, delta_x, delta_y, -1, color);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+void RenderFrame() {
+    memset(depth_buffer, 0, 800 * 600 * sizeof(float));
+
+    if (clear_screen) {
+        uint16_t clear_color = IntColor(screen_clear_color);
+        for (int i = 0; i < 800 * 600; i++) {
+            screen_buffer[i] = clear_color;
+        }
+    }
+    
+    for (int i = 0; i < 500; i++) {
+        uint16_t color = IntColor(COLOR_PINK);
+        uint16_t x = sinf(i) * 100.0f + 200.0f;
+        uint16_t y = cosf(i) * 100.0f + 200.0f;
+        BlitDot(x, y, color);
+    }
+    
+    
+    float spin = GetTickTime() * 2.0f;
+    
+    BlitLine(420, 420, sinf(spin) * 100 + 420, cosf(spin) * 100 + 420, IntColor(COLOR_CYAN));
 }
 
 drawlistentry_t InsertDrawListEntry() {
@@ -289,8 +405,8 @@ void GetScreen(char* buffer, int w, int h) {
 }
 
 void Init() {
-
     
+    depth_buffer = (float*)malloc(800 * 600 * sizeof(float));
     
     
     // initialize the default pose
@@ -313,7 +429,7 @@ uint32_t GetMaxIndexRangeLength() {
 }
 
 void SetDevice(void* buffer) {
-    screen_buffer = (unsigned char*)buffer;
+    screen_buffer = (uint16_t*)buffer;
 }
 
 }

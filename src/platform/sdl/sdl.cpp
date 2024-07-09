@@ -152,7 +152,8 @@ void Window::Init() {
         SDL_RenderSetLogicalSize(renderer, 800, 600);
         
         frame_texture = SDL_CreateTexture(renderer,
-                               SDL_PIXELFORMAT_ARGB8888,
+                               //SDL_PIXELFORMAT_ARGB8888,
+                               SDL_PIXELFORMAT_RGB565,
                                SDL_TEXTUREACCESS_STREAMING,
                                800, 600);
         
@@ -174,7 +175,7 @@ void Window::Update() {
     }
     
     if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
-        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, 800 * sizeof(uint32_t));
+        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, 800 * sizeof(uint16_t) /*sizeof(uint32_t)*/);
         
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, frame_texture, NULL, NULL);
