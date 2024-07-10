@@ -37,7 +37,18 @@ static uint16_t screen_height = 600.0f;
 static uint16_t* screen_buffer = nullptr;
 static float* depth_buffer = nullptr;
 
-static std::pair<uint16_t, uint16_t> spans[1000];
+struct Span {
+    uint16_t begin;     // x coord on which the span starts
+    uint16_t end;       // x coord on which the span ends
+    uint16_t begin_p0;  // first point for begin
+    uint16_t begin_p1;  // second point for begin
+    int32_t begin_adv;  // how far from the first point in begin, mapped to [0x0000, 0xFFFF]
+    uint16_t end_p0;    // same as for begin, but for end
+    uint16_t end_p1;    // ditto
+    int32_t end_adv;    // ditto
+};
+
+static Span spans[1000];
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
@@ -151,8 +162,8 @@ struct Point2D {
 };
 
 template <bool set_span_first>
-void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t skip_first, std::pair<uint16_t, uint16_t>** span_array) {
-    std::pair<uint16_t, uint16_t>* span = *span_array;
+void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32_t p1, int32_t skip_first, Span** span_array) {
+    Span* span = *span_array;
 
     int32_t delta_x = x1 - x0;
     int32_t advance = delta_x > 0 ? 1 : -1;
@@ -161,26 +172,46 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t skip_firs
     int32_t height = y1 - y0;
 
     if (height <= 0) return;
+    
+    int32_t total_spans = height - skip_first;
+    int32_t point_advance = -(0xFFFF / height);
+    int32_t point_sum = 0xFFFF;
 
     if (width == 0) {
-        for (int32_t i = height - skip_first; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; span++) {
             if (set_span_first) {
-                span->first = x0;
+                span->begin = x0;
+                span->begin_p0 = p0;
+                span->begin_p1 = p1;
+                span->begin_adv = point_sum;
             } else {
-                span->second = x0;
+                span->end = x0;
+                span->end_p0 = p0;
+                span->end_p1 = p1;
+                span->end_adv = point_sum;
             }
+            
+            point_sum += point_advance;
         }
     } else if (width == height) {
         if (skip_first) {
             x0 += advance; 
         }
 
-        for (int32_t i = height - skip_first; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; span++) {
             if (set_span_first) {
-                span->first = x0;
+                span->begin = x0;
+                span->begin_p0 = p0;
+                span->begin_p1 = p1;
+                span->begin_adv = point_sum;
             } else {
-                span->second = x0;
+                span->end = x0;
+                span->end_p0 = p0;
+                span->end_p1 = p1;
+                span->end_adv = point_sum;
             }
+            
+            point_sum += point_advance;
             x0 += advance; 
         }
     } else if (height > width) {
@@ -197,13 +228,21 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t skip_firs
             }
         }
 
-        for (int32_t i = height - skip_first; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; span++) {
             if (set_span_first) {
-                span->first = x0;
+                span->begin = x0;
+                span->begin_p0 = p0;
+                span->begin_p1 = p1;
+                span->begin_adv = point_sum;
             } else {
-                span->second = x0;
+                span->end = x0;
+                span->end_p0 = p0;
+                span->end_p1 = p1;
+                span->end_adv = point_sum;
             }
 
+            point_sum += point_advance;
+            
             error += width;
             if (error > 0) {
                 x0 += advance; 
@@ -229,14 +268,22 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t skip_firs
             }
         }
 
-        for (int32_t i = height - skip_first; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; span++) {
             if (set_span_first) {
-                span->first = x0;
+                span->begin = x0;
+                span->begin_p0 = p0;
+                span->begin_p1 = p1;
+                span->begin_adv = point_sum;
             } else {
-                span->second = x0;
+                span->end = x0;
+                span->end_p0 = p0;
+                span->end_p1 = p1;
+                span->end_adv = point_sum;
             }
-            x0 += major_advance;    
-
+            
+            point_sum += point_advance;
+            x0 += major_advance;   
+ 
             error += error_advance;
             if (error > 0) {
                 x0 += advance;      
@@ -249,7 +296,7 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t skip_firs
 }
 
 void RasterizeTriangle(Point2D* vertices, uint16_t color) {
-    std::pair<uint16_t, uint16_t>* span_ptr;
+    Span* span_ptr;
 
     int32_t min_index = 0;
     int32_t max_index = 0;
@@ -320,11 +367,13 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
         }
 
         MakeSpans<true>(vertices[prev_index].x,
-                 vertices[prev_index].y,
-                 vertices[this_index].x,
-                 vertices[this_index].y,
-                 skip_first,
-                 &span_ptr);
+                        vertices[prev_index].y,
+                        vertices[this_index].x,
+                        vertices[this_index].y,
+                        prev_index,
+                        this_index,
+                        skip_first,
+                        &span_ptr);
                  
          prev_index = this_index;
          skip_first = 0;
@@ -343,11 +392,13 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
         }
         
         MakeSpans<false>(vertices[prev_index].x - 1,
-                 vertices[prev_index].y,
-                 vertices[this_index].x - 1,
-                 vertices[this_index].y,
-                 skip_first,
-                 &span_ptr);
+                         vertices[prev_index].y,
+                         vertices[this_index].x - 1,
+                         vertices[this_index].y,
+                         prev_index,
+                         this_index,
+                         skip_first,
+                         &span_ptr);
                  
         prev_index = this_index;
         skip_first = 0; 
@@ -355,8 +406,39 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
 
     span_ptr = spans;
     for (int32_t y = start_y; y < (start_y + span_length); y++, span_ptr++) {
-        for (int32_t x = span_ptr->first; x <= span_ptr->second; x++) {
-            BlitDot(x, y, color);
+        int32_t begin_mix[3] = {0, 0, 0};
+        int32_t end_mix[3] = {0, 0, 0};
+        
+        begin_mix[span_ptr->begin_p0] = span_ptr->begin_adv;
+        begin_mix[span_ptr->begin_p1] = 0xFFFF - span_ptr->begin_adv;
+        
+        end_mix[span_ptr->end_p0] = span_ptr->end_adv;
+        end_mix[span_ptr->end_p1] = 0xFFFF - span_ptr->end_adv;
+        
+        int32_t span_length = span_ptr->end - span_ptr->begin + 1;
+        
+        if (span_length <= 0) continue;
+        
+        int32_t p0_adv = (end_mix[0] - begin_mix[0]) / span_length;
+        int32_t p1_adv = (end_mix[1] - begin_mix[1]) / span_length;
+        int32_t p2_adv = (end_mix[2] - begin_mix[2]) / span_length;
+        
+        int32_t p0_mix = begin_mix[0];
+        int32_t p1_mix = begin_mix[1];
+        int32_t p2_mix = begin_mix[2];
+        
+        for (int32_t x = span_ptr->begin; x <= span_ptr->end; x++) {
+            int32_t r = (p0_mix & 0xFFFF) >> (16 - 5);
+            int32_t g = (p1_mix & 0xFFFF) >> (16 - 6);
+            int32_t b = (p2_mix & 0xFFFF) >> (16 - 5);
+            
+            int32_t c = (r << (5 + 6)) | (g << (5)) | b;
+            
+            BlitDot(x, y, c);
+            
+            p0_mix += p0_adv;
+            p1_mix += p1_adv;
+            p2_mix += p2_adv;
         }
     }
 }
@@ -412,6 +494,10 @@ void RenderFrame() {
     //BlitLine(x2, y2, x0, y0, IntColor(COLOR_CYAN));
     
     Point2D plist[4] = {{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}};
+    
+    //BlitLine(0, 0, x0, y0, IntColor(COLOR_RED));
+    //BlitLine(0, 0, x1, y1, IntColor(COLOR_GREEN));
+    //BlitLine(0, 0, x2, y2, IntColor(COLOR_BLUE));
     
     RasterizeTriangle(plist, IntColor(COLOR_GREEN));
     
