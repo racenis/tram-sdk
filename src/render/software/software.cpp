@@ -11,8 +11,11 @@
 
 namespace tram::Render::API {
 
-Pool<SWDrawListEntry> draw_list ("render list", 500, false);
-Pool<SWLight> light_list ("light list", 200, false);
+Pool<SWDrawListEntry> draw_list("render list", 500, false);
+Pool<SWLight> light_list("light list", 200, false);
+Pool<SWTexture> texture_list("texture list", 200, false);
+Pool<SWVertexArray> vertex_arrays("vertex_arrays list", 200, false);
+Pool<SWIndexArray> index_arrays("index_arrays list", 200, false);
 Octree<uint32_t> light_tree;
 std::vector<uint32_t> light_tree_ids (200);
 
@@ -444,6 +447,199 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
 }
 
 
+struct StaticVertex {
+    vec3 pos;
+    vec3 nrm;
+    vec2 tex;
+    vec2 lit;
+};
+
+struct DynamicVertex {
+    vec3 pos;
+    vec3 nrm;
+    vec2 tex;
+    vec4 wgt;
+    ivec4 ind;
+};
+
+struct ColorVertex {
+    vec3 pos;
+    vec3 col;
+};
+
+void ClipLineInClipSpace(vec4& point0, vec4& point1) {
+    vec4 p0 = point0;
+    vec4 p1 = point1;
+    
+    // clip against left plane
+    if (p0.w + p0.x < 0.0f) {
+        float a = (p0.w + p0.x) / ((p0.w + p0.x) - (p1.w + p1.x));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    if (p1.w + p1.x < 0.0f) {
+        float a = (p1.w + p1.x) / ((p1.w + p1.x) - (p0.w + p0.x));
+        p1 = (1.0f - a) * p1 + a * p0;
+    }
+    
+    // clip against right plane
+    if (p0.w - p0.x < 0.0f) {
+        float a = (p0.w - p0.x) / ((p0.w - p0.x) - (p1.w - p1.x));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    if (p1.w - p1.x < 0.0f) {
+        float a = (p1.w - p1.x) / ((p1.w - p1.x) - (p0.w - p0.x));
+        p1 = (1.0f - a) * p1 + a * p0;
+    }
+    
+    // clip against bottom plane
+    if (p0.w + p0.y < 0.0f) {
+        float a = (p0.w + p0.y) / ((p0.w + p0.y) - (p1.w + p1.y));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    if (p1.w + p1.y < 0.0f) {
+        float a = (p1.w + p1.y) / ((p1.w + p1.y) - (p0.w + p0.y));
+        p1 = (1.0f - a) * p1 + a * p0;
+    }
+    
+    // clip against top plane
+    if (p0.w - p0.y < 0.0f) {
+        float a = (p0.w - p0.y) / ((p0.w - p0.y) - (p1.w - p1.y));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    if (p1.w - p1.y < 0.0f) {
+        float a = (p1.w - p1.y) / ((p1.w - p1.y) - (p0.w - p0.y));
+        p1 = (1.0f - a) * p1 + a * p0;
+    }
+    
+    // clip against near plane
+    if (p0.w + p0.z < 0.0f) {
+        float a = (p0.w + p0.z) / ((p0.w + p0.z) - (p1.w + p1.z));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    if (p1.w + p1.z < 0.0f) {
+        float a = (p1.w + p1.z) / ((p1.w + p1.z) - (p0.w + p0.z));
+        p1 = (1.0f - a) * p1 + a * p0;
+    }
+    
+    // clip against far plane
+    if (p0.w - p0.z < 0.0f) {
+        float a = (p0.w - p0.z) / ((p0.w - p0.z) - (p1.w - p1.z));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    if (p1.w - p1.z < 0.0f) {
+        float a = (p1.w - p1.z) / ((p1.w - p1.z) - (p0.w - p0.z));
+        p1 = (1.0f - a) * p1 + a * p0;
+    }
+    
+    point0 = p0;
+    point1 = p1;
+}
+
+void PerspectiveDivision(vec4& p) {
+    if (p.w != 0.0f) {
+        p.x /= p.w;
+        p.y /= p.w;
+    }
+}
+
+void PerspectiveDivision(vec4& p0, vec4& p1) {
+    if (p0.w != 0.0f) {
+        p0.x /= p0.w;
+        p0.y /= p0.w;
+    }
+    
+    if (p1.w != 0.0f) {
+        p1.x /= p1.w;
+        p1.y /= p1.w;
+    }
+}
+
+std::pair<int32_t, int32_t> ClipSpaceToScreenSpace(const vec4 p) {
+    int32_t px = 2 + (p.x + 1.0f) * 0.5f * (screen_width - 4);
+    int32_t py = 2 + (1.0f - p.y) * 0.5f * (screen_height - 4);
+    return {px, py};
+}
+
+bool PointVisible(vec4 p) {    
+    // point outside left plane
+    if (p.w + p.x < 0.0f) {
+        return false;
+    }
+
+    // point outside right plane
+    if (p.w - p.x < 0.0f) {
+        return false;
+    }
+
+    // point outside bottom plane
+    if (p.w + p.y < 0.0f) {
+        return false;
+    }
+
+    // point outside top plane
+    if (p.w - p.y < 0.0f) {
+        return false;
+    }
+
+    // point outside near plane
+    if (p.w + p.z < 0.0f) {
+        return false;
+    }
+    
+    // point outside far plane
+    if (p.w - p.z < 0.0f) {
+        return false;
+    }
+    
+    return true;
+}
+
+bool LineVisible(vec4 p0, vec4 p1) {    
+    // line outside left plane
+    if (p0.w + p0.x < 0.0f && p1.w + p1.x < 0.0f) {
+        return false;
+    }
+
+    // line outside right plane
+    if (p0.w - p0.x < 0.0f && p1.w - p1.x < 0.0f) {
+        return false;
+    }
+
+    // line outside bottom plane
+    if (p0.w + p0.y < 0.0f && p1.w + p1.y < 0.0f) {
+        return false;
+    }
+
+    // line outside top plane
+    if (p0.w - p0.y < 0.0f && p1.w - p1.y < 0.0f) {
+        return false;
+    }
+
+    // line outside near plane
+    if (p0.w + p0.z < 0.0f && p1.w + p1.z < 0.0f) {
+        return false;
+    }
+    
+    // line outside far plane
+    if (p0.w - p0.z < 0.0f && p1.w - p1.z < 0.0f) {
+        return false;
+    }
+    
+    return true;
+}
+
+void ClipRenderLine(vec4 p0, vec4 p1, uint16_t color) {
+    if (!LineVisible(p0, p1)) return;
+    
+    ClipLineInClipSpace(p0, p1);
+    PerspectiveDivision(p0, p1);
+    
+    auto [px0, py0] = ClipSpaceToScreenSpace(p0);
+    auto [px1, py1] = ClipSpaceToScreenSpace(p1);
+    
+    BlitLine(px0, py0, px1, py1, color);
+}
+
 
 
 
@@ -457,7 +653,7 @@ void RenderFrame() {
         }
     }
     
-    for (int i = 0; i < 500; i++) {
+    /*for (int i = 0; i < 500; i++) {
         uint16_t color = IntColor(COLOR_PINK);
         uint16_t x = sinf(i + GetTickTime()) * 100.0f + 200.0f;
         uint16_t y = cosf(i + GetTickTime()) * 100.0f + 200.0f;
@@ -504,7 +700,77 @@ void RenderFrame() {
     
     Point2D plist2[3] = {{0, 0}, {0, 100}, {100, 0}};
     
-    RasterizeTriangle(plist2, IntColor(COLOR_BLUE));
+    RasterizeTriangle(plist2, IntColor(COLOR_BLUE));*/
+    
+    
+    std::vector<std::pair<uint32_t, SWDrawListEntry*>> draw_list_sorted;
+    for (auto& entry : draw_list) {
+        uint32_t sort_key = entry.layer;
+        draw_list_sorted.push_back({sort_key, &entry});
+    }
+    sort(draw_list_sorted.begin(), draw_list_sorted.end());
+    
+    uint32_t current_layer = 0;
+    for (auto [_, entry] : draw_list_sorted) {
+        if (!(entry->flags & FLAG_RENDER)) continue;
+        if (!entry->vertex_array) continue;
+
+        if (current_layer != entry->layer) {
+            // TODO: zero out zbuffer?
+        }
+        current_layer = entry->layer;
+        
+        // ...
+        
+        
+        switch (entry->vertex_array->type) {
+            case SW_STATIC_LIGHTMAPPED:
+                
+                if (!entry->index_array) continue;
+
+                for (size_t i = 0; i < entry->index_length; i++) {
+                    uint32_t triangle = (entry->index_offset + i) * 3;
+                    
+                    StaticVertex& p0 = ((StaticVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 0]];
+                    StaticVertex& p1 = ((StaticVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 1]];
+                    StaticVertex& p2 = ((StaticVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 2]];
+                    
+                    vec4 pr0 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
+                    vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
+                    vec4 pr2 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p2.pos, 1.0f);
+                    
+                    // backface culling
+                    vec2 ab = {pr1.x/pr1.w - pr0.x/pr0.w, pr1.y/pr1.w - pr0.y/pr0.w};
+                    vec2 ac = {pr2.x/pr2.w - pr0.x/pr0.w, pr2.y/pr2.w - pr0.y/pr0.w};
+                    if (glm::dot(ab, ac) < 0.0f) continue;
+                    
+                    if (PointVisible(pr0) && PointVisible(pr1) && PointVisible(pr2)) {
+                        
+                        PerspectiveDivision(pr0);
+                        PerspectiveDivision(pr1);
+                        PerspectiveDivision(pr2);
+    
+                        auto [px0, py0] = ClipSpaceToScreenSpace(pr0);
+                        auto [px1, py1] = ClipSpaceToScreenSpace(pr1);
+                        auto [px2, py2] = ClipSpaceToScreenSpace(pr2);
+                        
+                        Point2D ps[3] = {{px0, py0}, {px1, py1}, {px2, py2}};
+                        
+                        RasterizeTriangle(ps, IntColor(COLOR_WHITE));
+                    } else {
+                        ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
+                        ClipRenderLine(pr1, pr2, IntColor(COLOR_WHITE));
+                        ClipRenderLine(pr2, pr0, IntColor(COLOR_WHITE));
+                    }
+                    
+                    
+                }
+                
+            default:
+                break;
+        }
+    }
+
 }
 
 drawlistentry_t InsertDrawListEntry() {
@@ -573,10 +839,11 @@ void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_
 }
 
 void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
-    
+    // TODO: check if material_type has transparency and save that fact
 }
 
 void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* texture) {
+    std::cout << "drawlist TEXRTUREs: " << texture_count << std::endl;
     entry.sw->texture = texture->sw_texture;
 }
 
@@ -617,54 +884,162 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
 
 
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
-    /*uint32_t texture;
-    uint32_t opengl_tex_format;
+    SWTexture* texture = texture_list.AddNew();
+    
+    texture->width = width;
+    texture->height = height;
     
     switch (color_mode) {
-        case COLORMODE_R:
-            opengl_tex_format = GL_RED;
-            break;
-        case COLORMODE_RG:
-            opengl_tex_format = GL_RG;
-            break;
-        case COLORMODE_RGB:
-            opengl_tex_format = GL_RGB;
-            break;
-        case COLORMODE_RGBA:
-            opengl_tex_format = GL_RGBA;
+        case COLORMODE_R:       texture->channels = 1;  break;
+        case COLORMODE_RG:      texture->channels = 2;  break;
+        case COLORMODE_RGB:     texture->channels = 3;  break;
+        case COLORMODE_RGBA:    texture->channels = 4;  break;
     }
     
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
     switch (texture_filter) {
-        case TEXTUREFILTER_NEAREST:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            break;
-        case TEXTUREFILTER_LINEAR:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            break;
-        case TEXTUREFILTER_LINEAR_MIPMAPPED:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            break;
+        case TEXTUREFILTER_NEAREST:             texture->mode = SW_NEAREST; break;
+        case TEXTUREFILTER_LINEAR:              texture->mode = SW_BLENDED; break;
+        case TEXTUREFILTER_LINEAR_MIPMAPPED:    texture->mode = SW_BLENDED; break;
     }
-
-    assert(data);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, opengl_tex_format, width, height, 0, opengl_tex_format, GL_UNSIGNED_BYTE, data);
-        
-    glGenerateMipmap(GL_TEXTURE_2D);*/
     
-    return texturehandle_t {.sw_texture = nullptr};
+    int texture_size = texture->width * texture->height * texture->channels;
+    texture->pixels = (char*)malloc(texture_size);
+    memcpy(texture->pixels, data, texture_size);
+    
+    return texturehandle_t {.sw_texture = texture};
+}
+
+void ParseFormat(vertexarray_t& vertex_array, VertexDefinition vertex_format) {
+    auto& helper = vertex_array.sw_vertex_array->helper;
+ 
+     for (int i = 0; i < (int)vertex_format.attribute_count; i++) {
+        switch (vertex_format.attributes[i].ffp_type) {
+            case VertexAttribute::FFP_POSITION:     helper.position = i;    break;
+            case VertexAttribute::FFP_NORMAL:       helper.normal = i;      break;
+            case VertexAttribute::FFP_COLOR:        helper.color = i;      break;
+            case VertexAttribute::FFP_TEXTURE:      helper.texture = i;     break;
+            case VertexAttribute::FFP_LIGHTMAP:     helper.lightmap = i;    break;
+            case VertexAttribute::FFP_BONE_INDEX:   helper.bone_index = i;  break;
+            case VertexAttribute::FFP_BONE_WEIGHT:  helper.bone_weight = i; break;
+            case VertexAttribute::FFP_IGNORE:                               break;
+        }
+    }
+    
+    if (helper.color != -1) {
+         vertex_array.sw_vertex_array->type = SW_STATIC_COLORED;
+    }
+ 
+    if (helper.lightmap != -1) {
+        vertex_array.sw_vertex_array->type = SW_STATIC_LIGHTMAPPED;
+    }
+    
+    if (helper.bone_index != -1 && helper.bone_weight != -1) {
+        vertex_array.sw_vertex_array->type = SW_DYNAMIC_BLENDED;
+    }
+    
+    vertex_array.sw_vertex_array->format = vertex_format;
+}
+
+void PackVertices(vertexarray_t& vertex_array, void* data, size_t count) {
+    switch (vertex_array.sw_vertex_array->type) {
+        case SW_STATIC_LIGHTMAPPED: {
+            StaticVertex* verts = (StaticVertex*)malloc(sizeof(StaticVertex) * count);
+            
+            VertexAttribute pos_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.position];
+            for (size_t i = 0; i < count; i++) {
+                vec3* pos = (vec3*)((char*)data + pos_attrib.offset + pos_attrib.stride * i);
+                verts[i].pos = *pos;
+            }
+            
+            VertexAttribute nrm_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.normal];
+            for (size_t i = 0; i < count; i++) {
+                vec3* nrm = (vec3*)((char*)data + nrm_attrib.offset + nrm_attrib.stride * i);
+                verts[i].nrm = *nrm;
+            }
+            
+            VertexAttribute tex_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.texture];
+            for (size_t i = 0; i < count; i++) {
+                vec2* tex = (vec2*)((char*)data + tex_attrib.offset + tex_attrib.stride * i);
+                verts[i].tex = *tex;
+            }
+            
+            VertexAttribute lit_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.lightmap];
+            for (size_t i = 0; i < count; i++) {
+                vec2* lit = (vec2*)((char*)data + lit_attrib.offset + lit_attrib.stride * i);
+                verts[i].lit = *lit;
+            }
+            
+            vertex_array.sw_vertex_array->vertices = verts;
+            vertex_array.sw_vertex_array->vertex_count = count;
+        } break;
+        case SW_DYNAMIC_BLENDED: {
+            DynamicVertex* verts = (DynamicVertex*)malloc(sizeof(DynamicVertex) * count);
+            
+            VertexAttribute pos_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.position];
+            for (size_t i = 0; i < count; i++) {
+                vec3* pos = (vec3*)((char*)data + pos_attrib.offset + pos_attrib.stride * i);
+                verts[i].pos = *pos;
+            }
+            
+            VertexAttribute nrm_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.normal];
+            for (size_t i = 0; i < count; i++) {
+                vec3* nrm = (vec3*)((char*)data + nrm_attrib.offset + nrm_attrib.stride * i);
+                verts[i].nrm = *nrm;
+            }
+            
+            VertexAttribute tex_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.texture];
+            for (size_t i = 0; i < count; i++) {
+                vec2* tex = (vec2*)((char*)data + tex_attrib.offset + tex_attrib.stride * i);
+                verts[i].tex = *tex;
+            }
+            
+            VertexAttribute wgt_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.bone_weight];
+            for (size_t i = 0; i < count; i++) {
+                vec4* wgt = (vec4*)((char*)data + wgt_attrib.offset + wgt_attrib.stride * i);
+                verts[i].wgt = *wgt;
+            }
+            
+            VertexAttribute ind_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.bone_index];
+            for (size_t i = 0; i < count; i++) {
+                ivec4* ind = (ivec4*)((char*)data + ind_attrib.offset + ind_attrib.stride * i);
+                verts[i].ind = *ind;
+            }
+        
+            vertex_array.sw_vertex_array->vertices = verts;
+            vertex_array.sw_vertex_array->vertex_count = count;
+        } break;
+        case SW_STATIC_COLORED: {
+            ColorVertex* verts = (ColorVertex*)malloc(sizeof(ColorVertex) * count);
+            
+            VertexAttribute pos_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.position];
+            for (size_t i = 0; i < count; i++) {
+                vec3* pos = (vec3*)((char*)data + pos_attrib.offset + pos_attrib.stride * i);
+                verts[i].pos = *pos;
+            }
+            
+            VertexAttribute col_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.color];
+            for (size_t i = 0; i < count; i++) {
+                vec3* col = (vec3*)((char*)data + col_attrib.offset + col_attrib.stride * i);
+                verts[i].col = *col;
+            }
+            
+            vertex_array.sw_vertex_array->vertices = verts;
+            vertex_array.sw_vertex_array->vertex_count = count;
+        } break;
+        case SW_SPRITE:
+            assert(false);
+    }
 }
 
 void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
+    vertex_array.sw_vertex_array = vertex_arrays.AddNew();
+    ParseFormat(vertex_array, vertex_format);
+    PackVertices(vertex_array, vertex_data, vertex_size / vertex_format.attributes[0].stride);
+    
+    index_array.sw_index_array = index_arrays.AddNew();
+    index_array.sw_index_array->indices = (uint32_t*)malloc(index_size);
+    index_array.sw_index_array->index_count = index_size / sizeof(uint32_t);
+    memcpy(index_array.sw_index_array->indices, index_data, index_size);
     /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
@@ -697,6 +1072,9 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
+    vertex_array.sw_vertex_array = vertex_arrays.AddNew();
+    ParseFormat(vertex_array, vertex_format);
+    
     /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
@@ -722,6 +1100,12 @@ void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_arr
 }
 
 void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data) {
+    if (vertex_array.sw_vertex_array->vertices) {
+        free(vertex_array.sw_vertex_array->vertices);
+        vertex_array.sw_vertex_array->vertices = nullptr;
+    }
+    
+    PackVertices(vertex_array, data, data_size / vertex_array.sw_vertex_array->format.attributes[0].stride);
     //glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
     //glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
     //glBindBuffer(GL_ARRAY_BUFFER, 0);

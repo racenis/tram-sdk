@@ -33,13 +33,26 @@ struct SWTexture {
 enum SWVertexType {
     SW_STATIC_LIGHTMAPPED,
     SW_DYNAMIC_BLENDED,
+    SW_STATIC_COLORED,
     SW_SPRITE
+};
+
+struct FFPHelper {
+    int position = -1;
+    int normal = -1;
+    int color = -1;
+    int texture = -1;
+    int lightmap = -1;
+    int bone_index = -1;
+    int bone_weight = -1;
 };
 
 struct SWVertexArray {
     SWVertexType type = SW_STATIC_LIGHTMAPPED;
     void* vertices = nullptr;
     size_t vertex_count = 0;
+    VertexDefinition format;
+    FFPHelper helper;
 };
 
 struct SWIndexArray {
