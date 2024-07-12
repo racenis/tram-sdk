@@ -38,7 +38,7 @@ static uint16_t screen_width = 800.0f;
 static uint16_t screen_height = 600.0f;
 
 static uint16_t* screen_buffer = nullptr;
-static float* depth_buffer = nullptr;
+static uint16_t* depth_buffer = nullptr;
 
 struct Span {
     uint16_t begin;     // x coord on which the span starts
@@ -162,6 +162,7 @@ void BlitLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint16_t color) {
 struct Point2D {
   int32_t x;
   int32_t y;
+  uint32_t depth;
 };
 
 template <bool set_span_first>
@@ -437,7 +438,20 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
             
             int32_t c = (r << (5 + 6)) | (g << (5)) | b;
             
-            BlitDot(x, y, c);
+            
+            int32_t depth = ((p0_mix * vertices[0].depth) >> 16)
+                          + ((p1_mix * vertices[1].depth) >> 16)
+                          + ((p2_mix * vertices[2].depth) >> 16);
+            
+            //int32_t r = (depth & 0xFFFF) >> (16 - 5);
+            //int32_t g = (depth & 0xFFFF) >> (16 - 6);
+            // b = (depth & 0xFFFF) >> (16 - 5);
+            //int32_t c = (r << (5 + 6)) | (g << (5)) | b;
+            
+            if (depth_buffer[y * screen_width + x] < depth) {
+                depth_buffer[y * screen_width + x] = depth;
+                BlitDot(x, y, c);
+            }
             
             p0_mix += p0_adv;
             p1_mix += p1_adv;
@@ -535,10 +549,133 @@ void ClipLineInClipSpace(vec4& point0, vec4& point1) {
     point1 = p1;
 }
 
+vec4 ClipSinglePointLine(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+    
+    // clip against left plane
+    if (p0.w + p0.x < 0.0f) {
+        float a = (p0.w + p0.x) / ((p0.w + p0.x) - (p1.w + p1.x));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    // clip against right plane
+    if (p0.w - p0.x < 0.0f) {
+        float a = (p0.w - p0.x) / ((p0.w - p0.x) - (p1.w - p1.x));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    // clip against bottom plane
+    if (p0.w + p0.y < 0.0f) {
+        float a = (p0.w + p0.y) / ((p0.w + p0.y) - (p1.w + p1.y));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    // clip against top plane
+    if (p0.w - p0.y < 0.0f) {
+        float a = (p0.w - p0.y) / ((p0.w - p0.y) - (p1.w - p1.y));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    // clip against near plane
+    if (p0.w + p0.z < 0.0f) {
+        float a = (p0.w + p0.z) / ((p0.w + p0.z) - (p1.w + p1.z));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    // clip against far plane
+    if (p0.w - p0.z < 0.0f) {
+        float a = (p0.w - p0.z) / ((p0.w - p0.z) - (p1.w - p1.z));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    return p0;
+}
+
+vec4 ClipSinglePointLineLeftPlane(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+    
+    // clip against left plane
+    if (p0.w + p0.x < 0.0f) {
+        float a = (p0.w + p0.x) / ((p0.w + p0.x) - (p1.w + p1.x));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+
+    return p0;
+}
+
+vec4 ClipSinglePointLineRightPlane(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+    
+    // clip against right plane
+    if (p0.w - p0.x < 0.0f) {
+        float a = (p0.w - p0.x) / ((p0.w - p0.x) - (p1.w - p1.x));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+
+    return p0;
+}
+
+vec4 ClipSinglePointLineBottomPlane(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+
+    if (p0.w + p0.y < 0.0f) {
+        float a = (p0.w + p0.y) / ((p0.w + p0.y) - (p1.w + p1.y));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    return p0;
+}
+
+vec4 ClipSinglePointLineTopPlane(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+    
+    
+    // clip against top plane
+    if (p0.w - p0.y < 0.0f) {
+        float a = (p0.w - p0.y) / ((p0.w - p0.y) - (p1.w - p1.y));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+
+    
+    return p0;
+}
+
+vec4 ClipSinglePointLineNearPlane(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+    
+    // clip against near plane
+    if (p0.w + p0.z < 0.0f) {
+        float a = (p0.w + p0.z) / ((p0.w + p0.z) - (p1.w + p1.z));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    return p0;
+}
+
+vec4 ClipSinglePointLineFarPlane(vec4* outside, vec4* inside) {
+    vec4 p0 = *outside;
+    vec4 p1 = *inside;
+    
+    // clip against far plane
+    if (p0.w - p0.z < 0.0f) {
+        float a = (p0.w - p0.z) / ((p0.w - p0.z) - (p1.w - p1.z));
+        p0 = (1.0f - a) * p0 + a * p1;
+    }
+    
+    return p0;
+}
+
 void PerspectiveDivision(vec4& p) {
     if (p.w != 0.0f) {
         p.x /= p.w;
         p.y /= p.w;
+        p.z /= p.w;
     }
 }
 
@@ -594,6 +731,30 @@ bool PointVisible(vec4 p) {
     return true;
 }
 
+bool PointOutsideLeftPlane(vec4 p) {    
+    return p.w + p.x < 0.0f;
+}
+
+bool PointOutsideRightPlane(vec4 p) {    
+    return p.w - p.x < 0.0f;
+}
+
+bool PointOutsideBottomPlane(vec4 p) {    
+    return p.w + p.y < 0.0f;
+}
+
+bool PointOutsideTopPlane(vec4 p) {    
+    return p.w - p.y < 0.0f;
+}
+
+bool PointOutsideNearPlane(vec4 p) {    
+    return p.w + p.z < 0.0f;
+}
+
+bool PointOutsideFarPlane(vec4 p) {    
+    return p.w - p.z < 0.0f;
+}
+
 bool LineVisible(vec4 p0, vec4 p1) {    
     // line outside left plane
     if (p0.w + p0.x < 0.0f && p1.w + p1.x < 0.0f) {
@@ -640,8 +801,78 @@ void ClipRenderLine(vec4 p0, vec4 p1, uint16_t color) {
     BlitLine(px0, py0, px1, py1, color);
 }
 
+struct ClipTriangle {
+    vec4 points[3];
+};
 
-
+size_t ClipTriangleList(ClipTriangle* triangles) {
+    ClipTriangle tri_list_1[12] = {*triangles};
+    ClipTriangle tri_list_2[12];
+    size_t tri_count_working = 1;
+    size_t tri_count_buffered = 0;
+    ClipTriangle* working_list = tri_list_1;
+    ClipTriangle* buffer_list = tri_list_2;
+    
+    auto clip_lambda = [&](auto outside_func, auto clip_func) {
+        for (size_t i = 0; i < tri_count_working; i++) {
+            vec4* in_points[3] = {nullptr, nullptr, nullptr};
+            vec4* out_points[3] = {nullptr, nullptr, nullptr};
+            size_t in_point_count = 0;
+            size_t out_point_count = 0;
+            
+            for (size_t p = 0; p < 3; p++) {
+                if (outside_func(working_list[i].points[p])) {
+                    out_points[out_point_count++] = &working_list[i].points[p];
+                } else {
+                    in_points[in_point_count++] = &working_list[i].points[p];
+                }
+            }
+            
+            switch (out_point_count) {
+                case 0:
+                    // triangle doesn't intersect plane, don't clip
+                    buffer_list[tri_count_buffered++] = working_list[i];
+                    break;
+                case 1: {
+                    vec4 clipped0 = clip_func(out_points[0], in_points[0]);
+                    vec4 clipped1 = clip_func(out_points[0], in_points[1]);
+                    
+                    buffer_list[tri_count_buffered++] = {{*in_points[1], *in_points[0], clipped0}};
+                    buffer_list[tri_count_buffered++] = {{*in_points[1], clipped0, clipped1}};
+                    
+                    } break;
+                case 2: {
+                    vec4 clipped0 = clip_func(out_points[0], in_points[0]);
+                    vec4 clipped1 = clip_func(out_points[1], in_points[0]);
+                    
+                    buffer_list[tri_count_buffered++] = {{*in_points[0], clipped0, clipped1}};
+                    } break;
+                case 3:
+                    // triangle completely outside of plane, discard
+                    break;
+            }
+        }
+        
+        assert(tri_count_buffered != 12);
+        
+        tri_count_working = tri_count_buffered;
+        tri_count_buffered = 0;
+        std::swap(working_list, buffer_list);
+    };
+    
+    clip_lambda(PointOutsideNearPlane, ClipSinglePointLineNearPlane);
+    clip_lambda(PointOutsideFarPlane, ClipSinglePointLineFarPlane);
+    clip_lambda(PointOutsideLeftPlane, ClipSinglePointLineLeftPlane);
+    clip_lambda(PointOutsideRightPlane, ClipSinglePointLineRightPlane);
+    clip_lambda(PointOutsideBottomPlane, ClipSinglePointLineBottomPlane);
+    clip_lambda(PointOutsideTopPlane, ClipSinglePointLineTopPlane);
+    
+    for (size_t i = 0; i < tri_count_working; i++) {
+        triangles[i] = working_list[i];
+    }
+    
+    return tri_count_working;
+}
 
 void RenderFrame() {
     memset(depth_buffer, 0, 800 * 600 * sizeof(float));
@@ -742,7 +973,7 @@ void RenderFrame() {
                     // backface culling
                     vec2 ab = {pr1.x/pr1.w - pr0.x/pr0.w, pr1.y/pr1.w - pr0.y/pr0.w};
                     vec2 ac = {pr2.x/pr2.w - pr0.x/pr0.w, pr2.y/pr2.w - pr0.y/pr0.w};
-                    if (glm::dot(ab, ac) < 0.0f) continue;
+                    if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
                     
                     if (PointVisible(pr0) && PointVisible(pr1) && PointVisible(pr2)) {
                         
@@ -754,13 +985,39 @@ void RenderFrame() {
                         auto [px1, py1] = ClipSpaceToScreenSpace(pr1);
                         auto [px2, py2] = ClipSpaceToScreenSpace(pr2);
                         
-                        Point2D ps[3] = {{px0, py0}, {px1, py1}, {px2, py2}};
+                        uint32_t pz0 = (float)0xFFFF * (pr0.z/pr0.w);
+                        uint32_t pz1 = (float)0xFFFF * (pr1.z/pr1.w);
+                        uint32_t pz2 = (float)0xFFFF * (pr2.z/pr2.w);
                         
-                        RasterizeTriangle(ps, IntColor(COLOR_WHITE));
+                        Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
+                        
+                        //std::cout << 0xFFFF << " " << pz2 << std::endl; 
+                        
+                        RasterizeTriangle(ps , IntColor(COLOR_WHITE));
                     } else {
-                        ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
-                        ClipRenderLine(pr1, pr2, IntColor(COLOR_WHITE));
-                        ClipRenderLine(pr2, pr0, IntColor(COLOR_WHITE));
+                        ClipTriangle clipped[12] = {{{pr0, pr1, pr2}}};
+                        size_t tri_count = ClipTriangleList(clipped);
+                        
+                        for (size_t i = 0; i < tri_count; i++) {
+                            PerspectiveDivision(clipped[i].points[0]);
+                            PerspectiveDivision(clipped[i].points[1]);
+                            PerspectiveDivision(clipped[i].points[2]);
+        
+                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0]);
+                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1]);
+                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2]);
+                            
+                            uint32_t pz0 = (float)0xFFFF * (clipped[i].points[0].z/clipped[i].points[0].w);
+                            uint32_t pz1 = (float)0xFFFF * (clipped[i].points[1].z/clipped[i].points[1].w);
+                            uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].z/clipped[i].points[2].w);
+                            
+                            Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
+                            RasterizeTriangle(ps , IntColor(COLOR_WHITE));
+                        }
+                        
+                        //ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
+                        //ClipRenderLine(pr1, pr2, IntColor(COLOR_WHITE));
+                        //ClipRenderLine(pr2, pr0, IntColor(COLOR_WHITE));
                     }
                     
                     
@@ -1126,7 +1383,7 @@ void GetScreen(char* buffer, int w, int h) {
 
 void Init() {
     
-    depth_buffer = (float*)malloc(800 * 600 * sizeof(float));
+    depth_buffer = (uint16_t*)malloc(800 * 600 * sizeof(float));
     
     
     // initialize the default pose
