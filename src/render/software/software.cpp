@@ -592,83 +592,34 @@ vec4 ClipSinglePointLine(vec4* outside, vec4* inside) {
     return p0;
 }
 
-vec4 ClipSinglePointLineLeftPlane(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-    
-    // clip against left plane
-    if (p0.w + p0.x < 0.0f) {
-        float a = (p0.w + p0.x) / ((p0.w + p0.x) - (p1.w + p1.x));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-
-    return p0;
+vec4 ClipSinglePointLineLeftPlane(vec4 outside, vec4 inside) {
+    float a = (outside.w + outside.x) / ((outside.w + outside.x) - (inside.w + inside.x));
+    return (1.0f - a) * outside + a * inside;
 }
 
-vec4 ClipSinglePointLineRightPlane(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-    
-    // clip against right plane
-    if (p0.w - p0.x < 0.0f) {
-        float a = (p0.w - p0.x) / ((p0.w - p0.x) - (p1.w - p1.x));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-
-    return p0;
+vec4 ClipSinglePointLineRightPlane(vec4 outside, vec4 inside) {
+    float a = (outside.w - outside.x) / ((outside.w - outside.x) - (inside.w - inside.x));
+    return (1.0f - a) * outside + a * inside;
 }
 
-vec4 ClipSinglePointLineBottomPlane(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-
-    if (p0.w + p0.y < 0.0f) {
-        float a = (p0.w + p0.y) / ((p0.w + p0.y) - (p1.w + p1.y));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    return p0;
+vec4 ClipSinglePointLineBottomPlane(vec4 outside, vec4 inside) {
+    float a = (outside.w + outside.y) / ((outside.w + outside.y) - (inside.w + inside.y));
+    return (1.0f - a) * outside + a * inside;
 }
 
-vec4 ClipSinglePointLineTopPlane(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-    
-    
-    // clip against top plane
-    if (p0.w - p0.y < 0.0f) {
-        float a = (p0.w - p0.y) / ((p0.w - p0.y) - (p1.w - p1.y));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-
-    
-    return p0;
+vec4 ClipSinglePointLineTopPlane(vec4 outside, vec4 inside) {
+    float a = (outside.w - outside.y) / ((outside.w - outside.y) - (inside.w - inside.y));
+    return (1.0f - a) * outside + a * inside;
 }
 
-vec4 ClipSinglePointLineNearPlane(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-    
-    // clip against near plane
-    if (p0.w + p0.z < 0.0f) {
-        float a = (p0.w + p0.z) / ((p0.w + p0.z) - (p1.w + p1.z));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    return p0;
+vec4 ClipSinglePointLineNearPlane(vec4 outside, vec4 inside) {
+    float a = (outside.w + outside.z) / ((outside.w + outside.z) - (inside.w + inside.z));
+    return (1.0f - a) * outside + a * inside;
 }
 
-vec4 ClipSinglePointLineFarPlane(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-    
-    // clip against far plane
-    if (p0.w - p0.z < 0.0f) {
-        float a = (p0.w - p0.z) / ((p0.w - p0.z) - (p1.w - p1.z));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    return p0;
+vec4 ClipSinglePointLineFarPlane(vec4 outside, vec4 inside) {
+    float a = (outside.w - outside.z) / ((outside.w - outside.z) - (inside.w - inside.z));
+    return (1.0f - a) * outside + a * inside;
 }
 
 void PerspectiveDivision(vec4& p) {
@@ -834,16 +785,16 @@ size_t ClipTriangleList(ClipTriangle* triangles) {
                     buffer_list[tri_count_buffered++] = working_list[i];
                     break;
                 case 1: {
-                    vec4 clipped0 = clip_func(out_points[0], in_points[0]);
-                    vec4 clipped1 = clip_func(out_points[0], in_points[1]);
+                    vec4 clipped0 = clip_func(*out_points[0], *in_points[0]);
+                    vec4 clipped1 = clip_func(*out_points[0], *in_points[1]);
                     
                     buffer_list[tri_count_buffered++] = {{*in_points[1], *in_points[0], clipped0}};
                     buffer_list[tri_count_buffered++] = {{*in_points[1], clipped0, clipped1}};
                     
                     } break;
                 case 2: {
-                    vec4 clipped0 = clip_func(out_points[0], in_points[0]);
-                    vec4 clipped1 = clip_func(out_points[1], in_points[0]);
+                    vec4 clipped0 = clip_func(*out_points[0], *in_points[0]);
+                    vec4 clipped1 = clip_func(*out_points[1], *in_points[0]);
                     
                     buffer_list[tri_count_buffered++] = {{*in_points[0], clipped0, clipped1}};
                     } break;
