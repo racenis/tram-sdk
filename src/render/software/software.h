@@ -27,7 +27,7 @@ struct SWTexture {
     int height;
     int channels;
     SWTextureMode mode = SW_NEAREST;
-    char* pixels = nullptr;
+    uint8_t* pixels = nullptr;
 };
 
 enum SWVertexType {

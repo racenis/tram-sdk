@@ -40,7 +40,7 @@ static uint16_t screen_height = 600.0f;
 static uint16_t* screen_buffer = nullptr;
 static uint16_t* depth_buffer = nullptr;
 
-struct Span {
+struct Scanline {
     uint16_t begin;     // x coord on which the span starts
     uint16_t end;       // x coord on which the span ends
     uint16_t begin_p0;  // first point for begin
@@ -51,7 +51,13 @@ struct Span {
     int32_t end_adv;    // ditto
 };
 
-static Span spans[1000];
+struct ScanlineBuffer {
+    Scanline scanlines[1000];
+    int32_t scanline_length = 0;
+    int32_t start_y = 0;
+};
+
+ScanlineBuffer* scanlines = new ScanlineBuffer;
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
@@ -166,8 +172,8 @@ struct Point2D {
 };
 
 template <bool set_span_first>
-void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32_t p1, int32_t skip_first, Span** span_array) {
-    Span* span = *span_array;
+void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32_t p1, int32_t skip_first, Scanline** scanline_array) {
+    Scanline* scanline = *scanline_array;
 
     int32_t delta_x = x1 - x0;
     int32_t advance = delta_x > 0 ? 1 : -1;
@@ -182,17 +188,17 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32
     int32_t point_sum = 0xFFFF;
 
     if (width == 0) {
-        for (int32_t i = total_spans; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; scanline++) {
             if (set_span_first) {
-                span->begin = x0;
-                span->begin_p0 = p0;
-                span->begin_p1 = p1;
-                span->begin_adv = point_sum;
+                scanline->begin = x0;
+                scanline->begin_p0 = p0;
+                scanline->begin_p1 = p1;
+                scanline->begin_adv = point_sum;
             } else {
-                span->end = x0;
-                span->end_p0 = p0;
-                span->end_p1 = p1;
-                span->end_adv = point_sum;
+                scanline->end = x0;
+                scanline->end_p0 = p0;
+                scanline->end_p1 = p1;
+                scanline->end_adv = point_sum;
             }
             
             point_sum += point_advance;
@@ -202,17 +208,17 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32
             x0 += advance; 
         }
 
-        for (int32_t i = total_spans; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; scanline++) {
             if (set_span_first) {
-                span->begin = x0;
-                span->begin_p0 = p0;
-                span->begin_p1 = p1;
-                span->begin_adv = point_sum;
+                scanline->begin = x0;
+                scanline->begin_p0 = p0;
+                scanline->begin_p1 = p1;
+                scanline->begin_adv = point_sum;
             } else {
-                span->end = x0;
-                span->end_p0 = p0;
-                span->end_p1 = p1;
-                span->end_adv = point_sum;
+                scanline->end = x0;
+                scanline->end_p0 = p0;
+                scanline->end_p1 = p1;
+                scanline->end_adv = point_sum;
             }
             
             point_sum += point_advance;
@@ -232,17 +238,17 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32
             }
         }
 
-        for (int32_t i = total_spans; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; scanline++) {
             if (set_span_first) {
-                span->begin = x0;
-                span->begin_p0 = p0;
-                span->begin_p1 = p1;
-                span->begin_adv = point_sum;
+                scanline->begin = x0;
+                scanline->begin_p0 = p0;
+                scanline->begin_p1 = p1;
+                scanline->begin_adv = point_sum;
             } else {
-                span->end = x0;
-                span->end_p0 = p0;
-                span->end_p1 = p1;
-                span->end_adv = point_sum;
+                scanline->end = x0;
+                scanline->end_p0 = p0;
+                scanline->end_p1 = p1;
+                scanline->end_adv = point_sum;
             }
 
             point_sum += point_advance;
@@ -272,17 +278,17 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32
             }
         }
 
-        for (int32_t i = total_spans; i-- > 0; span++) {
+        for (int32_t i = total_spans; i-- > 0; scanline++) {
             if (set_span_first) {
-                span->begin = x0;
-                span->begin_p0 = p0;
-                span->begin_p1 = p1;
-                span->begin_adv = point_sum;
+                scanline->begin = x0;
+                scanline->begin_p0 = p0;
+                scanline->begin_p1 = p1;
+                scanline->begin_adv = point_sum;
             } else {
-                span->end = x0;
-                span->end_p0 = p0;
-                span->end_p1 = p1;
-                span->end_adv = point_sum;
+                scanline->end = x0;
+                scanline->end_p0 = p0;
+                scanline->end_p1 = p1;
+                scanline->end_adv = point_sum;
             }
             
             point_sum += point_advance;
@@ -296,11 +302,11 @@ void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32
         }
     }
 
-    *span_array = span;
+    *scanline_array = scanline;
 }
 
-void RasterizeTriangle(Point2D* vertices, uint16_t color) {
-    Span* span_ptr;
+void ScanlineConvertTriangle(ScanlineBuffer* scanlines, Point2D* vertices) {
+    Scanline* span_ptr;
 
     int32_t min_index = 0;
     int32_t max_index = 0;
@@ -353,12 +359,12 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
         }
     }
 
-    int32_t span_length = max_point_y - min_point_y - 1 + top_is_flat;
-    int32_t start_y = min_point_y + 1 - top_is_flat;
+    /*int32_t*/ scanlines->scanline_length = max_point_y - min_point_y - 1 + top_is_flat;
+    /*int32_t*/ scanlines->start_y = min_point_y + 1 - top_is_flat;
 
-    if (span_length <= 0) return;
+    if (scanlines->scanline_length <= 0) return;
 
-    span_ptr = spans;
+    span_ptr = scanlines->scanlines;
     int32_t prev_index = min_index_l;
     int32_t this_index = min_index_l;
     bool skip_first = !top_is_flat;
@@ -383,7 +389,7 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
          skip_first = 0;
     } while (this_index != max_index);
 
-    span_ptr = spans;
+    span_ptr = scanlines->scanlines;
     prev_index = min_index_r;
     this_index = min_index_r;
     skip_first = !top_is_flat;
@@ -407,9 +413,11 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
         prev_index = this_index;
         skip_first = 0; 
     } while (this_index != max_index);
+}
 
-    span_ptr = spans;
-    for (int32_t y = start_y; y < (start_y + span_length); y++, span_ptr++) {
+void RasterizeTriangle(ScanlineBuffer* scanlines, Point2D* vertices) {
+    Scanline* span_ptr = scanlines->scanlines;
+    for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
         int32_t begin_mix[3] = {0, 0, 0};
         int32_t end_mix[3] = {0, 0, 0};
         
@@ -460,6 +468,96 @@ void RasterizeTriangle(Point2D* vertices, uint16_t color) {
     }
 }
 
+void RasterizeTriangleLightmapped(ScanlineBuffer* scanlines, Point2D* vertices, uint16_t color, vec2* texture_uvs, vec2* lightmap_uvs, SWTexture* texture, SWTexture* lightmap) {
+    int32_t p0_tex_x = texture_uvs[0].x * (float)texture->width * (float)(0xFF + 1);
+    int32_t p0_tex_y = texture_uvs[0].y * (float)texture->height * (float)(0xFF + 1);
+    int32_t p1_tex_x = texture_uvs[1].x * (float)texture->width * (float)(0xFF + 1);
+    int32_t p1_tex_y = texture_uvs[1].y * (float)texture->height * (float)(0xFF + 1);
+    int32_t p2_tex_x = texture_uvs[2].x * (float)texture->width * (float)(0xFF + 1);
+    int32_t p2_tex_y = texture_uvs[2].y * (float)texture->height * (float)(0xFF + 1);
+    
+    int32_t p0_lit_x = lightmap_uvs[0].x * (float)lightmap->width * (float)(0xFF + 1);
+    int32_t p0_lit_y = lightmap_uvs[0].y * (float)lightmap->height * (float)(0xFF + 1);
+    int32_t p1_lit_x = lightmap_uvs[1].x * (float)lightmap->width * (float)(0xFF + 1);
+    int32_t p1_lit_y = lightmap_uvs[1].y * (float)lightmap->height * (float)(0xFF + 1);
+    int32_t p2_lit_x = lightmap_uvs[2].x * (float)lightmap->width * (float)(0xFF + 1);
+    int32_t p2_lit_y = lightmap_uvs[2].y * (float)lightmap->height * (float)(0xFF + 1);
+    
+    Scanline* span_ptr = scanlines->scanlines;
+    for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
+        int32_t begin_mix[3] = {0, 0, 0};
+        int32_t end_mix[3] = {0, 0, 0};
+        
+        begin_mix[span_ptr->begin_p0] = span_ptr->begin_adv;
+        begin_mix[span_ptr->begin_p1] = 0xFFFF - span_ptr->begin_adv;
+        
+        end_mix[span_ptr->end_p0] = span_ptr->end_adv;
+        end_mix[span_ptr->end_p1] = 0xFFFF - span_ptr->end_adv;
+        
+        int32_t span_length = span_ptr->end - span_ptr->begin + 1;
+        
+        if (span_length <= 0) continue;
+        
+        int32_t depth_begin = ((begin_mix[0] * vertices[0].depth) >> 16) + ((begin_mix[1] * vertices[1].depth) >> 16) + ((begin_mix[2] * vertices[2].depth) >> 16);
+        int32_t depth_end = ((end_mix[0] * vertices[0].depth) >> 16) + ((end_mix[1] * vertices[1].depth) >> 16) + ((end_mix[2] * vertices[2].depth) >> 16);
+        
+        int32_t depth_adv = (depth_end - depth_begin) / span_length;
+        int32_t depth_mix = depth_begin;
+        
+        int32_t tex_x_begin = (((begin_mix[0] >> 8) * p0_tex_x) >> 8) + (((begin_mix[1] >> 8) * p1_tex_x) >> 8) + (((begin_mix[2] >> 8) * p2_tex_x) >> 8);
+        int32_t tex_y_begin = (((begin_mix[0] >> 8) * p0_tex_y) >> 8) + (((begin_mix[1] >> 8) * p1_tex_y) >> 8) + (((begin_mix[2] >> 8) * p2_tex_y) >> 8);
+        
+        int32_t tex_x_end = (((end_mix[0] >> 8) * p0_tex_x) >> 8) + (((end_mix[1] >> 8) * p1_tex_x) >> 8) + (((end_mix[2] >> 8) * p2_tex_x) >> 8);
+        int32_t tex_y_end = (((end_mix[0] >> 8) * p0_tex_y) >> 8) + (((end_mix[1] >> 8) * p1_tex_y) >> 8) + (((end_mix[2] >> 8) * p2_tex_y) >> 8);
+        
+        int32_t tex_x_adv = (tex_x_end - tex_x_begin) / span_length;
+        int32_t tex_y_adv = (tex_y_end - tex_y_begin) / span_length;
+        
+        int32_t tex_x_mix = tex_x_begin;
+        int32_t tex_y_mix = tex_y_begin;
+        
+        int32_t lit_x_begin = (((begin_mix[0] >> 8) * p0_lit_x) >> 8) + (((begin_mix[1] >> 8) * p1_lit_x) >> 8) + (((begin_mix[2] >> 8) * p2_lit_x) >> 8);
+        int32_t lit_y_begin = (((begin_mix[0] >> 8) * p0_lit_y) >> 8) + (((begin_mix[1] >> 8) * p1_lit_y) >> 8) + (((begin_mix[2] >> 8) * p2_lit_y) >> 8);
+        
+        int32_t lit_x_end = (((end_mix[0] >> 8) * p0_lit_x) >> 8) + (((end_mix[1] >> 8) * p1_lit_x) >> 8) + (((end_mix[2] >> 8) * p2_lit_x) >> 8);
+        int32_t lit_y_end = (((end_mix[0] >> 8) * p0_lit_y) >> 8) + (((end_mix[1] >> 8) * p1_lit_y) >> 8) + (((end_mix[2] >> 8) * p2_lit_y) >> 8);
+        
+        int32_t lit_x_adv = (lit_x_end - lit_x_begin) / span_length;
+        int32_t lit_y_adv = (lit_y_end - lit_y_begin) / span_length;
+        
+        int32_t lit_x_mix = lit_x_begin;
+        int32_t lit_y_mix = lit_y_begin;
+        
+        for (int32_t x = span_ptr->begin; x <= span_ptr->end; x++) {
+            depth_mix += depth_adv;
+            
+            tex_x_mix += tex_x_adv;
+            tex_y_mix += tex_y_adv;
+            
+            lit_x_mix += lit_x_adv;
+            lit_y_mix += lit_y_adv;
+            
+            if (depth_buffer[y * screen_width + x] > depth_mix) continue;
+            
+            int32_t tex_x = (tex_x_mix >> 8) & (texture->width - 1);
+            int32_t tex_y = (tex_y_mix >> 8) & (texture->width - 1);
+            int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
+            
+            int32_t lit_x = (lit_x_mix >> 8) & (lightmap->width - 1);
+            int32_t lit_y = (lit_y_mix >> 8) & (lightmap->width - 1);
+            int32_t lit_offset = (lightmap->width * lit_y + lit_x) * lightmap->channels;
+            
+            uint16_t r = (((int32_t)texture->pixels[tex_offset + 0] * (int32_t)lightmap->pixels[lit_offset + 0]) & 0xFFFF) >> (16 - 5);
+            uint16_t g = (((int32_t)texture->pixels[tex_offset + 1] * (int32_t)lightmap->pixels[lit_offset + 1]) & 0xFFFF) >> (16 - 6);
+            uint16_t b = (((int32_t)texture->pixels[tex_offset + 2] * (int32_t)lightmap->pixels[lit_offset + 2]) & 0xFFFF) >> (16 - 5);
+            
+            uint16_t c = (r << (5 + 6)) | (g << (5)) | b;
+            
+            depth_buffer[y * screen_width + x] = depth_mix;
+            BlitDot(x, y, c);
+        }
+    }
+}
 
 struct StaticVertex {
     vec3 pos;
@@ -757,6 +855,8 @@ struct ClipTriangle {
 };
 
 size_t ClipTriangleList(ClipTriangle* triangles) {
+    // accidentally messed up calculations, this array should actually be 2^6? large?
+    // we could also fold in tri_list_1 into triangles
     ClipTriangle tri_list_1[12] = {*triangles};
     ClipTriangle tri_list_2[12];
     size_t tri_count_working = 1;
@@ -944,7 +1044,11 @@ void RenderFrame() {
                         
                         //std::cout << 0xFFFF << " " << pz2 << std::endl; 
                         
-                        RasterizeTriangle(ps , IntColor(COLOR_WHITE));
+                        vec2 texture_uvs[3] = {p0.tex, p1.tex, p2.tex};
+                        vec2 lightmap_uvs[3] = {p0.lit, p1.lit, p2.lit};
+                        
+                        ScanlineConvertTriangle(scanlines, ps);
+                        RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->texture, entry->lightmap);
                     } else {
                         ClipTriangle clipped[12] = {{{pr0, pr1, pr2}}};
                         size_t tri_count = ClipTriangleList(clipped);
@@ -963,7 +1067,8 @@ void RenderFrame() {
                             uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].z/clipped[i].points[2].w);
                             
                             Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                            RasterizeTriangle(ps , IntColor(COLOR_WHITE));
+                            ScanlineConvertTriangle(scanlines, ps);
+                            RasterizeTriangle(scanlines, ps/*, IntColor(COLOR_WHITE)*/);
                         }
                         
                         //ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
@@ -1111,7 +1216,7 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
     }
     
     int texture_size = texture->width * texture->height * texture->channels;
-    texture->pixels = (char*)malloc(texture_size);
+    texture->pixels = (uint8_t*)malloc(texture_size);
     memcpy(texture->pixels, data, texture_size);
     
     return texturehandle_t {.sw_texture = texture};
