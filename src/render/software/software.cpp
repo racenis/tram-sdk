@@ -1475,6 +1475,22 @@ void RenderFrame() {
                 }
                 
                 break;
+                
+            case SW_STATIC_COLORED:
+                
+                if (!(entry->flags & FLAG_DRAW_LINES)) continue;
+                
+                for (size_t i = 0; i < entry->index_length / 2; i++) {
+                    ColorVertex& p0 = ((ColorVertex*)entry->vertex_array->vertices)[i * 2 + 0];
+                    ColorVertex& p1 = ((ColorVertex*)entry->vertex_array->vertices)[i * 2 + 1];
+                    
+                    vec4 pr0 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
+                    vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
+                    
+                    ClipRenderLine(pr0, pr1, IntColor(p0.col));
+                }
+                
+                break;
             default:
                 break;
         }
