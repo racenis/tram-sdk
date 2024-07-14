@@ -559,6 +559,142 @@ void RasterizeTriangleLightmapped(ScanlineBuffer* scanlines, Point2D* vertices, 
     }
 }
 
+void RasterizeTriangleShadedTextured(ScanlineBuffer* scanlines, Point2D* vertices, vec3* colors, vec3* speculars, vec2* texture_uvs, SWTexture* texture) {
+    int32_t p0_tex_x = texture_uvs[0].x * (float)texture->width * (float)(0xFF + 1);
+    int32_t p0_tex_y = texture_uvs[0].y * (float)texture->height * (float)(0xFF + 1);
+    int32_t p1_tex_x = texture_uvs[1].x * (float)texture->width * (float)(0xFF + 1);
+    int32_t p1_tex_y = texture_uvs[1].y * (float)texture->height * (float)(0xFF + 1);
+    int32_t p2_tex_x = texture_uvs[2].x * (float)texture->width * (float)(0xFF + 1);
+    int32_t p2_tex_y = texture_uvs[2].y * (float)texture->height * (float)(0xFF + 1);
+    
+    int32_t p0_col_r = fabsf(colors[0].r) * (float)(0xFFFF + 1);
+    int32_t p0_col_g = fabsf(colors[0].g) * (float)(0xFFFF + 1);
+    int32_t p0_col_b = fabsf(colors[0].b) * (float)(0xFFFF + 1);
+    int32_t p1_col_r = fabsf(colors[1].r) * (float)(0xFFFF + 1);
+    int32_t p1_col_g = fabsf(colors[1].g) * (float)(0xFFFF + 1);
+    int32_t p1_col_b = fabsf(colors[1].b) * (float)(0xFFFF + 1);
+    int32_t p2_col_r = fabsf(colors[2].r) * (float)(0xFFFF + 1);
+    int32_t p2_col_g = fabsf(colors[2].g) * (float)(0xFFFF + 1);
+    int32_t p2_col_b = fabsf(colors[2].b) * (float)(0xFFFF + 1);
+    
+    int32_t p0_spc_r = fabsf(speculars[0].r) * (float)(0xFFFF + 1);
+    int32_t p0_spc_g = fabsf(speculars[0].g) * (float)(0xFFFF + 1);
+    int32_t p0_spc_b = fabsf(speculars[0].b) * (float)(0xFFFF + 1);
+    int32_t p1_spc_r = fabsf(speculars[1].r) * (float)(0xFFFF + 1);
+    int32_t p1_spc_g = fabsf(speculars[1].g) * (float)(0xFFFF + 1);
+    int32_t p1_spc_b = fabsf(speculars[1].b) * (float)(0xFFFF + 1);
+    int32_t p2_spc_r = fabsf(speculars[2].r) * (float)(0xFFFF + 1);
+    int32_t p2_spc_g = fabsf(speculars[2].g) * (float)(0xFFFF + 1);
+    int32_t p2_spc_b = fabsf(speculars[2].b) * (float)(0xFFFF + 1);
+    
+    //std::cout << colors[0].r << " " << colors[1].r << " " << 
+    
+    
+    Scanline* span_ptr = scanlines->scanlines;
+    for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
+        int32_t begin_mix[3] = {0, 0, 0};
+        int32_t end_mix[3] = {0, 0, 0};
+        
+        begin_mix[span_ptr->begin_p0] = span_ptr->begin_adv;
+        begin_mix[span_ptr->begin_p1] = 0xFFFF - span_ptr->begin_adv;
+        
+        end_mix[span_ptr->end_p0] = span_ptr->end_adv;
+        end_mix[span_ptr->end_p1] = 0xFFFF - span_ptr->end_adv;
+        
+        int32_t span_length = span_ptr->end - span_ptr->begin + 1;
+        
+        if (span_length <= 0) continue;
+        
+        int32_t depth_begin = ((begin_mix[0] * vertices[0].depth) >> 16) + ((begin_mix[1] * vertices[1].depth) >> 16) + ((begin_mix[2] * vertices[2].depth) >> 16);
+        int32_t depth_end = ((end_mix[0] * vertices[0].depth) >> 16) + ((end_mix[1] * vertices[1].depth) >> 16) + ((end_mix[2] * vertices[2].depth) >> 16);
+        
+        int32_t depth_adv = (depth_end - depth_begin) / span_length;
+        int32_t depth_mix = depth_begin;
+        
+        int32_t tex_x_begin = (((begin_mix[0] >> 8) * p0_tex_x) >> 8) + (((begin_mix[1] >> 8) * p1_tex_x) >> 8) + (((begin_mix[2] >> 8) * p2_tex_x) >> 8);
+        int32_t tex_y_begin = (((begin_mix[0] >> 8) * p0_tex_y) >> 8) + (((begin_mix[1] >> 8) * p1_tex_y) >> 8) + (((begin_mix[2] >> 8) * p2_tex_y) >> 8);
+        
+        int32_t tex_x_end = (((end_mix[0] >> 8) * p0_tex_x) >> 8) + (((end_mix[1] >> 8) * p1_tex_x) >> 8) + (((end_mix[2] >> 8) * p2_tex_x) >> 8);
+        int32_t tex_y_end = (((end_mix[0] >> 8) * p0_tex_y) >> 8) + (((end_mix[1] >> 8) * p1_tex_y) >> 8) + (((end_mix[2] >> 8) * p2_tex_y) >> 8);
+        
+        int32_t tex_x_adv = (tex_x_end - tex_x_begin) / span_length;
+        int32_t tex_y_adv = (tex_y_end - tex_y_begin) / span_length;
+        
+        int32_t tex_x_mix = tex_x_begin;
+        int32_t tex_y_mix = tex_y_begin;
+        
+        int32_t col_r_begin = (((begin_mix[0] >> 8) * p0_col_r) >> 8) + (((begin_mix[1] >> 8) * p1_col_r) >> 8) + (((begin_mix[2] >> 8) * p2_col_r) >> 8);
+        int32_t col_g_begin = (((begin_mix[0] >> 8) * p0_col_g) >> 8) + (((begin_mix[1] >> 8) * p1_col_g) >> 8) + (((begin_mix[2] >> 8) * p2_col_g) >> 8);
+        int32_t col_b_begin = (((begin_mix[0] >> 8) * p0_col_b) >> 8) + (((begin_mix[1] >> 8) * p1_col_b) >> 8) + (((begin_mix[2] >> 8) * p2_col_b) >> 8);
+        
+        int32_t col_r_end = (((end_mix[0] >> 8) * p0_col_r) >> 8) + (((end_mix[1] >> 8) * p1_col_r) >> 8) + (((end_mix[2] >> 8) * p2_col_r) >> 8);
+        int32_t col_g_end = (((end_mix[0] >> 8) * p0_col_g) >> 8) + (((end_mix[1] >> 8) * p1_col_g) >> 8) + (((end_mix[2] >> 8) * p2_col_g) >> 8);
+        int32_t col_b_end = (((end_mix[0] >> 8) * p0_col_b) >> 8) + (((end_mix[1] >> 8) * p1_col_b) >> 8) + (((end_mix[2] >> 8) * p2_col_b) >> 8);
+        
+        int32_t col_r_adv = (col_r_end - col_r_begin) / span_length;
+        int32_t col_g_adv = (col_g_end - col_g_begin) / span_length;
+        int32_t col_b_adv = (col_b_end - col_b_begin) / span_length;
+        
+        int32_t col_r_mix = col_r_begin;
+        int32_t col_g_mix = col_g_begin;
+        int32_t col_b_mix = col_b_begin;
+        
+        int32_t spc_r_begin = (((begin_mix[0] >> 8) * p0_spc_r) >> 8) + (((begin_mix[1] >> 8) * p1_spc_r) >> 8) + (((begin_mix[2] >> 8) * p2_spc_r) >> 8);
+        int32_t spc_g_begin = (((begin_mix[0] >> 8) * p0_spc_g) >> 8) + (((begin_mix[1] >> 8) * p1_spc_g) >> 8) + (((begin_mix[2] >> 8) * p2_spc_g) >> 8);
+        int32_t spc_b_begin = (((begin_mix[0] >> 8) * p0_spc_b) >> 8) + (((begin_mix[1] >> 8) * p1_spc_b) >> 8) + (((begin_mix[2] >> 8) * p2_spc_b) >> 8);
+        
+        int32_t spc_r_end = (((end_mix[0] >> 8) * p0_spc_r) >> 8) + (((end_mix[1] >> 8) * p1_spc_r) >> 8) + (((end_mix[2] >> 8) * p2_spc_r) >> 8);
+        int32_t spc_g_end = (((end_mix[0] >> 8) * p0_spc_g) >> 8) + (((end_mix[1] >> 8) * p1_spc_g) >> 8) + (((end_mix[2] >> 8) * p2_spc_g) >> 8);
+        int32_t spc_b_end = (((end_mix[0] >> 8) * p0_spc_b) >> 8) + (((end_mix[1] >> 8) * p1_spc_b) >> 8) + (((end_mix[2] >> 8) * p2_spc_b) >> 8);
+        
+        int32_t spc_r_adv = (spc_r_end - spc_r_begin) / span_length;
+        int32_t spc_g_adv = (spc_g_end - spc_g_begin) / span_length;
+        int32_t spc_b_adv = (spc_b_end - spc_b_begin) / span_length;
+        
+        int32_t spc_r_mix = spc_r_begin;
+        int32_t spc_g_mix = spc_g_begin;
+        int32_t spc_b_mix = spc_b_begin;
+        
+        for (int32_t x = span_ptr->begin; x <= span_ptr->end; x++) {
+            depth_mix += depth_adv;
+            
+            tex_x_mix += tex_x_adv;
+            tex_y_mix += tex_y_adv;
+            
+            col_r_mix += col_r_adv;
+            col_g_mix += col_g_adv;
+            col_b_mix += col_b_adv;
+            
+            spc_r_mix += spc_r_adv;
+            spc_g_mix += spc_g_adv;
+            spc_b_mix += spc_b_adv;
+            
+            if (depth_buffer[y * screen_width + x] > depth_mix) continue;
+            
+            int32_t tex_x = (tex_x_mix >> 8) & (texture->width - 1);
+            int32_t tex_y = (tex_y_mix >> 8) & (texture->width - 1);
+            int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
+            
+            int32_t r = (((int32_t)texture->pixels[tex_offset + 0] * (col_r_mix >> 8) + spc_r_mix)) >> (16 - 5);
+            int32_t g = (((int32_t)texture->pixels[tex_offset + 1] * (col_g_mix >> 8) + spc_g_mix)) >> (16 - 6);
+            int32_t b = (((int32_t)texture->pixels[tex_offset + 2] * (col_b_mix >> 8) + spc_b_mix)) >> (16 - 5);
+            
+            if (r & ~0x1F) r = 0x1F;
+            if (g & ~0x3F) g = 0x3F;
+            if (b & ~0x1F) b = 0x1F;
+            
+            //uint16_t r = ((col_r_mix) & 0xFFFF) >> (16 - 5);
+            //uint16_t g = ((col_g_mix) & 0xFFFF) >> (16 - 6);
+            //uint16_t b = ((col_b_mix) & 0xFFFF) >> (16 - 5);
+            
+            uint16_t c = (r << (5 + 6)) | (g << (5)) | b;
+            
+            depth_buffer[y * screen_width + x] = depth_mix;
+            BlitDot(x, y, c);
+        }
+    }
+}
+
 struct StaticVertex {
     vec3 pos;
     vec3 nrm;
@@ -720,6 +856,45 @@ vec4 ClipSinglePointLineFarPlane(vec4 outside, vec4 inside) {
     return (1.0f - a) * outside + a * inside;
 }
 
+struct ClipPoint {
+    vec4 coordinate;
+    vec3 barycentric;
+};
+
+struct ClipTriangle {
+    ClipPoint points[3];
+};
+
+ClipPoint ClipSingleClipPointLineLeftPlane(ClipPoint outside, ClipPoint inside) {
+    float a = (outside.coordinate.w + outside.coordinate.x) / ((outside.coordinate.w + outside.coordinate.x) - (inside.coordinate.w + inside.coordinate.x));
+    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
+}
+
+ClipPoint ClipSingleClipPointLineRightPlane(ClipPoint outside, ClipPoint inside) {
+    float a = (outside.coordinate.w - outside.coordinate.x) / ((outside.coordinate.w - outside.coordinate.x) - (inside.coordinate.w - inside.coordinate.x));
+    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
+}
+
+ClipPoint ClipSingleClipPointLineBottomPlane(ClipPoint outside, ClipPoint inside) {
+    float a = (outside.coordinate.w + outside.coordinate.y) / ((outside.coordinate.w + outside.coordinate.y) - (inside.coordinate.w + inside.coordinate.y));
+    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
+}
+
+ClipPoint ClipSingleClipPointLineTopPlane(ClipPoint outside, ClipPoint inside) {
+    float a = (outside.coordinate.w - outside.coordinate.y) / ((outside.coordinate.w - outside.coordinate.y) - (inside.coordinate.w - inside.coordinate.y));
+    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
+}
+
+ClipPoint ClipSingleClipPointLineNearPlane(ClipPoint outside, ClipPoint inside) {
+    float a = (outside.coordinate.w + outside.coordinate.z) / ((outside.coordinate.w + outside.coordinate.z) - (inside.coordinate.w + inside.coordinate.z));
+    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
+}
+
+ClipPoint ClipSingleClipPointLineFarPlane(ClipPoint outside, ClipPoint inside) {
+    float a = (outside.coordinate.w - outside.coordinate.z) / ((outside.coordinate.w - outside.coordinate.z) - (inside.coordinate.w - inside.coordinate.z));
+    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
+}
+
 void PerspectiveDivision(vec4& p) {
     if (p.w != 0.0f) {
         p.x /= p.w;
@@ -850,10 +1025,6 @@ void ClipRenderLine(vec4 p0, vec4 p1, uint16_t color) {
     BlitLine(px0, py0, px1, py1, color);
 }
 
-struct ClipTriangle {
-    vec4 points[3];
-};
-
 size_t ClipTriangleList(ClipTriangle* triangles) {
     // accidentally messed up calculations, this array should actually be 2^6? large?
     // we could also fold in tri_list_1 into triangles
@@ -866,13 +1037,13 @@ size_t ClipTriangleList(ClipTriangle* triangles) {
     
     auto clip_lambda = [&](auto outside_func, auto clip_func) {
         for (size_t i = 0; i < tri_count_working; i++) {
-            vec4* in_points[3] = {nullptr, nullptr, nullptr};
-            vec4* out_points[3] = {nullptr, nullptr, nullptr};
+            ClipPoint* in_points[3] = {nullptr, nullptr, nullptr};
+            ClipPoint* out_points[3] = {nullptr, nullptr, nullptr};
             size_t in_point_count = 0;
             size_t out_point_count = 0;
             
             for (size_t p = 0; p < 3; p++) {
-                if (outside_func(working_list[i].points[p])) {
+                if (outside_func(working_list[i].points[p].coordinate)) {
                     out_points[out_point_count++] = &working_list[i].points[p];
                 } else {
                     in_points[in_point_count++] = &working_list[i].points[p];
@@ -885,16 +1056,16 @@ size_t ClipTriangleList(ClipTriangle* triangles) {
                     buffer_list[tri_count_buffered++] = working_list[i];
                     break;
                 case 1: {
-                    vec4 clipped0 = clip_func(*out_points[0], *in_points[0]);
-                    vec4 clipped1 = clip_func(*out_points[0], *in_points[1]);
+                    ClipPoint clipped0 = clip_func(*out_points[0], *in_points[0]);
+                    ClipPoint clipped1 = clip_func(*out_points[0], *in_points[1]);
                     
                     buffer_list[tri_count_buffered++] = {{*in_points[1], *in_points[0], clipped0}};
                     buffer_list[tri_count_buffered++] = {{*in_points[1], clipped0, clipped1}};
                     
                     } break;
                 case 2: {
-                    vec4 clipped0 = clip_func(*out_points[0], *in_points[0]);
-                    vec4 clipped1 = clip_func(*out_points[1], *in_points[0]);
+                    ClipPoint clipped0 = clip_func(*out_points[0], *in_points[0]);
+                    ClipPoint clipped1 = clip_func(*out_points[1], *in_points[0]);
                     
                     buffer_list[tri_count_buffered++] = {{*in_points[0], clipped0, clipped1}};
                     } break;
@@ -911,12 +1082,12 @@ size_t ClipTriangleList(ClipTriangle* triangles) {
         std::swap(working_list, buffer_list);
     };
     
-    clip_lambda(PointOutsideNearPlane, ClipSinglePointLineNearPlane);
-    clip_lambda(PointOutsideFarPlane, ClipSinglePointLineFarPlane);
-    clip_lambda(PointOutsideLeftPlane, ClipSinglePointLineLeftPlane);
-    clip_lambda(PointOutsideRightPlane, ClipSinglePointLineRightPlane);
-    clip_lambda(PointOutsideBottomPlane, ClipSinglePointLineBottomPlane);
-    clip_lambda(PointOutsideTopPlane, ClipSinglePointLineTopPlane);
+    clip_lambda(PointOutsideNearPlane, ClipSingleClipPointLineNearPlane);
+    clip_lambda(PointOutsideFarPlane, ClipSingleClipPointLineFarPlane);
+    clip_lambda(PointOutsideLeftPlane, ClipSingleClipPointLineLeftPlane);
+    clip_lambda(PointOutsideRightPlane, ClipSingleClipPointLineRightPlane);
+    clip_lambda(PointOutsideBottomPlane, ClipSingleClipPointLineBottomPlane);
+    clip_lambda(PointOutsideTopPlane, ClipSingleClipPointLineTopPlane);
     
     for (size_t i = 0; i < tri_count_working; i++) {
         triangles[i] = working_list[i];
@@ -1050,25 +1221,48 @@ void RenderFrame() {
                         ScanlineConvertTriangle(scanlines, ps);
                         RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->texture, entry->lightmap);
                     } else {
-                        ClipTriangle clipped[12] = {{{pr0, pr1, pr2}}};
+                        ClipTriangle clipped[12] = {{{{pr0, {1, 0, 0}}, {pr1, {0, 1, 0}}, {pr2, {0, 0, 1}}}}};
                         size_t tri_count = ClipTriangleList(clipped);
                         
                         for (size_t i = 0; i < tri_count; i++) {
-                            PerspectiveDivision(clipped[i].points[0]);
-                            PerspectiveDivision(clipped[i].points[1]);
-                            PerspectiveDivision(clipped[i].points[2]);
+                            PerspectiveDivision(clipped[i].points[0].coordinate);
+                            PerspectiveDivision(clipped[i].points[1].coordinate);
+                            PerspectiveDivision(clipped[i].points[2].coordinate);
         
-                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0]);
-                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1]);
-                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2]);
+                            //std::cout << clipped[i].points[0].barycentric.x << " ";
+                            //std::cout << clipped[i].points[0].barycentric.y << " ";
+                            //std::cout << clipped[i].points[0].barycentric.z << " ";
+                            //std::cout << clipped[i].points[0].barycentric.x + clipped[i].points[0].barycentric.y + clipped[i].points[0].barycentric.z << std::endl;
+        
+                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0].coordinate);
+                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1].coordinate);
+                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2].coordinate);
                             
-                            uint32_t pz0 = (float)0xFFFF * (clipped[i].points[0].z/clipped[i].points[0].w);
-                            uint32_t pz1 = (float)0xFFFF * (clipped[i].points[1].z/clipped[i].points[1].w);
-                            uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].z/clipped[i].points[2].w);
+                            uint32_t pz0 = (float)0xFFFF * (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
+                            uint32_t pz1 = (float)0xFFFF * (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
+                            uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
+   
+                            const float bary00 = clipped[i].points[0].barycentric.x;
+                            const float bary01 = clipped[i].points[0].barycentric.y;
+                            const float bary02 = clipped[i].points[0].barycentric.z;
+                            const float bary10 = clipped[i].points[1].barycentric.x;
+                            const float bary11 = clipped[i].points[1].barycentric.y;
+                            const float bary12 = clipped[i].points[1].barycentric.z;
+                            const float bary20 = clipped[i].points[2].barycentric.x;
+                            const float bary21 = clipped[i].points[2].barycentric.y;
+                            const float bary22 = clipped[i].points[2].barycentric.z;
+                            
+                            vec2 texture_uvs[3] = {p0.tex * bary00 + p1.tex * bary01 + p2.tex * bary02, 
+                                                   p0.tex * bary10 + p1.tex * bary11 + p2.tex * bary12,
+                                                   p0.tex * bary20 + p1.tex * bary21 + p2.tex * bary22};
+                            vec2 lightmap_uvs[3] = {p0.lit * bary00 + p1.lit * bary01 + p2.lit * bary02, 
+                                                    p0.lit * bary10 + p1.lit * bary11 + p2.lit * bary12,
+                                                    p0.lit * bary20 + p1.lit * bary21 + p2.lit * bary22};
                             
                             Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
                             ScanlineConvertTriangle(scanlines, ps);
-                            RasterizeTriangle(scanlines, ps/*, IntColor(COLOR_WHITE)*/);
+                            //RasterizeTriangle(scanlines, ps/*, IntColor(COLOR_WHITE)*/);
+                            RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->texture, entry->lightmap);
                         }
                         
                         //ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
@@ -1079,6 +1273,208 @@ void RenderFrame() {
                     
                 }
                 
+                break;
+            case SW_DYNAMIC_BLENDED:
+                if (!entry->index_array) continue;
+
+                for (size_t i = 0; i < entry->index_length; i++) {
+                    uint32_t triangle = (entry->index_offset + i) * 3;
+                    
+                    DynamicVertex& p0 = ((DynamicVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 0]];
+                    DynamicVertex& p1 = ((DynamicVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 1]];
+                    DynamicVertex& p2 = ((DynamicVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 2]];
+                    
+                    vec4 local_pos0 = vec4(p0.pos, 1.0f);
+                    vec4 local_pos1 = vec4(p1.pos, 1.0f);
+                    vec4 local_pos2 = vec4(p2.pos, 1.0f);
+                    
+                    vec4 local_nrm0 = vec4(p0.nrm, 0.0f);
+                    vec4 local_nrm1 = vec4(p1.nrm, 0.0f);
+                    vec4 local_nrm2 = vec4(p2.nrm, 0.0f);
+                    
+                    if (entry->pose) {
+                        vec4 local_pos00 = entry->pose->pose[p0.ind.x] * local_pos0;
+                        vec4 local_pos01 = entry->pose->pose[p0.ind.y] * local_pos0;
+                        vec4 local_pos02 = entry->pose->pose[p0.ind.z] * local_pos0;
+                        vec4 local_pos03 = entry->pose->pose[p0.ind.w] * local_pos0;
+                        
+                        vec4 local_pos10 = entry->pose->pose[p1.ind.x] * local_pos1;
+                        vec4 local_pos11 = entry->pose->pose[p1.ind.y] * local_pos1;
+                        vec4 local_pos12 = entry->pose->pose[p1.ind.z] * local_pos1;
+                        vec4 local_pos13 = entry->pose->pose[p1.ind.w] * local_pos1;
+                        
+                        vec4 local_pos20 = entry->pose->pose[p2.ind.x] * local_pos2;
+                        vec4 local_pos21 = entry->pose->pose[p2.ind.y] * local_pos2;
+                        vec4 local_pos22 = entry->pose->pose[p2.ind.z] * local_pos2;
+                        vec4 local_pos23 = entry->pose->pose[p2.ind.w] * local_pos2;
+                        
+                        local_pos0 = local_pos00 * p0.wgt.x + local_pos01 * p0.wgt.y + local_pos02 * p0.wgt.z + local_pos03 * p0.wgt.w;
+                        local_pos1 = local_pos10 * p1.wgt.x + local_pos11 * p1.wgt.y + local_pos12 * p1.wgt.z + local_pos13 * p1.wgt.w;
+                        local_pos2 = local_pos20 * p2.wgt.x + local_pos21 * p2.wgt.y + local_pos22 * p2.wgt.z + local_pos23 * p2.wgt.w;
+                        
+                        vec4 local_nrm00 = entry->pose->pose[p0.ind.x] * local_nrm0;
+                        vec4 local_nrm01 = entry->pose->pose[p0.ind.y] * local_nrm0;
+                        vec4 local_nrm02 = entry->pose->pose[p0.ind.z] * local_nrm0;
+                        vec4 local_nrm03 = entry->pose->pose[p0.ind.w] * local_nrm0;
+                        
+                        vec4 local_nrm10 = entry->pose->pose[p1.ind.x] * local_nrm1;
+                        vec4 local_nrm11 = entry->pose->pose[p1.ind.y] * local_nrm1;
+                        vec4 local_nrm12 = entry->pose->pose[p1.ind.z] * local_nrm1;
+                        vec4 local_nrm13 = entry->pose->pose[p1.ind.w] * local_nrm1;
+                        
+                        vec4 local_nrm20 = entry->pose->pose[p2.ind.x] * local_nrm2;
+                        vec4 local_nrm21 = entry->pose->pose[p2.ind.y] * local_nrm2;
+                        vec4 local_nrm22 = entry->pose->pose[p2.ind.z] * local_nrm2;
+                        vec4 local_nrm23 = entry->pose->pose[p2.ind.w] * local_nrm2;
+                        
+                        local_nrm0 = local_nrm00 * p0.wgt.x + local_nrm01 * p0.wgt.y + local_nrm02 * p0.wgt.z + local_nrm03 * p0.wgt.w;
+                        local_nrm1 = local_nrm10 * p1.wgt.x + local_nrm11 * p1.wgt.y + local_nrm12 * p1.wgt.z + local_nrm13 * p1.wgt.w;
+                        local_nrm2 = local_nrm20 * p2.wgt.x + local_nrm21 * p2.wgt.y + local_nrm22 * p2.wgt.z + local_nrm23 * p2.wgt.w;
+                    }
+                    
+                    const vec4 world_pos0 = entry->matrix * local_pos0;
+                    const vec4 world_pos1 = entry->matrix * local_pos1;
+                    const vec4 world_pos2 = entry->matrix * local_pos2;
+                    
+                    const vec3 world_nrm0 = glm::normalize(vec3(entry->matrix * local_nrm0));
+                    const vec3 world_nrm1 = glm::normalize(vec3(entry->matrix * local_nrm1));
+                    const vec3 world_nrm2 = glm::normalize(vec3(entry->matrix * local_nrm2));
+                    
+                    const vec3 view_dir0 = normalize(layers[0].view_position - vec3(world_pos0));
+                    const vec3 view_dir1 = normalize(layers[0].view_position - vec3(world_pos1));
+                    const vec3 view_dir2 = normalize(layers[0].view_position - vec3(world_pos2));
+                    
+                    vec3 color0, color1, color2;
+                    if (entry->flags & FLAG_NO_DIRECTIONAL) {
+                        color0 = {0.0f, 0.0f, 0.0f};
+                        color1 = {0.0f, 0.0f, 0.0f};
+                        color2 = {0.0f, 0.0f, 0.0f};
+                    } else {
+                        color0 = layers[0].ambient_color + layers[0].sun_color * glm::max(glm::dot(world_nrm0, normalize(layers[0].sun_direction)), 0.0f);
+                        color1 = layers[0].ambient_color + layers[0].sun_color * glm::max(glm::dot(world_nrm1, normalize(layers[0].sun_direction)), 0.0f);
+                        color2 = layers[0].ambient_color + layers[0].sun_color * glm::max(glm::dot(world_nrm2, normalize(layers[0].sun_direction)), 0.0f);
+                    }
+                    
+                    vec3 spec_color0 = {0.0f, 0.0f, 0.0f};
+                    vec3 spec_color1 = {0.0f, 0.0f, 0.0f};
+                    vec3 spec_color2 = {0.0f, 0.0f, 0.0f};
+                    
+                    for (size_t i = 0; i < 4; i++) {
+                        SWLight* light = &light_list[entry->lights[i]];
+                        vec3 light_vec0 = light->location - vec3(world_pos0);
+                        vec3 light_vec1 = light->location - vec3(world_pos1);
+                        vec3 light_vec2 = light->location - vec3(world_pos2);
+                        float dist0 = glm::length(light_vec0);
+                        float dist1 = glm::length(light_vec1);
+                        float dist2 = glm::length(light_vec2);
+                        float strn0 = glm::max(glm::dot(glm::normalize(light_vec0), world_nrm0), 0.0f);
+                        float strn1 = glm::max(glm::dot(glm::normalize(light_vec1), world_nrm1), 0.0f);
+                        float strn2 = glm::max(glm::dot(glm::normalize(light_vec2), world_nrm2), 0.0f);
+                        float attn0 = strn0 * (1.0f / (1.0f + 0.09f * dist0 + 0.032f * (dist0 * dist0)));
+                        float attn1 = strn1 * (1.0f / (1.0f + 0.09f * dist0 + 0.032f * (dist1 * dist1)));
+                        float attn2 = strn2 * (1.0f / (1.0f + 0.09f * dist0 + 0.032f * (dist2 * dist2)));
+                        float drct0 = glm::clamp(glm::pow(glm::max(glm::dot(light->direction, -glm::normalize(light_vec0)), 0.0f), light->exponent), 0.0f, 1.0f);
+                        float drct1 = glm::clamp(glm::pow(glm::max(glm::dot(light->direction, -glm::normalize(light_vec1)), 0.0f), light->exponent), 0.0f, 1.0f);
+                        float drct2 = glm::clamp(glm::pow(glm::max(glm::dot(light->direction, -glm::normalize(light_vec2)), 0.0f), light->exponent), 0.0f, 1.0f);
+                        
+                        float spec0 = glm::pow(glm::max(glm::dot(view_dir0, glm::reflect(-glm::normalize(light_vec0), world_nrm0)), 0.0f), entry->specular_exponent);
+                        float spec1 = glm::pow(glm::max(glm::dot(view_dir1, glm::reflect(-glm::normalize(light_vec1), world_nrm1)), 0.0f), entry->specular_exponent);
+                        float spec2 = glm::pow(glm::max(glm::dot(view_dir2, glm::reflect(-glm::normalize(light_vec2), world_nrm2)), 0.0f), entry->specular_exponent);
+                        
+                        color0 += light->color * attn0 * drct0;
+                        color1 += light->color * attn1 * drct1;
+                        color2 += light->color * attn2 * drct2;
+                        
+                        spec_color0 += entry->specular_weight * spec0 * light->color * drct0;
+                        spec_color1 += entry->specular_weight * spec1 * light->color * drct1;
+                        spec_color2 += entry->specular_weight * spec2 * light->color * drct2;
+                    }
+                    
+                    color0 += (1.0f - entry->specular_transparency) * spec_color0;
+                    color1 += (1.0f - entry->specular_transparency) * spec_color1;
+                    color2 += (1.0f - entry->specular_transparency) * spec_color2;
+                    
+                    vec4 pos0 = layers[0].projection_matrix * layers[0].view_matrix * world_pos0;
+                    vec4 pos1 = layers[0].projection_matrix * layers[0].view_matrix * world_pos1;
+                    vec4 pos2 = layers[0].projection_matrix * layers[0].view_matrix * world_pos2;
+                    
+                    // backface culling
+                    vec2 ab = {pos1.x/pos1.w - pos0.x/pos0.w, pos1.y/pos1.w - pos0.y/pos0.w};
+                    vec2 ac = {pos2.x/pos2.w - pos0.x/pos0.w, pos2.y/pos2.w - pos0.y/pos0.w};
+                    if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
+                    
+                    if (PointVisible(pos0) && PointVisible(pos1) && PointVisible(pos2)) {
+                        PerspectiveDivision(pos0);
+                        PerspectiveDivision(pos1);
+                        PerspectiveDivision(pos2);
+    
+                        auto [px0, py0] = ClipSpaceToScreenSpace(pos0);
+                        auto [px1, py1] = ClipSpaceToScreenSpace(pos1);
+                        auto [px2, py2] = ClipSpaceToScreenSpace(pos2);
+                        
+                        uint32_t pz0 = (float)0xFFFF * (pos0.z/pos0.w);
+                        uint32_t pz1 = (float)0xFFFF * (pos1.z/pos1.w);
+                        uint32_t pz2 = (float)0xFFFF * (pos2.z/pos2.w);
+                        
+                        Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
+                        
+                        vec2 texture_uvs[3] = {p0.tex, p1.tex, p2.tex};
+                        vec3 colors[3] = {color0, color1, color2};
+                        vec3 speculars[3] = {spec_color0, spec_color1, spec_color2};
+
+                        ScanlineConvertTriangle(scanlines, ps);
+                        RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->texture);
+                    } else {
+                        ClipTriangle clipped[12] = {{{{pos0, {1, 0, 0}}, {pos1, {0, 1, 0}}, {pos2, {0, 0, 1}}}}};
+                        size_t tri_count = ClipTriangleList(clipped);
+                        
+                        for (size_t i = 0; i < tri_count; i++) {
+                            PerspectiveDivision(clipped[i].points[0].coordinate);
+                            PerspectiveDivision(clipped[i].points[1].coordinate);
+                            PerspectiveDivision(clipped[i].points[2].coordinate);
+        
+                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0].coordinate);
+                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1].coordinate);
+                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2].coordinate);
+                            
+                            uint32_t pz0 = (float)0xFFFF * (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
+                            uint32_t pz1 = (float)0xFFFF * (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
+                            uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
+   
+                            const float bary00 = clipped[i].points[0].barycentric.x;
+                            const float bary01 = clipped[i].points[0].barycentric.y;
+                            const float bary02 = clipped[i].points[0].barycentric.z;
+                            const float bary10 = clipped[i].points[1].barycentric.x;
+                            const float bary11 = clipped[i].points[1].barycentric.y;
+                            const float bary12 = clipped[i].points[1].barycentric.z;
+                            const float bary20 = clipped[i].points[2].barycentric.x;
+                            const float bary21 = clipped[i].points[2].barycentric.y;
+                            const float bary22 = clipped[i].points[2].barycentric.z;
+                            
+                            vec2 texture_uvs[3] = {p0.tex * bary00 + p1.tex * bary01 + p2.tex * bary02, 
+                                                   p0.tex * bary10 + p1.tex * bary11 + p2.tex * bary12,
+                                                   p0.tex * bary20 + p1.tex * bary21 + p2.tex * bary22};
+                            vec3 colors[3] = {color0 * bary00 + color1 * bary01 + color2 * bary02, 
+                                              color0 * bary10 + color1 * bary11 + color2 * bary12,
+                                              color0 * bary20 + color1 * bary21 + color2 * bary22};
+                            vec3 speculars[3] = {spec_color0 * bary00 + spec_color1 * bary01 + spec_color2 * bary02, 
+                                                 spec_color0 * bary10 + spec_color1 * bary11 + spec_color2 * bary12,
+                                                 spec_color0 * bary20 + spec_color1 * bary21 + spec_color2 * bary22};
+                            
+                            Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
+                            ScanlineConvertTriangle(scanlines, ps);
+                            RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->texture);
+                        }
+                        
+                        //ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
+                        //ClipRenderLine(pr1, pr2, IntColor(COLOR_WHITE));
+                        //ClipRenderLine(pr2, pr0, IntColor(COLOR_WHITE));
+                    }
+                    
+                    
+                }
+                
+                break;
             default:
                 break;
         }
@@ -1309,7 +1705,7 @@ void PackVertices(vertexarray_t& vertex_array, void* data, size_t count) {
             VertexAttribute wgt_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.bone_weight];
             for (size_t i = 0; i < count; i++) {
                 vec4* wgt = (vec4*)((char*)data + wgt_attrib.offset + wgt_attrib.stride * i);
-                verts[i].wgt = *wgt;
+                verts[i].wgt = glm::normalize(*wgt);
             }
             
             VertexAttribute ind_attrib = vertex_array.sw_vertex_array->format.attributes[vertex_array.sw_vertex_array->helper.bone_index];
