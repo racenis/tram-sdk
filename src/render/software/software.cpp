@@ -66,8 +66,9 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetScreenSize(float width, float height) {
-    //screen_width = width;
-    //screen_height = height;
+    screen_width = width;
+    screen_height = height;
+    std::cout << "NEW SCREEN SIZE! " << width << " " << height << std::endl;
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
@@ -1013,6 +1014,40 @@ bool LineVisible(vec4 p0, vec4 p1) {
     return true;
 }
 
+bool TriangleVisible(vec4 p0, vec4 p1, vec4 p2) {    
+    // line outside left plane
+    if (p0.w + p0.x < 0.0f && p1.w + p1.x < 0.0f && p2.w + p2.x < 0.0f) {
+        return false;
+    }
+
+    // line outside right plane
+    if (p0.w - p0.x < 0.0f && p1.w - p1.x < 0.0f && p2.w - p2.x < 0.0f) {
+        return false;
+    }
+
+    // line outside bottom plane
+    if (p0.w + p0.y < 0.0f && p1.w + p1.y < 0.0f && p2.w + p2.y < 0.0f) {
+        return false;
+    }
+
+    // line outside top plane
+    if (p0.w - p0.y < 0.0f && p1.w - p1.y < 0.0f && p2.w - p2.y < 0.0f) {
+        return false;
+    }
+
+    // line outside near plane
+    if (p0.w + p0.z < 0.0f && p1.w + p1.z < 0.0f && p2.w + p2.z < 0.0f) {
+        return false;
+    }
+    
+    // line outside far plane
+    if (p0.w - p0.z < 0.0f && p1.w - p1.z < 0.0f && p2.w - p2.z < 0.0f) {
+        return false;
+    }
+    
+    return true;
+}
+
 void ClipRenderLine(vec4 p0, vec4 p1, uint16_t color) {
     if (!LineVisible(p0, p1)) return;
     
@@ -1082,12 +1117,12 @@ size_t ClipTriangleList(ClipTriangle* triangles) {
         std::swap(working_list, buffer_list);
     };
     
-    clip_lambda(PointOutsideNearPlane, ClipSingleClipPointLineNearPlane);
-    clip_lambda(PointOutsideFarPlane, ClipSingleClipPointLineFarPlane);
     clip_lambda(PointOutsideLeftPlane, ClipSingleClipPointLineLeftPlane);
     clip_lambda(PointOutsideRightPlane, ClipSingleClipPointLineRightPlane);
     clip_lambda(PointOutsideBottomPlane, ClipSingleClipPointLineBottomPlane);
     clip_lambda(PointOutsideTopPlane, ClipSingleClipPointLineTopPlane);
+    clip_lambda(PointOutsideNearPlane, ClipSingleClipPointLineNearPlane);
+    clip_lambda(PointOutsideFarPlane, ClipSingleClipPointLineFarPlane);
     
     for (size_t i = 0; i < tri_count_working; i++) {
         triangles[i] = working_list[i];
@@ -1192,10 +1227,12 @@ void RenderFrame() {
                     vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
                     vec4 pr2 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p2.pos, 1.0f);
                     
+                    if (!TriangleVisible(pr0, pr1, pr2)) continue;
+                    
                     // backface culling
-                    vec2 ab = {pr1.x/pr1.w - pr0.x/pr0.w, pr1.y/pr1.w - pr0.y/pr0.w};
-                    vec2 ac = {pr2.x/pr2.w - pr0.x/pr0.w, pr2.y/pr2.w - pr0.y/pr0.w};
-                    if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
+                    //vec2 ab = {pr1.x/pr1.w - pr0.x/pr0.w, pr1.y/pr1.w - pr0.y/pr0.w};
+                    //vec2 ac = {pr2.x/pr2.w - pr0.x/pr0.w, pr2.y/pr2.w - pr0.y/pr0.w};
+                    //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
                     
                     if (PointVisible(pr0) && PointVisible(pr1) && PointVisible(pr2)) {
                         
@@ -1288,10 +1325,6 @@ void RenderFrame() {
                     vec4 local_pos1 = vec4(p1.pos, 1.0f);
                     vec4 local_pos2 = vec4(p2.pos, 1.0f);
                     
-                    vec4 local_nrm0 = vec4(p0.nrm, 0.0f);
-                    vec4 local_nrm1 = vec4(p1.nrm, 0.0f);
-                    vec4 local_nrm2 = vec4(p2.nrm, 0.0f);
-                    
                     if (entry->pose) {
                         vec4 local_pos00 = entry->pose->pose[p0.ind.x] * local_pos0;
                         vec4 local_pos01 = entry->pose->pose[p0.ind.y] * local_pos0;
@@ -1311,7 +1344,28 @@ void RenderFrame() {
                         local_pos0 = local_pos00 * p0.wgt.x + local_pos01 * p0.wgt.y + local_pos02 * p0.wgt.z + local_pos03 * p0.wgt.w;
                         local_pos1 = local_pos10 * p1.wgt.x + local_pos11 * p1.wgt.y + local_pos12 * p1.wgt.z + local_pos13 * p1.wgt.w;
                         local_pos2 = local_pos20 * p2.wgt.x + local_pos21 * p2.wgt.y + local_pos22 * p2.wgt.z + local_pos23 * p2.wgt.w;
-                        
+                    }
+                    
+                    const vec4 world_pos0 = entry->matrix * local_pos0;
+                    const vec4 world_pos1 = entry->matrix * local_pos1;
+                    const vec4 world_pos2 = entry->matrix * local_pos2;
+                    
+                    vec4 pos0 = layers[0].projection_matrix * layers[0].view_matrix * world_pos0;
+                    vec4 pos1 = layers[0].projection_matrix * layers[0].view_matrix * world_pos1;
+                    vec4 pos2 = layers[0].projection_matrix * layers[0].view_matrix * world_pos2;
+                    
+                    if (!TriangleVisible(pos0, pos1, pos2)) continue;
+                    
+                    // backface culling
+                    vec2 ab = {pos1.x/pos1.w - pos0.x/pos0.w, pos1.y/pos1.w - pos0.y/pos0.w};
+                    vec2 ac = {pos2.x/pos2.w - pos0.x/pos0.w, pos2.y/pos2.w - pos0.y/pos0.w};
+                    if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
+                    
+                    vec4 local_nrm0 = vec4(p0.nrm, 0.0f);
+                    vec4 local_nrm1 = vec4(p1.nrm, 0.0f);
+                    vec4 local_nrm2 = vec4(p2.nrm, 0.0f);
+                    
+                    if (entry->pose) {
                         vec4 local_nrm00 = entry->pose->pose[p0.ind.x] * local_nrm0;
                         vec4 local_nrm01 = entry->pose->pose[p0.ind.y] * local_nrm0;
                         vec4 local_nrm02 = entry->pose->pose[p0.ind.z] * local_nrm0;
@@ -1331,10 +1385,6 @@ void RenderFrame() {
                         local_nrm1 = local_nrm10 * p1.wgt.x + local_nrm11 * p1.wgt.y + local_nrm12 * p1.wgt.z + local_nrm13 * p1.wgt.w;
                         local_nrm2 = local_nrm20 * p2.wgt.x + local_nrm21 * p2.wgt.y + local_nrm22 * p2.wgt.z + local_nrm23 * p2.wgt.w;
                     }
-                    
-                    const vec4 world_pos0 = entry->matrix * local_pos0;
-                    const vec4 world_pos1 = entry->matrix * local_pos1;
-                    const vec4 world_pos2 = entry->matrix * local_pos2;
                     
                     const vec3 world_nrm0 = glm::normalize(vec3(entry->matrix * local_nrm0));
                     const vec3 world_nrm1 = glm::normalize(vec3(entry->matrix * local_nrm1));
@@ -1393,15 +1443,6 @@ void RenderFrame() {
                     color0 += (1.0f - entry->specular_transparency) * spec_color0;
                     color1 += (1.0f - entry->specular_transparency) * spec_color1;
                     color2 += (1.0f - entry->specular_transparency) * spec_color2;
-                    
-                    vec4 pos0 = layers[0].projection_matrix * layers[0].view_matrix * world_pos0;
-                    vec4 pos1 = layers[0].projection_matrix * layers[0].view_matrix * world_pos1;
-                    vec4 pos2 = layers[0].projection_matrix * layers[0].view_matrix * world_pos2;
-                    
-                    // backface culling
-                    vec2 ab = {pos1.x/pos1.w - pos0.x/pos0.w, pos1.y/pos1.w - pos0.y/pos0.w};
-                    vec2 ac = {pos2.x/pos2.w - pos0.x/pos0.w, pos2.y/pos2.w - pos0.y/pos0.w};
-                    if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
                     
                     if (PointVisible(pos0) && PointVisible(pos1) && PointVisible(pos2)) {
                         PerspectiveDivision(pos0);

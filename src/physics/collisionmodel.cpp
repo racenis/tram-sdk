@@ -3,6 +3,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <physics/physics.h>
+#include <physics/api.h>
 #include <physics/collisionmodel.h>
 #include <templates/hashmap.h>
 
@@ -36,154 +37,90 @@ void CollisionModel::LoadFromDisk () {
     strcat(path, name);
     strcat(path, ".collmdl");
 
-    model = new btCompoundShape();
-
     File file (path, MODE_READ);
 
     if (!file.is_open()) {
         std::cout << "Can't find collisionmodel: " << path << std::endl;
 
-        btCollisionShape* shape = new btBoxShape(btVector3(0.125f, 0.125f, 0.125f));
-
-        btTransform transform;
-        transform.setIdentity();
-        
-        model->addChildShape(transform, shape);
-        
+        shape = Physics::API::MakeCollisionShape(nullptr, 0);
         load_fail = true;
         status = READY;
         
         return;
     }
 
+    std::vector<API::CollisionShapeTransform> shapes;
+
     std::cout << "Loading: " << path << std::endl;
     
     while (file.is_continue()) {
         name_t type = file.read_name();
         if (type == "box") {
-            float coords[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float rotation[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float dimensions[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 position = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 rotation = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 dimensions = {file.read_float32(), file.read_float32(), file.read_float32()};
+            
+            shapes.push_back({CollisionShape::Box(dimensions), position, rotation});
 
-            btTransform transf;
-            btQuaternion rotat;
+        } else if (type == "sphere") {
+            vec3 position = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 rotation = {file.read_float32(), file.read_float32(), file.read_float32()};
+            float radius = file.read_float32();
 
-            transf.setIdentity();
-            transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-            rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-            transf.setRotation(rotat);
-            btCollisionShape* shape = new btBoxShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
+            shapes.push_back({CollisionShape::Sphere(radius), position, rotation});
+            
+        } else if (type == "cylinder") {
+            vec3 position = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 rotation = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 dimensions = {file.read_float32(), file.read_float32(), file.read_float32()};
 
-            model->addChildShape(transf, shape);
-        } else if (type == "sphere"){
-            float coords[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float rotation[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float thickness= file.read_float32();
-
-            btTransform transf;
-            btQuaternion rotat;
-
-            transf.setIdentity();
-            transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-            rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-            transf.setRotation(rotat);
-            btCollisionShape* shape = new btSphereShape(thickness);
-
-            model->addChildShape(transf, shape);
-        } else if (type == "cylinder"){
-            float coords[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float rotation[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float dimensions[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-
-            btTransform transf;
-            btQuaternion rotat;
-
-            transf.setIdentity();
-            transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-            rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-            transf.setRotation(rotat);
-            btCollisionShape* shape = new btCylinderShape(btVector3(dimensions[0], dimensions[1], dimensions[2]));
-
-            model->addChildShape(transf, shape);
-        } else if (type == "capsule"){
-            float coords[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float rotation[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float thickness= file.read_float32();
+            shapes.push_back({CollisionShape::Cylinder(dimensions.x, dimensions.y), position, rotation});
+            
+        } else if (type == "capsule") {
+            vec3 position = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 rotation = {file.read_float32(), file.read_float32(), file.read_float32()};
+            float radius = file.read_float32();
             float height = file.read_float32();
 
-            btTransform transf;
-            btQuaternion rotat;
-
-            transf.setIdentity();
-            transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-            rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-            transf.setRotation(rotat);
-            btCollisionShape* shape = new btCapsuleShape(thickness, height);
-
-            model->addChildShape(transf, shape);
-        } else if (type == "cone"){
-            float coords[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float rotation[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-            float thickness= file.read_float32();
+            shapes.push_back({CollisionShape::Capsule(radius, height), position, rotation});
+            
+        } else if (type == "cone") {
+            vec3 position = {file.read_float32(), file.read_float32(), file.read_float32()};
+            vec3 rotation = {file.read_float32(), file.read_float32(), file.read_float32()};
+            float radius = file.read_float32();
             float height = file.read_float32();
 
-            btTransform transf;
-            btQuaternion rotat;
-
-            transf.setIdentity();
-            transf.setOrigin(btVector3(coords[0], coords[1], coords[2]));
-            rotat.setEuler(rotation[1], rotation[0], rotation[2]);
-            transf.setRotation(rotat);
-            btCollisionShape* shape = new btConeShape(thickness, height);
-
-            model->addChildShape(transf, shape);
+            shapes.push_back({CollisionShape::Cone(radius, height), position, rotation});
+            
         } else if (type == "cloud") {
-            size_t verts = file.read_uint32();
+            size_t point_count = file.read_uint32();
         
-            btConvexHullShape* convexhull  = new btConvexHullShape();
-            
-            btTransform transf;
-            btVector3 v;
-            
-            for (size_t i = 0; i < verts; i++){
-                float coords[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-                v.setValue(coords[0], coords[1], coords[2]);
-                convexhull->addPoint(v);
+            vec3* points = new vec3[point_count];
+        
+            for (size_t i = 0; i < point_count; i++) {
+                points[i] = {file.read_float32(), file.read_float32(), file.read_float32()};
             }
-
-            transf.setIdentity();
-            model->addChildShape(transf, convexhull);
+        
+            shapes.push_back({CollisionShape::Hull(points, point_count), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)});
         } else if (type == "mesh") {
-            size_t verts = file.read_uint32();
+            size_t triangle_count = file.read_uint32();
 
-            btTriangleMesh* trimesh = new btTriangleMesh();
-
-            // TODO: allocate
-            // allocate memory for the meshy mesh??? like here??
-            // trimesh->preallocateVertices(verts);
-
-            btVector3 v[3];
-            btTransform transf;
-
-            for (size_t i = 0; i < verts; i++){
-                float coords1[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-                float coords2[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
-                float coords3[3] = {file.read_float32(), file.read_float32(), file.read_float32()};
+            CollisionTriangle* triangles = new CollisionTriangle[triangle_count];
+            
+            for (size_t i = 0; i < triangle_count; i++){
+                vec3 p0 = {file.read_float32(), file.read_float32(), file.read_float32()};
+                vec3 p1 = {file.read_float32(), file.read_float32(), file.read_float32()};
+                vec3 p2 = {file.read_float32(), file.read_float32(), file.read_float32()};
                 
-                v[0].setValue(coords1[0], coords1[1], coords1[2]);
-                v[1].setValue(coords2[0], coords2[1], coords2[2]);
-                v[2].setValue(coords3[0], coords3[1], coords3[2]);
-                
-                trimesh->addTriangle(v[0], v[1], v[2]);
+                triangles[i] = {p0, p1, p2};
             }
 
-            btBvhTriangleMeshShape* mshape = new btBvhTriangleMeshShape(trimesh, true, true);
+            shapes.push_back({CollisionShape::Mesh(triangles, triangle_count), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)});
 
-            transf.setIdentity();
-            model->addChildShape(transf, mshape);
         }
     }
 
+    shape = Physics::API::MakeCollisionShape(&shapes[0], shapes.size());
     status = READY;
 }
 

@@ -14,6 +14,7 @@
 
 namespace tram::Physics {
 
+    
 class EntMotionState : public btMotionState {
 public:
     EntMotionState (Entity* ent, vec3& offset) {

@@ -2,66 +2,63 @@
 // All rights reserved.
 
 #include <components/physics.h>
-#include <physics/bullet/bullet.h>
 
-#include <physics/bullet/motionstates.h>
+#include <physics/api.h>
+#include <framework/entity.h>
 
 using namespace tram::Physics;
-using namespace tram::Physics::Bullet;
 
 namespace tram {
 
 template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
 
-void PhysicsComponent::Start(){
+void PhysicsComponent::Start() {
     if (collision_model.get()) {
         collision_shape = collision_model->GetShape();
     }
-
+    
+    API::get_trf_callback get_callback = nullptr;
+    API::set_trf_callback set_callback = nullptr;
+    
+    // TODO: add a check to check if parent != nullptr?
     if (update_parent_transform) {
-        motion_state = new EntMotionState(parent, rigidbody_offset);
-    } else {
-        btTransform initial_transform;
-		initial_transform.setIdentity();
-		//initial_transform.setOrigin({rigidbody_position.x, rigidbody_position.y, rigidbody_position.z});
-        //initial_transform.setRotation({rigidbody_rotation.x, rigidbody_rotation.y, rigidbody_rotation.z, rigidbody_rotation.w});
-        if (parent) {
-            quat rot = parent->GetRotation();
-            vec3 pos = parent->GetLocation();
-            initial_transform.setOrigin({pos.x, pos.y, pos.z});
-            initial_transform.setRotation({rot.x, rot.y, rot.z, rot.w});
-        }
-        motion_state = new btDefaultMotionState(initial_transform);
+        get_callback = [](void* data) -> std::pair<vec3, quat> {
+            Entity* parent = ((PhysicsComponent*)data)->GetParent();
+            //std::cout << "getting parent: " << ((PhysicsComponent*)data)->GetParent()->GetName() << std::endl;
+            return {parent->GetLocation(), parent->GetRotation()};
+        };
+        set_callback = [](void* data, std::pair<vec3, quat> transform) {
+            ((PhysicsComponent*)data)->GetParent()->UpdateTransform(transform.first, transform.second);
+            //std::cout << "setting parent: " << ((PhysicsComponent*)data)->GetParent()->GetName() << std::endl;
+        };
     }
     
+    rigidbody = API::MakeRigidbody(collision_shape,
+                                   rigidbody_mass,
+                                   rigidbody_position,
+                                   rigidbody_rotation,
+                                   rigidbody_collision_mask,
+                                   rigidbody_collision_group,
+                                   get_callback,
+                                   set_callback,
+                                   this);
 
-    btScalar bullet_mass = rigidbody_mass;
-    btVector3 bullet_inertia (0.0f, 0.0f, 0.0f);
-    collision_shape->calculateLocalInertia(bullet_mass, bullet_inertia);
-    btRigidBody::btRigidBodyConstructionInfo bullet_construction_info (bullet_mass, motion_state, collision_shape, bullet_inertia);
-
-    rigidbody = new btRigidBody(bullet_construction_info);
-
-    DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
-    
-    rigidbody->setUserPointer(this);
-    rigidbody->setUserIndex(USERINDEX_PHYSICSCOMPONENT);
-    rigidbody->setCollisionFlags(rigidbody_collision_flags);
-
-    if (rigidbody_should_sleep) rigidbody->setActivationState(0);
-    if (rigidbody_should_awake) rigidbody->setActivationState(DISABLE_DEACTIVATION);
-
+    if (rigidbody_should_sleep) API::SleepRigidbody(rigidbody);
+    if (rigidbody_should_awake) API::DisableRigidbodyDeactivation(rigidbody);
+    if (!rigidbody_debug_draw)  API::SetRigidbodyDebugDrawing(rigidbody, rigidbody_debug_draw);
+    if (rigidbody_kinematic)    API::SetRigidbodyKinematic(rigidbody, rigidbody_kinematic);
+        
     is_ready = true;
 }
 
 PhysicsComponent::~PhysicsComponent(){
-    RemoveAllConstraints();
+    //RemoveAllConstraints();
     
-    if (rigidbody) {
-        DYNAMICS_WORLD->removeRigidBody(rigidbody);
-    
-        delete rigidbody;
-        delete motion_state;
+    if (rigidbody.bt_rigidbody) {
+        //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+        API::YeetRigidbody(rigidbody);
+        //delete rigidbody.bt_rigidbody;
+        //delete motion_state;
     }
 }
 
@@ -96,8 +93,9 @@ void PhysicsComponent::SetCollisionMask (uint32_t flags) {
     rigidbody_collision_mask = flags;
     
     if (is_ready) {
-        DYNAMICS_WORLD->removeRigidBody(rigidbody);
-        DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+        //DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        API::SetRigidbodyCollisionMask(rigidbody, rigidbody_collision_mask);
     }
 }
 
@@ -108,15 +106,17 @@ void PhysicsComponent::SetCollisionMask (uint32_t flags) {
 /// together.
 void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
     rigidbody_collision_group = flags;
+    
     if (is_ready) {
-        DYNAMICS_WORLD->removeRigidBody(rigidbody);
-        DYNAMICS_WORLD->addRigidBody(rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
+        API::SetRigidbodyCollisionMask(rigidbody, rigidbody_collision_group);
+        //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+        //DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     }
 }
 
 /// Sets the collision shape of the physics object.
 void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
-    collision_shape = CollisionShapeToConvexShape(shape);
+    collision_shape = API::MakeCollisionShape(shape);
 }
 
 /// Sets the mass of the physics object.
@@ -124,9 +124,9 @@ void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
 /// to be infinite, and the object will become static and immovable.
 /// @note Has no effect after the PhysicsComponent is loaded.
 void PhysicsComponent::SetMass(float mass) {
-    if (mass == 0) {
+    /*if (mass == 0) {
         rigidbody_collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
-    }
+    }*/
     
     rigidbody_mass = mass;
 }
@@ -138,28 +138,34 @@ void PhysicsComponent::SetMass(float mass) {
 void PhysicsComponent::Push(vec3 direction) {
     if (!is_ready) return;
     
-    rigidbody->activate(); // force awake, sleeping objects won't move
-    rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
+    API::PushRigidbody(rigidbody, direction);
+    
+    //rigidbody.bt_rigidbody->activate(); // force awake, sleeping objects won't move
+    //rigidbody.bt_rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
 }
 
 void PhysicsComponent::Push(vec3 direction, vec3 local) {
     if (!is_ready) return;
     
-    rigidbody->activate();
-    rigidbody->applyImpulse(btVector3(direction.x, direction.y, direction.z), btVector3(local.x, local.y, local.z));
+    API::PushRigidbody(rigidbody, direction, local);
+    //rigidbody.bt_rigidbody->activate();
+    //rigidbody.bt_rigidbody->applyImpulse(btVector3(direction.x, direction.y, direction.z), btVector3(local.x, local.y, local.z));
 }
 
 void PhysicsComponent::Spin(vec3 direction) {
     if (!is_ready) return;
     
-    rigidbody->activate();
-    rigidbody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
+    API::SpinRigidbody(rigidbody, direction);
+    
+    //rigidbody.bt_rigidbody->activate();
+    //rigidbody.bt_rigidbody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
 }
 
 /// Awakens the object.
 void PhysicsComponent::Awaken() {
     if (is_ready) {
-        rigidbody->activate();
+        API::AwakenRigidbody(rigidbody);
+        //rigidbody.bt_rigidbody->activate();
     }
     
     rigidbody_should_sleep = false;
@@ -168,7 +174,8 @@ void PhysicsComponent::Awaken() {
 /// Puts the object to sleep.
 void PhysicsComponent::Sleep() {
     if (is_ready) {
-        rigidbody->setActivationState(0);
+        //rigidbody.bt_rigidbody->setActivationState(0);
+        API::SleepRigidbody(rigidbody);
     }
     
     rigidbody_should_sleep = true;
@@ -178,14 +185,17 @@ void PhysicsComponent::Sleep() {
 /// Set to false, if you don't want the physics object to show up when
 /// drawing physics debug.
 void PhysicsComponent::SetDebugDrawing (bool drawing) {
-    if (drawing) {
+    /*if (drawing) {
         rigidbody_collision_flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
     } else {
         rigidbody_collision_flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-    }
+    }*/
+    
+    rigidbody_debug_draw = drawing;
     
     if (is_ready) {
-        rigidbody->setCollisionFlags(rigidbody_collision_flags);
+        API::SetRigidbodyDebugDrawing(rigidbody, drawing);
+        //rigidbody.bt_rigidbody->setCollisionFlags(rigidbody_collision_flags);
     }
 }
 
@@ -195,14 +205,17 @@ void PhysicsComponent::SetDebugDrawing (bool drawing) {
 /// parent entity.
 /// @note Use DisableDeactivation() if you don't want to constantly wake the object up.
 void PhysicsComponent::SetKinematic (bool kinematic) {
-    if (kinematic) {
+    rigidbody_kinematic = kinematic;
+    
+    /*if (kinematic) {
         rigidbody_collision_flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
     } else {
         rigidbody_collision_flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
-    }
+    }*/
     
     if (is_ready) {
-        rigidbody->setCollisionFlags(rigidbody_collision_flags);
+        API::SetRigidbodyKinematic(rigidbody, kinematic);
+        //rigidbody.bt_rigidbody->setCollisionFlags(rigidbody_collision_flags);
     }
 }
 
@@ -217,10 +230,11 @@ void PhysicsComponent::SetUpdateParentTransform(bool update) {
 
 /// Sets the position of the physics object.
 void PhysicsComponent::SetLocation(vec3 position) {
-    if (rigidbody) {
-        btTransform trans = rigidbody->getWorldTransform();
-        trans.setOrigin(btVector3 (position.x, position.y, position.z));
-        rigidbody->setWorldTransform(trans);
+    if (rigidbody.bt_rigidbody) {
+        API::SetRigidbodyLocation(rigidbody, position);
+        //btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
+        //trans.setOrigin(btVector3 (position.x, position.y, position.z));
+        //rigidbody.bt_rigidbody->setWorldTransform(trans);
     }
     
     rigidbody_position = position;
@@ -228,10 +242,11 @@ void PhysicsComponent::SetLocation(vec3 position) {
 
 /// Sets the rotation of the physics object.
 void PhysicsComponent::SetRotation (quat rotation) {
-    if (rigidbody) {
-        btTransform trans = rigidbody->getWorldTransform();
-        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-        rigidbody->setWorldTransform(trans);
+    if (rigidbody.bt_rigidbody) {
+        API::SetRigidbodyRotation(rigidbody, rotation);
+        //btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
+        //trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+        //rigidbody.bt_rigidbody->setWorldTransform(trans);
     }
     
     rigidbody_rotation = rotation;
@@ -244,7 +259,8 @@ void PhysicsComponent::SetAngularFactor(vec3 factor) {
     rigidbody_angular_factor = factor;
     
     if (is_ready) {
-        rigidbody->setAngularFactor({factor.x, factor.y, factor.z});
+        API::SetRigidbodyAngularFactor(rigidbody, factor);
+        //rigidbody.bt_rigidbody->setAngularFactor({factor.x, factor.y, factor.z});
     }
 }
 
@@ -255,7 +271,8 @@ void PhysicsComponent::SetLinearFactor(vec3 factor) {
     rigidbody_linear_factor = factor;
     
     if (is_ready) {
-        rigidbody->setLinearFactor({factor.x, factor.y, factor.z});
+        API::SetRigidbodyLinearFactor(rigidbody, factor);
+        //rigidbody.bt_rigidbody->setLinearFactor({factor.x, factor.y, factor.z});
     }
 }
 
@@ -263,7 +280,8 @@ void PhysicsComponent::SetLinearFactor(vec3 factor) {
 /// This makes the object to never fall asleep.
 void PhysicsComponent::DisableDeactivation() {
     if (is_ready) {
-        rigidbody->setActivationState(DISABLE_DEACTIVATION);
+        API::DisableRigidbodyDeactivation(rigidbody);
+        //rigidbody.bt_rigidbody->setActivationState(DISABLE_DEACTIVATION);
     }
     
     rigidbody_should_awake = true;
@@ -274,93 +292,26 @@ void PhysicsComponent::DisableDeactivation() {
 void PhysicsComponent::SetVelocity (const vec3& velocity){
     if (!is_ready) return;
     
-    if (velocity.x != 0.0f &&
+    /*if (velocity.x != 0.0f &&
         velocity.y != 0.0f &&
         velocity.z != 0.0f
     ) {
-        rigidbody->activate();
+        rigidbody.bt_rigidbody->activate();
     }
     
-    rigidbody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+    rigidbody.bt_rigidbody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));*/
+    API::SetRigidbodyVelocity(rigidbody, velocity);
 }
 
 /// Returns the velocity of the physics object.
 /// Always returns zero velocity if component is not loaded.
 vec3 PhysicsComponent::GetVelocity () {
     if (is_ready) {
-        auto velocity = rigidbody->getLinearVelocity();
-        return {velocity.getX(), velocity.getY(), velocity.getZ()};
+        return API::GetRigidbodyVelocity(rigidbody);
+        //auto velocity = rigidbody.bt_rigidbody->getLinearVelocity();
+        //return {velocity.getX(), velocity.getY(), velocity.getZ()};
     } else {
         return {0.0f, 0.0f, 0.0f};
-    }
-}
-
-void PhysicsComponent::AddPointConstraint(vec3 offset) {
-    btTypedConstraint* constr = new btPoint2PointConstraint(
-        *this->rigidbody,
-        {offset.x, offset.y, offset.z}
-    );
-
-    this->constraints.push_back({
-        nullptr,
-        constr
-    });
-    
-    DYNAMICS_WORLD->addConstraint(constr);
-}
-
-void PhysicsComponent::AddPointConstraint(vec3 offset, PhysicsComponent* other, vec3 other_offset) {
-    // TODO: implement
-}
-
-/// Constraint removal helper function.
-void RemoveConstraintHelper(std::vector<PhysicsConstraint>& constraints, btTypedConstraint* removable) {
-    for (auto it = constraints.begin(); it < constraints.end(); it++) {
-        if (it->constraint == removable) {
-            constraints.erase(it);
-            return;
-        }
-    }
-}
-
-void PhysicsComponent::RemoveConstraint(PhysicsComponent* other) {
-    bool try_erasing = true;
-    
-    while (try_erasing) {
-        try_erasing = false;
-        
-        for (auto it = constraints.begin(); it < constraints.end(); it++) {
-            if (it->other == other) {
-                if (other) {
-                    RemoveConstraintHelper(other->constraints, it->constraint);
-                }
-                
-                DYNAMICS_WORLD->removeConstraint(it->constraint);
-                
-                delete it->constraint;
-                
-                constraints.erase(it);
-                try_erasing = true;
-                
-                break;
-            }
-        }
-    }
-}
-
-void PhysicsComponent::RemoveAllConstraints() {
-    while (constraints.size()) {
-        auto it = constraints.begin();
-        
-        if (it->other) {
-            RemoveConstraintHelper(it->other->constraints, it->constraint);
-        }
-        
-        delete it->constraint;
-        
-        DYNAMICS_WORLD->removeConstraint(it->constraint);
-        
-        constraints.erase(it);
     }
 }
 

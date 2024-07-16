@@ -283,8 +283,6 @@ void KeyScroll(float value) {
 void ScreenResize(int width, int height) {
     screen_width = width;
     screen_height = height;
-    
-    Render::SetScreenSize(width, height);
 }
 
 void ScreenClose() {

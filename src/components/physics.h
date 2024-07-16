@@ -8,26 +8,11 @@
 #include <physics/collisionmodel.h>
 #include <physics/collisionshape.h>
 
-class btCollisionShape;
-class btMotionState;
-class btRigidBody;
-class btActionInterface;
-class btTypedConstraint;
-
 namespace tram {
-
-struct PhysicsConstraint {
-    PhysicsComponent* other;
-    btTypedConstraint* constraint;
-};
-
-// TODO: hide all of BulletPhysics pointers
-// it would be a good idea to hide away all of these pointers behind an opaque
-// struct pointer
 
 class PhysicsComponent : public EntityComponent {
 public:
-    PhysicsComponent() : collision_model (this) {}
+    PhysicsComponent() : collision_model(this) {}
     ~PhysicsComponent();
     void EventHandler(Event &event) {}
     void Start();
@@ -65,25 +50,18 @@ public:
 
     void SetVelocity(const vec3& velocity);
     vec3 GetVelocity();
-
-    void AddPointConstraint(vec3 offset);
-    void AddPointConstraint(vec3 offset, PhysicsComponent* other, vec3 other_offset);
-    
-    void RemoveConstraint(PhysicsComponent* other);
-    void RemoveAllConstraints();
 private:
     ResourceProxy<Physics::CollisionModel> collision_model;
-    btCollisionShape* collision_shape = nullptr;
-    btMotionState* motion_state = nullptr;
-    btRigidBody* rigidbody = nullptr;
-    btActionInterface* action = nullptr;
-    std::vector<PhysicsConstraint> constraints;
+    Physics::collisionshape_t collision_shape = {nullptr};
+    Physics::rigidbody_t rigidbody = {nullptr};
 
     float rigidbody_mass = 1.0f;
 
     bool rigidbody_should_sleep = true;
     bool rigidbody_should_awake = false;
     bool update_parent_transform = true;
+    bool rigidbody_kinematic = false;
+    bool rigidbody_debug_draw = true;
     
     vec3 rigidbody_position = {0.0f, 0.0f, 0.0f};
     quat rigidbody_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
@@ -94,8 +72,6 @@ private:
 
     uint32_t rigidbody_collision_mask = -1;
     uint32_t rigidbody_collision_group = -1;
-    
-    uint32_t rigidbody_collision_flags = 0;
 };
 
 }

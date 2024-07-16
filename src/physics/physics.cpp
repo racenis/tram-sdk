@@ -14,7 +14,7 @@
 namespace tram::Physics {
 /// Option for drawing physics debug lines.
 /// Set to true if you want to see physics debug lines. False if not.
-bool DRAW_PHYSICS_DEBUG = false;
+bool DRAW_PHYSICS_DEBUG = true;
 
 /// Initializes the physics system.
 void Init() {

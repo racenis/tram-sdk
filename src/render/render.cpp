@@ -57,8 +57,18 @@ static void update_view(layer_t layer) {
 }
 
 static void update_projection(layer_t layer) {
-    view_properties[layer].projection = glm::perspective(glm::radians(view_properties[layer].view_fov), screen_width / screen_height, 0.1f, 1000.0f);
-    API::SetProjectionMatrix(view_properties[layer].projection, layer);
+    const float fov = view_properties[layer].view_fov;
+    const float ratio = screen_width / screen_height;
+    
+    mat4 matrix;
+    if (fov == 0.0f) {
+        matrix = glm::ortho(-ratio, +ratio, -(1.0f/ratio), +(1.0f/ratio), 0.01f, 50.0f);
+    } else {
+        matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, 0.01f, 50.0f);
+    }
+    
+    view_properties[layer].projection = matrix;
+    API::SetProjectionMatrix(matrix, layer);
 }
 
 static void update_light(layer_t layer) {

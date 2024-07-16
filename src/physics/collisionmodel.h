@@ -5,9 +5,7 @@
 #define TRAM_SDK_PHYSICS_COLLISIONMODEL_H
 
 #include <framework/resource.h>
-#include <unordered_map>
-
-class btCompoundShape;
+#include <physics/physics.h>
 
 namespace tram::Physics {
 
@@ -15,16 +13,15 @@ class CollisionModel : public Resource {
 public:
     CollisionModel(name_t mName) : Resource(mName) {}
 
-    void LoadFromDisk ();
-    void LoadFromMemory () {}
-    
+    void LoadFromDisk();
+    void LoadFromMemory() {}
     void Unload() {}
     
-    inline btCompoundShape* GetShape () { return model; }
+    inline collisionshape_t GetShape() { return shape; }
 
-    static CollisionModel* Find (name_t model_name);
+    static CollisionModel* Find(name_t model_name);
 protected:
-    btCompoundShape* model = nullptr;
+    collisionshape_t shape;
 };
 
 }

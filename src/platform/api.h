@@ -27,6 +27,8 @@ void SetCursorPosition(float x, float y);
 void EnableCursor();
 void DisableCursor();
 
+void SetScale(int s);
+
 double GetTime();
 
 }

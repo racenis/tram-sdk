@@ -23,6 +23,7 @@ static uint32_t* frame_buffer = nullptr;
 
 static int screen_width = 800;
 static int screen_height = 600;
+static int screen_scale = 3;
 static int relpos_x = screen_width/2;
 static int relpos_y = screen_height/2;
 static bool cursor_enabled = false;
@@ -148,17 +149,22 @@ void Window::Init() {
             abort();
         }
 
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-        SDL_RenderSetLogicalSize(renderer, 800, 600);
+        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+        SDL_RenderSetLogicalSize(renderer, screen_width/screen_scale, screen_height/screen_scale);
         
         frame_texture = SDL_CreateTexture(renderer,
                                //SDL_PIXELFORMAT_ARGB8888,
                                SDL_PIXELFORMAT_RGB565,
                                SDL_TEXTUREACCESS_STREAMING,
-                               800, 600);
+                               screen_width/screen_scale, screen_height/screen_scale);
         
-        frame_buffer = (uint32_t*)malloc(800 * 600 * sizeof(uint32_t));
+        frame_buffer = (uint32_t*)malloc(screen_width * screen_height * sizeof(uint32_t));
         
+        int ww = screen_width/screen_scale;
+        int hh = screen_height/screen_scale;
+        //Render::API::SetScreenSize(ww, hh);
+        Render::SetScreenSize(ww, hh);
         Render::API::SetDevice(frame_buffer);
     }
     
@@ -175,7 +181,7 @@ void Window::Update() {
     }
     
     if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
-        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, 800 * sizeof(uint16_t) /*sizeof(uint32_t)*/);
+        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, (screen_width/screen_scale) * sizeof(uint16_t) /*sizeof(uint32_t)*/);
         
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, frame_texture, NULL, NULL);
@@ -195,9 +201,16 @@ void Window::SetTitle(const char* title) {
 void Window::SetSize(int w, int h) {
     SDL_SetWindowSize(window, w, h);
     UI::ScreenResize(w, h);
+    int ww = w/screen_scale;
+    int hh = h/screen_scale;
+    Render::SetScreenSize(ww, hh);
     
     screen_width = w;
     screen_height = h;
+}
+
+void SetScale(int s) {
+    screen_scale = s;
 }
 
 void Window::SetCursor(CursorType cursor) {
@@ -266,8 +279,8 @@ void Input::Update() {
                 if (cursor_enabled) {
                     KeyMouse(event.motion.x, event.motion.y);
                 } else {
-                    relpos_x += event.motion.xrel;
-                    relpos_y += event.motion.yrel;
+                    relpos_x += event.motion.xrel * 3;
+                    relpos_y += event.motion.yrel * 3;
                     
                     KeyMouse(relpos_x, relpos_y);
                 }

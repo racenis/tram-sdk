@@ -9,6 +9,9 @@
 
 #include <vector>
 
+struct btCollisionShape;
+struct btRigidBody;
+
 namespace tram {
     class PhysicsComponent;  
 }
@@ -34,6 +37,21 @@ struct Collision {
     vec3 point;
     vec3 normal;
     float distance;
+};
+
+namespace API { struct RigidbodyMetadata; }
+
+struct collisionshape_t {
+    btCollisionShape* bt_shape;
+};
+
+struct trigger_t {
+    
+};
+
+struct rigidbody_t {
+    btRigidBody* bt_rigidbody;
+    API::RigidbodyMetadata* bt_metadata;
 };
 
 class CollisionShape;

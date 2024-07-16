@@ -168,6 +168,7 @@
       <File Name="src/platform/file.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="physics">
+      <File Name="src/physics/api.h"/>
       <File Name="src/physics/collisionshape.h"/>
       <File Name="src/physics/collisionmodel.h"/>
       <VirtualDirectory Name="bullet">

@@ -3,6 +3,7 @@
 
 #include <components/trigger.h>
 #include <physics/bullet/bullet.h>
+#include <physics/api.h>
 
 using namespace tram::Physics;
 using namespace tram::Physics::Bullet;
@@ -13,7 +14,7 @@ template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger co
 
 void TriggerComponent::Start(){
     if (!shape && model) {
-        shape = (btCollisionShape*) model->GetShape();
+        shape = (btCollisionShape*) model->GetShape().bt_shape;
     }
     
     assert(shape);
@@ -50,7 +51,7 @@ TriggerComponent::~TriggerComponent(){
 
 /// Sets a collision shape for the trigger.
 void TriggerComponent::SetShape(Physics::CollisionShape shape) {
-    this->shape = CollisionShapeToConvexShape(shape);
+    this->shape = API::MakeCollisionShape(shape).bt_shape;
 }
 
 /// Sets a collision mask for the trigger.

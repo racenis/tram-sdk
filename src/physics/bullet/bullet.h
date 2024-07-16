@@ -16,8 +16,6 @@ enum UserIndex : int {
     USERINDEX_TRIGGERCOMPONENT = 2,
 };
 
-btConvexShape* CollisionShapeToConvexShape (CollisionShape shape);
-
 void Init();
 void StepPhysics();
 void DrawDebug();

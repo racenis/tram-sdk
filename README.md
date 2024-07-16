@@ -6,6 +6,8 @@
 
 It does what Godoesn't.
 
+Free func_door included with every install!
+
 ## What's it
 
 Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022 and similar applications.
@@ -28,6 +30,25 @@ polygonal soup instead of BSPs and supports level streaming.
 - Level streaming
 - Allows use of Quake level editors to create level geometry
 
+### Platforms
+- Windows (XP SP3 or later)
+- Linux
+- Web browser (needs WebAssembly support)
+
+### Requirements
+- Graphics card (optional) that supports either:
+	- OpenGL 4.0
+	- WebGL 2.0 (for web builds)
+	- Direct3D 9.0
+- Decent CPU (at least Pentium 4) if using software rendering
+- Mouse and/or keyboard
+- Will probably add controllers and other input devices later
+- GCC/G++ 12.4.0 or MinGW/G++ 12.4.0
+- Clang should work too
+- Don't know about MSVC++
+- If it supports C++20, it should work
+
+
 ![Demo1](/docs/demo1.gif)
 
 ### Links
@@ -38,26 +59,23 @@ More information can be found on the [github.io page](https://racenis.github.io/
 
 - FPS ([source code](https://github.com/racenis/jam-game) / [itch.io](https://racenis.itch.io/dziiviibas-partikula))
 
-- Platformer ([source code](https://github.com/racenis/jam-game-ii) / [itch.io](https://racenis.itch.io/sulas-glaaze))
+- Platformer ([source code](https://github.com/racenis/jam-game-ii) / [itch.io / web demo](https://racenis.itch.io/sulas-glaaze))
 
-- Adventure ([source code](https://github.com/racenis/jam-game-iii) / [itch.io](https://racenis.itch.io/froggy-garden))
-
-### Dependencies
-Right now I'm using glad for OpenGL pointer acquisition, glfw for windowing, glm for vector math, Bullet for physics simulation. Maybe will change in the future.
+- Adventure ([source code](https://github.com/racenis/jam-game-iii) / [itch.io / web demo](https://racenis.itch.io/froggy-garden))
 
 ### Building
-I don't have any makefiles right now, so I suggest that you dump all of the code from the `src` directory into your favorite IDE.
+#### MinGW/GCC/Clang(?)/Emscripten/
+Edit the settings found in `maketool.ini`.
 
-Set the compiler include search directories to `src`, `libraries`, `libraries/glad`, `libraries/glfw` and `libraries/openal`.
+Set repository root as the working directory.
 
-For the linker, set the search directories to `libraries/binaries/win64`, if you're compiling on windows. For Linux you should install the relevant packages from your package manager. Here's the linking order that should work: `-Llibraries  -lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath -lglfw3 -lOpenAL32  -lglfw3 -lgdi32 -lopengl32`. The last two are for windows only, I think.
+Run `devtools/maketool.py generate` to generate a `Makefile`.
 
-### Libraries
-For convenience, I have included all of the library header files in the `libraries` directory. Since compiling all of the libraries from source takes about an hour, I have also included binaries for 64-bit windows in the `libraries/binaries/win64` directory. They should work for gcc and clang compilers.
+Use `make library && make clean` to compile the library.
 
-If you're on Linux, then all of the binaries should be available to you from your package manager.
-
-If you're using the microsoft's C++ compiler, then good luck.
+### Dependencies
+Header files and binaries (for MinGW x86/x86_64 and WebAssembly) included in `libraries` directory.
+Check [/libraries/README.md](/libraries/README.md) for more information.
 
 ### Contributions
 No code contributions accepted right now, but if you find a bug or have a suggestion, then you can open a github issue.
@@ -69,10 +87,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
-	- Add a callback function for updating
+	- ~~Add a callback function for updating~~
 - Replace Bezier curves with Catmull-Roms
-- ~~Refactor GLFW from UI to Platform~~
-	- Also make it so that GLFW can be swapped for SDL
 - Add command-line argument parser.
 	- Should parse command-line arguments.
 	- Also should allow setting of settings through command-line.
@@ -100,9 +116,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Add some kind of a code to bind 
 - Put triangle definition into math.h
 - Put MinAABB MaxAABB into there too
-- And also switch traingle intersection thingy
+- And also switch triangle intersection thingy
 - AddLine() drawlistentry is not being drawn on top
-- Get Calc Key things does not work?? at least the distance part
 - Add directional lights to lightmapper
  
 #### Should do later
@@ -143,9 +158,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
 - Add more rendering stuff
-	- Single drawlistthingy can be in mutliple layers
+	- Single drawlistthingy can be in multiple layers
 	- Layers have different cameras
-	- Cameras can be orthogrpahics
+	- Cameras can be orthographics
 	- Add shear test
 	- Maybe rename camera? camera is extension and in render:: there is view
 - Make the engine work without any files
@@ -155,17 +170,14 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make Raycast that returns multiple points
 	
 ### New features that would be nice to have, but are not very important
-- ControllerComponents have configurable transitions between animations
-	- In the form of:
+- Animation state machine component for ControllerComponents
+	- Would have the same or similar API as ControllerComponent
+	- Would allow setting transitions between animations in the form of:
 		- State/from
 		- State/to
 		- Fade-out rate
 		- Fade-in rate
 	- Or something like that
-- ControllerComponents have fake IK
-	- Leg placement for creatures with legs
-	- Ability to look at (turn head/etc. towards) something
-- Actually it might be a better idea to delegate this functionality to a seperate component.
 - Input recording and playback
 - AudioComponents can play more than 128 sounds at the same time
 - Split animation into animation and StreamableAnimation

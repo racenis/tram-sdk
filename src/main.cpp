@@ -547,7 +547,8 @@ int main() {
         vec3 start = Render::GetViewPosition();
         vec3 direction = Render::GetViewRotation() * DIRECTION_FORWARD;
         
-        auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
+        //auto result = Physics::Raycast(start, start + 4.0f * direction, -1 ^ Physics::COLL_TRIGGER);
+        auto result = Physics::Raycast(start, start + 4.0f * direction, -1);
         
         if (result.collider) {
             Message::Send({Message::ACTIVATE, 0, result.collider->GetParent()->GetID(), 0});
@@ -609,7 +610,7 @@ int main() {
     });
     
     Event::AddListener(Event::LOOK_AT, [](Event& event) {
-        AddLine(vec3(0, 0, 0), vec3(0, 0, 0) + (quat)*(Value*)event.data * DIRECTION_FORWARD, COLOR_CYAN);
+        //AddLine(vec3(0, 0, 0), vec3(0, 0, 0) + (quat)*(Value*)event.data * DIRECTION_FORWARD, COLOR_CYAN);
     });
         
         

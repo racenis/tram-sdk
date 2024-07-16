@@ -4,9 +4,341 @@
 #include <physics/bullet/bullet.h>
 #include <physics/bullet/debugdrawer.h>
 
+#include <physics/api.h>
+
 #include <components/trigger.h>
 
 #include <btBulletDynamicsCommon.h>
+
+namespace tram::Physics::API {
+
+using namespace Bullet;
+    
+class CallbackMotionState : public btMotionState {
+public:
+    CallbackMotionState(vec3 position, quat rotation, get_trf_callback get_callback, set_trf_callback set_callback, void* data) {
+        this->position = position;
+        this->rotation = rotation;
+        this->get_transform_callback = get_callback;
+        this->set_transform_callback = set_callback;
+        this->data_pointer = data;
+    }
+    virtual ~CallbackMotionState() {}
+
+    virtual void getWorldTransform (btTransform& world_transform) const {
+        vec3 position = this->position;
+        quat rotation = this->rotation;
+        
+        if (get_transform_callback) {
+            //auto [position, rotation] = get_transform_callback(data_pointer);
+            std::tie(position, rotation) = get_transform_callback(data_pointer);
+            //this->position = position;
+            //this->rotation = rotation;
+            
+            
+        }
+
+        btVector3 transform_translation;
+        btQuaternion transform_rotation;
+        
+        transform_translation.setX(position.x);
+        transform_translation.setY(position.y);
+        transform_translation.setZ(position.z);
+        
+        transform_rotation.setX(rotation.x);
+        transform_rotation.setY(rotation.y);
+        transform_rotation.setZ(rotation.z);
+        transform_rotation.setW(rotation.w);
+        
+        btTransform transform;
+        transform.setIdentity();
+        transform.setRotation(transform_rotation);
+        transform.setOrigin(transform_translation);
+
+        world_transform = transform;
+    }
+
+    virtual void setWorldTransform (const btTransform& world_transform) {
+        btQuaternion transform_rotation = world_transform.getRotation();
+        btVector3 transform_translation = world_transform.getOrigin();
+
+        position.x = transform_translation.getX();
+        position.y = transform_translation.getY();
+        position.z = transform_translation.getZ();
+        
+        rotation.x = transform_rotation.getX();
+        rotation.y = transform_rotation.getY();
+        rotation.z = transform_rotation.getZ();
+        rotation.w = transform_rotation.getW();
+
+        if (set_transform_callback) {
+            set_transform_callback(data_pointer, {position, rotation});
+        }
+    }
+
+    void SetTransformCallback(std::pair<vec3, quat>(*get_transform_callback)(void*), void(*set_transform_callback)(void*, std::pair<vec3, quat>), void* data) {
+        this->get_transform_callback = get_transform_callback;
+        this->set_transform_callback = set_transform_callback;
+        this->data_pointer = data;
+    }
+
+protected:
+    std::pair<vec3, quat>(*get_transform_callback)(void*) = nullptr;
+    void(*set_transform_callback)(void*, std::pair<vec3, quat>) = nullptr;
+    
+    vec3 position;
+    quat rotation;
+    
+    void* data_pointer = nullptr;
+};
+    
+struct RigidbodyMetadata {
+    uint32_t collision_mask = -1;
+    uint32_t collision_group = -1;
+    uint32_t collision_flags = 0;
+    
+    CallbackMotionState* motion_state = nullptr;
+    
+    char padding[10];
+};
+
+Pool<RigidbodyMetadata> rigidbody_metadata_pool("rigibody emtadat pool", 200);
+    
+btCollisionShape* MakeBulletShape(CollisionShape shape) {
+    switch (shape.type) {
+        case SHAPE_SPHERE:
+            return new btSphereShape(shape.radius);
+        case SHAPE_CYLINDER:
+            return new btCylinderShape(btVector3(shape.radius_x, shape.height, shape.radius_x));
+        case SHAPE_CAPSULE:
+            return new btCapsuleShape(shape.radius, shape.height);
+        case SHAPE_BOX:
+            return new btBoxShape(btVector3(shape.extent_x, shape.extent_y, shape.extent_z));
+        case SHAPE_HULL: {
+            btConvexHullShape* hull  = new btConvexHullShape();
+            for (size_t i = 0; i < shape.hull_size; i++) {
+                hull->addPoint(btVector3(shape.hull_points[i].x, shape.hull_points[i].y, shape.hull_points[i].z));
+            }
+            return hull;
+        } break;
+        case SHAPE_MESH: {
+            btTriangleMesh* mesh = new btTriangleMesh();
+            
+            for (size_t i = 0; i < shape.mesh_size; i++) {
+                btVector3 p0(shape.mesh_triangles[i].p0.x,
+                             shape.mesh_triangles[i].p0.y,
+                             shape.mesh_triangles[i].p0.z);
+                btVector3 p1(shape.mesh_triangles[i].p1.x,
+                             shape.mesh_triangles[i].p1.y,
+                             shape.mesh_triangles[i].p1.z);
+                btVector3 p2(shape.mesh_triangles[i].p2.x,
+                             shape.mesh_triangles[i].p2.y,
+                             shape.mesh_triangles[i].p2.z);
+                
+                mesh->addTriangle(p0, p1, p2);
+            }
+
+            return new btBvhTriangleMeshShape(mesh, true, true);
+        } break;
+        default:
+            return nullptr;
+    }
+}
+
+collisionshape_t MakeCollisionShape(CollisionShapeTransform* shapes, size_t shape_count) {
+    if (!shapes || shape_count < 1) {
+        return {new btBoxShape(btVector3(0.125f, 0.125f, 0.125f))};
+    }
+    
+    btCompoundShape* shape = new btCompoundShape();
+    
+    for (size_t i = 0; i < shape_count; i++) {
+        btTransform transform;
+        btQuaternion rotation;
+
+        transform.setIdentity();
+        transform.setOrigin(btVector3(shapes[i].position.x, shapes[i].position.y, shapes[i].position.z));
+        rotation.setX(shapes[i].rotation.x);
+        rotation.setY(shapes[i].rotation.y);
+        rotation.setZ(shapes[i].rotation.z);
+        rotation.setW(shapes[i].rotation.w);
+        transform.setRotation(rotation);
+        
+        shape->addChildShape(transform, MakeBulletShape(shapes[i].shape));
+    }
+    
+    return {shape};
+}
+
+collisionshape_t MakeCollisionShape(CollisionShape shape) {
+    return {MakeBulletShape(shape)};
+}
+
+
+rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, quat rotation, uint32_t mask, uint32_t group, get_trf_callback get_callback, set_trf_callback set_callback, void* data) {
+    RigidbodyMetadata* metadata = rigidbody_metadata_pool.AddNew();
+    
+    if (mass == 0.0f) {
+        metadata->collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
+    }
+    
+    metadata->collision_mask = mask;
+    metadata->collision_group = group;
+    metadata->motion_state = new CallbackMotionState(position, rotation, get_callback, set_callback, data);
+    
+    btScalar rigidbody_mass = mass;
+    btVector3 rigidbody_inertia (0.0f, 0.0f, 0.0f);
+    shape.bt_shape->calculateLocalInertia(rigidbody_mass, rigidbody_inertia);
+    
+    btRigidBody::btRigidBodyConstructionInfo bullet_construction_info(rigidbody_mass, metadata->motion_state, shape.bt_shape, rigidbody_inertia);
+    rigidbody_t rigidbody = {new btRigidBody(bullet_construction_info), metadata};
+
+    std::cout << "collisin mask " << metadata->collision_mask << " grop " << metadata->collision_group << std::endl;
+
+    Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, metadata->collision_group, metadata->collision_mask);
+    
+    rigidbody.bt_rigidbody->setUserPointer(metadata);
+    rigidbody.bt_rigidbody->setCollisionFlags(metadata->collision_flags);
+    
+    return rigidbody;
+}
+
+void YeetRigidbody(rigidbody_t rigidbody) {
+    DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    delete rigidbody.bt_rigidbody;
+    delete rigidbody.bt_metadata->motion_state;
+    rigidbody_metadata_pool.Remove(rigidbody.bt_metadata);
+}
+
+void SetRigidbodyTransformCallback(rigidbody_t rigidbody, std::pair<vec3, quat>(*get_transform_callback)(void*), void(*set_transform_callback)(void*, std::pair<vec3, quat>), void* data) {
+    std::cout << "insignde callback setter" << std::endl;
+    rigidbody.bt_metadata->motion_state->SetTransformCallback(get_transform_callback, set_transform_callback, data);
+}
+
+void SetRigidbodyCollisionCallback(rigidbody_t rigidbody, void(*callback)(void*), void* data) {
+    
+}
+
+void SetRigidbodyCollisionMask(rigidbody_t rigidbody, uint32_t mask) {
+    rigidbody.bt_metadata->collision_mask = mask;
+    DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    std::cout << "SetRigidbodyCollisionMask mask " << rigidbody.bt_metadata->collision_mask << " grop " << rigidbody.bt_metadata->collision_group << std::endl;
+    DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+}
+
+void SetRigidbodyCollisionGroup(rigidbody_t rigidbody, uint32_t group) {
+    rigidbody.bt_metadata->collision_group = group;
+    DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    std::cout << "SetRigidbodyCollisionGroup mask " << rigidbody.bt_metadata->collision_mask << " grop " << rigidbody.bt_metadata->collision_group << std::endl;
+    DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+}
+
+void SetRigidbodyLocation(rigidbody_t rigidbody, vec3 position) {
+    btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
+    trans.setOrigin(btVector3 (position.x, position.y, position.z));
+    rigidbody.bt_rigidbody->setWorldTransform(trans);
+}
+void SetRigidbodyRotation(rigidbody_t rigidbody, quat rotation) {
+    btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
+    trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+    rigidbody.bt_rigidbody->setWorldTransform(trans);
+}
+void SetRigidbodyMass(rigidbody_t rigidbody, float mass) {
+    
+}
+void PushRigidbody(rigidbody_t rigidbody, vec3 direction) {
+    rigidbody.bt_rigidbody->activate(); // force awake, sleeping objects won't move
+    rigidbody.bt_rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
+}
+void PushRigidbody(rigidbody_t rigidbody, vec3 direction, vec3 local) {
+    rigidbody.bt_rigidbody->activate();
+    rigidbody.bt_rigidbody->applyImpulse(btVector3(direction.x, direction.y, direction.z), btVector3(local.x, local.y, local.z));
+}
+
+void SpinRigidbody(rigidbody_t rigidbody, vec3 direction) {
+    rigidbody.bt_rigidbody->activate();
+    rigidbody.bt_rigidbody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
+}
+void SetRigidbodyDebugDrawing(rigidbody_t rigidbody, bool drawing) {
+    if (drawing) {
+        rigidbody.bt_metadata->collision_flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+    } else {
+        rigidbody.bt_metadata->collision_flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+    }
+    
+    rigidbody.bt_rigidbody->setCollisionFlags(rigidbody.bt_metadata->collision_flags);
+}
+void SetRigidbodyKinematic(rigidbody_t rigidbody, bool kinematic) {
+    if (kinematic) {
+        rigidbody.bt_metadata->collision_flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
+    } else {
+        rigidbody.bt_metadata->collision_flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
+    }
+    
+    rigidbody.bt_rigidbody->setCollisionFlags(rigidbody.bt_metadata->collision_flags);
+}
+void SetRigidbodyAngularFactor(rigidbody_t rigidbody, vec3 factor) {
+    rigidbody.bt_rigidbody->setAngularFactor({factor.x, factor.y, factor.z});
+}
+void SetRigidbodyLinearFactor(rigidbody_t rigidbody, vec3 factor) {
+    rigidbody.bt_rigidbody->setLinearFactor({factor.x, factor.y, factor.z});
+}
+void SetRigidbodyVelocity(rigidbody_t rigidbody, vec3 velocity) {
+    if (velocity.x != 0.0f &&
+        velocity.y != 0.0f &&
+        velocity.z != 0.0f
+    ) {
+        rigidbody.bt_rigidbody->activate();
+    }
+    
+    rigidbody.bt_rigidbody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+}
+vec3 GetRigidbodyVelocity(rigidbody_t rigidbody) {
+    auto velocity = rigidbody.bt_rigidbody->getLinearVelocity();
+    return {velocity.getX(), velocity.getY(), velocity.getZ()};
+}
+void AwakenRigidbody(rigidbody_t rigidbody) {
+    rigidbody.bt_rigidbody->activate();
+}
+void SleepRigidbody(rigidbody_t rigidbody) {
+    rigidbody.bt_rigidbody->setActivationState(0);
+}
+
+void DisableRigidbodyDeactivation(rigidbody_t rigidbody) {
+    rigidbody.bt_rigidbody->setActivationState(DISABLE_DEACTIVATION);
+}
+
+trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec3 position, quat rotation);/* {
+    return {nullptr};
+}*/
+void YeetTrigger(trigger_t) {
+    
+}
+void SetTriggerCollisionCallback(rigidbody_t rigidbody, void(*callback)(void*), void* data) {
+    
+}
+
+void SetTriggerCollisionMask(rigidbody_t rigidbody, uint32_t mask) {
+    rigidbody.bt_metadata->collision_mask = mask;
+    Bullet::DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+}
+
+void SetTriggerCollisionGroup(rigidbody_t rigidbody, uint32_t group) {
+    rigidbody.bt_metadata->collision_group = group;
+    Bullet::DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+}
+
+void SetTriggerLocation(rigidbody_t rigidbody, vec3 location) {
+    
+}
+
+void SetTriggerRotation(rigidbody_t rigidbody, vec3 location) {
+    
+}
+
+}
 
 namespace tram::Physics::Bullet {
 
@@ -17,21 +349,6 @@ btSequentialImpulseConstraintSolver* CONSTRAINT_SOLVER = nullptr;
 btDiscreteDynamicsWorld* DYNAMICS_WORLD = nullptr;
 btIDebugDraw* DEBUG_DRAWER = nullptr;
 btVehicleRaycaster* VEHICLE_RAYCASTER = nullptr;
-
-btConvexShape* CollisionShapeToConvexShape (CollisionShape shape) {
-    switch (shape.type) {
-        case SHAPE_SPHERE:
-            return new btSphereShape(shape.dimensions.x);
-        case SHAPE_CYLINDER:
-            return new btCylinderShape(btVector3(shape.dimensions.x, shape.dimensions.y, shape.dimensions.z));
-        case SHAPE_CAPSULE:
-            return new btCapsuleShape(shape.dimensions.x, shape.dimensions.y);
-        case SHAPE_BOX:
-            return new btBoxShape(btVector3(shape.dimensions.x, shape.dimensions.y, shape.dimensions.z));
-        default:
-            return nullptr;
-    }
-}
 
 void Init() {
     BROADPHASE_INTERFACE = new btDbvtBroadphase();
@@ -182,7 +499,7 @@ struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
 
 /// I have no idea if this function works.
 std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask) {
-    auto shape_ptr = CollisionShapeToConvexShape(shape);
+    auto shape_ptr = API::MakeBulletShape(shape);
     btTransform bto, bfrom;
     std::vector<Collision> collisions;
     
@@ -192,8 +509,10 @@ std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from,
     bto.setOrigin({to.x, to.y, to.z});
     bfrom.setIdentity();
     bfrom.setOrigin({from.x, from.y, from.z});
-    
-    DYNAMICS_WORLD->convexSweepTest(shape_ptr, bfrom, bto, callback);
+
+    // that btConvexShape* cast will probably segfault if MakeBulletShape() 
+    // didn't return a btConvexShape (of which there is only a mesh)
+    DYNAMICS_WORLD->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
     
     delete shape_ptr;
     
