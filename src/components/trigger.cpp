@@ -2,56 +2,37 @@
 // All rights reserved.
 
 #include <components/trigger.h>
-#include <physics/bullet/bullet.h>
+//#include <physics/bullet/bullet.h>
 #include <physics/api.h>
 
 using namespace tram::Physics;
-using namespace tram::Physics::Bullet;
+//using namespace tram::Physics::Bullet;
 
 namespace tram {
 
 template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
 
-void TriggerComponent::Start(){
-    if (!shape && model) {
-        shape = (btCollisionShape*) model->GetShape().bt_shape;
+void TriggerComponent::Start() {
+    if (!shape.bt_shape && model) {
+        shape = model->GetShape();
     }
     
-    assert(shape);
+    assert(shape.bt_shape);
 
-    btTransform transform;
-    transform.setIdentity();
-    transform.setOrigin(btVector3(location.x, location.y, location.z));
-    
-    btQuaternion rotation_quat;
-    rotation_quat.setX(rotation.x);
-    rotation_quat.setY(rotation.y);
-    rotation_quat.setZ(rotation.z);
-    rotation_quat.setW(rotation.w);
-    transform.setRotation(rotation_quat);
-    
-    trigger = new btCollisionObject();
-    trigger->setCollisionShape(shape);
-    trigger->setWorldTransform(transform);
-    trigger->setUserPointer(this);
-    trigger->setUserIndex(USERINDEX_TRIGGERCOMPONENT);
-    trigger->setCollisionFlags(trigger->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    
-    DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
+    trigger = API::MakeTrigger(shape, collisionMask, collisionGroup, location, rotation);
     
     is_ready = true;
 }
 
 TriggerComponent::~TriggerComponent(){
-    DYNAMICS_WORLD->removeCollisionObject(trigger);
-    delete trigger;
+    API::YeetTrigger(trigger);
     
-    if (shape && !model.get()) delete shape;
+    if (shape.bt_shape && !model.get()) API::YeetCollisionShape(shape);
 };
 
 /// Sets a collision shape for the trigger.
 void TriggerComponent::SetShape(Physics::CollisionShape shape) {
-    this->shape = API::MakeCollisionShape(shape).bt_shape;
+    this->shape = API::MakeCollisionShape(shape);
 }
 
 /// Sets a collision mask for the trigger.
@@ -61,8 +42,7 @@ void TriggerComponent::SetCollisionMask(uint32_t flags){
     collisionMask = flags;
     
     if (is_ready) {
-        DYNAMICS_WORLD->removeCollisionObject(trigger);
-        DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
+        API::SetTriggerCollisionMask(trigger, flags);
     }
 }
 
@@ -73,8 +53,7 @@ void TriggerComponent::SetCollisionGroup(uint32_t flags){
     collisionGroup = flags;
     
     if (is_ready) {
-        DYNAMICS_WORLD->removeCollisionObject(trigger);
-        DYNAMICS_WORLD->addCollisionObject(trigger, collisionGroup, collisionMask);
+        API::SetTriggerCollisionGroup(trigger, flags);
     }
 }
 
@@ -83,9 +62,7 @@ void TriggerComponent::SetLocation (glm::vec3 location) {
     this->location = location;
     
     if (is_ready) {
-        btTransform trans = trigger->getWorldTransform();
-        trans.setOrigin(btVector3 (location.x, location.y, location.z));
-        trigger->setWorldTransform(trans);
+        API::SetTriggerLocation(trigger, location);
     }
 }
 
@@ -94,15 +71,13 @@ void TriggerComponent::SetRotation (glm::quat rotation) {
     this->rotation = rotation;
     
     if (is_ready) {
-        btTransform trans = trigger->getWorldTransform();
-        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-        trigger->setWorldTransform(trans);
+        API::SetTriggerRotation(trigger, location);
     }
 }
 
 /// Registers a collision.
 /// This method is called from Phyics::Update().
-void TriggerComponent::Collision (const Physics::Collision& collision) {
+void TriggerComponent::Collision(const Physics::Collision& collision) {
     if (!filter_callback || filter_callback(this, collision.collider)) {
         if (!is_collided && !was_collided && activation_callback) {
             activation_callback(this, collision);
@@ -131,7 +106,7 @@ void TriggerComponent::ResetCollisions() {
     was_collided = is_collided;
     is_collided = false;
 }
-
+/*
 // For the Bullet physics.
 struct TriggerPollCallback : public btCollisionWorld::ContactResultCallback {
     TriggerPollCallback(std::vector<Physics::Collision>& collisions) : collisions(collisions) {}
@@ -179,14 +154,14 @@ struct TriggerPollCallback : public btCollisionWorld::ContactResultCallback {
         return 1; // tbh idk what this method is supposed to return
     }
     std::vector<Physics::Collision>& collisions;
-};
+};*/
 
 /// Checks for collisions with the trigger.
 std::vector<Physics::Collision> TriggerComponent::Poll () {
     std::vector<Physics::Collision> collisions;
     
-    TriggerPollCallback callback (collisions);
-    DYNAMICS_WORLD->contactTest(trigger, callback);
+    //TriggerPollCallback callback (collisions);
+    //DYNAMICS_WORLD->contactTest(trigger.bt_collisionshape, callback);
     
     return collisions;
 }

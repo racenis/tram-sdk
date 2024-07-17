@@ -10,6 +10,7 @@
 #include <vector>
 
 struct btCollisionShape;
+struct btCollisionObject;
 struct btRigidBody;
 
 namespace tram {
@@ -46,7 +47,8 @@ struct collisionshape_t {
 };
 
 struct trigger_t {
-    
+    btCollisionObject* bt_collisionshape;
+    API::RigidbodyMetadata* bt_metadata;
 };
 
 struct rigidbody_t {

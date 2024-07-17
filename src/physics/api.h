@@ -20,6 +20,7 @@ struct CollisionShapeTransform {
 
 collisionshape_t MakeCollisionShape(CollisionShapeTransform* shapes, size_t shape_count);
 collisionshape_t MakeCollisionShape(CollisionShape shape);
+void YeetCollisionShape(collisionshape_t shape);
 
 rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, quat rotation, uint32_t mask, uint32_t group, get_trf_callback get_callback, set_trf_callback set_callback, void* data);
 void YeetRigidbody(rigidbody_t rigidbody);
@@ -45,11 +46,11 @@ void DisableRigidbodyDeactivation(rigidbody_t rigidbody);
 
 trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec3 position, quat rotation);
 void YeetTrigger(trigger_t);
-void SetTriggerCollisionCallback(rigidbody_t rigidbody, void(*callback)(void*), void* data);
-void SetTriggerCollisionMask(rigidbody_t rigidbody, uint32_t mask);
-void SetTriggerCollisionGroup(rigidbody_t rigidbody, uint32_t group);
-void SetTriggerLocation(rigidbody_t rigidbody, vec3 location);
-void SetTriggerRotation(rigidbody_t rigidbody, vec3 location);
+void SetTriggerCollisionCallback(trigger_t rigidbody, void(*callback)(void*), void* data);
+void SetTriggerCollisionMask(trigger_t rigidbody, uint32_t mask);
+void SetTriggerCollisionGroup(trigger_t rigidbody, uint32_t group);
+void SetTriggerLocation(trigger_t rigidbody, vec3 location);
+void SetTriggerRotation(trigger_t rigidbody, quat location);
     
 }
 

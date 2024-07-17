@@ -52,11 +52,11 @@ private:
     uint32_t collisionMask = -1;
     uint32_t collisionGroup = -1;
     
-    glm::vec3 location = vec3 (0.0f, 0.0f, 0.0f);
-    glm::quat rotation = vec3 (0.0f, 0.0f, 0.0f);
+    glm::vec3 location = vec3(0.0f, 0.0f, 0.0f);
+    glm::quat rotation = vec3(0.0f, 0.0f, 0.0f);
     
-    btCollisionShape* shape = nullptr;
-    btCollisionObject* trigger = nullptr;
+    Physics::collisionshape_t shape = {nullptr};
+    Physics::trigger_t trigger = {nullptr};
     
     void (*activation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
     void (*deactivation_callback)(TriggerComponent*, Physics::Collision) = nullptr;

@@ -91,13 +91,20 @@ protected:
     
     void* data_pointer = nullptr;
 };
-    
+
+enum MetadataType {
+    METADATA_RIGIDBODY,
+    METADATA_TRIGGER,
+};
+
 struct RigidbodyMetadata {
     uint32_t collision_mask = -1;
     uint32_t collision_group = -1;
     uint32_t collision_flags = 0;
     
     CallbackMotionState* motion_state = nullptr;
+    
+    MetadataType type;
     
     char padding[10];
 };
@@ -174,6 +181,11 @@ collisionshape_t MakeCollisionShape(CollisionShape shape) {
     return {MakeBulletShape(shape)};
 }
 
+void YeetCollisionShape(collisionshape_t shape) {
+    // here we leak the memory
+    // TODO: fix
+}
+
 
 rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, quat rotation, uint32_t mask, uint32_t group, get_trf_callback get_callback, set_trf_callback set_callback, void* data) {
     RigidbodyMetadata* metadata = rigidbody_metadata_pool.AddNew();
@@ -182,6 +194,7 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
         metadata->collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
     }
     
+    metadata->type = METADATA_RIGIDBODY;
     metadata->collision_mask = mask;
     metadata->collision_group = group;
     metadata->motion_state = new CallbackMotionState(position, rotation, get_callback, set_callback, data);
@@ -308,34 +321,72 @@ void DisableRigidbodyDeactivation(rigidbody_t rigidbody) {
     rigidbody.bt_rigidbody->setActivationState(DISABLE_DEACTIVATION);
 }
 
-trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec3 position, quat rotation);/* {
-    return {nullptr};
-}*/
-void YeetTrigger(trigger_t) {
+trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec3 position, quat rotation) {
+    RigidbodyMetadata* metadata = rigidbody_metadata_pool.AddNew();
+   
+    metadata->type = METADATA_RIGIDBODY;
+    metadata->collision_mask = mask;
+    metadata->collision_group = group;
+    metadata->collision_flags = 0;
+    metadata->motion_state = nullptr;
+ 
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(btVector3(position.x, position.y, position.z));
     
+    btQuaternion rotation_quat;
+    rotation_quat.setX(rotation.x);
+    rotation_quat.setY(rotation.y);
+    rotation_quat.setZ(rotation.z);
+    rotation_quat.setW(rotation.w);
+    transform.setRotation(rotation_quat);
+    
+    trigger_t trigger = {new btCollisionObject(), metadata};
+    
+    metadata->collision_flags = trigger.bt_collisionshape->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE;
+    
+    trigger.bt_collisionshape->setCollisionShape(shape.bt_shape);
+    trigger.bt_collisionshape->setWorldTransform(transform);
+    trigger.bt_collisionshape->setUserPointer(metadata);
+    trigger.bt_collisionshape->setCollisionFlags(metadata->collision_flags);
+    
+    DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, metadata->collision_group, metadata->collision_mask);
+    
+    return trigger;
 }
-void SetTriggerCollisionCallback(rigidbody_t rigidbody, void(*callback)(void*), void* data) {
+
+void YeetTrigger(trigger_t trigger) {
+    DYNAMICS_WORLD->removeCollisionObject(trigger.bt_collisionshape);
+    delete trigger.bt_collisionshape;
+}
+
+void SetTriggerCollisionCallback(trigger_t trigger, void(*callback)(void*), void* data) {
     
 }
 
-void SetTriggerCollisionMask(rigidbody_t rigidbody, uint32_t mask) {
-    rigidbody.bt_metadata->collision_mask = mask;
-    Bullet::DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
-    Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+void SetTriggerCollisionMask(trigger_t trigger, uint32_t mask) {
+    trigger.bt_metadata->collision_mask = mask;
+    Bullet::DYNAMICS_WORLD->removeCollisionObject(trigger.bt_collisionshape);
+    Bullet::DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, trigger.bt_metadata->collision_group, trigger.bt_metadata->collision_mask);
 }
 
-void SetTriggerCollisionGroup(rigidbody_t rigidbody, uint32_t group) {
-    rigidbody.bt_metadata->collision_group = group;
-    Bullet::DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
-    Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+void SetTriggerCollisionGroup(trigger_t trigger, uint32_t group) {
+    trigger.bt_metadata->collision_group = group;
+    Bullet::DYNAMICS_WORLD->removeCollisionObject(trigger.bt_collisionshape);
+    Bullet::DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, trigger.bt_metadata->collision_group, trigger.bt_metadata->collision_mask);
 }
 
-void SetTriggerLocation(rigidbody_t rigidbody, vec3 location) {
+void SetTriggerLocation(trigger_t trigger, vec3 location) {
     
+        btTransform trans = trigger.bt_collisionshape->getWorldTransform();
+        trans.setOrigin(btVector3 (location.x, location.y, location.z));
+        trigger.bt_collisionshape->setWorldTransform(trans);
 }
 
-void SetTriggerRotation(rigidbody_t rigidbody, vec3 location) {
-    
+void SetTriggerRotation(trigger_t trigger, quat rotation) {
+    btTransform trans = trigger.bt_collisionshape->getWorldTransform();
+        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+        trigger.bt_collisionshape->setWorldTransform(trans);
 }
 
 }
