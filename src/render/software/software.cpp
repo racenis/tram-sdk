@@ -66,9 +66,10 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetScreenSize(float width, float height) {
+    depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
+    
     screen_width = width;
     screen_height = height;
-    std::cout << "NEW SCREEN SIZE! " << width << " " << height << std::endl;
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
@@ -1132,11 +1133,11 @@ size_t ClipTriangleList(ClipTriangle* triangles) {
 }
 
 void RenderFrame() {
-    memset(depth_buffer, 0, 800 * 600 * sizeof(float));
+    memset(depth_buffer, 0, screen_width * screen_height * sizeof(float));
 
     if (clear_screen) {
         uint16_t clear_color = IntColor(screen_clear_color);
-        for (int i = 0; i < 800 * 600; i++) {
+        for (int i = 0; i < screen_width * screen_height; i++) {
             screen_buffer[i] = clear_color;
         }
     }
@@ -1892,7 +1893,7 @@ void GetScreen(char* buffer, int w, int h) {
 
 void Init() {
     
-    depth_buffer = (uint16_t*)malloc(800 * 600 * sizeof(float));
+    depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
     
     
     // initialize the default pose

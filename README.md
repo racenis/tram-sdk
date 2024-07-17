@@ -85,6 +85,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
+- RenderComponents should support offsetting textures
+	- A method like RenderComponent::SetTextureOffset(Material*, vec2).
+	- It would add an offset to the specified Materia's texture.
+	- That would allow texture animations and the like.
 - PhysicsComponents can live without Entity parents.
 	- Add an option to not create a MotionState
 	- ~~Add a callback function for updating~~

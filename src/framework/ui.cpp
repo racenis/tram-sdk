@@ -270,7 +270,7 @@ void KeyMouse(float xpos, float ypos) {
     keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - keyboard_axis_values[KEY_MOUSE_Y];
     keyboard_axis_values[KEY_MOUSE_X] = xpos;
     keyboard_axis_values[KEY_MOUSE_Y] = ypos;
-    
+
     if (input_state == STATE_DEFAULT) {
         Event::Post({Event::CURSORPOS, 0xFFFF, 0, nullptr});
     }
@@ -283,6 +283,7 @@ void KeyScroll(float value) {
 void ScreenResize(int width, int height) {
     screen_width = width;
     screen_height = height;
+    Render::SetScreenSize(width, height);
 }
 
 void ScreenClose() {

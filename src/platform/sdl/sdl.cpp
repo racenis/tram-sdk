@@ -9,7 +9,9 @@
 #include <sdl2/SDL_syswm.h>
 #include <glad.c>
 
+#ifdef _WIN32
 #include <d3dx9.h>
+#endif
 
 using namespace tram::UI;
 
@@ -28,7 +30,25 @@ static int relpos_x = screen_width/2;
 static int relpos_y = screen_height/2;
 static bool cursor_enabled = false;
 
+#ifdef _WIN32
 static IDirect3DDevice9* d3d_device = nullptr;
+#endif
+
+static void SoftwareRenderContextUpdate() {
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+    //SDL_RenderSetLogicalSize(renderer, screen_width/screen_scale, screen_height/screen_scale);
+    
+    frame_texture = SDL_CreateTexture(renderer,
+                           //SDL_PIXELFORMAT_ARGB8888,
+                           SDL_PIXELFORMAT_RGB565,
+                           SDL_TEXTUREACCESS_STREAMING,
+                           screen_width/screen_scale, screen_height/screen_scale);
+    
+    frame_buffer = (uint32_t*)malloc(screen_width * screen_height * sizeof(uint32_t));
+    
+    Render::API::SetDevice(frame_buffer);
+}
 
 void Window::Init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -66,6 +86,7 @@ void Window::Init() {
         SDL_GL_SetSwapInterval(1);
     }
     
+#ifdef _WIN32
     if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
         IDirect3D9* d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
         if (!d3d9) {
@@ -140,6 +161,7 @@ void Window::Init() {
 
         Render::API::SetDevice(d3d_device);
     }
+#endif
     
     if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
         renderer = SDL_CreateRenderer(window, -1, 0 /*SDL_RENDERER_SOFTWARE*/);
@@ -149,23 +171,14 @@ void Window::Init() {
             abort();
         }
 
-        //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-        SDL_RenderSetLogicalSize(renderer, screen_width/screen_scale, screen_height/screen_scale);
-        
-        frame_texture = SDL_CreateTexture(renderer,
-                               //SDL_PIXELFORMAT_ARGB8888,
-                               SDL_PIXELFORMAT_RGB565,
-                               SDL_TEXTUREACCESS_STREAMING,
-                               screen_width/screen_scale, screen_height/screen_scale);
-        
-        frame_buffer = (uint32_t*)malloc(screen_width * screen_height * sizeof(uint32_t));
-        
         int ww = screen_width/screen_scale;
         int hh = screen_height/screen_scale;
         //Render::API::SetScreenSize(ww, hh);
         Render::SetScreenSize(ww, hh);
-        Render::API::SetDevice(frame_buffer);
+
+        UI::ScreenResize(screen_width/screen_scale, screen_height/screen_scale);
+
+        SoftwareRenderContextUpdate();
     }
     
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -176,9 +189,11 @@ void Window::Update() {
         SDL_GL_SwapWindow(window);
     }
     
+#ifdef _WIN32
     if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
         d3d_device->Present(0, 0, 0, 0);
     }
+#endif
     
     if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
         SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, (screen_width/screen_scale) * sizeof(uint16_t) /*sizeof(uint32_t)*/);
@@ -200,11 +215,13 @@ void Window::SetTitle(const char* title) {
 
 void Window::SetSize(int w, int h) {
     SDL_SetWindowSize(window, w, h);
-    UI::ScreenResize(w, h);
+    
     int ww = w/screen_scale;
     int hh = h/screen_scale;
-    Render::SetScreenSize(ww, hh);
+    UI::ScreenResize(ww, hh);
     
+    SoftwareRenderContextUpdate();
+
     screen_width = w;
     screen_height = h;
 }
@@ -263,7 +280,9 @@ void Input::Update() {
                         relpos_x = off_x + screen_width/2;
                         relpos_y = off_y + screen_height/2;
 
-                        UI::ScreenResize(screen_width, screen_height);
+                        SoftwareRenderContextUpdate();
+
+                        UI::ScreenResize(screen_width/screen_scale, screen_height/screen_scale);
                         } break;
                     default:
                         break;
@@ -277,12 +296,12 @@ void Input::Update() {
                 break;
             case SDL_MOUSEMOTION:
                 if (cursor_enabled) {
-                    KeyMouse(event.motion.x, event.motion.y);
+                    KeyMouse((float)event.motion.x/screen_scale, (float)event.motion.y/screen_scale);
                 } else {
                     relpos_x += event.motion.xrel * 3;
                     relpos_y += event.motion.yrel * 3;
                     
-                    KeyMouse(relpos_x, relpos_y);
+                    KeyMouse((float)relpos_x/screen_scale, (float)relpos_y/screen_scale);
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
