@@ -106,7 +106,8 @@ struct RigidbodyMetadata {
     
     MetadataType type;
     
-    char padding[10];
+    col_callback collision_callback = nullptr;
+    void* collision_data = nullptr;
 };
 
 Pool<RigidbodyMetadata> rigidbody_metadata_pool("rigibody emtadat pool", 200);
@@ -210,6 +211,7 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
 
     Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, metadata->collision_group, metadata->collision_mask);
     
+    rigidbody.bt_rigidbody->setUserIndex(USERINDEX_RIGIDBODY);
     rigidbody.bt_rigidbody->setUserPointer(metadata);
     rigidbody.bt_rigidbody->setCollisionFlags(metadata->collision_flags);
     
@@ -228,8 +230,9 @@ void SetRigidbodyTransformCallback(rigidbody_t rigidbody, std::pair<vec3, quat>(
     rigidbody.bt_metadata->motion_state->SetTransformCallback(get_transform_callback, set_transform_callback, data);
 }
 
-void SetRigidbodyCollisionCallback(rigidbody_t rigidbody, void(*callback)(void*), void* data) {
-    
+void SetRigidbodyCollisionCallback(rigidbody_t rigidbody, col_callback callback, void* data) {
+    rigidbody.bt_metadata->collision_callback = callback;
+    rigidbody.bt_metadata->collision_data = data;
 }
 
 void SetRigidbodyCollisionMask(rigidbody_t rigidbody, uint32_t mask) {
@@ -348,6 +351,7 @@ trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec
     trigger.bt_collisionshape->setCollisionShape(shape.bt_shape);
     trigger.bt_collisionshape->setWorldTransform(transform);
     trigger.bt_collisionshape->setUserPointer(metadata);
+    trigger.bt_collisionshape->setUserIndex(USERINDEX_TRIGGER);
     trigger.bt_collisionshape->setCollisionFlags(metadata->collision_flags);
     
     DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, metadata->collision_group, metadata->collision_mask);
@@ -360,8 +364,9 @@ void YeetTrigger(trigger_t trigger) {
     delete trigger.bt_collisionshape;
 }
 
-void SetTriggerCollisionCallback(trigger_t trigger, void(*callback)(void*), void* data) {
-    
+void SetTriggerCollisionCallback(trigger_t trigger, col_callback callback, void* data) {
+    trigger.bt_metadata->collision_callback = callback;
+    trigger.bt_metadata->collision_data = data;
 }
 
 void SetTriggerCollisionMask(trigger_t trigger, uint32_t mask) {
@@ -377,16 +382,93 @@ void SetTriggerCollisionGroup(trigger_t trigger, uint32_t group) {
 }
 
 void SetTriggerLocation(trigger_t trigger, vec3 location) {
-    
-        btTransform trans = trigger.bt_collisionshape->getWorldTransform();
-        trans.setOrigin(btVector3 (location.x, location.y, location.z));
-        trigger.bt_collisionshape->setWorldTransform(trans);
+    btTransform trans = trigger.bt_collisionshape->getWorldTransform();
+    trans.setOrigin(btVector3 (location.x, location.y, location.z));
+    trigger.bt_collisionshape->setWorldTransform(trans);
 }
 
 void SetTriggerRotation(trigger_t trigger, quat rotation) {
     btTransform trans = trigger.bt_collisionshape->getWorldTransform();
-        trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-        trigger.bt_collisionshape->setWorldTransform(trans);
+    trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+    trigger.bt_collisionshape->setWorldTransform(trans);
+}
+
+std::pair<ObjectCollision, void*> Raycast(vec3 from, vec3 to, uint32_t collision_mask) {
+    btVector3 bto, bfrom;
+
+    bto.setValue(to.x, to.y, to.z);
+    bfrom.setValue(from.x, from.y, from.z);
+
+    btCollisionWorld::ClosestRayResultCallback callback (bfrom, bto);
+
+    callback.m_collisionFilterMask = collision_mask;
+    
+    DYNAMICS_WORLD->rayTest(bfrom, bto, callback);
+
+    if (callback.hasHit() && callback.m_collisionObject->getUserIndex() == USERINDEX_RIGIDBODY) {
+        auto& point = callback.m_hitPointWorld;
+        auto& normal = callback.m_hitNormalWorld;
+        
+        RigidbodyMetadata* metadata = (RigidbodyMetadata*)callback.m_collisionObject->getUserPointer();
+        
+        return {{vec3(point.getX(), point.getY(), point.getZ()),
+                 vec3(normal.getX(), normal.getY(), normal.getZ()),
+                 0.0f},
+                 metadata->collision_data};
+    } else {
+        return {{vec3 (0.0f, 0.0f, 0.0f), vec3 (0.0f, 0.0f, 0.0f), 0.0f}, nullptr};
+    }
+}
+
+struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
+    ShapecastCallback(std::vector<std::pair<ObjectCollision, void*>>& collisions, uint32_t collision_mask)
+        : collisions(collisions), collision_mask(collision_mask) {}
+    btScalar addSingleResult (btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace) {
+        const btCollisionObject* ob = convexResult.m_hitCollisionObject;
+        
+        // ignore triggers
+        if (ob->getUserIndex() != USERINDEX_RIGIDBODY) {
+            return 1;
+        }
+        
+        /*const*/ RigidbodyMetadata* metadata = (RigidbodyMetadata*)ob->getUserPointer();
+        
+        if (assert(metadata); metadata->collision_group & collision_mask) {
+            auto& contact = convexResult.m_hitPointLocal;
+            auto& normal = convexResult.m_hitNormalLocal;
+            
+            collisions.push_back({
+                {{contact.getX(), contact.getY(), contact.getZ()},
+                {-normal.getX(), normal.getY(), normal.getZ()},
+                0.0f}, metadata->collision_data
+            });
+        }
+        
+        return 1; // tbh idk what this method is supposed to return
+    }
+    std::vector<std::pair<ObjectCollision, void*>>& collisions;
+    uint32_t collision_mask;
+};
+
+std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, vec3 from, vec3 to, uint32_t collision_mask) {
+    auto shape_ptr = API::MakeBulletShape(shape);
+    btTransform bto, bfrom;
+    std::vector<std::pair<ObjectCollision, void*>> collisions;
+    
+    ShapecastCallback callback(collisions, collision_mask);
+
+    bto.setIdentity();
+    bto.setOrigin({to.x, to.y, to.z});
+    bfrom.setIdentity();
+    bfrom.setOrigin({from.x, from.y, from.z});
+
+    // that btConvexShape* cast will probably segfault if MakeBulletShape() 
+    // didn't return a btConvexShape (of which there is only a mesh)
+    DYNAMICS_WORLD->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
+    
+    delete shape_ptr;
+    
+    return collisions;
 }
 
 }
@@ -431,36 +513,37 @@ void StepPhysics(){
     DYNAMICS_WORLD->stepSimulation(1.0f/60.0f, 0);
     
     // process the triggers
+    // TODO: move this ?? to physics.cpp?
     for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
     
     // BulletPhysics API is trash and I hate it
     int numManifolds = DYNAMICS_WORLD->getDispatcher()->getNumManifolds();
     for (int i = 0; i < numManifolds; i++) {
         btPersistentManifold* contactManifold = DYNAMICS_WORLD->getDispatcher()->getManifoldByIndexInternal(i);
-        const btCollisionObject* obA = contactManifold->getBody0();
-        const btCollisionObject* obB = contactManifold->getBody1();
+        const btCollisionObject* obj_a = contactManifold->getBody0();
+        const btCollisionObject* obj_b = contactManifold->getBody1();
         
         // skip if no contacts
         if (!contactManifold->getNumContacts()) continue;
         
-        // stupid bullshit
+        // might need to reverse normal
         bool swapped = false;
         
-        // make sure that obA is triggercomponent
-        if (obA->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
-            obB->getUserIndex() == USERINDEX_TRIGGERCOMPONENT) {
-            std::swap(obA, obB);
+        // make sure that obj_a is triggercomponent
+        if (obj_a->getUserIndex() == USERINDEX_RIGIDBODY &&
+            obj_b->getUserIndex() == USERINDEX_TRIGGER) {
+            std::swap(obj_a, obj_b);
             swapped = true;
         }
         
         // if not collision between physicscomponent and trigger, skip
-        if (obA->getUserIndex() != USERINDEX_TRIGGERCOMPONENT ||
-            obB->getUserIndex() != USERINDEX_PHYSICSCOMPONENT) {
+        if (obj_a->getUserIndex() != USERINDEX_TRIGGER ||
+            obj_b->getUserIndex() != USERINDEX_RIGIDBODY) {
             continue;
         }
         
-        assert(obA->getUserPointer());
-        assert(obB->getUserPointer());
+        assert(obj_a->getUserPointer());
+        assert(obj_b->getUserPointer());
         
         for (int i = 0; i < contactManifold->getNumContacts(); i++) {
             auto& contact = contactManifold->getContactPoint(i);
@@ -469,18 +552,22 @@ void StepPhysics(){
             vec3 point = {posA.getX(), posA.getY(), posA.getZ()};
             vec3 normal = -glm::normalize(point - vec3 {posB.getX(), posB.getY(), posB.getZ()});
             
-            // idiot fuck shit piss ass crap
+            // reverse the normal
             if (swapped) normal = -normal;
             
+            // this is to avoid accidental division by zero
             if (contact.getDistance() == 0.0f) normal = {0.0f, 1.0f, 0.0f};
             
-            ((TriggerComponent*) obA->getUserPointer())->Collision({
-                (PhysicsComponent*) obB->getUserPointer(),
-                point,
-                normal,
-                contact.getDistance()
-            });
+            //std::cout << "collision! " << point.x << " " << point.z << std::endl;
             
+            API::RigidbodyMetadata* metadata_a = (API::RigidbodyMetadata*)obj_a->getUserPointer();
+            API::RigidbodyMetadata* metadata_b = (API::RigidbodyMetadata*)obj_b->getUserPointer();
+            
+            if (metadata_a->collision_callback) {
+                metadata_a->collision_callback(metadata_a->collision_data,
+                                               metadata_b->collision_data,
+                                               {point, normal, contact.getDistance()});
+            }
             
         }
     }
@@ -490,84 +577,8 @@ void DrawDebug() {
     DYNAMICS_WORLD->debugDrawWorld();
 }
 
-Collision Raycast (const glm::vec3& from, const glm::vec3& to, uint32_t collision_mask) {
-    btVector3 bto, bfrom;
 
-    bto.setValue(to.x, to.y, to.z);
-    bfrom.setValue(from.x, from.y, from.z);
 
-    btCollisionWorld::ClosestRayResultCallback callback (bfrom, bto);
 
-    callback.m_collisionFilterMask = collision_mask;
-    
-    DYNAMICS_WORLD->rayTest(bfrom, bto, callback);
-
-    if (callback.hasHit() && callback.m_collisionObject->getUserIndex() == USERINDEX_PHYSICSCOMPONENT) {
-        auto& point = callback.m_hitPointWorld;
-        auto& normal = callback.m_hitNormalWorld;
-        
-        return {
-            (PhysicsComponent*) callback.m_collisionObject->getUserPointer(),
-            vec3 (point.getX(), point.getY(), point.getZ()),
-            vec3 (normal.getX(), normal.getY(), normal.getZ())
-        };
-    } else {
-        return {
-            nullptr, vec3 (0.0f, 0.0f, 0.0f), vec3 (0.0f, 0.0f, 0.0f)
-        };
-    }
-}
-
-struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
-    ShapecastCallback(std::vector<Physics::Collision>& collisions, uint32_t collision_mask)
-        : collisions(collisions), collision_mask(collision_mask) {}
-    btScalar addSingleResult (btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace) {
-        const btCollisionObject* ob = convexResult.m_hitCollisionObject;
-        
-        // ignore triggers
-        if (ob->getUserIndex() != USERINDEX_PHYSICSCOMPONENT) {
-            return 1;
-        }
-        
-        /*const*/ PhysicsComponent* phys_comp = (PhysicsComponent*) ob->getUserPointer();
-
-        if (phys_comp->GetCollisionGroup() & collision_mask) {
-            assert(phys_comp);
-            auto& contact = convexResult.m_hitPointLocal;
-            auto& normal = convexResult.m_hitNormalLocal;
-            collisions.push_back({
-                phys_comp,
-                {contact.getX(), contact.getY(), contact.getZ()},
-                {-normal.getX(), normal.getY(), normal.getZ()}
-            });
-        }
-        
-        return 1; // tbh idk what this method is supposed to return
-    }
-    std::vector<Physics::Collision>& collisions;
-    uint32_t collision_mask;
-};
-
-/// I have no idea if this function works.
-std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask) {
-    auto shape_ptr = API::MakeBulletShape(shape);
-    btTransform bto, bfrom;
-    std::vector<Collision> collisions;
-    
-    ShapecastCallback callback (collisions, collision_mask);
-
-    bto.setIdentity();
-    bto.setOrigin({to.x, to.y, to.z});
-    bfrom.setIdentity();
-    bfrom.setOrigin({from.x, from.y, from.z});
-
-    // that btConvexShape* cast will probably segfault if MakeBulletShape() 
-    // didn't return a btConvexShape (of which there is only a mesh)
-    DYNAMICS_WORLD->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
-    
-    delete shape_ptr;
-    
-    return collisions;
-}
 
 }

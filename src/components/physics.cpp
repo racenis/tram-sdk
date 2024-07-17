@@ -43,6 +43,8 @@ void PhysicsComponent::Start() {
                                    set_callback,
                                    this);
 
+    API::SetRigidbodyCollisionCallback(rigidbody, nullptr, this);
+
     if (rigidbody_should_sleep) API::SleepRigidbody(rigidbody);
     if (rigidbody_should_awake) API::DisableRigidbodyDeactivation(rigidbody);
     if (!rigidbody_debug_draw)  API::SetRigidbodyDebugDrawing(rigidbody, rigidbody_debug_draw);

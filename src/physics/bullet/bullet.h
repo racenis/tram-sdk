@@ -14,6 +14,8 @@ namespace tram::Physics::Bullet {
 enum UserIndex : int {
     USERINDEX_PHYSICSCOMPONENT = 1,
     USERINDEX_TRIGGERCOMPONENT = 2,
+    USERINDEX_RIGIDBODY = 3,
+    USERINDEX_TRIGGER = 4,
 };
 
 void Init();

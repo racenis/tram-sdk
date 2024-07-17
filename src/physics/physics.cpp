@@ -2,19 +2,22 @@
 // All rights reserved.
 
 #include <physics/physics.h>
+#include <physics/api.h>
+
 #include <physics/bullet/bullet.h>
 #include <physics/bullet/actions.h>
 
 
 #include <components/trigger.h>
 
+#include <vector>
 
 #include <framework/system.h>
 
 namespace tram::Physics {
 /// Option for drawing physics debug lines.
 /// Set to true if you want to see physics debug lines. False if not.
-bool DRAW_PHYSICS_DEBUG = true;
+bool DRAW_PHYSICS_DEBUG = false;
 
 /// Initializes the physics system.
 void Init() {
@@ -38,12 +41,23 @@ void Update() {
 /// @return Collision struct. If there was nothing found, then the pointer
 ///         in the struct will be set to nullptr.
 Collision Raycast(const glm::vec3& from, const glm::vec3& to, uint32_t collision_mask) {
-    return Bullet::Raycast(from, to, collision_mask);
+    auto[result, object] = API::Raycast(from, to, collision_mask);
+    
+    return {(PhysicsComponent*)object, result.point, result.normal};
+    
+    //return Bullet::Raycast(from, to, collision_mask);
 }
 
 /// I have no idea if this function works.
 std::vector<Collision> Shapecast(const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask) {
-    return Bullet::Shapecast(shape, from, to, collision_mask);
+    std::vector<Collision> collisions;
+    auto results = API::Shapecast(shape, from, to, collision_mask);
+    for (auto[result, object] : results) {
+        collisions.push_back({((PhysicsComponent*) object), result.point, result.normal, result.distance});
+    }
+    
+    return collisions;
+    //return Bullet::Shapecast(shape, from, to, collision_mask);
 }
 
 }

@@ -21,6 +21,16 @@ void TriggerComponent::Start() {
 
     trigger = API::MakeTrigger(shape, collisionMask, collisionGroup, location, rotation);
     
+    API::SetTriggerCollisionCallback(trigger, [](void* obj_a, void* obj_b, API::ObjectCollision collision) {
+        TriggerComponent* trigger_component = (TriggerComponent*)obj_a;
+        PhysicsComponent* physics_component = (PhysicsComponent*)obj_b;
+        
+        trigger_component->Collision({physics_component,
+                                      collision.point,
+                                      collision.normal, 
+                                      collision.distance});
+    }, this);
+    
     is_ready = true;
 }
 

@@ -75,7 +75,7 @@ void ControllerComponent::ApplyDynamics() {
     if (is_in_air) {
         // check for terminal velocity
         if (velocity.y > -0.12f) {
-            //velocity.y -= 0.0053f;
+            velocity.y -= 0.0053f;
         }
     } else {
         velocity *= friction;
@@ -244,6 +244,8 @@ void ControllerComponent::RecoverFromCollisions() {
     
     walk_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
     crouch_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
+    
+    //new_pos.y = 1.0f;
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
