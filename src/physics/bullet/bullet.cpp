@@ -12,8 +12,13 @@
 
 namespace tram::Physics::API {
 
-using namespace Bullet;
-    
+static btDiscreteDynamicsWorld* dynamics_world = nullptr;
+
+enum UserIndex : int {
+    USERINDEX_RIGIDBODY = 3,
+    USERINDEX_TRIGGER = 4,
+};
+
 class CallbackMotionState : public btMotionState {
 public:
     CallbackMotionState(vec3 position, quat rotation, get_trf_callback get_callback, set_trf_callback set_callback, void* data) {
@@ -30,12 +35,7 @@ public:
         quat rotation = this->rotation;
         
         if (get_transform_callback) {
-            //auto [position, rotation] = get_transform_callback(data_pointer);
             std::tie(position, rotation) = get_transform_callback(data_pointer);
-            //this->position = position;
-            //this->rotation = rotation;
-            
-            
         }
 
         btVector3 transform_translation;
@@ -112,7 +112,7 @@ struct RigidbodyMetadata {
 
 Pool<RigidbodyMetadata> rigidbody_metadata_pool("rigibody emtadat pool", 200);
     
-btCollisionShape* MakeBulletShape(CollisionShape shape) {
+static btCollisionShape* MakeBulletShape(CollisionShape shape) {
     switch (shape.type) {
         case SHAPE_SPHERE:
             return new btSphereShape(shape.radius);
@@ -209,7 +209,7 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
 
     std::cout << "collisin mask " << metadata->collision_mask << " grop " << metadata->collision_group << std::endl;
 
-    Bullet::DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, metadata->collision_group, metadata->collision_mask);
+    dynamics_world->addRigidBody(rigidbody.bt_rigidbody, metadata->collision_group, metadata->collision_mask);
     
     rigidbody.bt_rigidbody->setUserIndex(USERINDEX_RIGIDBODY);
     rigidbody.bt_rigidbody->setUserPointer(metadata);
@@ -219,7 +219,7 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
 }
 
 void YeetRigidbody(rigidbody_t rigidbody) {
-    DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    dynamics_world->removeRigidBody(rigidbody.bt_rigidbody);
     delete rigidbody.bt_rigidbody;
     delete rigidbody.bt_metadata->motion_state;
     rigidbody_metadata_pool.Remove(rigidbody.bt_metadata);
@@ -237,16 +237,16 @@ void SetRigidbodyCollisionCallback(rigidbody_t rigidbody, col_callback callback,
 
 void SetRigidbodyCollisionMask(rigidbody_t rigidbody, uint32_t mask) {
     rigidbody.bt_metadata->collision_mask = mask;
-    DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    dynamics_world->removeRigidBody(rigidbody.bt_rigidbody);
     std::cout << "SetRigidbodyCollisionMask mask " << rigidbody.bt_metadata->collision_mask << " grop " << rigidbody.bt_metadata->collision_group << std::endl;
-    DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+    dynamics_world->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
 }
 
 void SetRigidbodyCollisionGroup(rigidbody_t rigidbody, uint32_t group) {
     rigidbody.bt_metadata->collision_group = group;
-    DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
+    dynamics_world->removeRigidBody(rigidbody.bt_rigidbody);
     std::cout << "SetRigidbodyCollisionGroup mask " << rigidbody.bt_metadata->collision_mask << " grop " << rigidbody.bt_metadata->collision_group << std::endl;
-    DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
+    dynamics_world->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
 }
 
 void SetRigidbodyLocation(rigidbody_t rigidbody, vec3 position) {
@@ -254,18 +254,22 @@ void SetRigidbodyLocation(rigidbody_t rigidbody, vec3 position) {
     trans.setOrigin(btVector3 (position.x, position.y, position.z));
     rigidbody.bt_rigidbody->setWorldTransform(trans);
 }
+
 void SetRigidbodyRotation(rigidbody_t rigidbody, quat rotation) {
     btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
     trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
     rigidbody.bt_rigidbody->setWorldTransform(trans);
 }
+
 void SetRigidbodyMass(rigidbody_t rigidbody, float mass) {
     
 }
+
 void PushRigidbody(rigidbody_t rigidbody, vec3 direction) {
     rigidbody.bt_rigidbody->activate(); // force awake, sleeping objects won't move
     rigidbody.bt_rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
 }
+
 void PushRigidbody(rigidbody_t rigidbody, vec3 direction, vec3 local) {
     rigidbody.bt_rigidbody->activate();
     rigidbody.bt_rigidbody->applyImpulse(btVector3(direction.x, direction.y, direction.z), btVector3(local.x, local.y, local.z));
@@ -275,6 +279,7 @@ void SpinRigidbody(rigidbody_t rigidbody, vec3 direction) {
     rigidbody.bt_rigidbody->activate();
     rigidbody.bt_rigidbody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
 }
+
 void SetRigidbodyDebugDrawing(rigidbody_t rigidbody, bool drawing) {
     if (drawing) {
         rigidbody.bt_metadata->collision_flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
@@ -284,6 +289,7 @@ void SetRigidbodyDebugDrawing(rigidbody_t rigidbody, bool drawing) {
     
     rigidbody.bt_rigidbody->setCollisionFlags(rigidbody.bt_metadata->collision_flags);
 }
+
 void SetRigidbodyKinematic(rigidbody_t rigidbody, bool kinematic) {
     if (kinematic) {
         rigidbody.bt_metadata->collision_flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
@@ -293,12 +299,15 @@ void SetRigidbodyKinematic(rigidbody_t rigidbody, bool kinematic) {
     
     rigidbody.bt_rigidbody->setCollisionFlags(rigidbody.bt_metadata->collision_flags);
 }
+
 void SetRigidbodyAngularFactor(rigidbody_t rigidbody, vec3 factor) {
     rigidbody.bt_rigidbody->setAngularFactor({factor.x, factor.y, factor.z});
 }
+
 void SetRigidbodyLinearFactor(rigidbody_t rigidbody, vec3 factor) {
     rigidbody.bt_rigidbody->setLinearFactor({factor.x, factor.y, factor.z});
 }
+
 void SetRigidbodyVelocity(rigidbody_t rigidbody, vec3 velocity) {
     if (velocity.x != 0.0f &&
         velocity.y != 0.0f &&
@@ -309,13 +318,16 @@ void SetRigidbodyVelocity(rigidbody_t rigidbody, vec3 velocity) {
     
     rigidbody.bt_rigidbody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
 }
+
 vec3 GetRigidbodyVelocity(rigidbody_t rigidbody) {
     auto velocity = rigidbody.bt_rigidbody->getLinearVelocity();
     return {velocity.getX(), velocity.getY(), velocity.getZ()};
 }
+
 void AwakenRigidbody(rigidbody_t rigidbody) {
     rigidbody.bt_rigidbody->activate();
 }
+
 void SleepRigidbody(rigidbody_t rigidbody) {
     rigidbody.bt_rigidbody->setActivationState(0);
 }
@@ -354,13 +366,13 @@ trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec
     trigger.bt_collisionshape->setUserIndex(USERINDEX_TRIGGER);
     trigger.bt_collisionshape->setCollisionFlags(metadata->collision_flags);
     
-    DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, metadata->collision_group, metadata->collision_mask);
+    dynamics_world->addCollisionObject(trigger.bt_collisionshape, metadata->collision_group, metadata->collision_mask);
     
     return trigger;
 }
 
 void YeetTrigger(trigger_t trigger) {
-    DYNAMICS_WORLD->removeCollisionObject(trigger.bt_collisionshape);
+    dynamics_world->removeCollisionObject(trigger.bt_collisionshape);
     delete trigger.bt_collisionshape;
 }
 
@@ -371,14 +383,14 @@ void SetTriggerCollisionCallback(trigger_t trigger, col_callback callback, void*
 
 void SetTriggerCollisionMask(trigger_t trigger, uint32_t mask) {
     trigger.bt_metadata->collision_mask = mask;
-    Bullet::DYNAMICS_WORLD->removeCollisionObject(trigger.bt_collisionshape);
-    Bullet::DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, trigger.bt_metadata->collision_group, trigger.bt_metadata->collision_mask);
+    dynamics_world->removeCollisionObject(trigger.bt_collisionshape);
+    dynamics_world->addCollisionObject(trigger.bt_collisionshape, trigger.bt_metadata->collision_group, trigger.bt_metadata->collision_mask);
 }
 
 void SetTriggerCollisionGroup(trigger_t trigger, uint32_t group) {
     trigger.bt_metadata->collision_group = group;
-    Bullet::DYNAMICS_WORLD->removeCollisionObject(trigger.bt_collisionshape);
-    Bullet::DYNAMICS_WORLD->addCollisionObject(trigger.bt_collisionshape, trigger.bt_metadata->collision_group, trigger.bt_metadata->collision_mask);
+    dynamics_world->removeCollisionObject(trigger.bt_collisionshape);
+    dynamics_world->addCollisionObject(trigger.bt_collisionshape, trigger.bt_metadata->collision_group, trigger.bt_metadata->collision_mask);
 }
 
 void SetTriggerLocation(trigger_t trigger, vec3 location) {
@@ -403,7 +415,7 @@ std::pair<ObjectCollision, void*> Raycast(vec3 from, vec3 to, uint32_t collision
 
     callback.m_collisionFilterMask = collision_mask;
     
-    DYNAMICS_WORLD->rayTest(bfrom, bto, callback);
+    dynamics_world->rayTest(bfrom, bto, callback);
 
     if (callback.hasHit() && callback.m_collisionObject->getUserIndex() == USERINDEX_RIGIDBODY) {
         auto& point = callback.m_hitPointWorld;
@@ -464,39 +476,28 @@ std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, v
 
     // that btConvexShape* cast will probably segfault if MakeBulletShape() 
     // didn't return a btConvexShape (of which there is only a mesh)
-    DYNAMICS_WORLD->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
+    dynamics_world->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
     
     delete shape_ptr;
     
     return collisions;
 }
 
-}
-
-namespace tram::Physics::Bullet {
-
-btBroadphaseInterface* BROADPHASE_INTERFACE = nullptr;
-btDefaultCollisionConfiguration* COLLISION_CONFIGURATION = nullptr;
-btCollisionDispatcher* COLLIISION_DISPATCHER = nullptr;
-btSequentialImpulseConstraintSolver* CONSTRAINT_SOLVER = nullptr;
-btDiscreteDynamicsWorld* DYNAMICS_WORLD = nullptr;
-btIDebugDraw* DEBUG_DRAWER = nullptr;
-btVehicleRaycaster* VEHICLE_RAYCASTER = nullptr;
-
 void Init() {
-    BROADPHASE_INTERFACE = new btDbvtBroadphase();
-    COLLISION_CONFIGURATION = new btDefaultCollisionConfiguration();
-    COLLIISION_DISPATCHER = new btCollisionDispatcher(COLLISION_CONFIGURATION);
-    CONSTRAINT_SOLVER = new btSequentialImpulseConstraintSolver();
+    btBroadphaseInterface* broadphase_interface = new btDbvtBroadphase();
+    btDefaultCollisionConfiguration* collision_configuration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* collision_dispatcher = new btCollisionDispatcher(collision_configuration);
+    btSequentialImpulseConstraintSolver* constraint_solver = new btSequentialImpulseConstraintSolver();
 
-    DYNAMICS_WORLD = new btDiscreteDynamicsWorld(COLLIISION_DISPATCHER, BROADPHASE_INTERFACE, CONSTRAINT_SOLVER, COLLISION_CONFIGURATION);
+    dynamics_world = new btDiscreteDynamicsWorld(collision_dispatcher, broadphase_interface, constraint_solver, collision_configuration);
 
-    DYNAMICS_WORLD->setGravity(btVector3(0.0f, -9.8f, 0.0f));
+    dynamics_world->setGravity(btVector3(0.0f, -9.8f, 0.0f));
 
-    DEBUG_DRAWER  = new PhysicsDebugDraw;
-    DYNAMICS_WORLD->setDebugDrawer(DEBUG_DRAWER);
+    btIDebugDraw* debug_drawer  = new PhysicsDebugDraw;
+    dynamics_world->setDebugDrawer(debug_drawer);
 
-    VEHICLE_RAYCASTER = new btDefaultVehicleRaycaster(DYNAMICS_WORLD);
+    btVehicleRaycaster* vehicle_raycaster = new btDefaultVehicleRaycaster(dynamics_world);
+    (void)vehicle_raycaster;
     
     // this will make a plane so that stuff doesn't fall out of the world
     btTransform trans;
@@ -506,20 +507,20 @@ void Init() {
     btRigidBody::btRigidBodyConstructionInfo constructioninfo (0.0f, motionstate, shape, btVector3(0.0f, 0.0f, 0.0f));
     btRigidBody* rigidbody = new btRigidBody(constructioninfo);
 
-    DYNAMICS_WORLD->addRigidBody(rigidbody);
+    dynamics_world->addRigidBody(rigidbody);
 }
 
 void StepPhysics(){
-    DYNAMICS_WORLD->stepSimulation(1.0f/60.0f, 0);
+    dynamics_world->stepSimulation(1.0f/60.0f, 0);
     
     // process the triggers
     // TODO: move this ?? to physics.cpp?
     for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
     
     // BulletPhysics API is trash and I hate it
-    int numManifolds = DYNAMICS_WORLD->getDispatcher()->getNumManifolds();
+    int numManifolds = dynamics_world->getDispatcher()->getNumManifolds();
     for (int i = 0; i < numManifolds; i++) {
-        btPersistentManifold* contactManifold = DYNAMICS_WORLD->getDispatcher()->getManifoldByIndexInternal(i);
+        btPersistentManifold* contactManifold = dynamics_world->getDispatcher()->getManifoldByIndexInternal(i);
         const btCollisionObject* obj_a = contactManifold->getBody0();
         const btCollisionObject* obj_b = contactManifold->getBody1();
         
@@ -568,17 +569,12 @@ void StepPhysics(){
                                                metadata_b->collision_data,
                                                {point, normal, contact.getDistance()});
             }
-            
         }
     }
 }
 
 void DrawDebug() {
-    DYNAMICS_WORLD->debugDrawWorld();
+    dynamics_world->debugDrawWorld();
 }
-
-
-
-
 
 }

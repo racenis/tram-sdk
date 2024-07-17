@@ -4,26 +4,15 @@
 #include <physics/physics.h>
 #include <physics/api.h>
 
-#include <physics/bullet/bullet.h>
-#include <physics/bullet/actions.h>
-
-
-#include <components/trigger.h>
-
-#include <vector>
-
 #include <framework/system.h>
 
 namespace tram::Physics {
-/// Option for drawing physics debug lines.
-/// Set to true if you want to see physics debug lines. False if not.
-bool DRAW_PHYSICS_DEBUG = false;
 
 /// Initializes the physics system.
 void Init() {
     assert(!System::IsInitialized(System::SYSTEM_PHYSICS));
     
-    Bullet::Init();
+    API::Init();
     
     System::SetInitialized(System::SYSTEM_PHYSICS, true);
 }
@@ -31,9 +20,7 @@ void Init() {
 /// Updates the physics system.
 /// Should only be called once in the update cycle.
 void Update() {
-    Bullet::StepPhysics();
-    
-    if (DRAW_PHYSICS_DEBUG) Bullet::DrawDebug();
+    API::StepPhysics();
 }
 
 /// Performs a raycast.
@@ -44,11 +31,9 @@ Collision Raycast(const glm::vec3& from, const glm::vec3& to, uint32_t collision
     auto[result, object] = API::Raycast(from, to, collision_mask);
     
     return {(PhysicsComponent*)object, result.point, result.normal};
-    
-    //return Bullet::Raycast(from, to, collision_mask);
 }
 
-/// I have no idea if this function works.
+/// I have no idea if this function works. (yes it does)
 std::vector<Collision> Shapecast(const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask) {
     std::vector<Collision> collisions;
     auto results = API::Shapecast(shape, from, to, collision_mask);
@@ -57,7 +42,6 @@ std::vector<Collision> Shapecast(const CollisionShape& shape, const vec3& from, 
     }
     
     return collisions;
-    //return Bullet::Shapecast(shape, from, to, collision_mask);
 }
 
 }

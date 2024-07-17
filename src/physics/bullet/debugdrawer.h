@@ -4,10 +4,10 @@
 #ifndef PHYSICS_BULLET_DEBUGDRAWER_H
 #define PHYSICS_BULLET_DEBUGDRAWER_H
 
-#include <physics/bullet/bullet.h>
+#include <btBulletDynamicsCommon.h>
 #include <framework/gui.h>
 
-namespace tram::Physics {
+namespace tram::Physics::API {
     
 class PhysicsDebugDraw : public btIDebugDraw {
 public:
@@ -16,10 +16,12 @@ public:
         drawLine(PointOnB, normalOnB, color);
     };
 
-    void reportErrorWarning(const char* warningString) {std::cout << warningString << std::endl;};
+    void reportErrorWarning(const char* warningString) {
+        std::cout << warningString << std::endl;
+    };
 
     void draw3dText(const btVector3& location, const char* textString) {
-        tram::GUI::DebugText(textString, {location.getX(), location.getY(), location.getZ()}, Render::COLOR_WHITE);
+        GUI::DebugText(textString, {location.getX(), location.getY(), location.getZ()}, Render::COLOR_WHITE);
     };
 
     void setDebugMode(int debugMode) {};
@@ -29,7 +31,7 @@ public:
     }
 
     void drawLine(const btVector3& from, const btVector3& to, const btVector3& color){
-        tram::Render::AddLine (
+        Render::AddLine(
             {from.getX(),   from.getY(),    from.getZ()}, 
             {to.getX(),     to.getY(),      to.getZ()}, 
             {color.getX(),  color.getY(),   color.getZ()}

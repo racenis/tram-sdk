@@ -173,10 +173,8 @@
       <File Name="src/physics/collisionmodel.h"/>
       <VirtualDirectory Name="bullet">
         <File Name="src/physics/bullet/debugdrawer.h"/>
-        <File Name="src/physics/bullet/motionstates.h"/>
         <File Name="src/physics/bullet/actions.h"/>
         <File Name="src/physics/bullet/bullet.cpp"/>
-        <File Name="src/physics/bullet/bullet.h"/>
       </VirtualDirectory>
       <File Name="src/physics/physics.h"/>
       <File Name="src/physics/physics.cpp"/>

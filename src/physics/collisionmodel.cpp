@@ -1,13 +1,14 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#include <btBulletDynamicsCommon.h>
 #include <physics/physics.h>
 #include <physics/api.h>
 #include <physics/collisionmodel.h>
 #include <templates/hashmap.h>
 
 #include <framework/file.h>
+
+#include <cstring>
 
 namespace tram::Physics {
 

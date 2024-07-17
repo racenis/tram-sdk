@@ -58,8 +58,8 @@ struct rigidbody_t {
 
 class CollisionShape;
 
-Collision Raycast (const vec3& from, const vec3& to, uint32_t collision_mask = -1);
-std::vector<Collision> Shapecast (const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask = -1);
+Collision Raycast(const vec3& from, const vec3& to, uint32_t collision_mask = -1);
+std::vector<Collision> Shapecast(const CollisionShape& shape, const vec3& from, const vec3& to, uint32_t collision_mask = -1);
 
 }
 
