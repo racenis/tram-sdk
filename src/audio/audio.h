@@ -9,8 +9,14 @@
 
 namespace tram::Audio {
 
-typedef uint32_t audiosource_t;
-typedef uint32_t audiobuffer_t;
+struct audiosource_t {
+    uint32_t al_source;
+};
+
+struct audiobuffer_t {
+    uint32_t* al_buffers;
+    int32_t al_buffer_count;
+};
 
 class Sound;
 

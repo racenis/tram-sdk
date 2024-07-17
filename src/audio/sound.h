@@ -12,8 +12,7 @@ namespace tram::Audio {
 
 class Sound : public Resource {
 public:
-    audiobuffer_t* sound_buffers = nullptr;
-    int32_t sound_buffer_count = 0;
+    audiobuffer_t sound_buffer = {0};
     int32_t channels = 0;
     int32_t sample_rate = 0;
     int32_t sound_length = 0;

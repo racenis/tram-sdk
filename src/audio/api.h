@@ -15,26 +15,26 @@ void Uninit();
 void SetListenerPosition(vec3 position);
 void SetListenerOrientation(quat orientation);
 
-audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels, int32_t& buffer_count);
-void RemoveAudioBuffer(audiobuffer_t* buffer, int32_t buffer_count);
+audiobuffer_t MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels);
+void RemoveAudioBuffer(audiobuffer_t buffer);
 
 audiosource_t MakeAudioSource();
 
-void SetAudioSourcePitch (audiosource_t source, float pitch);
-void SetAudioSourceGain (audiosource_t source, float gain);
-void SetAudioSourcePosition (audiosource_t source, vec3 position);
-void SetAudioSourceVelocity (audiosource_t source, vec3 velocity);
-void SetAudioSourceRepeating (audiosource_t source, bool repeating);
+void SetAudioSourcePitch(audiosource_t source, float pitch);
+void SetAudioSourceGain(audiosource_t source, float gain);
+void SetAudioSourcePosition(audiosource_t source, vec3 position);
+void SetAudioSourceVelocity(audiosource_t source, vec3 velocity);
+void SetAudioSourceRepeating(audiosource_t source, bool repeating);
 
-void SetAudioSourceBuffer(audiosource_t source, const audiobuffer_t* buffers, int32_t buffer_count);
+void SetAudioSourceBuffer(audiosource_t source, audiobuffer_t buffer);
 
-void PlayAudioSource (audiosource_t source);
-void PauseAudioSource (audiosource_t source);
-void StopAudioSource (audiosource_t source);
+void PlayAudioSource(audiosource_t source);
+void PauseAudioSource(audiosource_t source);
+void StopAudioSource(audiosource_t source);
 
-bool IsAudioSourcePlaying (audiosource_t source);
+bool IsAudioSourcePlaying(audiosource_t source);
 
-void RemoveAudioSource (audiosource_t source);
+void RemoveAudioSource(audiosource_t source);
     
 }
 

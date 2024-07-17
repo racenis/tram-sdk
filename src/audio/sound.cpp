@@ -23,12 +23,13 @@ static Hashmap<Sound*> sound_map("Sound hash map", 500);
 void Sound::LoadFromDisk() {
     sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + std::string(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
     
-    Log (SEVERITY_INFO, System::SYSTEM_AUDIO, "Bytelength: {} Channels: {} SampleRate: {} ", sound_length, channels, sample_rate);
+    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Bytelength: {} Channels: {} SampleRate: {} ", sound_length, channels, sample_rate);
     
     if (sound_length < 0) {
-        Log (SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
+        load_fail = true;
+        Log(SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
     } else {
-        sound_buffers = API::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels, sound_buffer_count);
+        sound_buffer = API::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels);
     }
     
     free(sound_data);
@@ -39,7 +40,7 @@ void Sound::LoadFromDisk() {
 
 /// Removes the sound from memory.
 void Sound::Unload() {
-    API::RemoveAudioBuffer(sound_buffers, sound_buffer_count);
+    API::RemoveAudioBuffer(sound_buffer);
     status = UNLOADED;
 }
 

@@ -28,7 +28,7 @@ void AudioComponent::Start() {
     
     SetAudioSourceRepeating(source, repeat);
     
-    SetAudioSourceBuffer(source, sound->sound_buffers, sound->sound_buffer_count);
+    SetAudioSourceBuffer(source, sound->sound_buffer);
     
     if (play_on_start) {
         PlayAudioSource(source);
