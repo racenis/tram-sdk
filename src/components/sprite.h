@@ -13,7 +13,7 @@ class SpriteComponent : public EntityComponent {
 public:
     SpriteComponent() : sprite(this){}
     ~SpriteComponent();
-    inline name_t GetSprite(){return sprite->GetName();}
+    inline name_t GetSprite(){ return sprite->GetName(); }
 
     void SetSprite(Render::Sprite* sprite){
         this->sprite = sprite;

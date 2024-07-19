@@ -12,13 +12,6 @@
 #include <cassert>
 
 namespace tram {
-    
-/// Engine version string.
-/// If you fork the engine, you should probably change this.
-char const* ENGINE_VERSION = "Tramway SDK v0.0.9";
-
-/// If set to true, then the main loop should stop and animation should exit.
-bool EXIT = false;
 
 static double frame_time = 0.0f;
 static float delta_time = 0.0f;
@@ -37,7 +30,7 @@ void Core::Init() {
     
     System::SetInitialized(System::SYSTEM_CORE, true);
     
-    std::cout << ENGINE_VERSION << std::endl;
+    std::cout << GetVersion() << std::endl;
 }
 
 /// Updates the core system.
@@ -74,6 +67,10 @@ double GetTickTime() {
 
 float GetDeltaTime() {
     return delta_time;
+}
+
+const char* GetVersion() {
+    return "Tramway SDK v0.0.9";
 }
 
 }

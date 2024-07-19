@@ -18,18 +18,15 @@ enum {
     FIELD_LIGHTMAP
 };
 
-static const uint32_t fields[2] = {
-    TYPE_NAME,
-    TYPE_NAME
-}; 
-
 void StaticWorldObject::Register() {
     Entity::RegisterType(
         "staticwobj", 
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new StaticWorldObject(a, b); },
         [](Entity* a) { delete a; },
-        fields,
-        2
+        {
+            {FIELD_MODEL,       TYPE_NAME,      FIELD_SERIALIZE},
+            {FIELD_LIGHTMAP,    TYPE_NAME,      FIELD_SERIALIZE}
+        }
     );
 }
 

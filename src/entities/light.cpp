@@ -10,49 +10,32 @@
 namespace tram {
 
 enum {
-    FIELD_COLOR_R,
-    FIELD_COLOR_G,
-    FIELD_COLOR_B,
+    FIELD_COLOR,
     FIELD_DISTANCE,
-    FIELD_DIRECTION_X,
-    FIELD_DIRECTION_Y,
-    FIELD_DIRECTION_Z,
+    FIELD_DIRECTION,
     FIELD_EXPONENT
 };
-
-static const uint32_t fields[8] = {
-    TYPE_FLOAT32,
-    TYPE_FLOAT32,
-    TYPE_FLOAT32,
-    TYPE_FLOAT32,
-    TYPE_FLOAT32,
-    TYPE_FLOAT32,
-    TYPE_FLOAT32,
-    TYPE_FLOAT32
-}; 
 
 void Light::Register() {
     Entity::RegisterType(
         "light", 
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Light(a, b); },
         [](Entity* a) { delete a; },
-        fields,
-        8
+        {
+            {FIELD_COLOR,       TYPE_VEC3,      FIELD_SERIALIZE},
+            {FIELD_DISTANCE,    TYPE_FLOAT32,   FIELD_SERIALIZE},
+            {FIELD_DIRECTION,   TYPE_VEC3,      FIELD_SERIALIZE},
+            {FIELD_EXPONENT,    TYPE_FLOAT32,   FIELD_SERIALIZE}
+        }
     );
 }
 
 Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
-    color_r = field_array[FIELD_COLOR_R];
-    color_g = field_array[FIELD_COLOR_G];
-    color_b = field_array[FIELD_COLOR_B];
+    color = field_array[FIELD_COLOR];
     distance = field_array[FIELD_DISTANCE];
-    direction_x = field_array[FIELD_DIRECTION_X];
-    direction_y = field_array[FIELD_DIRECTION_Y];
-    direction_z = field_array[FIELD_DIRECTION_Z];
-    exponent = field_array[FIELD_EXPONENT];
-    
+    direction = field_array[FIELD_DIRECTION];
+    exponent = field_array[FIELD_EXPONENT];    
 }
-
 
 void Light::UpdateParameters () {
     if (!is_loaded) return;
@@ -65,9 +48,9 @@ void Light::SetParameters () {
 
 void Light::Load () {
     light.make();
-    light->SetColor({color_r, color_g, color_b});
+    light->SetColor(color);
     light->SetDistance(distance);
-    light->SetDirection({direction_x, direction_y, direction_z});
+    light->SetDirection(direction);
     light->SetExponent(exponent);
 
     light->Init();
@@ -91,9 +74,7 @@ void Light::Serialize () {
     light_color = light->GetColor(); // idk if this actually works
     light_distance = light->GetDistance();
     
-    color_r = light_color.r;
-    color_g = light_color.g;
-    color_b = light_color.b;
+    color = light_color;
     distance = light_distance;
 }
 

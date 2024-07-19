@@ -25,13 +25,9 @@ public:
 protected:
     Component<LightComponent> light;
     
-    float color_r;
-    float color_g;
-    float color_b;
+    vec3 color;
     float distance;
-    float direction_x;
-    float direction_y;
-    float direction_z;
+    vec3 direction;
     float exponent;
 };
 

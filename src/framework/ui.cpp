@@ -26,15 +26,13 @@ namespace tram::UI {
 
 static InputState input_state = STATE_DEFAULT;
 
-
-
 static float screen_width = 800.0f;
 static float screen_height = 600.0f;
 
 static float camera_pitch = 0.0f;
 static float camera_yaw = -90.0f;
 
-
+static bool exit = false;
 
 static bool keyboard_keys_values[KEY_LASTKEY] = {false};
 static float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
@@ -44,8 +42,6 @@ static double cursorx_last = 0.0f, cursory_last = 0.0f;
 
 // static char* input_text = nullptr;
 // static uint32_t input_text_len = 0;
-
-
 
 struct KeyBinding {
     keyboardaction_t action = KEY_ACTION_NONE;
@@ -67,7 +63,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_LEFT, KeyBinding {.action = KEY_ACTION_LEFT}},
     {KEY_RIGHT, KeyBinding {.action = KEY_ACTION_RIGHT}},
 
-    {KEY_F1, KeyBinding {.special_option = [](){ EXIT = true; /*glfwSetWindowShouldClose(WINDOW, EXIT);*/ }}},
+    {KEY_F1, KeyBinding {.special_option = [](){ exit = true; /*glfwSetWindowShouldClose(WINDOW, EXIT);*/ }}},
     //{KEY_F5, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
     //{KEY_F6, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
     {KEY_F9, KeyBinding {.special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
@@ -287,11 +283,11 @@ void ScreenResize(int width, int height) {
 }
 
 void ScreenClose() {
-    EXIT = true;
+    exit = true;
 }
 
 bool ShouldExit() {
-    return EXIT;
+    return exit;
 }
 
 keyboardaction_t RegisterKeyboardAction() {

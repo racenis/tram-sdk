@@ -44,6 +44,8 @@ struct Message {
     static void Send(const Message& message, float delay);
     static void Dispatch();
     static void* AllocateData(size_t ammount);
+    template <typename T> static T* AllocateData() { static_assert(std::is_trivially_destructible_v<T>); return (T*)AllocateData(sizeof(T)); }
+    template <typename T> static T* AllocateData(const T& data) { static_assert(std::is_trivially_destructible_v<T>); T* ptr = (T*)AllocateData(sizeof(T)); *ptr = data; return ptr; }
 
     message_t type;
     id_t sender;

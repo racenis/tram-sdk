@@ -21,8 +21,9 @@ public:
     void EventHandler(Event &event){};
     void Start();
 
-    name_t GetModel(){ return model->GetName(); }
-    void SetModel(name_t modelName){ model = Physics::CollisionModel::Find(modelName); }
+    Physics::CollisionModel* GetModel() { return model.get(); }
+    void SetModel(name_t model) { this->model = Physics::CollisionModel::Find(model); }
+    void SetModel(Physics::CollisionModel* model) { this->model = model; }
     void SetShape(Physics::CollisionShape shape);
 
     void SetActivationCallback(void (*activation_callback)(TriggerComponent*, Physics::Collision)) { this->activation_callback = activation_callback; }
@@ -37,8 +38,8 @@ public:
     uint32_t GetCollisionMask() { return collisionMask; }
     uint32_t GetCollisionGroup() { return collisionGroup; }
     
-    void SetLocation(glm::vec3 location);
-    void SetRotation(glm::quat rotation);
+    void SetLocation(vec3 location);
+    void SetRotation(quat rotation);
     
     std::vector<Physics::Collision> GetStoredCollisions() { return stored_collisions; }
     
@@ -52,8 +53,8 @@ private:
     uint32_t collisionMask = -1;
     uint32_t collisionGroup = -1;
     
-    glm::vec3 location = vec3(0.0f, 0.0f, 0.0f);
-    glm::quat rotation = vec3(0.0f, 0.0f, 0.0f);
+    vec3 location = vec3(0.0f, 0.0f, 0.0f);
+    quat rotation = vec3(0.0f, 0.0f, 0.0f);
     
     Physics::collisionshape_t shape = {nullptr};
     Physics::trigger_t trigger = {nullptr};

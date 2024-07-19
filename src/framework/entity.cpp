@@ -98,6 +98,16 @@ void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntity
     registered_entity_types.Insert(name, {constr_func, destr_func, fields, fieldcount});
 }
 
+void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields) {
+    uint32_t* field_types = new uint32_t[fields.size()];
+    
+    for (auto& field : fields) {
+        field_types[field.field_id] = field.field_type;
+    }
+    
+    registered_entity_types.Insert(name, {constr_func, destr_func, field_types, fields.size()});
+}
+
 void Entity::Register() {
     if (id) {
         entity_id_list.Insert(id, this);

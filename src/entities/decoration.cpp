@@ -26,19 +26,16 @@ enum {
     FIELD_ANIMATION
 };
 
-static const uint32_t fields[3] = {
-    TYPE_UINT32,
-    TYPE_NAME,
-    TYPE_NAME
-}; 
-
 void Decoration::Register() {
     Entity::RegisterType(
         "decoration", 
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Decoration(a, b); },
         [](Entity* a) { delete a; },
-        fields,
-        3
+        {
+            {FIELD_FLAGS,       TYPE_UINT32,    FIELD_SERIALIZE},
+            {FIELD_MODEL,       TYPE_NAME,      FIELD_SERIALIZE},
+            {FIELD_ANIMATION,   TYPE_NAME,      FIELD_SERIALIZE}
+        }
     );
 }
 

@@ -10,14 +10,13 @@ namespace tram {
 
 typedef uint32_t id_t;
 
-extern bool EXIT;
-extern char const* ENGINE_VERSION;
-
 id_t GenerateID();
 
 uint32_t GetTick();
 double GetTickTime();
 float GetDeltaTime();
+
+const char* GetVersion();
 
 namespace Core {
     void Init();

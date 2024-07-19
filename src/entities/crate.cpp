@@ -20,18 +20,15 @@ enum {
     FIELD_COLLMODEL
 };
 
-static const uint32_t fields[2] = {
-    TYPE_NAME,
-    TYPE_NAME
-}; 
-
 void Crate::Register() {
     Entity::RegisterType(
         "crate", 
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Crate(a, b); },
         [](Entity* a) { delete a; },
-        fields,
-        2
+        {
+            {FIELD_MODEL,       TYPE_NAME,      FIELD_SERIALIZE},
+            {FIELD_COLLMODEL,   TYPE_NAME,      FIELD_SERIALIZE}
+        }
     );
 }
 

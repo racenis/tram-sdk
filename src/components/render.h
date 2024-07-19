@@ -14,9 +14,9 @@ class RenderComponent : public EntityComponent {
 public:
     RenderComponent();
     ~RenderComponent();
-    inline Render::Model* GetModel(){return model.get();};
+    inline Render::Model* GetModel() { return model.get(); }
 
-    inline name_t GetLightmap(){ return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
+    inline name_t GetLightmap() { return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
 
     void SetModel(name_t name);
     void SetLightmap(name_t name);
@@ -31,9 +31,9 @@ public:
     void SetRotation(glm::quat nrotation);
     void SetScale(vec3 scale);
     void SetColor(vec3 color);
-    void SetWorldParameters (bool interior_lighting);
+    void SetWorldParameters(bool interior_lighting);
 
-    void EventHandler(Event &event){return;}
+    void EventHandler(Event &event) { return; }
 protected:
     void InsertDrawListEntries();
     void RefreshAABB();

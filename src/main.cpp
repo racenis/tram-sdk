@@ -625,7 +625,7 @@ int main() {
 #ifdef __EMSCRIPTEN__
     UI::SetWebMainLoop(mainloop);
 #else
-    while(!EXIT){
+    while(!UI::ShouldExit()){
         mainloop();
     }
 

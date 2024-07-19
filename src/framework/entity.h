@@ -66,7 +66,18 @@ public:
 
     void CheckTransition();
 
-    static void RegisterType (name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
+    struct FieldInfo {
+        uint32_t field_id;
+        uint32_t field_type;
+        uint32_t field_flags;
+    };
+
+    enum : uint32_t {
+        FIELD_SERIALIZE = 1
+    };
+
+    static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
+    static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields);
     
     static void UpdateFromList();
     static Entity* Make (name_t type, File* file);
