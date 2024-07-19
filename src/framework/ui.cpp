@@ -183,19 +183,19 @@ void SetWindowSize(int w, int h) {
 
 void SetCursor(CursorType cursor) {
     switch (cursor) {
-        case CURSOR_NONE:
-            Platform::Window::DisableCursor();
-            break;
+        //case CURSOR_NONE:
+            //Platform::Window::DisableCursor();
+            //break;
         case CURSOR_DEFAULT:
-            Platform::Window::EnableCursor();
+            //Platform::Window::EnableCursor();
             Platform::Window::SetCursor(Platform::Window::CURSOR_DEFAULT);
             break;
         case CURSOR_TEXT:
-            Platform::Window::EnableCursor();
+            //Platform::Window::EnableCursor();
             Platform::Window::SetCursor(Platform::Window::CURSOR_TEXT);
             break;
         case CURSOR_CLICK:
-            Platform::Window::EnableCursor();
+            //Platform::Window::EnableCursor();
             Platform::Window::SetCursor(Platform::Window::CURSOR_CLICK);
             break;
     };
@@ -204,16 +204,34 @@ void SetCursor(CursorType cursor) {
 void SetInputState (InputState state) {
     input_state = state;
     
-    if (input_state == STATE_MENU_OPEN) {
-        cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
-        cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
-        
-        SetCursor(CURSOR_DEFAULT);
-    } else {
-        keyboard_axis_values[KEY_MOUSE_X] = cursorx_last;
-        keyboard_axis_values[KEY_MOUSE_Y] = cursory_last;
-        
-        SetCursor(CURSOR_NONE);
+    switch (state) {
+        case STATE_DEFAULT:
+        case STATE_NO_INPUT:
+        case STATE_FLYING:
+            keyboard_axis_values[KEY_MOUSE_X] = cursorx_last;
+            keyboard_axis_values[KEY_MOUSE_Y] = cursory_last;
+            
+            Platform::Window::DisableCursor();
+        break;
+        case STATE_MENU_OPEN:
+        case STATE_CURSOR:
+            cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
+            cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
+            
+            Platform::Window::EnableCursor();
+    }
+}
+
+
+static bool GenerateEvent() {
+    switch (input_state) {
+        case STATE_DEFAULT:
+        case STATE_CURSOR:
+            return true;
+        case STATE_NO_INPUT:
+        case STATE_FLYING:
+        case STATE_MENU_OPEN:
+            return false;  
     }
 }
 
@@ -241,8 +259,8 @@ float PollKeyboardAxisDelta(KeyboardAxis key) {
 
 void KeyPress(KeyboardKey key) {
     const auto& binding = key_action_bindings[key];
-    
-    if (binding.action && input_state == STATE_DEFAULT) {            
+
+    if (binding.action && GenerateEvent()) {            
         Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
     } else if (binding.special_option) {
         binding.special_option();

@@ -73,10 +73,11 @@ enum KeyboardAxis : uint16_t {
 };
 
 enum InputState {
-    STATE_DEFAULT,  //< Normal input, events get generated.
-    STATE_NO_INPUT, //< Inputs get ignored.
-    STATE_FLYING,   //< Events are skipped, inputs move camera directly.
-    STATE_MENU_OPEN //< Input gets registered, but no events are generated.
+    STATE_DEFAULT,      //< Normal input, events get generated, cursor disabled.
+    STATE_NO_INPUT,     //< Inputs get ignored, no cursor.
+    STATE_FLYING,       //< Events are skipped, inputs directly move view.
+    STATE_MENU_OPEN,    //< Input gets registered, but no events are generated, cursor enabled.
+    STATE_CURSOR        //< Normal input, events get generated, but cursor enabled.
 };
 
 typedef uint16_t keyboardaction_t;
@@ -99,7 +100,6 @@ enum KeyboardAction : keyboardaction_t {
 };
 
 enum CursorType {
-    CURSOR_NONE,
     CURSOR_DEFAULT,
     CURSOR_TEXT,
     CURSOR_CLICK

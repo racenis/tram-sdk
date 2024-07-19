@@ -31,7 +31,8 @@ public:
     void SetRotation(glm::quat nrotation);
     void SetScale(vec3 scale);
     void SetColor(vec3 color);
-    void SetWorldParameters(bool interior_lighting);
+    
+    void SetDirectionaLight(bool enabled);
 
     void EventHandler(Event &event) { return; }
 protected:

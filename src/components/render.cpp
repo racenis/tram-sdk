@@ -90,8 +90,8 @@ RenderComponent::~RenderComponent() {
 };
 
 /// Sets the world parameters for model rendering.
-void RenderComponent::SetWorldParameters (bool interior_lighting) {
-    if (interior_lighting) {
+void RenderComponent::SetDirectionaLight(bool enabled) {
+    if (!enabled) {
         render_flags |= FLAG_NO_DIRECTIONAL;
     } else {
         render_flags &= ~FLAG_NO_DIRECTIONAL;

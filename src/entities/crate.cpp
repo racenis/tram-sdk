@@ -50,7 +50,7 @@ void Crate::UpdateParameters() {
     if (!is_loaded) return;
     rendercomponent->SetLocation(location);
     rendercomponent->SetRotation(rotation);
-    rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
+    rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
 }
 
 void Crate::SetParameters() {

@@ -56,7 +56,7 @@ void StaticWorldObject::Load(){
     rendercomponent->SetParent(this);
     rendercomponent->SetModel(model);
     rendercomponent->SetLightmap(lightmap);
-    rendercomponent->SetWorldParameters(cell->HasInteriorLighting());
+    rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
 
     physicscomponent.make();
     physicscomponent->SetModel(model);
