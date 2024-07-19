@@ -51,11 +51,9 @@ void AnimationComponent::Start() {
 }
 
 /// Sets procedural animation keyframe.
-void AnimationComponent::SetBoneKeyframe (name_t bone_name, const Render::Keyframe& keyframe) {
-    // not super efficient, but it works
-    // maybe add a method for setting the keyframe based on the index
-    for (size_t i = 0; i < armature_bone_count; i++){
-        if (armature_bones[i].name == bone_name){
+void AnimationComponent::SetKeyframe(name_t bone_name, const Render::Keyframe& keyframe) {
+    for (size_t i = 0; i < armature_bone_count; i++) {
+        if (armature_bones[i].name == bone_name) {
             base_pose[i] = keyframe;
             return;
         }
@@ -75,7 +73,7 @@ void AnimationComponent::SetBoneKeyframe (name_t bone_name, const Render::Keyfra
 /// @param interpolate      If set to true, then animation will be interpolated, if set to
 ///                         false, then it will use only the latest keyframe.
 /// @param pause_on_last    If set to true, then the animation will pause on the last keyframe.
-void AnimationComponent::PlayAnimation (name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame) {
+void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame) {
     // find an empty slot for the animation
     size_t slot;
     for (slot = 0; slot < ANIM_COUNT; slot++) {
@@ -118,7 +116,7 @@ void AnimationComponent::PlayAnimation (name_t animation_name, uint32_t repeats,
 }
 
 /// Extracts pointers to keyframes from animation data.
-void AnimationComponent::FindKeyframePointers (size_t animation_index) {
+void AnimationComponent::FindKeyframePointers(size_t animation_index) {
     const auto& slot = animation_index;
     size_t anim_bone_count = anim_info[slot].animation_header->second;
     
@@ -146,7 +144,7 @@ void AnimationComponent::FindKeyframePointers (size_t animation_index) {
 
 /// Stops an animation if its playing.
 /// Will do nothing, if the animation is not playing.
-void AnimationComponent::StopAnimation(name_t animation_name) {
+void AnimationComponent::Stop(name_t animation_name) {
     for (size_t i = 0; i < ANIM_COUNT; i++) {
         if(anim_playing[i] == animation_name) {
             anim_playing[i] = UID();
@@ -162,22 +160,77 @@ void AnimationComponent::StopAnimation(name_t animation_name) {
     }
 }
 
-/// Pauses an animation.
+/// Sets animation's pause state.
 /// This will do nothing, if the animation is not playing. Pausing an already paused
 /// or continuing an already playing animation will do nothing.
-/// @param animation_name Name of the animation to pause.
-/// @param pause            Set to true, to pause the animation, set to false to continue.
-void AnimationComponent::PauseAnimation (name_t animation_name, bool pause) {
-    for (size_t i = 0; i < ANIM_COUNT; i++){
-        if(anim_playing[i] == animation_name){
+/// @param animation_name   Name of the animation to pause.
+/// @param pause            Set to true to pause the animation, set to false to continue.
+void AnimationComponent::SetPause(name_t animation_name, bool pause) {
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (anim_playing[i] == animation_name) {
             anim_info[i].pause = pause;
             return;
         }
     }
 }
 
+/// Pauses an animation.
+/// If the animation is being played, it will be paused. Otherwise this method
+/// will do nothing. Use Continue() method to continue playing the animation.
+void AnimationComponent::Pause(name_t animation_name) {
+    SetPause(animation_name, true);
+}
+
+/// Continues an animation.
+/// If an animation is paused, it will continue playback. Otherwise this method
+/// will do nothing.
+void AnimationComponent::Continue(name_t animation_name) {
+    SetPause(animation_name, false);
+}
+
+/// Fades in an animation.
+/// Before fading in an animation, it must be started with Play().
+void AnimationComponent::FadeIn(name_t animation_name, float speed) {
+    SetFade(animation_name, true, speed);
+}
+
+/// Fades out an animation.
+void AnimationComponent::FadeOut(name_t animation_name, float speed) {
+    SetFade(animation_name, false, speed);
+}
+
+/// Sets the weight of an animation.
+void AnimationComponent::SetWeight(name_t animation_name, float weight) {
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (anim_playing[i] == animation_name) {
+            anim_info[i].weight = weight;
+            return;
+        }
+    }
+}
+
+/// Sets the speed of an animation.
+void AnimationComponent::SetSpeed(name_t animation_name, float speed) {
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (anim_playing[i] == animation_name) {
+            anim_info[i].speed = speed;
+            return;
+        }
+    }
+}
+
+/// Sets the repeats of an animation.
+void AnimationComponent::SetRepeats(name_t animation_name, uint32_t repeats) {
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (anim_playing[i] == animation_name) {
+            anim_info[i].repeats = repeats;
+            return;
+        }
+    }
+}
+
 /// Returns true if an animation is playing.
-bool AnimationComponent::IsPlayingAnimation (name_t animation_name) {
+bool AnimationComponent::IsPlaying(name_t animation_name) {
     for (size_t i = 0; i < ANIM_COUNT; i++) {
         if (anim_playing[i] == animation_name) {
             return true;
@@ -189,20 +242,19 @@ bool AnimationComponent::IsPlayingAnimation (name_t animation_name) {
 /// Fades in or fades out an animation.
 /// This will gradually increase or decrease the weight of an animation until it is fully
 /// faded in or faded out.
-/// The animation must already be started with PlayAnimation() for it to
+/// The animation must already be started with Play() for it to
 /// be faded, otherwise this method will do nothing.
 /// If an animation is fully faded out, it will automatically be stopped.
 /// @param animation_name Name of the animation to be faded.
 /// @param fade_in      Set to true, if animation is to be faded in, false if faded out.
-/// @param fade_speed   Fade speed in in weight units per animation frame. So, for example,
-///                     if you wanted to fade an animation for 2 seconds, you would set
-///                     fade_speed to 1.0/24.0*2.0.
-void AnimationComponent::FadeAnimation (name_t animation_name, bool fade_in, float fade_speed) {
-    for (size_t i = 0; i < ANIM_COUNT; i++){
-        if(anim_playing[i] == animation_name){
+/// @param fade_length  How long, in seconds, will it take for the animation to finish
+///                     fading in/out.
+void AnimationComponent::SetFade(name_t animation_name, bool fade_in, float fade_length) {
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (anim_playing[i] == animation_name) {
             anim_info[i].fade_in = fade_in;
             anim_info[i].fade_out = !fade_in;
-            anim_info[i].fade_speed = fade_speed;
+            anim_info[i].fade_speed = 1.0f/24.0f * fade_length;
             anim_info[i].fade_ammount = fade_in ? 0.0f : 1.0f;
             return;
         }
@@ -216,9 +268,9 @@ void AnimationComponent::Update() {
 }
 
 /// Sets an animation to a specific frame.
-/// If the animation is not already started with PlayAnimation(), then this method will
+/// If the animation is not already started with Play(), then this method will
 /// do nothing.
-void AnimationComponent::SetFrameAnimation (name_t animation_name, float frame) {
+void AnimationComponent::SetFrame(name_t animation_name, float frame) {
     for (size_t i = 0; i < ANIM_COUNT; i++){
         if(anim_playing[i] == animation_name){
             anim_info[i].frame = frame;
@@ -253,7 +305,7 @@ void AnimationComponent::Refresh() {
         } else if (anim.fade_out) {
             anim.fade_ammount -= frames_since_update * anim.fade_speed;
             if (anim.fade_ammount < 0.0f) {
-                StopAnimation(anim.animation_header->first);
+                Stop(anim.animation_header->first);
             }
         }
         
@@ -275,7 +327,7 @@ void AnimationComponent::Refresh() {
                     anim.frame = 0.0f;
                     
                     if (anim.repeats == 0) {
-                        StopAnimation(anim.animation_header->first);
+                        Stop(anim.animation_header->first);
                         continue;
                     }
                 }
@@ -317,13 +369,13 @@ void AnimationComponent::Refresh() {
                 // interpolation ratio between keyframes
                 float mix_w = anim.interpolate ? (anim.frame - keyframes[second_keyframe].frame) / (keyframes[first_keyframe].frame - keyframes[second_keyframe].frame) : 0.0f;
                 
-                // total mix weight
+                // add up animation's weight and fade
                 float total_mix_weight = anim.weight * anim.fade_ammount;
                 
                 // mix together will all other animations
                 anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * total_mix_weight;
                 anim_mixed[k].rotation *= glm::mix(glm::quat(glm::vec3(0.0f)), glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w), total_mix_weight);
-                anim_mixed[k].scale *= glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w); // * total_mix_weight;                    
+                anim_mixed[k].scale = glm::mix(anim_mixed[k].scale, anim_mixed[k].scale * glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w), total_mix_weight); // * total_mix_weight;                    
             }
         }
     }

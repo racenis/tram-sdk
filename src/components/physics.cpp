@@ -20,8 +20,7 @@ void PhysicsComponent::Start() {
     API::get_trf_callback get_callback = nullptr;
     API::set_trf_callback set_callback = nullptr;
     
-    // TODO: add a check to check if parent != nullptr?
-    if (update_parent_transform) {
+    if (update_parent_transform && parent) {
         get_callback = [](void* data) -> std::pair<vec3, quat> {
             Entity* parent = ((PhysicsComponent*)data)->GetParent();
             //std::cout << "getting parent: " << ((PhysicsComponent*)data)->GetParent()->GetName() << std::endl;
@@ -30,6 +29,15 @@ void PhysicsComponent::Start() {
         set_callback = [](void* data, std::pair<vec3, quat> transform) {
             ((PhysicsComponent*)data)->GetParent()->UpdateTransform(transform.first, transform.second);
             //std::cout << "setting parent: " << ((PhysicsComponent*)data)->GetParent()->GetName() << std::endl;
+        };
+    } else {
+        get_callback = [](void* data) -> std::pair<vec3, quat> {
+            PhysicsComponent* component = (PhysicsComponent*)data;
+            return {component->rigidbody_position, component->rigidbody_rotation};
+        };
+        set_callback = [](void* data, std::pair<vec3, quat> transform) {
+            ((PhysicsComponent*)data)->rigidbody_position = transform.first;
+            ((PhysicsComponent*)data)->rigidbody_rotation = transform.second;
         };
     }
     

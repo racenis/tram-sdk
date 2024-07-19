@@ -86,7 +86,7 @@ void Decoration::Load(){
     
     if (animation) {
         std::cout << "PLAYING " << animation << std::endl;
-        animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
+        animationcomponent->Play(animation, -1, 1.0f, 1.0f);
     }
     
     is_loaded = true;
@@ -132,12 +132,13 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::TOGGLE:
             if (animation) {
-                if (animationcomponent->IsPlayingAnimation(animation)) {
+                if (animationcomponent->IsPlaying(animation)) {
                     //animationcomponent->StopAnimation(animation);
-                    animationcomponent->FadeAnimation(animation, false, 0.05f);
+                    //animationcomponent->FadeAnimation(animation, false, 0.05f);
+                    animationcomponent->FadeOut(animation, 1.0f);
                 } else {
-                    animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
-                    animationcomponent->FadeAnimation(animation, true, 0.05f);
+                    animationcomponent->Play(animation, -1, 1.0f, 1.0f);
+                    animationcomponent->FadeIn(animation, 1.0f);
                 }
             }
             break;
@@ -146,23 +147,27 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::START:
             if (animation) {
-                animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
-                animationcomponent->FadeAnimation(animation, true, 0.05f);
+                animationcomponent->Play(animation, -1, 1.0f, 1.0f);
+                //animationcomponent->FadeAnimation(animation, true, 0.05f);
+                animationcomponent->FadeIn(animation, 1.0f);
             }
             break;
         case Message::STOP:
             if (animation) {
                 //animationcomponent->StopAnimation(animation);
-                animationcomponent->FadeAnimation(animation, false, 0.05f);
+                //animationcomponent->FadeAnimation(animation, false, 0.05f);
+                animationcomponent->FadeOut(animation, 1.0f);
             }
             break;
         case Message::SET_ANIMATION:
-            if (animation && animationcomponent->IsPlayingAnimation(animation)) {
+            if (animation && animationcomponent->IsPlaying(animation)) {
                 //animationcomponent->StopAnimation(animation);
-                animationcomponent->FadeAnimation(animation, false, 0.05f);
+                //animationcomponent->FadeAnimation(animation, false, 0.05f);
+                animationcomponent->FadeOut(animation, 1.0f);
                 animation = *(Value*)msg.data_value;
-                animationcomponent->PlayAnimation(animation, -1, 1.0f, 1.0f);
-                animationcomponent->FadeAnimation(animation, true, 0.05f);
+                animationcomponent->Play(animation, -1, 1.0f, 1.0f);
+                //animationcomponent->FadeAnimation(animation, true, 0.05f);
+                animationcomponent->FadeIn(animation, 1.0f);
             } else {
                 animation = *(Value*)msg.data_value;
             }

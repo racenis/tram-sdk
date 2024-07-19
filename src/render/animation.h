@@ -20,8 +20,8 @@ const size_t BONE_COUNT = 30; // bone count in a pose
 struct Bone {
     name_t name;
     uint32_t parent = -1;
-    vec3 head = vec3(1.0f);
-    vec3 tail = vec3(1.0f);
+    vec3 head = {0.0f, 0.0f, 0.0f};
+    vec3 tail = {1.0f, 1.0f, 1.0f};
     float roll = 0.0f;
 };
 

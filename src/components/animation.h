@@ -18,14 +18,27 @@ public:
     void SetModel(name_t model) { this->model = Render::Model::Find(model); }
     Render::Model* GetModel() { return model.get(); }
     Render::Pose* GetPose() { return pose; }
-    void SetBoneKeyframe(name_t bone_name, const Render::Keyframe& keyframe);
+    
+    void SetKeyframe(name_t bone_name, const Render::Keyframe& keyframe);
     void SetOnAnimationFinishCallback(void (*callback) (AnimationComponent*, name_t)) { anim_finish_callback = callback; }
-    void PlayAnimation(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);
-    bool IsPlayingAnimation(name_t animation_name);
-    void StopAnimation(name_t animation_name);
-    void PauseAnimation(name_t animation_name, bool pause);
-    void FadeAnimation(name_t animation_name, bool fade_in, float fade_speed);
-    void SetFrameAnimation(name_t animation_name, float frame);
+    
+    void Play(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate = true, bool pause_on_last_frame = false);
+    bool IsPlaying(name_t animation_name);
+    void Stop(name_t animation_name);
+    void Pause(name_t animation_name);
+    void Continue(name_t animation_name);
+    
+    void SetWeight(name_t animation_name, float weight);
+    void SetSpeed(name_t animation_name, float speed);
+    void SetRepeats(name_t animation_name, uint32_t repeats);
+    
+    void FadeIn(name_t animation_name, float length);
+    void FadeOut(name_t animation_name, float length);
+    
+    void SetPause(name_t animation_name, bool pause);
+    void SetFade(name_t animation_name, bool fade_in, float fade_length);
+    void SetFrame(name_t animation_name, float frame);
+    
     void Refresh();
     void EventHandler(Event &event) { return; }
     static void Update();

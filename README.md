@@ -88,10 +88,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - RenderComponents should support offsetting textures
 	- A method like RenderComponent::SetTextureOffset(Material*, vec2).
 	- It would add an offset to the specified Materia's texture.
-	- That would allow texture animations and the like.
-- PhysicsComponents can live without Entity parents.
-	- Add an option to not create a MotionState
-	- ~~Add a callback function for updating~~
+	- This would allow texture animations and the like.
 - Replace Bezier curves with Catmull-Roms
 - Add command-line argument parser.
 	- Should parse command-line arguments.
@@ -150,7 +147,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Steal ideas from various particle editors
 - Finish sprites
 	- Make them not be distorted horizontally in the shader
-- Swapable physics engine?
 
 #### For very later versions
 - Occlusion/frustrum culling
@@ -164,9 +160,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add more rendering stuff
 	- Single drawlistthingy can be in multiple layers
 	- Layers have different cameras
-	- Cameras can be orthographics
 	- Add shear test
-	- Maybe rename camera? camera is extension and in render:: there is view
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
 - Fix animation scaling translation
