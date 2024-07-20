@@ -67,8 +67,6 @@ protected:
     Render::Pose* pose = nullptr;
     ResourceProxy<Render::Model> model;
     
-    float last_update = 0.0f; // TODO: this could actually be replaced with GetDeltaTime() now
-    
     void (*anim_finish_callback) (AnimationComponent*, name_t) = nullptr;
     
     const Render::Bone* armature_bones = nullptr;

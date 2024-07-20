@@ -295,7 +295,7 @@ void AnimationComponent::Refresh() {
         
         // increase the frames of the animation
         auto& anim = anim_info[i];
-        float frames_since_update = (GetTickTime() - last_update) * 24.0f;
+        float frames_since_update = GetDeltaTime() * 24.0f;
         if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
         
         // do fade-ins/fade-outs
@@ -378,8 +378,6 @@ void AnimationComponent::Refresh() {
         }
     }
 
-    last_update = GetTickTime();
-    
     // convert mixed keyframes to pose matrices
     for(uint64_t i = 0; i < armature_bone_count; i++){
 

@@ -183,8 +183,7 @@ collisionshape_t MakeCollisionShape(CollisionShape shape) {
 }
 
 void YeetCollisionShape(collisionshape_t shape) {
-    // here we leak the memory
-    // TODO: fix
+    delete shape.bt_shape;
 }
 
 

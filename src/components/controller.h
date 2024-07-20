@@ -6,14 +6,12 @@
 
 #include <framework/core.h>
 #include <framework/entitycomponent.h>
-
-// TODO: refactor so that this include can be replaced with forward declaration
-#include <components/animation.h>
-#include <components/trigger.h>
+#include <physics/physics.h>
 
 namespace tram {
 
 class PhysicsComponent;
+class TriggerComponent;
 
 class ControllerComponent : public EntityComponent {
 public:

@@ -146,15 +146,6 @@ static value_t call_function(name_t name, std::vector<Value> parameters) {
 static void load_script(const char* script) {
     std::string path = std::string("scripts/") + script + ".lua";
     
-    /*File file (path.c_str(), MODE_READ);
-    
-    if (!file.is_open()) {
-        // TODO: add error message
-        return;
-    }
-    
-    load(file.cursor);*/
-    
     if (luaL_loadfile(L, path.c_str())) {
         Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in loading {} \n {}", path, lua_tostring(L, -1));
         lua_pop(L, 1);

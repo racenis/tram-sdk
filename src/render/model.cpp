@@ -259,10 +259,6 @@ static uint32_t PutTriangleInBucket (
         }
     }
     
-    // check if allowed to make another bucket
-    // TODO: check why this assertion was needed?
-    //assert(buckets.size() < 3);
-    
     // insert a new bucket
     buckets.push_back({
         materials[material_index]->GetType(),

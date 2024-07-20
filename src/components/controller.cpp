@@ -6,6 +6,7 @@
 
 #include <components/controller.h>
 #include <components/physics.h>
+#include <components/trigger.h>
 
 namespace tram {
 
