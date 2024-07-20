@@ -37,10 +37,10 @@ Crate::Crate(const SharedEntityData& shared_data, const ValueArray& field_array)
     collmodel = field_array[FIELD_COLLMODEL];
 }
 
-Crate::Crate (const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot) : Entity(nname) {
+Crate::Crate (const char* nname, const char* modelname, const char* collisionmodelname, vec3 pos, vec3 rot) : Entity(nname) {
     name = UID(nname);
     location = pos;
-    rotation = glm::quat(rot);
+    rotation = quat(rot);
 
     model = UID(modelname);
     collmodel = UID(collisionmodelname);
@@ -104,7 +104,7 @@ void Crate::Testingolingo() {
     assert(is_loaded);
     assert(physicscomponent);
     physicscomponent->SetAngularFactor({0.0f, 0.0f, 0.0f});
-    physicscomponent->SetRotation(glm::vec3(0.0f, 0.785f, 0.0f));
+    physicscomponent->SetRotation(vec3(0.0f, 0.785f, 0.0f));
 }
 
 }

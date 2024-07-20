@@ -68,7 +68,7 @@ void TriggerComponent::SetCollisionGroup(uint32_t flags){
 }
 
 /// Sets the location of the component.
-void TriggerComponent::SetLocation (glm::vec3 location) {
+void TriggerComponent::SetLocation (vec3 location) {
     this->location = location;
     
     if (is_ready) {
@@ -77,7 +77,7 @@ void TriggerComponent::SetLocation (glm::vec3 location) {
 }
 
 /// Sets the rotation of the component.
-void TriggerComponent::SetRotation (glm::quat rotation) {
+void TriggerComponent::SetRotation (quat rotation) {
     this->rotation = rotation;
     
     if (is_ready) {

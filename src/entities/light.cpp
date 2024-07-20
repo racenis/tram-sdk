@@ -68,7 +68,7 @@ void Light::Unload () {
 }
 
 void Light::Serialize () {
-    glm::vec3 light_color;
+    vec3 light_color;
     float light_distance;
     
     light_color = light->GetColor(); // idk if this actually works

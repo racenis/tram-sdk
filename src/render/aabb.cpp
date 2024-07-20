@@ -5,6 +5,7 @@
 
 #include <templates/pool.h>
 #include <templates/aabb.h>
+#include <templates/octree.h>
 
 namespace tram::Render::AABB {
 
@@ -136,6 +137,56 @@ static void DrawAABBNodeChildren(AABBTree::Node* node) {
 
 void DebugDrawTree() {
     DrawAABBNodeChildren(scene_tree.root);
+}
+
+}
+
+namespace tram::Render::LightTree {
+
+struct Light {
+    light_t handle;
+    vec3 position;
+    float distance;
+    uint32_t tree_handle;
+};
+
+Pool<Light> light_list("lighttree pool", 200);
+Octree<Light*> light_tree;
+
+void AddLight(light_t light, vec3 pos, float dist) {
+    Light* new_light = light_list.AddNew();
+    
+    new_light->handle = light;
+    new_light->position = pos;
+    new_light->distance = dist;
+    
+    new_light->tree_handle = light_tree.AddLeaf(new_light, pos.x, pos.y, pos.z);
+}
+
+void FindLights(vec3 position, light_t* dest) {
+    Light* lights[4] = {nullptr, nullptr, nullptr, nullptr};
+    light_tree.FindNearest(lights, position.x, position.y, position.z);
+    
+    for (int i = 0; i < 4; i++) {
+        if (lights[i]) {
+            dest[i] = lights[i]->handle;
+        } else {
+            dest[i] = light_t {.generic = nullptr};
+        }
+    }
+}
+
+void RemoveLight(light_t light) {
+    Light* remove_light = nullptr;
+    
+    for (auto& entry : light_list) {
+        if (entry.handle.generic == light.generic) {
+            remove_light = &entry;
+        }
+    }
+    
+    light_tree.RemoveLeaf(remove_light->tree_handle);
+    light_list.Remove(remove_light);
 }
 
 }

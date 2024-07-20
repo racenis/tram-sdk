@@ -64,7 +64,7 @@ static void update_projection(layer_t layer) {
     if (fov == 0.0f) {
         matrix = glm::ortho(-ratio, +ratio, -(1.0f/ratio), +(1.0f/ratio), 0.01f, 50.0f);
     } else {
-        matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, 0.01f, 50.0f);
+        matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, 0.01f, 25.0f);
     }
     
     view_properties[layer].projection = matrix;

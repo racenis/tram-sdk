@@ -31,7 +31,7 @@ public:
 
     void UpdateRenderListObject();
 
-    void UpdateLocation(glm::vec3 nlocation){
+    void UpdateLocation(vec3 nlocation){
         location = nlocation;
         UpdateRenderListObject();
     }
@@ -43,7 +43,7 @@ protected:
 
     Render::drawlistentry_t draw_list_entry;
     
-    glm::vec3 location;
+    vec3 location;
     
     size_t anim_frame = 0;
     size_t anim_speed = 0;

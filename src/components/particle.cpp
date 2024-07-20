@@ -57,7 +57,7 @@ void ParticleComponent::Update(){
     }
     
     for (uint32_t i = 0; i < emission_rate; i++) {
-        glm::vec3 random_vec;
+        vec3 random_vec;
         static int tick = 0;
         tick++; srand(tick*6217);
         random_vec.x = 0.5f - ((float)rand()/(float)RAND_MAX);
@@ -66,7 +66,7 @@ void ParticleComponent::Update(){
         tick++; srand(tick*6217);
         random_vec.z = 0.5f - ((float)rand()/(float)RAND_MAX);
         
-        glm::vec3 velocity = initial_velocity + (random_vec*initial_velocity_randomness);
+        vec3 velocity = initial_velocity + (random_vec*initial_velocity_randomness);
         particles.push_back(Particle {velocity, velocity, 0});
     }
 
@@ -88,37 +88,37 @@ void ParticleComponent::UpdateRenderListObject(){
 
     for (auto particle : particles) {
         Render::SpriteVertex top_left {
-            //.co = glm::vec3(0.0f, 0.0f, 0.0f),
+            //.co = vec3(0.0f, 0.0f, 0.0f),
             .co = particle.coords,
-            .voffset = glm::vec2 (-half_width, half_height),
-            .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
+            .voffset = vec2(-half_width, half_height),
+            .texco = vec2(0.0f + tex_w_off, 1.0f - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
         
         Render::SpriteVertex top_right {
-            //.co = glm::vec3(0.0f, 0.0f, 0.0f),
+            //.co = vec3(0.0f, 0.0f, 0.0f),
             .co = particle.coords,
-            .voffset = glm::vec2 (half_width, half_height),
-            .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
+            .voffset = vec2(half_width, half_height),
+            .texco = vec2(tex_width + tex_w_off, 1.0f - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
         
         Render::SpriteVertex bottom_left {
-            //.co = glm::vec3(0.0f, 0.0f, 0.0f),
+            //.co = vec3(0.0f, 0.0f, 0.0f),
             .co = particle.coords,
-            .voffset = glm::vec2 (-half_width, -half_height),
-            .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
+            .voffset = vec2(-half_width, -half_height),
+            .texco = vec2(0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };
         
         Render::SpriteVertex bottom_right {
-            //.co = glm::vec3(0.0f, 0.0f, 0.0f),
+            //.co = vec3(0.0f, 0.0f, 0.0f),
             .co = particle.coords,
-            .voffset = glm::vec2 (half_width, -half_height),
-            .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
+            .voffset = vec2(half_width, -half_height),
+            .texco = vec2(tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
             .verticality = 1.0f,
             .texture = 0
         };

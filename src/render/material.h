@@ -32,31 +32,6 @@ enum TextureType {
 class Material : public Resource {
 public:
     Material(name_t name) : Resource(name) {}
-    Material(name_t name, materialtype_t type) : Resource(name), type(type) {}
-    Material(name_t name, materialtype_t type, MaterialFilter filter) : Resource(name), type(type), filter(filter) {}
-    Material(name_t name, materialtype_t type, MaterialFilter filter, MaterialProperty property) : Resource(name), type(type), filter(filter), property(property) {}
-    Material(
-        name_t name, 
-        materialtype_t type, 
-        MaterialFilter filter, 
-        MaterialProperty property, 
-        vec3 color, 
-        float specular_weight, 
-        float specular_exponent,
-        float specular_transparency,
-        TextureType texture_type,
-        Material* source
-    ) : 
-        Resource(name), 
-        type(type), 
-        filter(filter), 
-        property(property),
-        texture_type(texture_type),
-        source(source),
-        color(color), 
-        specular_weight(specular_weight), 
-        specular_exponent(specular_exponent),
-        specular_transparency(specular_transparency) {}
     
     inline texturehandle_t GetTexture() const { return texture; }
     inline uint32_t GetWidth() const { return width; }
@@ -68,6 +43,14 @@ public:
     inline float GetSpecularExponent() const { return specular_exponent; }
     inline float GetSpecularTransparency() const { return specular_transparency; }
 
+    void SetMaterialType(materialtype_t type) { this->type = type; }
+    void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; }
+    void SetMaterialProperty(MaterialProperty property) { this->property = property; }
+    void SetColor(color_t color) { this->color = color; }
+    void SetSpecular(float weight, float exponent,  float transparency) { specular_weight = weight; specular_exponent = exponent; specular_transparency = transparency; }
+    void SetTextureType(TextureType texture_type) { this->texture_type = texture_type; }
+    void SetSource(Material* source) { this->source = source; }
+    
     void MakePattern(vec3 color1, vec3 color2);
     
     void LoadFromDisk();

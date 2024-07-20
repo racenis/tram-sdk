@@ -67,7 +67,7 @@ struct SWDrawListEntry {
     
     mat4 matrix = mat4(1.0f);
 
-    uint32_t lights[4] = {0};
+    SWLight* lights[4] = {nullptr, nullptr, nullptr, nullptr};
     
     uint32_t layer = 0;
     SWTexture* lightmap = nullptr;

@@ -27,28 +27,6 @@ struct VertexBufferMetadata {
 };
 Pool<VertexBufferMetadata> vertex_buffer_metadata("vertex buffer metadata", 500, false);
 
-/*
-struct ShaderUniformMatrices {
-    glm::mat4 projection;       /// Projection matrix.
-    glm::mat4 view;             /// View matrix.
-    glm::vec3 view_pos;
-};
-
-struct ShaderUniformModelMatrices {
-    glm::mat4 model;        /// Model -> world space matrix. Rotates and translates vertices from how they are defined in the model to where they will appear in the world.
-    glm::uvec4 modelLights; /// Indices for lights in the light list. The shader will use these 4 indices to determine with which lights the model should be lit up.
-    glm::vec4 sunDirection; /// Normalized vector. Sunlight direction.
-    glm::vec4 sunColor;     /// Sunlight color.
-    glm::vec4 ambientColor; /// Shadow color.
-    float time;
-    float sunWeight;
-    float screenWidth;
-    float screenHeight;
-    glm::vec4 colors[15];
-    glm::vec4 specular[15];
-    float padding[30];
-};*/
-
 struct LayerParameters {
     mat4 projection_matrix = mat4(1.0f);
     mat4 view_matrix = mat4(1.0f);
@@ -58,33 +36,11 @@ struct LayerParameters {
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.3f, 0.3f, 0.3f};
 };
-/*
-ShaderUniformMatrices matrices;
-ShaderUniformModelMatrices modelMatrices;
-*/
+
 static LayerParameters layers[7];
-/*
-class ShaderBuffer {};
 
-const uint32_t matrix_uniform_binding = 0;
-const uint32_t model_matrix_uniform_binding = 1;
-const uint32_t light_uniform_binding = 2;
-const uint32_t bone_uniform_binding = 3;
-
-uint32_t matrix_uniform_buffer;
-uint32_t model_matrix_uniform_buffer;
-uint32_t light_uniform_buffer;
-uint32_t bone_uniform_buffer;
-
-*/
 vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
 bool clear_screen = true;
-
-/*
-
-static float SCREEN_WIDTH = 800.0f;
-static float SCREEN_HEIGHT = 600.0f;*/
-
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;

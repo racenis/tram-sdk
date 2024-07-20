@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <algorithm>
-#include <glm/glm.hpp>
+#include <framework/math.h>
 
 namespace tram {
      template <typename T>
@@ -34,7 +34,7 @@ namespace tram {
         }
 
         size_t FindNearest(T result[], float x, float y, float z){
-            std::sort(nodevec.begin(), nodevec.end(), [=](const Node& a, const Node& b){return glm::distance(glm::vec3(x, y, z), glm::vec3(a.x, a.y, a.z)) < glm::distance(glm::vec3(x, y, z), glm::vec3(b.x, b.y, b.z));});
+            std::sort(nodevec.begin(), nodevec.end(), [=](const Node& a, const Node& b){return glm::distance(vec3(x, y, z), vec3(a.x, a.y, a.z)) < glm::distance(vec3(x, y, z), vec3(b.x, b.y, b.z));});
             for (size_t i = 0; i < 4 && i < nodevec.size(); i++){
                 result[i] = nodevec[i].type;
             }

@@ -38,4 +38,12 @@ void DebugDrawTree();
 
 }
 
+namespace tram::Render::LightTree {
+    
+void AddLight(light_t light, vec3 pos, float dist);
+void FindLights(vec3 position, light_t* dest);
+void RemoveLight(light_t light);
+    
+}
+
 #endif // TRAM_SDK_RENDER_AABB_H

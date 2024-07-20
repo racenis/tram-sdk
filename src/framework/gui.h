@@ -75,19 +75,19 @@ void Frame(orientation frame_orient, float offset);
 void Frame(orientation frame_orient, float width, float height);
 void FrameBreakLine();
 void EndFrame();  // pops a frame
-void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex);
+void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const vec3& color, const uint32_t& tex);
 void ScrollBar(float& scroll, float& height); // scrollbar for the frame
 void Glyph(const uint32_t& symbol, const float& x, const float& y);
-void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex);     // new glyph using the top of the stack
-void GlyphText(char const* text, font_t font, float x, float y, float space, const glm::vec3& color = Render::COLOR_WHITE);
-void DebugText(char const* text, const glm::vec3& location, const glm::vec3& color = Render::COLOR_WHITE);
+void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const vec3& color, const uint32_t& tex);     // new glyph using the top of the stack
+void GlyphText(char const* text, font_t font, float x, float y, float space, const vec3& color = Render::COLOR_WHITE);
+void DebugText(char const* text, const vec3& location, const vec3& color = Render::COLOR_WHITE);
 void FrameBorder();
 bool SmallButton(const symbol& glyph);
 void CheckBox(bool& check);
 void RadioButton(uint32_t& val, const uint32_t& this_val);
 bool Button(char const* text);
 
-void Text(char const* text, font_t font, orientation alignment = TEXT_LEFT, const glm::vec3& color = Render::COLOR_WHITE);
+void Text(char const* text, font_t font, orientation alignment = TEXT_LEFT, const vec3& color = Render::COLOR_WHITE);
 
 void TextBox(char* text, uint32_t max_len);
 void DropdownBox(char const** texts, uint32_t len, uint32_t& selected);

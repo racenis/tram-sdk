@@ -27,7 +27,7 @@ void Update() {
 /// Performs a raycast from from to to.
 /// @return Collision struct. If there was nothing found, then the pointer
 ///         in the struct will be set to nullptr.
-Collision Raycast(const glm::vec3& from, const glm::vec3& to, uint32_t collision_mask) {
+Collision Raycast(const vec3& from, const vec3& to, uint32_t collision_mask) {
     auto[result, object] = API::Raycast(from, to, collision_mask);
     
     return {(PhysicsComponent*)object, result.point, result.normal};

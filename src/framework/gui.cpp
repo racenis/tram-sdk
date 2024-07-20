@@ -145,7 +145,7 @@ font_t RegisterFont (Render::Sprite* sprite) {
 /// Adds a glyph to rendering list.
 /// Triangularizes a glyph from its params and then it get sent off to
 /// rendering via the glyph rendering list.
-void SetGlyph(float x, float y, float z, float w, float h, float tex_x, float tex_y, float tex_w, float tex_h, const glm::vec3& color, font_t font) {
+void SetGlyph(float x, float y, float z, float w, float h, float tex_x, float tex_y, float tex_w, float tex_h, const vec3& color, font_t font) {
     Render::SpriteVertex tleft;   // top left
     Render::SpriteVertex tright;  // top right
     Render::SpriteVertex bleft;   // bottom left
@@ -192,7 +192,7 @@ void SetGlyph(float x, float y, float z, float w, float h, float tex_x, float te
     glyphvertices.push_back(tleft);
 }
 
-void Glyph (const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const glm::vec3& color, const uint32_t& tex) {
+void Glyph (const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const vec3& color, const uint32_t& tex) {
     auto& t = FrameStack.top();
     
     // check if glyph needs to be clipped
@@ -227,7 +227,7 @@ void Glyph (const float& x, const float& y, const float& w, const float& h, cons
     SetGlyph(x + t.offset_x, y + t.offset_y, FrameStack.top().stack_height, w, h, tex_x, tex_y, w, h, color, tex);
 }
 
-void GlyphNoclip(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
+void GlyphNoclip(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const vec3& color, const uint32_t& tex) {
     auto& t = FrameStack.top();
     SetGlyph(x + t.offset_x, y + t.offset_y, FrameStack.top().stack_height, w, h, tex_x, tex_y, tex_w, tex_h, color, tex);
 }
@@ -320,7 +320,7 @@ void Frame() {
     *FrameStack.AddNew() = new_frame;
 }
 
-void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const glm::vec3& color, const uint32_t& tex) {
+void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const vec3& color, const uint32_t& tex) {
     auto& f = FrameStack.top();
     GlyphNoclip(0.0f, 0.0f, f.width, f.height, tex_x, tex_y, tex_w, tex_h, color, tex);
 }
@@ -406,10 +406,10 @@ void ScrollBar(float& scroll, float& height) {
 void FrameBorder() {
     auto& t = FrameStack.top();
     const float s = 0.001f;
-    glm::vec3 tl(t.offset_x * s, t.offset_y * s, 0.0f);
-    glm::vec3 tr((t.offset_x + t.width) * s, t.offset_y * s, 0.0f);
-    glm::vec3 bl(t.offset_x * s, (t.offset_y + t.height) * s, 0.0f);
-    glm::vec3 br((t.offset_x + t.width) * s, (t.offset_y + t.height) * s, 0.0f);
+    vec3 tl(t.offset_x * s, t.offset_y * s, 0.0f);
+    vec3 tr((t.offset_x + t.width) * s, t.offset_y * s, 0.0f);
+    vec3 bl(t.offset_x * s, (t.offset_y + t.height) * s, 0.0f);
+    vec3 br((t.offset_x + t.width) * s, (t.offset_y + t.height) * s, 0.0f);
     Render::AddLine(tl, tr, Render::COLOR_PINK);
     Render::AddLine(tr, br, Render::COLOR_PINK);
     Render::AddLine(br, bl, Render::COLOR_PINK);
@@ -496,7 +496,7 @@ void RadioButton(uint32_t& val, const uint32_t& this_val) {
 }
 
 // sets a string until null-terminator
-void GlyphText(char const* text, font_t font, float x, float y, float space, const glm::vec3& color ) {
+void GlyphText(char const* text, font_t font, float x, float y, float space, const vec3& color ) {
     for (char const* t = text; *t != '\0'; t++) {
         if (*t == ' ') { x += space; continue; }
         //auto& f = UI::glyphinfo[font][(size_t)*t];
@@ -507,7 +507,7 @@ void GlyphText(char const* text, font_t font, float x, float y, float space, con
 }
 
 // sets a string until an end pointer
-void GlyphText(char const* text, char const* end, font_t font, float x, float y, float space, const glm::vec3& color = Render::COLOR_WHITE) {
+void GlyphText(char const* text, char const* end, font_t font, float x, float y, float space, const vec3& color = Render::COLOR_WHITE) {
     for (char const* t = text; t != end; t++) {
         if (*t == ' ') { x += space; continue; }
         //auto& f = UI::glyphinfo[font][(size_t)*t];
@@ -529,8 +529,8 @@ void GlyphMetrics(char const* text, font_t font, float& w, uint32_t& sp, char co
 }
 
 // projects a world-space point onto the screen, then sets a text there
-void DebugText(char const* text, const glm::vec3& location, const glm::vec3& color) {
-    glm::vec3 screen_location;
+void DebugText(char const* text, const vec3& location, const vec3& color) {
+    vec3 screen_location;
     Render::Project(location, screen_location);
     float w; uint32_t sp; char const* end;
     GlyphMetrics(text, 1, w, sp, end);
@@ -540,7 +540,7 @@ void DebugText(char const* text, const glm::vec3& location, const glm::vec3& col
     EndFrame();
 }
 
-void Text(char const* text, font_t font, orientation alignment, const glm::vec3& color) {
+void Text(char const* text, font_t font, orientation alignment, const vec3& color) {
     float x = FrameStack.top().cursor_x;
     float y = FrameStack.top().cursor_y;
     float a = FrameStack.top().width - x;
@@ -598,7 +598,7 @@ bool Button(char const* text) {
         Glyph(BUTTON_TEXT + MIDDLE + mode, x + l.width + (m.width * i) , y);
         
     FrameStack.top().stack_height++; // hack
-    GlyphText(text, text_end, 2, std::round(x + ((total_w - text_w) / SPACE_WIDTH)) , y-1.0f, 2.0f/*, glm::vec3(0.667f, 0.667f, 0.667f)*/);
+    GlyphText(text, text_end, 2, std::round(x + ((total_w - text_w) / SPACE_WIDTH)) , y-1.0f, 2.0f/*, vec3(0.667f, 0.667f, 0.667f)*/);
     FrameStack.top().stack_height--; // hack
     
     //std::cout << "total_w: " << total_w << " text_w: " << text_w << " x: " << x << " bongo: " << ((total_w - text_w) / 2.0f) << std::endl;

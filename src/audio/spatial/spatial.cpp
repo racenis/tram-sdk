@@ -146,11 +146,11 @@ void Uninit() {
     UninitOutput();
 }
 
-void SetListenerPosition(const glm::vec3& position) {
+void SetListenerPosition(const vec3& position) {
     listener_position = position;
 }
 
-void SetListenerOrientation(const glm::quat& orientation) {
+void SetListenerOrientation(const quat& orientation) {
     listener_orientation = orientation;
 }
 

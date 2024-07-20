@@ -93,8 +93,8 @@ void ControllerComponent::ApplyDynamics() {
         if (is_in_air) target_speed *= 0.33f;
 
         // convert local space direction into global space direction and normalize it
-        glm::vec3 wish_dir = glm::normalize(parent->GetRotation() * move_direction);
-        if (std::isnan(wish_dir.x) || std::isnan(wish_dir.y) || std::isnan(wish_dir.z)) wish_dir = glm::vec3(0.0f, 0.0f, 0.0f);
+        vec3 wish_dir = glm::normalize(parent->GetRotation() * move_direction);
+        if (std::isnan(wish_dir.x) || std::isnan(wish_dir.y) || std::isnan(wish_dir.z)) wish_dir = vec3(0.0f, 0.0f, 0.0f);
         
         // clip the move direction so that it doesn't exceed maximum velocity
         float current_speed = glm::dot(velocity, wish_dir); 

@@ -1,5 +1,6 @@
 #include <components/light.h>
 
+#include <render/aabb.h>
 #include <render/api.h>
 
 namespace tram {
@@ -9,6 +10,8 @@ template <> Pool<LightComponent> PoolProxy<LightComponent>::pool ("light compone
 void LightComponent::Init () {
     light = Render::API::MakeLight();
     
+    Render::LightTree::AddLight(light, location, distance);
+    
     is_init = true;
     is_ready = true;
     
@@ -17,6 +20,7 @@ void LightComponent::Init () {
 
 LightComponent::~LightComponent () {
     Render::API::DeleteLight(light);
+    Render::LightTree::RemoveLight(light);
     
     light.generic = nullptr;
     is_ready = false;
@@ -25,6 +29,8 @@ LightComponent::~LightComponent () {
 void LightComponent::Update () {
     if (is_ready) {
         Render::API::SetLightParameters(light, location, color, distance, direction, exponent);
+        Render::LightTree::RemoveLight(light);
+        Render::LightTree::AddLight(light, location, distance);
     }
 }
 

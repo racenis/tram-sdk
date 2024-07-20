@@ -62,7 +62,7 @@ struct GLDrawListEntry {
     }
 
     /// Assembles a key for sorting
-    uint64_t CalcSortKey (const glm::vec3& cameraPosition) {
+    uint64_t CalcSortKey (const vec3& cameraPosition) {
         vec3 location = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
         uint64_t sortkey = 0;
         sortkey = flags & FLAG_TRANSPARENT ? 1 : 0;

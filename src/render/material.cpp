@@ -135,15 +135,20 @@ void Material::LoadMaterialInfo(const char* filename){
             mat_source = Material::Find(mat_tex_type_name);
         }
 
-        // this might break!!
-        if (material_list.Find(mat_name)) PoolProxy<Material>::Delete(material_list.Find(mat_name));
+        Material* material = material_list.Find(mat_name);
+    
+        if (!material) {
+            material = PoolProxy<Material>::New(mat_name);
+            material_list.Insert(UID(mat_name), material);
+        }
 
-        // a better way to do this would be to create a protexted method
-        // called SetMaterialProperties(...) or something like that and
-        // then you could use Material::Find() to construct a new material
-        // and then use SetMaterialProperties(...) method to set its
-        // properties
-        material_list.Insert(mat_name, PoolProxy<Material>::New(mat_name, mat_type, mat_filter, mat_property, mat_color, mat_spec_weight, mat_spec_exponent, mat_spec_transparency, mat_tex_type, mat_source));
+        material->SetMaterialType(mat_type);
+        material->SetMaterialFilter(mat_filter);
+        material->SetMaterialProperty(mat_property);
+        material->SetColor(mat_color);
+        material->SetSpecular(mat_spec_weight, mat_spec_exponent, mat_spec_transparency);
+        material->SetTextureType(mat_tex_type);
+        material->SetSource(mat_source);
     }
 }
 
@@ -154,7 +159,8 @@ Material* Material::Make(name_t name, materialtype_t type) {
     Material* material = material_list.Find(name);
     
     if (!material) {
-        material = PoolProxy<Material>::New(name, type, FILTER_NEAREST);
+        //material = PoolProxy<Material>::New(name, type, FILTER_NEAREST);
+        material = PoolProxy<Material>::New(name);
         material_list.Insert(UID(name), material);
     }
     
@@ -174,7 +180,8 @@ Material* Material::Find(name_t name){
     Material* material = material_list.Find(name);
     
     if (!material) {
-        material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP, FILTER_LINEAR);
+        //material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP, FILTER_LINEAR);
+        material = PoolProxy<Material>::New(name);
         material_list.Insert(UID(name), material);
     }
     

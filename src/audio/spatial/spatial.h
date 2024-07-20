@@ -12,8 +12,8 @@ void Init();
 void Update();
 void Uninit();
 
-void SetListenerPosition(const glm::vec3& position);
-void SetListenerOrientation(const glm::quat& orientation);
+void SetListenerPosition(const vec3& position);
+void SetListenerOrientation(const quat& orientation);
 
 audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels, int32_t& buffer_count);
 void RemoveAudioBuffer(audiobuffer_t* buffers, int32_t buffer_count);

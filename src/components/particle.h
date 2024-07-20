@@ -12,8 +12,8 @@ namespace tram {
 class ParticleComponent : public EntityComponent {
 public:
     struct Particle {
-        glm::vec3 coords;
-        glm::vec3 velocity;
+        vec3 coords;
+        vec3 velocity;
         uint32_t age;
     };
     
@@ -31,7 +31,7 @@ public:
 
     void UpdateRenderListObject();
 
-    void UpdateLocation(glm::vec3 nlocation){
+    void UpdateLocation(vec3 nlocation){
         location = nlocation;
         UpdateRenderListObject();
     }
@@ -43,7 +43,7 @@ public:
     // put these behind getter/setter methods, maybe?
     uint32_t emission_rate = 1;
     uint32_t particle_max_age = 120;
-    vec3 gravity = glm::vec3(0.0f, -0.005f, 0.0f);
+    vec3 gravity = vec3(0.0f, -0.005f, 0.0f);
     vec3 initial_velocity = vec3(0.0f, 0.15f, 0.0f);
     float initial_velocity_randomness = 0.1f;
 protected:

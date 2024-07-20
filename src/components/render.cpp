@@ -107,13 +107,16 @@ void RenderComponent::SetDirectionaLight(bool enabled) {
 }
 
 /// Sets the location of the model.
-void RenderComponent::SetLocation(glm::vec3 nlocation){
+void RenderComponent::SetLocation(vec3 nlocation){
     location = nlocation;
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry.generic) {
                 Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
+                light_t lights[4];
+                Render::LightTree::FindLights(location, lights);
+                Render::API::SetLights(entry, lights);
             }
         }
         
@@ -122,7 +125,7 @@ void RenderComponent::SetLocation(glm::vec3 nlocation){
 }
 
 /// Sets the rotation of the model.
-void RenderComponent::SetRotation(glm::quat nrotation){
+void RenderComponent::SetRotation(quat nrotation){
     rotation = nrotation;
     
     if (is_ready) {
@@ -209,6 +212,10 @@ void RenderComponent::InsertDrawListEntries() {
             specular_exponents[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularExponent();
             specular_transparencies[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularTransparency();
         }
+
+        light_t lights[4];
+        Render::LightTree::FindLights(location, lights);
+        Render::API::SetLights(entry, lights);
 
         Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
         Render::API::SetDrawListIndexArray(entry, model->GetIndexArray());

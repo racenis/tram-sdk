@@ -192,7 +192,7 @@ void mainloop() {
     }
     
     // this will make the light spin
-    //vec3 litloc = glm::vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
+    //vec3 litloc = vec3(cos(((float)tick) / 60.0f) * 7.0f, 1.25f ,sin(((float)tick) / 60.0f) * 7.0f);
     //quat litrot;
     //QuatLookAt(litrot, litloc, vec3(0.0f, 1.8f, 0.0f));
     //binguser->SetLocation(litloc);
@@ -200,7 +200,7 @@ void mainloop() {
     //lit->SetLocation(litloc);
     
     // this makes the mongus model bob up and down
-    //monguser->SetLocation(glm::vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
+    //monguser->SetLocation(vec3(0.0f, 0.5f + sin(((float)tick) / 45.0f)*0.25f, 3.0f));
     
     //SetText("hello i have begonis", 10.0f, 10.0f, 1.2f, 300.0f, false, false, 1, COLOR_PINK);
     //SetText("begonis bepis", 10.0f, 40.0f, 1.0f, 300.0f, false, false, 0, COLOR_PINK);
@@ -486,15 +486,15 @@ int main() {
     //binguser = PoolProxy<RenderComponent>::New();
     //binguser->SetModel(UID("bingus"));
     //binguser->Init();
-    //binguser->SetLocation(glm::vec3(0.0f, 0.0f, 0.0f));
-    //binguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //binguser->SetLocation(vec3(0.0f, 0.0f, 0.0f));
+    //binguser->SetRotation(quat(vec3(0.0f, 0.0f, 0.0f)));
 
     // create the mongus model
     //monguser = PoolProxy<RenderComponent>::New();
     //monguser->SetModel(UID("mongus"));
     //monguser->Init();
-    //monguser->SetLocation(glm::vec3(0.0f, 10.0f, 0.0f));
-    //monguser->SetRotation(glm::quat(glm::vec3(0.0f, 0.0f, 0.0f)));
+    //monguser->SetLocation(vec3(0.0f, 10.0f, 0.0f));
+    //monguser->SetRotation(quat(vec3(0.0f, 0.0f, 0.0f)));
 
     // create a light
     //lit = PoolProxy<LightComponent>::New();
@@ -519,13 +519,13 @@ int main() {
     
     //tolet_spinner = PoolProxy<SpriteComponent>::New();
     //tolet_spinner->SetSprite(tolet_sprite);
-    //tolet_spinner->UpdateLocation(glm::vec3(3.0f, 1.2f, -1.0f));
+    //tolet_spinner->UpdateLocation(vec3(3.0f, 1.2f, -1.0f));
     //tolet_spinner->Init();
     //tolet_spinner->Play();
     
     //tolet_emitter = PoolProxy<ParticleComponent>::New();
     //tolet_emitter->SetSprite(tolet_sprite);
-    //tolet_emitter->UpdateLocation(glm::vec3(0.0f, 1.2f, -7.0f));
+    //tolet_emitter->UpdateLocation(vec3(0.0f, 1.2f, -7.0f));
     //tolet_emitter->Init();
     
     //derp = Audio::Sound::Find(UID("apelsin"));
@@ -534,7 +534,7 @@ int main() {
     //eerp->Load();
     
     //derp_player = PoolProxy<AudioComponent>::New();
-    //derp_player->SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
+    //derp_player->SetLocation(vec3(0.0f, 1.0f, 0.0f));
     //derp_player->SetSound("apelsin");
     //derp_player->SetRepeating(true);
     //derp_player->Init();

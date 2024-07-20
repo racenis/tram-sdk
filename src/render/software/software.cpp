@@ -16,8 +16,6 @@ Pool<SWLight> light_list("light list", 200, false);
 Pool<SWTexture> texture_list("texture list", 200, false);
 Pool<SWVertexArray> vertex_arrays("vertex_arrays list", 200, false);
 Pool<SWIndexArray> index_arrays("index_arrays list", 200, false);
-Octree<uint32_t> light_tree;
-std::vector<uint32_t> light_tree_ids (200);
 
 struct LayerParameters {
     mat4 projection_matrix = mat4(1.0f);
@@ -453,11 +451,6 @@ void RasterizeTriangle(ScanlineBuffer* scanlines, Point2D* vertices) {
                           + ((p1_mix * vertices[1].depth) >> 16)
                           + ((p2_mix * vertices[2].depth) >> 16);
             
-            //int32_t r = (depth & 0xFFFF) >> (16 - 5);
-            //int32_t g = (depth & 0xFFFF) >> (16 - 6);
-            // b = (depth & 0xFFFF) >> (16 - 5);
-            //int32_t c = (r << (5 + 6)) | (g << (5)) | b;
-            
             if (depth_buffer[y * screen_width + x] < depth) {
                 depth_buffer[y * screen_width + x] = depth;
                 BlitDot(x, y, c);
@@ -553,6 +546,11 @@ void RasterizeTriangleLightmapped(ScanlineBuffer* scanlines, Point2D* vertices, 
             uint16_t g = (((int32_t)texture->pixels[tex_offset + 1] * (int32_t)lightmap->pixels[lit_offset + 1]) & 0xFFFF) >> (16 - 6);
             uint16_t b = (((int32_t)texture->pixels[tex_offset + 2] * (int32_t)lightmap->pixels[lit_offset + 2]) & 0xFFFF) >> (16 - 5);
             
+            // overwrite with depth
+            //r = depth_mix  >> (16 - 5);
+            //g = depth_mix  >> (16 - 6);
+            //b = depth_mix  >> (16 - 5);
+            
             uint16_t c = (r << (5 + 6)) | (g << (5)) | b;
             
             depth_buffer[y * screen_width + x] = depth_mix;
@@ -588,9 +586,6 @@ void RasterizeTriangleShadedTextured(ScanlineBuffer* scanlines, Point2D* vertice
     int32_t p2_spc_r = fabsf(speculars[2].r) * (float)(0xFFFF + 1);
     int32_t p2_spc_g = fabsf(speculars[2].g) * (float)(0xFFFF + 1);
     int32_t p2_spc_b = fabsf(speculars[2].b) * (float)(0xFFFF + 1);
-    
-    //std::cout << colors[0].r << " " << colors[1].r << " " << 
-    
     
     Scanline* span_ptr = scanlines->scanlines;
     for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
@@ -684,10 +679,6 @@ void RasterizeTriangleShadedTextured(ScanlineBuffer* scanlines, Point2D* vertice
             if (r & ~0x1F) r = 0x1F;
             if (g & ~0x3F) g = 0x3F;
             if (b & ~0x1F) b = 0x1F;
-            
-            //uint16_t r = ((col_r_mix) & 0xFFFF) >> (16 - 5);
-            //uint16_t g = ((col_g_mix) & 0xFFFF) >> (16 - 6);
-            //uint16_t b = ((col_b_mix) & 0xFFFF) >> (16 - 5);
             
             uint16_t c = (r << (5 + 6)) | (g << (5)) | b;
             
@@ -1142,56 +1133,6 @@ void RenderFrame() {
         }
     }
     
-    /*for (int i = 0; i < 500; i++) {
-        uint16_t color = IntColor(COLOR_PINK);
-        uint16_t x = sinf(i + GetTickTime()) * 100.0f + 200.0f;
-        uint16_t y = cosf(i + GetTickTime()) * 100.0f + 200.0f;
-        BlitDot(x, y, color);
-    }
-    
-    float turn = 3.14f / 2.5f;
-    for (float r = 0.0f; r < 3.14f * 2.0f; r += turn) {
-        uint16_t x0 = sinf(r + GetTickTime()) * 50.0f + 420.0f;
-        uint16_t y0 = cosf(r + GetTickTime()) * 50.0f + 200.0f;
-        uint16_t x1 = sinf(r + turn + GetTickTime()) * 50.0f + 420.0f;
-        uint16_t y1 = cosf(r + turn + GetTickTime()) * 50.0f + 200.0f;
-        BlitLine(x0, y0, x1, y1, IntColor(COLOR_YELLOW));
-    }
-    
-    float spin = GetTickTime() * 2.0f;
-    
-    BlitLine(420, 420, sinf(spin) * 100 + 420, cosf(spin) * 100 + 420, IntColor(COLOR_CYAN));
-    
-    float spin1 = GetTickTime() * 2.0f + 0.0f;
-    float spin2 = GetTickTime() * 2.0f + 2.1f;
-    float spin3 = GetTickTime() * 2.0f + 2.1f + 2.1f;
-    int x0 = 200 * sinf(spin1) + 300;
-    int y0 = 200 * cosf(spin1) + 300;
-    int x1 = 200 * sinf(spin2) + 300;
-    int y1 = 200 * cosf(spin2) + 300;
-    int x2 = fabsf(sinf(GetTickTime() * 1.76f)) * 200 * sinf(spin3) + 300;
-    int y2 = fabsf(sinf(GetTickTime() * 1.76f)) * 200 * cosf(spin3) + 300;
-    int x3 = 200 * sinf(spin3 + 0.4f) + 300;
-    int y3 = 200 * cosf(spin3+ 0.4f) + 300;
-    
-    //BlitLine(x0, y0, x1, y1, IntColor(COLOR_CYAN));
-    //BlitLine(x1, y1, x2, y2, IntColor(COLOR_CYAN));
-    //BlitLine(x2, y2, x0, y0, IntColor(COLOR_CYAN));
-    
-    Point2D plist[4] = {{x0, y0}, {x1, y1}, {x2, y2}, {x3, y3}};
-    
-    //BlitLine(0, 0, x0, y0, IntColor(COLOR_RED));
-    //BlitLine(0, 0, x1, y1, IntColor(COLOR_GREEN));
-    //BlitLine(0, 0, x2, y2, IntColor(COLOR_BLUE));
-    
-    RasterizeTriangle(plist, IntColor(COLOR_GREEN));
-    
-    
-    Point2D plist2[3] = {{0, 0}, {0, 100}, {100, 0}};
-    
-    RasterizeTriangle(plist2, IntColor(COLOR_BLUE));*/
-    
-    
     std::vector<std::pair<uint32_t, SWDrawListEntry*>> draw_list_sorted;
     for (auto& entry : draw_list) {
         uint32_t sort_key = entry.layer;
@@ -1208,9 +1149,6 @@ void RenderFrame() {
             // TODO: zero out zbuffer?
         }
         current_layer = entry->layer;
-        
-        // ...
-        
         
         switch (entry->vertex_array->type) {
             case SW_STATIC_LIGHTMAPPED:
@@ -1236,22 +1174,36 @@ void RenderFrame() {
                     //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
                     
                     if (PointVisible(pr0) && PointVisible(pr1) && PointVisible(pr2)) {
-                        
                         PerspectiveDivision(pr0);
                         PerspectiveDivision(pr1);
                         PerspectiveDivision(pr2);
+        
+                        // backface culling
+                        vec2 ab = {pr1.x - pr0.x, pr1.y - pr0.y};
+                        vec2 ac = {pr2.x - pr0.x, pr2.y - pr0.y};
+                        if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
     
                         auto [px0, py0] = ClipSpaceToScreenSpace(pr0);
                         auto [px1, py1] = ClipSpaceToScreenSpace(pr1);
                         auto [px2, py2] = ClipSpaceToScreenSpace(pr2);
                         
-                        uint32_t pz0 = (float)0xFFFF * (pr0.z/pr0.w);
-                        uint32_t pz1 = (float)0xFFFF * (pr1.z/pr1.w);
-                        uint32_t pz2 = (float)0xFFFF * (pr2.z/pr2.w);
+                        float depth0 = (pr0.z/pr0.w);
+                        float depth1 = (pr1.z/pr1.w);
+                        float depth2 = (pr2.z/pr2.w);
+                        
+                        if (depth0 < 0.0f) depth0 = 0.0f;
+                        if (depth1 < 0.0f) depth1 = 0.0f;
+                        if (depth2 < 0.0f) depth2 = 0.0f;
+                        
+                        if (depth0 > 1.0f) depth0 = 1.0f;
+                        if (depth1 > 1.0f) depth1 = 1.0f;
+                        if (depth2 > 1.0f) depth2 = 1.0f;
+                        
+                        uint32_t pz0 = (float)0xFFFF * depth0;
+                        uint32_t pz1 = (float)0xFFFF * depth1;
+                        uint32_t pz2 = (float)0xFFFF * depth2;
                         
                         Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                        
-                        //std::cout << 0xFFFF << " " << pz2 << std::endl; 
                         
                         vec2 texture_uvs[3] = {p0.tex, p1.tex, p2.tex};
                         vec2 lightmap_uvs[3] = {p0.lit, p1.lit, p2.lit};
@@ -1267,18 +1219,33 @@ void RenderFrame() {
                             PerspectiveDivision(clipped[i].points[1].coordinate);
                             PerspectiveDivision(clipped[i].points[2].coordinate);
         
-                            //std::cout << clipped[i].points[0].barycentric.x << " ";
-                            //std::cout << clipped[i].points[0].barycentric.y << " ";
-                            //std::cout << clipped[i].points[0].barycentric.z << " ";
-                            //std::cout << clipped[i].points[0].barycentric.x + clipped[i].points[0].barycentric.y + clipped[i].points[0].barycentric.z << std::endl;
+                            // backface culling doesn't work, since the triangle
+                            // triangle windigs get messed up? or something like
+                            // that.
+                            // TODO: fix
+                            //vec2 ab = {clipped[i].points[1].coordinate.x - clipped[i].points[0].coordinate.x, clipped[i].points[1].coordinate.y - clipped[i].points[0].coordinate.y};
+                            //vec2 ac = {clipped[i].points[2].coordinate.x - clipped[i].points[0].coordinate.x, clipped[i].points[2].coordinate.y - clipped[i].points[0].coordinate.y};
+                            //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
         
                             auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0].coordinate);
                             auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1].coordinate);
                             auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2].coordinate);
                             
-                            uint32_t pz0 = (float)0xFFFF * (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
-                            uint32_t pz1 = (float)0xFFFF * (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
-                            uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
+                            float depth0 = (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
+                            float depth1 = (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
+                            float depth2 = (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
+                            
+                            if (depth0 < 0.0f) depth0 = 0.0f;
+                            if (depth1 < 0.0f) depth1 = 0.0f;
+                            if (depth2 < 0.0f) depth2 = 0.0f;
+                            
+                            if (depth0 > 1.0f) depth0 = 1.0f;
+                            if (depth1 > 1.0f) depth1 = 1.0f;
+                            if (depth2 > 1.0f) depth2 = 1.0f;
+                            
+                            uint32_t pz0 = (float)0xFFFF * depth0;
+                            uint32_t pz1 = (float)0xFFFF * depth1;
+                            uint32_t pz2 = (float)0xFFFF * depth2;
    
                             const float bary00 = clipped[i].points[0].barycentric.x;
                             const float bary01 = clipped[i].points[0].barycentric.y;
@@ -1299,13 +1266,8 @@ void RenderFrame() {
                             
                             Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
                             ScanlineConvertTriangle(scanlines, ps);
-                            //RasterizeTriangle(scanlines, ps/*, IntColor(COLOR_WHITE)*/);
                             RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->texture, entry->lightmap);
                         }
-                        
-                        //ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
-                        //ClipRenderLine(pr1, pr2, IntColor(COLOR_WHITE));
-                        //ClipRenderLine(pr2, pr0, IntColor(COLOR_WHITE));
                     }
                     
                     
@@ -1411,7 +1373,10 @@ void RenderFrame() {
                     vec3 spec_color2 = {0.0f, 0.0f, 0.0f};
                     
                     for (size_t i = 0; i < 4; i++) {
-                        SWLight* light = &light_list[entry->lights[i]];
+                        SWLight* light = entry->lights[i];
+
+                        if (!light) continue;
+                        
                         vec3 light_vec0 = light->location - vec3(world_pos0);
                         vec3 light_vec1 = light->location - vec3(world_pos1);
                         vec3 light_vec2 = light->location - vec3(world_pos2);
@@ -1507,10 +1472,6 @@ void RenderFrame() {
                             ScanlineConvertTriangle(scanlines, ps);
                             RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->texture);
                         }
-                        
-                        //ClipRenderLine(pr0, pr1, IntColor(COLOR_WHITE));
-                        //ClipRenderLine(pr1, pr2, IntColor(COLOR_WHITE));
-                        //ClipRenderLine(pr2, pr0, IntColor(COLOR_WHITE));
                     }
                     
                     
@@ -1578,18 +1539,14 @@ void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weight
     entry.sw->specular_transparency = *transparency;
 }
 
-void SetLights(drawlistentry_t entry, uint32_t* lights) {
+void SetLights(drawlistentry_t entry, light_t* lights) {
     for (size_t i = 0; i < 4; i++) {
-        entry.sw->lights[i] = lights[i];
+        entry.sw->lights[i] = lights[i].sw;
     }
 }
 
 void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
-    vec4 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    
     entry.sw->matrix = matrix;
-    
-    light_tree.FindNearest(entry.sw->lights, origin.x, origin.y, origin.z);
 }
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
@@ -1610,43 +1567,25 @@ void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, mate
 }
 
 void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* texture) {
-    std::cout << "drawlist TEXRTUREs: " << texture_count << std::endl;
     entry.sw->texture = texture->sw_texture;
 }
 
 light_t MakeLight() {
-    SWLight* light = light_list.AddNew();
-    uint32_t light_id = light - light_list.GetFirst();
-    uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
-    
-    light_tree_ids [light_id] = leaf_id;
-        
-    return light_t { .sw = light };
+    return light_t {.sw = light_list.AddNew()};
 }
 
 void DeleteLight(light_t light) {
-    SWLight* light_ptr = light.sw;
-    uint32_t light_id = light_ptr - light_list.GetFirst();
-    uint32_t leaf_id = light_tree_ids [light_id];
-
-    light_list.Remove(light_ptr);
-    light_tree.RemoveLeaf(leaf_id);
+    light_list.Remove(light.sw);
 }
 
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
     SWLight* light_ptr = light.sw;
-    uint32_t light_id = light_ptr - light_list.GetFirst();
-    uint32_t leaf_id = light_tree_ids [light_id];
     
     light_ptr->location = location;
     light_ptr->color = color;
     light_ptr->distance = distance;
     light_ptr->direction = direction;
     light_ptr->exponent = exponent;
-    
-    light_tree.RemoveLeaf(leaf_id);
-    leaf_id = light_tree.AddLeaf(light_id, light_ptr->location.x, light_ptr->location.y, light_ptr->location.z);
-    light_tree_ids [light_id] = leaf_id;
 }
 
 
@@ -1807,63 +1746,11 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
     index_array.sw_index_array->indices = (uint32_t*)malloc(index_size);
     index_array.sw_index_array->index_count = index_size / sizeof(uint32_t);
     memcpy(index_array.sw_index_array->indices, index_data, index_size);
-    /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
-
-    glGenBuffers(1, &index_array.gl_index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, index_data, GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
-
-    glBindVertexArray(vertex_array.gl_vertex_array);
-
-    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
-        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
-        
-        if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        } else {
-            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        }
-        
-        glEnableVertexAttribArray(i);
-    }
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
     vertex_array.sw_vertex_array = vertex_arrays.AddNew();
     ParseFormat(vertex_array, vertex_format);
-    
-    /*glGenBuffers(1, &vertex_array.gl_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
-
-    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
-
-    glBindVertexArray(vertex_array.gl_vertex_array);
-
-    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
-        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
-        
-        if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        } else {
-            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        }
-        
-        glEnableVertexAttribArray(i);
-    }
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 }
 
 void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data) {
@@ -1873,9 +1760,6 @@ void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data
     }
     
     PackVertices(vertex_array, data, data_size / vertex_array.sw_vertex_array->format.attributes[0].stride);
-    //glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    //glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
@@ -1888,23 +1772,17 @@ void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
 }
 
 void GetScreen(char* buffer, int w, int h) {
-    //glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+    // TODO: implement
 }
 
 void Init() {
-    
     depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
-    
     
     // initialize the default pose
     BLANK_POSE = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         BLANK_POSE->pose[i] = mat4(1.0f);
     }
-    
-    // initialize the default light
-    //new (light_list.begin().ptr) LightListEntry;
-    light_list.AddNew();
 }
 
 ContextType GetContext() {

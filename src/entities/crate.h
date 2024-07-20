@@ -17,7 +17,7 @@ class Crate : public Entity {
 public:
     Crate(const SharedEntityData&, const ValueArray&);
 
-    Crate(const char* nname, const char* modelname, const char* collisionmodelname, glm::vec3 pos, glm::vec3 rot);
+    Crate(const char* nname, const char* modelname, const char* collisionmodelname, vec3 pos, vec3 rot);
     void UpdateParameters();
     void SetParameters();
     void Load();

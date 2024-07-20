@@ -374,7 +374,7 @@ void AnimationComponent::Refresh() {
                 
                 // mix together will all other animations
                 anim_mixed[k].location += glm::mix(keyframes[second_keyframe].location, keyframes[first_keyframe].location, mix_w) * total_mix_weight;
-                anim_mixed[k].rotation *= glm::mix(glm::quat(glm::vec3(0.0f)), glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w), total_mix_weight);
+                anim_mixed[k].rotation *= glm::mix(quat(vec3(0.0f)), glm::mix(keyframes[second_keyframe].rotation, keyframes[first_keyframe].rotation, mix_w), total_mix_weight);
                 anim_mixed[k].scale = glm::mix(anim_mixed[k].scale, anim_mixed[k].scale * glm::mix(keyframes[second_keyframe].scale, keyframes[first_keyframe].scale, mix_w), total_mix_weight); // * total_mix_weight;                    
             }
         }
@@ -385,28 +385,28 @@ void AnimationComponent::Refresh() {
     // convert mixed keyframes to pose matrices
     for(uint64_t i = 0; i < armature_bone_count; i++){
 
-        pose->pose[i] = glm::mat4(1.0f);
+        pose->pose[i] = mat4(1.0f);
 
-        glm::mat4 modelToBone = glm::translate(glm::mat4(1.0f), -armature_bones[i].head);
+        mat4 modelToBone = glm::translate(mat4(1.0f), -armature_bones[i].head);
         
         auto& head = armature_bones[i].head;
         auto& tail = armature_bones[i].tail;
         auto& roll = armature_bones[i].roll;
         
-        glm::vec3 tail_dir = glm::normalize(tail - head);
+        vec3 tail_dir = glm::normalize(tail - head);
         
-        auto rot = glm::rotation(tail_dir, glm::vec3(0.0f, 0.0f, -1.0f));
+        auto rot = glm::rotation(tail_dir, vec3(0.0f, 0.0f, -1.0f));
         modelToBone = glm::toMat4(rot) * modelToBone;
-        auto rolltransf = glm::rotate(glm::mat4(1.0f), -roll, glm::vec3(0.0f, 0.0f, -1.0f));
+        auto rolltransf = glm::rotate(mat4(1.0f), -roll, vec3(0.0f, 0.0f, -1.0f));
         modelToBone = rolltransf * modelToBone;
 
 
-        glm::mat4 boneAnim = glm::mat4(1.0f);
+        mat4 boneAnim = mat4(1.0f);
         boneAnim = glm::toMat4(anim_mixed[i].rotation) * boneAnim;
-        boneAnim = glm::translate(glm::mat4(1.0f), anim_mixed[i].location) * boneAnim;
-        boneAnim = glm::scale(glm::mat4(1.0f), anim_mixed[i].scale) * boneAnim;
+        boneAnim = glm::translate(mat4(1.0f), anim_mixed[i].location) * boneAnim;
+        boneAnim = glm::scale(mat4(1.0f), anim_mixed[i].scale) * boneAnim;
 
-        glm::mat4 boneToModel = glm::inverse(modelToBone);
+        mat4 boneToModel = glm::inverse(modelToBone);
 
         if(armature_bone_parents[i] == (uint32_t)-1){
             pose->pose[i] = boneToModel * boneAnim * modelToBone;
@@ -415,14 +415,14 @@ void AnimationComponent::Refresh() {
         }
         
         /* idk i don't remember what this debugging code is for, but might be useful
-        glm::vec3 o(0.0f);
-        glm::vec3 x(1.0f, 0.0f, 0.0f);
-        glm::vec3 y(0.0f, 0.0f, -1.0f);
-        glm::vec3 z(0.0f, 1.0f, 0.0f);
-        o = poz * glm::vec4(o, 1.0f);
-        Render::AddLine(o, poz * glm::vec4(x, 1.0f), Render::COLOR_RED);
-        Render::AddLine(o, poz * glm::vec4(y, 1.0f), Render::COLOR_GREEN);
-        Render::AddLine(o, poz * glm::vec4(z, 1.0f), Render::COLOR_BLUE);
+        vec3 o(0.0f);
+        vec3 x(1.0f, 0.0f, 0.0f);
+        vec3 y(0.0f, 0.0f, -1.0f);
+        vec3 z(0.0f, 1.0f, 0.0f);
+        o = poz * vec4(o, 1.0f);
+        Render::AddLine(o, poz * vec4(x, 1.0f), Render::COLOR_RED);
+        Render::AddLine(o, poz * vec4(y, 1.0f), Render::COLOR_GREEN);
+        Render::AddLine(o, poz * vec4(z, 1.0f), Render::COLOR_BLUE);
         */
     }
 }

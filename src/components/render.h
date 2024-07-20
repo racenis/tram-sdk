@@ -27,8 +27,8 @@ public:
     vec3 GetLocation() const { return location; }
     quat GetRotation() const { return rotation; }
 
-    void SetLocation(glm::vec3 nlocation);
-    void SetRotation(glm::quat nrotation);
+    void SetLocation(vec3 nlocation);
+    void SetRotation(quat nrotation);
     void SetScale(vec3 scale);
     void SetColor(vec3 color);
     

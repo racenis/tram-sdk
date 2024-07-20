@@ -23,23 +23,23 @@ Octree<uint32_t> light_tree;
 std::vector<uint32_t> light_tree_ids (200);
 
 struct ShaderUniformMatrices {
-    glm::mat4 projection;       /// Projection matrix.
-    glm::mat4 view;             /// View matrix.
-    glm::vec3 view_pos;
+    mat4 projection;       /// Projection matrix.
+    mat4 view;             /// View matrix.
+    vec3 view_pos;
 };
 
 struct ShaderUniformModelMatrices {
-    glm::mat4 model;        /// Model -> world space matrix. Rotates and translates vertices from how they are defined in the model to where they will appear in the world.
-    glm::uvec4 modelLights; /// Indices for lights in the light list. The shader will use these 4 indices to determine with which lights the model should be lit up.
-    glm::vec4 sunDirection; /// Normalized vector. Sunlight direction.
-    glm::vec4 sunColor;     /// Sunlight color.
-    glm::vec4 ambientColor; /// Shadow color.
+    mat4 model;        /// Model -> world space matrix. Rotates and translates vertices from how they are defined in the model to where they will appear in the world.
+    uvec4 modelLights; /// Indices for lights in the light list. The shader will use these 4 indices to determine with which lights the model should be lit up.
+    vec4 sunDirection; /// Normalized vector. Sunlight direction.
+    vec4 sunColor;     /// Sunlight color.
+    vec4 ambientColor; /// Shadow color.
     float time;
     float sunWeight;
     float screenWidth;
     float screenHeight;
-    glm::vec4 colors[15];
-    glm::vec4 specular[15];
+    vec4 colors[15];
+    vec4 specular[15];
     float padding[30];
 };
 
@@ -135,19 +135,19 @@ void RenderFrame() {
     }
     
     modelMatrices.time = GetTickTime();
-    modelMatrices.sunDirection =    glm::vec4(LAYER[0].sun_direction, 1.0f);
-    modelMatrices.sunColor =        glm::vec4(LAYER[0].sun_color, 1.0f);
-    modelMatrices.ambientColor =    glm::vec4(LAYER[0].ambient_color, 1.0f);
+    modelMatrices.sunDirection =    vec4(LAYER[0].sun_direction, 1.0f);
+    modelMatrices.sunColor =        vec4(LAYER[0].sun_color, 1.0f);
+    modelMatrices.ambientColor =    vec4(LAYER[0].ambient_color, 1.0f);
     modelMatrices.screenWidth =     SCREEN_WIDTH;
     modelMatrices.screenHeight =    SCREEN_HEIGHT;
 
     matrices.projection = LAYER[0].projection_matrix;
     matrices.view = LAYER[0].view_matrix;
     matrices.view_pos = LAYER[0].view_position;
-    //matrices.view = glm::inverse(glm::translate(glm::mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
+    //matrices.view = glm::inverse(glm::translate(mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
     //matrices.view_pos = LAYER[0].camera_position;
 
-    //if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * glm::vec3(0.0f, 0.0f, -5.0f));
+    //if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * vec3(0.0f, 0.0f, -5.0f));
 
     UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
     UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight)*50, light_list.begin().ptr);
@@ -176,8 +176,8 @@ void RenderFrame() {
     for (std::pair<uint64_t, GLDrawListEntry*>& pp : rvec){
         GLDrawListEntry* robj = pp.second;
 
-        /*glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(robj->location[0], robj->location[1], robj->location[2]));
+        /*mat4 model = mat4(1.0f);
+        model = glm::translate(model, vec3(robj->location[0], robj->location[1], robj->location[2]));
         model *= glm::toMat4(robj->rotation);*/
 
         glUseProgram(robj->shader);

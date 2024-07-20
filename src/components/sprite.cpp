@@ -65,33 +65,33 @@ void SpriteComponent::UpdateRenderListObject() {
     float half_height = tex_height * sprite->GetFrames()[anim_frame].scale / 2.0f;
 
     Render::SpriteVertex top_left {
-        .co = glm::vec3(0.0f, 0.0f, 0.0f),
-        .voffset = glm::vec2 (-half_width, half_height),
-        .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_h_off),
+        .co = vec3(0.0f, 0.0f, 0.0f),
+        .voffset = vec2(-half_width, half_height),
+        .texco = vec2(0.0f + tex_w_off, 1.0f - tex_h_off),
         .verticality = 1.0f,
         .texture = 0
     };
     
     Render::SpriteVertex top_right {
-        .co = glm::vec3(0.0f, 0.0f, 0.0f),
-        .voffset = glm::vec2 (half_width, half_height),
-        .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_h_off),
+        .co = vec3(0.0f, 0.0f, 0.0f),
+        .voffset = vec2(half_width, half_height),
+        .texco = vec2(tex_width + tex_w_off, 1.0f - tex_h_off),
         .verticality = 1.0f,
         .texture = 0
     };
     
     Render::SpriteVertex bottom_left {
-        .co = glm::vec3(0.0f, 0.0f, 0.0f),
-        .voffset = glm::vec2 (-half_width, -half_height),
-        .texco = glm::vec2 (0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
+        .co = vec3(0.0f, 0.0f, 0.0f),
+        .voffset = vec2(-half_width, -half_height),
+        .texco = vec2(0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
         .verticality = 1.0f,
         .texture = 0
     };
     
     Render::SpriteVertex bottom_right {
-        .co = glm::vec3(0.0f, 0.0f, 0.0f),
-        .voffset = glm::vec2 (half_width, -half_height),
-        .texco = glm::vec2 (tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
+        .co = vec3(0.0f, 0.0f, 0.0f),
+        .voffset = vec2(half_width, -half_height),
+        .texco = vec2(tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
         .verticality = 1.0f,
         .texture = 0
     };

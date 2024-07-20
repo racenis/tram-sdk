@@ -12,7 +12,7 @@ void SetFlags(drawlistentry_t entry, uint32_t flags);
 void SetLayer(drawlistentry_t entry, layer_t layer);
 void SetPose(drawlistentry_t entry, Pose* pose);
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap);
-void SetLights(drawlistentry_t entry, uint32_t* lights);
+void SetLights(drawlistentry_t entry, light_t* lights);
 void SetMatrix(drawlistentry_t entry, const mat4& matrix);
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle);
 void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle);

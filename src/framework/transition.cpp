@@ -57,7 +57,7 @@ void Transition::AddPoint (vec3 point) {
 
 bool Transition::IsInside (vec3 point) {
     for(size_t i = 0; i < planes.size(); i++)
-        if(glm::dot(planes[i], glm::vec4(point, 1.0f)) < 0.0f) return false;    
+        if(glm::dot(planes[i], vec4(point, 1.0f)) < 0.0f) return false;    
     return true;
 }
 
@@ -77,11 +77,11 @@ void Transition::GeneratePlanes (bool disp) {
                 auto cross = glm::cross(AB, AC);
                 auto d = -(cross.x*A.x + cross.y*A.y + cross.z*A.z);
                 
-                glm::vec4 plane = glm::vec4(cross, d);
+                vec4 plane = vec4(cross, d);
                 
                 for (size_t it = 0; it < points.size(); it++) {
                     if(i == it || j == it || k == it) continue;
-                    if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
+                    if(glm::dot(plane, vec4(points[it], 1.0f)) < 0.0f) {
                         plane *= -1.0f;
                         goto tryagain;
                     }
@@ -94,9 +94,9 @@ void Transition::GeneratePlanes (bool disp) {
                     Render::AddLine(A, C, Render::COLOR_WHITE);
                     Render::AddLine(B, C, Render::COLOR_WHITE);
                     
-                    Render::AddLine(A, A+(glm::normalize(cross)*0.5f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    Render::AddLine(B, B+(glm::normalize(cross)*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
-                    Render::AddLine(C, C+(glm::normalize(cross)*0.1f)+glm::vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(A, A+(glm::normalize(cross)*0.5f)+vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(B, B+(glm::normalize(cross)*0.1f)+vec3(0.002f), Render::COLOR_CYAN);
+                    Render::AddLine(C, C+(glm::normalize(cross)*0.1f)+vec3(0.002f), Render::COLOR_CYAN);
                 }
                 
                 planes.push_back(plane);
@@ -108,7 +108,7 @@ void Transition::GeneratePlanes (bool disp) {
                 
                 for (size_t it = 0; it < points.size(); it++) {
                     if(i == it || j == it || k == it) continue;
-                    if(glm::dot(plane, glm::vec4(points[it], 1.0f)) < 0.0f) {
+                    if(glm::dot(plane, vec4(points[it], 1.0f)) < 0.0f) {
                         goto yeet;
                     }
                 }
@@ -118,7 +118,7 @@ void Transition::GeneratePlanes (bool disp) {
         }
     }
     
-    std::sort(planes.begin(), planes.end(), [](const glm::vec4& a, const glm::vec4& b){ 
+    std::sort(planes.begin(), planes.end(), [](const vec4& a, const vec4& b){ 
         if (a.x != b.x) return a.x < b.x;
         if (a.y != b.y) return a.y < b.y;
         if (a.z != b.z) return a.z < b.z;
