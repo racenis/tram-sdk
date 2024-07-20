@@ -35,7 +35,7 @@ protected:
     name_t model;
     name_t animation;
     
-    uint32_t flags;
+    uint32_t decoration_flags;
 };
 
 }

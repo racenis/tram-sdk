@@ -41,9 +41,9 @@ public:
     void SetLocation(vec3 location);
     void SetRotation(quat rotation);
     
-    std::vector<Physics::Collision> GetStoredCollisions() { return stored_collisions; }
+    const std::vector<Physics::Collision>& GetStoredCollisions() { return stored_collisions; }
     
-    void Collision (const Physics::Collision& collision);
+    void Collision(const Physics::Collision& collision);
     void ResetCollisions();
     
     std::vector<Physics::Collision> Poll ();

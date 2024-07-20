@@ -17,11 +17,11 @@ public:
         uint32_t age;
     };
     
-    ParticleComponent() : sprite(this){}
+    ParticleComponent() : sprite(this) {}
     ~ParticleComponent();
-    inline name_t GetSprite(){return sprite->GetName();}
+    inline name_t GetSprite() { return sprite->GetName(); }
 
-    void SetSprite(Render::Sprite* sprite){
+    void SetSprite(Render::Sprite* sprite) {
         this->sprite = sprite;
     }
 
@@ -50,11 +50,10 @@ protected:
     std::vector<Particle> particles;
     ResourceProxy<Render::Sprite> sprite;
 
-    Render::drawlistentry_t draw_list_entry;
-    
     vec3 location;
-    
-    Render::vertexarray_t vertex_array;
+
+    Render::drawlistentry_t draw_list_entry = {.generic = nullptr};
+    Render::vertexarray_t vertex_array = {.generic = nullptr};
 };
 
 }

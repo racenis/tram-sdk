@@ -40,6 +40,7 @@ void UpdateHierarchy(id_t parent_id) {
 /*                                                                            */
 /******************************************************************************/
 
+// this macro could be converted into a method
 #define PlaySound(TYPE) if (sound) SoundTable::Find(sound)->PlaySound(TYPE, origin, 1.0f);
 
 enum {

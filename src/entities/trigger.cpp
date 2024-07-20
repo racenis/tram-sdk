@@ -43,7 +43,7 @@ void Trigger::Register() {
 
 Trigger::Trigger(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     model = field_array[FIELD_MODEL];
-    flags = field_array[FIELD_FLAGS];
+    trigger_flags = field_array[FIELD_FLAGS];
     collision_mask = field_array[FIELD_COLLISION_MASK];
 }
 
@@ -98,7 +98,7 @@ void Trigger::Serialize() {
 }
 
 void Trigger::Activate() {
-    if (!(flags & TRIGGER_DISABLED)) {
+    if (!(trigger_flags & TRIGGER_DISABLED)) {
         std::cout << "firing trigger " << name << std::endl;
         FireSignal(Signal::ACTIVATE);
     } else {
@@ -109,10 +109,10 @@ void Trigger::Activate() {
 void Trigger::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::LOCK:
-            flags |= TRIGGER_DISABLED;
+            trigger_flags |= TRIGGER_DISABLED;
             break;
         case Message::UNLOCK:
-            flags &= ~TRIGGER_DISABLED;
+            trigger_flags &= ~TRIGGER_DISABLED;
             break;
         default:
             std::cout << "Trigger " << name << " does not understand message " << Message::GetName(msg.type) << std::endl;  

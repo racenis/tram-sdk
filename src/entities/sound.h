@@ -32,7 +32,7 @@ protected:
     
     name_t sound;
     float volume;
-    int flags;
+    int sound_flags;
 };
 
 }

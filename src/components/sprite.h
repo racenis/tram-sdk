@@ -41,8 +41,6 @@ public:
 protected:
     ResourceProxy<Render::Sprite> sprite;
 
-    Render::drawlistentry_t draw_list_entry;
-    
     vec3 location;
     
     size_t anim_frame = 0;
@@ -50,7 +48,8 @@ protected:
     size_t anim_bframe = 0;
     bool anim_isplaying = false;
     
-    Render::vertexarray_t vertex_array;
+    Render::drawlistentry_t draw_list_entry = {.generic = nullptr};
+    Render::vertexarray_t vertex_array = {.generic = nullptr};
 };
 
 }

@@ -321,8 +321,6 @@ public:
         vec3 max;
     };
     
-    size_t validnum;
-    
     Node* root = new Node {nullptr, nullptr, nullptr, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}};
 };
 

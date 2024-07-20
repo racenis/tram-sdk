@@ -232,6 +232,8 @@ static bool GenerateEvent() {
         case STATE_FLYING:
         case STATE_MENU_OPEN:
             return false;  
+        default:
+            return false;
     }
 }
 

@@ -40,7 +40,7 @@ void Sound::Register() {
 Sound::Sound(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     sound = field_array[FIELD_SOUND];
     volume = field_array[FIELD_VOLUME];
-    flags = field_array[FIELD_FLAGS];
+    sound_flags = field_array[FIELD_FLAGS];
 }
 
 /// PLays a sound, then removes itself.
@@ -49,7 +49,7 @@ Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
     
     this->sound = sound;
     this->volume = volume;
-    this->flags = SOUND_START_ON_LOAD;
+    this->sound_flags = SOUND_START_ON_LOAD;
     
     this->location = position;
     
@@ -78,12 +78,12 @@ void Sound::Load () {
     
     audio->SetParent(this);
     audio->SetSound(sound);
-    audio->SetRepeating(flags & SOUND_LOOPING);
+    audio->SetRepeating(sound_flags & SOUND_LOOPING);
     audio->SetLocation(location);
     
     audio->Init();
     
-    if (flags & SOUND_START_ON_LOAD) {
+    if (sound_flags & SOUND_START_ON_LOAD) {
         audio->Play();
     }
     

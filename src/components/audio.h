@@ -27,7 +27,7 @@ public:
     void EventHandler(Event &event){}
 protected:
     ResourceProxy<Audio::Sound> sound;
-    Audio::audiosource_t source;
+    Audio::audiosource_t source = {.generic = nullptr};
     vec3 location = {0.0f, 0.0f, 0.0f};
     bool repeat = false;
     bool play_on_start = false;

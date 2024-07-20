@@ -40,7 +40,7 @@ void Decoration::Register() {
 }
 
 Decoration::Decoration(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
-    flags = field_array[FIELD_FLAGS];
+    decoration_flags = field_array[FIELD_FLAGS];
     model = field_array[FIELD_MODEL];
     animation = field_array[FIELD_ANIMATION];
 }
@@ -108,7 +108,7 @@ void Decoration::Serialize() {
 void Decoration::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::SELECT:
-            if (flags & FLAG_LOCKED) return;
+            if (decoration_flags & FLAG_LOCKED) return;
             Event::Post({
                 .type = Event::SELECTED,
                 .poster_id = this->id
@@ -117,15 +117,15 @@ void Decoration::MessageHandler(Message& msg) {
         case Message::ACTIVATE:
             break;
         case Message::ACTIVATE_ONCE:
-            if (flags & FLAG_LOCKED) return;
+            if (decoration_flags & FLAG_LOCKED) return;
             FireSignal(Signal::ACTIVATE);
             FireSignal(Signal::USE);
             break;
         case Message::LOCK:
-            flags |= FLAG_LOCKED;
+            decoration_flags |= FLAG_LOCKED;
             break;
         case Message::UNLOCK:
-            flags &= ~FLAG_LOCKED;
+            decoration_flags &= ~FLAG_LOCKED;
             break;
         case Message::TOGGLE:
             if (animation) {

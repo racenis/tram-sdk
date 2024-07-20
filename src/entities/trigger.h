@@ -29,7 +29,7 @@ protected:
     Component<TriggerComponent> triggercomponent;
     
     name_t model;
-    uint32_t flags;
+    uint32_t trigger_flags;
     uint32_t collision_mask;
 };
 

@@ -100,7 +100,7 @@ void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float wei
     anim_info[slot].pause_on_last_frame = pause_on_last_frame;
     anim_info[slot].animation_header = nullptr;
     
-    for (size_t i; i < Render::BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
+    for (size_t i = 0; i < Render::BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
     
     anim_info[slot].animation_header = Render::Animation::Find(animation_name)->GetPointer();
 
@@ -337,23 +337,21 @@ void AnimationComponent::Refresh() {
     
     
     // mix together keyframes
-    for (size_t i = 0; i < ANIM_COUNT; i++){
-        if(anim_playing[i] == UID()) continue;
-        
-
-        
-        for (size_t k = 0; k < armature_bone_count; k++){
+    for (size_t i = 0; i < ANIM_COUNT; i++) {
+        if (!anim_playing[i]) continue;
+                
+        for (size_t k = 0; k < armature_bone_count; k++) {
             Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
             if (keyframe_header != nullptr) {
                 Render::Keyframe* keyframes = (Render::Keyframe*)(keyframe_header + 1);
                 size_t keyframe_count = keyframe_header->second;
-                auto& anim = anim_info[i];
+                const auto& anim = anim_info[i];
                 
                 // find the first keyframe that happens after the animation's current frame
                 size_t second_keyframe = -1llu;
-                for (size_t i = 0; i < keyframe_count; i++) {
-                    if (keyframes[i].frame > anim.frame) {
-                        second_keyframe = i;
+                for (size_t f = 0; f < keyframe_count; f++) {
+                    if (keyframes[f].frame > anim.frame) {
+                        second_keyframe = f;
                         break;
                     }
                 }
@@ -389,9 +387,9 @@ void AnimationComponent::Refresh() {
 
         mat4 modelToBone = glm::translate(mat4(1.0f), -armature_bones[i].head);
         
-        auto& head = armature_bones[i].head;
-        auto& tail = armature_bones[i].tail;
-        auto& roll = armature_bones[i].roll;
+        const auto& head = armature_bones[i].head;
+        const auto& tail = armature_bones[i].tail;
+        const auto& roll = armature_bones[i].roll;
         
         vec3 tail_dir = glm::normalize(tail - head);
         

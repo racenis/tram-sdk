@@ -33,3 +33,4 @@
 
 build
 #libraries/*
+tram-sdk-cppcheck-build-dir

@@ -10,12 +10,21 @@
 namespace tram::Audio {
 
 struct audiosource_t {
-    uint32_t al_source;
+    union {
+        uint32_t al_source;
+        void* generic;
+    };
 };
 
 struct audiobuffer_t {
-    uint32_t* al_buffers;
-    int32_t al_buffer_count;
+    union {
+        struct {
+            uint32_t* al_buffers;
+            int32_t al_buffer_count;
+        };
+        void* generic;
+    };
+    
 };
 
 class Sound;

@@ -221,8 +221,7 @@ void Material::LoadFromDisk() {
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
     char path[100] = "data/textures/";
-    int channels;
-    
+
     switch (type) {
         case MATERIAL_LIGHTMAP:
             //filter = FILTER_LINEAR;
@@ -248,6 +247,10 @@ void Material::LoadFromDisk() {
 
     stbi_set_flip_vertically_on_load(true);
     loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, channels);
+
+    if (loadchannels != channels) {
+        std::cout << "Texture " << path << " should have " << (int)channels << " channels, but it has " << (int)loadchannels << "!" << std::endl;
+    }
 
     if (loadtexture) {
         width = loadwidth;
@@ -281,6 +284,7 @@ void Material::LoadFromMemory(){
         return;
     }
 
+    // TODO: switch this out from checking 'type' and instead use 'channels'
     if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
         texture = API::CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     } else {

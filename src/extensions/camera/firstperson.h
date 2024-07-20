@@ -52,9 +52,6 @@ protected:
     float yaw = 0.0f;
     float pitch = 0.0f;
     
-    vec3 location = vec3 (0.0f, 0.0f, 0.0f);
-    quat rotation = quat (vec3 (0.0f, 0.0f, 0.0f));
-    
     vec3 following_offset = vec3 (0.0f, 0.0f, 0.0f);
     float following_interpolation = 1.0f;
     //Entity* following = nullptr;

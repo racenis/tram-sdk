@@ -26,7 +26,7 @@ struct Bone {
 };
 
 struct Keyframe {
-    float frame;
+    float frame = 0.0f;
     vec3 location = {0.0f, 0.0f, 0.0f};
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 scale = {1.0f, 1.0f, 1.0f};

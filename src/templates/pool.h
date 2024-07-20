@@ -98,16 +98,16 @@ public:
         poolSize--;
     };
     T& operator[](size_t index) { return *(first + index); } // note that there is no checking for whether the index is valid
-    T* GetFirst(){return first;};   // yeet?
-    T* GetLast(){return last;};     // also yeet?
-    iterator begin(){auto ptr = first; while (*((uint64_t*)ptr) == 0 && ptr < last) ptr++; return ptr;};
-    iterator end(){return last;};
-    size_t GetSize(){return poolSize;}; // yeet too?
-    size_t size(){return poolSize;};
-    size_t index(T* ptr){return ptr - first;};
+    T* GetFirst() {return first;};   // yeet?
+    T* GetLast() {return last;};     // also yeet?
+    iterator begin() {auto ptr = first; while (*((uint64_t*)ptr) == 0 && ptr < last) ptr++; return ptr;};
+    iterator end() {return last;};
+    size_t GetSize() const {return poolSize;}; // yeet too?
+    size_t size() const {return poolSize;};
+    size_t index(const T* ptr) const {return ptr - first;};
     
     /// Checks if an object can be accessed through iteration.
-    bool validate (T* ptr) {
+    bool validate (const T* ptr) const {
         return ptr >= first && ptr <= last && *((uint64_t*)ptr) != 0;
     }
 

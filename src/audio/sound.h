@@ -18,7 +18,6 @@ public:
     int32_t sound_length = 0;
     int16_t* sound_data = nullptr;
     
-    void Load() { LoadFromDisk(); }
     void LoadFromDisk();
     void LoadFromMemory(){}
     void Unload();

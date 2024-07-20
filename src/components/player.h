@@ -25,13 +25,10 @@ public:
     void Init();
     PlayerComponent();
     ~PlayerComponent();
-    void SetParent(Entity* ent) { parent = ent; }
-    void SetControllerComponent (ControllerComponent* comp) {controller = comp; }
+    void SetControllerComponent (ControllerComponent* comp) { controller = comp; }
     void Start() {}
     void MoveUpdate() { assert(cell_loader); cell_loader->UpdateLocation(parent->GetLocation()); }
 private:
-    Entity* parent = nullptr; // whatuses?
-    
     EventListener keydown;
     EventListener keypress;
     EventListener mouseposition;

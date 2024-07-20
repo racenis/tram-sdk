@@ -104,7 +104,7 @@ void FirstPersonCamera::Update () {
     // update position to entity that is being followed
     if (following) {
         //location = following->GetLocation();
-        location = Entity::Find(following)->GetLocation();
+        position = Entity::Find(following)->GetLocation();
         //rotation = following->Query(QUERY_LOOK_DIRECTION);
         //rotation = look_at_direction;
         rotation = this->following_lookat;
@@ -112,7 +112,7 @@ void FirstPersonCamera::Update () {
     }
     
     // putting everything together
-    vec3 term_loc = location;
+    vec3 term_loc = position;
     quat term_rot = rotation;
     
     term_rot *= quat(vec3(0.0f, 0.0f, tilt + (sinf(bob) * bobbing_tilt * bobbing_weight)));
