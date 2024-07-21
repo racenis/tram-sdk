@@ -120,6 +120,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - And also switch triangle intersection thingy
 - AddLine() drawlistentry is not being drawn on top
 - Add directional lights to lightmapper
+- Hashmap deletion does not get actually deleted?
+- Switch hashmap to uint32_t
  
 #### Should do later
 

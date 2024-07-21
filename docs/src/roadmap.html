@@ -1,0 +1,205 @@
+<!-- PAGE_TITLE: Roadmap | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Roadmap
+</h1>
+
+<table border="1">
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Audio</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add an option to attach audio effects to audio sources.
+		</td>
+		<td>
+			The OpenAL backend supports this. Other possible, future backends
+			might also support this.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add an option to automatically determine audio effects for audio sources.
+		</td>
+		<td>
+			This could be implemented as reverb zones, which are manually
+			placed in levels, or the parameters of the effects could be 
+			determined using raycasts, or with other means.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add an option to play back tracker files
+		</td>
+		<td>
+			There are libraries which should be able to play back tracker
+			files. One of them could be integrated into the audio system.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Animation</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add events to animations
+		</td>
+		<td>
+			It should be possible to add a callback for a specific bone, and when
+			a keyframe for that bone is reached, it would trigger the callback.
+			This would allow syncing up code to animations.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Language</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add UTF-16 strings
+		</td>
+		<td>
+			Currently it is possible to only use 256 different characters in
+			text. By switching strings from char to wchar, we could use all
+			of the characters. 
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Graph</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add Paths
+		</td>
+		<td>
+			It would be neat if you could have entities follow a path that is
+			laid down in the level editor.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add Navmeshes
+		</td>
+		<td>
+			Navmeshes would allow better navigation by NPCs.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Serialization</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add serialization
+		</td>
+		<td>
+			Serialization was yeeted out, but it should be very easy to put it
+			back in. This would allow saving the state of the application.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Files</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add virtual file system
+		</td>
+		<td>
+			This would allow files to be read not only from disk, but also
+			archives. Files could also be written to archives. Files could
+			also be read using HTTP GET and written as POST requests.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Rendering</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add sphere maps
+		</td>
+		<td>
+			This would allow reflective surfaces. Would also need to add some
+			way to automatically capture.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Light probes
+		</td>
+		<td>
+			Implemented using spherical harmonics or something similar.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			 Detail textures
+		</td>
+		<td>
+			would be neat
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Bump/normal mapping
+		</td>
+		<td>
+			Mor edetails good!
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Planar reflections
+		</td>
+		<td>
+			Using with stencils or something
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Transparency
+		</td>
+		<td>
+			There already is, but it is not !! is not good! --> not blendered
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Decals
+		</td>
+		<td>
+			Would allow projecting! images and that would be good.
+		</td>
+	</tr>
+
+</table>

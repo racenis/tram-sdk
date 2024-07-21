@@ -1,0 +1,328 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Roadmap | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+		</style>
+	</head>
+	<body background="images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="images/logo3.gif"/>
+					<img style="float:right;" src="images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="index.html">Home</a> | 
+							<a href="features.html">Features</a> | 
+							<a href="roadmap.html">Roadmap</a> | 
+							<a href="learn.html">Learn</a> | 
+							<a href="documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Roadmap | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Roadmap
+</h1>
+
+<table border="1">
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Audio</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add an option to attach audio effects to audio sources.
+		</td>
+		<td>
+			The OpenAL backend supports this. Other possible, future backends
+			might also support this.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add an option to automatically determine audio effects for audio sources.
+		</td>
+		<td>
+			This could be implemented as reverb zones, which are manually
+			placed in levels, or the parameters of the effects could be 
+			determined using raycasts, or with other means.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add an option to play back tracker files
+		</td>
+		<td>
+			There are libraries which should be able to play back tracker
+			files. One of them could be integrated into the audio system.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Animation</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add events to animations
+		</td>
+		<td>
+			It should be possible to add a callback for a specific bone, and when
+			a keyframe for that bone is reached, it would trigger the callback.
+			This would allow syncing up code to animations.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Language</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add UTF-16 strings
+		</td>
+		<td>
+			Currently it is possible to only use 256 different characters in
+			text. By switching strings from char to wchar, we could use all
+			of the characters. 
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Graph</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add Paths
+		</td>
+		<td>
+			It would be neat if you could have entities follow a path that is
+			laid down in the level editor.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add Navmeshes
+		</td>
+		<td>
+			Navmeshes would allow better navigation by NPCs.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Serialization</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add serialization
+		</td>
+		<td>
+			Serialization was yeeted out, but it should be very easy to put it
+			back in. This would allow saving the state of the application.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Files</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add virtual file system
+		</td>
+		<td>
+			This would allow files to be read not only from disk, but also
+			archives. Files could also be written to archives. Files could
+			also be read using HTTP GET and written as POST requests.
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<center>
+				<b>Rendering</b>
+			</center>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Add sphere maps
+		</td>
+		<td>
+			This would allow reflective surfaces. Would also need to add some
+			way to automatically capture.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Light probes
+		</td>
+		<td>
+			Implemented using spherical harmonics or something similar.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			 Detail textures
+		</td>
+		<td>
+			would be neat
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Bump/normal mapping
+		</td>
+		<td>
+			Mor edetails good!
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Planar reflections
+		</td>
+		<td>
+			Using with stencils or something
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Transparency
+		</td>
+		<td>
+			There already is, but it is not !! is not good! --> not blendered
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Decals
+		</td>
+		<td>
+			Would allow projecting! images and that would be good.
+		</td>
+	</tr>
+
+</table>
+
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="images/800x600.gif"/><br/>
+					<img src="images/firefoxnow.gif"/><br/>
+					<img src="images/hicolor.gif"/><br/>
+					
+					<img src="images/blender.gif"/><br/>
+					<img src="images/wxwidgets.gif"/><br/>
+					
+					<img src="images/winxp.gif"/><br/>
+					<img src="images/linux.gif"/><br/>
+					<img src="images/hatemac.jpg"/><br/>
+					
+					<img src="images/discord-no-way.gif"/><br/>
+					
+					<img src="images/winrar.gif"/><br/>
+					<img src="images/sdblast.gif"/><br/>
+					<img src="images/esheep.gif"/><br/>
+					
+					<img src="images/valid-bad.gif"/><br/>
+					<img src="images/notepadpp.gif"/><br/>
+					<img src="images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
