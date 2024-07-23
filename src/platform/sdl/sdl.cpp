@@ -7,7 +7,7 @@
 
 #include <sdl2/SDL.h>
 #include <sdl2/SDL_syswm.h>
-#include <glad.c>
+#include <glad/glad.c>
 
 #ifdef _WIN32
 #include <d3dx9.h>

@@ -7,8 +7,8 @@
     #include <AL/alc.h>
     #include <AL/al.h>
 #else
-    #include <alc.h>
-    #include <al.h>
+    #include <openal/alc.h>
+    #include <openal/al.h>
 #endif
 
 

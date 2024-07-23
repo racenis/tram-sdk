@@ -4,7 +4,7 @@
     #ifdef __EMSCRIPTEN__
         #include <GLFW/glfw3.h>
     #else
-        #include <glfw3.h>
+        #include <glfw/glfw3.h>
     #endif
 #endif
 

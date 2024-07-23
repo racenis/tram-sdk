@@ -7,8 +7,6 @@
 #include <physics/physics.h>
 #include <physics/collisionshape.h>
 
-#include <btBulletDynamicsCommon.h>
-
 namespace tram::Physics::Bullet {
         
 }

@@ -252,9 +252,6 @@
         <IncludePath Value="./src"/>
         <IncludePath Value="./libraries"/>
         <IncludePath Value="./libraries/bullet"/>
-        <IncludePath Value="./libraries/glad"/>
-        <IncludePath Value="./libraries/glfw3"/>
-        <IncludePath Value="./libraries/openal"/>
       </Compiler>
       <Linker Options="-ld3dx9;-ld3d9;-lSDL2.dll;-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
         <LibraryPath Value="libraries/binaries/win64"/>
