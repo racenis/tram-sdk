@@ -25,7 +25,7 @@ static uint32_t* frame_buffer = nullptr;
 
 static int screen_width = 800;
 static int screen_height = 600;
-static int screen_scale = 3;
+static int screen_scale = 1;
 static int relpos_x = screen_width/2;
 static int relpos_y = screen_height/2;
 static bool cursor_enabled = false;

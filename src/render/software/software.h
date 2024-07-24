@@ -58,6 +58,9 @@ struct SWVertexArray {
 struct SWIndexArray {
     size_t index_count = 0;
     uint32_t* indices = nullptr;
+#ifndef __x86_64__
+    void* padding;
+#endif
 };
 
 struct SWDrawListEntry {

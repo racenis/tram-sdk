@@ -276,10 +276,10 @@ void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weight
     entry.d3d->specular_transparency = *transparencies;
 }
 
-void SetLights(drawlistentry_t entry, uint32_t* lights) {
-    for (size_t i = 0; i < 4; i++) {
+void SetLights(drawlistentry_t entry, light_t* lights) {
+    /*for (size_t i = 0; i < 4; i++) {
         entry.d3d->lights[i] = lights[i];
-    }
+    }*/
 }
 
 void SetMatrix(drawlistentry_t entry, const mat4& matrix) {

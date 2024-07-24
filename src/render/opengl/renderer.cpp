@@ -10,7 +10,7 @@
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
 #else
-    #include <glad.h>
+    #include <glad/glad.h>
 #endif
 
 #include <glm/gtc/type_ptr.hpp>
@@ -287,10 +287,10 @@ void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weight
     }
 }
 
-void SetLights(drawlistentry_t entry, uint32_t* lights) {
-    for (size_t i = 0; i < 4; i++) {
-        entry.gl->lights[i] = lights[i];
-    }
+void SetLights(drawlistentry_t entry, light_t* lights) {
+    /*for (size_t i = 0; i < 4; i++) {
+        entry.gl->lights[i] = light_list.index(lights[i].gl);
+    }*/
 }
 
 void SetMatrix(drawlistentry_t entry, const mat4& matrix) {

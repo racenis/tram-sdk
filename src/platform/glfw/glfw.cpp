@@ -9,8 +9,8 @@
     #include <GL/gl.h>
     #include <GLFW/glfw3.h>
 #else
-    #include <glad.c>
-    #include <glfw3.h>
+    #include <glad/glad.c>
+    #include <glfw/glfw3.h>
 #endif
 
 using namespace tram::UI;

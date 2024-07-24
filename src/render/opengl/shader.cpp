@@ -13,7 +13,7 @@
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
 #else
-    #include <glad.h>
+    #include <glad/glad.h>
 #endif
 
 #include <framework/logging.h>

@@ -153,12 +153,12 @@
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
       <VirtualDirectory Name="sdl">
-        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig=""/>
+        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/platform/image.h"/>
       <File Name="src/platform/image.cpp"/>
       <VirtualDirectory Name="glfw">
-        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/platform/api.h"/>
       <File Name="src/platform/time.cpp"/>
@@ -182,8 +182,8 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <VirtualDirectory Name="software">
-        <File Name="src/render/software/software.h" ExcludeProjConfig=""/>
-        <File Name="src/render/software/software.cpp" ExcludeProjConfig=""/>
+        <File Name="src/render/software/software.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/software/software.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <VirtualDirectory Name="direct3d">
         <File Name="src/render/direct3d/renderer.cpp" ExcludeProjConfig="Debug;"/>
@@ -201,10 +201,10 @@
       <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
-        <File Name="src/render/opengl/api.h" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/api.h" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/render/render.h"/>
       <File Name="src/render/animation.h"/>
