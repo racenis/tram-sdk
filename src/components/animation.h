@@ -71,7 +71,7 @@ protected:
     
     const Render::Bone* armature_bones = nullptr;
     size_t armature_bone_count = 0;
-    uint32_t armature_bone_parents[Render::BONE_COUNT] = {-1ul};
+    int32_t armature_bone_parents[Render::BONE_COUNT] = {-1};
     
     name_t anim_playing[ANIM_COUNT];
     AnimationPlaybackInfo anim_info[ANIM_COUNT];

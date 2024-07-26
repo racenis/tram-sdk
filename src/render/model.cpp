@@ -435,7 +435,7 @@ void Model::LoadFromDisk() {
 
         Bone rootbone {
             .name = UID("Root"),
-            .parent = (uint32_t) -1,
+            .parent = -1,
             .head = {0.0f, 0.0f, 0.0f},
             .tail = {0.0f, 1.0f, 0.0f},
             .roll = 0.0f
@@ -617,7 +617,7 @@ void Model::LoadFromDisk() {
         for (uint32_t i = 0; i < bcount; i++) {
             armature.push_back(Bone {
                 .name = file.read_name(),
-                .parent = file.read_uint32(),
+                .parent = file.read_int32(),
                 
                 .head = {
                     file.read_float32(),
@@ -746,7 +746,7 @@ void Model::LoadFromDisk() {
     
     armature.push_back(Bone {
         .name = UID("Root"),
-        .parent = (uint32_t) -1,
+        .parent = -1,
         .head = {0.0f, 0.0f, 0.0f},
         .tail = {0.0f, 1.0f, 0.0f},
         .roll = 0.0f

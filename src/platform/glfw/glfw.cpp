@@ -6,11 +6,14 @@
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
     #include <emscripten/html5.h>
+#endif
+
+#ifndef __WIN32
     #include <GL/gl.h>
     #include <GLFW/glfw3.h>
 #else
-    #include <glad/glad.c>
-    #include <glfw/glfw3.h>
+    #include <glad.c>
+    #include <glfw3.h>
 #endif
 
 using namespace tram::UI;

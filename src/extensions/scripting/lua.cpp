@@ -2,7 +2,7 @@
 #include <framework/script.h>
 #include <framework/logging.h>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 
 

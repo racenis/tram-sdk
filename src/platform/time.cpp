@@ -1,7 +1,7 @@
 #include <platform/time.h>
 
 #ifndef ENGINE_EDITOR_MODE
-    #ifdef __EMSCRIPTEN__
+    #ifndef __WIN32
         #include <GLFW/glfw3.h>
     #else
         #include <glfw/glfw3.h>

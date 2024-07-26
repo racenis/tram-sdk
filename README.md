@@ -47,7 +47,8 @@ polygonal soup instead of BSPs and supports level streaming.
 - Clang should work too
 - Don't know about MSVC++
 - If it supports C++20, it should work
-
+- Python 3.8 for scripts
+- Blender 2.83 for 3D model and animation exporters
 
 ![Demo1](/docs/demo1.gif)
 
@@ -64,14 +65,53 @@ More information can be found on the [github.io page](https://racenis.github.io/
 - Adventure ([source code](https://github.com/racenis/jam-game-iii) / [itch.io / web demo](https://racenis.itch.io/froggy-garden))
 
 ### Building
-#### MinGW/GCC/Clang(?)/Emscripten/
-Edit the settings found in `maketool.ini`.
+#### Windows / MinGW
+Edit the settings found in `maketool.ini`. Set the platform to WIN32 or WIN64, 
+depending on your compiler version.
+
+If you compile dependencies yourself, place them in the `/libraries/binaries/win32`
+or `/libraries/binaries/win64` directories.
 
 Set repository root as the working directory.
 
 Run `devtools/maketool.py generate` to generate a `Makefile`.
 
 Use `make library && make clean` to compile the library.
+
+#### Linux / GCC
+
+Install Python interpreter, C++ compiler and OpenGL headers.
+```sudo apt-get install python3
+sudo apt-get install build-essential
+sudo apt-get install libmesa-dev
+```
+Install dependencies.
+```sudo apt-get install libglfw3-dev
+sudo apt-get install libbullet-dev
+sudo pat-get install libopenal-dev
+sudo apt-get install liblua5.4-dev
+```
+These are the packages for Debian-based distributions, for other distributions
+check your package manager. 
+
+Download the source code.
+```git clone https://github.com/racenis/tram-sdk.git
+```
+
+`vi maketool.ini` or `nano maketool.ini`
+Edit the makefile generator's configuration. Set the `compiler` to your `g++`
+compiler and `archiver` to your `ar` program. Set `platform` to `LINUX`. Select
+the modules which you will be using.
+
+Review the configuration and generate the makefile.
+```chmod +x devtools/maketool.py
+devtools/maketool.py config
+devtools/maketool.py generate
+```
+
+Then compile.
+```make
+```
 
 ### Dependencies
 Header files and binaries (for MinGW x86/x86_64 and WebAssembly) included in `libraries` directory.

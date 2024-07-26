@@ -404,7 +404,7 @@ void AnimationComponent::Refresh() {
 
         mat4 boneToModel = glm::inverse(modelToBone);
 
-        if(armature_bone_parents[i] == (uint32_t)-1){
+        if (armature_bone_parents[i] == -1) {
             pose->pose[i] = boneToModel * boneAnim * modelToBone;
         } else {
             pose->pose[i] = pose->pose[armature_bone_parents[i]] * boneToModel * boneAnim * modelToBone;

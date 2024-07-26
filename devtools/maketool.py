@@ -52,7 +52,7 @@ class Module:
 modules = {
 	"platform/glfw": Module("platform/glfw",
 		"platform", 
-		{"WEB": "", "WIN32": "", 		"WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/glfw", "WIN64": f" -I{tramsdk}libraries/glfw", "LINUX": ""},
 		{"WEB": "", "WIN32": "", 		"WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "-lglfw3 -lgdi32", "WIN64": "-lglfw3 -lgdi32", "LINUX": "-lglfw"}),
 	"platform/sdl": Module("platform/sdl",
@@ -71,10 +71,15 @@ modules = {
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
+	"audio/template": Module("audio/template",
+		"audio", 
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
 		
 	"render/opengl": Module("render/opengl",
 		"render", 
-		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/glad", "WIN64": f" -I{tramsdk}libraries/glad", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
 	"render/direct3d": Module("render/direct3d",
@@ -106,7 +111,7 @@ modules = {
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
 	"extensions/scripting/lua": Module("extensions/scripting/lua",
 		"extensions", 
-		{"WEB": "", "WIN32": "",		"WIN64": "", 		"LINUX": ""},
+		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/lua", "WIN64": f" -I{tramsdk}libraries/lua", "LINUX": ""},
 		{"WEB": "", "WIN32": "",		"WIN64": "", 		"LINUX": ""},
 		{"WEB": "-llua", "WIN32": "-llua",	"WIN64": "-llua",	"LINUX": "-llua"})
 }

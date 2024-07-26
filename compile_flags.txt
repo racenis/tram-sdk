@@ -2,6 +2,11 @@
 -IC:\Users\Poga\Desktop\painis\tram-sdk\src
 -IC:\Users\Poga\Desktop\painis\tram-sdk\libraries
 -IC:\Users\Poga\Desktop\painis\tram-sdk\libraries\bullet
+-IC:\Users\Poga\Desktop\painis\tram-sdk\libraries\glad
+-IC:\Users\Poga\Desktop\painis\tram-sdk\libraries\lua
+-IC:\Users\Poga\Desktop\painis\tram-sdk\libraries\openal
+-IC:\Users\Poga\Desktop\painis\tram-sdk\libraries\sdl2
+-IC:\Users\Poga\Desktop\painis\tram-sdk\libraries\glfw
 -Ic:\mingw64\include\c++\12.1.0
 -Ic:\mingw64\include\c++\12.1.0\x86_64-w64-mingw32
 -Ic:\mingw64\include\c++\12.1.0\backward

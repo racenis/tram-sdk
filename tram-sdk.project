@@ -44,6 +44,9 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
+      <VirtualDirectory Name="template">
+        <File Name="src/audio/template/template.cpp" ExcludeProjConfig="Debug;"/>
+      </VirtualDirectory>
       <VirtualDirectory Name="spatial">
         <File Name="src/audio/spatial/definitions.h"/>
         <File Name="src/audio/spatial/output.h"/>
@@ -252,6 +255,11 @@
         <IncludePath Value="./src"/>
         <IncludePath Value="./libraries"/>
         <IncludePath Value="./libraries/bullet"/>
+        <IncludePath Value="./libraries/glad"/>
+        <IncludePath Value="./libraries/lua"/>
+        <IncludePath Value="./libraries/openal"/>
+        <IncludePath Value="./libraries/sdl2"/>
+        <IncludePath Value="./libraries/glfw"/>
       </Compiler>
       <Linker Options="-ld3dx9;-ld3d9;-lSDL2.dll;-lglfw3;-lgdi32;-lopengl32;-lportaudio;-lwinmm;-lole32" Required="yes">
         <LibraryPath Value="libraries/binaries/win64"/>

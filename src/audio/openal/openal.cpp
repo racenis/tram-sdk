@@ -3,7 +3,7 @@
 #include <framework/logging.h>
 #include <framework/system.h>
 
-#ifdef __EMSCRIPTEN__
+#ifndef __WIN32
     #include <AL/alc.h>
     #include <AL/al.h>
 #else

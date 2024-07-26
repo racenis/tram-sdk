@@ -9,11 +9,11 @@
 
 #include <config.h>
 
-#ifdef __EMSCRIPTEN__
+#ifndef __WIN32
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
 #else
-    #include <glad/glad.h>
+    #include <glad.h>
 #endif
 
 #include <framework/logging.h>
