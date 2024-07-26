@@ -225,8 +225,8 @@ struct TriangleBucket {
 };
 
 struct BucketMapping {
-    uint32_t bucket = -1ul;
-    uint32_t index_in_bucket = -1ul;
+    int32_t bucket = -1;
+    int32_t index_in_bucket = -1;
 };
 
 static uint32_t PutTriangleInBucket (
@@ -237,7 +237,7 @@ static uint32_t PutTriangleInBucket (
     Triangle triangle
 ) {
     // check if material is already in a bucket
-    if (auto& mapping = bucket_mappings[material_index]; mapping.bucket != -1ul) {
+    if (auto& mapping = bucket_mappings[material_index]; mapping.bucket != -1) {
         buckets[mapping.bucket].triangles.push_back(triangle);
         return mapping.index_in_bucket;
     }
@@ -302,6 +302,7 @@ void Model::LoadFromDisk() {
         uint32_t mcount = file.read_uint32();   // number of materials
 
         bucket_mappings.resize(mcount);
+        assert(bucket_mappings.size() == mcount);
 
         model_aabb->triangles.reserve(tcount);
         //model_aabb->tree.nodes.reserve(tcount);
@@ -348,6 +349,8 @@ void Model::LoadFromDisk() {
             };
             
             uint32_t material_index = file.read_uint32();
+            assert(material_index < mcount);
+            assert(triangle_buckets.size() < mcount);
             
             uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
             
