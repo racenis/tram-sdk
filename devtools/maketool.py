@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os as os
 import sys as sys
 import configparser as configparser
@@ -52,12 +54,12 @@ modules = {
 		"platform", 
 		{"WEB": "", "WIN32": "", 		"WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", 		"WIN64": "", "LINUX": ""},
-		{"WEB": "", "WIN32": "-lglfw3 -lgdi32", "WIN64": "-lglfw3 -lgdi32", "LINUX": ""}),
+		{"WEB": "", "WIN32": "-lglfw3 -lgdi32", "WIN64": "-lglfw3 -lgdi32", "LINUX": "-lglfw"}),
 	"platform/sdl": Module("platform/sdl",
 		"platform", 
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
-		{"WEB": "", "WIN32": "-lSDL2.dll -lgdi32 -ld3d9", "WIN64": "-lSDL2.dll -lgdi32 -ld3d9", "LINUX": ""}),
+		{"WEB": "", "WIN32": "-lSDL2.dll -lgdi32 -ld3d9", "WIN64": "-lSDL2.dll -lgdi32 -ld3d9", "LINUX": "-lsdl2"}),
 		
 	"audio/openal": Module("audio/openal",
 		"audio", 
@@ -88,7 +90,7 @@ modules = {
 		
 	"physics/bullet": Module("physics/bullet",
 		"physics", 
-		{"WEB": f" -I{tramsdk}libraries/bullet", "WIN32": f" -I{tramsdk}libraries/bullet", "WIN64": f" -I{tramsdk}libraries/bullet", "LINUX": ""},
+		{"WEB": f" -I{tramsdk}libraries/bullet", "WIN32": f" -I{tramsdk}libraries/bullet", "WIN64": f" -I{tramsdk}libraries/bullet", "LINUX": f" -I{tramsdk}libraries/bullet"},
 		{"WEB": web_bin, "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "WIN32": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "WIN64": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "LINUX": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath "}),
 		
@@ -106,7 +108,7 @@ modules = {
 		"extensions", 
 		{"WEB": "", "WIN32": "",		"WIN64": "", 		"LINUX": ""},
 		{"WEB": "", "WIN32": "",		"WIN64": "", 		"LINUX": ""},
-		{"WEB": "-llua", "WIN32": "-llua",	"WIN64": "-llua",	"LINUX": ""})
+		{"WEB": "-llua", "WIN32": "-llua",	"WIN64": "-llua",	"LINUX": "-llua"})
 }
 
 for module, enable in module_enables.items():
@@ -227,7 +229,7 @@ def generate_makefile():
 	# Generate translation unit rules
 	for unit in units:
 		makefile += objectify(unit) + ".o: " + unit + "\n"
-		makefile += "\t" + compiler + " -c -g -O0 -std=c++20 -I./src"
+		makefile += "\t" + compiler + " -c -g -O0 -Wno-narrowing -std=c++20 -I./src"
 		makefile += " -I" + tramsdk + "libraries"
 		if platform == "WEB":
 			makefile += " -Wno-undefined-var-template"
