@@ -33,12 +33,12 @@ void Window::Init() {
         std::cout << "GLFW error code: " << code << " message: " << message << std::endl;
     });
     
-    if (CURRENT_PLATFORM == PLATFORM_WEB) {
+#ifndef __WIN32
         // this is for opengl es 3.0
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    } else {
+#else
         // this is for opengl 4.0
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -46,7 +46,7 @@ void Window::Init() {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true); 
-    }
+#endif
 
     glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
     
@@ -60,7 +60,7 @@ void Window::Init() {
     glfwMakeContextCurrent(WINDOW);
     
     // random settings that we don't need on web platform
-#ifndef __EMSCRIPTEN__
+#ifdef __WIN32
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();
