@@ -130,6 +130,11 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
+- Fix Event and Message data allocation
+    - If you allocate event data while inside event handler? it will probably not be very good
+    - Should add this to tests
+    - Need to figure out how to handle delayed message data
+
 - RenderComponents should support offsetting textures
 	- A method like RenderComponent::SetTextureOffset(Material*, vec2).
 	- It would add an offset to the specified Materia's texture.

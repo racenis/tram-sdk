@@ -81,7 +81,7 @@ modules = {
 		"render", 
 		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/glad", "WIN64": f" -I{tramsdk}libraries/glad", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
-		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": "-lGL"}),
 	"render/direct3d": Module("render/direct3d",
 		"render", 
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
@@ -95,7 +95,7 @@ modules = {
 		
 	"physics/bullet": Module("physics/bullet",
 		"physics", 
-		{"WEB": f" -I{tramsdk}libraries/bullet", "WIN32": f" -I{tramsdk}libraries/bullet", "WIN64": f" -I{tramsdk}libraries/bullet", "LINUX": f" -I{tramsdk}libraries/bullet"},
+		{"WEB": f" -I{tramsdk}libraries/bullet", "WIN32": f" -I{tramsdk}libraries/bullet", "WIN64": f" -I{tramsdk}libraries/bullet", "LINUX": f" -I/usr/include/bullet"},
 		{"WEB": web_bin, "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "WIN32": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "WIN64": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "LINUX": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath "}),
 		
@@ -111,9 +111,9 @@ modules = {
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
 	"extensions/scripting/lua": Module("extensions/scripting/lua",
 		"extensions", 
-		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/lua", "WIN64": f" -I{tramsdk}libraries/lua", "LINUX": ""},
+		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/lua", "WIN64": f" -I{tramsdk}libraries/lua", "LINUX": " -I/usr/include/lua5.4"},
 		{"WEB": "", "WIN32": "",		"WIN64": "", 		"LINUX": ""},
-		{"WEB": "-llua", "WIN32": "-llua",	"WIN64": "-llua",	"LINUX": "-llua"})
+		{"WEB": "-llua", "WIN32": "-llua",	"WIN64": "-llua",	"LINUX": "-llua5.4"})
 }
 
 for module, enable in module_enables.items():
@@ -283,7 +283,8 @@ def generate_makefile():
 		else:
 			makefile += " -o " + project_name
 			makefile += " -L" + tramsdk + " "
-			makefile += "-static "
+			if platform != "LINUX":
+				makefile += "-static "
 			for unit in units:
 				makefile += objectify(unit) + ".o "
 			if project_name != "tramsdk":
