@@ -81,12 +81,14 @@ Use `make library && make clean` to compile the library.
 #### Linux / GCC
 
 Install Python interpreter, C++ compiler and OpenGL headers.
-```sudo apt-get install python3
+```
+sudo apt-get install python3
 sudo apt-get install build-essential
 sudo apt-get install libmesa-dev
 ```
 Install dependencies.
-```sudo apt-get install libglfw3-dev
+```
+sudo apt-get install libglfw3-dev
 sudo apt-get install libbullet-dev
 sudo pat-get install libopenal-dev
 sudo apt-get install liblua5.4-dev
@@ -95,7 +97,8 @@ These are the packages for Debian-based distributions, for other distributions
 check your package manager. 
 
 Download the source code.
-```git clone https://github.com/racenis/tram-sdk.git
+```
+git clone https://github.com/racenis/tram-sdk.git
 ```
 
 `vi maketool.ini` or `nano maketool.ini`
@@ -104,13 +107,15 @@ compiler and `archiver` to your `ar` program. Set `platform` to `LINUX`. Select
 the modules which you will be using.
 
 Review the configuration and generate the makefile.
-```chmod +x devtools/maketool.py
+```
+chmod +x devtools/maketool.py
 devtools/maketool.py config
 devtools/maketool.py generate
 ```
 
 Then compile.
-```make
+```
+make
 ```
 
 ### Dependencies
