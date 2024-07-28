@@ -350,7 +350,7 @@ void Model::LoadFromDisk() {
             
             uint32_t material_index = file.read_uint32();
             assert(material_index < mcount);
-            assert(triangle_buckets.size() < mcount);
+            assert(triangle_buckets.size() <= mcount);
             
             uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
             

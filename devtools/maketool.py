@@ -111,7 +111,7 @@ modules = {
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
 	"extensions/scripting/lua": Module("extensions/scripting/lua",
 		"extensions", 
-		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/lua", "WIN64": f" -I{tramsdk}libraries/lua", "LINUX": " -I/usr/include/lua5.4"},
+		{"WEB": f" -I{tramsdk}libraries/lua", "WIN32": f" -I{tramsdk}libraries/lua", "WIN64": f" -I{tramsdk}libraries/lua", "LINUX": " -I/usr/include/lua5.4"},
 		{"WEB": "", "WIN32": "",		"WIN64": "", 		"LINUX": ""},
 		{"WEB": "-llua", "WIN32": "-llua",	"WIN64": "-llua",	"LINUX": "-llua5.4"})
 }

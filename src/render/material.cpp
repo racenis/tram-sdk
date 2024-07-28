@@ -152,6 +152,12 @@ void Material::LoadMaterialInfo(const char* filename){
     }
 }
 
+Material::Material(name_t name, materialtype_t type) : Resource(name) {
+    if (type == MATERIAL_LIGHTMAP) {
+        filter = FILTER_LINEAR;
+    }
+}
+
 /// Creates a material.
 /// If a Material already exists with that name, then the existing Material is returned.
 /// @return Always returns a pointer to a Material.
@@ -160,7 +166,7 @@ Material* Material::Make(name_t name, materialtype_t type) {
     
     if (!material) {
         //material = PoolProxy<Material>::New(name, type, FILTER_NEAREST);
-        material = PoolProxy<Material>::New(name);
+        material = PoolProxy<Material>::New(name, type);
         material_list.Insert(UID(name), material);
     }
     

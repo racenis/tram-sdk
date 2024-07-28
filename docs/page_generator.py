@@ -4,7 +4,8 @@ pages = ["index",
 		 "features",
 		 "roadmap",
 		 "learn",
-		 "documentation"
+		 "documentation",
+		 "documentation/index"
 		 
 		 ]
 template = "template"
@@ -14,6 +15,9 @@ template_text = open("src/" + template + ".html", "r").read()
 for page in pages:
 	page_text = open("src/" + page + ".html", "r").read()
 	
+	page_level = page.count('/')
+	page_level = "../" * page_level
+	
 	page_title = re.search("<!-- PAGE_TITLE: (.+?) -->", page_text)
 	if page_title:
 		page_title = page_title.group(1)
@@ -22,6 +26,8 @@ for page in pages:
 	
 	page_templated = template_text
 	page_templated = page_templated.replace("<!-- PAGE_TITLE -->", page_title).replace("<!-- PAGE_CONTENT -->", page_text)
+	
+	page_templated = page_templated.replace("<!-- PAGE_LEVEL -->", page_level)
 	
 	for link in re.findall("<!-- MENU_LINK:(.+?):(.+?) -->", page_templated):
 		replace_match = "<!-- MENU_LINK:" + link[0] + ":" + link[1] + " -->"

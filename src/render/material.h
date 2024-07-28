@@ -32,6 +32,7 @@ enum TextureType {
 class Material : public Resource {
 public:
     Material(name_t name) : Resource(name) {}
+    Material(name_t name, materialtype_t type);
     
     inline texturehandle_t GetTexture() const { return texture; }
     inline uint32_t GetWidth() const { return width; }

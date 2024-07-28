@@ -39,7 +39,7 @@ void RenderComponent::SetModel (name_t name) {
 /// Lightmaps are rendered only for static models, so setting a lightmap for
 /// a dynamic model will do nothing.
 void RenderComponent::SetLightmap (name_t name) {
-    lightmap = Render::Material::Find(name);
+    lightmap = Render::Material::Make(name, MATERIAL_LIGHTMAP);
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
