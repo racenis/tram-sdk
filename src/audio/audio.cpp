@@ -39,7 +39,7 @@ void Uninit() {
 
 /// See Audio::API::SetListenerPosition().
 void SetListenerPosition(vec3 position) {
-    API::SetListenerOrientation(position);
+    API::SetListenerPosition(position);
 }
 
 /// See Audio::API::SetListenerOrientation().

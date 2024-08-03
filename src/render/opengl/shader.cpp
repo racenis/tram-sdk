@@ -205,6 +205,12 @@ void BindUniformBlock(const char* name, uint32_t binding) {
         if (block_index == GL_INVALID_INDEX) continue;
         
         glUniformBlockBinding(shader_name, block_index, binding);
+        
+        
+        GLint result;
+        glGetActiveUniformBlockiv(shader_name, block_index, GL_UNIFORM_BLOCK_DATA_SIZE, &result);
+        
+        std::cout << "Shader " << shader_name << " block " << name << " size: " << result << std::endl;
     }
 }
 
@@ -225,6 +231,7 @@ void RegisterShader(vertexformat_t format, materialtype_t type, const char* vert
     
     std::cout << "Linking..." << std::endl;
     uint32_t linked = LinkShader(vertex, fragment);
+    std::cout << "linked as " << linked << std::endl;
     
     //std::cout << vertex_shader << " and " << fragment_shader << " for " << GetVertexFormatName(format) << " and " << GetMaterialTypeName(type) << std::endl;
     //std::cout << vertex << " and " << fragment << " to " << linked << std::endl;

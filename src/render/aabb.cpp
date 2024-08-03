@@ -151,7 +151,7 @@ struct Light {
 };
 
 Pool<Light> light_list("lighttree pool", 200);
-Octree<Light*> light_tree;
+Octree<Light*> light_tree("light tree", 200);;
 
 void AddLight(light_t light, vec3 pos, float dist) {
     Light* new_light = light_list.AddNew();

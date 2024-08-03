@@ -19,13 +19,14 @@ namespace tram::Render::API {
 
 Pool<GLDrawListEntry> draw_list ("render list", 500, false);
 Pool<GLLight> light_list ("light list", 200, false);
-Octree<uint32_t> light_tree;
+Octree<uint32_t> light_tree("light tree", 200);
 std::vector<uint32_t> light_tree_ids (200);
 
 struct ShaderUniformMatrices {
     mat4 projection;       /// Projection matrix.
     mat4 view;             /// View matrix.
     vec3 view_pos;
+    float padding;
 };
 
 struct ShaderUniformModelMatrices {
