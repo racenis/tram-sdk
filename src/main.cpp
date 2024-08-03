@@ -18,6 +18,7 @@
 #include <framework/message.h>
 #include <framework/language.h>
 #include <framework/script.h>
+#include <framework/path.h>
 #include <physics/physics.h>
 #include <audio/audio.h>
 
@@ -102,6 +103,8 @@ bool record = false;
 void mainloop() {
     Core::Update();
     UI::Update();
+    
+    Path::Find("test")->Draw();
     
     octree.Draw();
     
@@ -412,6 +415,8 @@ void mainloop() {
 
 int main() {
     std::cout << "CURRENT_PLATFORM: " << CURRENT_PLATFORM << std::endl; 
+    
+    Path::Find("test")->LoadFromDisk();
     
     octree.Insert({0.1f, 0.2f, 0.3f}, {0.1f, 0.2f, 0.3f});
     octree.Insert({0.67f, 0.23, 0.7f}, {0.67f, 0.23, 0.7f});

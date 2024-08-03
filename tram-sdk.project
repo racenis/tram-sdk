@@ -90,6 +90,8 @@
       <File Name="src/components/animation.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/graph.h"/>
+      <File Name="src/framework/graph.cpp"/>
       <File Name="src/framework/script.h"/>
       <File Name="src/framework/script.cpp"/>
       <File Name="src/framework/signal.h"/>

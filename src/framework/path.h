@@ -4,36 +4,66 @@
 #ifndef TRAM_SDK_FRAMEWORK_PATH_H
 #define TRAM_SDK_FRAMEWORK_PATH_H
 
-#include <framework/core.h>
-#include <framework/uid.h>
-#include <framework/math.h>
+#include <framework/graph.h>
 
-#include <vector>
+#include <framework/uid.h>
 
 namespace tram {
 
-typedef uint32_t node_id_t;
-
-struct PathNode {
-    node_id_t next, prev, left, right;
-    vec3 position;
+enum PathType {
+    PATH_STRAIGHT,
+    PATH_LEFT,
+    PATH_RIGHT,
+    
+    PATH_LINEAR,
+    PATH_CURVE
+};
+    
+struct PathEdgeInfo {
+    PathType type;
 };
 
-class Path {
-public:
-    Path (name_t name) : name(name) {}
-    ~Path() = delete;
+class PathFollower;
 
-    inline name_t GetName() { return name; }
-    inline const std::vector<node_id_t>& GetNodes() { return nodes; }
-    
+class Path : public Graph {
+public:
+    Path(name_t name) : name(name) {}
+
     void LoadFromDisk();
 
-    static PathNode GetPathNode (node_id_t node_id);
-    static Path* Find (name_t name);
+    void Draw();
+    
+    static Path* Find(name_t name);
 protected:
+    ~Path() = delete;
+
+    friend class PathFollower;
+
     name_t name;
-    std::vector<node_id_t> nodes;
+    std::vector<PathEdgeInfo> edge_infos;
+};
+
+class PathFollower {
+    PathFollower(Path* path, vec3 initial_pos, PathType type);
+    
+    void Advance(float);
+    
+    void Project(vec3);
+    
+    void TurnLeft();
+    void TurnRight();
+    void TurnStraight();
+    
+    vec3 GetPosition();
+    
+    void SetOrientation(vec3);
+    
+    float progress;
+    uint32_t prev;
+    uint32_t next;
+    PathType type;
+    PathType direction;
+    Path* following;
 };
     
 }
