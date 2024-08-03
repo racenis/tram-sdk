@@ -9,6 +9,7 @@ layout (location = 1) in vec3 VertColor;	// vertex color
 layout (std140) uniform Matrices {
     mat4 projection;
     mat4 view;
+	vec3 view_pos;
 };
 
 out vec3 vert_color;
