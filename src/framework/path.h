@@ -44,6 +44,7 @@ protected:
 };
 
 class PathFollower {
+public:
     PathFollower(Path* path, vec3 initial_pos, PathType type);
     
     void Advance(float);
@@ -55,6 +56,7 @@ class PathFollower {
     void TurnStraight();
     
     vec3 GetPosition();
+    vec3 GetTangent();
     
     void SetOrientation(vec3);
     
@@ -63,7 +65,7 @@ class PathFollower {
     uint32_t next;
     PathType type;
     PathType direction;
-    Path* following;
+    Path* path;
 };
     
 }

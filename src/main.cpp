@@ -100,6 +100,9 @@ AnimationComponent* monguser_armature = nullptr;
 
 bool record = false;
 
+PathFollower* follower = nullptr;
+vec3 initial_follower = {0.1f, 1.0f, 1.5f};
+
 void mainloop() {
     Core::Update();
     UI::Update();
@@ -112,6 +115,23 @@ void mainloop() {
     size_t count = octree.Find(toots, Render::GetViewPosition());
     for (size_t i  = 0 ; i < count ; i++)
         AddLineAABB(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), toots[i], vec3(0.0f, 0.0f, 0.0f), COLOR_PINK);
+    
+    follower->Advance(0.025f);
+    
+    Entity* mongus = Entity::Find("mongus");
+    
+    if (mongus && GetTick() > 120) {
+        AddLineMarker(mongus->GetLocation(), COLOR_RED);
+        mongus->SetLocation(follower->GetPosition());
+        mongus->SetRotation(glm::quatLookAt(follower->GetTangent(), DIRECTION_UP));
+    }
+    
+    
+    
+    //follower->SetOrientation(Render::GetViewRotation() * DIRECTION_FORWARD);
+    AddLineMarker(follower->GetPosition(), COLOR_PINK);
+    
+    //follower->Project(Render::GetViewPosition());
     
     //Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, vec3(0.0f, 0.75f, 0.0f), COLOR_GREEN);
     //Render::AddLineAABB({-1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {3.0f, 0.0f, 3.0f}, vec3(0.75f, 0.0f, 0.0f), COLOR_GREEN);
@@ -418,6 +438,8 @@ int main() {
     
     Path::Find("test")->LoadFromDisk();
     
+    follower = new PathFollower(Path::Find("test"), initial_follower, PATH_LINEAR);
+    
     octree.Insert({0.1f, 0.2f, 0.3f}, {0.1f, 0.2f, 0.3f});
     octree.Insert({0.67f, 0.23, 0.7f}, {0.67f, 0.23, 0.7f});
     octree.Insert({-0.11f, 0.52f, -0.163f}, {-0.11f, 0.52f, -0.163f});
@@ -680,7 +702,11 @@ int main() {
         //AddLine(vec3(0, 0, 0), vec3(0, 0, 0) + (quat)*(Value*)event.data * DIRECTION_FORWARD, COLOR_CYAN);
     });
         
-        
+    
+    UI::BindKeyboardKey(UI::KEY_T, [](){
+        follower->Advance(0.01f);
+    });
+    
     UI::BindKeyboardKey(UI::KEY_R, [](){
         record = !record;
     });

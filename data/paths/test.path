@@ -1,13 +1,13 @@
 PATHv2
 
 node -2 1 -2
-node 0 1 -2
+node 0 1 -2.5
 node 2 1 -2
-node 2 1 0
+node 2.5 1 0
 node 2 1 2
-node 0 1 2
+node 0 1 2.5
 node -2 1 2
-node -2 1 0
+node -2.5 1 0
 
 edge 0 1
 edge 1 2

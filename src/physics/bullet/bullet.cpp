@@ -157,7 +157,7 @@ collisionshape_t MakeCollisionShape(CollisionShapeTransform* shapes, size_t shap
         return {new btBoxShape(btVector3(0.125f, 0.125f, 0.125f))};
     }
     
-    btCompoundShape* shape = new btCompoundShape();
+    btCompoundShape* shape = new btCompoundShape(true);
     
     for (size_t i = 0; i < shape_count; i++) {
         btTransform transform;

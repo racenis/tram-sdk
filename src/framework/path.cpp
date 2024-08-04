@@ -92,50 +92,98 @@ PathFollower::PathFollower(Path* path, vec3 initial_pos, PathType type) {
     this->next = 0;
     this->progress = 0.0f;
     this->direction = PATH_STRAIGHT;
-    this->following = path;
+    this->path = path;
     this->type = type;
     
     Project(initial_pos);
 }
 
-void PathFollower::Advance(float) {
-    // TODO:
-    // calculate distance between prev and next
-    // convert from advance meters into percentage points
-    // advance
-    // if pushed beyond next,
+void PathFollower::Advance(float distance) {
+    float segment = glm::distance(path->nodes[prev].position, path->nodes[next].position);
+    float dist_left = (1.0f - progress) * segment;
+    
+    if (dist_left < distance) {
+        distance -= dist_left;
+        
+        // TODO: implement steering
+        // also figure out what to do if path just ends there?
+        uint32_t next_next = (uint32_t)-1;
+        for (uint32_t edge : path->nodes[next].edges) {
+            uint32_t candidate_next = path->edges[edge].to;
+            if (candidate_next != prev && candidate_next != next) {
+                next_next = candidate_next;
+            }
+        }
+        
+        // cancel advance if there is no more segments to advance to
+        if (next_next == (uint32_t)-1) return;
+        
+        prev = next;
+        next = next_next;
+        progress = 0.0f;
+        
+        Advance(distance);
+        //if (distance > 0.01f) Advance(distance);
+    } else {
+        dist_left -= distance;
+        progress = (segment - dist_left) / segment;
+    }
 }
 
-void PathFollower::Project(vec3) {
-    // TODO:
-    // basically, bad poopy initial algorithm:
-    
-    // for each edge in following path edges:
-    //      get nearest point on edge
-    //      save edge with the nearest point
-    // save first and second edge points
-    // also calculate progrogress
-    
-    
+static vec3 nearest_point(vec3 a, vec3 b, vec3 p) {
+    vec3 v = b - a;
+    vec3 u = a - p;
+    float t = - (glm::dot(v, u) / glm::dot(v, v));
+    return glm::mix(a, b, glm::clamp(t, 0.0f, 1.0f));
 }
 
-void SetOrientation(vec3) {
-    // TODO:
+static float project_line(vec3 a, vec3 b, vec3 p) {
+    vec3 v = b - a;
+    vec3 u = a - p;
+    float t = - (glm::dot(v, u) / glm::dot(v, v));
+    return glm::clamp(t, 0.0f, 1.0f);
+}
+
+void PathFollower::Project(vec3 projectable) {
+    int nearest_edge = 0;
+    float nearest_dist = INFINITY;
+    for (size_t i = 0; i < path->edges.size(); i++) {
+        vec3 from_point = path->nodes[path->edges[i].from].position;
+        vec3 to_point = path->nodes[path->edges[i].to].position;
+        vec3 point = nearest_point(from_point, to_point, projectable);
+        
+        float distance = glm::distance(projectable, point);
+        
+        if (distance < nearest_dist) {
+            nearest_dist = distance;
+            nearest_edge = i;
+        }
+    }
     
-    // parameter is a normal vector
-    // if it is pointing towards next point, good
-    // otherwise swap next and prev
+    this->prev = path->edges[nearest_edge].from;
+    this->next = path->edges[nearest_edge].to;
+    
+    this->progress = project_line(path->nodes[prev].position, path->nodes[next].position, projectable);
+}
+
+void PathFollower::SetOrientation(vec3 orientation) {
+    vec3 from_to = glm::normalize(path->nodes[next].position - path->nodes[prev].position);
+    vec3 direction = glm::normalize(orientation);
+    
+    if (glm::dot(from_to, direction) < 0.0f) {
+        std::swap(prev, next);
+        progress = 1.0f - progress;
+    }
 }
 
 vec3 PathFollower::GetPosition() {
-    
-    // TODO: implement curve position get
-    
-    // this next one is only linear
-    
-    return glm::mix(following->nodes[prev].position,
-                    following->nodes[next].position,
+    return glm::mix(path->nodes[prev].position,
+                    path->nodes[next].position,
                     progress);
+}
+
+vec3 PathFollower::GetTangent() {
+    return glm::normalize(path->nodes[next].position - path->nodes[prev].position);
 }
 
 void PathFollower::PathFollower::TurnLeft() {
