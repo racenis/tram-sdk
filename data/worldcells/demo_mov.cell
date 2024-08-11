@@ -2,7 +2,7 @@ CELLv3 cell 0 1
 #staticwobj 0 worldspawn 0 0.000000 0.000000 0.000000 0.0 0.0 0.0 worldspawn fullbright
 #staticwobj 0 platforma 0 0.000000 0.000000 0.000000 0.0 0.0 0.0 platforma fullbright
 staticwobj 0 paliktnis 0 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 movs lightmap/movs
-trigger 0 trigeris 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 0 16 trigger 
+trigger 0 trigeris 0 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 0 16 trigger 
 #staticwobj 0 ftft 0 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 ftft fullbright
 #staticwobj 0 apliktnis 0 0.000000 0.000000 3.000000 -3.141593 0.058408 -3.141593 tepik fullbright
 #crate 0 muca 0 -1.400000 0.600000 3.800000 0.000000 0.785398 0.000000 crate_ligma crate

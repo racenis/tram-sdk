@@ -1,72 +1,75 @@
 #version 300 es
 
+// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
+// All rights reserved.
+
 precision highp float;
 
-out vec4 fragColor;
+out vec4 fragment;
 
-in vec2 vertUV;
-in vec3 color;
-flat in uint texindex;
+in vec2 vert_uv;
+in vec3 vert_color;
+flat in uint vert_tex_index;
 
 uniform sampler2D sampler[16];
 
-void main()
-{
-	vec4 texcolor;
-	
-	switch (texindex) {
+void main() {
+	vec4 sampled_color;
+
+	switch (vert_tex_index) {
 	case 0u:
-		texcolor = texture(sampler[0], vertUV);
+		sampled_color = texture(sampler[0], vert_uv);
 		break;
 	case 1u:
-		texcolor = texture(sampler[1], vertUV);
+		sampled_color = texture(sampler[1], vert_uv);
 		break;
 	case 2u:
-		texcolor = texture(sampler[2], vertUV);
+		sampled_color = texture(sampler[2], vert_uv);
 		break;
 	case 3u:
-		texcolor = texture(sampler[3], vertUV);
+		sampled_color = texture(sampler[3], vert_uv);
 		break;
 	case 4u:
-		texcolor = texture(sampler[4], vertUV);
+		sampled_color = texture(sampler[4], vert_uv);
 		break;
 	case 5u:
-		texcolor = texture(sampler[5], vertUV);
+		sampled_color = texture(sampler[5], vert_uv);
 		break;
 	case 6u:
-		texcolor = texture(sampler[6], vertUV);
+		sampled_color = texture(sampler[6], vert_uv);
 		break;
 	case 7u:
-		texcolor = texture(sampler[7], vertUV);
+		sampled_color = texture(sampler[7], vert_uv);
 		break;
 	case 8u:
-		texcolor = texture(sampler[8], vertUV);
+		sampled_color = texture(sampler[8], vert_uv);
 		break;
 	case 9u:
-		texcolor = texture(sampler[9], vertUV);
+		sampled_color = texture(sampler[9], vert_uv);
 		break;
 	case 10u:
-		texcolor = texture(sampler[10], vertUV);
+		sampled_color = texture(sampler[10], vert_uv);
 		break;
 	case 11u:
-		texcolor = texture(sampler[11], vertUV);
+		sampled_color = texture(sampler[11], vert_uv);
 		break;
 	case 12u:
-		texcolor = texture(sampler[12], vertUV);
+		sampled_color = texture(sampler[12], vert_uv);
 		break;
 	case 13u:
-		texcolor = texture(sampler[13], vertUV);
+		sampled_color = texture(sampler[13], vert_uv);
 		break;
 	case 14u:
-		texcolor = texture(sampler[14], vertUV);
+		sampled_color = texture(sampler[14], vert_uv);
 		break;
 	case 15u:
-		texcolor = texture(sampler[15], vertUV);
+		sampled_color = texture(sampler[15], vert_uv);
 		break;			
 	}
 
-	vec4 sampledColor = texcolor;
-	if (sampledColor.w < 0.99) discard;
-	fragColor = sampledColor * vec4(color, 1.0);
-	//fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	
+	
+	if (sampled_color.w < 1.0) discard;
+	
+	fragment = sampled_color * vec4(vert_color, 1.0);
 }

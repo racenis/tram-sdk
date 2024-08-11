@@ -1,5 +1,9 @@
 #version 300 es
 
+// idk if this shader is even used anymore
+
+// probably not
+
 precision highp float;
 
 layout (location = 0) in vec2 Position;

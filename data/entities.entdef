@@ -21,6 +21,10 @@ begin
 	field float color-g
 	field float color-b
 	field float distance
+	field float direction-x
+	field float direction-y
+	field float direction-z
+	field float exponent
 end
 
 begin
