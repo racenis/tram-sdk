@@ -63,6 +63,7 @@ void StaticWorldObject::Load(){
     physicscomponent->SetMass(0.0f);
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_WORLDOBJ);
+    physicscomponent->SetCollisionMask(-1 ^ (COLL_WORLDOBJ | COLL_STATICOBJ));
 
     rendercomponent->Init();
     physicscomponent->Init();

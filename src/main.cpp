@@ -26,6 +26,7 @@
 
 #include <framework/system.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 
 #include <entities/crate.h>
 #include <entities/staticworldobject.h>
@@ -433,8 +434,20 @@ void mainloop() {
 
 
 
-int main() {
+int main(int argc, const char** argv) {
     std::cout << "CURRENT_PLATFORM: " << CURRENT_PLATFORM << std::endl; 
+    
+    bool poopis = false;
+
+    Settings::Register(vec4(0, 0, 0, 0), "toopis");
+    Settings::Register(ValuePtr(&poopis), "poopis");
+
+    Settings::Parse(argv, argc);
+
+    vec4 toopis = Settings::Get("toopis");
+
+    std::cout << "toopis " << toopis.x << " " << toopis.y << " " << toopis.z << " " << toopis.w << " " << std::endl;
+    std::cout << "poopis " << poopis << std::endl;
     
     Path::Find("test")->LoadFromDisk();
     

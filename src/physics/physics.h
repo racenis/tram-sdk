@@ -25,12 +25,13 @@ void Update();
 extern bool DRAW_PHYSICS_DEBUG;
 
 enum CollisionGroup : uint32_t {
-    COLL_WORLDOBJ = 2,   //< StaticWorldObject's, etc.
-    COLL_DYNAMICOBJ = 4, //< Crates
-    COLL_VEHICLE = 8,    //< Trams & busses
-    COLL_PLAYER = 16,    //< Player
-    COLL_TRIGGER = 32,
-    COLL_MONSTER = 64
+    COLL_WORLDOBJ = 2,      //< Worldspawns
+    COLL_STATICOBJ = 4,     //< Decorations, doors, elevators and platforms
+    COLL_DYNAMICOBJ = 8,    //< Crates and other 
+    COLL_TRIGGER = 16,      //< Triggers
+    COLL_PLAYER  = 32,      //< Players
+    COLL_MONSTER = 64,      //< Monsters and other NPCs
+    COLL_VEHICLE = 128      //< Trams and microbuses
 };
 
 struct Collision {

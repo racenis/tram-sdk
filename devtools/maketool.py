@@ -236,6 +236,7 @@ def generate_makefile():
 		makefile += objectify(unit) + ".o: " + unit + "\n"
 		makefile += "\t" + compiler + " -c -g -O0 -Wno-narrowing -std=c++20 -I./src"
 		makefile += " -I" + tramsdk + "libraries"
+		makefile += " -I" + tramsdk + "src"
 		if platform == "WEB":
 			makefile += " -Wno-undefined-var-template"
 		for module in modules.values():

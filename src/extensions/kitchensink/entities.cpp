@@ -189,7 +189,8 @@ void Button::Load(){
     rendercomponent->SetLightmap(lightmap);
 
     physicscomponent->SetParent(this);
-    physicscomponent->SetCollisionGroup(Physics::COLL_DYNAMICOBJ);
+    physicscomponent->SetCollisionGroup(Physics::COLL_STATICOBJ);
+    physicscomponent->SetCollisionMask(-1 ^ (Physics::COLL_WORLDOBJ | Physics::COLL_STATICOBJ));
     physicscomponent->SetModel(model);
     physicscomponent->SetMass(0.0f);
     physicscomponent->SetUpdateParentTransform(false);

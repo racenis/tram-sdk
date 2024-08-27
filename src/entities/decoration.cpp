@@ -71,7 +71,8 @@ void Decoration::Load(){
     animationcomponent->SetModel(model);
 
     physicscomponent->SetParent(this);
-    physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);
+    physicscomponent->SetCollisionGroup(COLL_STATICOBJ);
+    physicscomponent->SetCollisionMask(-1 ^ (COLL_WORLDOBJ | COLL_STATICOBJ));
     physicscomponent->SetModel(model);
     physicscomponent->SetMass(0.0f);
     
