@@ -501,7 +501,7 @@ void GlyphText(char const* text, font_t font, float x, float y, float space, con
         if (*t == ' ') { x += space; continue; }
         //auto& f = UI::glyphinfo[font][(size_t)*t];
         auto& f = fonts[font]->GetFrames()[(size_t)*t];
-        Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.width, f.height, f.offset_x, f.offset_y, color, font);
+        Glyph(x, y-(2*f.border_v)+(LINE_HEIGHT/2.0f)+4.0f, f.width, f.height, f.offset_x, f.offset_y, color, font);
         x += f.width;
     }
 }
@@ -512,7 +512,7 @@ void GlyphText(char const* text, char const* end, font_t font, float x, float y,
         if (*t == ' ') { x += space; continue; }
         //auto& f = UI::glyphinfo[font][(size_t)*t];
         auto& f = fonts[font]->GetFrames()[(size_t)*t];
-        Glyph(x, y-f.drop+(LINE_HEIGHT/2.0f)+4.0f, f.width, f.height, f.offset_x, f.offset_y, color, font);
+        Glyph(x, y-(2*f.border_v)+(LINE_HEIGHT/2.0f)+4.0f, f.width, f.height, f.offset_x, f.offset_y, color, font);
         x += f.width;
     }
 }

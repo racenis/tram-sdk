@@ -46,8 +46,8 @@ void Sprite::LoadFromDisk() {
         frames.push_back({
             0, 0,
             64, 64,
-            0, 0,
-            1.0f, 1.0f
+            32, 32,
+            0, 0
         });
         
         if (!material) material = Material::Find("defaulttexture");
@@ -61,7 +61,7 @@ void Sprite::LoadFromDisk() {
     name_t header = file.read_name();
     name_t material_name = file.read_name();
     
-    if (header != "SPRv1") {
+    if (header != "SPRv2") {
         Log("Incorrect sprite header \"{}\" in file \"{}\"", header, filename);
     }
     
@@ -71,10 +71,10 @@ void Sprite::LoadFromDisk() {
             .offset_y = file.read_uint16(),
             .width = file.read_uint16(),
             .height = file.read_uint16(),
-            .drop = file.read_uint16(),
-            .border = file.read_uint16(),
-            .scale = file.read_float32(),
-            .length = file.read_float32()
+            .midpoint_x = file.read_uint16(),
+            .midpoint_y = file.read_uint16(),
+            .border_h = file.read_uint16(),
+            .border_v = file.read_uint16()
         });
     }
     

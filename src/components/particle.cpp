@@ -81,8 +81,8 @@ void ParticleComponent::UpdateRenderListObject(){
     float tex_height = sprite->GetFrames().front().height / (float)sprite->GetMaterial()->GetHeight();
     float tex_w_off = sprite->GetFrames().front().offset_x / (float)sprite->GetMaterial()->GetWidth();
     float tex_h_off = sprite->GetFrames().front().offset_y / (float)sprite->GetMaterial()->GetHeight();
-    float half_width = tex_width * sprite->GetFrames().front().scale / 2.0f;
-    float half_height = tex_height * sprite->GetFrames().front().scale / 2.0f;
+    float half_width = tex_width; //* sprite->GetFrames().front().scale / 2.0f;
+    float half_height = tex_height; //* sprite->GetFrames().front().scale / 2.0f;
 
     std::vector<Render::SpriteVertex> vertices;
 

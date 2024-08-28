@@ -15,10 +15,10 @@ struct SpriteFrame {
     uint16_t offset_y;
     uint16_t width;
     uint16_t height;
-    uint16_t drop;
-    uint16_t border;
-    float scale;
-    float length;       // idk what this is supposed to be
+    uint16_t midpoint_x;
+    uint16_t midpoint_y;
+    uint16_t border_h;
+    uint16_t border_v;
 };
 
 class Sprite : public Resource {

@@ -57,7 +57,7 @@ void Parse(const char** argv, int argc) {
             case TYPE_UINT64:   value.SetValue((uint64_t)atoi(argv[i])); break;
             case TYPE_FLOAT32:  value.SetValue((float)atof(argv[i])); break;
             case TYPE_FLOAT64:  value.SetValue((double)atof(argv[i])); break;
-            case TYPE_NAME:     value.SetValue(argv[i]); break;
+            case TYPE_NAME:     value.SetValue((name_t)argv[i]); break;
             case TYPE_STRING:   value.SetValue(argv[i]); break;
             case TYPE_VEC2:     value.SetValue(vec2{atof(argv[i]), atof(argv[i+1])}); i += 1; break;
             case TYPE_VEC3:     value.SetValue(vec3{atof(argv[i]), atof(argv[i+1]), atof(argv[i+2])}); i += 2; break; 
