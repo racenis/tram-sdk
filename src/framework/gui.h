@@ -13,6 +13,7 @@ namespace tram::Render {
 namespace tram::GUI {
 
 typedef uint32_t font_t;
+typedef uint32_t glyph_t;
 
 enum orientation:uint32_t {
     TEXT_LEFT,
@@ -30,38 +31,44 @@ enum orientation:uint32_t {
     FRAME_BOTTOM_LEFT,
 };
 
-enum symbol:uint32_t {
-    SELECTED = 1,
-    PRESSED = 2,
-    DISABLED = 3,
-    LEFT = 0,
-    MIDDLE = 4,
-    RIGHT = 8,
-    BUTTON_CROSS = 0,
-    BUTTON_QUESTION = 4,
-    BUTTON_MINIMIZE = 8,
-    BUTTON_MAXIMIZE = 12,
-    BUTTON_UP = 16,
-    BUTTON_DOWN = 20,
-    BUTTON_LEFT = 24,
-    BUTTON_RIGHT = 28,
-    BUTTON_RADIO = 32,
-    BUTTON_CHECHBOX = 36,
-    BUTTON_TEXT = 40,
-    BUTTON_TEXTBOX = 52,
-    BUTTON_DROPDOWN = 64,
-    CORNER_TOP_LEFT = 0,
-    CORNER_TOP_RIGHT = 1,
-    CORNER_BOTTOM_LEFT = 2,
-    CORNER_BOTTOM_RIGHT = 3,
-    CORNER_TOP = 4,
-    CORNER_RIGHT = 5,
-    CORNER_LEFT = 6,
-    CORNER_BOTTOM = 7,
-    CORNER_CENTER = 8,
-    BOX_PLAIN = 80,
-    SCROLL_TRACK = 89,
-    SCROLL_BAR = 90,
+enum widget:glyph_t {
+    WIDGET_BUTTON = 0,
+    WIDGET_BUTTON_PRESSED = 9,
+    WIDGET_BUTTON_SELECTED_ENABLED = 18,
+    WIDGET_BUTTON_SELECTED_DISABLED = 27,
+    WIDGET_BUTTON_DISABLED = 36,
+    WIDGET_BUTTON_PRESSED_DISABLED = 45,
+    WIDGET_WINDOW = 54,
+    WIDGET_REVERSE_WINDOW = 63,
+    WIDGET_SELECT_BOX = 72,
+    WIDGET_SELECT_BOX_PRESSED = 81,
+    WIDGET_SELECT_BOX_SELECTED = 90,
+    WIDGET_TEXT_BOX = 99,
+    WIDGET_TEXT_BOX_DISABLED = 108,
+    WIDGET_BORDER = 117,
+    WIDGET_SCROLL_BAR_TRACK_VERTICAL = 126,
+    WIDGET_SCROLL_BAR_TRACK_HORIZONTAL = 129,
+    WIDGET_DIVIDER_VERTICAL = 132,
+    WIDGET_DIVIDER_HORIZONTAL = 135,
+    WIDGET_SLIDER_TRACK_VERTICAL = 138,
+    WIDGET_SLIDER_TRACK_HORIZONTAL = 138,
+    WIDGET_SCROLL_BAR_VERTICAL = 144,
+    WIDGET_SCROLL_BAR_HORIZONTAL = 147,
+    WIDGET_TAB = 150,
+    WIDGET_PROGESS_BAR = 153,
+    WIDGET_RADIO_BUTTON = 156,
+    WIDGET_CHECK_BUTTON = 162,
+    WIDGET_SLIDER_VERTICAL = 168,
+    WIDGET_SLIDER_HORIZONTAL = 174,
+    WIDGET_BUTTON_UP = 180,
+    WIDGET_BUTTON_DOWN = 186,
+    WIDGET_BUTTON_LEFT = 192,
+    WIDGET_BUTTON_RIGHT = 198,
+    WIDGET_BUTTON_EXIT = 204,
+    WIDGET_BUTTON_HELP = 210,
+    WIDGET_BUTTON_2_WINDOW = 216,
+    WIDGET_BUTTON_1_WINDOW = 222,
+    WIDGET_DEFAULT = 255,
 };
 
 void Init();
@@ -70,27 +77,6 @@ font_t RegisterFont(Render::Sprite* sprite);
 
 void Begin();
 void End();
-
-void Frame(orientation frame_orient, float offset);
-void Frame(orientation frame_orient, float width, float height);
-void FrameBreakLine();
-void EndFrame();  // pops a frame
-void FillFrame(const float& tex_x, const float& tex_y, const float& tex_w, const float& tex_h, const vec3& color, const uint32_t& tex);
-void ScrollBar(float& scroll, float& height); // scrollbar for the frame
-void Glyph(const uint32_t& symbol, const float& x, const float& y);
-void Glyph(const float& x, const float& y, const float& w, const float& h, const float& tex_x, const float& tex_y, const vec3& color, const uint32_t& tex);     // new glyph using the top of the stack
-void GlyphText(char const* text, font_t font, float x, float y, float space, const vec3& color = Render::COLOR_WHITE);
-void DebugText(char const* text, const vec3& location, const vec3& color = Render::COLOR_WHITE);
-void FrameBorder();
-bool SmallButton(const symbol& glyph);
-void CheckBox(bool& check);
-void RadioButton(uint32_t& val, const uint32_t& this_val);
-bool Button(char const* text);
-
-void Text(char const* text, font_t font, orientation alignment = TEXT_LEFT, const vec3& color = Render::COLOR_WHITE);
-
-void TextBox(char* text, uint32_t max_len);
-void DropdownBox(char const** texts, uint32_t len, uint32_t& selected);
 
 }
 

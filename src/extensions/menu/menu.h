@@ -11,7 +11,7 @@ namespace tram::Ext::Menu {
     void DebugMenu();
     void EscapeMenu();
     
-    extern GUI::font_t FONT_SYMBOL;
+    extern GUI::font_t FONT_WIDGETS;
     extern GUI::font_t FONT_TEXT;
     extern GUI::font_t FONT_TEXT_BOLD;
     extern GUI::font_t FONT_HEADER;

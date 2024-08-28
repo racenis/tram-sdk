@@ -290,19 +290,19 @@ void mainloop() {
     std::string tickstr2 = std::to_string(GetTickTime());
     //std::string tickstr3 = std::to_string(trigga->Poll().size());
     
-    GUI::Text(tickstr.c_str(), 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
-    GUI::Text(tickstr2.c_str(), 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
+    //GUI::Text(tickstr.c_str(), 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
+    //GUI::Text(tickstr2.c_str(), 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
     //GUI::Text("AAAAAAAAAA", 4, tram::GUI::TEXT_CENTER); GUI::FrameBreakLine();
     //GUI::Text(tickstr3.c_str(), 2, tram::GUI::TEXT_CENTER);
     
-    if (dingus_menu) {
+    /*if (dingus_menu) {
         if (GUI::Button("close menu!")) {
            UI::SetInputState(tram::UI::STATE_DEFAULT); 
            dingus_menu = false;
         }
         
         GUI::FrameBreakLine();
-    }
+    }*/
     
     
     //{

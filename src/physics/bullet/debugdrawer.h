@@ -21,7 +21,7 @@ public:
     };
 
     void draw3dText(const btVector3& location, const char* textString) {
-        GUI::DebugText(textString, {location.getX(), location.getY(), location.getZ()}, Render::COLOR_WHITE);
+        //GUI::DebugText(textString, {location.getX(), location.getY(), location.getZ()}, Render::COLOR_WHITE);
     };
 
     void setDebugMode(int debugMode) {};
