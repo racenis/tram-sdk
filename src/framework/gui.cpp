@@ -26,6 +26,7 @@ namespace tram::GUI {
 struct FrameObject {
     uint32_t x, y, w, h;
     uint32_t cursor_x, cursor_y;
+    uint32_t stack_height;
 };
 
 Stack<FrameObject> frame_stack("GUI Frame stack", 100);
@@ -175,6 +176,9 @@ uint32_t GlyphHeight(font_t font, glyph_t glyph) {
     return fonts[font]->GetFrames()[glyph].height;
 }
 
+uint32_t GlyphBorderV(font_t font, glyph_t glyph) {
+    return fonts[font]->GetFrames()[glyph].border_v;
+}
 
 void DrawGlyph(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w = 0, uint32_t h = 0) {
     const auto& info = fonts[font]->GetFrames()[glyph];
@@ -182,7 +186,7 @@ void DrawGlyph(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w = 
     if (!w) w = info.width;
     if (!h) h = info.height;
     
-    SetGlyph(x, y, 0, w, h, info.offset_x, info.offset_y, info.width, info.height, Render::COLOR_WHITE, font);
+    SetGlyph(x, y, frame_stack.top().stack_height, w, h, info.offset_x, info.offset_y, info.width, info.height, Render::COLOR_WHITE, font);
 }
 
 /// Draws a glyph box.
@@ -215,6 +219,233 @@ void DrawBox(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w, uin
     DrawGlyph(font, mid_mid, x+GlyphWidth(font, mid_lft), y+GlyphHeight(font, top_mid), w-GlyphWidth(font, mid_lft)-GlyphWidth(font, mid_rgt), h-GlyphHeight(font, top_mid)-GlyphHeight(font, btm_mid));
 }
 
+uint32_t TextWidth(font_t font, const char* text) {
+    uint32_t width = 0;
+    for (const char* c = text; *c != '\0'; c++) {
+        width += GlyphWidth(font, *c);
+    }
+    return width;
+}
+
+void Text(font_t font, const char* text, uint32_t orientation) {
+    uint32_t cursor_x = frame_stack.top().cursor_x;
+    uint32_t cursor_y = frame_stack.top().cursor_y;
+    // depending on alignment we could also choose other cursor_x and cursor_y
+    
+    switch (orientation) {
+        case TEXT_LEFT:
+        default: 
+            break;
+        case TEXT_CENTER:
+            cursor_x += (frame_stack.top().w - TextWidth(font, text)) / 2;
+            break;
+        case TEXT_RIGHT:
+            cursor_x += frame_stack.top().w - TextWidth(font, text);
+            break;
+        case TEXT_JUSTIFIED:
+            // TODO: implement
+            break;
+    }
+    
+    for (const char* c = text; *c != '\0'; c++) {
+        DrawGlyph(font, *c, cursor_x, cursor_y);
+        cursor_x += GlyphWidth(font, *c);
+    }
+    
+    frame_stack.top().cursor_x = cursor_x;
+    frame_stack.top().cursor_y = cursor_y;
+}
+
+void DrawBoxHorizontal(font_t font, glyph_t glyph,  uint32_t x, uint32_t y, uint32_t w) {
+    const glyph_t lft = glyph + 0;
+    const glyph_t mid = glyph + 1;
+    const glyph_t rgt = glyph + 2;
+    
+    DrawGlyph(font, lft, x, y, 0, 0);
+    DrawGlyph(font, rgt, x+w-GlyphWidth(font, lft)-GlyphWidth(font, rgt), y, 0, 0);
+    DrawGlyph(font, mid, x+GlyphWidth(font, lft), y, w-GlyphWidth(font, lft)-GlyphWidth(font, rgt), 0);
+}
+
+void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+    uint32_t stack_height = frame_stack.top().stack_height;
+    
+    FrameObject* new_frame = frame_stack.AddNew();
+    
+    new_frame->x = x;
+    new_frame->y = y;
+    new_frame->w = w;
+    new_frame->h = h;
+    new_frame->cursor_x = x;
+    new_frame->cursor_y = y;
+    new_frame->stack_height = stack_height + 1;
+}
+
+void PushFrameRelative(uint32_t orientation, uint32_t offset) {
+    uint32_t x = frame_stack.top().x;
+    uint32_t y = frame_stack.top().y;
+    uint32_t w = frame_stack.top().w;
+    uint32_t h = frame_stack.top().h;
+    
+    switch (orientation) {
+        default: return;
+        case FRAME_LEFT:
+            x += offset;
+            w -= offset;
+            break;
+        case FRAME_RIGHT:
+            w -= offset;
+            break;
+        case FRAME_TOP:
+            y += offset;
+            h -= offset;
+            break;
+        case FRAME_BOTTOM:
+            h -= offset;
+            break;
+        case FRAME_INSET:
+            x += offset;
+            y += offset;
+            w -= offset * 2;
+            h -= offset * 2;
+            break;
+    }
+    
+    PushFrame(x, y, w, h);
+}
+
+void PopFrame() {
+    frame_stack.Remove();
+}
+
+bool CursorOver(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+    uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
+    uint32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
+    
+    return cur_x > x && cur_y > y && cur_x < x + w && cur_y < y + h;
+}
+
+bool mouse_click_not_handled = true;
+
+bool ClickHandled() {
+    if (mouse_click_not_handled) {
+        mouse_click_not_handled = false;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool Clicked() {
+    return UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
+}
+
+bool Button(const char* text) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    uint32_t w = TextWidth(2, text) + 16;
+    uint32_t h = 22;
+    
+    glyph_t style = WIDGET_BUTTON;
+    
+    if (CursorOver(x, y, w, h)) {
+        if (Clicked()) {
+            style = WIDGET_BUTTON_PRESSED;
+        } else {
+            style = WIDGET_BUTTON_SELECTED_ENABLED;
+        }
+        
+        UI::SetCursor(UI::CURSOR_CLICK);
+    }
+    
+    DrawBox(0, style, x, y, w, h);
+    
+    PushFrame(x, y + 3, w, h);
+    Text(1, text, TEXT_CENTER);
+    PopFrame();
+    
+    frame_stack.top().cursor_x += w;
+    
+    return CursorOver(x, y, w, h) && ClickHandled();
+}
+
+bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled = true) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    
+    glyph_t style = WIDGET_RADIO_BUTTON;
+    
+    if (enabled && index == selected) style += 1;
+    if (!enabled && index == selected) style += 5;
+    if (!enabled && index != selected) style += 4;
+    
+    DrawGlyph(0, style, x, y);
+    
+    frame_stack.top().cursor_x += GlyphWidth(0, style);
+    
+    if (text) Text(1, text, TEXT_LEFT);
+    
+    if (enabled && CursorOver(x, y, frame_stack.top().cursor_x - x, 24)) {
+        if (ClickHandled()) {
+            selected = index;
+            return true;
+        }
+        
+        UI::SetCursor(UI::CURSOR_CLICK);
+    }
+    
+    return false;
+}
+
+bool CheckBox(bool& selected, const char* text, bool enabled = true) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    
+    glyph_t style = WIDGET_CHECK_BUTTON;
+    
+    if (enabled && selected) style += 1;
+    if (!enabled && selected) style += 5;
+    if (!enabled && selected) style += 4;
+    
+    DrawGlyph(0, style, x, y);
+    
+    frame_stack.top().cursor_x += GlyphWidth(0, style);
+    
+    if (text) Text(1, text, TEXT_LEFT);
+    
+    if (enabled && CursorOver(x, y, frame_stack.top().cursor_x - x, 24)) {
+        if (ClickHandled()) {
+            selected = !selected;
+            return true;
+        }
+        
+        UI::SetCursor(UI::CURSOR_CLICK);
+    }
+    
+    return false;
+}
+
+void NewLine() {
+    frame_stack.top().cursor_x = frame_stack.top().x;
+    frame_stack.top().cursor_y += 24;
+}
+
+void HorizontalDivider() {
+    NewLine();
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    uint32_t w = frame_stack.top().cursor_x - frame_stack.top().x + frame_stack.top().w;
+    DrawBoxHorizontal(0, WIDGET_DIVIDER_HORIZONTAL, x, y, w);
+    frame_stack.top().cursor_x = frame_stack.top().x;
+    frame_stack.top().cursor_y += GlyphHeight(0, WIDGET_DIVIDER_HORIZONTAL) + 4;
+}
+
+void FillFrame(font_t font, glyph_t glyph) {
+    DrawBox(font, glyph, frame_stack.top().x, 
+                         frame_stack.top().y, 
+                         frame_stack.top().w, 
+                         frame_stack.top().h);
+    frame_stack.top().stack_height++;
+}
 
 void Begin() {
     
@@ -229,12 +460,47 @@ void Begin() {
     first_frame->h = UI::GetScreenWidth();
     first_frame->cursor_x = 0;
     first_frame->cursor_y = 0;
+    first_frame->stack_height = 0;
     
-    SetGlyph(0, 0, 0, 256, 256, 0, 0, 256, 256, Render::COLOR_WHITE, 0);
+    // Resets cursor -> widgets might change it to something else.
+    UI::SetCursor(UI::CURSOR_DEFAULT);
     
-    DrawBox(0, WIDGET_TEXT_BOX, 300, 300, 100, 100);
-    DrawBox(0, WIDGET_TEXT_BOX_DISABLED, 430, 300, 100, 20);
-    DrawBox(0, WIDGET_BORDER, 600, 100, 30, 120);
+    // This is set up so that only a single button or other widget can handle
+    // the mouse click for the duration of it.
+    static bool prev_mouse = false;
+    if (UI::PollKeyboardKey(UI::KEY_LEFTMOUSE) && !prev_mouse) {
+        mouse_click_not_handled = true;
+    } else {
+        mouse_click_not_handled = false;
+    }
+    prev_mouse = UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
+    
+    //SetGlyph(0, 0, 0, 256, 256, 0, 0, 256, 256, Render::COLOR_WHITE, 0);
+    
+
+    
+    //Text(2, "New text Font this is text!");
+    
+    //if (Button("this is a button")) std::cout << "yeea" << std::endl;
+    
+    static uint32_t selected = 0;
+    static bool sected = false;
+    RadioButton(0, selected, "ee");
+    //NewLine();
+    RadioButton(1, selected, "uuuu");
+    CheckBox(sected, "tooting");
+    
+    //NewLine();
+    HorizontalDivider();
+    //NewLine();
+    Text(1, "choochking toopi nnot", TEXT_LEFT);
+    
+    PushFrame(200, 200, 100, 50);
+    FillFrame(0, WIDGET_BUTTON);
+    PushFrameRelative(FRAME_INSET, 5);
+    Text(1, "toop ing tooting", TEXT_LEFT);
+    PopFrame();
+    PopFrame();
 }
 
 void End() {
