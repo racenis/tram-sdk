@@ -49,6 +49,11 @@ static void GlyphColor(vec3 color) {
     glyph_color = color;
 }
 
+void SetColor(vec3 color) {
+    user_color = color;
+    glyph_color = color;
+}
+
 using namespace tram::Render::API;
 
 /// Performs initialization of the GUI system.
@@ -407,7 +412,9 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
     if (!enabled && index == selected) style += 5;
     if (!enabled && index != selected) style += 4;
     
+    GlyphColor(Render::COLOR_WHITE);
     DrawGlyph(0, style, x, y);
+    RestoreUserColor();
     
     frame_stack.top().cursor_x += GlyphWidth(0, style);
     
@@ -435,7 +442,9 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     if (!enabled && selected) style += 5;
     if (!enabled && selected) style += 4;
     
+    GlyphColor(Render::COLOR_WHITE);
     DrawGlyph(0, style, x, y);
+    RestoreUserColor();
     
     frame_stack.top().cursor_x += GlyphWidth(0, style);
     
@@ -463,17 +472,21 @@ void HorizontalDivider() {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
     uint32_t w = frame_stack.top().cursor_x - frame_stack.top().x + frame_stack.top().w;
+    GlyphColor(Render::COLOR_WHITE);
     DrawBoxHorizontal(0, WIDGET_DIVIDER_HORIZONTAL, x, y, w);
+    RestoreUserColor();
     frame_stack.top().cursor_x = frame_stack.top().x;
     frame_stack.top().cursor_y += GlyphHeight(0, WIDGET_DIVIDER_HORIZONTAL) + 4;
 }
 
 void FillFrame(font_t font, glyph_t glyph) {
+    GlyphColor(Render::COLOR_WHITE);
     DrawBox(font, glyph, frame_stack.top().x, 
                          frame_stack.top().y, 
                          frame_stack.top().w, 
                          frame_stack.top().h);
     frame_stack.top().stack_height++;
+    RestoreUserColor();
 }
 
 bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) {

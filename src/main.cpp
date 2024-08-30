@@ -108,21 +108,21 @@ void mainloop() {
     Core::Update();
     UI::Update();
     
-    Path::Find("test")->Draw();
+    //Path::Find("test")->Draw();
     
-    octree.Draw();
+    //octree.Draw();
     
-    vec3 toots[4];
-    size_t count = octree.Find(toots, Render::GetViewPosition());
-    for (size_t i  = 0 ; i < count ; i++)
-        AddLineAABB(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), toots[i], vec3(0.0f, 0.0f, 0.0f), COLOR_PINK);
+    //vec3 toots[4];
+    //size_t count = octree.Find(toots, Render::GetViewPosition());
+    //for (size_t i  = 0 ; i < count ; i++)
+        //AddLineAABB(vec3(-0.5f, -0.5f, -0.5f), vec3(0.5f, 0.5f, 0.5f), toots[i], vec3(0.0f, 0.0f, 0.0f), COLOR_PINK);
     
     follower->Advance(0.025f);
     
     Entity* mongus = Entity::Find("mongus");
     
     if (mongus && GetTick() > 120) {
-        AddLineMarker(mongus->GetLocation(), COLOR_RED);
+        //AddLineMarker(mongus->GetLocation(), COLOR_RED);
         mongus->SetLocation(follower->GetPosition());
         mongus->SetRotation(glm::quatLookAt(follower->GetTangent(), DIRECTION_UP));
     }
@@ -130,7 +130,7 @@ void mainloop() {
     
     
     //follower->SetOrientation(Render::GetViewRotation() * DIRECTION_FORWARD);
-    AddLineMarker(follower->GetPosition(), COLOR_PINK);
+    //AddLineMarker(follower->GetPosition(), COLOR_PINK);
     
     //follower->Project(Render::GetViewPosition());
     

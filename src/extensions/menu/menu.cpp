@@ -33,6 +33,9 @@ uint32_t MENU_SYSTEM = -1;
 
 DebugMenu* debug_menu = nullptr;
 
+// replace menu stack with just menu list
+// and make menu list act like menu stack
+// ALSO make sure that menu list is copied before iterating
 Stack<Menu*> menu_stack("mneu stack", 100);
 std::vector<Menu*> menu_list;
 
@@ -111,6 +114,8 @@ void Init() {
 }
 
 void Update() {
+    GUI::SetColor({0.0f, 0.0f, 0.0f});
+    
     for (auto menu : menu_list) {
         menu->Display();
     }

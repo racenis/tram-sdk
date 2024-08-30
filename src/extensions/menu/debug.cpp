@@ -44,11 +44,11 @@ void EntityProperties::Display() {
         if (Entity* ptr = Entity::Find(entity); !ptr) {
             GUI::Text(FONT_TEXT, "No entity available.");
         } else {
-            GUI::Text(FONT_TEXT_BOLD, "Entity ID ");
+            GUI::Text(FONT_TEXT, "Entity ID ");
             GUI::TextBox(std::to_string(ptr->GetID()).c_str(), 50);
-            GUI::Text(FONT_TEXT_BOLD, " Name ");
+            GUI::Text(FONT_TEXT, " Name ");
             GUI::TextBox(ptr->GetName(), 100);
-            GUI::Text(FONT_TEXT_BOLD, " Distance ");
+            GUI::Text(FONT_TEXT, " Distance ");
             float dist = glm::distance(Render::GetViewPosition(), ptr->GetLocation());
             int dist0 = dist;
             int dist1 = dist*10 - dist0*10;
@@ -63,7 +63,11 @@ void EntityProperties::Display() {
             }
                         
             if (GUI::Button("Message")) {
-                
+                auto send = new MessageSend;
+                send->SetEntity(ptr->GetID());
+                Menu::Push(send);
+                //auto props = new MessageTypeSelection([](auto){});
+                //Menu::Push(props);
             }
         }
     GUI::PopFrame();
@@ -127,5 +131,88 @@ void EntityPicker::Display() {
     GUI::PopFrame();
 }
 
+MessageTypeSelection::MessageTypeSelection(std::function<void(id_t)> callback) {
+    this->callback = callback;
+}
+
+void MessageTypeSelection::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34 * 2);
+    GUI::PushFrameRelative(GUI::FRAME_LEFT, 200);
+    
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        
+        message_t selected = Message::NONE;
+        
+        for (message_t i = 0; i < Message::LAST_MESSAGE; i++) {
+            if (GUI::Button(Message::GetName(i))) {
+                selected = i;
+            }
+            
+            GUI::NewLine();
+        }
+        
+        if (selected) {
+            callback(selected);
+        
+            Menu::Pop();
+        }
+        
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
+
+void MessageSend::SetEntity(id_t entity) {
+    this->entity_id = entity;
+}
+
+void MessageSend::SetMessageType(uint32_t type) {
+    this->message_type = type;
+}
+
+void MessageSend::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        if (Entity* entity = Entity::Find(entity_id); !entity) {
+            GUI::Text(FONT_TEXT, "No entity available.");
+        } else {
+            // Send [type] to [name] parameter [none|int|uint|float] [entry] .. send
+            GUI::Text(FONT_TEXT, "Send ");
+            GUI::TextBox(Message::GetName(message_type), 100);
+            if (GUI::Button("(?)")) {
+                auto select = new MessageTypeSelection([=, this](auto p){this->SetMessageType(p);});
+                Menu::Push(select);
+            }
+            GUI::Text(FONT_TEXT, " to ");
+            if (entity->GetName()) {
+                GUI::TextBox(entity->GetName(), 100);
+            } else {
+                GUI::TextBox(std::to_string(entity->GetID()).c_str(), 100);
+            }
+            GUI::Text(FONT_TEXT, " with a parameter of ");
+            GUI::RadioButton(0, parameter_type, "none");
+            GUI::RadioButton(1, parameter_type, "int");
+            GUI::RadioButton(2, parameter_type, "name");
+            GUI::RadioButton(3, parameter_type, "float");
+            GUI::TextBox("", 100);
+            if (GUI::Button("Send!")) {
+                Message msg;
+                msg.type = message_type;
+                msg.sender = 0;
+                msg.receiver = entity->GetID();
+                switch (parameter_type) {
+                    default:
+                        msg.data = nullptr;
+                }
+                Message::Send(msg);
+            }
+        }
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
 
 }

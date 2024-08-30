@@ -34,6 +34,28 @@ protected:
     std::function<void(id_t)> callback;
 };
 
+// TODO: maybe make this a generic list selection class?
+class MessageTypeSelection : public Menu {
+public:
+    MessageTypeSelection(std::function<void(id_t)> callback);
+    void Display();
+    ~MessageTypeSelection() = default;
+protected:
+    std::function<void(id_t)> callback;
+};
+
+class MessageSend : public Menu {
+public:
+    void SetEntity(id_t entity);
+    void SetMessageType(uint32_t type);
+    void Display();
+    ~MessageSend() = default;
+protected:
+    uint32_t parameter_type = 0;
+    id_t entity_id = 0;
+    uint32_t message_type = 0;
+};
+
 }
 
 #endif

@@ -95,6 +95,7 @@ bool ClickHandled();
 void Begin();
 void End();
 
+void SetColor(vec3 color);
 void FillFrame(font_t font, glyph_t glyph);
 void HorizontalDivider();
 void NewLine();
