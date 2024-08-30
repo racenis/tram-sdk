@@ -25,6 +25,10 @@ enum orientation:uint32_t {
     FRAME_RIGHT,
     FRAME_TOP,
     FRAME_BOTTOM,
+    FRAME_LEFT_INV,
+    FRAME_RIGHT_INV,
+    FRAME_TOP_INV,
+    FRAME_BOTTOM_INV,
     FRAME_INSET
 };
 
@@ -86,8 +90,23 @@ void Init();
 void Update();
 font_t RegisterFont(Render::Sprite* sprite);
 
+bool ClickHandled();
+
 void Begin();
 void End();
+
+void FillFrame(font_t font, glyph_t glyph);
+void HorizontalDivider();
+void NewLine();
+bool CheckBox(bool& selected, const char* text, bool enabled = true);
+bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled = true);
+bool Button(const char* text);
+void PopFrame();
+void PushFrameRelative(uint32_t orientation, uint32_t offset);
+void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+void Text(font_t font, const char* text, uint32_t orientation = TEXT_LEFT);
+bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
+void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);
 
 }
 

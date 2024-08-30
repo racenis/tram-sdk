@@ -38,6 +38,17 @@ Render::drawlistentry_t glyphvertices_entry;
 
 std::vector<Render::SpriteVertex> glyphvertices;
 
+static vec3 user_color = Render::COLOR_WHITE;
+static vec3 glyph_color = Render::COLOR_WHITE;
+
+static void RestoreUserColor() {
+    glyph_color = user_color;
+}
+
+static void GlyphColor(vec3 color) {
+    glyph_color = color;
+}
+
 using namespace tram::Render::API;
 
 /// Performs initialization of the GUI system.
@@ -186,7 +197,7 @@ void DrawGlyph(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w = 
     if (!w) w = info.width;
     if (!h) h = info.height;
     
-    SetGlyph(x, y, frame_stack.top().stack_height, w, h, info.offset_x, info.offset_y, info.width, info.height, Render::COLOR_WHITE, font);
+    SetGlyph(x, y, frame_stack.top().stack_height, w, h, info.offset_x, info.offset_y, info.width, info.height, glyph_color, font);
 }
 
 /// Draws a glyph box.
@@ -289,17 +300,31 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
     switch (orientation) {
         default: return;
         case FRAME_LEFT:
-            x += offset;
-            w -= offset;
+            w = offset;
             break;
         case FRAME_RIGHT:
             w -= offset;
+            x += offset;
             break;
         case FRAME_TOP:
+            h = offset;
+            break;
+        case FRAME_BOTTOM:
+            h -= offset;
+            y += offset;
+            break;
+        case FRAME_LEFT_INV:
+            x += offset;
+            w -= offset;
+            break;
+        case FRAME_RIGHT_INV:
+            w -= offset;
+            break;
+        case FRAME_TOP_INV:
             y += offset;
             h -= offset;
             break;
-        case FRAME_BOTTOM:
+        case FRAME_BOTTOM_INV:
             h -= offset;
             break;
         case FRAME_INSET:
@@ -357,18 +382,22 @@ bool Button(const char* text) {
         UI::SetCursor(UI::CURSOR_CLICK);
     }
     
+    GlyphColor(Render::COLOR_WHITE);
     DrawBox(0, style, x, y, w, h);
     
     PushFrame(x, y + 3, w, h);
+    GlyphColor(Render::COLOR_BLACK);
     Text(1, text, TEXT_CENTER);
     PopFrame();
     
     frame_stack.top().cursor_x += w;
     
+    RestoreUserColor();
+    
     return CursorOver(x, y, w, h) && ClickHandled();
 }
 
-bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled = true) {
+bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
     
@@ -396,7 +425,7 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
     return false;
 }
 
-bool CheckBox(bool& selected, const char* text, bool enabled = true) {
+bool CheckBox(bool& selected, const char* text, bool enabled) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
     
@@ -447,6 +476,62 @@ void FillFrame(font_t font, glyph_t glyph) {
     frame_stack.top().stack_height++;
 }
 
+bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    if (w == 0) w = 100;
+    if (h == 0) h = 22;
+    
+    glyph_t style = enabled ? WIDGET_TEXT_BOX : WIDGET_TEXT_BOX_DISABLED;
+    
+    if (CursorOver(x, y, w, h)) {
+        if (Clicked()) {
+
+        } else {
+
+        }
+        
+        UI::SetCursor(UI::CURSOR_TEXT);
+    }
+    
+    GlyphColor(Render::COLOR_WHITE);
+    DrawBox(0, style, x, y, w, h);
+    
+    PushFrame(x + 4, y + 3, w - 8, h);
+    GlyphColor(Render::COLOR_BLACK);
+    Text(1, text, TEXT_LEFT);
+    PopFrame();
+    
+    frame_stack.top().cursor_x += w;
+    
+    RestoreUserColor();
+    
+    return CursorOver(x, y, w, h) && ClickHandled();
+}
+
+void TextBox(const char* text, uint32_t w, uint32_t h) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    if (w == 0) w = 100;
+    if (h == 0) h = 22;
+
+    if (CursorOver(x, y, w, h)) {
+        UI::SetCursor(UI::CURSOR_TEXT);
+    }
+    
+    GlyphColor(Render::COLOR_WHITE);
+    DrawBox(0, WIDGET_TEXT_BOX_DISABLED, x, y, w, h);
+    
+    PushFrame(x + 4, y + 3, w - 8, h);
+    GlyphColor(Render::COLOR_BLACK);
+    Text(1, text, TEXT_LEFT);
+    PopFrame();
+    
+    frame_stack.top().cursor_x += w;
+    
+    RestoreUserColor();
+}
+
 void Begin() {
     
     // The first frame takes up the whole screen.
@@ -477,8 +562,11 @@ void Begin() {
     
     //SetGlyph(0, 0, 0, 256, 256, 0, 0, 256, 256, Render::COLOR_WHITE, 0);
     
+    //char e[100] = "textanto";
+    //TextBox(e, 100);
 
-    
+
+    return;
     //Text(2, "New text Font this is text!");
     
     //if (Button("this is a button")) std::cout << "yeea" << std::endl;

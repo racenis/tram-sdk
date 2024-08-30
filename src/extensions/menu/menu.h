@@ -7,15 +7,29 @@
 #include <framework/gui.h>
 
 namespace tram::Ext::Menu {
-    void Init();
-    void DebugMenu();
-    void EscapeMenu();
+
+void Init();
+void Update();
+
+extern GUI::font_t FONT_WIDGETS;
+extern GUI::font_t FONT_TEXT;
+extern GUI::font_t FONT_TEXT_BOLD;
+extern GUI::font_t FONT_HEADER;
+extern GUI::font_t FONT_PIXELART;
+
+class Menu {
+public:
+    virtual void Display() = 0;
+    virtual ~Menu() = default;
+
+    static void Push(Menu*);
+    static bool Pop();
+    static void Clear();
     
-    extern GUI::font_t FONT_WIDGETS;
-    extern GUI::font_t FONT_TEXT;
-    extern GUI::font_t FONT_TEXT_BOLD;
-    extern GUI::font_t FONT_HEADER;
-    extern GUI::font_t FONT_PIXELART;
+    static void Add(Menu*);
+    static void Remove(Menu*);
+};
+
 }
 
 #endif

@@ -4,13 +4,19 @@
 #include <framework/gui.h>
 #include <framework/stats.h>
 #include <framework/worldcell.h>
+#include <framework/system.h>
 
 #include <physics/physics.h>
 #include <render/render.h>
 #include <render/sprite.h>
 #include <render/material.h>
 
-#include <framework/system.h>
+#include <templates/stack.h>
+
+#include <extensions/menu/menu.h>
+#include <extensions/menu/debug.h>
+
+#include <algorithm>
 
 using namespace tram::GUI;
 using namespace tram::Render;
@@ -25,19 +31,48 @@ font_t FONT_PIXELART = 0;   //< Large pixel-art font.
 
 uint32_t MENU_SYSTEM = -1;
 
-bool escape_menu_open = false;
-bool debug_menu_open = false;
+DebugMenu* debug_menu = nullptr;
+
+Stack<Menu*> menu_stack("mneu stack", 100);
+std::vector<Menu*> menu_list;
 
 void ToggleMenuState() { UI::SetInputState((UI::GetInputState() == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT); }
 
-void EscapeMenuKeyboard () { 
-    ToggleMenuState();
-    escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : escape_menu_open = true;
+void CloseAll() {
+    if (debug_menu) Menu::Remove(debug_menu);
+    
+    debug_menu = nullptr;
+}
+
+void EscapeMenuKeyboard () {
+    if (Menu::Pop()) {
+        return;
+    }
+    
+    CloseAll();
+    UI::SetInputState(UI::STATE_DEFAULT);
+    
+    /*if (debug_menu) {
+        CloseAll();
+        UI::SetInputState(UI::STATE_DEFAULT);
+    } else  {
+        CloseAll();
+        debug_menu = new DebugMenu();
+        Menu::Add(debug_menu);
+        UI::SetInputState(UI::STATE_MENU_OPEN);
+    }*/
 }
 
 void DebugMenuKeyboard () {
-    ToggleMenuState();
-    escape_menu_open || debug_menu_open ? escape_menu_open = false, debug_menu_open = false : debug_menu_open = true;
+    if (debug_menu) {
+        CloseAll();
+        UI::SetInputState(UI::STATE_DEFAULT);
+    } else  {
+        CloseAll();
+        debug_menu = new DebugMenu();
+        Menu::Add(debug_menu);
+        UI::SetInputState(UI::STATE_MENU_OPEN);
+    }
 }
 
 void Init() {
@@ -75,7 +110,46 @@ void Init() {
     System::SetInitialized(MENU_SYSTEM, true);
 }
 
-void DebugMenu() {
+void Update() {
+    for (auto menu : menu_list) {
+        menu->Display();
+    }
+    
+    if (menu_stack.GetLength()) {
+        menu_stack.top()->Display();
+    }
+}
+
+void Menu::Push(Menu* menu) {
+    *menu_stack.AddNew() = menu;
+}
+
+bool Menu::Pop() {
+    if (menu_stack.GetLength()) {
+        delete menu_stack.top();
+        menu_stack.Remove();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void Menu::Clear() {
+    while(menu_stack.GetLength()) {
+        delete menu_stack.top();
+        menu_stack.Remove();
+    }
+}
+
+void Menu::Add(Menu* menu) {
+    menu_list.push_back(menu);
+}
+
+void Menu::Remove(Menu* menu) {
+    menu_list.erase(std::find(menu_list.begin(), menu_list.end(), menu));
+}
+
+void DebugMenue() {
     //static bool debugdraw_trans = false;
     //static bool debugdraw_paths = false;
     //static bool debugdraw_navmeshes = false;
@@ -96,7 +170,7 @@ void DebugMenu() {
         //GUI::Text(fpsinfobuffer, 2); GUI::FrameBreakLine();
     //}
     
-    if (!debug_menu_open) return;
+    //if (!debug_menu_open) return;
     
     static bool worldcell_menu_open = false;
     static bool debugdraw_menu_open = false;
@@ -187,14 +261,14 @@ void DebugMenu() {
     }
 }
 
-void EscapeMenu() {
-    if (!escape_menu_open) return;
+//void EscapeMenu() {
+    //if (!escape_menu_open) return;
     
     //Frame(FRAME_TOP, 20);
     
     //Text("Escape Menu", 2);
     
     //EndFrame();
-}
+//}
 
 }

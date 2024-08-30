@@ -153,7 +153,7 @@ void mainloop() {
         frametick = 0;
     }
 
-    if (UI::GetInputState() != STATE_DEFAULT) {
+    /*if (UI::GetInputState() != STATE_DEFAULT) {
         for (int i = 0; i < 1; i ++){
         float x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
         float y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
@@ -187,7 +187,7 @@ void mainloop() {
         //Log("{} {} {} : {} {} {}", res2.x, res2.y, res2.z, res3.x, res3.y, res3.z);
         
         
-    }
+    }*/
 
     
     //vec3 ray_pos = Render::GetCameraPosition();
@@ -283,8 +283,9 @@ void mainloop() {
     }
     
     GUI::Begin();
-    Ext::Menu::DebugMenu();
-    Ext::Menu::EscapeMenu();
+    //Ext::Menu::DebugMenu();
+    //Ext::Menu::EscapeMenu();
+    Ext::Menu::Update();
     
     std::string tickstr = std::to_string(GetTick());
     std::string tickstr2 = std::to_string(GetTickTime());
