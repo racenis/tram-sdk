@@ -5,6 +5,7 @@
 
 #include <templates/queue.h>
 #include <templates/stackpool.h>
+#include <templates/hashmap.h>
 
 #include <framework/event.h>
 #include <framework/entity.h>
@@ -12,6 +13,8 @@
 
 namespace tram {
 
+const size_t MAX_EVENT_TYPES = 100;
+    
 struct ListenerInfo {
     enum ListenerType : int64_t {
         LISTENER_COMPONENT,
@@ -38,13 +41,49 @@ static StackPool<char> data_pool ("event data pool", 2000);
 //static std::vector<Pool<ListenerInfo>> listener_table(Event::LAST_EVENT, {"EVENTListnerPoo", 50});
 static std::vector<std::vector<ListenerInfo>> listener_table(Event::LAST_EVENT, std::vector<ListenerInfo>());
 
+static const char* event_names[MAX_EVENT_TYPES] = {
+    "keypress",
+    "keydown",
+    "keyup",
+    "cursorpos",
+    "tick",
+    "selected",
+    "look-at"
+};
+
+static event_t last_type = Event::LAST_EVENT;
+static Hashmap<event_t> name_t_to_event_t("name_t_to_event_t", (MAX_EVENT_TYPES*2)+11);
+
 /// Registers a new event type.
-event_t Event::Register() {
-    auto new_event_id = listener_table.size();
-    //listener_table.emplace_back(std::string("Event Listener Pool ") + std::to_string(new_event_id), 50);
+event_t Event::Register(const char* name) {
     listener_table.push_back(std::vector<ListenerInfo>());
-    return new_event_id;
+    event_names[last_type] = name;
+    return last_type++;
 }
+
+event_t Event::GetType(name_t name) {
+    event_t type = name_t_to_event_t.Find(name);
+    
+    if (!type) {
+        for (event_t i = 0; i < last_type; i++) {
+            if (event_names[i] == name) {
+                name_t_to_event_t.Insert(name, i);
+                return i;
+            }
+        }
+    }
+    
+    return type;
+}
+
+name_t Event::GetName(event_t type) {
+    return event_names[type];
+}
+
+event_t Event::GetLast() {
+    return last_type;
+}
+
 
 static listener_t NewListenerHandle(event_t type) {
     static listener_t last_id = 0;

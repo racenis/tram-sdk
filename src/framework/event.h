@@ -8,6 +8,8 @@
 #include <cstddef>
 #include <type_traits>
 
+#include <framework/uid.h>
+
 namespace tram {
 
 typedef uint16_t event_t;
@@ -29,7 +31,10 @@ struct Event {
         LAST_EVENT
     };
 
-    static event_t Register();
+    static event_t Register(const char* name);
+    static event_t GetType(name_t name);
+    static name_t GetName(event_t type);
+    static event_t GetLast();
     static void Post (const Event &event);
     static void Dispatch();
     static listener_t AddListener(event_t type, EntityComponent* component);

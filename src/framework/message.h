@@ -38,7 +38,7 @@ struct Message {
     static message_t Register(const char* name);
     static message_t GetType(name_t name);
     static name_t GetName(message_t type);
-    
+    static message_t GetLast();
     
     static void Send(const Message& message);
     static void Send(const Message& message, float delay);
@@ -46,6 +46,7 @@ struct Message {
     static void* AllocateData(size_t ammount);
     template <typename T> static T* AllocateData() { static_assert(std::is_trivially_destructible_v<T>); return (T*)AllocateData(sizeof(T)); }
     template <typename T> static T* AllocateData(const T& data) { static_assert(std::is_trivially_destructible_v<T>); T* ptr = (T*)AllocateData(sizeof(T)); *ptr = data; return ptr; }
+    static void SetInterceptCallback(void(const Message&));
 
     message_t type;
     id_t sender;

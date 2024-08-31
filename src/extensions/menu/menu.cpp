@@ -109,6 +109,8 @@ void Init() {
     UI::BindKeyboardKey(UI::KEY_ESCAPE, EscapeMenuKeyboard);
     UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, DebugMenuKeyboard);
     
+    InitCallbacks();
+    
     MENU_SYSTEM = System::Register("Default Menus", "MENU");
     System::SetInitialized(MENU_SYSTEM, true);
 }
@@ -116,13 +118,17 @@ void Init() {
 void Update() {
     GUI::SetColor({0.0f, 0.0f, 0.0f});
     
-    for (auto menu : menu_list) {
+    auto menu_list_copy = menu_list;
+    for (auto menu : menu_list_copy) {
         menu->Display();
     }
     
+    // TODO: cop[y menu_stack
     if (menu_stack.GetLength()) {
         menu_stack.top()->Display();
     }
+    
+    UpdateCallbacks();
 }
 
 void Menu::Push(Menu* menu) {
@@ -151,7 +157,11 @@ void Menu::Add(Menu* menu) {
 }
 
 void Menu::Remove(Menu* menu) {
-    menu_list.erase(std::find(menu_list.begin(), menu_list.end(), menu));
+    auto thing = std::find(menu_list.begin(), menu_list.end(), menu);
+    
+    // TODO:  fix memory leak
+    //delete *thing;
+    menu_list.erase(thing);
 }
 
 void DebugMenue() {

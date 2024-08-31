@@ -18,6 +18,7 @@ const size_t MAX_MESSAGE_TYPES = 100;
 static Queue<Message> message_queue ("message queue", 500);
 static Pool<Message> message_pool ("message pool", 250);
 static StackPool<char> data_pool ("message data pool", 2000);
+static void(*intercept_callback)(const Message&) = nullptr;
 
 std::priority_queue <std::pair<double, Message*>, std::vector<std::pair<double, Message*>>, std::greater<std::pair<double, Message*>>> future_messages;
 
@@ -73,6 +74,10 @@ name_t Message::GetName(message_t type) {
     return message_names[type];
 }
 
+message_t Message::GetLast() {
+    return last_type;
+}
+
 /// Dispatches sent messsages.
 /// Dispatches the messages that have been sent using the Message::Send() function.
 void Message::Dispatch() {
@@ -91,6 +96,7 @@ void Message::Dispatch() {
         Message& message = message_queue.front();
         Entity* receiver = Entity::Find(message.receiver);
         if (receiver) receiver->MessageHandler(message);
+        if (intercept_callback) intercept_callback(message);
 
         message_queue.pop();
     }
@@ -128,6 +134,10 @@ void Message::Send (const Message& message, float delay) {
 /// @note Remember to only use POD data types.
 void* Message::AllocateData (size_t ammount) {
     return data_pool.AddNew(ammount);
+}
+
+void Message::SetInterceptCallback(void(*callback)(const Message&)) {
+    intercept_callback = callback;
 }
 
 }

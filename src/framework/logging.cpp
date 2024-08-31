@@ -20,10 +20,18 @@ void SetSystemLoggingSeverity (System::system_t system, Severity min_severity) {
     severities[system] = min_severity;
 }
 
+static void(*log_callback)(int, const char*) = nullptr;
+
+void SetLogCallback(void(*callback)(int, const char*)) {
+    log_callback = callback;
+}
+
 }
 
 namespace tram::implementation {
 
+// since all of the formats use the same buffer? we should probably add a some
+// sort of a lock or something. so that you can Log from multiple threads.
 char buffer[500] = {'\0'}; // yes.. haha .. YES!!
 
 void concat_fmt (std::string_view& str) {
@@ -38,7 +46,7 @@ void concat_fmt (std::string_view& str) {
     str.remove_prefix(close_bracket + 1);
 }
 
-void flush (int severity, int system) {
+void flush_console(int severity, int system) {
     if ((size_t) system < severities.size() && severity < severities[system]) {
         buffer[0] = '\0';
         return;
@@ -62,6 +70,14 @@ void flush (int severity, int system) {
     }
     
     std::cout << buffer << std::endl;
+    buffer[0] = '\0';
+}
+
+void flush_callback(int severity, int system) {
+    if (log_callback) {
+        log_callback(severity, buffer);
+    }
+    
     buffer[0] = '\0';
 }
 

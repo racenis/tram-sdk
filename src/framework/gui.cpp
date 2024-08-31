@@ -308,15 +308,15 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
             w = offset;
             break;
         case FRAME_RIGHT:
-            w -= offset;
-            x += offset;
+            x += w - offset;
+            w = offset;
             break;
         case FRAME_TOP:
             h = offset;
             break;
         case FRAME_BOTTOM:
-            h -= offset;
-            y += offset;
+            y += h - offset;
+            h = offset;
             break;
         case FRAME_LEFT_INV:
             x += offset;
@@ -555,7 +555,7 @@ void Begin() {
     first_frame->x = 0;
     first_frame->y = 0;
     first_frame->w = UI::GetScreenWidth();
-    first_frame->h = UI::GetScreenWidth();
+    first_frame->h = UI::GetScreenHeight();
     first_frame->cursor_x = 0;
     first_frame->cursor_y = 0;
     first_frame->stack_height = 0;

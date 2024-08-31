@@ -10,10 +10,18 @@
 
 namespace tram::Ext::Menu {
 
+void InitCallbacks();
+void UpdateCallbacks();
+
+class InterceptMenu;
+
 class DebugMenu : public Menu {
 public:
     void Display();
     ~DebugMenu() = default;
+protected:
+    static bool intercept_enabled;
+    static InterceptMenu* intercept_menu ;
 };
 
 class EntityProperties : public Menu {
@@ -54,6 +62,12 @@ protected:
     uint32_t parameter_type = 0;
     id_t entity_id = 0;
     uint32_t message_type = 0;
+};
+
+class InterceptMenu : public Menu {
+public:
+    void Display();
+    ~InterceptMenu() = default;
 };
 
 }
