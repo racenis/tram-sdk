@@ -5,6 +5,8 @@
 #include <components/render.h>
 #include <framework/entity.h>
 #include <framework/logging.h>
+#include <framework/worldcell.h>
+#include <framework/stats.h>
 
 namespace tram::Ext::Menu {
 
@@ -226,14 +228,27 @@ void UpdateCallbacks() {
 }
 
 bool DebugMenu::intercept_enabled = false;
+bool DebugMenu::statistics_enabled = false;
 InterceptMenu* DebugMenu::intercept_menu = nullptr;
+StatisticsMenu* DebugMenu::statistics_menu = nullptr;
 
 void DebugMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
     GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
     
-        GUI::Button("Worldcells");
+        if (GUI::Button("Worldcells")) {
+            std::vector<std::string> cells;
+            for (auto& cell : PoolProxy<WorldCell>::GetPool()) {
+                cells.push_back(cell.GetName());
+            }
+            
+            auto props = new WorldCellProperties;
+            auto picks = new ListSelection([=, this](auto p){props->SetPicked(&PoolProxy<WorldCell>::GetPool()[p]);}, cells);
+            
+            Menu::Push(props);
+            Menu::Push(picks);
+        }
         
         if (GUI::Button("Select entity")) {
             auto props = new EntityProperties();
@@ -247,13 +262,26 @@ void DebugMenu::Display() {
         
         GUI::Button("Options");
     
-        if (GUI::CheckBox(intercept_enabled, "Intercept")) {
+        if (GUI::CheckBox(intercept_enabled, "Intercept ")) {
             if (intercept_enabled) {
                 intercept_menu = new InterceptMenu;
+                if (statistics_menu) intercept_menu->SetOffset(24);
                 Menu::Add(intercept_menu);
             } else {
                 Menu::Remove(intercept_menu);
                 intercept_menu = nullptr;
+            }
+        }
+        
+        if (GUI::CheckBox(statistics_enabled, "Statistics ")) {
+            if (statistics_enabled) {
+                statistics_menu = new StatisticsMenu;
+                if (intercept_menu) intercept_menu->SetOffset(24);
+                Menu::Add(statistics_menu);
+            } else {
+                Menu::Remove(statistics_menu);
+                if (intercept_menu) intercept_menu->SetOffset(0);
+                statistics_menu = nullptr;
             }
         }
         
@@ -361,28 +389,28 @@ void EntityPicker::Display() {
     GUI::PopFrame();
 }
 
-MessageTypeSelection::MessageTypeSelection(std::function<void(id_t)> callback) {
+ListSelection::ListSelection(std::function<void(uint32_t)> callback, std::vector<std::string> list) {
     this->callback = callback;
+    this->list = list;
 }
 
-void MessageTypeSelection::Display() {
+void ListSelection::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34 * 2);
     GUI::PushFrameRelative(GUI::FRAME_LEFT, 200);
     
     GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         
-        message_t selected = Message::NONE;
-        
-        for (message_t i = 0; i < Message::LAST_MESSAGE; i++) {
-            if (GUI::Button(Message::GetName(i))) {
+        uint32_t selected = 255;
+        for (uint32_t i = 0; i < list.size(); i++) {
+            if (GUI::Button(list[i].c_str())) {
                 selected = i;
             }
             
             GUI::NewLine();
         }
         
-        if (selected) {
+        if (selected != 255) {
             callback(selected);
         
             Menu::Pop();
@@ -413,7 +441,11 @@ void MessageSend::Display() {
             GUI::Text(FONT_TEXT, "Send ");
             GUI::TextBox(Message::GetName(message_type), 100);
             if (GUI::Button("(?)")) {
-                auto select = new MessageTypeSelection([=, this](auto p){this->SetMessageType(p);});
+                std::vector<std::string> messages;
+                for (message_t i = 0; i < Message::GetLast(); i++) {
+                    messages.push_back(Message::GetName(i));
+                }
+                auto select = new ListSelection([=, this](auto p){this->SetMessageType(p);}, messages);
                 Menu::Push(select);
             }
             GUI::Text(FONT_TEXT, " to ");
@@ -450,6 +482,7 @@ void InterceptMenu::Display() {
     int total_lines = intercepts.size();
     if (total_lines > 20) total_lines = 20;
     
+    GUI::PushFrameRelative(GUI::FRAME_BOTTOM_INV, offset);
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM, total_lines * 16 + 10);
     GUI::PushFrameRelative(GUI::FRAME_RIGHT, 400);
     GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
@@ -462,6 +495,148 @@ void InterceptMenu::Display() {
             if (++lines > 20) break;
         }
     GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
+
+void WorldCellProperties::SetPicked(WorldCell* cell) {
+    this->cell = cell;
+}
+
+void WorldCellProperties::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        if (!cell) {
+            GUI::Text(FONT_TEXT, "No cell available.");
+        } else {
+            bool loaded = cell->IsLoaded();
+            bool interior = cell->IsInterior();
+            bool interior_lighting = cell->HasInteriorLighting();
+            bool debug_draw = cell->IsDebugDraw();
+            
+            GUI::Text(FONT_TEXT, "Worldcell ");
+            GUI::TextBox(cell->GetName(), 100);
+            GUI::Text(FONT_TEXT, " Entities ");
+            GUI::TextBox(std::to_string(cell->GetEntityCount()).c_str(), 50);
+            if (GUI::Button("(view)")) {
+                std::vector<std::string> entities;
+                for (auto entity : cell->GetEntities()) {
+                    entities.push_back(entity->GetName());
+                }
+                
+                // possible error here:
+                // worldcell entity list might change between entity list name
+                // generation and callback
+                // TODO: fix
+                // possible fix -> instead of ListSelection just having a single
+                // vector of strings, it would also have a second vector with
+                // data values
+                auto props = new EntityProperties;
+                auto picks = new ListSelection([=, this](uint32_t p){props->SetPicked(cell->GetEntities()[p]->GetID());}, entities);
+                
+                Menu::Push(props);
+                Menu::Push(picks);
+            }
+            if (GUI::CheckBox(loaded, "Is loaded ")) {
+                if (loaded) {
+                    cell->Load();
+                } else {
+                    cell->Unload();
+                }
+            }
+            if (GUI::CheckBox(interior, "Is interior ")) {
+                cell->SetInterior(interior);
+            }
+            if (GUI::CheckBox(interior_lighting, "Has interior lighting ")) {
+                cell->SetInteriorLights(interior_lighting);
+            }
+            if (GUI::CheckBox(interior, "Debug draw ")) {
+                cell->SetDebugDraw(debug_draw);
+            }
+        }
+        /*if (Entity* ptr = Entity::Find(entity); !ptr) {
+            GUI::Text(FONT_TEXT, "No entity available.");
+        } else {
+            GUI::Text(FONT_TEXT, "Entity ID ");
+            GUI::TextBox(std::to_string(ptr->GetID()).c_str(), 50);
+            GUI::Text(FONT_TEXT, " Name ");
+            GUI::TextBox(ptr->GetName(), 100);
+            GUI::Text(FONT_TEXT, " Distance ");
+            float dist = glm::distance(Render::GetViewPosition(), ptr->GetLocation());
+            int dist0 = dist;
+            int dist1 = dist*10 - dist0*10;
+            GUI::TextBox((std::to_string(dist0) + "." + std::to_string(dist1)).c_str(), 50);
+            
+            if (GUI::Button("Load")) {
+                ptr->Load();
+            }
+            
+            if (GUI::Button("Unload")) {
+                ptr->Unload();
+            }
+                        
+            if (GUI::Button("Message")) {
+                auto send = new MessageSend;
+                send->SetEntity(ptr->GetID());
+                Menu::Push(send);
+                //auto props = new MessageTypeSelection([](auto){});
+                //Menu::Push(props);
+            }
+        }*/
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
+
+void StatisticsMenu::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 24);
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
+
+        GUI::PushFrameRelative(GUI::FRAME_LEFT, 100);
+        GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
+            GUI::Text(1, "Tramway SDK");
+        GUI::PopFrame();
+        GUI::PopFrame();
+
+        char render_str1[16];
+        char render_str2[24];
+        char physics_str[24];
+        
+        uint32_t vram_kb = Stats::GetStat(Stats::RESOURCE_VRAM) / 1024;
+        uint32_t vram_mb_w = vram_kb / 1000;
+        uint32_t vram_mb_f = vram_kb % 1000;
+        
+        snprintf(render_str1, 16, "Render %.2fms", 1000 * Stats::GetStatAverage(System::SYSTEM_RENDER));
+        snprintf(render_str2, 24, "VRAM %i %i KB", vram_mb_w, vram_mb_f);
+        snprintf(physics_str, 24, "Physics %.2fms", 1000 * Stats::GetStatAverage(System::SYSTEM_PHYSICS));
+
+        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
+        GUI::PushFrameRelative(GUI::FRAME_LEFT, 200);
+        GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
+            GUI::Text(1, render_str1);
+            
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 75);
+                GUI::Text(1, render_str2, GUI::TEXT_RIGHT);
+            GUI::PopFrame();
+        GUI::PopFrame();
+        GUI::PopFrame();
+        GUI::PopFrame();
+        
+        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 300);
+        GUI::PushFrameRelative(GUI::FRAME_LEFT, 100);
+        GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
+            GUI::Text(1, physics_str);
+        GUI::PopFrame();
+        GUI::PopFrame();
+        GUI::PopFrame();
+
     GUI::PopFrame();
     GUI::PopFrame();
 }

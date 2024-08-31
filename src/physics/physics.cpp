@@ -5,6 +5,7 @@
 #include <physics/api.h>
 
 #include <framework/system.h>
+#include <framework/stats.h>
 
 namespace tram::Physics {
 
@@ -20,7 +21,9 @@ void Init() {
 /// Updates the physics system.
 /// Should only be called once in the update cycle.
 void Update() {
+    Stats::Start(System::SYSTEM_PHYSICS);
     API::StepPhysics();
+    Stats::Stop(System::SYSTEM_PHYSICS);
 }
 
 /// Performs a raycast.

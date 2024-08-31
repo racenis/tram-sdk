@@ -24,6 +24,7 @@ void Collate();
 
 size_t GetStat(Resource resource);
 double GetStat(System::system_t system);
+double GetStatAverage(System::system_t system);
 double GetStatUncollated(System::system_t system);
 
 }

@@ -45,6 +45,8 @@ public:
 
     WorldCell* FindTransition (vec3 point);
     
+    inline const std::vector<Entity*>& GetEntities() { return entities; }
+    
     bool IsInside(vec3 point);
 
     static WorldCell* Find (vec3 point);

@@ -19,6 +19,7 @@
 #include <framework/language.h>
 #include <framework/script.h>
 #include <framework/path.h>
+#include <framework/stats.h>
 #include <physics/physics.h>
 #include <audio/audio.h>
 
@@ -429,6 +430,8 @@ void mainloop() {
     Physics::Update();
 
     Render::Render();
+
+    Stats::Collate();
 
     UI::EndFrame();
 }

@@ -3,6 +3,7 @@
 
 #include <framework/core.h>
 #include <framework/system.h>
+#include <framework/stats.h>
 #include <render/render.h>
 #include <render/renderer.h>
 #include <render/vertices.h>
@@ -113,6 +114,7 @@ void Init () {
 
 /// Renders a single frame.
 void Render () {
+    Stats::Start(System::SYSTEM_RENDER);
 #ifndef ENGINE_EDITOR_MODE
     // idk if these need to be here -> after all, the armatures aren't updated in here?
     for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
@@ -125,6 +127,7 @@ void Render () {
     colorlines.clear();
     
     RenderFrame();
+    Stats::Stop(System::SYSTEM_RENDER);
 }
 
 /// Sets the sun direction.

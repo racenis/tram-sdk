@@ -16,12 +16,16 @@ struct SystemStat {
     double time_spent = 0.0f;           //< total time spent since last collation
     double time_spent_collated = 0.0f;  //< total time spent during previous period
     double time_spent_total = 0.0f;     //< total time spend during all periods
+    double time_spent_average = 0.0f;
+    double time_spent_average_collated = 0.0f;
+    int average_count = 0;
 };
 
 static std::vector<SystemStat> all_stats (100);
 static std::vector<size_t> all_resources (100);
 
-static uint32_t last_collate = -1;
+static uint32_t last_collate_frame = -1;
+static uint32_t last_collate_time = -1;
 
 /// Starts counting time spent on a system.
 void Start(System::system_t system) {
@@ -59,9 +63,19 @@ void Remove(Resource resource, size_t ammount) {
 
 /// Collates all of the time statistics.
 void Collate() {
-    assert(last_collate != GetTick() && "Don't call Collate() twice in an update cycle.");
+    assert(last_collate_frame != GetTick() && "Don't call Collate() twice in an update cycle.");
     
-    last_collate = GetTick();
+    if (last_collate_time != (uint32_t)Platform::Window::GetTime()) {
+        last_collate_time = Platform::Window::GetTime();
+        
+        for (auto& stat : all_stats) {
+            stat.time_spent_average_collated = stat.time_spent_average / (double)stat.average_count;
+            stat.time_spent_average = 0.0f;
+            stat.average_count = 0;
+        }
+    }
+    
+    last_collate_frame = GetTick();
     
     for (auto& stat : all_stats) {
         assert(stat.time_started == -1.0f);
@@ -70,6 +84,9 @@ void Collate() {
         stat.time_spent_collated = stat.time_spent;
         
         stat.time_spent = 0.0f;
+        
+        stat.time_spent_average += stat.time_spent_collated;
+        stat.average_count++;
     }
 }
 
@@ -89,6 +106,11 @@ double GetStat(System::system_t system) {
 double GetStatUncollated(System::system_t system) {
     assert(all_stats.size() > system);
     return all_stats[system].time_spent;
+}
+
+double GetStatAverage(System::system_t system) {
+    assert(all_stats.size() > system);
+    return all_stats[system].time_spent_average_collated;
 }
 
 }

@@ -8,12 +8,17 @@
 
 #include <functional>
 
+namespace tram {
+    class WorldCell;
+}
+
 namespace tram::Ext::Menu {
 
 void InitCallbacks();
 void UpdateCallbacks();
 
 class InterceptMenu;
+class StatisticsMenu;
 
 class DebugMenu : public Menu {
 public:
@@ -21,7 +26,9 @@ public:
     ~DebugMenu() = default;
 protected:
     static bool intercept_enabled;
-    static InterceptMenu* intercept_menu ;
+    static bool statistics_enabled;
+    static InterceptMenu* intercept_menu;
+    static StatisticsMenu* statistics_menu;
 };
 
 class EntityProperties : public Menu {
@@ -42,14 +49,14 @@ protected:
     std::function<void(id_t)> callback;
 };
 
-// TODO: maybe make this a generic list selection class?
-class MessageTypeSelection : public Menu {
+class ListSelection : public Menu {
 public:
-    MessageTypeSelection(std::function<void(id_t)> callback);
+    ListSelection(std::function<void(uint32_t)> callback, std::vector<std::string> list);
     void Display();
-    ~MessageTypeSelection() = default;
+    ~ListSelection() = default;
 protected:
-    std::function<void(id_t)> callback;
+    std::function<void(uint32_t)> callback;
+    std::vector<std::string> list;
 };
 
 class MessageSend : public Menu {
@@ -67,7 +74,25 @@ protected:
 class InterceptMenu : public Menu {
 public:
     void Display();
+    inline void SetOffset(uint32_t offset) { this->offset = offset; } 
     ~InterceptMenu() = default;
+protected:
+    uint32_t offset = 0;
+};
+
+class WorldCellProperties : public Menu {
+public:
+    void SetPicked(WorldCell* cell);
+    void Display();
+    ~WorldCellProperties() = default;
+protected:
+    WorldCell* cell = nullptr;
+};
+
+class StatisticsMenu : public Menu {
+public:
+    void Display();
+    ~StatisticsMenu() = default;
 };
 
 }
