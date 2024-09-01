@@ -41,6 +41,10 @@ void Trigger::Register() {
     );
 }
 
+name_t Trigger::GetType() {
+    return "trigger";
+}
+
 Trigger::Trigger(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     model = field_array[FIELD_MODEL];
     trigger_flags = field_array[FIELD_FLAGS];

@@ -24,6 +24,7 @@ public:
     void UpdateParameters();
     void SetParameters();
     void MessageHandler(Message& msg);
+    name_t GetType();
 protected:
     Component<PlayerComponent> plomp;
 public:

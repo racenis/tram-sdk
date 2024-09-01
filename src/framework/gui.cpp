@@ -380,15 +380,17 @@ bool Clicked() {
     return UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
 }
 
-bool Button(const char* text) {
+bool Button(const char* text, bool enabled, uint32_t width) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
-    uint32_t w = TextWidth(2, text) + 16;
+    uint32_t w = width ? width : TextWidth(2, text) + 16;
     uint32_t h = 22;
     
     glyph_t style = WIDGET_BUTTON;
     
-    if (CursorOver(x, y, w, h)) {
+    if (!enabled) {
+        style = WIDGET_BUTTON_DISABLED;
+    } else if (CursorOver(x, y, w, h)) {
         if (Clicked()) {
             style = WIDGET_BUTTON_PRESSED;
         } else {
@@ -402,7 +404,7 @@ bool Button(const char* text) {
     DrawBox(0, style, x, y, w, h);
     
     PushFrame(x, y + 3, w, h);
-    GlyphColor(Render::COLOR_BLACK);
+    GlyphColor(enabled ? Render::COLOR_BLACK : Render::COLOR_GRAY);
     Text(1, text, TEXT_CENTER);
     PopFrame();
     
@@ -410,7 +412,7 @@ bool Button(const char* text) {
     
     RestoreUserColor();
     
-    return CursorOver(x, y, w, h) && ClickHandled();
+    return enabled && CursorOver(x, y, w, h) && ClickHandled();
 }
 
 bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled) {
@@ -451,7 +453,7 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     
     if (enabled && selected) style += 1;
     if (!enabled && selected) style += 5;
-    if (!enabled && selected) style += 4;
+    if (!enabled && !selected) style += 4;
     
     GlyphColor(Render::COLOR_WHITE);
     DrawGlyph(0, style, x, y);
@@ -473,9 +475,20 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     return false;
 }
 
-void NewLine() {
+void NewLine(uint32_t line) {
     frame_stack.top().cursor_x = frame_stack.top().x;
-    frame_stack.top().cursor_y += 24;
+    switch (line) {
+        case LINE_NORMAL:
+        default:
+            frame_stack.top().cursor_y += 24;
+            break;
+        case LINE_LOW:
+            frame_stack.top().cursor_y += 16;
+            break;
+        case LINE_HIGH:
+            frame_stack.top().cursor_y += 32;
+            break;
+    }
 }
 
 void HorizontalDivider() {

@@ -16,6 +16,10 @@ Player::Player() : Entity("player") {
     auto_load = false;
 }
 
+name_t Player::GetType() {
+    return "player";
+}
+
 void Player::Load(){
     plomp.make();
     controllercomponent.make();

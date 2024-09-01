@@ -323,6 +323,8 @@ void EntityProperties::Display() {
             int dist0 = dist;
             int dist1 = dist*10 - dist0*10;
             GUI::TextBox((std::to_string(dist0) + "." + std::to_string(dist1)).c_str(), 50);
+            GUI::Text(FONT_TEXT, " Type ");
+            GUI::TextBox(ptr->GetType(), 75);
             
             if (GUI::Button("Load")) {
                 ptr->Load();
@@ -477,7 +479,7 @@ void MessageSend::Display() {
             GUI::RadioButton(1, parameter_type, "int");
             GUI::RadioButton(2, parameter_type, "name");
             GUI::RadioButton(3, parameter_type, "float");
-            GUI::TextBox(parameter_string, 32, true, 100);
+            GUI::TextBox(parameter_string, 32, parameter_type != 0, 100);
             if (GUI::Button("Send!")) {
                 Message msg;
                 msg.type = message_type;
@@ -551,7 +553,7 @@ void WorldCellProperties::Display() {
             if (GUI::Button("(view)")) {
                 std::vector<std::string> entities;
                 for (auto entity : cell->GetEntities()) {
-                    entities.push_back(entity->GetName());
+                    entities.push_back((std::string)entity->GetType() + " | " + (std::string)entity->GetName());
                 }
                 
                 // possible error here:

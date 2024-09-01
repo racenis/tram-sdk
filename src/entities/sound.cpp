@@ -36,6 +36,10 @@ void Sound::Register() {
     );
 }
 
+name_t Sound::GetType() {
+    return "sound";
+}
+
 /// Regular map file constructor.
 Sound::Sound(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     sound = field_array[FIELD_SOUND];

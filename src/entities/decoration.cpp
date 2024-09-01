@@ -39,6 +39,10 @@ void Decoration::Register() {
     );
 }
 
+name_t Decoration::GetType() {
+    return "decoration";
+}
+
 Decoration::Decoration(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     decoration_flags = field_array[FIELD_FLAGS];
     model = field_array[FIELD_MODEL];

@@ -21,6 +21,7 @@ public:
     void UpdateParameters(); void SetParameters();
     void Load(); void Unload(); void Serialize();
     void Update(); void MessageHandler(Message& msg);
+    name_t GetType();
     static void Register();
 protected:
     Component<RenderComponent> rendercomponent;

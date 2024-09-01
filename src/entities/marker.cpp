@@ -17,6 +17,10 @@ void Marker::Register() {
     );
 }
 
+name_t Marker::GetType() {
+    return "marker";
+}
+
 void Marker::UpdateParameters() {}
 void Marker::SetParameters() {}
 void Marker::Load() {}

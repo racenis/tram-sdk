@@ -19,6 +19,7 @@ public:
     void Unload();
     void Serialize();
     void MessageHandler(Message& msg);
+    name_t GetType();
     static void Register();
 };
 

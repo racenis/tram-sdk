@@ -15,6 +15,7 @@
 
 #include <extensions/menu/menu.h>
 #include <extensions/menu/debug.h>
+#include <extensions/menu/system.h>
 
 #include <algorithm>
 
@@ -48,10 +49,24 @@ void CloseAll() {
 }
 
 void EscapeMenuKeyboard () {
-    if (Menu::Pop()) {
+    /*if (Menu::Pop()) {
         if (Menu::Empty()) {
             UI::SetInputState(UI::STATE_DEFAULT);
         }
+    }*/
+    
+    if (Menu::Empty()) {
+        SystemMenu* system_menu = new SystemMenu();
+        Menu::Push(system_menu);
+        UI::SetInputState(UI::STATE_MENU_OPEN);
+    } else {
+        Menu::Pop();
+        
+        //Menu::Clear();
+        if (Menu::Empty()) {
+            UI::SetInputState(UI::STATE_DEFAULT);
+        }
+        
     }
     
     //CloseAll();

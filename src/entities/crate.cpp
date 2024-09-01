@@ -32,6 +32,10 @@ void Crate::Register() {
     );
 }
 
+name_t Crate::GetType() {
+    return "crate";
+}
+
 Crate::Crate(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     model = field_array[FIELD_MODEL];
     collmodel = field_array[FIELD_COLLMODEL];

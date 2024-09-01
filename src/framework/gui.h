@@ -21,6 +21,10 @@ enum orientation:uint32_t {
     TEXT_RIGHT,
     TEXT_JUSTIFIED,
     
+    LINE_LOW,
+    LINE_NORMAL,
+    LINE_HIGH,
+    
     FRAME_LEFT,
     FRAME_RIGHT,
     FRAME_TOP,
@@ -98,10 +102,10 @@ void End();
 void SetColor(vec3 color);
 void FillFrame(font_t font, glyph_t glyph);
 void HorizontalDivider();
-void NewLine();
+void NewLine(uint32_t line = LINE_NORMAL);
 bool CheckBox(bool& selected, const char* text, bool enabled = true);
 bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled = true);
-bool Button(const char* text);
+bool Button(const char* text, bool enabled = true, uint32_t width = 0);
 void PopFrame();
 void PushFrameRelative(uint32_t orientation, uint32_t offset);
 void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);

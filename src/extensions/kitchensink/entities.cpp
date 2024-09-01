@@ -100,6 +100,10 @@ void Button::Register() {
     );
 }
 
+name_t Button::GetType() {
+    return "button";
+}
+
 Button::Button(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     flags =         field_array[BUTTON_FIELD_FLAGS];
     model =         field_array[BUTTON_FIELD_MODEL];

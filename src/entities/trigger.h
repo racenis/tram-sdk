@@ -23,6 +23,7 @@ public:
     void Serialize();
     void MessageHandler(Message& msg);
     void Activate();
+    name_t GetType();
     static void Register();
 protected:
     Component<RenderComponent> rendercomponent;

@@ -39,6 +39,8 @@
         <File Name="src/extensions/scripting/lua.cpp"/>
       </VirtualDirectory>
       <VirtualDirectory Name="menu">
+        <File Name="src/extensions/menu/system.h"/>
+        <File Name="src/extensions/menu/system.cpp"/>
         <File Name="src/extensions/menu/debug.cpp"/>
         <File Name="src/extensions/menu/debug.h"/>
         <File Name="src/extensions/menu/menu.h"/>

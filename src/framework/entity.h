@@ -64,6 +64,8 @@ public:
     virtual void MessageHandler(Message& msg) = 0;
     virtual void EventHandler(Event &event) {};
 
+    virtual name_t GetType() = 0;
+
     void CheckTransition();
 
     struct FieldInfo {

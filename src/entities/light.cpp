@@ -30,6 +30,10 @@ void Light::Register() {
     );
 }
 
+name_t Light::GetType() {
+    return "light";
+}
+
 Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     color = field_array[FIELD_COLOR];
     distance = field_array[FIELD_DISTANCE];

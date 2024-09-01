@@ -30,6 +30,10 @@ void StaticWorldObject::Register() {
     );
 }
 
+name_t StaticWorldObject::GetType() {
+    return "staticwobj";
+}
+
 StaticWorldObject::StaticWorldObject(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     model = field_array[FIELD_MODEL];
     lightmap = field_array[FIELD_LIGHTMAP];
