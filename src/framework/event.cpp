@@ -45,6 +45,7 @@ static const char* event_names[MAX_EVENT_TYPES] = {
     "keypress",
     "keydown",
     "keyup",
+    "keychar",
     "cursorpos",
     "tick",
     "selected",

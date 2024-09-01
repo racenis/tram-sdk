@@ -19,11 +19,14 @@ typedef uint64_t listener_t;
 class EntityComponent;
 class Entity;
 
+struct Value;
+
 struct Event {
     enum Type : event_t {
         KEYPRESS,       // keyboard key still pressed
         KEYDOWN,        // keyboard key pressed
         KEYUP,          // keyboard key released
+        KEYCHAR,        // keyboard input registered
         CURSORPOS,      // cursor moved
         TICK,           // emitted every tick
         SELECTED,       // cursor on top of an interactable object
@@ -53,6 +56,7 @@ struct Event {
     union {
         void* data = nullptr;
         uint64_t data_int;
+        Value* data_value;
     };
 };
 

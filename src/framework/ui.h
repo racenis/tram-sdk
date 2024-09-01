@@ -134,8 +134,12 @@ float PollKeyboardAxisDelta(KeyboardAxis key);
 void SetInputState(InputState state);
 InputState GetInputState();
 
+// maybe instead of each platform calling this? these could be fed as pointers
+// into the platform?
+// TODO: fix
 void KeyPress(KeyboardKey key);
 void KeyRelease(KeyboardKey key);
+void KeyCode(uint16_t code);
 void KeyMouse(float x_value, float y_value);
 void KeyScroll(float value);
 void ScreenResize(int w, int h);

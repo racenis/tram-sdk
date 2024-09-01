@@ -85,6 +85,19 @@ void Window::Init() {
         if (action == GLFW_RELEASE) {
             KeyRelease(GLFWKeyToKeyboardKey(key));
         }
+        
+        // GLFW doesn't forward backspace to CharCallback, so instead we will
+        // handle this here.
+        if (action == GLFW_PRESS || action == GLFW_REPEAT) switch (key) {
+            case GLFW_KEY_BACKSPACE:
+                KeyCode(8);
+                break;
+            case GLFW_KEY_ENTER:
+                KeyCode(10);
+                break;
+            default:
+                break;
+        }
     });
     
     glfwSetCursorPosCallback(WINDOW, [](GLFWwindow* window, double xpos, double ypos) {
@@ -104,7 +117,10 @@ void Window::Init() {
     glfwSetScrollCallback(WINDOW, [](GLFWwindow* window, double xoffset, double yoffset) {
         KeyScroll(yoffset);
     });
-
+    
+    glfwSetCharCallback(WINDOW, [](GLFWwindow* window, unsigned int codepoint) {
+        KeyCode(codepoint);
+    });
 
 
     //glfwSetWindowSizeLimits(WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);

@@ -36,7 +36,7 @@ DebugMenu* debug_menu = nullptr;
 // replace menu stack with just menu list
 // and make menu list act like menu stack
 // ALSO make sure that menu list is copied before iterating
-Stack<Menu*> menu_stack("mneu stack", 100);
+std::vector<Menu*> menu_stack;
 std::vector<Menu*> menu_list;
 
 void ToggleMenuState() { UI::SetInputState((UI::GetInputState() == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT); }
@@ -49,11 +49,13 @@ void CloseAll() {
 
 void EscapeMenuKeyboard () {
     if (Menu::Pop()) {
-        return;
+        if (Menu::Empty()) {
+            UI::SetInputState(UI::STATE_DEFAULT);
+        }
     }
     
-    CloseAll();
-    UI::SetInputState(UI::STATE_DEFAULT);
+    //CloseAll();
+    
     
     /*if (debug_menu) {
         CloseAll();
@@ -67,14 +69,13 @@ void EscapeMenuKeyboard () {
 }
 
 void DebugMenuKeyboard () {
-    if (debug_menu) {
-        CloseAll();
-        UI::SetInputState(UI::STATE_DEFAULT);
-    } else  {
-        CloseAll();
+    if (Menu::Empty()) {
         debug_menu = new DebugMenu();
-        Menu::Add(debug_menu);
+        Menu::Push(debug_menu);
         UI::SetInputState(UI::STATE_MENU_OPEN);
+    } else {
+        Menu::Clear();
+        UI::SetInputState(UI::STATE_DEFAULT);
     }
 }
 
@@ -124,31 +125,49 @@ void Update() {
     }
     
     // TODO: cop[y menu_stack
-    if (menu_stack.GetLength()) {
-        menu_stack.top()->Display();
+    bool displayed[3] = {false, false, false};
+    auto menu_stack_copy = menu_stack;
+    for (auto menu = menu_stack_copy.rbegin(); menu != menu_stack_copy.rend(); menu++) {
+
+        if (uint32_t layer = (*menu)->Layer(); !displayed[layer]) {
+            displayed[layer] = true;
+            (*menu)->Display();
+        }
+        
+        
+        //menu.
+        //*menu->Display();
     }
+    /*if (menu_stack.size()) {
+        menu_stack.top()->Display();
+    }*/
     
     UpdateCallbacks();
 }
 
 void Menu::Push(Menu* menu) {
-    *menu_stack.AddNew() = menu;
+    //*menu_stack.AddNew() = menu;
+    menu_stack.push_back(menu);
 }
 
 bool Menu::Pop() {
-    if (menu_stack.GetLength()) {
-        delete menu_stack.top();
-        menu_stack.Remove();
+    if (menu_stack.size()) {
+        delete menu_stack.back();
+        menu_stack.pop_back();
         return true;
     } else {
         return false;
     }
 }
 
+bool Menu::Empty() {
+    return !menu_stack.size();
+}
+
 void Menu::Clear() {
-    while(menu_stack.GetLength()) {
-        delete menu_stack.top();
-        menu_stack.Remove();
+    while(menu_stack.size()) {
+        delete menu_stack.back();
+        menu_stack.pop_back();
     }
 }
 

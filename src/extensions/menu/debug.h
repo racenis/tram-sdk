@@ -23,6 +23,7 @@ class StatisticsMenu;
 class DebugMenu : public Menu {
 public:
     void Display();
+    uint32_t Layer() { return 0; }
     ~DebugMenu() = default;
 protected:
     static bool intercept_enabled;
@@ -34,6 +35,7 @@ protected:
 class EntityProperties : public Menu {
 public:
     void SetPicked(id_t entity);
+    uint32_t Layer() { return 1; }
     void Display();
     ~EntityProperties() = default;
 protected:
@@ -43,6 +45,7 @@ protected:
 class EntityPicker : public Menu {
 public:
     EntityPicker(std::function<void(id_t)> callback);
+    uint32_t Layer() { return 1; }
     void Display();
     ~EntityPicker() = default;
 protected:
@@ -52,6 +55,7 @@ protected:
 class ListSelection : public Menu {
 public:
     ListSelection(std::function<void(uint32_t)> callback, std::vector<std::string> list);
+    uint32_t Layer() { return 2; }
     void Display();
     ~ListSelection() = default;
 protected:
@@ -63,6 +67,7 @@ class MessageSend : public Menu {
 public:
     void SetEntity(id_t entity);
     void SetMessageType(uint32_t type);
+    uint32_t Layer() { return 1; }
     void Display();
     ~MessageSend() = default;
 protected:
@@ -74,6 +79,7 @@ protected:
 class InterceptMenu : public Menu {
 public:
     void Display();
+    uint32_t Layer() { return 0; }
     inline void SetOffset(uint32_t offset) { this->offset = offset; } 
     ~InterceptMenu() = default;
 protected:
@@ -83,6 +89,7 @@ protected:
 class WorldCellProperties : public Menu {
 public:
     void SetPicked(WorldCell* cell);
+    uint32_t Layer() { return 1; }
     void Display();
     ~WorldCellProperties() = default;
 protected:
@@ -92,7 +99,22 @@ protected:
 class StatisticsMenu : public Menu {
 public:
     void Display();
+    uint32_t Layer() { return 0; }
     ~StatisticsMenu() = default;
+};
+
+class EventEmit : public Menu {
+public:
+    void SetEventType(uint32_t type) { event_type = type; }
+    uint32_t Layer() { return 1; }
+    void Display();
+    ~EventEmit() = default;
+protected:
+    uint16_t subtype = 0;
+    uint32_t parameter_type = 0;
+    uint32_t event_type = 0;
+    char subtype_string[8] = "0";
+    char parameter_string[32] = "";
 };
 
 }

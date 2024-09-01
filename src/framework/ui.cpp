@@ -284,6 +284,10 @@ void KeyRelease(KeyboardKey key) {
     keyboard_keys_values[key] = false;
 }
 
+void KeyCode(uint16_t code) {
+    Event::Post({Event::KEYCHAR, code, 0, nullptr});
+}
+
 void KeyMouse(float xpos, float ypos) {
     keyboard_axis_deltas[KEY_MOUSE_X] = xpos - keyboard_axis_values[KEY_MOUSE_X];
     keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - keyboard_axis_values[KEY_MOUSE_Y];

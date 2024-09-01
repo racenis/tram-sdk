@@ -7,11 +7,14 @@
 
 #include <framework/system.h>
 #include <framework/logging.h>
+#include <framework/event.h>
 
 #include <render/api.h>
 #include <render/vertices.h>
 #include <render/sprite.h>
 #include <render/material.h>
+
+#include <cstring>
 
 // This whole file is a mess.
 // TODO: fix
@@ -37,6 +40,9 @@ Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
 Render::drawlistentry_t glyphvertices_entry;
 
 std::vector<Render::SpriteVertex> glyphvertices;
+
+static std::vector<uint16_t> keycode_queue;
+static char* selected_text_string = nullptr;
 
 static vec3 user_color = Render::COLOR_WHITE;
 static vec3 glyph_color = Render::COLOR_WHITE;
@@ -72,6 +78,10 @@ void Init() {
     SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
     SetFlags(glyphvertices_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
     
+    Event::AddListener(Event::KEYCHAR, [](Event& evt) {
+        keycode_queue.push_back(evt.subtype);
+    });
+    
     System::SetInitialized(System::SYSTEM_GUI, true);
 }
 
@@ -104,6 +114,7 @@ void Update() {
     UpdateVertexArray(glyphvertices_vertex_array, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
     SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size());
     glyphvertices.clear();
+    keycode_queue.clear();
 }
 
 /// Registers a font.
@@ -497,11 +508,34 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
     
     glyph_t style = enabled ? WIDGET_TEXT_BOX : WIDGET_TEXT_BOX_DISABLED;
     
+    bool allow_typing = selected_text_string == text;
+    bool text_changed = false;
+    
+    if (allow_typing) {
+        uint32_t current_length = strlen(text);
+        
+        for (uint16_t code : keycode_queue) {
+            if (code == 8 && current_length) {
+                text[current_length - 1] = '\0';
+                text_changed = true;
+                continue;
+            }
+            if (code == 10) {
+                selected_text_string = nullptr;
+                text_changed = true;
+                continue;
+            }
+            if (code < 256 && current_length + 1 < length) {
+                text[current_length] = code;
+                text[current_length + 1] = '\0';
+                text_changed = true;
+            }
+        }
+    }
+    
     if (CursorOver(x, y, w, h)) {
         if (Clicked()) {
-
-        } else {
-
+            selected_text_string = text;
         }
         
         UI::SetCursor(UI::CURSOR_TEXT);
@@ -513,13 +547,15 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
     PushFrame(x + 4, y + 3, w - 8, h);
     GlyphColor(Render::COLOR_BLACK);
     Text(1, text, TEXT_LEFT);
+    if (allow_typing && (GetTick() & 16)) Text(1, "|", TEXT_LEFT);
     PopFrame();
     
     frame_stack.top().cursor_x += w;
     
     RestoreUserColor();
     
-    return CursorOver(x, y, w, h) && ClickHandled();
+    //return CursorOver(x, y, w, h) && ClickHandled();
+    return text_changed;
 }
 
 void TextBox(const char* text, uint32_t w, uint32_t h) {
@@ -568,6 +604,9 @@ void Begin() {
     static bool prev_mouse = false;
     if (UI::PollKeyboardKey(UI::KEY_LEFTMOUSE) && !prev_mouse) {
         mouse_click_not_handled = true;
+        
+        // clicking outside of textbox cancels editing
+        selected_text_string = nullptr;
     } else {
         mouse_click_not_handled = false;
     }
@@ -575,7 +614,7 @@ void Begin() {
     
     //SetGlyph(0, 0, 0, 256, 256, 0, 0, 256, 256, Render::COLOR_WHITE, 0);
     
-    //char e[100] = "textanto";
+    //static char e[100] = "textanto";
     //TextBox(e, 100);
 
 

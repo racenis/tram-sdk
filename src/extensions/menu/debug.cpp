@@ -8,6 +8,8 @@
 #include <framework/worldcell.h>
 #include <framework/stats.h>
 
+#include <cstring>
+
 namespace tram::Ext::Menu {
 
 struct Intercept {
@@ -258,7 +260,11 @@ void DebugMenu::Display() {
             Menu::Push(picks);
         }
         
-        GUI::Button("Emit event");
+        if (GUI::Button("Emit event")) {
+            auto emit = new EventEmit;
+            
+            Menu::Push(emit);
+        }
         
         GUI::Button("Options");
     
@@ -639,6 +645,63 @@ void StatisticsMenu::Display() {
 
     GUI::PopFrame();
     GUI::PopFrame();
+}
+
+void EventEmit::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        // Emit [event] subtype [type] with parameter of ''
+        GUI::Text(FONT_TEXT, "Emit ");
+        GUI::TextBox(Event::GetName(event_type), 100);
+        if (GUI::Button("(?)")) {
+            std::vector<std::string> events;
+            for (message_t i = 0; i < Event::GetLast(); i++) {
+                events.push_back(Event::GetName(i));
+            }
+            auto select = new ListSelection([=, this](auto p){this->SetEventType(p);}, events);
+            Menu::Push(select);
+        }
+        GUI::Text(FONT_TEXT, " subtype ");
+        if (GUI::TextBox(subtype_string, 8, true, 100)) {
+            if (strlen(subtype_string)) {
+                subtype = atoi(subtype_string);
+                snprintf(subtype_string, 8, "%i", subtype);
+            }
+        }
+        GUI::Text(FONT_TEXT, " with a parameter of ");
+        GUI::RadioButton(0, parameter_type, "none");
+        GUI::RadioButton(1, parameter_type, "int");
+        GUI::RadioButton(2, parameter_type, "name");
+        GUI::RadioButton(3, parameter_type, "float");
+        GUI::TextBox(parameter_string, 32, parameter_type != 0, 100);
+        if (GUI::Button("Emit!")) {
+            Event evt;
+            evt.type = event_type;
+            evt.subtype = subtype;
+            evt.poster_id = 0;
+            
+            switch (parameter_type) {
+                case 0:
+                    evt.data_value = Event::AllocateData<Value>((int32_t)atoi(parameter_string));
+                    break;
+                case 1:
+                    evt.data_value = Event::AllocateData<Value>((float)atof(parameter_string));
+                    break;
+                case 2:
+                    evt.data_value = Event::AllocateData<Value>((name_t)parameter_string);
+                    break;
+                default:
+                    evt.data = nullptr;
+            }
+            Event::Post(evt);
+        }
+        
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();    
+    
 }
 
 }

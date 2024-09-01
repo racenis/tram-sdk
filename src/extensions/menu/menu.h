@@ -20,10 +20,12 @@ extern GUI::font_t FONT_PIXELART;
 class Menu {
 public:
     virtual void Display() = 0;
+    virtual uint32_t Layer() = 0;
     virtual ~Menu() = default;
 
     static void Push(Menu*);
     static bool Pop();
+    static bool Empty();
     static void Clear();
     
     static void Add(Menu*);
