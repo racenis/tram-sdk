@@ -65,6 +65,7 @@ std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, v
 void Init();
 void StepPhysics();
 void DrawDebug();
+void DrawDebug(bool);
 
 }
 

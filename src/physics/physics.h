@@ -21,8 +21,6 @@ namespace tram::Physics {
 
 void Init();
 void Update();
-    
-extern bool DRAW_PHYSICS_DEBUG;
 
 enum CollisionGroup : uint32_t {
     COLL_WORLDOBJ = 2,      //< Worldspawns

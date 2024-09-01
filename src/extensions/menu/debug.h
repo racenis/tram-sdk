@@ -74,6 +74,7 @@ protected:
     uint32_t parameter_type = 0;
     id_t entity_id = 0;
     uint32_t message_type = 0;
+    char parameter_string[32] = "";
 };
 
 class InterceptMenu : public Menu {
@@ -115,6 +116,16 @@ protected:
     uint32_t event_type = 0;
     char subtype_string[8] = "0";
     char parameter_string[32] = "";
+};
+
+class SignalMenu : public Menu {
+public:
+    void SetEntity(id_t entity) { entity_id = entity; }
+    void Display();
+    uint32_t Layer() { return 2; }
+    ~SignalMenu() = default;
+protected:
+    id_t entity_id = 0;
 };
 
 }

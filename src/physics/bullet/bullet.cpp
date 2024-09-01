@@ -481,6 +481,11 @@ std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, v
     return collisions;
 }
 
+static bool draw_debug = false;
+void DrawDebug(bool draw) {
+    draw_debug = draw;
+}
+
 void Init() {
     btBroadphaseInterface* broadphase_interface = new btDbvtBroadphase();
     btDefaultCollisionConfiguration* collision_configuration = new btDefaultCollisionConfiguration();
@@ -508,8 +513,10 @@ void Init() {
     dynamics_world->addRigidBody(rigidbody);
 }
 
-void StepPhysics(){
+void StepPhysics() {
     dynamics_world->stepSimulation(1.0f/60.0f, 0);
+    
+    if (draw_debug) dynamics_world->debugDrawWorld();
     
     // process the triggers
     // TODO: move this ?? to physics.cpp?

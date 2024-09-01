@@ -614,9 +614,10 @@ void Begin() {
     
     //SetGlyph(0, 0, 0, 256, 256, 0, 0, 256, 256, Render::COLOR_WHITE, 0);
     
+    //GUI::PushFrameRelative(FRAME_TOP_INV, 100);
     //static char e[100] = "textanto";
     //TextBox(e, 100);
-
+    //GUI::PopFrame();
 
     return;
     //Text(2, "New text Font this is text!");

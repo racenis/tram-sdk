@@ -1,6 +1,7 @@
 #include <extensions/menu/debug.h>
 
 #include <render/aabb.h>
+#include <physics/api.h>
 //#include <render/render.h>
 #include <components/render.h>
 #include <framework/entity.h>
@@ -291,6 +292,11 @@ void DebugMenu::Display() {
             }
         }
         
+        static bool draw_debug = false;
+        if (GUI::CheckBox(draw_debug, "Physics ")) {
+            Physics::API::DrawDebug(draw_debug);
+        }
+        
         
     GUI::PopFrame();
     GUI::PopFrame();
@@ -325,7 +331,13 @@ void EntityProperties::Display() {
             if (GUI::Button("Unload")) {
                 ptr->Unload();
             }
-                        
+            
+            if (GUI::Button("Signals")) {
+                auto signals = new SignalMenu;
+                signals->SetEntity(ptr->GetID());
+                Menu::Push(signals);
+            }
+            
             if (GUI::Button("Message")) {
                 auto send = new MessageSend;
                 send->SetEntity(ptr->GetID());
@@ -465,13 +477,22 @@ void MessageSend::Display() {
             GUI::RadioButton(1, parameter_type, "int");
             GUI::RadioButton(2, parameter_type, "name");
             GUI::RadioButton(3, parameter_type, "float");
-            GUI::TextBox("", 100);
+            GUI::TextBox(parameter_string, 32, true, 100);
             if (GUI::Button("Send!")) {
                 Message msg;
                 msg.type = message_type;
                 msg.sender = 0;
                 msg.receiver = entity->GetID();
                 switch (parameter_type) {
+                    case 0:
+                        msg.data_value = Event::AllocateData<Value>((int32_t)atoi(parameter_string));
+                        break;
+                    case 1:
+                        msg.data_value = Event::AllocateData<Value>((float)atof(parameter_string));
+                        break;
+                    case 2:
+                        msg.data_value = Event::AllocateData<Value>((name_t)parameter_string);
+                        break;
                     default:
                         msg.data = nullptr;
                 }
@@ -702,6 +723,97 @@ void EventEmit::Display() {
     GUI::PopFrame();
     GUI::PopFrame();    
     
+}
+
+void SignalMenu::Display() {
+    Entity* entity = Entity::Find(entity_id);
+    SignalTable* signals = entity ? entity->GetSignalTable() : nullptr;
+    
+    uint32_t signal_offset = signals ? 10 + 16 * signals->signal_count : 24;
+    
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34 * 2);
+    GUI::PushFrameRelative(GUI::FRAME_LEFT, 500);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, signal_offset);
+    
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        
+        if (!entity)  {
+            GUI::Text(1, "Entity unavailable.");
+        } else if (!signals) {
+            GUI::Text(1, "Entity has no signals.");
+        } else {
+            for (uint32_t i = 0; i < signals->signal_count; i++) {
+                Signal& signal = signals->signals[i];
+                
+                GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 24 * i);
+                
+                    
+                
+                    GUI::Text(1, Signal::GetName(signal.type));
+                    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
+                    
+                    GUI::Text(1, Message::GetName(signal.message_type));
+                    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
+                    
+                    GUI::Text(1, std::to_string(signal.delay).c_str());
+                    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 60);
+                    
+                    GUI::Text(1, std::to_string(signal.limit).c_str());
+                    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
+                    
+                    GUI::Text(1, signal.receiver);
+                    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
+                    
+                    if (Value* data = (Value*)signal.data; data) {
+                        switch (data->GetType()) {
+                            case TYPE_INT32:
+                                GUI::Text(1, std::to_string(data->GetInt()).c_str());
+                                break;
+                            case TYPE_FLOAT32:
+                                GUI::Text(1, std::to_string(data->GetFloat()).c_str());
+                                break;
+                            case TYPE_NAME:
+                                GUI::Text(1, (name_t)*data);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    
+                    GUI::PopFrame();
+                    GUI::PopFrame();
+                    GUI::PopFrame();
+                    GUI::PopFrame();
+                    GUI::PopFrame();
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                GUI::PopFrame();
+            }
+        }
+        
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
 }
 
 }

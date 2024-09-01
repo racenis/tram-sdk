@@ -725,7 +725,7 @@ int main(int argc, const char** argv) {
     });
     
     UI::BindKeyboardKey(UI::KEY_R, [](){
-        record = !record;
+        //record = !record;
     });
     
     //UI::SetWindowSize(320, 240);

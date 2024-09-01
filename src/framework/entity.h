@@ -79,6 +79,8 @@ public:
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields);
     
+    inline SignalTable* GetSignalTable() { return signals; }
+    
     static void UpdateFromList();
     static Entity* Make (name_t type, File* file);
     static Entity* Find (id_t entity_id);
