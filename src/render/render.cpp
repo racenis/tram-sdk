@@ -26,6 +26,8 @@ struct {
     vec3 view_position = {0.0f, 0.0f, 0.0f};
     quat view_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     float view_fov = 60.0f;
+    float near_plane = 0.01f;
+    float far_plane = 250.0f;
     
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
@@ -63,9 +65,9 @@ static void update_projection(layer_t layer) {
     
     mat4 matrix;
     if (fov == 0.0f) {
-        matrix = glm::ortho(-ratio, +ratio, -(1.0f/ratio), +(1.0f/ratio), 0.01f, 50.0f);
+        matrix = glm::ortho(-ratio, +ratio, -(1.0f/ratio), +(1.0f/ratio), view_properties[layer].near_plane, view_properties[layer].far_plane);
     } else {
-        matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, 0.01f, 250.0f);
+        matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, view_properties[layer].near_plane, view_properties[layer].far_plane);
     }
     
     view_properties[layer].projection = matrix;
@@ -169,6 +171,20 @@ void SetViewFov(float fov, layer_t layer) {
     view_properties[layer].view_fov = fov;
     update_projection(layer);
 }
+
+float GetViewFov(layer_t layer) {
+    return view_properties[layer].view_fov;
+}
+
+void SetViewDistance(float dist, layer_t layer) {
+    view_properties[layer].far_plane = dist;
+    update_projection(layer);
+}
+float GetViewDistance(layer_t layer) {
+    return view_properties[layer].far_plane;
+}
+
+
 
 /// Sets the view position.
 /// @param position View position.

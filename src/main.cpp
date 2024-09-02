@@ -634,18 +634,18 @@ int main(int argc, const char** argv) {
     //tolet_emitter->UpdateLocation(vec3(0.0f, 1.2f, -7.0f));
     //tolet_emitter->Init();
     
-    //derp = Audio::Sound::Find(UID("apelsin"));
+    derp = Audio::Sound::Find(UID("apelsin"));
     //eerp = Audio::Sound::Find(UID("dekpunkta"));
-    //derp->Load();
+    derp->Load();
     //eerp->Load();
     
-    //derp_player = PoolProxy<AudioComponent>::New();
-    //derp_player->SetLocation(vec3(0.0f, 1.0f, 0.0f));
-    //derp_player->SetSound("apelsin");
-    //derp_player->SetRepeating(true);
-    //derp_player->Init();
+    derp_player = PoolProxy<AudioComponent>::New();
+    derp_player->SetLocation(vec3(0.0f, 1.0f, 0.0f));
+    derp_player->SetSound("apelsin");
+    derp_player->SetRepeating(true);
+    derp_player->Init();
     
-    //derp_player->Play();
+    derp_player->Play();
     
     Event::AddListener(Event::KEYPRESS, [](Event& event) {
         if (event.subtype != KEY_ACTION_ACTIVATE) return;

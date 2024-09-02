@@ -33,6 +33,10 @@ void SetAmbientColor(color_t color, layer_t layer = 0);
 void SetScreenSize(float width, float height);
 
 void SetViewFov(float fov, layer_t layer = 0);
+float GetViewFov(layer_t layer = 0);
+
+void SetViewDistance(float dist, layer_t layer = 0);
+float GetViewDistance(layer_t layer = 0);
 
 void SetViewPosition(vec3 position, layer_t layer = 0);
 void SetViewRotation(quat rotation, layer_t layer = 0);

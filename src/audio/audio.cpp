@@ -37,6 +37,16 @@ void Uninit() {
     API::Uninit();
 }
 
+static float volume = 1.0f;
+void SetVolume(float value) {
+    volume = value;
+    API::SetListenerGain(value);
+}
+
+float GetVolume() {
+    return volume;
+}
+
 /// See Audio::API::SetListenerPosition().
 void SetListenerPosition(vec3 position) {
     API::SetListenerPosition(position);

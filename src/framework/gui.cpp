@@ -8,6 +8,7 @@
 #include <framework/system.h>
 #include <framework/logging.h>
 #include <framework/event.h>
+#include <framework/language.h>
 
 #include <render/api.h>
 #include <render/vertices.h>
@@ -275,8 +276,8 @@ void Text(font_t font, const char* text, uint32_t orientation) {
     }
     
     for (const char* c = text; *c != '\0'; c++) {
-        DrawGlyph(font, *c, cursor_x, cursor_y);
-        cursor_x += GlyphWidth(font, *c);
+        DrawGlyph(font, (unsigned char)*c, cursor_x, cursor_y);
+        cursor_x += GlyphWidth(font, (unsigned char)*c);
     }
     
     frame_stack.top().cursor_x = cursor_x;
@@ -475,6 +476,52 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     return false;
 }
 
+bool Slider(float& value, bool enabled, uint32_t width) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    uint32_t w = width ? width : 100;
+    uint32_t h = 22;
+    
+    glyph_t style = WIDGET_SLIDER_HORIZONTAL;
+    
+    if (!enabled) {
+        style += 4;
+    } else if (CursorOver(x, y, w, h)) {
+        if (Clicked()) {
+            style += 3;
+        } else {
+            style += 2;
+        }
+        
+        UI::SetCursor(UI::CURSOR_CLICK);
+    }
+    
+    GlyphColor(Render::COLOR_WHITE);
+    //DrawBox(0, style, x, y, w, h);
+    DrawBoxHorizontal(0, WIDGET_SLIDER_TRACK_HORIZONTAL, x, y + 8, w);
+    
+    PushFrame(x, y + 3, w, h);
+    //GlyphColor(enabled ? Render::COLOR_BLACK : Render::COLOR_GRAY);
+    //Text(1, text, TEXT_CENTER);
+    DrawGlyph(0, style, x + (uint32_t)(value * w) - (GlyphWidth(0, style) / 2), y);
+    PopFrame();
+    
+    frame_stack.top().cursor_x += w;
+    
+    RestoreUserColor();
+    
+    if (enabled && CursorOver(x, y, w, h) && Clicked()) {
+        
+        uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
+        uint32_t progress = cur_x - x;
+        value = (float)progress / (float)w;
+        std::cout << cur_x << " prog " << progress << std::endl;
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void NewLine(uint32_t line) {
     frame_stack.top().cursor_x = frame_stack.top().x;
     switch (line) {
@@ -540,6 +587,12 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
             }
             if (code < 256 && current_length + 1 < length) {
                 text[current_length] = code;
+                text[current_length + 1] = '\0';
+                text_changed = true;
+                continue;
+            }
+            if (current_length + 1 < length) {
+                text[current_length] = Language::UTF16ToLatin7(code);
                 text[current_length + 1] = '\0';
                 text_changed = true;
             }
@@ -630,6 +683,8 @@ void Begin() {
     //GUI::PushFrameRelative(FRAME_TOP_INV, 100);
     //static char e[100] = "textanto";
     //TextBox(e, 100);
+    //static float slider = 0.0f;
+    //Slider(slider, true, 100);
     //GUI::PopFrame();
 
     return;

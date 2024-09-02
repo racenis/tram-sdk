@@ -43,6 +43,7 @@ static bool exit = false;
 static bool keyboard_keys_values[KEY_LASTKEY] = {false};
 static float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_deltas[KEY_LASTAXIS] = {0.0f};
+static float keyboard_axis_sensitivity[KEY_LASTAXIS] = {1.0f, 1.0f, 1.0f};
 
 static double cursorx_last = 0.0f, cursory_last = 0.0f;
 
@@ -269,7 +270,15 @@ float PollKeyboardAxis(KeyboardAxis key) {
 /// Checks the change of an axis for since the last frame.
 /// @return Value of the axis delta.
 float PollKeyboardAxisDelta(KeyboardAxis key) {
-    return keyboard_axis_deltas[key];
+    return keyboard_axis_sensitivity[key] * keyboard_axis_deltas[key];
+}
+
+float GetAxisSensitivity(KeyboardAxis key) {
+    return keyboard_axis_sensitivity[key];
+}
+
+void SetAxisSensitivity(KeyboardAxis key, float value) {
+    keyboard_axis_sensitivity[key] = value;
 }
 
 void KeyPress(KeyboardKey key) {

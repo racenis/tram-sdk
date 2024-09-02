@@ -16,7 +16,7 @@ namespace tram::Language {
 static StackPool<char> language_string_pool ("stringpool for langs", 10000);
 static Hashmap<const char*> language_string_map ("Hashmap for language strings", 500);
     
-void Load (const char* filename){
+void Load(const char* filename){
     char path [100] = "data/";
     strcat (path, filename);
     strcat (path, ".lang");
@@ -40,13 +40,20 @@ void Load (const char* filename){
     }
 }
 
-const char* Get (name_t name) {
+const char* Get(name_t name) {
     const char* string = language_string_map.Find(name);
     
     if (!string) {
         return name;
     } else {
         return string;
+    }
+}
+
+char UTF16ToLatin7(uint16_t code) {
+    switch (code) {
+        
+        default: return 15;
     }
 }
 

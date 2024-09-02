@@ -14,6 +14,7 @@ void Uninit();
 
 void SetListenerPosition(vec3 position);
 void SetListenerOrientation(quat orientation);
+void SetListenerGain(float gain);
 
 audiobuffer_t MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels);
 void RemoveAudioBuffer(audiobuffer_t buffer);

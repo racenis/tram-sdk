@@ -145,6 +145,9 @@ void KeyScroll(float value);
 void ScreenResize(int w, int h);
 void ScreenClose();
 
+float GetAxisSensitivity(KeyboardAxis axis);
+void SetAxisSensitivity(KeyboardAxis axis, float value);
+
 keyboardaction_t RegisterKeyboardAction(const char* name);
 keyboardaction_t GetKeyboardAction(name_t name);
 name_t GetKeyboardActionName(keyboardaction_t type);

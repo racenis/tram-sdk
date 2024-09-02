@@ -33,6 +33,9 @@ void Init();
 void Update();
 void Uninit();
 
+void SetVolume(float value);
+float GetVolume();
+
 void SetListenerPosition(vec3 position);
 void SetListenerOrientation(quat orientation);
 

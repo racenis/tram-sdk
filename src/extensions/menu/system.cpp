@@ -1,6 +1,14 @@
 #include <extensions/menu/system.h>
 
+#include <audio/audio.h>
+
 namespace tram::Ext::Menu {
+
+std::string string_float(float value) {
+    int value_num = floorf(value);
+    int value_div = value * 10 - value_num * 10;
+    return std::to_string(value_num) + "." + std::to_string(value_div);
+}
     
 void SystemMenu::Display() {
     uint32_t menu_height = 130;
@@ -88,12 +96,22 @@ void SettingsMenu::Display() {
                 GUI::CheckBox(enable_debug, "Enable debug mode", false);
             } break;
             case 1: {
-                bool inverse_x = false;
-                bool inverse_y = false;
-                GUI::Text(1, "Mouse sensitivity (TODO: implement)"); GUI::NewLine(GUI::LINE_NORMAL);
-                GUI::CheckBox(inverse_x, "Invert mouse X axis"); GUI::NewLine(GUI::LINE_LOW);
-                GUI::CheckBox(inverse_y, "Invert mouse Y axis"); GUI::NewLine(GUI::LINE_NORMAL);
-                GUI::Text(1, binding_action ? "Key bindings ... press any key to bind ..." :"Key bindings"); GUI::NewLine(GUI::LINE_LOW);
+                static bool inverse_x = false;
+                static bool inverse_y = false;
+                float sensitivity = fabsf(UI::GetAxisSensitivity(UI::KEY_MOUSE_X));
+                GUI::Text(1, "Mouse sensitivity ");
+                sensitivity /= 5.0f;
+                bool changed_sensitivity = GUI::Slider(sensitivity, true, 150);
+                sensitivity *= 5.0f;
+                GUI::TextBox(string_float(sensitivity).c_str(), 50, 0);
+                GUI::NewLine(GUI::LINE_NORMAL);
+                changed_sensitivity |= GUI::CheckBox(inverse_x, "Invert mouse X axis"); GUI::NewLine(GUI::LINE_LOW);
+                changed_sensitivity |= GUI::CheckBox(inverse_y, "Invert mouse Y axis"); GUI::NewLine(GUI::LINE_NORMAL);
+                if (changed_sensitivity) {
+                    UI::SetAxisSensitivity(UI::KEY_MOUSE_X, sensitivity * (inverse_x ? -1.0f : 1.0f));
+                    UI::SetAxisSensitivity(UI::KEY_MOUSE_Y, sensitivity * (inverse_y ? -1.0f : 1.0f));
+                }
+                GUI::Text(1, binding_action ? "Key bindings ... press any key to bind ..." : "Key bindings"); GUI::NewLine(GUI::LINE_LOW);
                 
                 GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 116);
                 GUI::FillFrame(0, GUI::WIDGET_REVERSE_WINDOW);
@@ -166,11 +184,38 @@ void SettingsMenu::Display() {
                 GUI::PopFrame();
             } break;
             case 2: {
-                GUI::Text(1, "Field of view (TODO: implement)"); GUI::NewLine();
-                GUI::Text(1, "Render distance (TODO: implement)"); GUI::NewLine();
+                float fov = Render::GetViewFov() / 180.0f;
+                float clp = Render::GetViewDistance() / 500.0f;
+                
+                GUI::Text(1, "Field of view"); GUI::NewLine();
+                GUI::Text(1, "Render distance"); GUI::NewLine();
+                
+                GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
+                    bool fovch = GUI::Slider(fov, true, 150);
+                    fov *= 180.0f;
+                    if (fovch) Render::SetViewFov(fov);
+                    GUI::TextBox((string_float(fov) + "\xb0").c_str(), 50);
+                    
+                    GUI::NewLine();
+                    bool clpch = GUI::Slider(clp, true, 150);
+                    clp *= 500.0f;
+                    if (clpch) Render::SetViewDistance(clp);
+                    GUI::TextBox((string_float(clp) + "m").c_str(), 50);
+                GUI::PopFrame();
             } break;
             case 3: {
-                GUI::Text(1, "Audio volume (TODO: implement)"); GUI::NewLine();
+                GUI::Text(1, "Audio volume"); GUI::NewLine();
+                
+                float vol = Audio::GetVolume();
+                
+                GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
+                    vol /= 2.0f;
+                    bool changed = GUI::Slider(vol, true, 150);
+                    vol *= 2.0f;
+                    GUI::TextBox(string_float(vol).c_str(), 50);
+                    
+                    if (changed) Audio::SetVolume(vol);
+                GUI::PopFrame();
             } break;
             }
         GUI::PopFrame();
