@@ -15,6 +15,9 @@
 
 #include <fstream>
 #include <cstring>
+#include <algorithm>
+
+#include <templates/hashmap.h>
 
 
 #ifdef __EMSCRIPTEN__
@@ -80,11 +83,18 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     }}},
 };
 
-void BindKeyboardKey (KeyboardKey key, keyboardaction_t action) {
+void BindKeyboardKey(KeyboardKey key, keyboardaction_t action) {
+    // this will check if any other key has already been bound to this action,
+    // and will unbind it if it has.
+    /*for (auto& binding : key_action_bindings) {
+        if (binding.second.action == action) {
+            binding.second.action = KEY_ACTION_NONE;
+        }
+    }*/
     key_action_bindings[key] = {.action = action};
 }
 
-void BindKeyboardKey (KeyboardKey key, void (*action)()) {
+void BindKeyboardKey(KeyboardKey key, void (*action)()) {
     key_action_bindings[key] = {.special_option = action};
 }
 
@@ -317,9 +327,210 @@ bool ShouldExit() {
     return exit;
 }
 
-keyboardaction_t RegisterKeyboardAction() {
-    static keyboardaction_t last = KEY_ACTION_LAST;
-    return last++;
+const size_t MAX_KEYBOARDACTION_TYPES = 100;
+static Hashmap<keyboardaction_t> name_t_to_keyboardaction_t("name_t_to_keyboardaction_t", (MAX_KEYBOARDACTION_TYPES*2)+11);
+static const char* keyboardaction_names[MAX_KEYBOARDACTION_TYPES] = {
+    "none",
+    "forward",
+    "backward",
+    "strafe-left",
+    "strafe-right",
+    "jump",
+    "crouch",
+    "sprint",
+    "activate",
+    "up",
+    "down",
+    "left",
+    "right"
+};
+
+static keyboardaction_t last_type = KeyboardAction::KEY_ACTION_LAST;
+
+keyboardaction_t RegisterKeyboardAction(const char* name) {
+    keyboardaction_names[last_type] = name;
+    return last_type++;
+}
+
+keyboardaction_t GetKeyboardAction(name_t name) {
+    keyboardaction_t type = name_t_to_keyboardaction_t.Find(name);
+    
+    if (!type) {
+        for (keyboardaction_t i = 0; i < last_type; i++) {
+            if (keyboardaction_names[i] == name) {
+                name_t_to_keyboardaction_t.Insert(name, i);
+                return i;
+            }
+        }
+    }
+    
+    return type;
+}
+
+name_t GetKeyboardActionName(keyboardaction_t type) {
+    return keyboardaction_names[type];
+}
+
+std::vector<std::pair<keyboardaction_t, std::vector<KeyboardKey>>> GetAllKeyboardKeyBindings() {
+    std::vector<std::pair<keyboardaction_t, std::vector<KeyboardKey>>> binding_list;
+    for (keyboardaction_t i = 1; i < last_type; i++) {
+        binding_list.push_back({i, {}});
+    }
+    
+    /*std::unordered_map<keyboardaction_t, std::vector<KeyboardKey>> binding_map;
+    for (auto& binding : key_action_bindings) {
+        if (binding.second.action) {
+            binding_map[binding.second.action].push_back(binding.first);
+        }
+    }*/
+    
+    
+    for (auto& binding : key_action_bindings) {
+        if (binding.second.action) {
+            for (auto& list_binding : binding_list) {
+                if (list_binding.first == binding.second.action) {
+                    list_binding.second.push_back(binding.first);
+                }
+            }
+        }
+        
+        //binding_list.push_back({binding.first, binding.second});
+        //binding_list.push_back({binding.first, binding.second});
+    }
+
+    //std::sort(binding_list.begin(), binding_list.end());
+    return binding_list;
+}
+
+const char* GetKeyboardKeyName(KeyboardKey key) {
+    switch (key) {
+    
+        case KEY_SPACE:             return "space";
+        case KEY_APOSTROPHE:        return "'";
+        case KEY_COMMA:             return ",";
+        case KEY_MINUS:             return "-";
+        case KEY_PERIOD:            return ".";
+        case KEY_SLASH:             return "/";
+        case KEY_0:                 return "0";
+        case KEY_1:                 return "1";
+        case KEY_2:                 return "2";
+        case KEY_3:                 return "3";
+        case KEY_4:                 return "4";
+        case KEY_5:                 return "5";
+        case KEY_6:                 return "6";
+        case KEY_7:                 return "7";
+        case KEY_8:                 return "8";
+        case KEY_9:                 return "9";
+        case KEY_SEMICOLON:         return ";";
+        case KEY_EQUAL:             return "=";
+        case KEY_A:                 return "a";
+        case KEY_B:                 return "b";
+        case KEY_C:                 return "c";
+        case KEY_D:                 return "d";
+        case KEY_E:                 return "e";
+        case KEY_F:                 return "f";
+        case KEY_G:                 return "g";
+        case KEY_H:                 return "h";
+        case KEY_I:                 return "i";
+        case KEY_J:                 return "j";
+        case KEY_K:                 return "k";
+        case KEY_L:                 return "l";
+        case KEY_M:                 return "m";
+        case KEY_N:                 return "n";
+        case KEY_O:                 return "o";
+        case KEY_P:                 return "p";
+        case KEY_Q:                 return "q";
+        case KEY_R:                 return "r";
+        case KEY_S:                 return "s";
+        case KEY_T:                 return "t";
+        case KEY_U:                 return "u";
+        case KEY_V:                 return "v";
+        case KEY_W:                 return "w";
+        case KEY_X:                 return "x";
+        case KEY_Y:                 return "y";
+        case KEY_Z:                 return "z";
+        case KEY_LEFT_BRACKET:      return "(";
+        case KEY_BACKSLASH:         return "\\";
+        case KEY_RIGHT_BRACKET:     return ")";
+        case KEY_GRAVE_ACCENT:      return "`";
+        case KEY_WORLD_1:           return "world1";
+        case KEY_WORLD_2:           return "world2";
+        case KEY_ESCAPE:            return "escape";
+        case KEY_ENTER:             return "enter";
+        case KEY_TAB:               return "tab";
+        case KEY_BACKSPACE:         return "backspace";
+        case KEY_INSERT:            return "insert";
+        case KEY_DELETE:            return "delete";
+        case KEY_RIGHT:             return "right";
+        case KEY_LEFT:              return "left";
+        case KEY_DOWN:              return "down";
+        case KEY_UP:                return "up";
+        case KEY_PAGE_UP:           return "pageup";
+        case KEY_PAGE_DOWN:         return "pagedown";
+        case KEY_HOME:              return "home";
+        case KEY_END:               return "end";
+        case KEY_CAPS_LOCK:         return "capslock";
+        case KEY_SCROLL_LOCK:       return "scrolllock";
+        case KEY_NUM_LOCK:          return "numlock";
+        case KEY_PRINT_SCREEN:      return "printscreen";
+        case KEY_PAUSE:             return "pause";
+        case KEY_F1:                return "f1";
+        case KEY_F2:                return "f2";
+        case KEY_F3:                return "f3";
+        case KEY_F4:                return "f4";
+        case KEY_F5:                return "f5";
+        case KEY_F6:                return "f6";
+        case KEY_F7:                return "f7";
+        case KEY_F8:                return "f8";
+        case KEY_F9:                return "f9";
+        case KEY_F10:               return "f10";
+        case KEY_F11:               return "f11";
+        case KEY_F12:               return "f12";
+        case KEY_F13:               return "f13";
+        case KEY_F14:               return "f14";    
+        case KEY_F15:               return "f15";
+        case KEY_F16:               return "f16";
+        case KEY_F17:               return "f17";
+        case KEY_F18:               return "f18";
+        case KEY_F19:               return "f19";
+        case KEY_F20:               return "f20";
+        case KEY_F21:               return "f21";
+        case KEY_F22:               return "f22";
+        case KEY_F23:               return "f23";
+        case KEY_F24:               return "f24";
+        case KEY_F25:               return "f25";
+        case KEY_KP_0:              return "keypad0";
+        case KEY_KP_1:              return "keypad1";
+        case KEY_KP_2:              return "keypad2";
+        case KEY_KP_3:              return "keypad3";
+        case KEY_KP_4:              return "keypad4";
+        case KEY_KP_5:              return "keypad5";
+        case KEY_KP_6:              return "keypad6";
+        case KEY_KP_7:              return "keypad7";
+        case KEY_KP_8:              return "keypad8";
+        case KEY_KP_9:              return "keypad9";
+        case KEY_KP_DECIMAL:        return "keypad.";
+        case KEY_KP_DIVIDE:         return "keypad/";
+        case KEY_KP_MULTIPLY:       return "keypad*";
+        case KEY_KP_SUBTRACT:       return "keypad-";
+        case KEY_KP_ADD:            return "keypad+";
+        case KEY_KP_ENTER:          return "keypadenter";
+        case KEY_KP_EQUAL:          return "keypad=";
+        case KEY_LEFT_SHIFT:        return "leftshift";
+        case KEY_LEFT_CONTROL:      return "leftcontrol";
+        case KEY_LEFT_ALT:          return "leftalt";
+        case KEY_LEFT_SUPER:        return "leftsuper";
+        case KEY_RIGHT_SHIFT:       return "rightshift";
+        case KEY_RIGHT_CONTROL:     return "rightcontrol";
+        case KEY_RIGHT_ALT:         return "rightalt";
+        case KEY_RIGHT_SUPER:       return "rightsuper";
+        case KEY_MENU:              return "menu";
+        case KEY_RIGHTMOUSE:        return "rightmouse";
+        case KEY_LEFTMOUSE:         return "leftmouse";
+        case KEY_MIDDLEMOUSE:       return "middlemouse";
+        case KEY_LASTKEY:           return "lastkey";
+        default:                    return "anykey";
+    }
 }
 
 }

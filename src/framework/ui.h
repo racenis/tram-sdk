@@ -145,7 +145,12 @@ void KeyScroll(float value);
 void ScreenResize(int w, int h);
 void ScreenClose();
 
-keyboardaction_t RegisterKeyboardAction();
+keyboardaction_t RegisterKeyboardAction(const char* name);
+keyboardaction_t GetKeyboardAction(name_t name);
+name_t GetKeyboardActionName(keyboardaction_t type);
+
+std::vector<std::pair<keyboardaction_t, std::vector<KeyboardKey>>> GetAllKeyboardKeyBindings();
+const char* GetKeyboardKeyName(KeyboardKey key);
 
 bool ShouldExit();
 

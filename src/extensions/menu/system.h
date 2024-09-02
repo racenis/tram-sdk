@@ -33,6 +33,8 @@ public:
     ~SettingsMenu() = default;
 protected:
     uint32_t tab = 0;
+    uint32_t binding_action = 0;
+    bool binding_state_ready = false;
 };
 
 }

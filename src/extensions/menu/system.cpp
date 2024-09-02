@@ -92,15 +92,66 @@ void SettingsMenu::Display() {
                 bool inverse_y = false;
                 GUI::Text(1, "Mouse sensitivity (TODO: implement)"); GUI::NewLine(GUI::LINE_NORMAL);
                 GUI::CheckBox(inverse_x, "Invert mouse X axis"); GUI::NewLine(GUI::LINE_LOW);
-                GUI::CheckBox(inverse_y, "Invert mouse Y axis"); GUI::NewLine(GUI::LINE_LOW);
-                GUI::Text(1, "Key bindings"); GUI::NewLine(GUI::LINE_LOW);
+                GUI::CheckBox(inverse_y, "Invert mouse Y axis"); GUI::NewLine(GUI::LINE_NORMAL);
+                GUI::Text(1, binding_action ? "Key bindings ... press any key to bind ..." :"Key bindings"); GUI::NewLine(GUI::LINE_LOW);
                 
-                GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 140);
+                GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 116);
                 GUI::FillFrame(0, GUI::WIDGET_REVERSE_WINDOW);
                 GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
                     
-                    uint32_t pages = 5;
+                    auto bindings = UI::GetAllKeyboardKeyBindings();
+
+                    const uint32_t keys_per_page = 4;
+                    uint32_t pages = (bindings.size() + keys_per_page - 1) / keys_per_page;
                     static uint32_t selected_page = 0;
+                    
+                    std::vector<std::pair<UI::keyboardaction_t, std::vector<UI::KeyboardKey>>> bindings_in_page;
+                    for (uint32_t i = keys_per_page * selected_page; i < bindings.size() && bindings_in_page.size() < keys_per_page; i++) {
+                        bindings_in_page.push_back(bindings[i]);
+                    }
+                    
+                    for (auto& binding : bindings_in_page) {
+                        GUI::Text(1, UI::GetKeyboardActionName(binding.first));
+                        GUI::NewLine();
+                    }
+                    
+                    GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
+                    for (auto& binding : bindings_in_page) {
+                        std::string button_text = binding.second.size() ? "" : "none";
+                        for (auto key : binding.second) {
+                            if (button_text.size()) button_text += " / ";
+                            button_text += UI::GetKeyboardKeyName(key);
+                        }
+                        if (GUI::Button(button_text.c_str())) {
+                            binding_action = binding.first;
+                            binding_state_ready = false;
+                        };
+                        GUI::NewLine();
+                    }
+                    GUI::PopFrame();
+                    
+                    if (binding_action) {
+                        if (!binding_state_ready) {
+                            bool keys_released = true;
+                            for (uint16_t i = 0; i < UI::KeyboardKey::KEY_LASTKEY; i++) {
+                                if (i == UI::KEY_ESCAPE || i == UI::KEY_GRAVE_ACCENT) continue;
+                                if (UI::PollKeyboardKey((UI::KeyboardKey)i)) {
+                                    keys_released = false;
+                                }
+                            }
+                            if (keys_released) {
+                                binding_state_ready = true;
+                            }
+                        } else {
+                            for (uint16_t i = 0; i < UI::KeyboardKey::KEY_LASTKEY; i++) {
+                                if (UI::PollKeyboardKey((UI::KeyboardKey)i)) {
+                                    UI::BindKeyboardKey((UI::KeyboardKey)i, binding_action);
+                                    binding_state_ready = false;
+                                    binding_action = 0;
+                                }
+                            }
+                        }
+                    }
                     
                     GUI::PushFrameRelative(GUI::FRAME_RIGHT, 25);
                     for (uint32_t i = 0; i < pages; i++) {
