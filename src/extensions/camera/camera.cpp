@@ -5,6 +5,7 @@
 #include <framework/system.h>
 #include <framework/entity.h>
 #include <framework/ui.h>
+#include <framework/settings.h>
 #include <render/render.h>
 #include <audio/audio.h>
 #include <components/controller.h>
@@ -14,7 +15,7 @@ namespace tram::Ext::Camera {
 uint32_t CAMERA_SYSTEM = -1u;
 Camera* selected_camera = nullptr;
 
-
+float shake_multiplier = 1.0f;
 
 id_t look_at_entity = 0;
 quat look_at_direction = {1.0f, 0.0f, 0.0f, 0.0f};
@@ -23,6 +24,8 @@ void Init() {
     assert(System::IsInitialized(System::SYSTEM_RENDER) && "Render system needs to be initialized first!");
     assert(System::IsInitialized(System::SYSTEM_AUDIO) && "Audio system needs to be initialized first!");
     assert(CAMERA_SYSTEM == -1u && "Camera system is already initialized!");
+    
+    Settings::Register((ValuePtr)&shake_multiplier, "camerashake");
     
     CAMERA_SYSTEM = System::Register("Camera control system", "CAMERA");
     System::SetInitialized(CAMERA_SYSTEM, true);

@@ -94,6 +94,9 @@ void Init();
 void Update();
 font_t RegisterFont(Render::Sprite* sprite);
 
+void SetScaling(uint32_t);
+uint32_t GetScaling();
+
 bool ClickHandled();
 
 void Begin();

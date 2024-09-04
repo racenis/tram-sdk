@@ -31,6 +31,14 @@ void SetScale(int s);
 
 double GetTime();
 
+int GetCurrentMonitor();
+int GetMonitorCount();
+void SetMonitor(int monitor);
+bool IsFullscreen();
+void SetFullscreen(bool);
+bool IsVsync();
+void SetVsync(bool);
+
 }
 
 namespace tram::Platform::Input {

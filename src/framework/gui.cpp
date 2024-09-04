@@ -40,6 +40,8 @@ Render::Sprite* fonts [16] = {nullptr};
 Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
 Render::drawlistentry_t glyphvertices_entry;
 
+static uint32_t scaling = 1;
+
 std::vector<Render::SpriteVertex> glyphvertices;
 
 static std::vector<uint16_t> keycode_queue;
@@ -59,6 +61,14 @@ static void GlyphColor(vec3 color) {
 void SetColor(vec3 color) {
     user_color = color;
     glyph_color = color;
+}
+
+void SetScaling(uint32_t scale) {
+    scaling = scale;
+}
+
+uint32_t GetScaling() {
+    return scaling;
 }
 
 using namespace tram::Render::API;
@@ -214,7 +224,7 @@ void DrawGlyph(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w = 
     if (!w) w = info.width;
     if (!h) h = info.height;
     
-    SetGlyph(x, y, frame_stack.top().stack_height, w, h, info.offset_x, info.offset_y, info.width, info.height, glyph_color, font);
+    SetGlyph(x*scaling, y*scaling, frame_stack.top().stack_height, w*scaling, h*scaling, info.offset_x, info.offset_y, info.width, info.height, glyph_color, font);
 }
 
 /// Draws a glyph box.
@@ -360,8 +370,8 @@ void PopFrame() {
 }
 
 bool CursorOver(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
-    uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
-    uint32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
+    uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
+    uint32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y) / scaling;
     
     return cur_x > x && cur_y > y && cur_x < x + w && cur_y < y + h;
 }
@@ -512,7 +522,7 @@ bool Slider(float& value, bool enabled, uint32_t width) {
     
     if (enabled && CursorOver(x, y, w, h) && Clicked()) {
         
-        uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
+        uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
         uint32_t progress = cur_x - x;
         value = (float)progress / (float)w;
         std::cout << cur_x << " prog " << progress << std::endl;
@@ -656,8 +666,8 @@ void Begin() {
     
     first_frame->x = 0;
     first_frame->y = 0;
-    first_frame->w = UI::GetScreenWidth();
-    first_frame->h = UI::GetScreenHeight();
+    first_frame->w = UI::GetScreenWidth() / scaling;
+    first_frame->h = UI::GetScreenHeight() / scaling;
     first_frame->cursor_x = 0;
     first_frame->cursor_y = 0;
     first_frame->stack_height = 0;

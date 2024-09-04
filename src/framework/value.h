@@ -207,6 +207,7 @@ public:
     
     operator Value() const {
         switch (type) {
+            case TYPE_UNDEFINED: return Value();
             case TYPE_BOOL:     return *bool_ptr;
             //case TYPE_INT:      return *int32_ptr;
             //case TYPE_UINT:     return *uint32_ptr;

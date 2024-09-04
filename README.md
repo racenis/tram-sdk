@@ -134,35 +134,22 @@ No code contributions accepted right now, but if you find a bug or have a sugges
     - If you allocate event data while inside event handler? it will probably not be very good
     - Should add this to tests
     - Need to figure out how to handle delayed message data
-
+- What if the event caller gets deleted while events are being dispatched?
+	- Or if messages are getting dispatched? Is it segfault?
+	- Event listener deleted? while dispatched?
+	
+	
 - RenderComponents should support offsetting textures
 	- A method like RenderComponent::SetTextureOffset(Material*, vec2).
-	- It would add an offset to the specified Materia's texture.
+	- It would add an offset to the specified Material's texture.
 	- This would allow texture animations and the like.
-- Replace Bezier curves with Catmull-Roms
-- Add command-line argument parser.
-	- Should parse command-line arguments.
-	- Also should allow setting of settings through command-line.
-	- Probably can think of other useful command-line commands.
-- Add a settings system.
-	- Should allow saving of various settings.
-	- Settings should be key-value pairs.
-	- Should also allow saving of keybindings.
-- Fix GUI system
-	- Current GUI system was written in 3 days.
-	- Add more time so that it isn't a spaghetti.
-- Fix Maketool
-	- Should properly seperate web and desktop builds.
 - Sound table does not play if only one sound
 - Add logging during render initialization end especially shader loading
-- Add option to change mouse sensitivity
 - Split tick event into fixed tick event and frame event
 - Overhaul shader system
 	- Add some kind of flags to shaders
 	- These flags would inject glsl preprocessor #define's into the shader code 
 - If can't find shader for a material, then print material name	
-- What if the event caller gets deleted while events are being dispatched?
-	- Or if messages are getting dispatched? Is it segfault?
 - If you don't RegisterShader() before Render::Init(), then the Uniform blocks won't be bound and you will get pancake models
 	- Add some kind of a code to bind 
 - Put triangle definition into math.h
@@ -192,9 +179,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add a better disk abstraction
 	- File() should also open files that are located in compressed archives.
 	- Also should open and be able to write files through HTTP.
-- Default menus
-	- Keybinding menu
-	- Graphics menu
 - Finish particles
 	- Steal ideas from various particle editors
 - Finish sprites
@@ -204,8 +188,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Occlusion/frustrum culling
 - Add rotations to sprites
 - Switch out all of the std::cout's to Log's
-- Think of new glyphs.
-	- Draw new glyphs.
 - Add some more asserts to the GUI system.
 - Rewrite path following for the PhysicsComponent
 - Implement navigation

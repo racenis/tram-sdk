@@ -13,6 +13,7 @@ const float TILT_SPEED = 0.01f;
 //const float BOB_SPEED = 0.2f;
 const float BOB_CHANGE_SPEED = 0.05f;
 
+extern float shake_multiplier;
     
 void FirstPersonCamera::SetTilt (float tilt) {
     this->tilt_goal = tilt;
@@ -115,10 +116,10 @@ void FirstPersonCamera::Update () {
     vec3 term_loc = position;
     quat term_rot = rotation;
     
-    term_rot *= quat(vec3(0.0f, 0.0f, tilt + (sinf(bob) * bobbing_tilt * bobbing_weight)));
+    term_rot *= quat(vec3(0.0f, 0.0f, tilt + (sinf(bob) * bobbing_tilt * bobbing_weight * shake_multiplier)));
     
     term_loc += following_offset;
-    term_loc += vec3(0.0f, 1.0f, 0.0f) * fabsf(sinf(bob)) * bobbing_distance * bobbing_weight;
+    term_loc += vec3(0.0f, 1.0f, 0.0f) * fabsf(sinf(bob)) * bobbing_distance * bobbing_weight * shake_multiplier;
     
     if (following_interpolation != 1.0f) {
         term_loc = glm::mix(Render::GetViewPosition(), term_loc, following_interpolation);

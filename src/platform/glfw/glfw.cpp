@@ -171,7 +171,71 @@ void Window::DisableCursor() {
 double Window::GetTime() {
     return glfwGetTime();
 }
+
+int current_monitor = 0;
+int Window::GetCurrentMonitor() {
+    return current_monitor;
+}
+
+int Window::GetMonitorCount() {
+    int count;
+    glfwGetMonitors(&count);
+    return count;
+}
+
+void Window::SetMonitor(int monitor) {
+    current_monitor = monitor;
+}
+
+bool is_fullscreen = false;
+bool Window::IsFullscreen() {
+    return is_fullscreen;
+}
+
+void Window::SetFullscreen(bool fullscreen) {
+    is_fullscreen = fullscreen;
+    if (fullscreen) {
+        int monitor_count;
+        GLFWmonitor** monitors = glfwGetMonitors(&monitor_count);
+        assert(current_monitor < monitor_count);
+        int width, height;
+        glfwGetWindowSize(WINDOW, &width, &height);
+        glfwSetWindowMonitor(WINDOW,
+                             monitors[current_monitor],
+                             0,
+                             0,
+                             width,
+                             height,
+                             60);
+    } else {
+        glfwSetWindowMonitor(WINDOW,
+                            nullptr,
+                            16,
+                            32,
+                            800,
+                            600,
+                            60);
+    }
+}
+
+bool vsync = true;
+bool Window::IsVsync() {
+    return vsync;
+}
+
+void Window::SetVsync(bool value) {
+    vsync = value;
     
+    if (vsync) {
+        glfwSwapInterval(1);
+    } else {
+        glfwSwapInterval(0);
+    }
+}
+
+
+
+
 void Input::Init() {
     
 }

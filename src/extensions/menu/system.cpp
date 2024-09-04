@@ -1,6 +1,8 @@
 #include <extensions/menu/system.h>
 
+#include <framework/settings.h>
 #include <audio/audio.h>
+#include <platform/api.h>
 
 namespace tram::Ext::Menu {
 
@@ -13,8 +15,8 @@ std::string string_float(float value) {
 void SystemMenu::Display() {
     uint32_t menu_height = 130;
     uint32_t menu_width = 100;
-    uint32_t menu_offset = (UI::GetScreenHeight() - menu_height) / 2;
-    uint32_t menu_offset2 = (UI::GetScreenWidth() - menu_width) / 2;
+    uint32_t menu_offset = (UI::GetScreenHeight() / GUI::GetScaling() - menu_height) / 2;
+    uint32_t menu_offset2 = (UI::GetScreenWidth() / GUI::GetScaling() - menu_width) / 2;
     
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, menu_offset);
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, menu_offset2);
@@ -73,8 +75,8 @@ void SystemMenu::Display() {
 void SettingsMenu::Display() {
     uint32_t menu_height = 240;
     uint32_t menu_width = 320;
-    uint32_t menu_offset = (UI::GetScreenHeight() - menu_height) / 2;
-    uint32_t menu_offset2 = (UI::GetScreenWidth() - menu_width) / 2;
+    uint32_t menu_offset = (UI::GetScreenHeight() / GUI::GetScaling() - menu_height) / 2;
+    uint32_t menu_offset2 = (UI::GetScreenWidth() / GUI::GetScaling() - menu_width) / 2;
     
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, menu_offset);
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, menu_offset2);
@@ -94,6 +96,28 @@ void SettingsMenu::Display() {
             default: {
                 bool enable_debug = true;
                 GUI::CheckBox(enable_debug, "Enable debug mode", false);
+                GUI::NewLine();
+                
+                GUI::Text(1, "GUI Scale ");
+                uint32_t gui_scale = GUI::GetScaling();
+                if (GUI::RadioButton(1, gui_scale, "1") ||
+                    GUI::RadioButton(2, gui_scale, "2") ||
+                    GUI::RadioButton(3, gui_scale, "3")
+                ) {
+                    GUI::SetScaling(gui_scale);
+                }
+                GUI::NewLine();
+                
+                Value camera_shake = Settings::Get("camerashake");
+                if (camera_shake.GetType() == TYPE_FLOAT32) {
+                    float shake = camera_shake.GetFloat();
+                    GUI::Text(1, "Camera shake ");
+                    if (GUI::Slider(shake)) {
+                        Settings::Set("camerashake", shake);
+                    }
+                    GUI::NewLine();
+                }
+                
             } break;
             case 1: {
                 static bool inverse_x = false;
@@ -189,6 +213,42 @@ void SettingsMenu::Display() {
                 
                 GUI::Text(1, "Field of view"); GUI::NewLine();
                 GUI::Text(1, "Render distance"); GUI::NewLine();
+                bool vsync = Platform::Window::IsVsync();
+                bool fullscreen = Platform::Window::IsFullscreen();
+                if (GUI::CheckBox(vsync, "VSync")) Platform::Window::SetVsync(vsync);
+                if (GUI::CheckBox(fullscreen, "Fullscreen")) Platform::Window::SetFullscreen(fullscreen);
+                
+                GUI::NewLine();
+                
+                uint32_t monitor = Platform::Window::GetCurrentMonitor();
+                uint32_t monitor_count = Platform::Window::GetMonitorCount();
+                
+                GUI::Text(1, "Monitor ");
+                if (GUI::RadioButton(0, monitor, "1", monitor_count > 0) ||
+                    GUI::RadioButton(1, monitor, "2", monitor_count > 1) ||
+                    GUI::RadioButton(2, monitor, "3", monitor_count > 2) ||
+                    GUI::RadioButton(3, monitor, "4", monitor_count > 3)
+                ) {
+                    Platform::Window::SetMonitor(monitor);
+                }
+                
+                GUI::NewLine();
+                
+                uint32_t resolution = 0;
+                if (UI::GetScreenWidth() == 640 && UI::GetScreenHeight() == 480) {
+                    resolution = 0;
+                } else if (UI::GetScreenWidth() == 800 && UI::GetScreenHeight() == 600) {
+                    resolution = 1;
+                } else if (UI::GetScreenWidth() == 1024 && UI::GetScreenHeight() == 768) {
+                    resolution = 2;
+                } else {
+                    resolution = 3;
+                }
+                
+                if (GUI::RadioButton(0, resolution, "640x480")) UI::SetWindowSize(640, 480);
+                if (GUI::RadioButton(1, resolution, "800x600")) UI::SetWindowSize(800, 600);
+                if (GUI::RadioButton(2, resolution, "1024x768")) UI::SetWindowSize(1024, 768);
+                GUI::RadioButton(3, resolution, "Other", false);
                 
                 GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
                     bool fovch = GUI::Slider(fov, true, 150);
