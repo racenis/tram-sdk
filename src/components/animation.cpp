@@ -322,6 +322,9 @@ void AnimationComponent::Refresh() {
                 if (anim.pause_on_last_frame && anim.repeats == 1) {
                     anim.frame = keyframes[keyframe_count-1].frame - 0.1f;
                     anim.pause = true;
+                    
+                    // maybe instead of calling finish callback? call pause callback?
+                    if (anim_finish_callback) anim_finish_callback(this, anim.animation_header->first);
                 } else {
                     anim.repeats--;
                     anim.frame = 0.0f;

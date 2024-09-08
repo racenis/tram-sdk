@@ -4,57 +4,42 @@
 #ifndef TRAM_SDK_EXTENSIONS_DESIGN_INVENTORY_H
 #define TRAM_SDK_EXTENSIONS_DESIGN_INVENTORY_H
 
-#include <extensions/design/attributes.h>
+#include <extensions/kitchensink/attributes.h>
 
-namespace tram::Ext::Design {
+#include <framework/gui.h>
 
-typedef int item_class;
+namespace tram::Ext::Kitchensink {
 
-void RegisterItemAction(name_t name, void (*func)());
-
-struct ItemProperty {
-    enum Type {
-        ATTRIBUTE_BOOST,
-        FLAG,
-    };
-    
-    Type type;
-    
-    union {
-        AttributeBoost attribute_boost;
-        name_t flag;
-    };
-};
-
+typedef void (*item_action_func)();
 
 struct ItemClass {
     name_t name;
     
     name_t viewmodel;
     
-    name_t viewmodel_animation;
-    name_t primary_action_animation;
-    name_t secondary_action_animation;
-    
-    name_t primary_action;
-    name_t secondary_action;
+    item_action_func primary_action = nullptr;
+    item_action_func secondary_action = nullptr;
+    item_action_func idle_action = nullptr;
     
     bool draw_hands = false;
     
-    int sprite = -1;
+    GUI::font_t sprite_font = 0;
+    GUI::font_t icon_font = 0;
+    GUI::glyph_t sprite_glyph = 0;
+    GUI::glyph_t icon_glyph = 0;
+    
     int width = 1, height = 1;
     int stack = 1;
     
-    std::vector<AttributeBoost> base_boosts;
+    std::vector<Attribute> attributes;
     
-    item_class Register(name_t name, const ItemClass& def);
+    static ItemClass* Find(name_t item_class);
 };
 
 struct ItemInstance {
-    int x = 0, y = 0;
+    name_t item_class;
     int count = 1;
-
-    item_class item_class;
+    int x = 0, y = 0;
 };
 
 struct Inventory {
@@ -65,9 +50,10 @@ struct Inventory {
     
     bool allow_overlap = true;
     
-    void AddItem(const ItemInstance& item);
-    void AddItem(item_class item, int count);
-    void RemoveItem(item_class item, int count);
+    int AddItem(const ItemInstance& item);
+    int AddItem(name_t item_class, int count);
+    int RemoveItem(name_t item_class, int count);
+    int GetItemCount(name_t item_class);
 };
 
 

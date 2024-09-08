@@ -137,6 +137,14 @@ void SettingsMenu::Display() {
                 }
                 GUI::Text(1, binding_action ? "Key bindings ... press any key to bind ..." : "Key bindings"); GUI::NewLine(GUI::LINE_LOW);
                 
+                GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 150);
+                GUI::NewLine(GUI::LINE_NORMAL);
+                bool raw_input = Platform::Window::IsRawInput();
+                if (GUI::CheckBox(raw_input, "Raw input")) {
+                    Platform::Window::SetRawInput(raw_input);
+                }
+                GUI::PopFrame();
+                
                 GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 116);
                 GUI::FillFrame(0, GUI::WIDGET_REVERSE_WINDOW);
                 GUI::PushFrameRelative(GUI::FRAME_INSET, 5);

@@ -118,7 +118,7 @@ void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
     rigidbody_collision_group = flags;
     
     if (is_ready) {
-        API::SetRigidbodyCollisionMask(rigidbody, rigidbody_collision_group);
+        API::SetRigidbodyCollisionGroup(rigidbody, rigidbody_collision_group);
         //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
         //DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     }

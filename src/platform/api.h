@@ -38,6 +38,8 @@ bool IsFullscreen();
 void SetFullscreen(bool);
 bool IsVsync();
 void SetVsync(bool);
+bool IsRawInput();
+void SetRawInput(bool);
 
 }
 

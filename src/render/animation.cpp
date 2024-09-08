@@ -21,8 +21,6 @@ namespace tram::Render {
 Hashmap<Animation*> animation_list ("model name list", 500);
 StackPool<uint8_t> animation_pool ("animation keyframe pool", 1024 * 1024);
 
-Pose* BLANK_POSE = nullptr;
-
 void Animation::LoadFromDisk(){
     char filename [100] = "data/animations/";
     strcat (filename, name);

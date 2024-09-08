@@ -55,11 +55,11 @@ void RenderComponent::SetLightmap (name_t name) {
 /// played by the AnimationComponent.
 /// Alternatively, this can be set to a nullptr, if no animations are to be played.
 /// This affects only dynamic models, static models don't play animations.
-void RenderComponent::SetArmature (AnimationComponent* armature) {
-    pose = armature->GetPose();
-    
-    if (!pose) {
-        pose = BLANK_POSE;
+void RenderComponent::SetArmature(AnimationComponent* armature) {
+    if (armature) {
+        pose = armature->GetPose();
+    } else {
+        pose = nullptr;
     }
     
     if (is_ready) {

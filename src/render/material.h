@@ -75,7 +75,7 @@ protected:
     
     vec3 color = {1.0f, 1.0f, 1.0f};
     float specular_weight = 0.0f;
-    float specular_exponent = 0.0f;
+    float specular_exponent = 1.0f;
     float specular_transparency = 0.0f;
     
     uint32_t width = 0;

@@ -798,10 +798,10 @@ void Init() {
     // I have no idea why this is being initialized in here? this could probably
     // be yeeted out anyway
     // TODO: check if can yeet
-    BLANK_POSE = PoolProxy<Render::Pose>::New();
-    for (size_t i = 0; i < BONE_COUNT; i++) {
-        BLANK_POSE->pose[i] = mat4(1.0f);
-    }
+    //BLANK_POSE = PoolProxy<Render::Pose>::New();
+    //for (size_t i = 0; i < BONE_COUNT; i++) {
+    //    BLANK_POSE->pose[i] = mat4(1.0f);
+    //}
     
     // initialize the default light
     light_list.AddNew();

@@ -79,6 +79,7 @@ bool clear_screen = true;
 static float SCREEN_WIDTH = 800.0f;
 static float SCREEN_HEIGHT = 600.0f;
 
+static Render::Pose* null_pose = nullptr;
 
 uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
     uint32_t handle;
@@ -182,8 +183,10 @@ void RenderFrame() {
 
         glUseProgram(robj->shader);
 
-        if(robj->pose != nullptr){
+        if (robj->pose) {
             UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(robj->pose->pose[0]));
+        } else {
+            UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(null_pose->pose[0]));
         }
 
         for (int i = 0; i < 15; i++) {
@@ -548,9 +551,9 @@ void Init() {
     //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
     // initialize the default pose
-    BLANK_POSE = PoolProxy<Render::Pose>::New();
+    null_pose = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
-        BLANK_POSE->pose[i] = mat4(1.0f);
+        null_pose->pose[i] = mat4(1.0f);
     }
     
     // initialize the default light

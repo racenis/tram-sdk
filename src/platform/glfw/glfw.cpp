@@ -168,6 +168,14 @@ void Window::DisableCursor() {
     glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
+bool Window::IsRawInput() {
+    return glfwGetInputMode(WINDOW, GLFW_RAW_MOUSE_MOTION);
+}
+
+void Window::SetRawInput(bool input) {
+    glfwSetInputMode(WINDOW, GLFW_RAW_MOUSE_MOTION, input);
+}
+
 double Window::GetTime() {
     return glfwGetTime();
 }

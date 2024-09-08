@@ -45,7 +45,7 @@ static float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_deltas[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_sensitivity[KEY_LASTAXIS] = {1.0f, 1.0f, 1.0f};
 
-static double cursorx_last = 0.0f, cursory_last = 0.0f;
+//static double cursorx_last = 0.0f, cursory_last = 0.0f;
 
 // static char* input_text = nullptr;
 // static uint32_t input_text_len = 0;
@@ -222,15 +222,15 @@ void SetInputState (InputState state) {
         case STATE_DEFAULT:
         case STATE_NO_INPUT:
         case STATE_FLYING:
-            keyboard_axis_values[KEY_MOUSE_X] = cursorx_last;
-            keyboard_axis_values[KEY_MOUSE_Y] = cursory_last;
+            //keyboard_axis_values[KEY_MOUSE_X] = cursorx_last;
+            //keyboard_axis_values[KEY_MOUSE_Y] = cursory_last;
             
             Platform::Window::DisableCursor();
         break;
         case STATE_MENU_OPEN:
         case STATE_CURSOR:
-            cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
-            cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
+            //cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
+            //cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
             
             Platform::Window::EnableCursor();
     }
@@ -308,10 +308,14 @@ void KeyCode(uint16_t code) {
 }
 
 void KeyMouse(float xpos, float ypos) {
-    keyboard_axis_deltas[KEY_MOUSE_X] = xpos - keyboard_axis_values[KEY_MOUSE_X];
-    keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - keyboard_axis_values[KEY_MOUSE_Y];
+    static float last_xpos = xpos;
+    static float last_ypos = ypos;
+    keyboard_axis_deltas[KEY_MOUSE_X] = xpos - last_xpos;
+    keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - last_ypos;
     keyboard_axis_values[KEY_MOUSE_X] = xpos;
     keyboard_axis_values[KEY_MOUSE_Y] = ypos;
+    last_xpos = xpos;
+    last_ypos = ypos;
 
     if (input_state == STATE_DEFAULT) {
         Event::Post({Event::CURSORPOS, 0xFFFF, 0, nullptr});

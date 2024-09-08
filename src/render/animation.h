@@ -37,8 +37,6 @@ struct Pose {
     mat4 pose[BONE_COUNT];
 };
 
-extern Pose* BLANK_POSE;
-
 class Animation : public Resource {
 public:
     Animation(name_t name) : Resource(name) {}

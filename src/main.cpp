@@ -128,7 +128,8 @@ void mainloop() {
         mongus->SetRotation(glm::quatLookAt(follower->GetTangent(), DIRECTION_UP));
     }
     
-    
+    //std::cout << PollKeyboardAxisDelta(tram::UI::KEY_MOUSE_X) << std::endl;
+    //std::cout << PollKeyboardAxis(tram::UI::KEY_MOUSE_X) << std::endl;
     
     //follower->SetOrientation(Render::GetViewRotation() * DIRECTION_FORWARD);
     //AddLineMarker(follower->GetPosition(), COLOR_PINK);
@@ -645,7 +646,7 @@ int main(int argc, const char** argv) {
     derp_player->SetRepeating(true);
     derp_player->Init();
     
-    derp_player->Play();
+    //derp_player->Play();
     
     Event::AddListener(Event::KEYPRESS, [](Event& event) {
         if (event.subtype != KEY_ACTION_ACTIVATE) return;
