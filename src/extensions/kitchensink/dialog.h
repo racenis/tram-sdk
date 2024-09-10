@@ -6,45 +6,9 @@
 
 #include <framework/value.h>
 
-#include <extensions/design/inventory.h>
+#include <vector>
 
-namespace tram::Ext::Design {
-
-struct DialogCondition {
-    enum Type {
-        QUEST_STAGE_MORETHAN,
-        QUEST_STAGE_LESSTHAN,
-        PLAYER_HAS_ITEM,
-        ENTITY_QUERY,
-    };
-    
-    Type type;
-    
-    name_t quest;
-    name_t stage;
-    
-    name_t query;
-    Value value;
-};
-
-struct DialogAction {
-    enum Type {
-        QUEST_SET_STAGE,
-        QUEST_ADVANCE_STAGE,
-        PLAYER_GIVE_ITEM,
-        PLAYER_TAKE_ITEM,
-    };
-    
-    Type type;
-    
-    name_t quest;
-    name_t stage;
-    name_t item_class;
-    int item_count;
-    
-    name_t message;
-    Value value;
-};
+namespace tram::Ext::Kitchensink {
     
 struct DialogTopic {
     name_t name;
@@ -52,13 +16,18 @@ struct DialogTopic {
     name_t prompt;
     name_t answer;
 
-    std::vector<DialogCondition> conditions;
-    std::vector<DialogAction> actions;
+    name_t condition_quest;
+    name_t condition_variable;
+    
+    name_t action_quest;
+    name_t action_variable;
 
     std::vector<name_t> next_topics;
     
-    void Register(const DialogTopic& topic);
-    const DialogTopic& Find(name_t topic);
+    bool ConditionMet();
+    void PerformAction();
+    
+    static DialogTopic* Find(name_t);
 };
     
 

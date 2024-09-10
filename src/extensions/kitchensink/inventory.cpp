@@ -5,10 +5,12 @@
 
 using namespace tram;
 template <> Pool<Ext::Kitchensink::ItemClass> PoolProxy<Ext::Kitchensink::ItemClass>::pool("itemclass pool", 500);
+template <> Pool<Ext::Kitchensink::Inventory> PoolProxy<Ext::Kitchensink::Inventory>::pool("inventory pool", 500);
 
 namespace tram::Ext::Kitchensink {
 
-static Hashmap<ItemClass*> item_class_list("model name list", 500);
+static Hashmap<ItemClass*> item_class_list("item_class_list list", 500);
+static Hashmap<Inventory*> inventory_list("inventory_list list", 500);
 
 ItemClass* ItemClass::Find(name_t name) {
     ItemClass* item_class = item_class_list.Find(name);
@@ -53,7 +55,7 @@ int Inventory::RemoveItem(name_t item_class, int count) {
     for (auto& item : items) {
         if (item.item_class != item_class) continue;
         
-        if (item.count < count) {
+        if (item.count <= count) {
             int over = count - item.count;
             std::erase_if(items, [=](auto& item){ return item.item_class = item_class;});
             return over;
@@ -73,5 +75,15 @@ int Inventory::GetItemCount(name_t item_class) {
     return 0;
 }
 
+Inventory* Inventory::Find(id_t id) {
+    Inventory* inventory = inventory_list.Find(id);
+    
+    if (!inventory) {
+        inventory = PoolProxy<Inventory>::New();
+        inventory_list.Insert(id, inventory);
+    }
+    
+    return inventory;
+}
 
 }

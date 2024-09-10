@@ -27,7 +27,7 @@ public:
         type = other.type; return *this;
     }
     
-    bool operator==(const Value& other) {
+    bool operator==(const Value& other) const {
         switch (type) {
             case TYPE_BOOL:
                 if (other.GetType() != TYPE_BOOL) return false; else return bool_value == other.bool_value;

@@ -10,18 +10,23 @@
 
 namespace tram::Ext::Kitchensink {
 
-typedef void (*item_action_func)();
+struct Inventory;
+struct ItemInstance;
+typedef void (*item_action_func)(Inventory*, ItemInstance*);
 
 struct ItemClass {
     name_t name;
     
     name_t viewmodel;
+    name_t worldmodel;
     
     item_action_func primary_action = nullptr;
     item_action_func secondary_action = nullptr;
     item_action_func idle_action = nullptr;
     
     bool draw_hands = false;
+    
+    name_t equipped_slot;
     
     GUI::font_t sprite_font = 0;
     GUI::font_t icon_font = 0;
@@ -30,6 +35,8 @@ struct ItemClass {
     
     int width = 1, height = 1;
     int stack = 1;
+    
+    float weight = 0.0f;
     
     std::vector<Attribute> attributes;
     
@@ -40,12 +47,12 @@ struct ItemInstance {
     name_t item_class;
     int count = 1;
     int x = 0, y = 0;
+    bool equipped = false;
 };
 
 struct Inventory {
     std::vector<ItemInstance> items;
     
-    int holding = -1;
     int width = 1, height = 1;
     
     bool allow_overlap = true;
@@ -54,6 +61,7 @@ struct Inventory {
     int AddItem(name_t item_class, int count);
     int RemoveItem(name_t item_class, int count);
     int GetItemCount(name_t item_class);
+    static Inventory* Find(id_t id);
 };
 
 
