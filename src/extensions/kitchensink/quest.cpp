@@ -69,6 +69,15 @@ void QuestVariable::SetScript(name_t script) {
     this->type = QUEST_VAR_CONDITION_SCRIPT;
 }
 
+
+void QuestVariable::SetObjective(name_t title, name_t description, int state) {
+    this->value1 = title;
+    this->value2 = description;
+    
+    this->state = state;
+    this->type = QUEST_VAR_OBJECTIVE;
+}
+
 Value QuestVariable::Evaluate() {
     switch (type) {
         case QUEST_VAR_VALUE:

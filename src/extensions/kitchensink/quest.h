@@ -22,6 +22,7 @@ enum quest_t : int {
     QUEST_VAR_CONDITION_AND,
     QUEST_VAR_CONDITION_OR,
     QUEST_VAR_CONDITION_SCRIPT,
+    QUEST_VAR_OBJECTIVE,
     QUEST_VAR_HAS_ITEM,
     
     
@@ -38,6 +39,8 @@ struct QuestVariable {
     Value value1;
     Value value2;
     
+    int state;
+    
     name_t quest1;
     name_t quest2;
     
@@ -53,12 +56,16 @@ struct QuestVariable {
     void SetOr(name_t, name_t, name_t, name_t);
     void SetScript(name_t);
     
+    void SetObjective(name_t, name_t, int);
+    
     Value Evaluate();
 };
 
 struct QuestTrigger {
     name_t name;
     quest_t type;
+    
+    name_t condition;
     
     Value value;
     
