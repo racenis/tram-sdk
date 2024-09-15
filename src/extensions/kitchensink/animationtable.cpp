@@ -30,7 +30,7 @@ AnimationTable* AnimationTable::Find(name_t name) {
     return sound_table;
 }
 
-void AnimationTable::SwitchState(name_t state) {
+void AnimationTable::SwitchState(name_t state, AnimationStateComponent* state_component) {
     auto next_state = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == state; });
     if (next_state == states.end()) {
         std::cout << "AnimationTable " << this->name << " state " << state << " not found!" << std::endl;
@@ -55,10 +55,22 @@ void AnimationTable::SwitchState(name_t state) {
     }
     
     // do outro transitions for yeetable state animations
-    for (auto cancel_space : cancel_spaces) {
-        if (!cancel_space->state) continue;
+    
+    
+    // go through all states in the component
+    // - find the space of the state
+    //   - check if space is in cancel spaces
+    
+    auto new_states = state_component->states;
+    for (auto state_name : state_component->states) {
+        auto cancel_space = std::find_if(cancel_spaces.begin(), cancel_spaces.end(), [=](auto& f) { return f->name == state_name; });
         
-        auto state = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == cancel_space->state; });
+        if (cancel_space == cancel_spaces.end()) {
+            new_states.push_back(state_name);
+            continue;
+        }
+                
+        auto state = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == state_name; });
         
         bool faded_out = false;
         
@@ -90,7 +102,7 @@ void AnimationTable::SwitchState(name_t state) {
     }
     
 
-    next_state_space->state = state;
+    new_states.push_back(state);
     component->Play(next_state->animation,
                     next_state->repeats,
                     next_state->weight,
@@ -102,8 +114,15 @@ void AnimationTable::SwitchState(name_t state) {
     bool did_fade_in = false;
     
     // check if there is a special intro transition
-    for (auto cancel_space : cancel_spaces) {
-        auto prev_state = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == cancel_space->state; });
+     for (auto state_name : state_component->states) {
+        auto cancel_space = std::find_if(cancel_spaces.begin(), cancel_spaces.end(), [=](auto& f) { return f->name == state_name; });
+        
+        if (cancel_space == cancel_spaces.end()) {
+            continue;
+        }
+        
+        auto prev_state = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == state_name; });
+        
         for (auto& trans : transition_into) {
             if (trans.from_state != prev_state->name) continue;
             if (trans.into_state != next_state->name) continue;
@@ -120,6 +139,8 @@ void AnimationTable::SwitchState(name_t state) {
             component->FadeIn(next_state->animation, trans.fade_time);
         }
     }
+    
+    state_component->states = new_states;
     
     if (did_fade_in) return;
     

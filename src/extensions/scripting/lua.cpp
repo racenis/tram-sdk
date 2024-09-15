@@ -52,6 +52,20 @@ static void push_value_to_stack(const value_t& value) {
 
 static value_t get_value_from_stack(int index, Type type) {
     switch (type) {
+        case TYPE_UNDEFINED:
+            if (lua_isboolean(L, index)) {
+                return (bool) lua_toboolean(L, index);
+            } else if (lua_isstring(L, index)) {
+                return (const char*) lua_tostring(L, index);
+            } else if (lua_isinteger(L, index)) {
+                return (int32_t) lua_tointeger(L, index);
+            } else if (lua_isnumber(L, index)) {
+                return (float) lua_tonumber(L, index);
+            } else {
+                return value_t();
+            }
+            break;
+        
         case TYPE_BOOL:         return (bool) lua_toboolean(L, index);
         
         case TYPE_NAME:         return (name_t) lua_tostring(L, index);
@@ -99,11 +113,19 @@ extern "C" {
 static int function_call_from_lua(lua_State* L) {
     auto& func = registered_functions[lua_tointeger(L, lua_upvalueindex(1))];
 
-    // hee hee
     std::vector<Value> params;
-    for (size_t i = 0; i < func.parameters.size(); i++) {
-        params.push_back(get_value_from_stack(i+1, func.parameters[i]));
+    
+    if (func.parameters.size()) {
+        for (size_t i = 0; i < func.parameters.size(); i++) {
+            params.push_back(get_value_from_stack(i+1, func.parameters[i]));
+        }
+    } else {
+        int param_count = lua_gettop(L);
+        for (int i = 0; i < param_count; i++) {
+            params.push_back(get_value_from_stack(i+1, TYPE_UNDEFINED));
+        }
     }
+    
     
     push_value_to_stack(func.function({params.data(), params.size()}));
     

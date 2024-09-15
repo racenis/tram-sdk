@@ -20,7 +20,7 @@ void DialogTopic::PerformAction() {
     Quest::Find(action_quest)->FireTrigger(action_variable);
 }
 
-DialogTopic* DialogTopic::Find(name_t name) {
+DialogTopic* DialogTopic::Make(name_t name) {
     DialogTopic* topic = item_class_list.Find(name);
     
     if (!topic) {
@@ -29,6 +29,10 @@ DialogTopic* DialogTopic::Find(name_t name) {
     }
     
     return topic;
+}
+
+DialogTopic* DialogTopic::Find(name_t name) {
+    return item_class_list.Find(name);
 }
 
 }

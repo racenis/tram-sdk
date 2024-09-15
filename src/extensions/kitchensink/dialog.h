@@ -27,6 +27,7 @@ struct DialogTopic {
     bool ConditionMet();
     void PerformAction();
     
+    static DialogTopic* Make(name_t);
     static DialogTopic* Find(name_t);
 };
     

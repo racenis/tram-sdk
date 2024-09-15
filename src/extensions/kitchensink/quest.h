@@ -80,6 +80,9 @@ struct Quest {
     std::vector<QuestVariable> variables;
     std::vector<QuestTrigger> triggers;
     
+    // TODO: add trigger script
+    // if can't find in trigger list, then call script
+    
     Value GetVariable(name_t);
     void SetVariable(name_t, Value);
     

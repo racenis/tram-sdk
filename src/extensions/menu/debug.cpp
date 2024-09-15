@@ -170,7 +170,7 @@ void InitCallbacks() {
         intercepts.push_back(intercept);
     });
     
-    for (event_t i = 0; i < Event::LAST_EVENT; i++) {
+    for (event_t i = 0; i < Event::GetLast(); i++) {
         Event::AddListener(i, [](Event& event) {
             EventIntercept* intercept = new EventIntercept;
         

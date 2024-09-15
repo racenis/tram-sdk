@@ -7,6 +7,7 @@
 #include <vector>
 #include <framework/uid.h>
 #include <framework/math.h>
+#include <framework/entitycomponent.h>
 
 namespace tram {
     class AnimationComponent;
@@ -17,8 +18,6 @@ namespace tram::Ext::Kitchensink {
 struct AnimStateSpace {
     name_t name;
     name_t parent;
-
-    name_t state;
 };
 
 struct AnimState {
@@ -57,11 +56,13 @@ struct AnimStateTransitionDefault {
     float fade_out_time;
 };
 
+class AnimationStateComponent;
+
 class AnimationTable {
 public:
     AnimationTable(name_t name) : name(name) {}
     
-    void SwitchState(name_t state);
+    void SwitchState(name_t state, AnimationStateComponent* state_component);
     
     void AddStateSpace(name_t name, name_t parent);
     void AddState(name_t state, name_t space);
@@ -72,9 +73,6 @@ public:
     void AddTransition(AnimStateTransitionFrom);
     void AddTransition(AnimStateTransitionInto);
     void AddTransition(AnimStateTransitionDefault);
-
-    void SetAnimationComponent(AnimationComponent* component) { this->component = component; }
-    AnimationComponent* GetAnimationComponent() { return this->component; }
 
     static AnimationTable* Find(name_t name);
 private:
@@ -88,6 +86,23 @@ private:
     std::vector<AnimStateTransitionFrom> transition_from;
     std::vector<AnimStateTransitionInto> transition_into;
     std::vector<AnimStateTransitionDefault> transition_default;
+};
+
+class AnimationStateComponent : public EntityComponent {
+public:
+    void EventHandler(Event &event) {}
+    void Start();
+    
+    void SwitchState(name_t state) { table->SwitchState(state, this); }
+    
+    void SetAnimationTable(name_t name) { this->table = AnimationTable::Find(name); }
+    void SetAnimationComponent(AnimationComponent* component) { this->component = component; }
+    AnimationComponent* GetAnimationComponent() { return this->component; }
+protected:
+    AnimationTable* table = nullptr;
+    AnimationComponent* component = nullptr;
+    std::vector<name_t> states;
+    friend class AnimationTable;
 };
 
 }
