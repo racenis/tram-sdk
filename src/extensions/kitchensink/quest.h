@@ -27,6 +27,7 @@ enum quest_t : int {
     
     
     QUEST_TGR_SET_VARIABLE,
+    QUEST_TGR_SET_OBJECTIVE,
     QUEST_TGR_SHOW_MESSAGE,
 };
     
@@ -65,13 +66,13 @@ struct QuestTrigger {
     name_t name;
     quest_t type;
     
-    name_t condition;
+    name_t condition; // condition, if any, for firing
     
-    Value value;
+    name_t variable; // name for variable which will be set
+    Value value; // variable name for which will be set
     
-    void SetValue(Value);
-    
-    void Fire();
+    void SetValue(name_t variable, Value);
+    void SetObjective(name_t name, int state);
 };
 
 struct Quest {
@@ -87,6 +88,8 @@ struct Quest {
     void SetVariable(name_t, Value);
     
     void FireTrigger(name_t);
+    
+    static void Init();
     
     static Quest* Find(name_t quest);
 };

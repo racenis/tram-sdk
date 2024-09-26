@@ -11,12 +11,14 @@ static Hashmap<Ext::Kitchensink::DialogTopic*> item_class_list("DialogTopic list
 namespace tram::Ext::Kitchensink {
 
 bool DialogTopic::ConditionMet() {
+    if (!condition_quest) return true;
     Value cond = Quest::Find(condition_quest)->GetVariable(condition_variable);
     assert(cond.GetType() == TYPE_BOOL);
     return (bool)cond;
 }
 
 void DialogTopic::PerformAction() {
+    if (!action_quest) return;
     Quest::Find(action_quest)->FireTrigger(action_variable);
 }
 

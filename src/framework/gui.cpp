@@ -286,6 +286,10 @@ void Text(font_t font, const char* text, uint32_t orientation) {
     }
     
     for (const char* c = text; *c != '\0'; c++) {
+        if (*c=='\n'){ NewLine(LINE_LOW);
+            cursor_x = frame_stack.top().cursor_x;
+        cursor_y = frame_stack.top().cursor_y;
+            continue;}
         DrawGlyph(font, (unsigned char)*c, cursor_x, cursor_y);
         cursor_x += GlyphWidth(font, (unsigned char)*c);
     }

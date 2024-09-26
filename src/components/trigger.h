@@ -63,12 +63,9 @@ private:
     void (*deactivation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
     bool (*filter_callback)(TriggerComponent*, PhysicsComponent*) = nullptr;
 
-    bool is_collided = false;
-    bool was_collided = false;
-    
     bool store_collisions = false;
     
-    Physics::Collision collision;
+    std::vector<std::pair<uint32_t, Physics::Collision>> active_collisions;
     
     std::vector<Physics::Collision> stored_collisions;
 };

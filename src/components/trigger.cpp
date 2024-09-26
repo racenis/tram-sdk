@@ -89,32 +89,47 @@ void TriggerComponent::SetRotation (quat rotation) {
 /// This method is called from Phyics::Update().
 void TriggerComponent::Collision(const Physics::Collision& collision) {
     if (!filter_callback || filter_callback(this, collision.collider)) {
-        if (!is_collided && !was_collided && activation_callback) {
-            activation_callback(this, collision);
-            this->collision = collision;
+        
+        bool new_collision = true;
+        for (auto& active_collision : active_collisions) {
+            if (active_collision.second.collider != collision.collider) continue;
+            active_collision.first = GetTick();
+            new_collision = false;
+            break;
+        }
+        
+        if (new_collision) {
+            active_collisions.push_back({GetTick(), collision});
+            
+            if (activation_callback) {
+                activation_callback(this, collision);
+            }
         }
         
         if (store_collisions) {
             stored_collisions.push_back(collision);
         }
-
-        is_collided = true;
     }
 }
 
 /// Resets registered collisions.
 /// This method is called from Phyics::Update().
 void TriggerComponent::ResetCollisions() {
-    if (!is_collided && was_collided && deactivation_callback) {
-        deactivation_callback(this, collision);
+    for (auto it = active_collisions.begin(); it != active_collisions.end();) {
+        if (GetTick() - it->first > 1) {
+            if (deactivation_callback) {
+                deactivation_callback(this, it->second);
+            }
+
+            it = active_collisions.erase(it);
+        } else {
+            it++;
+        }
     }
     
     if (store_collisions) {
         stored_collisions.clear();
     }
-    
-    was_collided = is_collided;
-    is_collided = false;
 }
 /*
 // For the Bullet physics.

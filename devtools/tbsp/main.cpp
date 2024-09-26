@@ -395,14 +395,14 @@ int main(int argc, const char** argv) {
 	// we will start clipping it with each brush plane, until we have clipped it
 	// into the shape of the brush.
 	
-	const vec3 low_lft_bak = {-4096.0f, -4096.0f, -4096.0f};
-	const vec3 low_rgt_bak = { 4096.0f, -4096.0f, -4096.0f};
-	const vec3 low_rgt_frt = { 4096.0f, -4096.0f,  4096.0f};
-	const vec3 low_lft_frt = {-4096.0f, -4096.0f,  4096.0f};
-	const vec3 hgh_lft_bak = {-4096.0f,  4096.0f, -4096.0f};
-	const vec3 hgh_rgt_bak = { 4096.0f,  4096.0f, -4096.0f};
-	const vec3 hgh_rgt_frt = { 4096.0f,  4096.0f,  4096.0f};
-	const vec3 hgh_lft_frt = {-4096.0f,  4096.0f,  4096.0f};
+	const vec3 low_lft_bak = {-8192.0f, -8192.0f, -8192.0f};
+	const vec3 low_rgt_bak = { 8192.0f, -8192.0f, -8192.0f};
+	const vec3 low_rgt_frt = { 8192.0f, -8192.0f,  8192.0f};
+	const vec3 low_lft_frt = {-8192.0f, -8192.0f,  8192.0f};
+	const vec3 hgh_lft_bak = {-8192.0f,  8192.0f, -8192.0f};
+	const vec3 hgh_rgt_bak = { 8192.0f,  8192.0f, -8192.0f};
+	const vec3 hgh_rgt_frt = { 8192.0f,  8192.0f,  8192.0f};
+	const vec3 hgh_lft_frt = {-8192.0f,  8192.0f,  8192.0f};
 	
 	const Plane blank = {
 		0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
