@@ -126,6 +126,7 @@ void SetWebMainLoop(void(*loop_function)(void));
 
 void BindKeyboardKey(KeyboardKey key, keyboardaction_t action);
 void BindKeyboardKey(KeyboardKey key, void (*action)());
+void BindKeyboardKey(KeyboardKey key, void (*action)(KeyboardKey));
 
 bool PollKeyboardKey(KeyboardKey key);
 float PollKeyboardAxis(KeyboardAxis key);

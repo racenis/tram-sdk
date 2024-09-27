@@ -98,6 +98,10 @@ void TriggerComponent::Collision(const Physics::Collision& collision) {
             break;
         }
         
+        if (store_collisions) {
+            stored_collisions.push_back(collision);
+        }
+        
         if (new_collision) {
             active_collisions.push_back({GetTick(), collision});
             
@@ -106,9 +110,6 @@ void TriggerComponent::Collision(const Physics::Collision& collision) {
             }
         }
         
-        if (store_collisions) {
-            stored_collisions.push_back(collision);
-        }
     }
 }
 

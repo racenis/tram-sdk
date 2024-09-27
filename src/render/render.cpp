@@ -28,6 +28,7 @@ struct {
     float view_fov = 60.0f;
     float near_plane = 0.01f;
     float far_plane = 250.0f;
+    float ortho_ratio = 1.0f;
     
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
@@ -65,7 +66,14 @@ static void update_projection(layer_t layer) {
     
     mat4 matrix;
     if (fov == 0.0f) {
-        matrix = glm::ortho(-ratio, +ratio, -(1.0f/ratio), +(1.0f/ratio), view_properties[layer].near_plane, view_properties[layer].far_plane);
+        std::cout << "REGEN ORHTO " << ratio << std::endl; 
+        matrix = glm::ortho((-ratio) / view_properties[layer].ortho_ratio,
+                            (+ratio) / view_properties[layer].ortho_ratio,
+                            (-(1.0f/ratio)) / view_properties[layer].ortho_ratio,
+                            (+(1.0f/ratio)) / view_properties[layer].ortho_ratio,
+                            //view_properties[layer].near_plane,
+                            -view_properties[layer].far_plane,
+                            view_properties[layer].far_plane);
     } else {
         matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, view_properties[layer].near_plane, view_properties[layer].far_plane);
     }
@@ -174,6 +182,11 @@ void SetViewFov(float fov, layer_t layer) {
 
 float GetViewFov(layer_t layer) {
     return view_properties[layer].view_fov;
+}
+
+void SetOrthoRatio(float ratio, layer_t layer) {
+    view_properties[layer].ortho_ratio = ratio;
+    update_projection(layer);
 }
 
 void SetViewDistance(float dist, layer_t layer) {

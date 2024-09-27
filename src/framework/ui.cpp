@@ -53,6 +53,7 @@ static float keyboard_axis_sensitivity[KEY_LASTAXIS] = {1.0f, 1.0f, 1.0f};
 struct KeyBinding {
     keyboardaction_t action = KEY_ACTION_NONE;
     void (*special_option)(void) = nullptr;
+    void (*special_option2)(KeyboardKey) = nullptr;
 };
 
 static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
@@ -97,6 +98,10 @@ void BindKeyboardKey(KeyboardKey key, keyboardaction_t action) {
 
 void BindKeyboardKey(KeyboardKey key, void (*action)()) {
     key_action_bindings[key] = {.special_option = action};
+}
+
+void BindKeyboardKey(KeyboardKey key, void (*action)(KeyboardKey)) {
+    key_action_bindings[key] = {.special_option2 = action};
 }
 
 void Init() {
@@ -288,6 +293,8 @@ void KeyPress(KeyboardKey key) {
         Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
     } else if (binding.special_option) {
         binding.special_option();
+    } else if (binding.special_option2) {
+        binding.special_option2(key);
     }
     
     keyboard_keys_values[key] = true;

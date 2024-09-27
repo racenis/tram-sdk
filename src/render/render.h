@@ -32,6 +32,8 @@ void SetAmbientColor(color_t color, layer_t layer = 0);
 
 void SetScreenSize(float width, float height);
 
+void SetOrthoRatio(float ratio, layer_t layer = 0);
+
 void SetViewFov(float fov, layer_t layer = 0);
 float GetViewFov(layer_t layer = 0);
 
