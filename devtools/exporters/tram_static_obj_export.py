@@ -28,8 +28,8 @@ def write_tram_static_model(context, filepath, use_some_setting):
 
     #get all polygons
     for poly in ob.data.polygons:
-        exp['polys'].append([poly.loop_indices[0], poly.loop_indices[1], poly.loop_indices[2], poly.material_index])
-    #    exp['mat'].append(poly.material_index)
+        for i in range(0, len(poly.loop_indices) - 2):
+            exp['polys'].append([poly.loop_indices[0], poly.loop_indices[i+1], poly.loop_indices[i+2], poly.material_index])
 
     #remove duplicate material entries
     #exp['mat'] = list(dict.fromkeys(exp['mat']))

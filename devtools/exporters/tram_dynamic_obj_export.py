@@ -16,10 +16,7 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
     #get uv coords
     for uv in ob.data.uv_layers['UVMap'].data:
         exp['uv'].append([uv.uv[0], uv.uv[1]])
-    #now do the same thing but for lightmap
-    #for uv in ob.data.uv_layers['UVMap'].data:
-    #    exp['lmap'].append([uv.uv[0], uv.uv[1]])
-
+        
     #get info of the loop vertices
     for mloop in ob.data.loops:
         vert = ob.data.vertices[mloop.vertex_index]
@@ -30,39 +27,67 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
         for w in vert.groups:
             weights.append([w.weight, w.group])
         
+        # if vertex has no weights, then just bind it to root
+        if len(weights) < 1:
+            weights.append([1.0, 0])
+            
+        # if vertex has less than the minimum of 4 weights, then just
+        # add some blank weights to the root
         while len(weights) < 4:
             weights.append([0.0, 0])
         
+        # if vertex has more than 4 weights, then find the weights
+        # that are the most significant and discard the rest
         weights.sort(reverse=True)
         weights = weights[:4]
         
+        # TODO: normalize weights? maybe?
+        
         exp['vweight'].append(weights)
 
-    #get all polygons
+    # get all polygons
     for poly in ob.data.polygons:
-        exp['polys'].append([poly.loop_indices[0], poly.loop_indices[1], poly.loop_indices[2], poly.material_index])
-        #exp['mat'].append(poly.material_index)
+        for i in range(0, len(poly.loop_indices) - 2):
+            exp['polys'].append([poly.loop_indices[0], poly.loop_indices[i+1], poly.loop_indices[i+2], poly.material_index])
 
-    #remove duplicate material entries
-    #exp['mat'] = list(dict.fromkeys(exp['mat']))
-
-    for bone in ob.parent.data.bones:
-        boning = []
-        boning.append(bone.name)
-        boning.append(bone.head_local[0])
-        boning.append(bone.head_local[2])
-        boning.append(-bone.head_local[1])
-        boning.append(bone.tail_local[0])
-        boning.append(bone.tail_local[2])
-        boning.append(-bone.tail_local[1])
-        boning.append(-bone.matrix.to_euler().z)
+    # collect bones
+    if ob.parent is None:
         
-        if len(bone.parent_recursive) > 0:
-            boning.append(ob.parent.data.bones.find(bone.parent_recursive[0].name))
-        else:
-            boning.append(-1)
-
+        # if the object has no armature attached, then we will just
+        # assume that it has a single bone
+        boning = []
+        boning.append("Root")
+        boning.append(0.0)
+        boning.append(0.0)
+        boning.append(0.0)
+        boning.append(0.0)
+        boning.append(1.0)
+        boning.append(0.0)
+        boning.append(0.0)
+        boning.append(-1)
+        
         exp['bones'].append(boning)
+        
+    else:
+        
+        # otherwise, just add the armature bones
+        for bone in ob.parent.data.bones:
+            boning = []
+            boning.append(bone.name)
+            boning.append(bone.head_local[0])
+            boning.append(bone.head_local[2])
+            boning.append(-bone.head_local[1])
+            boning.append(bone.tail_local[0])
+            boning.append(bone.tail_local[2])
+            boning.append(-bone.tail_local[1])
+            boning.append(-bone.matrix.to_euler().z)
+            
+            if len(bone.parent_recursive) > 0:
+                boning.append(ob.parent.data.bones.find(bone.parent_recursive[0].name))
+            else:
+                boning.append(-1)
+
+            exp['bones'].append(boning)
 
 
 
@@ -127,14 +152,8 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
         line += str(bone[7]) + "\n"
         f.write(line)
         
-    for gru in ob.vertex_groups:
-        f.write(gru.name + "\n")
-    #for vert in ob.data.vertices:
-    #    vert.groups
-    
-    
-    
-    
+    for group in ob.vertex_groups:
+        f.write(group.name + "\n")
    
     f.close()
 
