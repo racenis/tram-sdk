@@ -125,11 +125,17 @@ void FirstPersonCamera::Update () {
         term_loc = glm::mix(Render::GetViewPosition(), term_loc, following_interpolation);
     }
     
-    Render::SetViewPosition(term_loc, 0);
-    Render::SetViewRotation(term_rot, 0);
+    position = term_loc;
+    rotation = term_rot;
     
-    Audio::SetListenerPosition(term_loc);
-    Audio::SetListenerOrientation(term_rot);
+    SetViewTransform();
+    SetListenerTransform();
+    
+    //Render::SetViewPosition(term_loc, 0);
+    //Render::SetViewRotation(term_rot, 0);
+    
+    //Audio::SetListenerPosition(term_loc);
+    //Audio::SetListenerOrientation(term_rot);
 }
     
 }

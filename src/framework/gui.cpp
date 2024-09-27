@@ -88,6 +88,7 @@ void Init() {
     SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
     SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
     SetFlags(glyphvertices_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
+    SetLayer(glyphvertices_entry, 2);
     
     Event::AddListener(Event::KEYCHAR, [](Event& evt) {
         keycode_queue.push_back(evt.subtype);

@@ -1,4 +1,5 @@
 import bpy
+import os
 
 bl_info = {
     "name": "Export Tram Dynamic Model",
@@ -198,6 +199,20 @@ class ExportTramDynamicObj(Operator, ExportHelper):
         ),
         default='OPT_A',
     )
+
+    def invoke(self, context, _event):
+        if not self.filepath or True:
+            blend_filepath = context.blend_data.filepath
+            if not blend_filepath:
+                blend_filepath = bpy.context.object.name
+            else:
+                path_dir = os.path.dirname(blend_filepath)
+                blend_filepath = os.path.join(path_dir, bpy.context.object.name)
+
+            self.filepath = blend_filepath + self.filename_ext
+
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
 
     def execute(self, context):
         return write_tram_dynamic_model(context, self.filepath, self.use_setting)

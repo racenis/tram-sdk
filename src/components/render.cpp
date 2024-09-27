@@ -154,6 +154,18 @@ void RenderComponent::SetScale(vec3 scale) {
     }
 }
 
+void RenderComponent::SetLayer(uint32_t layer) {
+    this->layer = layer;
+    
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::SetLayer(entry, layer);
+            }
+        }
+    }
+}
+
 /// Sets the scale of the model.
 void RenderComponent::SetColor(vec3 color) {
     this->color = color;
@@ -227,6 +239,7 @@ void RenderComponent::InsertDrawListEntries() {
 
         Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t{.generic = 0});
         Render::API::SetFlags(entry, render_flags);
+        Render::API::SetLayer(entry, layer);
 
         Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
 

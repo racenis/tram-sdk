@@ -31,6 +31,7 @@ public:
     void SetRotation(quat nrotation);
     void SetScale(vec3 scale);
     void SetColor(vec3 color);
+    void SetLayer(uint32_t layer);
     
     void SetDirectionaLight(bool enabled);
 
@@ -50,6 +51,7 @@ protected:
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 scale = {1.0f, 1.0f, 1.0f};
     vec3 color = {1.0f, 1.0f, 1.0f};
+    uint32_t layer = 0;
 
     void* aabb_tree_leaf = 0;
 

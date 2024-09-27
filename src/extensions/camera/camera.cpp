@@ -44,6 +44,20 @@ Camera::~Camera() {
     if (this == selected_camera) selected_camera = nullptr;
 }
 
+void Camera::SetViewTransform() {
+    for (uint32_t i = 0; i < 8; i++) {
+        if (layer_mask & (1 << i)) {
+            Render::SetViewPosition(position, i);
+            Render::SetViewRotation(rotation, i);
+        }
+    }
+}
+
+void Camera::SetListenerTransform() {
+    Audio::SetListenerPosition(position);
+    Audio::SetListenerOrientation(rotation);
+}
+
 void Camera::SetActive() {
     selected_camera = this;
 }

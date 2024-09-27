@@ -145,10 +145,6 @@ void RenderFrame() {
     matrices.projection = LAYER[0].projection_matrix;
     matrices.view = LAYER[0].view_matrix;
     matrices.view_pos = LAYER[0].view_position;
-    //matrices.view = glm::inverse(glm::translate(mat4(1.0f), LAYER[0].camera_position) * glm::toMat4(LAYER[0].camera_rotation));
-    //matrices.view_pos = LAYER[0].camera_position;
-
-    //if (THIRD_PERSON) matrices.view = glm::translate(matrices.view, LAYER[0].camera_rotation * vec3(0.0f, 0.0f, -5.0f));
 
     UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
     UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight)*50, light_list.begin().ptr);
@@ -156,30 +152,34 @@ void RenderFrame() {
     static uint32_t layer; layer = 0;
 
     static std::vector<std::pair<uint64_t, GLDrawListEntry*>> rvec;
-
     rvec.clear();
 
-
-    // TODO: change this to using iterators
-    GLDrawListEntry* robj = draw_list.GetFirst();
-    GLDrawListEntry* rlast = draw_list.GetLast();
-
-    for(;robj < rlast; robj++){
-        if(*((uint64_t*)robj) == 0) continue;
-
+    for (auto& robj : draw_list) {
         // TODO: do view culling in here
 
-        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj->CalcSortKey(LAYER[0].view_position), robj));
+        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj.CalcSortKey(LAYER[robj.layer].view_position), &robj));
     }
 
     sort(rvec.begin(), rvec.end());
 
-    for (std::pair<uint64_t, GLDrawListEntry*>& pp : rvec){
-        GLDrawListEntry* robj = pp.second;
+    
+    for (auto [_, robj] : rvec) {
+        
+        if (layer != robj->layer) {
+            layer = robj->layer;
+            
+            glClear(GL_DEPTH_BUFFER_BIT);
+            
+            modelMatrices.sunDirection =    vec4(LAYER[layer].sun_direction, 1.0f);
+            modelMatrices.sunColor =        vec4(LAYER[layer].sun_color, 1.0f);
+            modelMatrices.ambientColor =    vec4(LAYER[layer].ambient_color, 1.0f);
 
-        /*mat4 model = mat4(1.0f);
-        model = glm::translate(model, vec3(robj->location[0], robj->location[1], robj->location[2]));
-        model *= glm::toMat4(robj->rotation);*/
+            matrices.projection = LAYER[layer].projection_matrix;
+            matrices.view = LAYER[layer].view_matrix;
+            matrices.view_pos = LAYER[layer].view_position;
+
+            UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
+        }
 
         glUseProgram(robj->shader);
 
@@ -226,12 +226,6 @@ void RenderFrame() {
         if(robj->lightmap != 0){
             glActiveTexture(GL_TEXTURE15);
             glBindTexture(GL_TEXTURE_2D, robj->lightmap);
-        }
-        
-        
-        if (layer != robj->layer) {
-            // *whatever opengl call clears the depth buffer*
-            layer = robj->layer;
         }
 
         if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
