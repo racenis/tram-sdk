@@ -166,6 +166,26 @@ void RenderComponent::SetLayer(uint32_t layer) {
     }
 }
 
+void RenderComponent::SetTextureOffset(name_t material, vec4 offset) {
+    if (is_ready) {
+        auto& index_ranges = model->GetIndexRanges();
+    
+        for (size_t i = 0; i < index_ranges.size(); i++) {
+            vec4 offsets[15];
+
+            for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
+                if (model->GetMaterials()[index_ranges[i].materials[j]]->GetName() == material) {
+                    offsets[j] = offset;
+                } else {
+                    offsets[j] = vec4(1.0f);
+                }
+            }
+
+            Render::API::SetDrawListTextureOffsets(draw_list_entries[i], index_ranges[i].material_count, offsets);
+        }
+    }
+}
+
 /// Sets the scale of the model.
 void RenderComponent::SetColor(vec3 color) {
     this->color = color;

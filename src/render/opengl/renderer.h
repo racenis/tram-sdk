@@ -49,15 +49,18 @@ struct GLDrawListEntry {
     float specular_weights[15];
     float specular_exponents[15];
     float specular_transparencies[15];
+    vec4 texture_transforms[15];
     
     char padding [4];
 
     GLDrawListEntry() {
         for (int i = 0; i < 15; i++) {
+            textures[i] = 0;
             colors[i] = {1.0f, 1.0f, 1.0f, 1.0f};
             specular_weights[i] = 0.0f;
             specular_exponents[i] = 1.0f;
             specular_transparencies[i] = 0.0f;
+            texture_transforms[i]  = {0.0f, 0.0f, 0.0f, 0.0f};
         }
     }
 

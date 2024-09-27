@@ -41,6 +41,7 @@ struct ShaderUniformModelMatrices {
     float screenHeight;
     vec4 colors[15];
     vec4 specular[15];
+    vec4 texture_transforms[15];
 };
 
 struct LayerParameters {
@@ -194,6 +195,11 @@ void RenderFrame() {
             modelMatrices.specular[i].x = robj->specular_weights[i];
             modelMatrices.specular[i].y = robj->specular_exponents[i];
             modelMatrices.specular[i].z = robj->specular_transparencies[i];
+            modelMatrices.texture_transforms[i] = robj->texture_transforms[i];
+            /*modelMatrices.texture_transforms[i].x = robj->texture_transforms[i][0][0];
+            modelMatrices.texture_transforms[i].y = robj->texture_transforms[i][0][1];
+            modelMatrices.texture_transforms[i].z = robj->texture_transforms[i][1][0];
+            modelMatrices.texture_transforms[i].w = robj->texture_transforms[i][1][1];*/
         }
 
         //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[0]].location, light_list.GetFirst()[robj->lights[0]].color);
@@ -281,6 +287,12 @@ void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weight
         entry.gl->specular_weights[i] = weights[i];
         entry.gl->specular_exponents[i] = exponents[i];
         entry.gl->specular_transparencies[i] = transparencies[i];
+    }
+}
+
+void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset) {
+    for (size_t i = 0; i < count; i++) {
+        entry.gl->texture_transforms[i] = offset[i];
     }
 }
 

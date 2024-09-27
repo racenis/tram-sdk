@@ -22,6 +22,7 @@ layout (std140) uniform ModelMatrices {
 	float screen_height;
 	vec4 colors[15];
 	vec4 specular[15];
+	vec4 texture_transforms[15];
 };
 
 uniform sampler2D sampler[16];

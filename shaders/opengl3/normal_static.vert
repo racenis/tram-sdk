@@ -26,6 +26,7 @@ layout (std140) uniform ModelMatrices {
 	float screen_height;
 	vec4 colors[15];
 	vec4 specular[15];
+	vec4 texture_transforms[15];
 };
 
 out vec2 vert_uv;
@@ -43,7 +44,7 @@ void main() {
 	vert_color *= sun_weight;
 	vert_color += 1.0 - sun_weight;
 	
-    vert_uv = VertUV;
+    vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;
 	vert_light_uv = VertLightUV;
 }

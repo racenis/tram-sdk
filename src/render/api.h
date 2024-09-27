@@ -35,6 +35,7 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
 void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader);
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color);
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies);
+void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset);
 void SetViewMatrix(const mat4& matrix, layer_t layer);
 void SetProjectionMatrix(const mat4& matrix, layer_t layer);
 void GetScreen(char* buffer, int w, int h);

@@ -32,6 +32,7 @@ public:
     void SetScale(vec3 scale);
     void SetColor(vec3 color);
     void SetLayer(uint32_t layer);
+    void SetTextureOffset(name_t material, vec4 offset);
     
     void SetDirectionaLight(bool enabled);
 
