@@ -113,6 +113,7 @@ bool Slider(float& value, bool enabled = true, uint32_t width = 0);
 void PopFrame();
 void PushFrameRelative(uint32_t orientation, uint32_t offset);
 void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+void Glyph(font_t font, glyph_t glyph);
 void Text(font_t font, const char* text, uint32_t orientation = TEXT_LEFT);
 bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
 void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);

@@ -228,6 +228,18 @@ void DrawGlyph(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w = 
     SetGlyph(x*scaling, y*scaling, frame_stack.top().stack_height, w*scaling, h*scaling, info.offset_x, info.offset_y, info.width, info.height, glyph_color, font);
 }
 
+void Glyph(font_t font, glyph_t glyph) {
+    uint32_t cursor_x = frame_stack.top().cursor_x;
+    uint32_t cursor_y = frame_stack.top().cursor_y;
+    
+    DrawGlyph(font, glyph, cursor_x, cursor_y);
+    
+    cursor_x += GlyphWidth(font, glyph);
+    
+    frame_stack.top().cursor_x = cursor_x;
+    frame_stack.top().cursor_y = cursor_y;
+}
+
 /// Draws a glyph box.
 void DrawBox(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     const glyph_t top_lft = glyph + 0;

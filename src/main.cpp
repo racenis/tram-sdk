@@ -105,6 +105,8 @@ bool record = false;
 PathFollower* follower = nullptr;
 vec3 initial_follower = {0.1f, 1.0f, 1.5f};
 
+Component<RenderComponent> chamberpot;
+
 void mainloop() {
     Core::Update();
     UI::Update();
@@ -124,7 +126,7 @@ void mainloop() {
     
     if (mongus && GetTick() > 120) {
         //AddLineMarker(mongus->GetLocation(), COLOR_RED);
-        mongus->SetLocation(follower->GetPosition());
+        mongus->SetLocation(follower->GetPosition() - 0.7f * DIRECTION_UP);
         mongus->SetRotation(glm::quatLookAt(follower->GetTangent(), DIRECTION_UP));
     }
     
@@ -645,6 +647,16 @@ int main(int argc, const char** argv) {
     derp_player->SetSound("apelsin");
     derp_player->SetRepeating(true);
     derp_player->Init();
+    
+    chamberpot.make();
+    chamberpot->SetModel("chamberpot2");
+    chamberpot->SetScale({0.2, 0.2, 0.2});
+    chamberpot->Init();
+    
+    Event::AddListener(Event::TICK, [](Event& event) {
+        chamberpot->SetLocation({0, 1, 0});
+        chamberpot->SetRotation(quat(vec3{sinf(GetTickTime() / 3.0) / 3.0, GetTickTime(), cosf(GetTickTime() / 2.0) / 5.0}));
+    });
     
     //derp_player->Play();
     

@@ -6,6 +6,8 @@
 
 It does what Godoesn't.
 
+I am not reinventing the wheel, I am disrupting the wheel industry.
+
 Free func_door included with every install!
 
 ## What's it

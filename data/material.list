@@ -184,3 +184,4 @@ dev/window128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
 dev/white flat nearest metal 1.0 1.0 1.0 1.0 32.0 0.0 same
 #lightmap/movs lightmap nearest metal 1.0 1.0 1.0 0.0 1.0 same
 kastetase flat nearest metal 1.0 0.0 1.0 1.0 32.0 0.0 metalareste
+Material flat nearest metal 1.0 0.0 1.0 1.0 16.0 1.0 Material.01
