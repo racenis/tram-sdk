@@ -46,6 +46,35 @@ function tram.event.Post(event_type, event_subtype, poster, data)
 	__tram_impl_event_post(event_type, event_subtype, post, data)
 end
 
+tram.event._evt_act = {}
+tram.event._evt_ids = 1
+
+function tram.event.AddListener(event_type, listener_action)
+	listener = __tram_impl_event_add_listener(event_type, tram.event._evt_ids)
+
+	tram.event._evt_act[tram.event._evt_ids] = listener_action
+	tram.event._evt_ids = tram.event._evt_ids + 1
+	
+	return listener
+end
+
+function tram.event.RemoveListener(listener)
+	-- TODO: delete from _evt_act also
+	__tram_impl_event_remove_listener(listener)
+end
+
+function __tram_impl_event_event_callback(event_type, event_subtype, event_poster, event_data, callback_data)
+	event = {}
+	event.type = event_type
+	event.subtype = event_subtype
+	event.poster = event_poster
+	event.data = event_data
+	
+	callback = tram.event._evt_act[callback_data]
+	
+	callback(event)
+end
+
 tram.event.KEYPRESS = tram.event.GetType("keypress")
 tram.event.KEYDOWN = tram.event.GetType("keydown")
 tram.event.KEYUP = tram.event.GetType("keyup")

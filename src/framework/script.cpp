@@ -105,12 +105,25 @@ void Init() {
         return name_t();
     });
     
-    SetFunction("__tram_impl_event_add_listener", {}, [](valuearray_t) -> value_t {
-        return GetDeltaTime();
+    SetFunction("__tram_impl_event_add_listener", {TYPE_UINT16, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        size_t data_int = (uint32_t)array[1];
+        void* data_ptr = (void*)data_int;
+        
+        return Event::AddListener(array[0], data_ptr, [](Event& event, void* data) {
+            size_t data_ptr = (size_t)data;
+            uint32_t data_int = (uint32_t)data_ptr;
+            
+            CallFunction("__tram_impl_event_event_callback", {event.type,
+                                                              event.subtype,
+                                                              event.poster_id,
+                                                              (uint32_t)event.data_int,
+                                                              data_int});
+        });
     });
     
-    SetFunction("__tram_impl_event_remove_listener", {}, [](valuearray_t) -> value_t {
-        return GetDeltaTime();
+    SetFunction("__tram_impl_event_remove_listener", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Event::RemoveListener((listener_t)array[0]);
+        return name_t();
     });
     
 

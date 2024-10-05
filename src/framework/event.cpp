@@ -92,7 +92,7 @@ event_t Event::GetLast() {
 static listener_t NewListenerHandle(event_t type) {
     static listener_t last_id = 0;
     
-    listener_t id_part = (last_id++) << 32;
+    listener_t id_part = (last_id++) << 16;
     listener_t event_part = type;
     
     return id_part | event_part;
@@ -159,7 +159,7 @@ void Event::RemoveListener(listener_t listener_id) {
     // each listener being added to the end of the table makes it sorted.
     
     //listener_t id_part = listener_id >> 32;
-    listener_t event_part = (listener_id << 32) >> 32;
+    listener_t event_part = (listener_id << 16) >> 16;
     
     auto it = listener_table[event_part].begin();
     auto end = listener_table[event_part].end();
