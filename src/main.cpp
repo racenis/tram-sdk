@@ -529,6 +529,10 @@ int main(int argc, const char** argv) {
     
     Ext::Scripting::Lua::Init();
 
+    Script::Init();
+    
+    Script::LoadScript("init");
+
     //static materialtype_t special_material = RegisterMaterialType("special");
     //API::RegisterShader(VERTEX_DYNAMIC, special_material, "normal_dynamic", "special_dynamic");
 
@@ -705,7 +709,9 @@ int main(int argc, const char** argv) {
     });
     
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
-        WorldCell::Find(UID("demo_mov"))->Unload();
+        //WorldCell::Find(UID("demo_mov"))->Unload();
+        
+        Script::LoadScript("bepis");
         
         /*
         camera->SetFollowing(nullptr);

@@ -29,6 +29,8 @@ struct Language {
 void SetLanguage(Language language);
 void LoadScript(const char* path);
 
+void Init();
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_SCRIPT_H

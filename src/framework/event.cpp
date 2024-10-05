@@ -57,6 +57,9 @@ static Hashmap<event_t> name_t_to_event_t("name_t_to_event_t", (MAX_EVENT_TYPES*
 
 /// Registers a new event type.
 event_t Event::Register(const char* name) {
+    // TODO: add a check that event with that name is not registered already!!!
+    // TODO: also check if name is valid
+    
     listener_table.push_back(std::vector<ListenerInfo>());
     event_names[last_type] = name;
     return last_type++;

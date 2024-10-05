@@ -130,6 +130,8 @@ struct LogIntercept : Intercept {
     }
 };
 
+
+
 void InitCallbacks() {
     Message::SetInterceptCallback([](const Message& msg) {
         MessageIntercept* intercept = new MessageIntercept;
@@ -170,7 +172,32 @@ void InitCallbacks() {
         intercepts.push_back(intercept);
     });
     
-    for (event_t i = 0; i < Event::GetLast(); i++) {
+    SetLogCallback([](int time, const char* text) {
+        LogIntercept* intercept = new LogIntercept;
+        
+        intercept->message = text;
+        intercept->time = time;
+        
+        intercepts.push_back(intercept);
+    });
+}
+
+void UpdateCallbacks() {
+    std::vector<Intercept*> filtered;
+    for (auto intercept : intercepts) {
+        bool expired = GetTick() > intercept->time;
+        
+        if (expired) {
+            delete intercept;
+        } else {
+            filtered.push_back(intercept);
+        }
+    }
+    std::swap(filtered, intercepts);
+    
+    static event_t last_callback = 0;
+    for (event_t i = last_callback; i < Event::GetLast(); i++) {
+        last_callback = Event::GetLast();
         Event::AddListener(i, [](Event& event) {
             EventIntercept* intercept = new EventIntercept;
         
@@ -205,29 +232,6 @@ void InitCallbacks() {
             intercepts.push_back(intercept);
         });
     }
-    
-    SetLogCallback([](int time, const char* text) {
-        LogIntercept* intercept = new LogIntercept;
-        
-        intercept->message = text;
-        intercept->time = time;
-        
-        intercepts.push_back(intercept);
-    });
-}
-
-void UpdateCallbacks() {
-    std::vector<Intercept*> filtered;
-    for (auto intercept : intercepts) {
-        bool expired = GetTick() > intercept->time;
-        
-        if (expired) {
-            delete intercept;
-        } else {
-            filtered.push_back(intercept);
-        }
-    }
-    std::swap(filtered, intercepts);
 }
 
 bool DebugMenu::intercept_enabled = false;

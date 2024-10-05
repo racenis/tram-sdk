@@ -95,7 +95,7 @@ public:
     operator int64_t() const { assert(type == TYPE_INT64); return int64_value; }
     
     operator uint8_t() const { assert(type == TYPE_UINT8); return uint8_value; }
-    operator uint16_t() const { assert(type == TYPE_UINT16); return uint16_value; }
+    operator uint16_t() const { if (type != TYPE_UINT16) {__asm__ volatile("int $0x03");} /*assert(type == TYPE_UINT16);*/ return uint16_value; }
     operator uint32_t() const { assert(type == TYPE_UINT32); return uint32_value; }
     operator uint64_t() const { assert(type == TYPE_UINT64); return uint64_value; }
     
@@ -337,6 +337,7 @@ class ValueArray {
 public:
     ValueArray(const Value* first, size_t count) : first_field(first), field_count(count) {}
     const Value& operator [](size_t n) const { assert(n < field_count); return first_field[n]; }
+    const size_t size() const { return field_count; }
 private:
     const Value* first_field;
     size_t field_count;

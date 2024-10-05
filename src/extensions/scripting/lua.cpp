@@ -34,7 +34,7 @@ static void push_value_to_stack(const value_t& value) {
     }
     
     if (value.IsFloat()) {
-        lua_pushinteger(L, value.GetFloat());   return;
+        lua_pushnumber(L, value.GetFloat());   return;
     }
     
     switch (value.GetType()) {
@@ -116,6 +116,7 @@ static int function_call_from_lua(lua_State* L) {
     std::vector<Value> params;
     
     if (func.parameters.size()) {
+        assert(func.parameters.size() == (size_t)lua_gettop(L) && "function called with registered param count");
         for (size_t i = 0; i < func.parameters.size(); i++) {
             params.push_back(get_value_from_stack(i+1, func.parameters[i]));
         }
