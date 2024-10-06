@@ -132,10 +132,10 @@ static value_t get_value_from_stack(int index, Type type) {
         }
         
         case TYPE_QUAT: {
+            lua_getfield(L, index, "w");
             lua_getfield(L, index, "x");
             lua_getfield(L, index, "y");
             lua_getfield(L, index, "z");
-            lua_getfield(L, index, "w");
             quat vec = {(float)lua_tonumber(L, -4),
                         (float)lua_tonumber(L, -3),
                         (float)lua_tonumber(L, -2),

@@ -70,7 +70,11 @@ function tram.math.vec3(x, y, z)
 	vector.y = y
 	vector.z = z
 	
-	return tram.math._make_vec3(vector)
+	setmetatable(vector, tram.math._metatable_vec3)
+	
+	return vector
+	
+	--return tram.math._make_vec3(vector)
 end
 
 
@@ -104,17 +108,64 @@ tram.math._metatable_quat = {
 	
 	__eq = function(self, other)
 		return self.x == other.x and self.y == other.y and self.z == other.z and self.w == other.w
+	end,
+	
+	__mul = function(self, other)
+		assert(getmetatable(self) == tram.math._metatable_quat)
+		
+		local result = {}
+		
+		if getmetatable(other) == tram.math._metatable_quat then
+			result.w = other.w * self.w - other.x * self.x - other.y * self.y - other.z * self.z
+			result.x = other.w * self.x + other.x * self.w - other.y * self.z + other.z * self.y
+			result.y = other.w * self.y + other.x * self.z + other.y * self.w - other.z * self.x
+			result.z = other.w * self.z - other.x * self.y + other.y * self.x + other.z * self.w
+		else if getmetatable(other) == tram.math._metatable_vec3 then
+			result = __tram_impl_math_quat_vec3_multiply(self, other)
+		else
+			error("quaternion invalid rotation")
+		end
+		
+		setmetatable(result, tram.math._metatable_quat)
+	
+		return result
 	end
 }
 
 function tram.math.quat(x, y, z, w)
-	vector = {}
-	vector.x = x
-	vector.y = y
-	vector.z = z
-	vector.w = w
+	local vector = {}
 	
-	return tram.math._make_quat(vector)
+	-- conversion from euler angles
+	if getmetatable(x) == tram.math._metatable_vec3 then
+		local roll = x.x
+		local pitch = x.y
+		local yaw = x.z
+		
+		local cr = math.cos(roll * 0.5);
+		local sr = math.sin(roll * 0.5);
+		local cp = math.cos(pitch * 0.5);
+		local sp = math.sin(pitch * 0.5);
+		local cy = math.cos(yaw * 0.5);
+		local sy = math.sin(yaw * 0.5);
+
+		vector.w = cr * cp * cy + sr * sp * sy;
+		vector.x = sr * cp * cy - cr * sp * sy;
+		vector.y = cr * sp * cy + sr * cp * sy;
+		vector.z = cr * cp * sy - sr * sp * cy;
+		
+	-- normal parametric constructor
+	elseif x ~= nil and y ~= nil and z ~= nil and w ~= nil then
+		vector.x = x
+		vector.y = y
+		vector.z = z
+		vector.w = w
+	else
+		error("Something is wrong with quaternion constructor parameters!")
+	end
+	
+	setmetatable(vector, tram.math._metatable_quat)
+	
+	return vector
 end
 
 

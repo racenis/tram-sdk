@@ -41,8 +41,23 @@ function tick_function()
 		--location:poot()
 		--print(location)
 		
-		rotation = crate:GetRotation()
-		print(rotation)
+		--rotation = crate:GetRotation()
+		--print(rotation)
+		--rotation = tram.math.quat(tram.math.vec3(0, tram.GetTickTime(), 0))
+		--print(rotation)
+		
+		local rotation = crate:GetRotation()
+		local turn = tram.math.quat(tram.math.vec3(0, 0.01, 0))
+		
+		--print(turn)
+		--print(rotation)
+		
+		local new_rotation = rotation * turn
+		
+		--print(new_rotation)
+		
+		
+		crate:SetRotation(new_rotation)
 	end
 end
 

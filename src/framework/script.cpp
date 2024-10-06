@@ -67,6 +67,23 @@ void Init() {
     });
     
     
+    // FRAMEWORK/MATH.H
+    
+    SetFunction("__tram_impl_math_quat_from_euler", {TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        return quat((vec3)array[0]);
+    });
+    
+    SetFunction("__tram_impl_math_quat_multiply", {TYPE_QUAT, TYPE_QUAT}, [](valuearray_t array) -> value_t {
+        return (quat)array[0] * (quat)array[1];
+    });
+    
+    SetFunction("__tram_impl_math_quat_vec3_multiply", {TYPE_QUAT, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        return (quat)array[0] * (vec3)array[1];
+    });
+    
+    
+    
+    
     // FRAMEWORK/EVENT.H
     
     SetFunction("__tram_impl_event_register", {TYPE_STRING}, [](valuearray_t array) -> value_t {
