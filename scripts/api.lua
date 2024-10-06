@@ -7,6 +7,7 @@ tram.math = {}
 tram.entity = {}
 tram.event = {}
 tram.message = {}
+tram.ui = {}
 
 
 
@@ -300,8 +301,7 @@ function tram.entity.Find(term)
 end
 
 
-
--- FRAMEWORK/EVENT.H
+-- =========================== FRAMEWORK/EVENT.H ============================ --
 
 function tram.event.Register(event_name)
 	return __tram_impl_event_register(event_name)
@@ -362,8 +362,7 @@ tram.event.SELECTED = tram.event.GetType("selected")
 tram.event.LOOK_AT = tram.event.GetType("look-at")
 
 
-
--- FRAMEWORK/MESSAGE.H
+-- ========================== FRAMEWORK/MESSAGE.H =========================== --
 
 function tram.message.Register(message_name)
 	return __tram_impl_message_register(message_name)
@@ -403,3 +402,250 @@ tram.message.SELECT = tram.message.GetType("select")
 tram.message.SET_PROGRESS = tram.message.GetType("set-progress")
 tram.message.SET_ANIMATION = tram.message.GetType("set-animation")
 
+
+
+-- ============================= FRAMEWORK/UI.H ============================= --
+
+tram.ui.KEY_SPACE = 0
+tram.ui.KEY_APOSTROPHE = 1
+tram.ui.KEY_COMMA = 2
+tram.ui.KEY_MINUS = 3
+tram.ui.KEY_PERIOD = 4
+tram.ui.KEY_SLASH = 5
+
+tram.ui.KEY_0 = 6
+tram.ui.KEY_1 = 7
+tram.ui.KEY_2 = 8
+tram.ui.KEY_3 = 9
+tram.ui.KEY_4 = 10
+tram.ui.KEY_5 = 11
+tram.ui.KEY_6 = 12
+tram.ui.KEY_7 = 13
+tram.ui.KEY_8 = 14
+tram.ui.KEY_9 = 15
+
+tram.ui.KEY_SEMICOLON = 16
+tram.ui.KEY_EQUAL = 17
+
+tram.ui.KEY_A = 18
+tram.ui.KEY_B = 19
+tram.ui.KEY_C = 20
+tram.ui.KEY_D = 21
+tram.ui.KEY_E = 22
+tram.ui.KEY_F = 23
+tram.ui.KEY_G = 24
+tram.ui.KEY_H = 25
+tram.ui.KEY_I = 26
+tram.ui.KEY_J = 27
+tram.ui.KEY_K = 28
+tram.ui.KEY_L = 29
+tram.ui.KEY_M = 30
+tram.ui.KEY_N = 31
+tram.ui.KEY_O = 32
+tram.ui.KEY_P = 33
+tram.ui.KEY_Q = 34
+tram.ui.KEY_R = 35
+tram.ui.KEY_S = 36
+tram.ui.KEY_T = 37
+tram.ui.KEY_U = 38
+tram.ui.KEY_V = 39
+tram.ui.KEY_W = 40
+tram.ui.KEY_X = 41
+tram.ui.KEY_Y = 42
+tram.ui.KEY_Z = 43
+
+tram.ui.KEY_LEFT_BRACKET = 44
+tram.ui.KEY_BACKSLASH = 45
+tram.ui.KEY_RIGHT_BRACKET = 46
+tram.ui.KEY_GRAVE_ACCENT = 47
+
+tram.ui.KEY_WORLD_1 = 48
+tram.ui.KEY_WORLD_2 = 49
+
+tram.ui.KEY_ESCAPE = 50
+tram.ui.KEY_ENTER = 51
+tram.ui.KEY_TAB = 52
+tram.ui.KEY_BACKSPACE = 53
+tram.ui.KEY_INSERT = 54
+tram.ui.KEY_DELETE = 55
+
+tram.ui.KEY_RIGHT = 56
+tram.ui.KEY_LEFT = 57
+tram.ui.KEY_DOWN = 58
+tram.ui.KEY_UP = 59
+
+tram.ui.KEY_PAGE_UP = 60
+tram.ui.KEY_PAGE_DOWN = 61
+tram.ui.KEY_HOME = 62
+tram.ui.KEY_END = 63
+tram.ui.KEY_CAPS_LOCK = 64
+tram.ui.KEY_SCROLL_LOCK = 65
+tram.ui.KEY_NUM_LOCK = 66
+tram.ui.KEY_PRINT_SCREEN = 67
+tram.ui.KEY_PAUSE = 68
+
+tram.ui.KEY_F1 = 69
+tram.ui.KEY_F2 = 70
+tram.ui.KEY_F3 = 71
+tram.ui.KEY_F4 = 72
+tram.ui.KEY_F5 = 73
+tram.ui.KEY_F6 = 74
+tram.ui.KEY_F7 = 75
+tram.ui.KEY_F8 = 76
+tram.ui.KEY_F9 = 77
+tram.ui.KEY_F10 = 78
+tram.ui.KEY_F11 = 79
+tram.ui.KEY_F12 = 80
+tram.ui.KEY_F13 = 81
+tram.ui.KEY_F14 = 82
+tram.ui.KEY_F15 = 83
+tram.ui.KEY_F16 = 84
+tram.ui.KEY_F17 = 85
+tram.ui.KEY_F18 = 86
+tram.ui.KEY_F19 = 87
+tram.ui.KEY_F20 = 88
+tram.ui.KEY_F21 = 89
+tram.ui.KEY_F22 = 90
+tram.ui.KEY_F23 = 91
+tram.ui.KEY_F24 = 92
+tram.ui.KEY_F25 = 93
+
+tram.ui.KEY_KP_0 = 94
+tram.ui.KEY_KP_1 = 95
+tram.ui.KEY_KP_2 = 96
+tram.ui.KEY_KP_3 = 97
+tram.ui.KEY_KP_4 = 98
+tram.ui.KEY_KP_5 = 99
+tram.ui.KEY_KP_6 = 100
+tram.ui.KEY_KP_7 = 101
+tram.ui.KEY_KP_8 = 102
+tram.ui.KEY_KP_9 = 103
+
+
+tram.ui.KEY_KP_DECIMAL = 104
+tram.ui.KEY_KP_DIVIDE = 105
+tram.ui.KEY_KP_MULTIPLY = 106
+tram.ui.KEY_KP_SUBTRACT = 107
+tram.ui.KEY_KP_ADD = 108
+tram.ui.KEY_KP_ENTER = 109
+tram.ui.KEY_KP_EQUAL = 110
+
+tram.ui.KEY_LEFT_SHIFT = 111
+tram.ui.KEY_LEFT_CONTROL = 112
+tram.ui.KEY_LEFT_ALT = 113
+tram.ui.KEY_LEFT_SUPER = 114
+tram.ui.KEY_RIGHT_SHIFT = 115
+tram.ui.KEY_RIGHT_CONTROL = 116
+tram.ui.KEY_RIGHT_ALT = 117
+tram.ui.KEY_RIGHT_SUPER = 118
+
+tram.ui.KEY_MENU = 119
+
+tram.ui.KEY_RIGHTMOUSE = 120
+tram.ui.KEY_LEFTMOUSE = 121
+tram.ui.KEY_MIDDLEMOUSE = 122
+
+tram.ui.KEY_MOUSE_X = 0
+tram.ui.KEY_MOUSE_Y = 1
+tram.ui.KEY_MOUSE_SCROLL = 2
+
+tram.ui.STATE_DEFAULT = 0
+tram.ui.STATE_NO_INPUT = 1
+tram.ui.STATE_FLYING = 2
+tram.ui.STATE_MENU_OPEN = 3
+tram.ui.STATE_CURSOR = 4
+
+tram.ui.KEY_ACTION_NONE = 0
+tram.ui.KEY_ACTION_FORWARD = 1
+tram.ui.KEY_ACTION_BACKWARD = 2
+tram.ui.KEY_ACTION_STRAFE_LEFT = 3
+tram.ui.KEY_ACTION_STRAFE_RIGHT = 4
+tram.ui.KEY_ACTION_JUMP = 5
+tram.ui.KEY_ACTION_CROUCH = 6
+tram.ui.KEY_ACTION_SPRINT = 7
+tram.ui.KEY_ACTION_ACTIVATE = 8
+tram.ui.KEY_ACTION_UP = 9
+tram.ui.KEY_ACTION_DOWN = 10
+tram.ui.KEY_ACTION_LEFT = 11
+tram.ui.KEY_ACTION_RIGHT = 12
+
+tram.ui.CURSOR_DEFAULT = 12
+tram.ui.CURSOR_TEXT = 12
+tram.ui.CURSOR_CLICK = 12
+
+function tram.ui.GetScreenWidth()
+	return __tram_impl_ui_get_screen_width()
+end
+
+function tram.ui.GetScreenHeight()
+	return __tram_impl_ui_get_screen_height()
+end
+
+function tram.ui.SetWindowTitle(title)
+	__tram_impl_ui_set_window_title(title)
+end
+
+function tram.ui.SetWindowSize(w, h)
+	__tram_impl_ui_set_window_size(w, h)
+end
+
+function tram.ui.SetCursor(cursor)
+	__tram_impl_ui_set_cursor(cursor)
+end
+
+tram.ui._keyboard_function = {}
+
+function tram.ui.BindKeyboardKey(key, action)
+	if type(action) == "function" then
+		__tram_impl_ui_bind_keyboard_callback(key)
+		tram.ui._keyboard_function[key] = action
+	else 
+		__tram_impl_ui_bind_keyboard_action(key, action)
+	end
+end
+
+function __tram_impl_ui_keyboard_callback(key)
+	callback = tram.ui._keyboard_function[key]
+	callback()
+end
+
+function tram.ui.PollKeyboardKey(key)
+	return __tram_impl_ui_poll_keyboard_key(key)
+end
+
+function tram.ui.PollKeyboardAxis(axis)
+	return __tram_impl_ui_poll_keyboard_axis(axis)
+end
+
+function tram.ui.PollKeyboardAxisDelta(axis)
+	return __tram_impl_ui_poll_keyboard_axis_delta(axis)
+end
+
+function tram.ui.SetInputState(state)
+	__tram_impl_ui_set_input_state(state)
+end
+
+function tram.ui.GetInputState()
+	return __tram_impl_ui_get_input_state()
+end
+
+
+function tram.ui.GetAxisSensitivity(axis)
+	return __tram_impl_ui_get_axis_sensitivity(axis)
+end
+
+function tram.ui.SetAxisSensitivity(axis, value)
+	return __tram_impl_ui_set_axis_sensitivity(axis, value)
+end
+
+function tram.ui.RegisterKeyboardAction(name)
+	return __tram_impl_ui_register_keyboard_action(name)
+end
+
+function tram.ui.GetKeyboardAction(name)
+	return __tram_impl_ui_get_keyboard_action(name)
+end
+
+function tram.ui.GetKeyboardActionName(name)
+	return __tram_impl_ui_get_keyboard_action_name(name)
+end

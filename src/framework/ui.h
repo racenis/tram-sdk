@@ -120,7 +120,6 @@ void SetWindowTitle(const char* title);
 void SetWindowSize(int w, int h);
 
 void SetCursor(CursorType cursor);
-void SetTextInput(char* text, uint32_t len);
 
 void SetWebMainLoop(void(*loop_function)(void));
 

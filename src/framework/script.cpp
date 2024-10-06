@@ -10,6 +10,7 @@
 #include <framework/core.h>
 #include <framework/entity.h>
 #include <framework/event.h>
+#include <framework/ui.h>
 
 namespace tram::Script {
 
@@ -245,6 +246,89 @@ void Init() {
         return name_t();
     });
     
+    
+    
+    
+    // FRAMEWORK/UI.H
+    
+    SetFunction("__tram_impl_ui_get_screen_width", {}, [](valuearray_t) -> value_t {
+        return UI::GetScreenWidth();
+    });
+    
+    SetFunction("__tram_impl_ui_get_screen_height", {}, [](valuearray_t) -> value_t {
+        return UI::GetScreenHeight();
+    });
+    
+    SetFunction("__tram_impl_ui_set_window_title", {TYPE_STRING}, [](valuearray_t array) -> value_t {
+        UI::SetWindowTitle(array[0]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_ui_set_window_size", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        UI::SetWindowSize((uint32_t)array[0], (uint32_t)array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_ui_set_cursor", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        UI::SetCursor((UI::CursorType)((uint32_t)array[0]));
+        return true;
+    });
+    
+    SetFunction("__tram_impl_ui_bind_keyboard_action", {TYPE_UINT16, TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        UI::BindKeyboardKey((UI::KeyboardKey)((uint16_t)array[0]), (uint16_t)array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_ui_bind_keyboard_callback", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        UI::BindKeyboardKey((UI::KeyboardKey)((uint16_t)array[0]), [](UI::KeyboardKey key) {
+            CallFunction("__tram_impl_ui_keyboard_callback", {key});
+        });
+        return true;
+    });
+    
+    SetFunction("__tram_impl_ui_poll_keyboard_key", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::PollKeyboardKey((UI::KeyboardKey)((uint16_t)array[0]));
+    });
+    
+    SetFunction("__tram_impl_ui_poll_keyboard_axis", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::PollKeyboardAxis((UI::KeyboardAxis)((uint16_t)array[0]));
+    });
+    
+    SetFunction("__tram_impl_ui_poll_keyboard_axis_delta", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::PollKeyboardAxis((UI::KeyboardAxis)((uint16_t)array[0]));
+    });
+    
+    SetFunction("__tram_impl_ui_set_input_state", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        UI::SetInputState((UI::InputState)((uint16_t)array[0]));
+        return true;
+    });
+    
+    SetFunction("__tram_impl_ui_get_input_state", {}, [](valuearray_t) -> value_t {
+        return UI::GetInputState();
+    });
+    
+    
+    SetFunction("__tram_impl_ui_get_axis_sensitivity", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::GetAxisSensitivity((UI::KeyboardAxis)((uint16_t)array[0]));
+    });
+    
+    SetFunction("__tram_impl_ui_set_axis_sensitivity", {TYPE_UINT16, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        UI::SetAxisSensitivity((UI::KeyboardAxis)((uint16_t)array[0]), array[1]);
+        return true;
+    });
+    
+    
+    SetFunction("__tram_impl_ui_register_keyboard_action", {TYPE_STRING}, [](valuearray_t array) -> value_t {
+        return UI::RegisterKeyboardAction(array[0]);
+    });
+    
+    SetFunction("__tram_impl_ui_get_keyboard_action", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        return UI::GetKeyboardAction(array[9]);
+    });
+    
+    SetFunction("__tram_impl_ui_get_keyboard_action_name", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::GetKeyboardActionName((uint16_t)array[1]);
+    });
     
     
 

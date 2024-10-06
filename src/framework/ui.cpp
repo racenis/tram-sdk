@@ -161,15 +161,6 @@ void Update() {
 
 
 
-void SetTextInput(char* text, uint32_t len) {
-    /*input_text = text;
-    input_text_len = len;
-    
-    text ?
-    glfwSetCharCallback(WINDOW, CharacterCallback):
-    glfwSetCharCallback(WINDOW, nullptr);*/
-}
-
 void EndFrame() {
     Platform::Window::Update();
 }

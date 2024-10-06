@@ -29,3 +29,15 @@ else
 	tram.message.Send(tram.message.SET_ANIMATION, 0, tram.entity.Find("mongus"):GetID(), "mongus-run")
 end
 
+--tram.ui.SetInputState(tram.ui.STATE_MENU_OPEN)
+
+--tram.ui.BindKeyboardKey(tram.ui.KEY_J, tram.ui.KEY_ACTION_JUMP)
+
+--tram.ui.BindKeyboardKey(tram.ui.KEY_J, function() print("chyungine!!") end)
+
+
+--tram.ui.SetWindowSize(100, 500)
+--tram.ui.SetCursor(tram.ui.CURSOR_TEXT)
+
+--print("width:", tram.ui.GetScreenWidth())
+--print("height:", tram.ui.GetScreenHeight())

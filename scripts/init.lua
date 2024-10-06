@@ -30,6 +30,15 @@ listener = tram.event.AddListener(event, event_function)
 function tick_function()
 	crate = tram.entity.Find("nukta")
 	
+	if tram.ui.PollKeyboardKey(tram.ui.KEY_J) then
+		print("JJJJJ")
+	end
+	
+	if tram.ui.PollKeyboardKey(tram.ui.KEY_K) then
+		print("KKKKK")
+	end
+	
+	
 	if crate == nil then
 		print("O NO WHERE CRATE")
 	else
