@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <framework/core.h>
+#include <framework/entity.h>
 #include <framework/event.h>
 
 namespace tram::Script {
@@ -125,6 +126,37 @@ void Init() {
         Event::RemoveListener((listener_t)array[0]);
         return name_t();
     });
+    
+    SetFunction("__tram_impl_entity_find_by_name", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        //std::cout << "findning !! " << (name_t)array[0] << std::endl;
+        Entity* entity = Entity::Find((name_t)array[0]);
+        //std::cout << "found: " << entity << " | " << entity->GetID() << std::endl;
+        return entity ? entity->GetID() : 0;
+        //return entity->GetID();
+    });
+    
+    SetFunction("__tram_impl_entity_find_by_id", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        return entity ? entity->GetID() : 0;
+    });
+    
+    SetFunction("__tram_impl_entity_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        return entity ? entity->GetName() : name_t();
+    });
+    
+    SetFunction("__tram_impl_entity_get_location", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        return entity ? entity->GetLocation() : vec3();
+    });
+    
+    SetFunction("__tram_impl_entity_set_location", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        if (entity) entity->SetLocation(array[1]);
+        return name_t();
+    });
+    
+    
     
 
     LoadScript("api");

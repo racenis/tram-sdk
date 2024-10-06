@@ -27,3 +27,16 @@ end
 
 listener = tram.event.AddListener(event, event_function)
 
+function tick_function()
+	crate = tram.entity.Find("nukta")
+	
+	if crate == nil then
+		print("O NO WHERE CRATE")
+	else
+		location = crate:GetLocation()
+		location.y = 1.25 + 0.5 * math.sin(tram.GetTickTime())
+		crate:SetLocation(location)
+	end
+end
+
+tram.event.AddListener(tram.event.TICK, tick_function)

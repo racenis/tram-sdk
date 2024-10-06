@@ -3,6 +3,7 @@
 
 if tram then return end
 tram = {}
+tram.entity = {}
 tram.event = {}
 
 -- FRAMEWORK/CORE.H
@@ -23,6 +24,40 @@ function tram.GetDeltaTime()
 	return __tram_impl_core_get_delta_time()
 end
 
+-- FRAMEWORK/ENTITY.H
+
+function tram.entity._make(id)
+	entity = {}
+	entity.id = id
+	
+	entity.GetName = function (self)
+		return __tram_impl_entity_get_name(self.id)
+	end
+	
+	entity.GetLocation = function (self)
+		return __tram_impl_entity_get_location(self.id)
+	end
+	
+	entity.SetLocation = function (self, location)
+		return __tram_impl_entity_set_location(self.id, location)
+	end
+	
+	return entity
+end
+
+function tram.entity.Find(term)
+	if type(term) == "string" then
+		id = __tram_impl_entity_find_by_name(term)
+	else
+		id = __tram_impl_entity_find_by_id(term)
+	end
+
+	if id == 0 then
+		return nil
+	end
+	
+	return tram.entity._make(id)
+end
 
 -- FRAMEWORK/EVENT.H
 

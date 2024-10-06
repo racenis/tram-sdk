@@ -4,7 +4,7 @@
 
 #include <lua.hpp>
 
-
+#include <iostream>
 
 namespace tram::Ext::Scripting::Lua {
 
@@ -42,9 +42,9 @@ static void push_value_to_stack(const value_t& value) {
         case TYPE_STRING:   lua_pushstring(L, (const char*)value);  return;
         case TYPE_VEC3:
             lua_createtable(L, 0, 3);
-            lua_pushnumber(L, ((vec3)value).x); lua_setfield(L, -2, "0");
-            lua_pushnumber(L, ((vec3)value).y); lua_setfield(L, -2, "1");
-            lua_pushnumber(L, ((vec3)value).z); lua_setfield(L, -2, "2");
+            lua_pushnumber(L, ((vec3)value).x); lua_setfield(L, -2, "x");
+            lua_pushnumber(L, ((vec3)value).y); lua_setfield(L, -2, "y");
+            lua_pushnumber(L, ((vec3)value).z); lua_setfield(L, -2, "z");
             return;
         default: lua_pushnil(L);
     }
@@ -87,10 +87,15 @@ static value_t get_value_from_stack(int index, Type type) {
         case TYPE_FLOAT64:      return (double) lua_tonumber(L, index);
         
         case TYPE_VEC3: {
-            lua_rawgeti(L, index, 1);
+            // TODO:: add validation ? check if field names is xyz
+            /*lua_rawgeti(L, index, 1);
             lua_rawgeti(L, index, 2);
-            lua_rawgeti(L, index, 3);
+            lua_rawgeti(L, index, 3);*/
+            lua_getfield(L, index, "x");
+            lua_getfield(L, index, "y");
+            lua_getfield(L, index, "z");
             vec3 vec = {lua_tonumber(L, -3), lua_tonumber(L, -2), lua_tonumber(L, -1)};
+            
             lua_pop(L, 3);
             return vec;
         }
