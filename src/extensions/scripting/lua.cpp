@@ -15,7 +15,33 @@ static Type best_value(int index) {
         case LUA_TNUMBER:   return TYPE_FLOAT;
         case LUA_TBOOLEAN:  return TYPE_BOOL;
         case LUA_TSTRING:   return TYPE_NAME;
-        case LUA_TTABLE:    return TYPE_VEC3;
+        case LUA_TTABLE:    {
+            lua_getfield(L, index, "x");
+            lua_getfield(L, index, "y");
+            lua_getfield(L, index, "z");
+            lua_getfield(L, index, "w");
+            
+            bool has_x = lua_tonumber(L, -4) == LUA_TNUMBER;
+            bool has_y = lua_tonumber(L, -3) == LUA_TNUMBER;
+            bool has_z = lua_tonumber(L, -2) == LUA_TNUMBER;
+            bool has_w = lua_tonumber(L, -1) == LUA_TNUMBER;
+            
+            lua_pop(L, 4);
+            
+            if (has_x && has_y && has_z && !has_w) {
+                std::cout << "returning vec3" << std::endl;
+                return TYPE_VEC3;
+            }
+            
+            if (has_x && has_y && has_z && has_w) {
+                std::cout << "returning quat" << std::endl;
+                return TYPE_QUAT;
+            }
+            
+            std::cout << "returning other" << std::endl;
+            
+            return TYPE_UNDEFINED;
+        }
         
         case LUA_TNIL:
         default: 
@@ -45,6 +71,13 @@ static void push_value_to_stack(const value_t& value) {
             lua_pushnumber(L, ((vec3)value).x); lua_setfield(L, -2, "x");
             lua_pushnumber(L, ((vec3)value).y); lua_setfield(L, -2, "y");
             lua_pushnumber(L, ((vec3)value).z); lua_setfield(L, -2, "z");
+            return;
+        case TYPE_QUAT:
+            lua_createtable(L, 0, 4);
+            lua_pushnumber(L, ((quat)value).x); lua_setfield(L, -2, "x");
+            lua_pushnumber(L, ((quat)value).y); lua_setfield(L, -2, "y");
+            lua_pushnumber(L, ((quat)value).z); lua_setfield(L, -2, "z");
+            lua_pushnumber(L, ((quat)value).w); lua_setfield(L, -2, "w");
             return;
         default: lua_pushnil(L);
     }
@@ -87,18 +120,31 @@ static value_t get_value_from_stack(int index, Type type) {
         case TYPE_FLOAT64:      return (double) lua_tonumber(L, index);
         
         case TYPE_VEC3: {
-            // TODO:: add validation ? check if field names is xyz
-            /*lua_rawgeti(L, index, 1);
-            lua_rawgeti(L, index, 2);
-            lua_rawgeti(L, index, 3);*/
             lua_getfield(L, index, "x");
             lua_getfield(L, index, "y");
             lua_getfield(L, index, "z");
-            vec3 vec = {lua_tonumber(L, -3), lua_tonumber(L, -2), lua_tonumber(L, -1)};
+            vec3 vec = {lua_tonumber(L, -3),
+                        lua_tonumber(L, -2),
+                        lua_tonumber(L, -1)};
             
             lua_pop(L, 3);
             return vec;
         }
+        
+        case TYPE_QUAT: {
+            lua_getfield(L, index, "x");
+            lua_getfield(L, index, "y");
+            lua_getfield(L, index, "z");
+            lua_getfield(L, index, "w");
+            quat vec = {(float)lua_tonumber(L, -4),
+                        (float)lua_tonumber(L, -3),
+                        (float)lua_tonumber(L, -2),
+                        (float)lua_tonumber(L, -1)};
+            
+            lua_pop(L, 4);
+            return vec;
+        }
+        
         default: return value_t();
     }
 }

@@ -36,6 +36,13 @@ function tick_function()
 		location = crate:GetLocation()
 		location.y = 1.25 + 0.5 * math.sin(tram.GetTickTime())
 		crate:SetLocation(location)
+
+		
+		--location:poot()
+		--print(location)
+		
+		rotation = crate:GetRotation()
+		print(rotation)
 	end
 end
 

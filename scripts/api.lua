@@ -3,8 +3,11 @@
 
 if tram then return end
 tram = {}
+tram.math = {}
 tram.entity = {}
 tram.event = {}
+
+
 
 -- FRAMEWORK/CORE.H
 
@@ -24,22 +27,131 @@ function tram.GetDeltaTime()
 	return __tram_impl_core_get_delta_time()
 end
 
+
+
+-- ============================ FRAMEWORK/MATH.H ============================ --
+-- This is where all of the vector math stuff is defined.
+-- For simple stuff, we just do all of the computation without leaving Lua. For
+-- more complex stuff we go down into C++.
+
+
+-- -------------------------------  VEC3 TYPE ------------------------------- --
+-- The vec3 type is basically a re-implemenation of tram::vec3, which itself is
+-- just an alias for glm::vec3.
+
+-- To create a new vec3, use tram.math.vec3(x, y, z). If you get a vec3 through
+-- the C++ API, then use setmetatable(object, tram.math._metatable_vec3) to set
+-- its metatable.
+
+tram.math._methods_vec3 = {
+	poot = function(self)
+		--value = "(" + self.x + self.y + self.z + ")"
+		value = string.format("(%.4f, %.4f, %.4f)", self.x, self.y, self.z)
+		print(value)
+		--print("vec3:", self.x, self.y, self.z)
+	end
+}
+
+tram.math._metatable_vec3 = {
+	__index = tram.math._methods_vec3,
+	
+	__tostring = function(self)
+		return string.format("(%.4f, %.4f, %.4f)", self.x, self.y, self.z)
+	end,
+	
+	__eq = function(self, other)
+		return self.x == other.x and self.y == other.y and self.z == other.z
+	end
+}
+
+function tram.math.vec3(x, y, z)
+	vector = {}
+	vector.x = x
+	vector.y = y
+	vector.z = z
+	
+	return tram.math._make_vec3(vector)
+end
+
+
+
+
+
+
+
+-- -------------------------------  QUAT TYPE ------------------------------- --
+-- The quat type is basically a re-implemenation of tram::quat, which itself is
+-- just an alias for glm::quat.
+
+-- To create a new quat, use tram.math.quat(x, y, z, w). You can also use the
+-- tram.math.quat(vec3) to construct a quaternion from euler angles contained in
+-- the vec3. If you get a quat through the C++ API, then use
+-- setmetatable(object, tram.math._metatable_quat) to set its metatable.
+
+tram.math._methods_quat = {
+	poot = function(self)
+		value = string.format("(%.4f, %.4f, %.4f)", self.x, self.y, self.z)
+		print(value)
+	end
+}
+
+tram.math._metatable_quat = {
+	__index = tram.math._methods_quat,
+	
+	__tostring = function(self)
+		return string.format("(%.4f, %.4f, %.4f, %.4f)", self.x, self.y, self.z, self.w)
+	end,
+	
+	__eq = function(self, other)
+		return self.x == other.x and self.y == other.y and self.z == other.z and self.w == other.w
+	end
+}
+
+function tram.math.quat(x, y, z, w)
+	vector = {}
+	vector.x = x
+	vector.y = y
+	vector.z = z
+	vector.w = w
+	
+	return tram.math._make_quat(vector)
+end
+
+
+
 -- FRAMEWORK/ENTITY.H
 
 function tram.entity._make(id)
 	entity = {}
 	entity.id = id
 	
+	
 	entity.GetName = function (self)
 		return __tram_impl_entity_get_name(self.id)
 	end
 	
-	entity.GetLocation = function (self)
-		return __tram_impl_entity_get_location(self.id)
+	entity.GetID = function (self)
+		return self.id
 	end
 	
+	
+	
+	entity.GetLocation = function (self)
+		vector = __tram_impl_entity_get_location(self.id)
+		setmetatable(vector, tram.math._metatable_vec3)
+		return vector
+	end
 	entity.SetLocation = function (self, location)
 		return __tram_impl_entity_set_location(self.id, location)
+	end
+	
+	entity.GetRotation = function (self)
+		vector = __tram_impl_entity_get_rotation(self.id)
+		setmetatable(vector, tram.math._metatable_quat)
+		return vector
+	end
+	entity.SetRotation = function (self, rotation)
+		return __tram_impl_entity_set_rotation(self.id, rotation)
 	end
 	
 	return entity
@@ -58,6 +170,8 @@ function tram.entity.Find(term)
 	
 	return tram.entity._make(id)
 end
+
+
 
 -- FRAMEWORK/EVENT.H
 

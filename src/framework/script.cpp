@@ -70,8 +70,6 @@ void Init() {
     // FRAMEWORK/EVENT.H
     
     SetFunction("__tram_impl_event_register", {TYPE_STRING}, [](valuearray_t array) -> value_t {
-        std::cout << "hello form c++!" << std::endl;
-        std::cout << "size : " << array.size() << std::endl;
         assert(array.size());
         const char* name = array[0];
         assert(name);
@@ -153,6 +151,17 @@ void Init() {
     SetFunction("__tram_impl_entity_set_location", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
         Entity* entity = Entity::Find((uint32_t)array[0]);
         if (entity) entity->SetLocation(array[1]);
+        return name_t();
+    });
+    
+    SetFunction("__tram_impl_entity_get_rotation", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        return entity ? entity->GetRotation() : quat(1.0f, 0.0f, 0.0f, 0.0f);
+    });
+    
+    SetFunction("__tram_impl_entity_set_rotation", {TYPE_UINT32, TYPE_QUAT}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        if (entity) entity->SetRotation(array[1]);
         return name_t();
     });
     
