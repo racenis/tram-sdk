@@ -108,13 +108,18 @@ void Init() {
         return Event::GetLast();
     });
     
-    SetFunction("__tram_impl_event_post", {TYPE_UINT16, TYPE_UINT16, TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+    SetFunction("__tram_impl_event_post", {TYPE_UINT16, TYPE_UINT16, TYPE_UINT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
         Event event;
         
         event.type = array[0];
         event.subtype = array[1];
         event.poster_id = array[2];
-        event.data_int = (uint32_t)array[3];
+        
+        if (array[3].GetType() == TYPE_UNDEFINED) {
+            event.data = nullptr;
+        } else {
+            event.data_value = Event::AllocateData<Value>(array[3]);
+        }
     
         Event::Post(event);
         
@@ -141,6 +146,64 @@ void Init() {
         Event::RemoveListener((listener_t)array[0]);
         return name_t();
     });
+    
+    
+    
+    
+    // FRAMEWORK/MESSAGE.H
+    
+    SetFunction("__tram_impl_message_register", {TYPE_STRING}, [](valuearray_t array) -> value_t {
+        assert(array.size());
+        const char* name = array[0];
+        assert(name);
+        char* copy = (char*)malloc(strlen(name) + 1);
+        strcpy(copy, name);
+        
+        return Message::Register(copy);
+    });
+    
+    SetFunction("__tram_impl_message_get_type", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        return Message::GetType(array[0]);
+    });
+    
+    SetFunction("__tram_impl_message_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return Message::GetName(array[0]);
+    });
+    
+    SetFunction("__tram_impl_message_get_last", {}, [](valuearray_t) -> value_t {
+        return Message::GetLast();
+    });
+    
+    SetFunction("__tram_impl_message_send", {TYPE_UINT32, TYPE_UINT32, TYPE_UINT32, TYPE_UNDEFINED, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        Message message;
+        
+        message.type = array[0];
+        message.sender = array[1];
+        message.receiver = array[2];
+        
+        if (array[3].GetType() == TYPE_UNDEFINED) {
+            message.data = nullptr;
+        } else {
+            message.data_value = Message::AllocateData<Value>(array[3]);
+            
+            if (array[3].GetType() == TYPE_STRING) {
+                *message.data_value = name_t((const char*)array[3]);
+            }
+        }
+        
+        if (array[4].GetType() == TYPE_UNDEFINED || array[4].GetFloat() == 0.0f) {
+            Message::Send(message);
+        } else {
+            Message::Send(message, array[4].GetFloat());
+        }
+        
+        return name_t();
+    });
+    
+    
+    
+    
+    // FRAMEWORK/ENTITY.H
     
     SetFunction("__tram_impl_entity_find_by_name", {TYPE_NAME}, [](valuearray_t array) -> value_t {
         //std::cout << "findning !! " << (name_t)array[0] << std::endl;

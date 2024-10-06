@@ -6,6 +6,7 @@ tram = {}
 tram.math = {}
 tram.entity = {}
 tram.event = {}
+tram.message = {}
 
 
 
@@ -61,6 +62,78 @@ tram.math._metatable_vec3 = {
 	
 	__eq = function(self, other)
 		return self.x == other.x and self.y == other.y and self.z == other.z
+	end,
+	
+	__add = function(self, other)
+		local result = {}
+		
+		if getmetatable(other) == tram.math._metatable_vec3 then
+			result.x = self.x + other.x
+			result.y = self.y + other.y
+			result.z = self.z + other.z
+		else
+			result.x = self.x + other
+			result.y = self.y + other
+			result.z = self.z + other
+		end
+	
+		setmetatable(result, tram.math._metatable_vec3)
+	
+		return result
+	end,
+	
+	__sub = function(self, other)
+		local result = {}
+		
+		if getmetatable(other) == tram.math._metatable_vec3 then
+			result.x = self.x + other.x
+			result.y = self.y + other.y
+			result.z = self.z + other.z
+		else
+			result.x = self.x + other
+			result.y = self.y + other
+			result.z = self.z + other
+		end
+	
+		setmetatable(result, tram.math._metatable_vec3)
+	
+		return result
+	end,
+	
+	__mul = function(self, other)
+		local result = {}
+		
+		if getmetatable(other) == tram.math._metatable_vec3 then
+			result.x = self.x + other.x
+			result.y = self.y + other.y
+			result.z = self.z + other.z
+		else
+			result.x = self.x + other
+			result.y = self.y + other
+			result.z = self.z + other
+		end
+	
+		setmetatable(result, tram.math._metatable_vec3)
+	
+		return result
+	end,
+	
+	__div = function(self, other)
+		local result = {}
+		
+		if getmetatable(other) == tram.math._metatable_vec3 then
+			result.x = self.x + other.x
+			result.y = self.y + other.y
+			result.z = self.z + other.z
+		else
+			result.x = self.x + other
+			result.y = self.y + other
+			result.z = self.z + other
+		end
+	
+		setmetatable(result, tram.math._metatable_vec3)
+	
+		return result
 	end
 }
 
@@ -120,7 +193,7 @@ tram.math._metatable_quat = {
 			result.x = other.w * self.x + other.x * self.w - other.y * self.z + other.z * self.y
 			result.y = other.w * self.y + other.x * self.z + other.y * self.w - other.z * self.x
 			result.z = other.w * self.z - other.x * self.y + other.y * self.x + other.z * self.w
-		else if getmetatable(other) == tram.math._metatable_vec3 then
+		elseif getmetatable(other) == tram.math._metatable_vec3 then
 			result = __tram_impl_math_quat_vec3_multiply(self, other)
 		else
 			error("quaternion invalid rotation")
@@ -168,7 +241,11 @@ function tram.math.quat(x, y, z, w)
 	return vector
 end
 
+-- -------------------------------  CONSTANTS ------------------------------- --
 
+tram.math.DIRECTION_FORWARD = tram.math.vec3(0.0, 0.0, -1.0)
+tram.math.DIRECTION_SIDE = tram.math.vec3(1.0, 0.0, 0.0)
+tram.math.DIRECTION_UP = tram.math.vec3(0.0, 1.0, 0.0)
 
 -- FRAMEWORK/ENTITY.H
 
@@ -283,3 +360,46 @@ tram.event.CURSORPOS = tram.event.GetType("cursorpos")
 tram.event.TICK = tram.event.GetType("tick")
 tram.event.SELECTED = tram.event.GetType("selected")
 tram.event.LOOK_AT = tram.event.GetType("look-at")
+
+
+
+-- FRAMEWORK/MESSAGE.H
+
+function tram.message.Register(message_name)
+	return __tram_impl_message_register(message_name)
+end
+
+function tram.message.GetType(message_name)
+	return __tram_impl_message_get_type(message_name)
+end
+
+function tram.message.GetName(message_name)
+	return __tram_impl_message_get_name(message_name)
+end
+
+function tram.message.GetLast()
+	return __tram_impl_message_get_last()
+end
+
+function tram.message.Send(message_type, sender, receiver, data, delay)
+	__tram_impl_message_send(message_type, sender, receiver, data, delay)
+end
+
+tram.message.NONE = tram.message.GetType("none")
+tram.message.PING = tram.message.GetType("ping")
+tram.message.MOVE_PICK_UP = tram.message.GetType("move-pick-up")
+tram.message.OPEN = tram.message.GetType("open")
+tram.message.CLOSE = tram.message.GetType("close")
+tram.message.LOCK = tram.message.GetType("lock")
+tram.message.UNLOCK = tram.message.GetType("unlock")
+tram.message.TOGGLE = tram.message.GetType("toggle")
+tram.message.KILL = tram.message.GetType("kill")
+tram.message.TRIGGER = tram.message.GetType("trigger")
+tram.message.START = tram.message.GetType("start")
+tram.message.STOP = tram.message.GetType("stop")
+tram.message.ACTIVATE = tram.message.GetType("activate")
+tram.message.ACTIVATE_ONCE = tram.message.GetType("activate-one")
+tram.message.SELECT = tram.message.GetType("select")
+tram.message.SET_PROGRESS = tram.message.GetType("set-progress")
+tram.message.SET_ANIMATION = tram.message.GetType("set-animation")
+
