@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Getting started | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+			
+			.menubar {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+			}
+
+			.navbar {
+				width: 100%;
+			}
+			
+			.navbar .left {
+				width: 50px;
+			}
+			
+			.navbar .middle {
+				text-align: center;
+			}
+			
+			.navbar .right {
+				width: 50px;
+				text-align: right;
+			}
+			
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+		</style>
+	</head>
+	<body background="../images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="../images/logo3.gif"/>
+					<img style="float:right;" src="../images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="../index.html">Home</a> | 
+							<a href="../features.html">Features</a> | 
+							<a href="../roadmap.html">Roadmap</a> | 
+							<a href="../learn.html">Learn</a> | 
+							<a href="../documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Getting started | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>Getting started</h1>
+
+<hr/>
+
+<p>
+	If you already know how to C++ and are very good at it, you should be able
+	to compile the code that can be found in the Tramway SDK repository.
+</p>
+	
+<p>
+	This article will cover the usage of the framework for beginners who are
+	either scared of C++ or just bad at it. I tried to create the LUA scripting
+	API in a way that is very close to the underlying C++ API, so after you
+	overcome your fear of C++ or get better at it, you should be able to switch
+	to it rather easily.
+</p>
+
+<p>
+	Before starting, evaluate yourself and make sure that you possess the
+	following qualities:
+</p>
+
+<ul>
+	<li>Good computer skills;</li>
+	<li>Decent programming skills;</li>
+	<li>Basic maths;</li>
+	<li>Knowledge of game engine concepts.</li>
+</ul>
+	
+<p>
+	If you do not meet these requirements, consider visiting your local public
+	library, signing up for computer literacy courses or finishing your 
+	secondary education (if applicable).
+</p>
+
+<h3>Setting up your workspace</h3>
+
+<hr/>
+
+<p>
+	Before beginning, it would be worthwhile to set up your virtual workspace.
+	My personal preference is to dump everything into a directory located on
+	my <code>Desktop</code> on Windows or in my <code>home</code> directory
+	on Linux.
+</p>
+
+<p>
+	Decide where you will put your workspace directory and create it. Name it
+	something descriptive, like <code>tramsdk</code>, <code>projects</code>,
+	<code>my_games</code> or <code>IMPORTANT</code>. Customize the icon. Add a
+	shortcut to your start menu or a start menu equivalent.
+</p>
+
+<p>
+	Next up, you will need to acquire the framework source code. Even if you use
+	pre-built binaries, the source code repository contains many useful Python
+	scripts.
+</p>
+
+<p>	
+	Download the <a href="https://github.com/racenis/tram-sdk">
+	repository</a>, either as a .zip file from the Github web interface, or
+	clone it through the git program. After that, download the template
+	repository, just like you downloaded the main framework repository.
+</p>
+
+<h3>Creating your first app.</h3>
+
+<hr/>
+
+<p>
+	Copy the directory and name it something descriptive, like
+	<code>my-app</code>. You will probably do this every time
+	you create a new app using the framework. Navigate into this directory.
+</p>
+
+<p>
+	If you're using Windows, then the template repository already contained
+	binaries for you. On Linux, you should take a look at the contents of the
+	<code>maketool.ini</code> file. Try running <code>maketool.py</code> found
+	in the <code>devtools</code> directory of the main framework repository,
+	while having this directory as the working directory. If you are using
+	Linux, then you're probably very clever, you should be able to figure this 
+	out.
+</p>
+
+<p>
+	The executable of the app is named <code>template.exe</code>, you might want
+	to rename it. Double-click on it or run it through command line and a window
+	with some interesting shapes should appear.
+</p>
+
+<p>
+	If a window does not appear, check if your monitor is plugged in and turned
+	on. Many users make this simple mistake.
+</p>
+
+<table class="navbar">
+	<tr>
+		<td class="left">&laquo; <a href="whatis.html">Back</a></td>
+		<td class="middle"><a href="../learn.html">Home</a></td>
+		<td class="right"><a href="structure.html">Next</a> &raquo;</td>
+	</tr>
+</table>
+
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="../images/800x600.gif"/><br/>
+					<img src="../images/firefoxnow.gif"/><br/>
+					<img src="../images/hicolor.gif"/><br/>
+					
+					<img src="../images/blender.gif"/><br/>
+					<img src="../images/wxwidgets.gif"/><br/>
+					
+					<img src="../images/winxp.gif"/><br/>
+					<img src="../images/linux.gif"/><br/>
+					<img src="../images/hatemac.jpg"/><br/>
+					
+					<img src="../images/discord-no-way.gif"/><br/>
+					
+					<img src="../images/winrar.gif"/><br/>
+					<img src="../images/sdblast.gif"/><br/>
+					<img src="../images/esheep.gif"/><br/>
+					
+					<img src="../images/valid-bad.gif"/><br/>
+					<img src="../images/notepadpp.gif"/><br/>
+					<img src="../images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

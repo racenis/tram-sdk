@@ -11,6 +11,14 @@
 #include <framework/entity.h>
 #include <framework/event.h>
 #include <framework/ui.h>
+#include <audio/audio.h>
+#include <render/render.h>
+#include <render/material.h>
+#include <render/model.h>
+#include <render/sprite.h>
+#include <physics/physics.h>
+
+using namespace tram::Render;
 
 namespace tram::Script {
 
@@ -307,7 +315,6 @@ void Init() {
         return UI::GetInputState();
     });
     
-    
     SetFunction("__tram_impl_ui_get_axis_sensitivity", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
         return UI::GetAxisSensitivity((UI::KeyboardAxis)((uint16_t)array[0]));
     });
@@ -317,20 +324,121 @@ void Init() {
         return true;
     });
     
-    
     SetFunction("__tram_impl_ui_register_keyboard_action", {TYPE_STRING}, [](valuearray_t array) -> value_t {
         return UI::RegisterKeyboardAction(array[0]);
     });
     
     SetFunction("__tram_impl_ui_get_keyboard_action", {TYPE_NAME}, [](valuearray_t array) -> value_t {
-        return UI::GetKeyboardAction(array[9]);
+        return UI::GetKeyboardAction(array[0]);
     });
     
     SetFunction("__tram_impl_ui_get_keyboard_action_name", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
-        return UI::GetKeyboardActionName((uint16_t)array[1]);
+        return UI::GetKeyboardActionName((uint16_t)array[0]);
     });
     
     
+    
+    
+    // FRAMEWORK/AUDIO.H
+    SetFunction("__tram_impl_audio_set_volume", {TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        Audio::SetVolume(array[0]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_audio_get_volume", {}, [](valuearray_t) -> value_t {
+        return Audio::GetVolume();
+    });
+    
+    SetFunction("__tram_impl_audio_set_listener_position", {TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        Audio::SetListenerPosition(array[0]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_audio_set_listener_orientation", {TYPE_QUAT}, [](valuearray_t array) -> value_t {
+        Audio::SetListenerOrientation(array[0]);
+        return true;
+    });
+
+
+
+
+    // RENDER/ANIMATION.H
+    SetFunction("__tram_impl_render_animation_find", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        Animation* animation = Animation::Find(array[0]);
+        
+        if (animation) {
+            return PoolProxy<Animation>::GetPool().index(animation);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_render_animation_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Animation>::GetPool()[(uint32_t)array[0]].GetName();
+    });
+
+
+
+
+    // RENDER/MATERIAL.H
+    SetFunction("__tram_impl_render_material_find", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        Material* material = Material::Find(array[0]);
+        
+        if (material) {
+            return PoolProxy<Material>::GetPool().index(material);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_render_material_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Material>::GetPool()[(uint32_t)array[0]].GetName();
+    });
+
+
+
+    // RENDER/MODEL.H
+    SetFunction("__tram_impl_render_model_find", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        Model* model = Model::Find(array[0]);
+        
+        if (model) {
+            return PoolProxy<Model>::GetPool().index(model);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_render_model_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetName();
+    });
+
+
+
+
+    // RENDER/SPRITE.H
+    SetFunction("__tram_impl_render_sprite_find", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        Sprite* sprite = Sprite::Find(array[0]);
+        
+        if (sprite) {
+            return PoolProxy<Sprite>::GetPool().index(sprite);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_render_sprite_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Sprite>::GetPool()[(uint32_t)array[0]].GetName();
+    });
+
+    
+
+
+
+
+
+
+
+
 
     LoadScript("api");
 }

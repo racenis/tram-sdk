@@ -8,7 +8,13 @@ tram.entity = {}
 tram.event = {}
 tram.message = {}
 tram.ui = {}
+tram.audio = {}
+tram.render = {}
+tram.physics = {}
 
+tram.render.animation = {}
+tram.render.model = {}
+tram.render.material = {}
 
 
 -- FRAMEWORK/CORE.H
@@ -402,7 +408,13 @@ tram.message.SELECT = tram.message.GetType("select")
 tram.message.SET_PROGRESS = tram.message.GetType("set-progress")
 tram.message.SET_ANIMATION = tram.message.GetType("set-animation")
 
+-- ============================= FRAMEWORK/GUI.H ============================ --
 
+-- TODO: implement
+
+-- ========================== FRAMEWORK/LANGUAGE.H ========================== --
+
+-- TODO: implement
 
 -- ============================= FRAMEWORK/UI.H ============================= --
 
@@ -649,3 +661,147 @@ end
 function tram.ui.GetKeyboardActionName(name)
 	return __tram_impl_ui_get_keyboard_action_name(name)
 end
+
+-- =========================== FRAMEWORK/RESOURCE.H ========================= --
+
+tram.resource.UNLOADED = 0
+tram.resource.LOADED = 1
+tram.resource.READY = 2
+
+-- ============================== AUDIO/AUDIO.H ============================= --
+
+function tram.audio.SetVolume(volume)
+	return __tram_impl_audio_set_volume(name)
+end
+
+function tram.audio.GetVolume(volume)
+	return __tram_impl_audio_get_volume(name)
+end
+
+function tram.audio.SetListenerPosition(position)
+	return __tram_impl_audio_set_listener_position(position)
+end
+
+function tram.audio.SetListenerOrientation(orientation)
+	return __tram_impl_audio_set_listener_orientation(orientation)
+end
+
+
+
+
+-- ============================ RENDER/MATERIAL.H =========================== --
+
+-- TODO: implement the rest of the stuff
+
+tram.render._metatable_animation = {
+	__index = {
+		GetName = function(self)
+			return __tram_impl_render_animation_get_name(self.index)
+		end
+	}
+}
+
+function tram.render.animation.Find(name)
+	local animation_index = __tram_impl_render_animation_find(name)
+	
+	if (animation_index == -1) then
+		return nil
+	end
+	
+	local animation = {}
+	animation.index = animation_index
+	
+	setmetatable(animation, tram.render._metatable_animation)
+	
+	return animation
+end
+
+-- ============================= RENDER/MODEL.H ============================= --
+
+tram.render._metatable_model = {
+	__index = {
+		GetName = function(self)
+			return __tram_impl_render_model_get_name(self.index)
+		end
+	}
+}
+
+function tram.render.model.Find(name)
+	local model_index = __tram_impl_render_model_find(name)
+	
+	if (model_index == -1) then
+		return nil
+	end
+	
+	local model = {}
+	model.index = model_index
+	
+	setmetatable(model, tram.render._metatable_model)
+	
+	return model
+end
+
+
+
+
+
+
+-- ============================ RENDER/MATERIAL.H =========================== --
+
+-- TODO: implement the rest of the stuff
+
+tram.render._metatable_material = {
+	__index = {
+		GetName = function(self)
+			return __tram_impl_render_material_get_name(self.index)
+		end
+	}
+}
+
+function tram.render.material.Find(name)
+	local material_index = __tram_impl_render_material_find(name)
+	
+	if (material_index == -1) then
+		return nil
+	end
+	
+	local material = {}
+	material.index = material_index
+	
+	setmetatable(material, tram.render._metatable_material)
+	
+	return material
+end
+
+
+
+
+
+
+-- ============================= RENDER/SPRITE.H ============================ --
+
+-- TODO: implement the rest of the stuff
+
+tram.render._metatable_sprite = {
+	__index = {
+		GetName = function(self)
+			return __tram_impl_render_sprite_get_name(self.index)
+		end
+	}
+}
+
+function tram.render.sprite.Find(name)
+	local sprite_index = __tram_impl_render_sprite_find(name)
+	
+	if (sprite_index == -1) then
+		return nil
+	end
+	
+	local sprite = {}
+	sprite.index = sprite_index
+	
+	setmetatable(sprite, tram.render._metatable_sprite)
+	
+	return sprite
+end
+

@@ -19,11 +19,14 @@ using namespace tram::Render;
 
 Hashmap<Sprite*> sprite_list ("SPRITE_LIST", 500);
 
+template <> Pool<Render::Sprite> PoolProxy<Render::Sprite>::pool("sprite pool", 500);
+
 Sprite* Sprite::Find(name_t name){
     auto sprite = sprite_list.Find(name);
     
     if (!sprite) {
-        sprite = new Sprite (name);
+        //sprite = new Sprite (name);
+        sprite = PoolProxy<Sprite>::New(name);
         sprite_list.Insert(name, sprite);
     }
 

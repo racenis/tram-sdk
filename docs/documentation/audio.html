@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<title>Audio | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
 		<style>
 		
 			body {
@@ -106,17 +106,122 @@
 					<a href="index.html" class="menu-link">Home</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
-					<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+					<!-- PAGE_TITLE: Audio | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Audio
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The audio system provides audio playback services.
 </p>
+
+<p>
+	Currently it only supports playing back audio from audio files, and from
+	.ogg format audio files in particular.
+</p>
+
+<p>
+	In the future, the system will be enhanced to allow streaming audio, and
+	possibly to allow for more formats to be used.
+</p>
+
+<p>
+	If you want to easily play back sounds in your levels, check out the
+	<a href="entities/sound.html">Sound</a> entity. It also has a scripting API
+	option, which is useful for playing back sound effects.
+</p>
+
+<p>
+	If you want to incorporate audio playback into the entities you are
+	constructing, you will find the <a href="components/audio.html">Audio
+	Component</a> useful.
+</p>
+
+<h2>Key concepts</h2>
+
+<hr/>
+
+<h4>Sound</h4>
+
+<p>
+	A sound is a <a href="framework/resource.html">Resource</a>. It contains
+	audio data loaded from an .ogg audio file.
+</p>
+
+<h4>Source</h4>
+
+<p>
+	A source will play back the audio contained in a Sound. It can be positioned
+	in 3D space.
+</p>
+
+<h4>Listener</h4>
+
+<p>
+	A listener is usually attached to the render view. It has a position and an
+	orientation.
+</p>
+	
+<p>
+	It determines how the sources should sound like, relative to it, i.e. if a
+	sound source is next to the listener, it will sound very loud, and if it is
+	moved to be very far from the listener, it will be very quiet.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	// TODO: implement
+</p>
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	// TODO: implement
+</p>
+
+<h2>Backends</h2>
+
+<hr/>
+
+<p>
+	Just like <a href="physics/physics.html">Physics</a> and
+	<a href="render/render.html">Render</a>, the Audio system provides an
+	interface for swapping out the audio system backends. The possible
+	options are:
+</p>
+
+<h4>OpenAL</h4>
+
+<p>
+	This is the default Audio backend. It uses the OpenAL library to play back
+	audio.
+</p>
+
+<h4>Spatial</h4>
+
+<p>
+	An experimental audio backend. Uses path tracing adapted from the primary
+	sample space metropolis light transport algorithm. Very fancy, but also
+	very slow and broken. Might not even compile without some fixes.
+</p>
+
+<h4>Template</h4>
+
+<p>
+	The template for implementing further backends. Implements only stubs of the
+	internal API functions. Can be used if you don't want to use any audio.
+</p>
+
+
+
 				</td>
 				<td width="90" valign="top" class="right-pane">
 					<img src="../images/800x600.gif"/><br/>

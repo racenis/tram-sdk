@@ -4,9 +4,24 @@ pages = ["index",
 		 "features",
 		 "roadmap",
 		 "learn",
+		 "learn/whatis",
+		 "learn/getstarted",
+		 "learn/structure",
+		 "learn/scripting",
+		 "learn/3dmodeling",
+		 "learn/materials",
+		 "learn/animations",
+		 "learn/pingpong",
+		 "learn/physics",
+		 "learn/render",
+		 "learn/world",
+		 "learn/walking",
+		 "learn/cameras",
+		 "learn/platforms",
+		 "learn/boomer",
 		 "documentation",
-		 "documentation/index"
-		 
+		 "documentation/index",
+		 "documentation/audio",
 		 ]
 template = "template"
 

@@ -29,6 +29,11 @@ else
 	tram.message.Send(tram.message.SET_ANIMATION, 0, tram.entity.Find("mongus"):GetID(), "mongus-run")
 end
 
+mongus = tram.render.animation.Find("mongus-run")
+
+print("mongus: ", mongus)
+print("name: ", mongus:GetName())
+
 --tram.ui.SetInputState(tram.ui.STATE_MENU_OPEN)
 
 --tram.ui.BindKeyboardKey(tram.ui.KEY_J, tram.ui.KEY_ACTION_JUMP)
