@@ -1,0 +1,62 @@
+<!-- PAGE_TITLE: Light Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Light Component
+</h1>
+
+<hr/>
+
+<p>
+	This <a href="../framework/entitycomponent.html">EntityComponent</a> is a
+	wrapper around a <a href="../render.html#light">light</a>.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">components/light.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_light_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	It's very simple, just pick the position of the light and its color. If you
+	want to increase the brightness of the light, multiply the 
+</p>
+
+<code>
+	<span class="codefunc">Component</span>&lt;<span class="codefunc">LightComponent</span>&gt; component;<br/>
+	<br/>
+	<span class="codekeyw">const float</span> brightness = <span class="codelit">2.0f</span>;<br/>
+	<span class="codekeyw">const vec3</span> color = {<span class="codelit">0.38f</span>, <span class="codelit">0.25f</span>, <span class="codelit">0.31f</span>};<br/>
+	<br/>
+	component.<span class="codefunc">make</span>();<br/>
+	component-&gt;<span class="codefunc">SetLocation</span>({<span class="codelit">0.0f</span>, <span class="codelit">0.0f</span>, <span class="codelit">0.0f</span>});<br/>
+	component-&gt;<span class="codefunc">SetColor</span>(brightness * color);<br/>
+	component-&gt;<span class="codefunc">Init</span>();
+</code>
+
+<p>
+	If you want to turn the light from a point light into a spotlight, you can
+	set its direction and exponent. The direction is a direction normal vector.
+	The exponent starts at 1.0 and increasing it narrows the spotlight's width.
+</p>
+
+
+<code>
+	component-&gt;<span class="codefunc">SetDirection</span>(DIRECTION_FORWARD);<br/>
+	component-&gt;<span class="codefunc">SetExponent</span>(<span class="codelit">16.0f</span>);
+</code>
+
+<br/>
+<br/>
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	Still working on it...
+</p>

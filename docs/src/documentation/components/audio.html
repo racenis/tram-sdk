@@ -1,0 +1,95 @@
+<!-- PAGE_TITLE: Audio Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Audio Component
+</h1>
+
+<hr/>
+
+<p>
+	This <a href="../framewor/entitycomponent.html">EntityComponent</a> is a
+	wrapper for <a href="../audio.html#source">audio sources</a>.
+</p>
+
+<p>
+	Pass in the sound which it needs to play, the position of the audio source
+	and it will play it. Very easy. Very simple.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">components/audio.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_audio_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Currently <a href="../audio.html#sound">sounds</a> won't get automatically
+	streamed in via the <a href="../framework/async.html">Async</a> system, so
+	make sure that the sound is already loaded before passing it to the
+	component:
+</p>
+
+<code>
+	<span class="codespac">Sound</span>::<span class="codefunc">Find</span>(<span class="codelit">"my-sound"</span>)-><span class="codefunc">Load</span>();
+</code>
+
+<p>
+	Remember to store the Component&lt;&gt; smart pointer in a class, static
+	variable, or otherwise ensure that it doesn't immediately get destructed.
+</p>
+
+<code>
+	<span class="codeclass">Component</span>&lt;<span class="codeclass">AudioComponent</span>&gt; audio;<br/>
+	<br/>
+	audio.<span class="codefunc">make</span>();<br/>
+	audio-><span class="codefunc">SetLocation</span>({<span class="codelit">0.0f</span>, <span class="codelit">0.0f</span>, <span class="codelit">0.0f</span>});<br/>
+	audio-><span class="codefunc">SetSound</span>(<span class="codelit">"my-sound"</span>);<br/>
+	audio-><span class="codefunc">SetRepeating</span>(<span class="codekeyw">true</span>);<br/>
+	audio-><span class="codefunc">Init</span>();
+</code>
+
+<p>
+
+</p>
+
+<p>
+	After initialization, you can begin playback of the sound, pause it or stop
+	it completely.
+</p>
+
+<code>
+	audio-><span class="codefunc">Play</span>();&nbsp;&nbsp;<span class="codecomm">// Begins the playback of the sound</span><br/>
+	audio-><span class="codefunc">Pause</span>();&nbsp;<span class="codecomm">// Pauses the playback</span><br/>
+	audio-><span class="codefunc">Stop</span>();&nbsp;&nbsp;<span class="codecomm">// Cancels the playback</span>
+</code>
+
+<p>
+	You can also check the status of the playback.
+</p>
+
+<code>
+	<span class="codecomm">
+	// Since we stopped the playback, this will<br/>
+	// evaluate to false<br/>
+	</span>
+	<span class="codekeyw">if</span> (audio-><span class="codefunc">IsPlaying</span>()) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"Audio source is playing."</span>);<br/>
+	} <span class="codekeyw">else</span> {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"Audio source has stopped."</span>);<br/>
+	}
+</code>
+
+<br/>
+<br/>
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	<i>Not yet implemented.</i>
+</p>

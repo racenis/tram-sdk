@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="eeee" href="../../favicon.gif">
+		<title>Audio Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+			
+			.menubar {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+			}
+
+			.navbar {
+				width: 100%;
+			}
+			
+			.navbar .left {
+				width: 50px;
+			}
+			
+			.navbar .middle {
+				text-align: center;
+			}
+			
+			.navbar .right {
+				width: 50px;
+				text-align: right;
+			}
+			
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+			.codefunc {
+				color: blue;
+			}
+			
+			.codeclass {
+				color: blue;
+			}
+			
+			.codekeyw {
+				color: red;
+			}
+			
+			.codecomm {
+				color: green;
+			}
+			
+			.codelit {
+				color: orange;
+			}
+			
+			.codespac {
+				color: blue;
+			}
+			
+			.codeexample {
+				white-space: pre;
+			}
+			
+		</style>
+	</head>
+	<body background="../../images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="../../images/logo3.gif"/>
+					<img style="float:right;" src="../../images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="../../index.html">Home</a> | 
+							<a href="../../features.html">Features</a> | 
+							<a href="../../roadmap.html">Roadmap</a> | 
+							<a href="../../learn.html">Learn</a> | 
+							<a href="../../documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Audio Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Audio Component
+</h1>
+
+<hr/>
+
+<p>
+	This <a href="../framewor/entitycomponent.html">EntityComponent</a> is a
+	wrapper for <a href="../audio.html#source">audio sources</a>.
+</p>
+
+<p>
+	Pass in the sound which it needs to play, the position of the audio source
+	and it will play it. Very easy. Very simple.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">components/audio.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_audio_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Currently <a href="../audio.html#sound">sounds</a> won't get automatically
+	streamed in via the <a href="../framework/async.html">Async</a> system, so
+	make sure that the sound is already loaded before passing it to the
+	component:
+</p>
+
+<code>
+	<span class="codespac">Sound</span>::<span class="codefunc">Find</span>(<span class="codelit">"my-sound"</span>)-><span class="codefunc">Load</span>();
+</code>
+
+<p>
+	Remember to store the Component&lt;&gt; smart pointer in a class, static
+	variable, or otherwise ensure that it doesn't immediately get destructed.
+</p>
+
+<code>
+	<span class="codeclass">Component</span>&lt;<span class="codeclass">AudioComponent</span>&gt; audio;<br/>
+	<br/>
+	audio.<span class="codefunc">make</span>();<br/>
+	audio-><span class="codefunc">SetLocation</span>({<span class="codelit">0.0f</span>, <span class="codelit">0.0f</span>, <span class="codelit">0.0f</span>});<br/>
+	audio-><span class="codefunc">SetSound</span>(<span class="codelit">"my-sound"</span>);<br/>
+	audio-><span class="codefunc">SetRepeating</span>(<span class="codekeyw">true</span>);<br/>
+	audio-><span class="codefunc">Init</span>();
+</code>
+
+<p>
+
+</p>
+
+<p>
+	After initialization, you can begin playback of the sound, pause it or stop
+	it completely.
+</p>
+
+<code>
+	audio-><span class="codefunc">Play</span>();&nbsp;&nbsp;<span class="codecomm">// Begins the playback of the sound</span><br/>
+	audio-><span class="codefunc">Pause</span>();&nbsp;<span class="codecomm">// Pauses the playback</span><br/>
+	audio-><span class="codefunc">Stop</span>();&nbsp;&nbsp;<span class="codecomm">// Cancels the playback</span>
+</code>
+
+<p>
+	You can also check the status of the playback.
+</p>
+
+<code>
+	<span class="codecomm">
+	// Since we stopped the playback, this will<br/>
+	// evaluate to false<br/>
+	</span>
+	<span class="codekeyw">if</span> (audio-><span class="codefunc">IsPlaying</span>()) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"Audio source is playing."</span>);<br/>
+	} <span class="codekeyw">else</span> {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"Audio source has stopped."</span>);<br/>
+	}
+</code>
+
+<br/>
+<br/>
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	<i>Not yet implemented.</i>
+</p>
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="../../images/800x600.gif"/><br/>
+					<img src="../../images/firefoxnow.gif"/><br/>
+					<img src="../../images/hicolor.gif"/><br/>
+					
+					<img src="../../images/blender.gif"/><br/>
+					<img src="../../images/wxwidgets.gif"/><br/>
+					
+					<img src="../../images/winxp.gif"/><br/>
+					<img src="../../images/linux.gif"/><br/>
+					<img src="../../images/hatemac.jpg"/><br/>
+					
+					<img src="../../images/discord-no-way.gif"/><br/>
+					
+					<img src="../../images/winrar.gif"/><br/>
+					<img src="../../images/sdblast.gif"/><br/>
+					<img src="../../images/esheep.gif"/><br/>
+					
+					<img src="../../images/valid-bad.gif"/><br/>
+					<img src="../../images/notepadpp.gif"/><br/>
+					<img src="../../images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

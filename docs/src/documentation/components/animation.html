@@ -1,0 +1,130 @@
+<!-- PAGE_TITLE: Animation Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Animation Component
+</h1>
+
+<hr/>
+
+<p>
+	This <a href="../framework/entitycomponent.html">EntityComponent</a> plays
+	back <a href="../render/animation.html">animations</a>. More precisely, it
+	generates pose matrices for the deformation of 3D models. It basically lets
+	you animate 3D models.
+</p>
+
+<p>
+	With this component you get 8 tracks to play back animations on. You also
+	get an additional track for procedural animations.
+</p>
+
+<p>
+	Multiple animations get added together. This can be used to animate
+	parts of characters seperately.
+</p>
+
+<p>
+	The playback speed of animations can be changed. This is useful for movement
+	animations.
+</p>
+
+<p>
+	You can also set up weights for animations. For example, you could create a
+	nodding animation for a character. Then you could play it back with a weight
+	of 0.2 to get a slight nod, 0.5 to get a normal nod and 1.0 to get a very 
+	enthusiastic nod.
+</p>
+
+<p>
+	There are also fade-ins and fade-outs, which gradually increase or decrease
+	the animation weight. This could be used, for example, if you created a 
+	walking animation for a character, which you could fade out, to make the 
+	character appear as if it is gradually coming to a stop.
+</p>
+
+
+<p>
+	There is some limited animation re-targeting &ndash; if the model for which
+	you created the animations has an armature which is similar enough for the
+	model which you want to animate, you can play back the same animations ande
+	everything will work. The bone names do need to be exactly the same in both
+	models.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">components/animation.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_animation_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	The only thing that you need to do before initializing this component? You
+	need to feed it a model. This has to be a 
+	<a href="../render/model.html#dynamic">dynamic model</a>, since 
+	<a href="../render/model.html#static">static models</a> have no 
+	<a href="../render.html#armature">bone</a> data in them.
+</p>
+
+<code>
+	Component&lt;AnimationComponent&gt; component;<br/>
+	<br/>
+	component.make();<br/>
+	component->SetModel("mongus");<br/>
+	component->Init();
+</code>
+
+<p>
+	Then you can begin playing some animations. You do need to make sure that 
+	the animation that you want to play is already loaded, since I forgot to
+	add the code for them to be automatically streamed in. Anyway:
+</p>
+
+<code class="codeexample">Animation::Find("mongus-run")->Load();
+	
+component->PlayAnimation("mongus-run",
+                         -1,
+                         1.0f,
+                         1.0f);
+</code>
+
+<p>
+	If you look closely, you will notice that we set the number of repeats to
+	-1. This means that it will repeat for a very long time. It will stop 
+	eventually, but it will take at least 2 years for an application running
+	at 60 FPS.
+</p>
+
+<p>
+	To actually view the animation that you are playing, you need to attach it
+	to a <a href="render.html">RenderComponent</a>.
+</p>
+
+<code>
+	Component&lt;RenderComponent&gt; model;<br/>
+	<br/>
+	model.make();<br/>
+	model->SetModel("mongus");<br/>
+	model->Init();<br/>
+	<br/>
+	model->SetArmature(component);
+</code>
+
+<p>
+	The possibilities of animation playback are limitless. Check the
+	<a href="../../cppapi/classtram_1_1_animation_component.html">API
+	documentation</a> for more information.
+</p>
+
+
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	Still working on this.
+</p>

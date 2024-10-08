@@ -1,0 +1,61 @@
+<!-- PAGE_TITLE: Sprite Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Sprite Component
+</h1>
+
+<hr/>
+
+<p>
+	This <a href="../framework/entitycomponent.html">EntityComponent</a> displays
+	a <a href="../render/sprite.html">sprite</a>.
+</p>
+
+<p>
+	If the spritesheet contains multiple sprites, it's possible to play them as
+	an animation. Very neat!
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">components/sprite.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_sprite_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	To get started, construct the component, feed it a sprite and set its
+	location. It might take a few moments for the sprite to be streamed in.
+</p>
+
+<code>
+	<span class="codeclass">Component</span>&lt;<span class="codeclass">SpriteComponent</span>&gt; component;<br/>
+	<br/>
+	component.<span class="codefunc">make</span>();<br/>
+	component-><span class="codefunc">SetSprite</span>(<span class="codeclass">Sprite</span>::<span class="codefunc">Find</span>(<span class="codelit">"poland"</span>));<br/>
+	comopennt-><span class="codefunc">UpdateLocation</span>({<span class="codelit">3.0f</span>, <span class="codelit">1.2f</span>, <span class="codelit">-1.0f</span>});<br/>
+	component-><span class="codefunc">Init</span>();
+</code>
+
+<p>
+	If you want to play the spritesheet as an animation.
+</p>
+
+<code>
+	component-><span class="codefunc">SetPlaySpeed</span>(<span class="codelit">2</span>);<br/>
+	component-><span class="codefunc">Play</span>();
+</code>
+
+<br/>
+<br/>
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	Eventually it will be finished, but might take some time.
+</p>

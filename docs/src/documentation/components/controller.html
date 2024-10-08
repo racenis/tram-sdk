@@ -1,0 +1,53 @@
+<!-- PAGE_TITLE: Controller Component | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Controller Component
+</h1>
+
+<hr/>
+
+<p>
+	This <a href="../framework/entitycomponent.html">EntityComponent</a> can be
+	used for controlling players and NPCs and that sort of stuff.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">components/controller.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_controller_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	All you really need to do to get started is just the creation of the 
+	component. Also you need to feed in a pointer to the entity which will be
+	controlled by this component. It will automatically update the position of
+	it when it moves.
+</p>
+
+<code>
+	<span class="codefunc">Component</span>&lt;<span class="codefunc">ControllerComponent</span>&gt; component;<br/>
+	<br/>
+	component.<span class="codefunc">make</span>();<br/>
+	component-&gt;<span class="codefunc">SetParent</span>(<span class="codekeyw">this</span>);<br/>
+	component-&gt;<span class="codefunc">Init</span>();
+</code>
+
+<p>
+	After that, you can begin sending commands to the component. Check the
+	<a href="../../cppapi/classtram_1_1_controller_component.html">API 
+	documentation</a> to see what kinds of commands there are. You can also
+	look at the implementation of the <a href="player.html">PlayerComponent</a>
+	to see an example of the usage of the component.
+</p>
+
+<h2>Scripting in Lua</h2>
+
+<hr/>
+
+<p>
+	Not done yet.
+</p>

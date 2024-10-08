@@ -22,6 +22,18 @@ pages = ["index",
 		 "documentation",
 		 "documentation/index",
 		 "documentation/audio",
+		 "documentation/components",
+		 "documentation/components/animation",
+		 "documentation/components/audio",
+		 "documentation/components/controller",
+		 "documentation/components/light",
+		 "documentation/components/particle",
+		 "documentation/components/physics",
+		 "documentation/components/player",
+		 "documentation/components/render",
+		 "documentation/components/sprite",
+		 "documentation/components/template",
+		 "documentation/components/trigger",
 		 ]
 template = "template"
 
