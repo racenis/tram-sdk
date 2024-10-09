@@ -39,6 +39,7 @@ pages = ["index",
 		 "documentation/framework/core",
 		 "documentation/framework/entity",
 		 "documentation/framework/entitycomponent",
+		 "documentation/framework/event",
 		 ]
 template = "template"
 

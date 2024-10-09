@@ -325,8 +325,8 @@ function tram.event.GetLast()
 	return __tram_impl_event_get_last()
 end
 
-function tram.event.Post(event_type, event_subtype, poster, data)
-	__tram_impl_event_post(event_type, event_subtype, post, data)
+function tram.event.Post(event)
+	__tram_impl_event_post(event.type, event.subtype, event.poster, event.data)
 end
 
 tram.event._evt_act = {}

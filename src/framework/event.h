@@ -28,6 +28,7 @@ struct Event {
         KEYUP,          // keyboard key released
         KEYCHAR,        // keyboard input registered
         CURSORPOS,      // cursor moved
+        FRAME,          // emitted every frame
         TICK,           // emitted every tick
         SELECTED,       // cursor on top of an interactable object
         LOOK_AT,        // entity is looking in a direction

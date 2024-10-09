@@ -5,8 +5,13 @@
 --	return {x, y, z}
 --end
 
+event = {}
+event.type = tram.event.GetType("my_fancy_event")
+event.subtype = 0
+event.poster = nil
+event.data = nil
 
-tram.event.Post(tram.event.GetType("my_fancy_event"), 0, nil, nil)
+tram.event.Post(event)
 
 print("VECTOR TSETS!")
 
