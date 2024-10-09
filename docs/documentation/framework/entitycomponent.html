@@ -1,0 +1,299 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="eeee" href="../../favicon.gif">
+		<title>EntityComponent | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+			
+			.menubar {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+			}
+
+			.navbar {
+				width: 100%;
+			}
+			
+			.navbar .left {
+				width: 50px;
+			}
+			
+			.navbar .middle {
+				text-align: center;
+			}
+			
+			.navbar .right {
+				width: 50px;
+				text-align: right;
+			}
+			
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+			.codefunc {
+				color: blue;
+			}
+			
+			.codeclass {
+				color: blue;
+			}
+			
+			.codekeyw {
+				color: red;
+			}
+			
+			.codecomm {
+				color: green;
+			}
+			
+			.codelit {
+				color: orange;
+			}
+			
+			.codespac {
+				color: blue;
+			}
+			
+			.codeexample {
+				white-space: pre;
+			}
+			
+		</style>
+	</head>
+	<body background="../../images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="../../images/logo3.gif"/>
+					<img style="float:right;" src="../../images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="../../index.html">Home</a> | 
+							<a href="../../features.html">Features</a> | 
+							<a href="../../roadmap.html">Roadmap</a> | 
+							<a href="../../learn.html">Learn</a> | 
+							<a href="../../documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: EntityComponent | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	EntityComponent
+</h1>
+
+<p>
+	EntityComponents are re-usable parts for assembling <a href="entity.html">
+	Entities</a>. Need to display a 3D model for an entity? Use a
+	RenderComponent. Need to add entity to the physics simulation? Use a
+	PhysicsComponent. Have an entity that simulates a frog and want to add frog
+	behavior to other entities? Refactor the frog code into a FrogComponent.
+</p>
+
+<p>
+	Most components are created in a way that you can use them without attaching
+	them to an entity, so you can use a RenderComponent to render some
+	UI elements, or a skybox or something like that, but in general they are
+	used for constructing entities.
+</p>
+
+<p>
+	Components can have dependencies on <a href="resource.html">Resources</a>.
+	This can be automatically tracked.
+</p>
+
+<p>
+	Unlike entities, which can be repeatedly loaded and unloaded, once a 
+	component is initialized, it can only be deleted. After that it will have to
+	be reconstructed and reinitialized.
+</p>
+
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/entitycomponent.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_entity_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Components work something like this:
+</p>
+
+<ol>
+	<li>
+		The component class object is constructed.
+	</li>
+	
+	<li>
+		The component is fed parameters by calling methods on it.
+	</li>
+	<ul>
+		<li>
+			If the parameter is a Resource and it is unloaded, then it gets
+			added to the Async loader queue.
+		</li>
+		<li>
+			In such a case, the component will remember that it is waiting
+			for a resource.
+		</li>
+	</ul>
+		
+	<li>
+		The component is initialized by calling the <code>Init()</code> method.
+	</li>
+	
+	<li>
+		If the component is waiting on any resources, then it will just do 
+		nothing and will wait for them to be ready.
+	</li>
+	
+	<li>
+		The component is started by either calling its own <code>Start()</code>
+		method, if it isn't waiting on any resources, or by the
+		<a href="asynv.html">Async</a> system, once the resources on which the
+		component is waiting have been loaded.
+	</li>
+	
+	<li>
+		The component does its component stuff. Some parameters may be changed
+		by getting their methods called.
+	</li>
+	
+	<li>
+		The component class gets destructed.
+	</li>
+</ol>
+
+<p>
+	None of the constructors have any parameters &ndash; this is mostly due to
+	the fact that I feel like the initialization code for components with a lot
+	of parameters, and therefore very long constructors looks incredibly awful.
+</p>
+	
+<p>
+	If you want to create your own component, you can copy the header and
+	implementation files of the 
+	<a href="../components/template.html">TemplateComponent</a>.
+</p>
+
+<code>
+	<span class="codeclass">Component</span>&lt;<span class="codeclass">TemplateComponent</span>&gt; template;<br/>
+	<br/>
+	<span class="codecomm">// constructs a new TemplateComponent</span><br/>
+	template.<span class="codefunc">make(</span>);<br/>
+	<br/>
+	<span class="codecomm">// initializes it</span><br/>
+	template-><span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// destructs it</span><br/>
+	template.<span class="codefunc">clear</span>();<br/>
+</code>
+
+<p>
+	The <code>Component</code> smart pointer class ensures that it will be
+	constructed into the correct <a href = "../templates/pool.html">Pool</a>.
+	This is required for some components to work properly, like the
+	<a href="../components/animation.html">AnimationComponent</a>, which will
+	not get updated if it isn't constructed in the correct pool.
+</p>
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="../../images/800x600.gif"/><br/>
+					<img src="../../images/firefoxnow.gif"/><br/>
+					<img src="../../images/hicolor.gif"/><br/>
+					
+					<img src="../../images/blender.gif"/><br/>
+					<img src="../../images/wxwidgets.gif"/><br/>
+					
+					<img src="../../images/winxp.gif"/><br/>
+					<img src="../../images/linux.gif"/><br/>
+					<img src="../../images/hatemac.jpg"/><br/>
+					
+					<img src="../../images/discord-no-way.gif"/><br/>
+					
+					<img src="../../images/winrar.gif"/><br/>
+					<img src="../../images/sdblast.gif"/><br/>
+					<img src="../../images/esheep.gif"/><br/>
+					
+					<img src="../../images/valid-bad.gif"/><br/>
+					<img src="../../images/notepadpp.gif"/><br/>
+					<img src="../../images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

@@ -1,11 +1,107 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Core | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Core
 </h1>
 
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	This is the main system of the framework. It keeps track of the main loop,
+	provides ID number generation services and keeps track of the framework
+	version.
 </p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	Frame
+</h4>
+
+<p>
+	Each cycle of the main loop is called a frame. It is called that because
+	during each loop you render a single frame of graphics.
+</p>
+
+<h4>
+	Tick
+</h4>
+
+<p>
+	There are 60 ticks in a second. If you have a 60hz monitor and you have
+	turned on vsync or a frame limiter,	then a tick will be the same as a frame.
+</p>
+
+<p>
+	This concept allows you to create applications as if they were always run
+	at 60 frames per second.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/core.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_core.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Every application created with the framework needs to initialize and update
+	the core system.
+</p>
+
+<code>
+	<span class="codeclass">Core</span>::<span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// main loop</span><br/>
+	<span class="codekeyw">while</span> (<span class="codekeyw">true</span>) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Core</span>::<span class="codefunc">Update</span>();<br/>
+	}<br/>
+	<br/>
+</code>
+
+
+<p>
+	That was very simple.
+</p>
+
+<code>
+	<span class="codekeyw">id_t</span> id = <span class="codefunc">GenerateID</span>();<br/>
+	<br/>
+	<span class="codekeyw">uint32_t</span> ticks = <span class="codefunc">GetTick</span>();<br/>
+	<br/>
+	<span class="codekeyw">double</span> time = <span class="codefunc">GetTickTime</span>();<br/>
+	<span class="codekeyw">float</span> delta_time <span class="codefunc">GetDeltaTime</span>();<br/>
+</code>
+
+<p>
+	After the previous bit of code is executed:
+</p>
+
+<ul>
+	<li>
+		The variable <i>id</i> will contain a new, unique ID number.
+	</li>
+	
+	<li>
+		The variable <i>ticks</i> will contain the number of ticks which have 
+		elapsed since the initialization of the application.
+	</li>
+	
+	<li>
+		The variable <i>time</i> will contain the time, in seconds, that has
+		passed since the initialization of the application.
+	</li>
+	
+	<li>
+		The variable <i>delta_time</i> will contain the time, in seconds, that
+		has passed between the start of this and the start of the previous
+		frame.
+	</li>
+</ul>

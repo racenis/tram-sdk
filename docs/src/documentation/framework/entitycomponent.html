@@ -1,11 +1,126 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: EntityComponent | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	EntityComponent
 </h1>
 
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	EntityComponents are re-usable parts for assembling <a href="entity.html">
+	Entities</a>. Need to display a 3D model for an entity? Use a
+	RenderComponent. Need to add entity to the physics simulation? Use a
+	PhysicsComponent. Have an entity that simulates a frog and want to add frog
+	behavior to other entities? Refactor the frog code into a FrogComponent.
+</p>
+
+<p>
+	Most components are created in a way that you can use them without attaching
+	them to an entity, so you can use a RenderComponent to render some
+	UI elements, or a skybox or something like that, but in general they are
+	used for constructing entities.
+</p>
+
+<p>
+	Components can have dependencies on <a href="resource.html">Resources</a>.
+	This can be automatically tracked.
+</p>
+
+<p>
+	Unlike entities, which can be repeatedly loaded and unloaded, once a 
+	component is initialized, it can only be deleted. After that it will have to
+	be reconstructed and reinitialized.
+</p>
+
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/entitycomponent.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_entity_component.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Components work something like this:
+</p>
+
+<ol>
+	<li>
+		The component class object is constructed.
+	</li>
+	
+	<li>
+		The component is fed parameters by calling methods on it.
+	</li>
+	<ul>
+		<li>
+			If the parameter is a Resource and it is unloaded, then it gets
+			added to the Async loader queue.
+		</li>
+		<li>
+			In such a case, the component will remember that it is waiting
+			for a resource.
+		</li>
+	</ul>
+		
+	<li>
+		The component is initialized by calling the <code>Init()</code> method.
+	</li>
+	
+	<li>
+		If the component is waiting on any resources, then it will just do 
+		nothing and will wait for them to be ready.
+	</li>
+	
+	<li>
+		The component is started by either calling its own <code>Start()</code>
+		method, if it isn't waiting on any resources, or by the
+		<a href="asynv.html">Async</a> system, once the resources on which the
+		component is waiting have been loaded.
+	</li>
+	
+	<li>
+		The component does its component stuff. Some parameters may be changed
+		by getting their methods called.
+	</li>
+	
+	<li>
+		The component class gets destructed.
+	</li>
+</ol>
+
+<p>
+	None of the constructors have any parameters &ndash; this is mostly due to
+	the fact that I feel like the initialization code for components with a lot
+	of parameters, and therefore very long constructors looks incredibly awful.
+</p>
+	
+<p>
+	If you want to create your own component, you can copy the header and
+	implementation files of the 
+	<a href="../components/template.html">TemplateComponent</a>.
+</p>
+
+<code>
+	<span class="codeclass">Component</span>&lt;<span class="codeclass">TemplateComponent</span>&gt; template;<br/>
+	<br/>
+	<span class="codecomm">// constructs a new TemplateComponent</span><br/>
+	template.<span class="codefunc">make(</span>);<br/>
+	<br/>
+	<span class="codecomm">// initializes it</span><br/>
+	template-><span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// destructs it</span><br/>
+	template.<span class="codefunc">clear</span>();<br/>
+</code>
+
+<p>
+	The <code>Component</code> smart pointer class ensures that it will be
+	constructed into the correct <a href = "../templates/pool.html">Pool</a>.
+	This is required for some components to work properly, like the
+	<a href="../components/animation.html">AnimationComponent</a>, which will
+	not get updated if it isn't constructed in the correct pool.
 </p>
