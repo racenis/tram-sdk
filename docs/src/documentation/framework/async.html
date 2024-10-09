@@ -1,0 +1,158 @@
+<!-- PAGE_TITLE: Async | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Async
+</h1>
+
+<hr/>
+
+<p>
+	The Async system lets you do stuff... asynchronously. On a separate
+	worker thread. This meant that the main logic thread can be freed up from
+	certain computations and in general makes the framework go vroom vroom.
+</p>
+
+<p>
+	Currently the async system supports <a href="resource.html">Resource</a>
+	loading. In the future it will get some more functionality, but it's only 
+	resources for now.
+</p>
+
+<p>
+	To use it, you need to initialize the system. This will start up the worker
+	threads. The system needs to be updated in the main loop and then shut down.
+</p>
+
+<p>
+	Unfortunately, it seems like multithreading still doesn't work in
+	webassembly builds, so you will have to do resource loading entirely from
+	the main thread.
+</p>
+
+<h2>
+	Resource streaming
+</h2>
+
+<hr/>
+
+<p>
+	Let's take the <a href="../render/model.h">Model</a> resource as an example.
+	It is derived from the <a href="resource.html">Resource</a> class and
+	implements its API.
+</p>
+
+<p>
+	Most of the time while loading the Model is spent retrieving it from the
+	disk and parsing it. All of the relevant logic is implemented in the
+	<code>LoadFromDisk()</code> method. This method will be called from the
+	worker thread.
+</p>
+
+<p>
+	Due to a quirk in the OpenGL API, we need to perform all of the data uploads
+	to the GPU from the main thread. The relevant logic for this is implemented 
+	in the <code>LoadFromMemory()</code> method.
+</p>
+
+<h3>
+	Example
+</h3>
+
+<hr/>
+
+<center>
+	<img src="asyncswimlane.gif"/><br/>
+	<i>
+		This is what happens when you call the SetModel() method on a 
+		RenderComponent and if the Model isn't loaded yet.
+	</i>
+</center>
+
+<p>
+	What happens when you assign a Model to a
+	<a href="../components/render.html">RenderComponent</a>?
+</p>
+
+<ol>
+	<li>
+		The RenderComponent will check if the Model is loaded. If it is not, it
+		will pass the Model to the Async system, which will add it to the disk
+		loading	queue.
+	</li>
+	<li>
+		The worker thread will pop the Model from the disk loading queue and 
+		will call its <code>LoadFromDisk()</code> method. The method will load
+		the	<code>.stmdl</code> or <code>.dymdl</code> file associated with the 
+		Model, parse it into binary format and build up an AABB tree. The worker
+		will then add the resource to the memory loading queue.
+	</li>
+	<li>
+		The main thread will pop the Model from the memory loading queue and
+		will call its <code>LoadFromMemory()</code> method. The method will pass
+		the binary model data to the <a href="../render.html">Render</a> API,
+		which in turn will upload the model data to the GPU memory. The memory
+		containing the binary data will then be free. Finally the Model will be
+		added to the finishing queue.
+	</li>
+	<li>
+		The main thread will pop the Model from the finishing queue. It will
+		then check which <a href="entitycomponent.html">EntityComponent</a>
+		requested the resource to be loaded. It will then notify our
+		RenderComponent about the loaded resource.
+	</li>
+	<li>
+		The RenderComponent will then add the loaded 3D model to the scene. It
+		will then be eligible to be rendered to the screen.
+	</li>
+</ol>
+
+	
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/async.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/async_8h.html">API documentation
+	page</a>.
+</p>
+
+<code>
+	<br/>
+	<span class="codekeyw">const size_t</span> thread_count = <span class="codelit">1</span>;<br/>
+	<br/>
+	<span class="codeclass">Async</span>::<span class="codefunc">Init</span>(thread_count);<br/>
+	<br/>
+	<span class="codecomm">// main loop</span><br/>
+	<span class="codekeyw">while</span> (<span class="codekeyw">true</span>) {<br/>
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codecomm">// the worker thread won't start on webassembly</br>
+	&nbsp;&nbsp;&nbsp;&nbsp;// builds, so we just do that part on the<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;// main thread</span><br/>
+#<span class="codekeyw">ifdef</span> __EMSCRIPTEN__<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Async</span>::<span class="codefunc">LoadResourcesFromDisk</span>();<br/>
+#<span class="codekeyw">endif</span><br/>
+<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Async</span>::<span class="codefunc">LoadResourcesFromMemory</span>();<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Async</span>::<span class="codefunc">FinishResources</span>();<br/>
+	}<br/>
+	<br/>
+	<span class="codeclass">Async</span>::<span class="codefunc">Yeet</span>();<br/><br/>
+</code>
+
+<p>
+	It is possible to request a resource to be loaded by calling the
+	<code><span class="codeclass">Async</span>::<span class="codefunc">RequestResource</span>()</code> function, but a
+	better way would be by using the
+	<a href="resource.html#proxy">ResourceProxy</a> smart pointer, which will
+	not only automatically request	a resource to be loaded, but will also
+	automatically manage reference count.
+</p>
+
+<p>
+	If you want to create a progress bar which displays the process of resource
+	loading, you can use <code><span class="codeclass">Async</span>::<span class="codefunc">GetWaitingResources</span>()</code> to get the number
+	of resources being processed by the Async system.
+</p>
