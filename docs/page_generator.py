@@ -36,6 +36,7 @@ pages = ["index",
 		 "documentation/components/trigger",
 		 
 		 "documentation/framework/async",
+		 "documentation/framework/entity",
 		 ]
 template = "template"
 
