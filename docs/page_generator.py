@@ -48,9 +48,9 @@ pages = ["index",
 		 "documentation/framework/logging",
 		 "documentation/framework/math",
 		 "documentation/framework/message",
-		 
 		 "documentation/framework/navmesh",
 		 "documentation/framework/path",
+		 "documentation/framework/resource",
 		 
 		 "documentation/framework/serialization",
 		 
