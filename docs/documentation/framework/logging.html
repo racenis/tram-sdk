@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="eeee" href="../../favicon.gif">
+		<title>Logging | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+			
+			.menubar {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+			}
+
+			.navbar {
+				width: 100%;
+			}
+			
+			.navbar .left {
+				width: 50px;
+			}
+			
+			.navbar .middle {
+				text-align: center;
+			}
+			
+			.navbar .right {
+				width: 50px;
+				text-align: right;
+			}
+			
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+			.codefunc {
+				color: blue;
+			}
+			
+			.codeclass {
+				color: blue;
+			}
+			
+			.codekeyw {
+				color: red;
+			}
+			
+			.codecomm {
+				color: green;
+			}
+			
+			.codelit {
+				color: orange;
+			}
+			
+			.codespac {
+				color: blue;
+			}
+			
+			.codeexample {
+				white-space: pre;
+			}
+			
+		</style>
+	</head>
+	<body background="../../images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="../../images/logo3.gif"/>
+					<img style="float:right;" src="../../images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="../../index.html">Home</a> | 
+							<a href="../../features.html">Features</a> | 
+							<a href="../../roadmap.html">Roadmap</a> | 
+							<a href="../../learn.html">Learn</a> | 
+							<a href="../../documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Logging | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Logging
+</h1>
+
+<hr/>
+
+<p>
+	The logging system provides logging.
+</p>
+
+<p>
+	Currently all logs are just dumped to standard output. In the future I'll 
+	add in some more logging stuff, like saving logs to a file.
+</p>
+
+<p>
+	It's possible to assign the system from which the logging statement
+	originates, as well as the logging statements severity. Logs then can be
+	filtered based on the system and severity.
+</p>
+
+<h2>
+	Severities
+</h2>
+
+<hr/>
+
+<h4>
+	Info | SEVERITY_INFO
+</h4>
+
+<p>
+	For very verbose debugging purposes. Useful to dump anything and everything.
+	Filtered out by default.
+</p>
+
+<h4>
+	Warning | SEVERITY_WARNING
+</h4>
+
+<p>
+	For things that should be looked at, such as the use of deprecated
+	functionality, missing files and such.
+</p>
+
+<h4>
+	Error | SEVERITY_ERROR
+</h4>
+
+<p>
+	For things that are ungood, but can be recovered from, such as errors with
+	file formatting, incorrect usage of functionality and such.
+</p>
+
+<h4>
+	Doubleplus Ungood Error | SEVERITY_CRITICAL_ERROR
+</h4>
+
+<p>
+	For errors that can't be recovered from. Useful to log some final data
+	before aborting the application.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/logging.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/logging_8h.html">API documentation
+	page</a>.
+</p>
+
+<code>
+	<span class="codecomm">// filter out everything coming from the Platform</span><br/>
+	<span class="codecomm">// system that has a severity which is lower than</span><br/>
+	<span class="codecomm">// error, i.e. infos and warnings.</span><br/>
+	<span class="codefunc">SetSystemLoggingSeverity</span>(<span class="codeclass">System</span>::SYSTEM_PLATFORM,<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SEVERITY_ERROR);<br/>
+	<br/>
+	<span class="codekeyw">float</span> number = <span class="codelit">420.0f</span>;<br/>
+	<span class="codekeyw">const char</span>* string = <span class="codelit">"mongus"</span>;<br/>
+	<br/>
+	<span class="codecomm">// will log: mongus has 420 bananas</span><br/>
+	<span class="codefunc">Log</span>(<span class="codelit">"{} has {} bananas."</span>, number, string);<br/>
+	<br/>
+	<span class="codecomm">// will log: hi!</span><br/>
+	<span class="codecomm">// but due to our filtering settings this will</span><br/>
+	/<span class="codecomm">/ be filtered out</span><br/>
+	<span class="codefunc">Log</span>(<span class="codeclass">System</span>::SYSTEM_PLATFORM, SEVERITY_INFO, <span class="codelit">"hi!"</span>);<br/>
+</code>
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="../../images/800x600.gif"/><br/>
+					<img src="../../images/firefoxnow.gif"/><br/>
+					<img src="../../images/hicolor.gif"/><br/>
+					
+					<img src="../../images/blender.gif"/><br/>
+					<img src="../../images/wxwidgets.gif"/><br/>
+					
+					<img src="../../images/winxp.gif"/><br/>
+					<img src="../../images/linux.gif"/><br/>
+					<img src="../../images/hatemac.jpg"/><br/>
+					
+					<img src="../../images/discord-no-way.gif"/><br/>
+					
+					<img src="../../images/winrar.gif"/><br/>
+					<img src="../../images/sdblast.gif"/><br/>
+					<img src="../../images/esheep.gif"/><br/>
+					
+					<img src="../../images/valid-bad.gif"/><br/>
+					<img src="../../images/notepadpp.gif"/><br/>
+					<img src="../../images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

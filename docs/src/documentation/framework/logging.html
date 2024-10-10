@@ -1,11 +1,95 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Logging | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Logging
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The logging system provides logging.
 </p>
+
+<p>
+	Currently all logs are just dumped to standard output. In the future I'll 
+	add in some more logging stuff, like saving logs to a file.
+</p>
+
+<p>
+	It's possible to assign the system from which the logging statement
+	originates, as well as the logging statements severity. Logs then can be
+	filtered based on the system and severity.
+</p>
+
+<h2>
+	Severities
+</h2>
+
+<hr/>
+
+<h4>
+	Info | SEVERITY_INFO
+</h4>
+
+<p>
+	For very verbose debugging purposes. Useful to dump anything and everything.
+	Filtered out by default.
+</p>
+
+<h4>
+	Warning | SEVERITY_WARNING
+</h4>
+
+<p>
+	For things that should be looked at, such as the use of deprecated
+	functionality, missing files and such.
+</p>
+
+<h4>
+	Error | SEVERITY_ERROR
+</h4>
+
+<p>
+	For things that are ungood, but can be recovered from, such as errors with
+	file formatting, incorrect usage of functionality and such.
+</p>
+
+<h4>
+	Doubleplus Ungood Error | SEVERITY_CRITICAL_ERROR
+</h4>
+
+<p>
+	For errors that can't be recovered from. Useful to log some final data
+	before aborting the application.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/logging.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/logging_8h.html">API documentation
+	page</a>.
+</p>
+
+<code>
+	<span class="codecomm">// filter out everything coming from the Platform</span><br/>
+	<span class="codecomm">// system that has a severity which is lower than</span><br/>
+	<span class="codecomm">// error, i.e. infos and warnings.</span><br/>
+	<span class="codefunc">SetSystemLoggingSeverity</span>(<span class="codeclass">System</span>::SYSTEM_PLATFORM,<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SEVERITY_ERROR);<br/>
+	<br/>
+	<span class="codekeyw">float</span> number = <span class="codelit">420.0f</span>;<br/>
+	<span class="codekeyw">const char</span>* string = <span class="codelit">"mongus"</span>;<br/>
+	<br/>
+	<span class="codecomm">// will log: mongus has 420 bananas</span><br/>
+	<span class="codefunc">Log</span>(<span class="codelit">"{} has {} bananas."</span>, number, string);<br/>
+	<br/>
+	<span class="codecomm">// will log: hi!</span><br/>
+	<span class="codecomm">// but due to our filtering settings this will</span><br/>
+	/<span class="codecomm">/ be filtered out</span><br/>
+	<span class="codefunc">Log</span>(<span class="codeclass">System</span>::SYSTEM_PLATFORM, SEVERITY_INFO, <span class="codelit">"hi!"</span>);<br/>
+</code>

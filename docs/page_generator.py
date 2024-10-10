@@ -41,7 +41,23 @@ pages = ["index",
 		 "documentation/framework/entitycomponent",
 		 "documentation/framework/event",
 		 "documentation/framework/file",
+		 "documentation/framework/graph",
 		 "documentation/framework/gui",
+		 "documentation/framework/language",
+		 "documentation/framework/loader",
+		 "documentation/framework/logging",
+		 "documentation/framework/math",
+		 "documentation/framework/message",
+		 
+		 "documentation/framework/navmesh",
+		 "documentation/framework/path",
+		 
+		 "documentation/framework/serialization",
+		 
+		 
+		 "documentation/framework/type",
+		 
+		 "documentation/framework/value",
 		 ]
 template = "template"
 

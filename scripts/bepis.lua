@@ -28,10 +28,19 @@ if toggle == nil then toggle = false end
 
 toggle = not toggle
 
+msg = {}
+msg.type = tram.message.SET_ANIMATION
+msg.sender = 0
+msg.receiver = tram.entity.Find("mongus"):GetID()
+
 if toggle then
-	tram.message.Send(tram.message.SET_ANIMATION, 0, tram.entity.Find("mongus"):GetID(), "mongus-jump")
+	msg.data = "mongus-jump"
+	tram.message.Send(msg)
+	--tram.message.Send(tram.message.SET_ANIMATION, 0, tram.entity.Find("mongus"):GetID(), "mongus-jump")
 else
-	tram.message.Send(tram.message.SET_ANIMATION, 0, tram.entity.Find("mongus"):GetID(), "mongus-run")
+	msg.data = "mongus-run"
+	tram.message.Send(msg)
+	--tram.message.Send(tram.message.SET_ANIMATION, 0, tram.entity.Find("mongus"):GetID(), "mongus-run")
 end
 
 mongus = tram.render.animation.Find("mongus-run")

@@ -128,8 +128,6 @@
       <File Name="src/framework/math.h"/>
       <File Name="src/framework/ui.h"/>
       <File Name="src/framework/ui.cpp"/>
-      <File Name="src/framework/navigation.h"/>
-      <File Name="src/framework/navigation.cpp"/>
       <File Name="src/framework/logging.h"/>
       <File Name="src/framework/logging.cpp"/>
       <File Name="src/framework/gui.h"/>

@@ -1,11 +1,127 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Type | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Type
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	There are a couple of types, which the framework supports for 
+	<a href="value.html">values</a>, <a href="signal.html">signals</a> and
+	<a href="script.html">scripting API</a>.
+</p>
+
+<h2>
+	Main types
+</h2>
+
+<hr/>
+
+<p>
+	All of these types are supported by signals, scripting API and level editor.
+</p>
+
+<h4>
+	Int
+</h4>
+
+<p>
+	Same as Int32.
+</p>
+
+<h4>
+	Float
+</h4>
+
+<p>
+	Same as Float32.
+</p>
+
+<h4>
+	Name
+</h4>
+
+<p>
+	Alias for <a href="uid.html">UID</a>.
+</p>
+
+<h2>
+	All types
+</h2>
+
+<hr/>
+
+<h4>
+	Undefined
+</h4>
+
+<p>
+	Not actually type. Used when a type is unknown.
+</p>
+
+<h4>
+	Bool
+</h4>
+
+<p>
+	Same as Int8.
+</p>
+
+<h4>
+	String
+</h4>
+
+<p>
+	Regular C flavored, null-terminated character array string.
+</p>
+
+<h4>
+	Int8, Int16, Int32, Int64 
+</h4>
+
+<p>
+	Signed integers, which are 8-bit, 16-bit, 32-bit and 64-bit wide
+	respectively.
+</p>
+
+<h4>
+	UInt
+</h4>
+
+<p>
+	Same as UInt32.
+</p>
+
+<h4>
+	UInt8, UInt16, UInt32, UInt64 
+</h4>
+
+<p>
+	Unsigned integers, which are 8-bit, 16-bit, 32-bit and 64-bit wide
+	respectively.
+</p>
+
+<h4>
+	Float32, Float64
+</h4>
+
+<p>
+	Floating point numbers, which are 32-bit and 64-bit wide respectively.
+</p>
+
+<h4>
+	Vec2, Vec3, Vec4
+</h4>
+
+<p>
+	Arrays consisting of 2, 3 and 4 elements of Float32 numbers respectively.
+</p>
+
+<h4>
+	Quat
+</h4>
+
+<p>
+	Same as Vec4, but with rotational semantics.
 </p>

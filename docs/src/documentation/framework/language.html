@@ -1,11 +1,76 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Language | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Language
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The language system allows for localization of text.
 </p>
+
+
+<p>
+	UTF-16 support is planned, but currently the only supported text encoding is
+	Latin&nbsp;7/Windows&nbsp;1257. It supports these languages:
+</p>
+
+<ul>
+	<li>Estonian</li>
+	<li>Latvian</li>
+	<li>Lithuanian</li>
+	<li>Finnish</li>
+	<li>English</li>
+	<li>German</li>
+	<li>Polish</li>
+	<li>Slovene</li>
+	<li>Norwegian</li>
+	<li><font size="1">Swedish</font></li>
+	<li><font size="1">Danish</font></li>
+</ul>
+
+<h2>
+	File format
+</h2>
+
+<hr/>
+
+<p>
+	Curently the format has no header. It consists of lines, they start with the
+	name of the string, a space and then the rest of the line is the string.
+</p>
+
+<p>
+	Example.
+</p>
+	
+<code>
+	mongus-ask Hello! Where is Mongus?<br/>
+	mongus-answer Very busy. Come back later!
+</code>
+
+<p>
+	The language files are stored in the <code>/data/</code> directory, the file
+	extension is <code>.lang</code>.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/language.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_language.html">API documentation
+	page</a>.
+</p>
+
+<code>
+	<span class="codecomm">// loading a language file</span><br/>
+	<span class="codeclass">Language</span>::<span class="codefunc">Load</span>(<span class="codelit">"english"</span>);<br/>
+	<br/>
+	<span class="codecomm">// accessing a string</span><br/>
+	<span class="codefunc">printf</span>(<span class="codelit">"%s\n"</span>, <span class="codeclass">Language</span>::<span class="codefunc">Get</span>(<span class="codelit">"hello"</span>));
+</code>

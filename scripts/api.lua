@@ -386,8 +386,8 @@ function tram.message.GetLast()
 	return __tram_impl_message_get_last()
 end
 
-function tram.message.Send(message_type, sender, receiver, data, delay)
-	__tram_impl_message_send(message_type, sender, receiver, data, delay)
+function tram.message.Send(message, delay)
+	__tram_impl_message_send(message.type, message.sender, message,receiver, message.data, delay)
 end
 
 tram.message.NONE = tram.message.GetType("none")
