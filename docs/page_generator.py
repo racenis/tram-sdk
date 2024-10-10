@@ -51,6 +51,8 @@ pages = ["index",
 		 "documentation/framework/navmesh",
 		 "documentation/framework/path",
 		 "documentation/framework/resource",
+		 "documentation/framework/script",
+		 "documentation/framework/settings",
 		 
 		 "documentation/framework/serialization",
 		 

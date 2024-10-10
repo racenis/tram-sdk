@@ -1,11 +1,62 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Settings | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Settings
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The settings system can be used to save your application's settings, as well
+	as automatically parse command line options.
 </p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/settings.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_settings.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Settings can be registered in two different ways. In the first, the 
+	settings system will store the setting for you. In the second, you provide
+	a pointer to the setting and manage the storage yourself.
+</p>
+
+<code>
+	<span class="codecomm">// allowing settings to manage the setting</span><br/>
+	<span class="codeclass">Settings</span>::<span class="codefunc">Register</span>(<span class="codelit">420</span>, <span class="codelit">"frog-count"</span>);<br/>
+	<br/>
+	<span class="codecomm">// managing our own setting</span><br/>
+	<span class="codekeyw">uint32_t</span> frog_count = <span class="codelit">420</span>;<br/>
+	<span class="codeclass">Settings</span>::<span class="codefunc">Register</span>(&amp;frog_count, <span class="codelit">"frog-count"</span>);<br/>
+</code>
+
+<p>
+	Parsing settings from commandline is very simple.
+</p>
+
+<code>
+	<span class="codekeyw">int</span> <span class="codefunc">main</span>(<span class="codekeyw">const char</span>** argv, <span class="codekeyw">int</span> argc) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Settings</span>::<span class="codefunc">Parse</span>(argv, argc);<br/>
+		<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">return</span> <span class="codelit">0</span>;<br/>
+	}
+</code>
+
+<p>
+	Settings can also be saved to disk and loaded back up.
+</p>
+
+<code>
+	<span class="codeclass">Settings</span>::<span class="codefunc">Save</span>(<span class="codelit">"frog-settings"</span>);<br/>
+	<span class="codeclass">Settings</span>::<span class="codefunc">Load</span>(<span class="codelit">"frog-settings"</span>);<br/>
+</code>
+
+

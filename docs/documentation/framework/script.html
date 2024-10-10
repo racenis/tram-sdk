@@ -1,0 +1,255 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="eeee" href="../../favicon.gif">
+		<title>Scripting | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+			
+			.menubar {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+			}
+
+			.navbar {
+				width: 100%;
+			}
+			
+			.navbar .left {
+				width: 50px;
+			}
+			
+			.navbar .middle {
+				text-align: center;
+			}
+			
+			.navbar .right {
+				width: 50px;
+				text-align: right;
+			}
+			
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+			.codefunc {
+				color: blue;
+			}
+			
+			.codeclass {
+				color: blue;
+			}
+			
+			.codekeyw {
+				color: red;
+			}
+			
+			.codecomm {
+				color: green;
+			}
+			
+			.codelit {
+				color: orange;
+			}
+			
+			.codespac {
+				color: blue;
+			}
+			
+			.codeexample {
+				white-space: pre;
+			}
+			
+		</style>
+	</head>
+	<body background="../../images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="../../images/logo3.gif"/>
+					<img style="float:right;" src="../../images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="../../index.html">Home</a> | 
+							<a href="../../features.html">Features</a> | 
+							<a href="../../roadmap.html">Roadmap</a> | 
+							<a href="../../learn.html">Learn</a> | 
+							<a href="../../documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Scripting | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Scripting
+</h1>
+
+<hr/>
+
+<p>
+	The script system implements the scripting API. It allows you to call 
+	scripts from C++ without being concerned with which scripting language
+	the script is actually implemented in.
+</p>
+
+<p>
+	Currently the only scripting language bindings that have been implemented
+	are for the <a href="../extensions/scripting.html">Lua language</a>.
+</p>
+
+<p>
+	All scripts are located in the <code>/scripts/</code> directory.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/script.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_script.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	First a script needs to be loaded. When a script is loaded from disk, it
+	will be automatically executed.
+</p>
+
+<code>
+	<span class="codeclass">Script</span>::<span class="codefunc">LoadScript</span>(<span class="codelit">"frog"</span>);
+</code>
+
+<p>
+	You can set global variables in the scripting context and retrieve
+	global variables from it.
+</p>
+
+<code>
+	<span class="codeclass">Script</span>::<span class="codefunc">SetGlobal</span>(<span class="codelit">"frog_status"</span>, <span class="codelit">420</span>);<br/>
+	<br/>
+	<span class="codekeyw">value_t</span> frogs = <span class="codeclass">Script</span>::<span class="codefunc">GetGlobal</span>(<span class="codelit">"frog_count"</span>);
+</code>
+
+<p>
+	You can also register in C++ function which can be called from the scripting
+	language. For example, this function, named <code>frog</code>, will accept
+	a single integer parameter, which it will print to console. It will then
+	return the value <code>true</code> if the integer inputted was 
+	<code>420</code>.
+</p>
+
+<code>
+	<span class="codeclass">Script</span>::<span class="codefunc">SetFunction</span>(<span class="codelit">"frog"</span>, {TYPE_INT},<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[](<span class="codekeyw">valuearray_t</span> array) -> <span class="codekeyw">value_t</span> {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">int32_t</span> frog = array[<span class="codelit">0</span>];<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"frog: %i"</span>, frog);<br/>
+		<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">return</span> frog == <span class="codelit">420</span>;<br/>
+	});
+</code>
+
+<p>
+	You can also call script functions from C++.
+</p>
+
+<code>
+	<span class="codekeyw">bool</span> result = <span class="codeclass">Script</span>::<span class="codefunc">CallFunction</span>(<span class="codelit">"frog"</span>, {<span class="codelit">420</span>});
+</code>
+
+
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="../../images/800x600.gif"/><br/>
+					<img src="../../images/firefoxnow.gif"/><br/>
+					<img src="../../images/hicolor.gif"/><br/>
+					
+					<img src="../../images/blender.gif"/><br/>
+					<img src="../../images/wxwidgets.gif"/><br/>
+					
+					<img src="../../images/winxp.gif"/><br/>
+					<img src="../../images/linux.gif"/><br/>
+					<img src="../../images/hatemac.jpg"/><br/>
+					
+					<img src="../../images/discord-no-way.gif"/><br/>
+					
+					<img src="../../images/winrar.gif"/><br/>
+					<img src="../../images/sdblast.gif"/><br/>
+					<img src="../../images/esheep.gif"/><br/>
+					
+					<img src="../../images/valid-bad.gif"/><br/>
+					<img src="../../images/notepadpp.gif"/><br/>
+					<img src="../../images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

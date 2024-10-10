@@ -1,11 +1,81 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Scripting | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Scripting
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The script system implements the scripting API. It allows you to call 
+	scripts from C++ without being concerned with which scripting language
+	the script is actually implemented in.
 </p>
+
+<p>
+	Currently the only scripting language bindings that have been implemented
+	are for the <a href="../extensions/scripting.html">Lua language</a>.
+</p>
+
+<p>
+	All scripts are located in the <code>/scripts/</code> directory.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/script.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_script.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	First a script needs to be loaded. When a script is loaded from disk, it
+	will be automatically executed.
+</p>
+
+<code>
+	<span class="codeclass">Script</span>::<span class="codefunc">LoadScript</span>(<span class="codelit">"frog"</span>);
+</code>
+
+<p>
+	You can set global variables in the scripting context and retrieve
+	global variables from it.
+</p>
+
+<code>
+	<span class="codeclass">Script</span>::<span class="codefunc">SetGlobal</span>(<span class="codelit">"frog_status"</span>, <span class="codelit">420</span>);<br/>
+	<br/>
+	<span class="codekeyw">value_t</span> frogs = <span class="codeclass">Script</span>::<span class="codefunc">GetGlobal</span>(<span class="codelit">"frog_count"</span>);
+</code>
+
+<p>
+	You can also register in C++ function which can be called from the scripting
+	language. For example, this function, named <code>frog</code>, will accept
+	a single integer parameter, which it will print to console. It will then
+	return the value <code>true</code> if the integer inputted was 
+	<code>420</code>.
+</p>
+
+<code>
+	<span class="codeclass">Script</span>::<span class="codefunc">SetFunction</span>(<span class="codelit">"frog"</span>, {TYPE_INT},<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[](<span class="codekeyw">valuearray_t</span> array) -> <span class="codekeyw">value_t</span> {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">int32_t</span> frog = array[<span class="codelit">0</span>];<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"frog: %i"</span>, frog);<br/>
+		<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">return</span> frog == <span class="codelit">420</span>;<br/>
+	});
+</code>
+
+<p>
+	You can also call script functions from C++.
+</p>
+
+<code>
+	<span class="codekeyw">bool</span> result = <span class="codeclass">Script</span>::<span class="codefunc">CallFunction</span>(<span class="codelit">"frog"</span>, {<span class="codelit">420</span>});
+</code>
+
