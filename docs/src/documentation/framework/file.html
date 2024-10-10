@@ -1,11 +1,56 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: File | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	File
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	This is a file abstraction that I made. I made it because the filestream of
+	the C++ standard library, altough possesing a very <i>je ne sais quoi</i> 
+	interface, is way too slow.
+</p>
+
+<p>
+	Currently it can only be used to load text files and parse them from disk.
+</p>
+
+<p>
+	I will probably add some more stuff to it in the future, like accessing
+	files over HTTP instead of just from disk, or maybe loading them from .zip
+	files.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/file.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_file.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	This is how you can parse in some text files.
+</p>
+
+<code>
+	<span class="codeclass">File</span> file(<span class="codelit">"my-text-file.txt"</span>, MODE_READ);<br/>
+	<br/>
+	<span class="codefunc">printf</span>(<span class="codelit">"num1: %f\n"</span>, file.<span class="codefunc">read_float32</span>());<br/>
+	<span class="codefunc">printf</span>(<span class="codelit">"num2: %i\n"</span>, file.<span class="codefunc">read_int32</span>());<br/>
+	<br/>
+	<span class="codecomm">// read until end of file</span><br/>
+	<span class="codekeyw">while</span> (file.<span class="codefunc">is_continue</span>()) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codekeyw">"%s\n"</span>, file.<span class="codefunc">read_name</span>());<br/>
+	}
+</code>
+
+<p>
+	Check <code>render/model.cpp</code> and <code>render/sprite.cpp</code> for
+	more examples of how you can use this.
 </p>
