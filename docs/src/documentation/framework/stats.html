@@ -1,11 +1,75 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Statistics | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Statistics
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The statistics system collects data. There are two different types of data.
 </p>
+
+<p>
+	The first type is time. Each <a href="system.html">System</a> gets its own
+	time counter. Systems can add time spent in themselves to the counter.
+</p>
+
+<p>
+	The second type is the counter counter. It provides arbitrary counting
+	services. For example, the Render system uses this service to count up an
+	approximation of how much GPU memory it is using.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/system.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_system.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	For the timings, somewhere in your main loop you need to add a call to the
+	collate function.
+</p>
+
+<code>
+	<span class="codecomm">// main loop</span><br/>
+	<span class="codekeyw">while</span> (<span class="codekeyw">true</span>) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Stats</span>::<span class="codefunc">Collate</span>();<br/>
+	}<br/>
+</code>
+
+<p>
+	After that, you can start counting stuff.
+</p>
+
+<code>
+	<span class="codekeyw">system_t</span> frog_system = <span class="codeclass">System</span>::<span class="codefunc">Register</span>(<span class="codelit">"frog"</span>);<br/>
+	<br/>
+	<span class="codeclass">Stats</span>::<span class="codefunc">Start</span>(frog_system);<br/>
+	<br/>
+	<span class="codefunc">pet_frogs</span>();<br/>
+	<span class="codefunc">feed_frogs</span>();<br/>
+	<span class="codefunc">bathe_frogs</span>();<br/>
+	<br/>
+	<span class="codeclass">Stats</span>::<span class="codefunc">Stop</span>(frog_system);<br/>
+	<br/>
+	<span class="codeclass">Stats</span>::<span class="codefunc">Add</span>(RESOURCE_FROG, inital_frogs);<br/>
+	<span class="codeclass">Stats</span>::<span class="codefunc">Remove</span>(RESOURCE_FROG, escaped_frogs);
+</code>
+	
+<p>
+	Finally, you can retrieve your counts.
+</p>
+
+<code>
+	<span class="codekeyw">size_t</span> frogs = <span class="codeclass">Stats</span>::<span class="codefunc">GetStat</span>(RESOURCE_FROG);<br/>
+	<span class="codekeyw">float</span> frog_time = <span class="codeclass">Stats</span>::<span class="codefunc">GetStat</span>(frog_system);
+</code>
+	

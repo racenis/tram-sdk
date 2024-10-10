@@ -1,11 +1,51 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Systems | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Systems
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The system concept was created to help identify parts of code.
 </p>
+
+<p>
+	This allows, for example, to check if a system has been initialized. This is
+	useful for systems which have a dependency on another system &ndash; they
+	can check if the system that they have a dependecy on has been initialized
+	before initializing themselves.
+</p>
+
+<p>
+	This concept also allows tracking <a href="stats.html">statistics</a> and
+	filtering <a href="logging.h">logging</a> based on the system from which the
+	logs originate.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/system.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_system.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Some systems are already registered into the framework, but you can register
+	your own systems too.
+</p>
+
+<code>
+	<span class="codekeyw">system_t</span> frog_system = <span class="codeclass">System</span>::<span class="codefunc">Register</span>(<span class="codelit">"frog"</span>);<br/>
+	<br/>
+	<span class="codecomm">// now we can initialize it</span><br/>
+	<span class="codeclass">System</span>::<span class="codefunc">SetInitialize</span>(frog_system, <span class="codekeyw">true</span>);<br/>
+	<span class="codekeyw">assert</span>(<span class="codeclass">System</span>::<span class="codefunc">IsInitialized</span>(frog_system));
+</code>
+
+

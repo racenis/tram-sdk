@@ -52,11 +52,12 @@ pages = ["index",
 		 "documentation/framework/path",
 		 "documentation/framework/resource",
 		 "documentation/framework/script",
-		 "documentation/framework/settings",
-		 
 		 "documentation/framework/serialization",
-		 
-		 
+		 "documentation/framework/settings",
+		 "documentation/framework/signal",
+		 "documentation/framework/stats",
+		 "documentation/framework/system",
+		 "documentation/framework/transition",
 		 "documentation/framework/type",
 		 
 		 "documentation/framework/value",
