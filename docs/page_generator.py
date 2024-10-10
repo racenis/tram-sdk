@@ -59,7 +59,9 @@ pages = ["index",
 		 "documentation/framework/system",
 		 "documentation/framework/transition",
 		 "documentation/framework/type",
-		 
+		 "documentation/framework/ui",
+		 "documentation/framework/uid",
+		 "documentation/framework/worldcell",
 		 "documentation/framework/value",
 		 ]
 template = "template"

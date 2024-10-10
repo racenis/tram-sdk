@@ -1,11 +1,158 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: UI | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	UI
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	The UI system deals with the creation of windows and taking in of the input.
+</p>
+
+<p>
+	Once initialized, the system will create an operating system window and will
+	start gathering and emitting keyboard and mouse events.	It also creates the
+	rendering context.
+</p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	Window
+</h4>
+
+<p>
+	It's where the graphics are rendered to. Also can be clicked on.
+</p>
+
+<h4>
+	Keyboard key
+</h4>
+
+<p>
+	Represents either a key on a computer keyboard, or a button on a mouse. Yes.
+</p>
+
+<p>
+	Can either be pressed on released.
+</p>
+
+<h4>
+	Keyboard axis
+</h4>
+
+<p>
+	Represents cursor position or scroll wheel scrolling.
+</p>
+
+<p>
+	Unlike a keyboard key, an axis has a scalar state.
+</p>
+
+<h4>
+	Keyboard action
+</h4>
+
+<p>
+	Unlike a keyboard key, which represents a physical key or something similar,
+	keyboard actions are completely abstract.
+</p>
+
+<p>
+	Keyboard keys can be bound to keyboard actions. This means that pressing and
+	releasing the keyboard key will also trigger the keyboard action.
+</p>
+
+<h4>
+	State
+</h4>
+
+<p>
+	The UI state determines what the system will do with keyboard and mouse
+	inputs.
+</p>
+
+<h2>
+	States
+</h2>
+
+<hr/>
+
+<h4>
+	Default | <code>STATE_DEFAULT</code>
+</h4>
+
+<p>
+	Cursor is hidden. Inputs generate events normally.
+</p>
+
+<h4>
+	No Input | <code>STATE_NO_INPUT</code>
+</h4>
+
+<p>
+	Cursor is hidden, but inputs generate no events.
+</p>
+
+<h4>
+	Flying | <code>STATE_FLYING</code>
+</h4>
+
+<p>
+	Cursor is hidden, no inputs are generated. Instead, WASD keys can be used to
+	move the <a href="../render.html">Render view</a> directly. Useful for
+	debugging.
+</p>
+
+<h4>
+	Menu Open | <code>STATE_MENU_OPEN</code>
+</h4>
+
+<p>
+	Cursor is displayed, but no events are generated.
+</p>
+
+<h4>
+	Cursor | <code>STATE_CURSOR</code>
+</h4>
+
+<p>
+	Cursor is displayed. Inputs generate events normally.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/system.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_u_i.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	The basic initializtion and stuff goes something like this.
+</p>
+
+<code>
+	<span class="codeclass">UI</span>::<span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// main loop</span><br/>
+	<span class="codekeyw">while</span> (<span class="codekeyw">true</span>) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">UI</span>::<span class="codefunc">Update</span>();<br/>
+	}<br/>
+	<br/>
+	<span class="codeclass">UI</span>::<span class="codefunc">Uninit</span>();<br/><br/>
+</code>
+
+<p>
+	As for the rest of it, there is too much stuff to cover all here. Check the
+	API documentation.
 </p>
