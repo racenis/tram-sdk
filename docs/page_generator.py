@@ -76,6 +76,17 @@ pages = ["index",
 		 "documentation/framework/value",
 		 
 		 "documentation/physics",
+		 "documentation/physics/collisionmodel",
+		 "documentation/physics/collisionshape",
+		 
+		 "documentation/platform",
+		 
+		 "documentation/render",
+		 "documentation/render/aabb",
+		 "documentation/render/animation",
+		 "documentation/render/material",
+		 "documentation/render/model",
+		 "documentation/render/sprite",
 		 ]
 template = "template"
 
