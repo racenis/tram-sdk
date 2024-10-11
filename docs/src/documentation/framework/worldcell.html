@@ -1,11 +1,115 @@
-<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: WorldCells | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	WorldCells
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	Worldcells are the basic streaming unit of the virtual world. Essentially
+	they are a list of entities.
 </p>
+
+<p>
+	The worldcells also have a volume. All of the entities, whose positions are
+	inside the worldcell's volume are considered to inside the worldcell.
+<p/>
+
+<p>
+	An entity is added to a worldcell if its definition is located in the
+	worldcell's disk file, or if it is created and its position is inside the
+	worldcell's volume or it enters a <a href="transition.html">transition
+	volume</a> leading from one worldcell to another.
+</p>
+
+<p>
+	All worldcell data files are located in the <code>/data/worldcells/</code>
+	directory. The file extension is <code>.cell</code>.
+</p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	Interior
+</h4>
+
+<p>
+	Worldcell volumes are not supposed to overlap. The only exception are 
+	interior and exterior worldcells. If an entity's position is both inside an
+	exterior and an interior worldcell, preference will be given to the interior
+	worldcell.
+</p>
+
+<h4>
+	Interior lighting
+</h4>
+
+<p>
+	If a worldcell has its lighting set to be interior, it means that for every
+	entity in that cell the <a href="../render.html">directional lighting</a>
+	will be disabled. This is more of a convention for entity implementation,
+	than something that is forced on entities	
+</p>
+
+<h4>
+	Transition
+</h4>
+
+<p>
+	A worldcell transition has a volume, defined by a convex hull wrapped around
+	a set of points, and an originating and a destination worldcell. If an
+	entity is in the originating worldcell and it enters the volume of the
+	tranistion, it will be switched to being in the destination worldcell.
+</p>
+
+<h4>
+	Volume
+</h4>
+
+<p>
+	If a transition has its originating and its destination worldcells set to
+	the same worldcell, then it is considered that the volume of the transition
+	contributes to the volume of the worldcell.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">framework/worldcell.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_worldcell.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Loading a worldcell is very simple.
+</p>
+
+<code>
+	<span class="codeclass">WorldCell</span>* frog_house = <span class="codeclass">WorldCell</span>::<span class="codefunc">Make</span>(<span class="codelit">"pond"</span>);<br/>
+	<br/>
+	frog_house-><span class="codefunc">LoadFromDisk</span>();<br/>
+	frog_house-><span class="codefunc">Load</span>();
+</code>
+
+<p>
+	We can also probe entitial contents of the worldcell.
+</p>
+
+<code>
+	<span class="codeclass">WorldCell</span>* frog_house = <span class="codeclass">WorldCell</span>::<span class="codefunc">Find</span>(<span class="codelit">"pond"</span>);<br/>
+<br/>
+	<span class="codekeyw">auto</span> entities = frog_house-><span class="codefunc">GetEntities</span>();<br/>
+<br/>
+	<span class="codekeyw">for</span> (<span class="codekeyw">auto</span> entity : enitities) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codefunc">printf</span>(<span class="codelit">"Entity: %s\n"</span>, entity-><span class="codefunc">GetName</span>());<br/>
+	}
+</code>

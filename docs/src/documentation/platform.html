@@ -1,0 +1,30 @@
+<!-- PAGE_TITLE: Platform | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Platform
+</h1>
+
+<p>
+	This system contains the platform compatibility layer. Basically it provides
+	a single API to perform various tasks, which are platform-specific.
+</p>
+
+<p>
+	For example, the creation of a window and the capture of keyboard keypress
+	events is specific to the operating system. Windows uses the Win32 API and
+	Linux uses the X Window System API. 
+</p>
+
+<p>
+	To make porting easier, the framework does not use these APIs directly,
+	instead using either the GLFW or the SDL libraries as a backend. It is also
+	possible to create your own backend.
+</p>
+
+<p>
+	Creating your own backend is useful if you want to embed the framework
+	inside of another application. For example, the
+	<a href="leveleditor.html">level editor</a> is a wxWidgets application that
+	embeds the rendering system of the framework.
+</p>
+

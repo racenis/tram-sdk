@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="eeee" href="../../favicon.gif">
-		<title>Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<title>Signals | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
 		<style>
 		
 			body {
@@ -135,17 +135,220 @@
 					<a href="index.html" class="menu-link">Home</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
-					<!-- PAGE_TITLE: Learn | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+					<!-- PAGE_TITLE: Signals | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Learn
+	Signals
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		There is nothing to learn.
-	</i>
+	Signals are <a href="message.html">Message</a> presets that can be attached
+	to entities.
+</p>	
+
+<p>
+	These can be configured in the <a href="../level-editor.html">level
+	editor</a>, or they	can be attached through scripting.	
 </p>
+
+<p>
+	When the appropriate moment comes, the entity will fire off the signal,
+	which in turn will send off the preset message.
+</p>
+
+<p>
+	Signals are named so as to be confusing to Godot users. Similar frameworks
+	call these the entity input/output system.
+</p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	Signal type
+</h4>
+
+<p>
+	Each signal has a type. This type determines what kind of action cause the
+	signal to fire.
+</p>
+
+<p>
+	Any entity can fire off any signal type for any action, but to keep it
+	consistent we have described some signal types.
+</p>
+
+<h4>
+	Signal firing
+</h4>
+
+<p>
+	When the appropriate moment comes, the entity fires off the signal. This
+	causes the signal table to look up all message presets associated with the
+	fired signal type. The signal table will then send off all of the relevant
+	message presets.
+</p>
+
+<p>
+	While signal message presets can have a value attached to them to be sent as
+	the attached data, during firing the entity can choose to replace the data
+	with something other than what the preset contains.
+</p>
+
+<h4>
+	Signal table
+</h4>
+
+<p>
+	Contains all of the signals that are defined for a certain entity. Can be
+	edited in the level editor. On disk each entity's signals are stored in the
+	<a href="worldcell.html">Worldcell</a> file.
+</p>
+
+<h2>
+	Signal types
+</h2>
+
+<hr/>
+
+<h4>
+	None | <code>NONE</code>
+</h4>
+
+<p>
+	This is not a signal.
+</p>
+
+<h4>
+	Spawn | <code>SPAWN</code>
+</h4>
+
+<p>
+	Fired when an entity is loaded.
+</p>
+
+<h4>
+	Kill | <code>KILL</code>
+</h4>
+
+<p>
+	Fired when an entity is killed.
+</p>
+
+<h4>
+	Activate | <code>ACTIVATE</code>
+</h4>
+
+<p>
+	Fired off when an entity is activated. What is considered an activation 
+	depends on the entity type.
+</p>
+
+<h4>
+	Use | <code>USE</code>
+</h4>
+
+<p>
+	Fired when the entity is activated, that is, receives a <i>Activate Once</i>
+	message.
+</p>
+
+<h4>
+	Locked Use | <code>LOCKED_USE</code>
+</h4>
+
+<p>
+	Same as Use, but fired when entity activation fails due to the entity being
+	locked.
+</p>
+
+<h4>
+	Open | <code>OPEN</code>
+</h4>
+
+<p>
+	Fired when the entity begins opening.
+</p>
+
+<h4>
+	Close | <code>CLOSE</code>
+</h4>
+
+<p>
+	Fired when the entity begins closing.
+</p>
+
+<h4>
+	End Open | <code>END_OPEN</code>
+</h4>
+
+<p>
+	Fired when the entity finishes opening.
+</p>
+
+<h4>
+	End Close | <code>END_CLOSE</code>
+</h4>
+
+<p>
+	Fired when the entity finishes closing.
+</p>
+
+<h4>
+	Trigger | <code>TRIGGER</code>
+</h4>
+
+<p>
+	Fired when the entity is triggered.
+</p>
+
+<h4>
+	Enter Trigger | <code>ENTER_TRIGGER</code>
+</h4>
+
+<p>
+	Fired when an entity enters a trigger. Its ID is attached as data in the
+	message.
+</p>
+
+<h4>
+	Exit Trigger | <code>EXIT_TRIGGER</code>
+</h4>
+
+<p>
+	Fired when an entity exits a trigger. Its ID is attached as data in the
+	message.
+</p>
+
+<h4>
+	Progress | <code>PROGRESS</code>
+</h4>
+
+<p>
+	Fired every tick that an entity is progressing. It replaces the message data
+	with a floating point progress value.
+</p>
+
+<p>
+	If the message type attached to this signal is set to Set Progress, then it
+	is possible to synchronize two entities that support progress.
+</p>
+
+<h4>
+	Last Signal | <code>LAST_SIGNAL</code>
+</h4>
+
+<p>
+	Not actually a signal.
+</p>
+
+
+
 				</td>
 				<td width="90" valign="top" class="right-pane">
 					<img src="../../images/800x600.gif"/><br/>

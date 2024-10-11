@@ -1,0 +1,182 @@
+<!-- PAGE_TITLE: Physics | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Physics
+</h1>
+
+<hr/>
+
+<p>
+	The physics system provides rigidbody physics simulation services.
+</p>
+
+<p>
+	Currently a single backed is implemented, which is the Bullet physics
+	library backed, but more will be added in the future.
+</p>
+
+<p>
+	If you want to add rigidbodies to your entities, consider using the
+	<a href="components/physics.html">PhysicsComponent</a>. For triggers, the 
+	<a href="components/physics.html">TriggerComponent</a> is available.
+</p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	Rigidbody
+</h4>
+
+<p>
+	An object in the physics simlation. Rigidbodies have some kind of a shape or
+	volume. This is determined by their
+	<a href="physics/collisionmodel.html">CollisionModel</a> or
+	<a href="physics/collisionshape.html">CollisionShape</a>.
+</p>
+
+<h4>
+	Trigger
+</h4>
+
+<p>
+	Triggers are special shapes or volumes that can detect if a rigidbody enters
+	its	volume.
+</p>
+
+<h4>
+	Collision Group
+</h4>
+
+<p>
+	Collision groups are groups that the rigidbody, trigger or other physics
+	construct is a part of. The object can be a part of several groups. They are
+	represented by bits in a bitmask.
+</p>
+
+<p>
+	It is more efficient for an object to belong to only a single group, or very
+	few groups.
+</p>
+
+<h4>
+	Collision Mask
+</h4>
+
+<p>
+	Collision masks are groups with which the rigidbody, trigger or other
+	physics	construct can collide with. The object can be set to collide with
+	several groups. Allowed collision groups are represented by bits in a
+	bitmask.
+</p>
+
+<p>
+	To determine if an object should collide with another object, each objects
+	group bitmask and the other object's mask bitmask are logically and-ed
+	together. If the resulting value is not zero, the objects are allowed to
+	collide.
+</p>
+
+<h4>
+	Raycast
+</h4>
+
+<p>
+	Useful for poking things, selecting objects. A raycast constructs a ray 
+	between two points and check whether it intersects any rigidbody between
+	these points. If an intersection is found, it is returned.
+</p>
+
+<h4>
+	Shapecast
+</h4>
+
+<p>
+	Similar to raycast, but instead of a checking an intersection with an
+	infinitely thin line, a shape is used. 
+</p>
+
+<h2>
+	Collisions: how do they work?
+</h2>
+
+<hr/>
+
+<p>
+	Like this.
+</p>
+
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">physics/physics.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/namespacetram_1_1_physics.html">API documentation
+	page</a>.
+</p>
+
+<code>
+	<span class="codeclass">Physics</span>::<span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// main loop</span><br/>
+	<span class="codekeyw">while</span> (<span class="codekeyw">true</span>) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Physics</span>::<span class="codefunc">Update</span>();<br/>
+	}<br/>
+	<br/>
+</code>
+
+<p>
+	Here's how we do raycasts. Let's do one from the render view.
+</p>
+
+<code>
+	auto pos = Render::GetViewPositon();<br/>
+	auto rot = Render::GetViewRotation();<br/>
+	<br/>
+	// convert rotation to normal vector<br/>
+	vec3 dir = rot * DIRECTION_FORWARD;<br/>
+	<br/>
+	// set end point to ne 5 meters in<br/>
+	// front of the view<br/>
+	vec3 end = pos + dir * 5.0f;<br/>
+	<br/>
+	// collision mask -1 means all bits, aka<br/>
+	// collide with all collision groups<br/>
+	auto coll = Physics::Raycast(pos, end, -1);<br/>
+	<br/>
+	<br/>
+	// skip collision if no entity attached<br/>
+	if (!coll.collider || !coll.collider->GetParent())<br/>
+		return;<br/>
+	<br/>
+	auto entity = coll.collider->GetParent();<br/>
+	<br/>
+	// send a SELECTED message to the collided<br/>
+	Message msg;<br/>
+	<br/>
+	msg.sender = 0;<br/>
+	msg.receiver = entity->GetID();<br/>
+	msg.type = Message::SELECTED;<br/>
+	msg.data = nullptr;<br/>
+	<br/>
+	Message::Send(msg);
+</code>
+
+<p>
+	This is how interactable object highlighting is usually done for a
+	first-person view. We check if there is an object withing 5 meters right in
+	front of the view, and if there is an object, we send the it a Selected
+	message.
+</p>
+
+<p>
+	Shapecasts work the same way, except that you also need to pass in the
+	shape, which will be used for the collision.
+</p>

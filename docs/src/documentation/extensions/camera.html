@@ -1,0 +1,78 @@
+<!-- PAGE_TITLE: Camera | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Camera
+</h1>
+
+<hr/>
+
+<p>
+	All camera types basically do a bit of logic and then come up with a
+	position and a rotation. Then they pass them over to the Render system to
+	and use them to set the View and pass them to the Audio system to set the
+	listener.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<h4>
+	Camera Interface
+</h4>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">extensions/camera/camera.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_ext_1_1_camera_1_1_camera.html">API documentation
+	page</a>.
+</p>
+
+<h4>
+	First Person Camera
+</h4>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">extensions/camera/firstperson.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_ext_1_1_camera_1_1_first_person_camera.html">API documentation
+	page</a>.
+</p>
+
+
+
+<p>
+	Here's how to do a first person camera.
+</p>
+
+<code>
+	// here will be our camera<br/>
+	Ext::Camera::FirstPersonCamera* camera = nullptr;<br/>
+	<br/>
+	// this will be our player<br/>
+	Entity* player = Entity::Find("player");<br/>
+	<br/>
+	// let's make a new camera<br/>
+	camera = new Ext::Camera::FirstPersonCamera;<br/>
+	<br/>
+	// this attaches the camera to the player<br/>
+	camera->SetFollowing(player);<br/>
+	<br/>
+	// this will allow rotation of the camera<br/>
+	// by moving the mouse cursor<br/>
+	camera->SetMouselook(true);<br/>
+	<br/>
+	// this will rotate the player with the<br/>
+	// camera. useful if player has a visible<br/>
+	// 3D model<br/>
+	camera->SetRotateFollowing(true);<br/>
+	<br/>
+	// this will position the camera half a meter<br/>
+	// above the player entity's middle point<br/>
+	camera->SetFollowingOffset({0.0f, 0.5f, 0.0f});<br/>
+	<br/>
+	// this turns on the camera<br/>
+	camera->SetActive();
+</code>
+
+<p>
+	There are other camera types, but they are sort of unfinished.
+</p>

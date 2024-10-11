@@ -19,6 +19,7 @@ pages = ["index",
 		 "learn/cameras",
 		 "learn/platforms",
 		 "learn/boomer",
+		 
 		 "documentation",
 		 "documentation/index",
 		 "documentation/audio",
@@ -34,6 +35,14 @@ pages = ["index",
 		 "documentation/components/sprite",
 		 "documentation/components/template",
 		 "documentation/components/trigger",
+		 
+		 "documentation/entities",
+		 
+		 "documentation/extensions",
+		 "documentation/extensions/camera",
+		 "documentation/extensions/menu",
+		 "documentation/extensions/kitchensink",
+		 "documentation/extensions/scripting",
 		 
 		 "documentation/framework/async",
 		 "documentation/framework/core",
@@ -63,6 +72,8 @@ pages = ["index",
 		 "documentation/framework/uid",
 		 "documentation/framework/worldcell",
 		 "documentation/framework/value",
+		 
+		 "documentation/physics",
 		 ]
 template = "template"
 
