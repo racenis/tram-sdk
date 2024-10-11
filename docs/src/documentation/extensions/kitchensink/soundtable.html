@@ -1,0 +1,54 @@
+<!-- PAGE_TITLE: SoundTable | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	SoundTable
+</h1>
+
+<p>
+	A sound table contains many-to-many mappings from a key to a name of a
+	sound. This allows to associate sounds with a certain category.
+</p>
+
+<p>
+	For example, <a href="../kitchensink.html">Button</a> entity has a
+	sound table parameter. When it opens or close, it will look up the sounds
+	mapped to the <code>SOUND_OPEN</code> and <code>SOUND_CLOSE</code> keys 
+	respectively. If it finds a sound that is mapped to a give key, it will play
+	it back.
+</p>
+
+<p>
+	Since there can be multiple sounds mapped to the same key, if there arises
+	such a situation when a sound is being looked up and there are multiple 
+	sounds associated with the given key, a random sound that is mapped to said
+	key will be returned.
+</p>
+
+<h2>Programming in C++</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">extensions/kitchensink/soundtable.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/classtram_1_1_ext_1_1_design_1_1_sound_table.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Very simple API. It was supposed to be very simple, so it is such.
+</p>
+
+<code>
+	SoundTable* table = SoundTable::Find("table");<br/>
+	<br/>
+	table->AddSound(SOUND_OPEN, "open1");<br/>
+	table->AddSound(SOUND_OPEN, "open2");<br/>
+	table->AddSound(SOUND_CLOSE, "close1");<br/>
+	<br/>
+	// this variable will be set to "close1"<br/>
+	name_t sound = table->GetSound(SOUND_CLOSE);<br/>
+	<br/>
+	// this will play back either "open1" or "open2"<br/>
+	table->Play(SOUND_OPEN);
+</code>
+

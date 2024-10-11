@@ -42,6 +42,8 @@ pages = ["index",
 		 "documentation/extensions/camera",
 		 "documentation/extensions/menu",
 		 "documentation/extensions/kitchensink",
+		 "documentation/extensions/kitchensink/animationtable",
+		 "documentation/extensions/kitchensink/soundtable",
 		 "documentation/extensions/scripting",
 		 
 		 "documentation/framework/async",

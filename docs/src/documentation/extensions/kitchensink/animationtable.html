@@ -1,0 +1,72 @@
+<!-- PAGE_TITLE: AnimationTable | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	AnimationTable
+</h1>
+
+<hr/>
+
+<p>
+	This is what is called a hierarchical animation blend space tree graph node
+	automata. It basically lets you define how an
+	<a href="../../components/animation.html">AnimationComponent</a> should
+	switch between animations, and which animations it can and which ones it
+	cannot play back at the same time.
+</p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	State
+</h4>
+
+<p>
+	When in a given state, the component will play back an animation. When the
+	state is switched, it will perform the configured transition, such as a
+	fade-in or fade-out. 
+</p>
+
+<h4>
+	State space
+</h4>
+
+<p>
+	The state space holds a They are organized hierarchically, and higher state spaces can override lower state spaces with their state.
+</p>
+
+<p> 
+	For example, a character could have a state space for torso and for legs,
+	both of which could be parented to a full body state space. It could then
+	play back animations on the torso and legs seperately, but sometimes it is
+	easier to create an animation for the armature together, like when climbing
+	a ladder, so then a state could be changed in the full body space and it
+	would override the animations of torso and legs.
+</p>
+
+<h4>
+	Transition
+</h4>
+
+<p>
+	When a transition between two states occurs, the animations have to be
+	switched. A transition determines how this occurs. It allows to configure
+	fade-ins, fade-outs and their durations.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<i>
+		I still haven't finalized the API and debugged everything, so it's not 
+		finished yet.
+	</i>
+</p>
+
