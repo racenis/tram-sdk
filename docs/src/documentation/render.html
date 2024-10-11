@@ -1,11 +1,268 @@
-<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Render | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	Render
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	Probably one of the most useful systems in the framework. Performs all of
+	the graphics stuff.
 </p>
+
+<h2>
+	Key concepts
+</h2>
+
+<hr/>
+
+<h4>
+	View
+</h4>
+
+<p>
+	Virtual camera perspective. Can be set using a position vector and a
+	rotation quaternion, or by directly feeding in a view and perspective
+	matrices.
+</p>
+
+<h4>
+	Layer
+</h4>
+
+<p>
+	Objects can be assigned to a layer. Curently there are 7 layers. Objects
+	in higher layers will be drawn on top of the objects in lower layers.
+</p>
+
+<h4>
+	Graphics Primitive
+</h4>
+
+<p>
+	A geometric shape that can be rasterized. The framework currently supports
+	the rasterization of triangles and straight line segments.
+</p>
+
+<h4>
+	Draw List Entry
+</h4>
+
+<p>
+	A record in the draw list. The draw list is list of all of the objects,
+	consisting of graphics primitives, that compose the rendered scene. To be
+	eligble for being rendered to the screen, the object must be added to the
+	draw list.
+</p>
+
+<h4>
+	Vertex
+</h4>
+
+<p>
+	A point consisting of some kind of a coordinate and possibly some other
+	data. Used to construct graphics primitives. A triangle consists of 3
+	vertices, a line segment of 2. Can be arranged in a buffer in list form.
+</p>
+
+<h4>
+	Index
+</h4>
+
+<p>
+	Reference to a vertex. Can be arranged in a buffer in list form. Invented as
+	a digital computer memory saving measure sometime in the late 20th century.
+</p>
+
+<h4>
+	Texture
+</h4>
+
+<p>
+	Raster image that can be applied to the surface of a graphics primitive
+	during rendering.
+</p>
+
+<h4>
+	Material
+</h4>
+
+<p>
+	Set of surface properties, possibly including a reference to a texture. 
+	Determines how the surface of a graphics primitive will be rendered.
+</p>
+
+<h4>
+	Light
+</h4>
+
+<p>
+	If there was no light we could just clear the screen with a black color
+	instead of rendering anything and you wouldn't even know.
+</p>
+
+<h4>
+	Lightmap
+</h4>
+
+<p>
+	Precomputed surface illumination for static objects. Allows the usage of
+	some rather slow algorithms for lighting computations, i.e. ray tracing,
+	path tracing, radiosity.
+</p>
+
+<h2>
+	Backends
+</h2>
+
+<hr/>
+
+<h4>
+	OpenGL
+</h4>
+
+<p>
+	Written in a subset of OpenGL 4.0 and WebGL, this is the main rendering
+	backend of the framework.
+</p>
+
+<h4>
+	Direct3D
+</h4>
+
+<p>
+	This backend uses the Direct3D9 fixed function pipeline. Not tested, but
+	should work with Direct3D7 level hardware. Curently only supports static
+	model, dynamic model and line rendering.
+</p>
+
+<h4>
+	Software
+</h4>
+
+<p>
+	This backend does all of the rendering on the CPU. Curently only supports
+	static model, dynamic model and line rendering.
+</p>
+
+<h2>
+	Lighting Types
+</h2>
+
+<hr/>
+
+<h4>
+	Dynamic light
+</h4>
+
+<p>
+	Can either be configured to act as a point light, or a spotlight.
+</p>
+
+<p>
+	No real limit on the ammount of lights in the scene, but each object can be
+	illuminated by only 4 lights at the same time.
+</p>
+
+<h4>
+	Directional light
+</h4>
+
+<p>
+	Light which is originating from a light source infinitely far away. Useful
+	for modelling sunlight.
+</p>
+
+<p>
+	The framework allows a single directional light to be used in the scene.
+</p>
+
+<h4>
+	Ambient light
+</h4>
+
+<p>
+	Adds some base lighting to every object in the scene. Has no direction.
+</p>
+
+<h4>
+	Lightmap
+</h4>
+
+<p>
+	Pre-computed lighting for a 3D model. Stored as a texture image. Only
+	available to static models.
+</p>
+
+<h2>
+	Programming in C++
+</h2>
+
+<hr/>
+
+<p>
+	<code>#<span class="codekeyw">include</span> &lt;<span class="codelit">render/render.h</span>&gt;</code> <br/>
+	<a href="../../cppapi/render_2render_8h.html">API documentation
+	page</a>.
+</p>
+
+<p>
+	Initialization the same as with other systems.
+</p>
+
+<code>
+	<span class="codecomm">// UI system needs to be initialized first</span><br/>
+	<span class="codeclass">UI</span>::<span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// now we initialize Render</span><br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">Init</span>();<br/>
+	<br/>
+	<span class="codecomm">// main loop</span><br/>
+	<span class="codekeyw">while</span> (<span class="codekeyw">true</span>) {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codeclass">Render</span>::<span class="codefunc">Render</span>();<br/>
+	}<br/>
+	<br/>
+</code>
+
+<p>
+	There's too many functions in the system to list, but here's some more
+	useful ones.
+</p>
+
+<code>
+	<br/>
+	<span class="codecomm">// the system defines some color constants</span><br/>
+	<span class="codekeyw">color_t</span> cyan = <span class="codeclass">Render</span>::COLOR_CYAN;<br/>
+	<span class="codekeyw">color_t</span> pink = <span class="codeclass">Render</span>::COLOR_PINK;<br/>
+ <br/>
+	<span class="codecomm">// this draws a debug line. all of the debug</span><br/>
+	<span class="codecomm">// drawing functions need to be called once</span><br/>
+	<span class="codecomm">// per frame, since after rendering a frame</span><br/>
+	<span class="codecomm">// the debug line buffer is emptied</span><br/>
+	<span class="codekeyw">const vec3</span> from = {<span class="codelit">0</span>, <span class="codelit">0</span>, <span class="codelit">0</span>};<br/>
+	<span class="codekeyw">const vec3</span> to = {<span class="codelit">1</span>, <span class="codelit">1</span>, <span class="codelit">1</span>};<br/>
+	<br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">AddLine</span>(from, to, cyan);<br/>
+	<br/>
+	<span class="codecomm">// this draws a cross</span><br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">AddLineMarker</span>(from, pink);<br/>
+	<br/>
+	<span class="codecomm">// sphere</span><br/>
+	<span class="codekeyw">const float</span> radius = 1.0f;<br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">AddSphere</span>(from, radius, pink);<br/>
+	<br/>
+	<span class="codecomm">// this is how to set the directional light</span><br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">SetSunDirection</span>(DIRECTION_FORWARD);<br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">SetSunColor</span>(COLOR_CYAN * <span class="codelit">1.0f</span>);<br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">SetAmbientColor</span>(COLOR_CYAN * <span class="codelit">0.1f</span>);<br/>
+	<br/>
+	<span class="codecomm">// setting the FOV, in degrees</span><br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">SetViewFov</span>(<span class="codelit">90.0f</span>);<br/>
+	<br/>
+	<span class="codecomm">// setting it to zero changes it to</span><br/>
+	<span class="codecomm">// orthographic projection.</span><br/>
+	<span class="codeclass">Render</span>::<span class="codefunc">SetViewFov</span>(<span class="codelit">90.0f</span>);<br/>
+
+	
+</code>
