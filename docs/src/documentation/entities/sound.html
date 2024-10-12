@@ -1,0 +1,121 @@
+<!-- PAGE_TITLE: Sound | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Sound
+</h1>
+
+<hr/>
+
+<p>
+	This entity can be placed in a level to play back sounds.
+</p>
+
+<p>
+	It also has a constructor so that it can be created thorugh code. If created
+	this way, the entity will yeet itself once it finishes playing back the 
+	sound. This way you can play a sound effect and then forget it.
+</p>
+
+<h2>
+	Fields
+</h2>
+
+<hr/>
+
+<h4>
+	Flags | <code>Int32</code>
+</h4>
+
+<p>
+	Bitmask, see flags section.
+</p>
+
+<h4>
+	Sound | <code>Name</code>
+</h4>
+
+<p>
+	Name of the sound that the entity will play back.
+</p>
+
+<h4>
+	Volume | <code>Float32</code>
+</h4>
+
+<p>
+	How loud the sound will be. From 0.0 to 1.0.
+</p>
+
+<h2>
+	Flags
+</h2>
+
+<hr/>
+
+<h4>
+	<code>1 | SOUND_LOOPING</code>
+</h4>
+
+<p>
+	The sound will loop after finishing.
+</p>
+
+<h4>
+	<code>2 | SOUND_START_ON_LOAD</code>
+</h4>
+
+<p>
+	The sound will begin playback as soon as the entity is loaded. Useful for
+	ambient sort of environmental sounds
+</p>
+
+<h2>
+	Messages
+</h2>
+
+<hr/>
+
+<h4>
+	Toggle | <code>TOGGLE</code>
+</h4>
+
+<p>
+	If the sound is being played, it will be stopped. If it is stopped, it will 
+	start again.
+</p>
+
+<h4>
+	Kill | <code>KILL</code>
+</h4>
+
+<p>
+	This yeets the entity.
+</p>
+
+<h4>
+	Start | <code>START</code>
+</h4>
+
+<p>
+	Starts playing back the sound.
+</p>
+
+<h4>
+	Stop | <code>STOP</code>
+</h4>
+
+<p>
+	Stops playing back the sound.
+</p>
+
+<h2>
+	Signals
+</h2>
+
+<hr/>
+
+<p>
+	<i>
+		There are none.
+	</i>
+</p>

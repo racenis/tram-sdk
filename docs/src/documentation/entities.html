@@ -1,11 +1,71 @@
-<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Entities | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	Entities
 </h1>
 
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	The framework comes with some pre-made enitites. These are very nice, you
+	should try using them. If you want, you can extend them by subclassing them
+	and building a new entity on top of them.
 </p>
+
+<ul>
+	<li><a href="entities/crate.html">Crate</a></li>
+	<p>
+		A crate is basically a
+		<a href="components/render.html">RenderComponent</a> and a 
+		<a href="components/physics.html">PhysicsComponent</a> glued together.
+		It doesn't do anything special. Can be used for small clutter objects.
+	</p>
+	
+	<li><a href="entities/decoration.html">Decoration</a></li>
+	<p>
+		Decorations are meant to display dynamic models. They can have a
+		<a href="components/physics.html">PhysicsComponent</a> to be used as a
+		collider, but it won't participate in the dynamics simulation.
+	</p>	
+	<p>
+		They also have a<a href="components/render.html">RenderComponent</a> and
+		an optional <a href="components/animation.html">AnimationComponent</a>.
+	</p>
+	<li><a href="entities/light.html">Light</a></li>
+	<p>
+		A wrapper around a <a href="components/light.html">LightComponent</a>.
+		Can be used for real-time illumination of dynamic objects and for
+		pre-computed lightmaps.
+	</p>
+	<li><a href="entities/marker.html">Marker</a></li>
+	<p>
+		A most basic entity. Has no components, doesn't do anything. It is only
+		used for its transform. Can be used as a template to create further
+		entity types on top of it.
+	</p>
+	<li><a href="entities/player.html">Player</a></li>
+	<p>
+		A very basic entity that serves as a wrapper for a
+		<a href="components/render.html">PlayerComponent</a> and a 
+		<a href="components/render.html">ControllerComponent</a>, which are
+		connected together. Useful if you want the user of your application to
+		be able to walk around the scene.
+	</p>
+	<li><a href="entities/sound.html">Sound</a></li>
+	<p>
+		A wrapper around a <a href="components/audio.html">AudioComponent</a>.
+		Can be used for environmental sounds, or if you just want to trigger a
+		sound by a <a href="framework/signal.html">Signal</a>.
+	</p>
+	<li><a href="entities/staticwobj.html">Static World Object</a></li>
+	<p>
+		It's meant for creating worldspawns.
+		<a href="components/render.html">RenderComponent</a> for the 3D model
+		part and <a href="components/render.html">PhysicsComponent</a> for the
+		collision. Can add lightmaps.
+	</p>
+	<li><a href="entities/trigger.html">Trigger</a></li>
+	<p>
+		A wrapper for a <a href="components/trigger.html">TriggerComponent</a>.
+		When triggered, outputs <a href="framework/signal.html">Signal</a>, so
+		can be used for logics and stuff.
+	</p>
+</ul>

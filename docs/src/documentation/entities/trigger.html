@@ -1,0 +1,92 @@
+<!-- PAGE_TITLE: Trigger | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Trigger
+</h1>
+
+<hr/>
+
+<p>
+	This entity can be used to detect collisions with other entities.
+</p>
+
+<h2>
+	Fields
+</h2>
+
+<hr/>
+
+<h4>
+	Flags | <code>UInt32</code>
+</h4>
+
+<p>
+	Bitmask, see flags section.
+</p>
+
+<h4>
+	Collision Mask | <code>UInt32</code>
+</h4>
+
+<p>
+	The <a href="physics.html#collisionmask">collision mask</a> of the trigger.
+</p>
+
+<h4>
+	Model | <code>Name</code>
+</h4>
+
+<p>
+	Name of the <a href="../physics/collisionmodel.html">collision model</a>
+	that the trigger will use.
+</p>
+
+<h2>
+	Flags
+</h2>
+
+<hr/>
+
+<h4>
+	<code>1 | TRIGGER_DISABLED</code>
+</h4>
+
+<p>
+	This will disable the trigger from being triggered.
+</p>
+
+<h2>
+	Messages
+</h2>
+
+<hr/>
+
+<h4>
+	Lock | <code>LOCK</code>
+</h4>
+
+<p>
+	Disables the trigger.
+</p>
+
+<h4>
+	Unlock | <code>UNLOCK</code>
+</h4>
+
+<p>
+	Enables the trigger.
+</p>
+
+<h2>
+	Signals
+</h2>
+
+<hr/>
+
+<h4>
+	Activate | <code>ACTIVATE</code>
+</h4>
+
+<p>
+	Fired when an entity collides with the trigger volume.
+</p>

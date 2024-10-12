@@ -1,0 +1,167 @@
+<!-- PAGE_TITLE: Sound | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Decoration
+</h1>
+
+<hr/>
+
+<p>
+	Displays a <a href="../render/model.html">3D model</a> and optionally plays
+	back an <a href="../render/animation.html">animation</a> on it.
+</p>
+
+<h2>
+	Fields
+</h2>
+
+<hr/>
+
+<h4>
+	Flags | <code>Int32</code>
+</h4>
+
+<p>
+	Bitmask, see flags section.
+</p>
+
+<h4>
+	Model | <code>Name</code>
+</h4>
+
+<p>
+	Name of both the 3D model and the
+	<a href="../physics/collisionmodel.html">collision model</a>.
+</p>
+
+<h4>
+	Animation | <code>Name</code>
+</h4>
+
+<p>
+	Name of the animation that the model will play. If set to <code>none</code>,
+	no animation will be played and the
+	<a href="../components/animation.html">AnimationComponent</a> won't even be
+	created.
+</p>
+
+<h2>
+	Flags
+</h2>
+
+<hr/>
+
+<h4>
+	<code>1 | FLAG_LOCKED</code>
+</h4>
+
+<p>
+	The decoration is locked and prevented from activating.
+</p>
+
+<h2>
+	Messages
+</h2>
+
+<hr/>
+
+<h4>
+	Select | <code>SELECT</code>
+</h4>
+
+<p>
+	If the decoration isn't locked, it will emit a
+	<a href="../framework/events.html#selected">Selected event</a>.
+</p>
+
+<h4>
+	Activate Once | <code>ACTIVATE_ONCE</code>
+</h4>
+
+<p>
+	If the decoration isn't locked, it will fire the 
+	<a href="../framework/signals.html#activate">Activate</a> and the
+	<a href="../framework/signals.html#use">Use</a> signals.
+</p>
+
+<h4>
+	Lock | <code>LOCK</code>
+</h4>
+
+<p>
+	Locks the decoration.
+</p>
+
+<h4>
+	Unlock | <code>UNLOCK</code>
+</h4>
+
+<p>
+	Unlocks the decoration.
+</p>
+
+<h4>
+	Toggle | <code>TOGGLE</code>
+</h4>
+
+<p>
+	If an animation is set and is being played, it will be stopped. If it is
+	stopped, it will be restarted.
+</p>
+
+<h4>
+	Kill | <code>KILL</code>
+</h4>
+
+<p>
+	Yeets the entity.
+</p>
+
+<h4>
+	Start | <code>START</code>
+</h4>
+
+<p>
+	If an animation is set, it will be played back.
+</p>
+
+<h4>
+	Stop | <code>STOP</code>
+</h4>
+
+<p>
+	If an animation is being played back, it will be stopped.
+</p>
+
+<h4>
+	Set Animation | <code>SET_ANIMATION</code>
+</h4>
+
+<p>
+	Switches which animation the component will play back. The data pointer of
+	the message needs to be set to a <a href="../framework/value.html">Value</a>
+	which contains the <a href="../framework/uid.html">name</a> of the animation
+	to which the switch is happening.
+</p>
+
+<h2>
+	Signals
+</h2>
+
+<hr/>
+
+<h4>
+	Activate | <code>ACTIVATE</code>
+</h4>
+
+<p>
+	Fired when the entity is activated and isn't locked.
+</p>
+
+<h4>
+	Use | <code>USE</code>
+</h4>
+
+<p>
+	Fired when the entity is activated and isn't locked.
+</p>

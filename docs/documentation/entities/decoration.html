@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="eeee" href="../../favicon.gif">
+		<title>Sound | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<style>
+		
+			body {
+				font-size: 10pt;
+				font-family: Arial,Helvetica,sans-serif;
+				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+			}
+		
+		
+			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
+						.menubar a:active {
+				color: white;
+			}
+
+			.menubar a:hover {
+				color: white;
+				text-decoration: none;
+			}
+			
+			.menubar {
+				font-family: Verdana,Arial,Helvetica,sans-serif;
+			}
+
+			.navbar {
+				width: 100%;
+			}
+			
+			.navbar .left {
+				width: 50px;
+			}
+			
+			.navbar .middle {
+				text-align: center;
+			}
+			
+			.navbar .right {
+				width: 50px;
+				text-align: right;
+			}
+			
+			h1, h2, h3, h4 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			
+			p {
+				margin-top: 4px;
+				margin-bottom: 4px;
+			}
+			
+			h1 {
+				font-size: 16pt;
+			}
+			
+			h2 {
+				font-size: 12pt;
+			}
+			
+			h3 {
+				font-size: 11pt;
+			}
+			
+			h4 {
+				font-size: 10pt;
+			}
+			
+			ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+			
+			.codefunc {
+				color: blue;
+			}
+			
+			.codeclass {
+				color: blue;
+			}
+			
+			.codekeyw {
+				color: red;
+			}
+			
+			.codecomm {
+				color: green;
+			}
+			
+			.codelit {
+				color: orange;
+			}
+			
+			.codespac {
+				color: blue;
+			}
+			
+			.codeexample {
+				white-space: pre;
+			}
+			
+		</style>
+	</head>
+	<body background="../../images/sky2.jpg">
+		<table width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td colspan="3" class="header">
+					<img src="../../images/logo3.gif"/>
+					<img style="float:right;" src="../../images/poland.gif"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="../../index.html">Home</a> | 
+							<a href="../../features.html">Features</a> | 
+							<a href="../../roadmap.html">Roadmap</a> | 
+							<a href="../../learn.html">Learn</a> | 
+							<a href="../../documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.0.9<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Sound | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Decoration
+</h1>
+
+<hr/>
+
+<p>
+	Displays a <a href="../render/model.html">3D model</a> and optionally plays
+	back an <a href="../render/animation.html">animation</a> on it.
+</p>
+
+<h2>
+	Fields
+</h2>
+
+<hr/>
+
+<h4>
+	Flags | <code>Int32</code>
+</h4>
+
+<p>
+	Bitmask, see flags section.
+</p>
+
+<h4>
+	Model | <code>Name</code>
+</h4>
+
+<p>
+	Name of both the 3D model and the
+	<a href="../physics/collisionmodel.html">collision model</a>.
+</p>
+
+<h4>
+	Animation | <code>Name</code>
+</h4>
+
+<p>
+	Name of the animation that the model will play. If set to <code>none</code>,
+	no animation will be played and the
+	<a href="../components/animation.html">AnimationComponent</a> won't even be
+	created.
+</p>
+
+<h2>
+	Flags
+</h2>
+
+<hr/>
+
+<h4>
+	<code>1 | FLAG_LOCKED</code>
+</h4>
+
+<p>
+	The decoration is locked and prevented from activating.
+</p>
+
+<h2>
+	Messages
+</h2>
+
+<hr/>
+
+<h4>
+	Select | <code>SELECT</code>
+</h4>
+
+<p>
+	If the decoration isn't locked, it will emit a
+	<a href="../framework/events.html#selected">Selected event</a>.
+</p>
+
+<h4>
+	Activate Once | <code>ACTIVATE_ONCE</code>
+</h4>
+
+<p>
+	If the decoration isn't locked, it will fire the 
+	<a href="../framework/signals.html#activate">Activate</a> and the
+	<a href="../framework/signals.html#use">Use</a> signals.
+</p>
+
+<h4>
+	Lock | <code>LOCK</code>
+</h4>
+
+<p>
+	Locks the decoration.
+</p>
+
+<h4>
+	Unlock | <code>UNLOCK</code>
+</h4>
+
+<p>
+	Unlocks the decoration.
+</p>
+
+<h4>
+	Toggle | <code>TOGGLE</code>
+</h4>
+
+<p>
+	If an animation is set and is being played, it will be stopped. If it is
+	stopped, it will be restarted.
+</p>
+
+<h4>
+	Kill | <code>KILL</code>
+</h4>
+
+<p>
+	Yeets the entity.
+</p>
+
+<h4>
+	Start | <code>START</code>
+</h4>
+
+<p>
+	If an animation is set, it will be played back.
+</p>
+
+<h4>
+	Stop | <code>STOP</code>
+</h4>
+
+<p>
+	If an animation is being played back, it will be stopped.
+</p>
+
+<h4>
+	Set Animation | <code>SET_ANIMATION</code>
+</h4>
+
+<p>
+	Switches which animation the component will play back. The data pointer of
+	the message needs to be set to a <a href="../framework/value.html">Value</a>
+	which contains the <a href="../framework/uid.html">name</a> of the animation
+	to which the switch is happening.
+</p>
+
+<h2>
+	Signals
+</h2>
+
+<hr/>
+
+<h4>
+	Activate | <code>ACTIVATE</code>
+</h4>
+
+<p>
+	Fired when the entity is activated and isn't locked.
+</p>
+
+<h4>
+	Use | <code>USE</code>
+</h4>
+
+<p>
+	Fired when the entity is activated and isn't locked.
+</p>
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="../../images/800x600.gif"/><br/>
+					<img src="../../images/firefoxnow.gif"/><br/>
+					<img src="../../images/hicolor.gif"/><br/>
+					
+					<img src="../../images/blender.gif"/><br/>
+					<img src="../../images/wxwidgets.gif"/><br/>
+					
+					<img src="../../images/winxp.gif"/><br/>
+					<img src="../../images/linux.gif"/><br/>
+					<img src="../../images/hatemac.jpg"/><br/>
+					
+					<img src="../../images/discord-no-way.gif"/><br/>
+					
+					<img src="../../images/winrar.gif"/><br/>
+					<img src="../../images/sdblast.gif"/><br/>
+					<img src="../../images/esheep.gif"/><br/>
+					
+					<img src="../../images/valid-bad.gif"/><br/>
+					<img src="../../images/notepadpp.gif"/><br/>
+					<img src="../../images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
