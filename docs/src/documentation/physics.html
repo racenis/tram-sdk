@@ -75,7 +75,7 @@
 
 <p>
 	To determine if an object should collide with another object, each objects
-	group bitmask and the other object's mask bitmask are logically and-ed
+	group bitmask and the other object's mask bitmask are logically ANDed
 	together. If the resulting value is not zero, the objects are allowed to
 	collide.
 </p>
@@ -109,6 +109,10 @@
 	Like this.
 </p>
 
+<center>
+	<img src="collisionmaskgroup.gif"/><br/>
+	<i>This is how the bitmask ANDing works.</i>
+</center>
 
 <h2>
 	Programming in C++
