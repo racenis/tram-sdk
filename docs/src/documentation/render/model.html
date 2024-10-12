@@ -1,11 +1,62 @@
-<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Models | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	Models
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	Currently we have three types of 3D models.
+</p>
+
+<p>
+	All model types are stored in the <code>/data/models/</code> directory.
+	Static models have the extension <code>.stmdl</code>, dynamic models have
+	the <code>.dymdl</code> extension and modifcation models have the 
+	<code>.mdmdl</code> extension.
+</p>
+
+<h2>
+	Static models
+</h2>
+
+<hr/>
+
+<p>
+	Static models not only have normal texture coordinates, but they also have 
+	lightmap coordinates. They can be lightmapped. That's pretty nice.
+</p>
+
+<h2>
+	Dynamic models
+</h2>
+
+<hr/>
+
+<p>
+	Dynamic models also have texture coordinates, but no lightmap coordinates.
+	Instead they have bone weights, which allow them to use pose matrices and
+	be animated by animations and stuff.
+</p>
+
+<h2>
+	Modification models
+</h2>
+
+<hr/>
+
+<p>
+	Unlike other model types, this model type has no vertex data of its own.
+	Instead it references the vertex data of some other model. What is unique
+	to it, is its material to material mapping. It can be used to swap out a
+	material.
+</p>
+
+<p>
+	For example, if you have a pink teapot model which uses a material named
+	<code>pink-pot</code> and you would like a cyan teapot model, instead of
+	re-exporting another dynamic model but with just the materials replaced,
+	you could create a modification model with the material mapping of
+	<code>pink-pot => cyan-pot</code>.
 </p>

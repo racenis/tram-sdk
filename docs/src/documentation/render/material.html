@@ -1,11 +1,308 @@
-<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Material | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	Material
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	Materials are used to describe the properties of geometry primitive
+	surfaces.
+</p>
+
+<p>
+	If a material is set to use a texture image, these images will be loaded 
+	from the <code>/data/textures/</code> directory and have the extension
+	<code>.png</code>.
+</p>
+
+<p>
+	Materials can be defined through code, or they can be defined through a
+	material list file. These files are located in the <code>/data/</code>
+	directory and have the extenstion <code>.list</code>.
+</p>
+
+<h2>
+	Properties
+</h2>
+
+<hr/>
+
+<h4>
+	Texture
+</h4>
+
+<p>
+	Optional texture image.
+</p>
+
+<h4>
+	Type
+</h4>
+
+<p>
+	Determines how the surface is rendered. For the OpenGL backend this
+	determines which shader is used.
+</p>
+
+<h4>
+	Property
+</h4>
+
+<p>
+	Determines what the material is made of. Useful for determining which sound
+	to use when collision happens with object, or which particle effect to spawn.
+</p>
+
+<h4>
+	Filter
+</h4>
+
+<p>
+	Determines how the texture of the material will be interpolated.
+</p>
+
+<h4>
+	Texture type
+</h4>
+
+<p>
+	Allows the material to not use its own texture, instead using a plain color,
+	or allows it to use another material's texture.
+</p>
+
+<h4>
+	Color
+</h4>
+
+<p>
+	If a material has no texture, it will use appear as this color. Otherwise 
+	the texture of the material will be tinted with this color.
+</p>
+
+<h4>
+	Specular weight
+</h4>
+
+<p>
+	Floating point value between 0.0 and 1.0. Determines how visible the
+	specular reflections of the material are. Setting this to 0.0 essentially
+	disables specular reflections.
+</p>
+
+<h4>
+	Specular exponent
+</h4>
+
+<p>
+	Floating point value from 1.0 to higher. Determines how wide the specular
+	reflection will be. Higher values means narrower relection.
+</p>
+
+<h4>
+	Specular transparency
+</h4>
+
+<p>
+	Floating point value between 0.0 and 1.0. Determines whether the material
+	absorbs any of the specular reflection. Setting this to 0.0 will make the
+	material absorb the specular reflection just like it does with diffuse and
+	setting this to 1.0 will have the specular reflection be the same color as
+	the light source.
+</p>
+
+<h2>
+	Material types
+</h2>
+
+<hr/>
+
+<p>
+	Most of these material types are accepted by all backends. If using OpenGL
+	backed, you can register new material types and set their shaders.
+</p>
+
+<h4>
+	Texture | <code>MATERIAL_TEXTURE</code>
+</h4>
+
+<p>
+	The material has a texture. It is fully opaque.
+</p>
+
+<h4>
+	Texture Alpha | <code>MATERIAL_TEXTURE_ALPHA</code>
+</h4>
+
+<p>
+	The material has a texture. It is partially opaque. The transparency channel
+	of the texture is used for an alpha test.
+</p>
+
+<h4>
+	Lightmap | <code>MATERIAL_LIGHTMAP</code>
+</h4>
+
+<p>
+	The texture of this material is used as a lightmap.
+</p>
+
+<h4>
+	MSDF | <code>MATERIAL_MSDF</code>
+</h4>
+
+<p>
+	The texture represents a MSDF.
+</p>
+
+<h4>
+	Glyph | <code>MATERIAL_GLYPH</code>
+</h4>
+
+<p>
+	This is the material used for GUI elements.
+</p>
+ 	
+<h4>
+	Water | <code>MATERIAL_WATER</code>
+</h4>
+
+<p>
+	This material will get fancy water effects applied to it, but this only
+	works with the OpenGL backend.
+</p>
+
+<h4>
+	Flat Color | <code>MATERIAL_FLAT_COLOR</code>
+</h4>
+
+<p>
+	The material has no texture associated with it and instead it will use its
+	color parameter.
+</p>
+ 
+<h2>
+	Material Property properties
+</h2>
+
+<hr/>
+
+<h4>
+	Metal | <code>PROPERTY_METAL</code>
+</h4>
+
+<p>
+	Heavy metal objects.
+</p>
+
+<h4>
+	Metal Thin | <code>PROPERTY_METAL_THIN</code>
+</h4>
+
+<p>
+	Light metal objects.
+</p>
+
+<h4>
+	Slime | <code>PROPERTY_SLIME</code>
+</h4>
+
+<p>
+	Exretions of a biological origin.
+</p>
+
+<h4>
+	Tile | <code>PROPERTY_TILE</code>
+</h4>
+
+<p>
+	Tiles, like those found in a bathroom.
+</p>
+ 	
+<h4>
+	Grate | <code>PROPERTY_GRATE</code>
+</h4>
+
+<p>
+	Fences and other metallic objects with lots of holes in them.
+</p>
+
+<h4>
+	Wood | <code>PROPERTY_WOOD</code>
+</h4>
+
+<p>
+	Trees, planks and logs.
+</p>
+
+<h4>
+	Computer | <code>PROPERTY_COMPUTER</code>
+</h4>
+
+<p>
+	Acts like mixture of metal and glass.
+</p>
+ 	
+<h4>
+	Glass | <code>PROPERTY_GLASS</code>
+</h4>
+
+<p>
+	Windows, jars and bottles.
+</p>
+
+<h4>
+	Snow | <code>PROPERTY_SNOW</code>
+</h4>
+
+<p>
+	Snow and other sound absorbent materials, carpets.
+</p>
+
+<h4>
+	Grass | <code>PROPERTY_GRASS</code>
+</h4>
+
+<p>
+	Like the green touchable stuff that grows outside.
+</p>
+
+<h4>
+	Concrete | <code>PROPERTY_CONCRETE</code>
+</h4>
+
+<p>
+	Concrete, rocks and stones.
+</p>
+
+<h4>
+	Flesh | <code>PROPERTY_FLESH</code>
+</h4>
+
+<p>
+	Sort of like a heavier version of slime. Things that are made out of meat.
+</p>
+
+
+<h2>
+	Filters
+</h2>
+
+<hr/>
+
+<h4>
+	Nearest | <code>FILTER_NEAREST</code>
+</h4>
+
+<p>
+	Textures won't use interpolation.
+</p>
+
+<h4>
+	Linear | <code>FILTER_LINEAR</code>
+</h4>
+
+<p>
+	Textures use linear interpolation.
 </p>

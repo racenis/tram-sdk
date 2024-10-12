@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="eeee" href="../../favicon.gif">
-		<title>Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<title>AABB | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
 		<style>
 		
 			body {
@@ -135,16 +135,29 @@
 					<a href="index.html" class="menu-link">Home</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
-					<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+					<!-- PAGE_TITLE: AABB | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	AABB
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	Whenever a 3D model is added to the scene by a
+	<a href="../components/render.html">RenderComponent</a>, it is also added to
+	the very large AABB tree which contains every model in the scene.
+</p>
+
+<p>
+	This tree can be used to query the contents of the scene. This is useful for
+	things like mouse picking of objects or decal projection.
+</p>
+
+<p>
+	This system also contains the LightTree, which is an octree that contains
+	all of the lights in the scene. It is used to determine which lights will be
+	used to illuminate which objects, since it speeds up nearest point queries.
 </p>
 				</td>
 				<td width="90" valign="top" class="right-pane">

@@ -1,11 +1,63 @@
-<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+<!-- PAGE_TITLE: Sprite | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	Sprite
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	Sprites are like little images that live inside of other images. These
+	images are the texture images of <a href="material.html">Materials</a>.
+	Sprites reference materials.
+</p>
+
+<p>
+	If you are creating a flipbook animation, it is easier to animate all of the
+	frames inside of a single image texture file. But how would the framework
+	know where exactly are each of the frames located in the image? It would
+	know it because you created a sprite, which contains the positions of each
+	frame inside the larger texture image.
+</p>
+
+<h2>
+	What does is inside a frame
+</h2>
+
+<hr/>
+
+<h4>
+	Offset X and Offset Y
+</h4>
+
+<p>
+	Offsets in pixels, from the top-left corner. This is the pixel coordinate
+	position of the top-left corner of the sprite and where it starts.
+</p>
+
+<h4>
+	Width and Height
+</h4>
+
+<p>
+	Width and height of the frame, in pixels.
+</p>
+
+<h4>
+	Midpoint X and Midpoint Y
+</h4>
+
+<p>
+	Offsets of the midpoint of the frame, in pixels. It is relative to the frame
+	offset. Usually they will be set to half of the width and half of the
+	height, so that the midpoint is in the midpoint of the sprite.
+</p>
+
+<h4>
+	Border H and V
+</h4>
+
+<p>
+	Horizontal and vertical borders around the sprite, in pixels. Only used for
+	text rendering.
 </p>

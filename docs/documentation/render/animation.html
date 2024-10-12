@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="eeee" href="../../favicon.gif">
-		<title>Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<title>Animations | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
 		<style>
 		
 			body {
@@ -135,17 +135,83 @@
 					<a href="index.html" class="menu-link">Home</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
-					<!-- PAGE_TITLE: Navmesh | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+					<!-- PAGE_TITLE: Animations | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
 <h1>
-	Navmesh
+	Animations
 </h1>
 
+<hr/>
+
 <p>
-	<i>
-		Not fully implemented yet.
-	</i>
+	Animations are a <a href="../framework/resource.html">Resource</a> that can
+	be used to, essentially, generate pose matrices. Those are used to deform
+	meshes. See <a href="../components/animation.html">AnimationComponent</a>
+	for examples of what you can do with animations.
 </p>
+
+<p>
+	Animations consist of keyframes. Each keyframe has some data associated with
+	it. This data is used to transform bones.
+</p>
+
+<p>
+	Keyframes start from zero and increase at a rate of 24 frames per second.
+	This is the same as the default animation frame rate in Blender.
+</p>
+
+<p>
+	Animations can be created in the Blender program and then exported using the
+	<a href="../plugin.html">Animation Exporter Plugin</a>.
+</p>
+
+<h2>
+	A brief overview of the Keyframe
+</h2>
+
+<hr/>
+
+<h4>
+	Frame
+</h4>
+
+<p>
+	Any positive number. It is used to determine when the keyframe will be
+	active.
+</p>
+
+<h4>
+	Location
+</h4>
+
+<p>
+	Translation of a bone.
+</p>
+
+<h4>
+	Rotation
+</h4>
+
+<p>
+	Rotation of a bone.
+</p>
+
+<h4>
+	Scale
+</h4>
+
+<p>
+	Scale of a bone.
+</p>
+
+<h4>
+	That's it
+</h4>
+
+<p>
+	No shearing or any other kind of funny transformations. 
+</p>
+
 				</td>
 				<td width="90" valign="top" class="right-pane">
 					<img src="../../images/800x600.gif"/><br/>
