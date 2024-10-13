@@ -49,7 +49,7 @@ protected:
     int last_activate;
 };
 
-class Decoration : public Entity {
+/*class Decoration : public Entity {
 public:
     Decoration(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
@@ -62,7 +62,7 @@ protected:
     
     name_t model;
     name_t lightmap;
-};
+};*/
 
 
 class Breakable : public Entity {

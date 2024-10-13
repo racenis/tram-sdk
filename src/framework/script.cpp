@@ -16,6 +16,7 @@
 #include <render/material.h>
 #include <render/model.h>
 #include <render/sprite.h>
+#include <render/api.h>
 #include <physics/physics.h>
 #include <components/render.h>
 #include <components/animation.h>
@@ -382,6 +383,11 @@ void Init() {
     SetFunction("__tram_impl_render_set_ambient_color", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
         layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
         Render::SetAmbientColor(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_screen_clear_color", {TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        Render::API::SetScreenClear(array[0], true);
         return true;
     });
     

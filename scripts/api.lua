@@ -276,7 +276,7 @@ function tram.entity._make(id)
 	
 	
 	entity.GetLocation = function (self)
-		vector = __tram_impl_entity_get_location(self.id)
+		local vector = __tram_impl_entity_get_location(self.id)
 		setmetatable(vector, tram.math._metatable_vec3)
 		return vector
 	end
@@ -285,7 +285,7 @@ function tram.entity._make(id)
 	end
 	
 	entity.GetRotation = function (self)
-		vector = __tram_impl_entity_get_rotation(self.id)
+		local vector = __tram_impl_entity_get_rotation(self.id)
 		setmetatable(vector, tram.math._metatable_quat)
 		return vector
 	end
@@ -709,6 +709,10 @@ function tram.render.SetAmbientColor(color, layer)
 	__tram_impl_render_set_ambient_color(color, layer)
 end
 
+function tram.render.SetScreenClearColor(color)
+	__tram_impl_render_set_screen_clear_color(color)
+end
+
 function tram.render.SetViewFov(fov, layer)
 	__tram_impl_render_set_view_fov(fov, layer)
 end
@@ -916,11 +920,15 @@ tram.render._metatable_rendercomponent = {
 		end,
 		
 		GetLocation = function(self)
-			return __tram_impl_components_render_get_location(self.index)
+			local vector = __tram_impl_components_render_get_location(self.index)
+			setmetatable(vector, tram.math._metatable_vec3)
+			return vector
 		end,
 		
 		GetRotation = function(self)
-			return __tram_impl_components_render_get_rotation(self.index)
+			local vector = __tram_impl_components_render_get_rotation(self.index)
+			setmetatable(vector, tram.math._metatable_quat)
+			return vector
 		end,
 		
 		SetLocation = function(self, location)

@@ -5,6 +5,8 @@
 --	return {x, y, z}
 --end
 
+tram.render.SetScreenClearColor(tram.render.COLOR_WHITE)
+
 event = {}
 event.type = tram.event.GetType("my_fancy_event")
 event.subtype = 0

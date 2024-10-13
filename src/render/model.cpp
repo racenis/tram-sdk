@@ -734,7 +734,11 @@ void Model::LoadFromDisk() {
     auto data = MakeNewErrorModel();
     model_data = data;
 
-    materials.push_back(Material::Find("defaulttexture"));
+    Material* error_material = Material::Find("defaulttexture");
+    error_material->AddReference();
+    Async::LoadDependency(error_material);
+    
+    materials.push_back(error_material);
 
     index_ranges.push_back(IndexRange {
         .index_offset = 0,
