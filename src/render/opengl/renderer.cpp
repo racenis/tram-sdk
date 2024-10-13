@@ -6,7 +6,7 @@
 
 #include <templates/octree.h>
 
-#ifndef __WIN32
+#ifndef _WIN32
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
 #else
@@ -496,7 +496,7 @@ void GetScreen(char* buffer, int w, int h) {
     glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer);
 }
 
-#ifdef __WIN32
+#ifdef _WIN32
 void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void*) {
     // apparently these are spammy, or something
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return; 
@@ -535,7 +535,7 @@ void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, u
 #endif
 
 void Init() {
-    #ifdef __WIN32
+    #ifdef _WIN32
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB); 
         glDebugMessageCallbackARB(RenderErrorCallback, nullptr);
         glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);

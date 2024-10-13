@@ -3,7 +3,7 @@
 #include <framework/logging.h>
 #include <framework/system.h>
 
-#ifndef __WIN32
+#ifndef _WIN32
     #include <AL/alc.h>
     #include <AL/al.h>
 #else

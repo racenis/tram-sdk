@@ -8,13 +8,14 @@
     #include <emscripten/html5.h>
 #endif
 
-#ifndef __WIN32
+#ifndef _WIN32
     #include <GL/gl.h>
     #include <GLFW/glfw3.h>
 #else
     #include <glad.c>
     #include <glfw3.h>
 #endif
+
 
 using namespace tram::UI;
 
@@ -33,7 +34,7 @@ void Window::Init() {
         std::cout << "GLFW error code: " << code << " message: " << message << std::endl;
     });
     
-#ifndef __WIN32
+#ifndef _WIN32
         // this is for opengl es 3.0
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -60,7 +61,7 @@ void Window::Init() {
     glfwMakeContextCurrent(WINDOW);
     
     // random settings that we don't need on web platform
-#ifdef __WIN32
+#ifdef _WIN32
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "OpenGL context didn't open" << std::endl;
             abort();

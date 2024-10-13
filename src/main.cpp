@@ -111,6 +111,8 @@ void mainloop() {
     Core::Update();
     UI::Update();
     
+    
+    
     //Path::Find("test")->Draw();
     
     //octree.Draw();

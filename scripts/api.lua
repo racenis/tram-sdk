@@ -11,10 +11,14 @@ tram.ui = {}
 tram.audio = {}
 tram.render = {}
 tram.physics = {}
+tram.resource = {}
+tram.components = {}
 
 tram.render.animation = {}
 tram.render.model = {}
 tram.render.material = {}
+tram.render.sprite = {}
+
 
 
 -- FRAMEWORK/CORE.H
@@ -93,13 +97,13 @@ tram.math._metatable_vec3 = {
 		local result = {}
 		
 		if getmetatable(other) == tram.math._metatable_vec3 then
-			result.x = self.x + other.x
-			result.y = self.y + other.y
-			result.z = self.z + other.z
+			result.x = self.x - other.x
+			result.y = self.y - other.y
+			result.z = self.z - other.z
 		else
-			result.x = self.x + other
-			result.y = self.y + other
-			result.z = self.z + other
+			result.x = self.x - other
+			result.y = self.y - other
+			result.z = self.z - other
 		end
 	
 		setmetatable(result, tram.math._metatable_vec3)
@@ -111,13 +115,13 @@ tram.math._metatable_vec3 = {
 		local result = {}
 		
 		if getmetatable(other) == tram.math._metatable_vec3 then
-			result.x = self.x + other.x
-			result.y = self.y + other.y
-			result.z = self.z + other.z
+			result.x = self.x * other.x
+			result.y = self.y * other.y
+			result.z = self.z * other.z
 		else
-			result.x = self.x + other
-			result.y = self.y + other
-			result.z = self.z + other
+			result.x = self.x * other
+			result.y = self.y * other
+			result.z = self.z * other
 		end
 	
 		setmetatable(result, tram.math._metatable_vec3)
@@ -129,13 +133,13 @@ tram.math._metatable_vec3 = {
 		local result = {}
 		
 		if getmetatable(other) == tram.math._metatable_vec3 then
-			result.x = self.x + other.x
-			result.y = self.y + other.y
-			result.z = self.z + other.z
+			result.x = self.x / other.x
+			result.y = self.y / other.y
+			result.z = self.z / other.z
 		else
-			result.x = self.x + other
-			result.y = self.y + other
-			result.z = self.z + other
+			result.x = self.x / other
+			result.y = self.y / other
+			result.z = self.z / other
 		end
 	
 		setmetatable(result, tram.math._metatable_vec3)
@@ -387,7 +391,7 @@ function tram.message.GetLast()
 end
 
 function tram.message.Send(message, delay)
-	__tram_impl_message_send(message.type, message.sender, message,receiver, message.data, delay)
+	__tram_impl_message_send(message.type, message.sender, message.receiver, message.data, delay)
 end
 
 tram.message.NONE = tram.message.GetType("none")
@@ -664,6 +668,8 @@ end
 
 -- =========================== FRAMEWORK/RESOURCE.H ========================= --
 
+-- -------------------------------  CONSTANTS ------------------------------- --
+
 tram.resource.UNLOADED = 0
 tram.resource.LOADED = 1
 tram.resource.READY = 2
@@ -688,6 +694,64 @@ end
 
 
 
+
+-- ============================= RENDER/RENDER.H ============================ --
+
+function tram.render.SetSunDirection(direction, layer)
+	__tram_impl_render_set_sun_direction(direction, layer)
+end
+
+function tram.render.SetSunColor(color, layer)
+	__tram_impl_render_set_sun_color(color, layer)
+end
+
+function tram.render.SetAmbientColor(color, layer)
+	__tram_impl_render_set_ambient_color(color, layer)
+end
+
+function tram.render.SetViewFov(fov, layer)
+	__tram_impl_render_set_view_fov(fov, layer)
+end
+
+function tram.render.SetViewDistance(distance, layer)
+	__tram_impl_render_set_view_distance(distance, layer)
+end
+
+function tram.render.SetViewPosition(direction, layer)
+	__tram_impl_render_set_view_position(direction, layer)
+end
+
+function tram.render.SetViewRotation(direction, layer)
+	__tram_impl_render_set_view_rotation(direction, layer)
+end
+
+function tram.render.GetViewPosition(layer)
+	return __tram_impl_render_get_view_position(layer)
+end
+
+function tram.render.GetViewRotation(layer)
+	return __tram_impl_render_get_view_rotation(layer)
+end
+
+function tram.render.AddLine(from, to, color)
+	__tram_impl_render_add_line(from, to, color)
+end
+
+function tram.render.AddLineMarker(position, color)
+	__tram_impl_render_add_line_marker(position, color)
+end
+
+-- -------------------------------  CONSTANTS ------------------------------- --
+
+tram.render.COLOR_WHITE = tram.math.vec3(1.0, 1.0, 1.0)
+tram.render.COLOR_RED = tram.math.vec3(1.0, 0.0, 0.0)
+tram.render.COLOR_GREEN = tram.math.vec3(0.0, 1.0, 0.0)
+tram.render.COLOR_BLUE = tram.math.vec3(0.0, 0.0, 1.0)
+tram.render.COLOR_YELLOW = tram.math.vec3(1.0, 1.0, 0.0)
+tram.render.COLOR_PINK = tram.math.vec3(1.0, 0.0, 1.0)
+tram.render.COLOR_CYAN = tram.math.vec3(0.0, 1.0, 1.0)
+tram.render.COLOR_BLACK = tram.math.vec3(0.0, 0.0, 0.0)
+tram.render.COLOR_GRAY = tram.math.vec3(0.3, 0.3, 0.3)
 
 -- ============================ RENDER/MATERIAL.H =========================== --
 
@@ -804,4 +868,173 @@ function tram.render.sprite.Find(name)
 	
 	return sprite
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- COMPONENTS COPMPOENNE TSCOMPONENTS CPOMNKPOEN TS COMPONETS
+
+tram.render._metatable_rendercomponent = {
+	__index = {
+		GetModel = function(self)
+			local material = {}
+			material.index = __tram_impl_components_render_get_model(self.index)
+	
+			setmetatable(material, tram.render._metatable_material)
+		
+			return material
+		end,
+		
+		SetModel = function(self, model)
+			if getmetatable(model) ~= tram.render._metatable_model then
+				model = tram.render.model.Find(model)
+			end
+			__tram_impl_components_render_set_model(self.index, model.index)
+		end,
+		
+		SetLightmap = function(self, material)
+			if getmetatable(material) ~= tram.render._metatable_material then
+				material = tram.render.material.Find(material)
+			end
+			__tram_impl_components_render_set_lightmap(self.index, material.index)
+		end,
+		
+		SetArmature = function(self, armature)
+			--__tram_impl_components_set_armature
+			error("RenderComponent SetArmature not implemented!")
+		end,
+		
+		GetLocation = function(self)
+			return __tram_impl_components_render_get_location(self.index)
+		end,
+		
+		GetRotation = function(self)
+			return __tram_impl_components_render_get_rotation(self.index)
+		end,
+		
+		SetLocation = function(self, location)
+			return __tram_impl_components_render_set_location(self.index, location)
+		end,
+		
+		SetRotation = function(self, rotation)
+			return __tram_impl_components_render_set_rotation(self.index, rotation)
+		end,
+		
+		SetScale = function(self, scale)
+			return __tram_impl_components_render_set_scale(self.index, scale)
+		end,
+		
+		SetColor = function(self, color)
+			return __tram_impl_components_render_set_color(self.index, color)
+		end,
+		
+		SetLayer = function(self, layer)
+			return __tram_impl_components_render_set_layer(self.index, layer)
+		end,
+		
+		SetTextureOffset = function(self, material, offset)
+			error("RenderComponent SetTextureOffset not implemented!")
+		end,
+		
+		SetDirectionalLight = function(self, enabled)
+			return __tram_impl_components_render_set_directional_light(self.index, enabled)
+		end,
+		
+		Init = function(self)
+			__tram_impl_components_render_init(self.index)
+		end,
+		
+		Delete = function(self)
+			__tram_impl_components_render_delete(self.index)
+			table.remove(self, "index")
+		end
+	}
+}
+
+function tram.components.Render()
+	local component_index = __tram_impl_components_render_make()
+	
+	if (component_index == -1) then
+		return nil
+	end
+	
+	local component = {}
+	component.index = component_index
+	
+	setmetatable(component, tram.render._metatable_rendercomponent)
+	
+	return component
+end
+
+
+
+
+tram.render._metatable_lightcomponent = {
+	__index = {
+		GetModel = function(self)
+			local material = {}
+			material.index = __tram_impl_components_render_get_model(self.index)
+	
+			setmetatable(material, tram.render._metatable_material)
+		
+			return material
+		end,
+		
+		SetLocation = function(self, location)
+			return __tram_impl_components_light_set_location(self.index, location)
+		end,
+		
+		SetColor = function(self, color)
+			return __tram_impl_components_light_set_color(self.index, color)
+		end,
+		
+		SetDistance = function(self, distance)
+			return __tram_impl_components_light_set_distance(self.index, distance)
+		end,
+		
+		SetDirection = function(self, direction)
+			return __tram_impl_components_light_set_direction(self.index, direction)
+		end,
+		
+		SetExponent = function(self, exponent)
+			return __tram_impl_components_light_set_exponent(self.index, exponent)
+		end,
+		
+		Init = function(self)
+			__tram_impl_components_light_init(self.index)
+		end,
+		
+		Delete = function(self)
+			__tram_impl_components_light_delete(self.index)
+			table.remove(self, "index")
+		end
+	}
+}
+
+function tram.components.Light()
+	local component_index = __tram_impl_components_light_make()
+	
+	if (component_index == -1) then
+		return nil
+	end
+	
+	local component = {}
+	component.index = component_index
+	
+	setmetatable(component, tram.render._metatable_lightcomponent)
+	
+	return component
+end
+
 

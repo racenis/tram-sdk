@@ -17,6 +17,9 @@
 #include <render/model.h>
 #include <render/sprite.h>
 #include <physics/physics.h>
+#include <components/render.h>
+#include <components/animation.h>
+#include <components/light.h>
 
 using namespace tram::Render;
 
@@ -339,7 +342,7 @@ void Init() {
     
     
     
-    // FRAMEWORK/AUDIO.H
+    // AUDIO/AUDIO.H
     SetFunction("__tram_impl_audio_set_volume", {TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
         Audio::SetVolume(array[0]);
         return true;
@@ -359,7 +362,67 @@ void Init() {
         return true;
     });
 
-
+    
+    
+    
+    
+    // RENDER/RENDER.H
+    SetFunction("__tram_impl_render_set_sun_direction", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetSunDirection(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_sun_color", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetSunColor(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_ambient_color", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetAmbientColor(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_view_fov", {TYPE_FLOAT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetViewFov(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_view_distance", {TYPE_FLOAT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetViewDistance(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_view_position", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetViewPosition(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_set_view_rotation", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        Render::SetViewRotation(array[0], layer);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_get_view_position", {TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[0].IsInt() ? array[0].GetInt() : 0;
+        return Render::GetViewPosition(layer);
+    });
+    
+    SetFunction("__tram_impl_render_add_line", {TYPE_VEC3, TYPE_VEC3, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        Render::AddLine(array[0], array[1], array[2]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_add_line_marker", {TYPE_VEC3, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        Render::AddLineMarker(array[0], array[1]);
+        return true;
+    });
 
 
     // RENDER/ANIMATION.H
@@ -436,6 +499,140 @@ void Init() {
 
 
 
+
+
+    // CMOMOAWMDPA WMDP MPAWDM PAW DMAPWD MAWD P
+
+    SetFunction("__tram_impl_components_render_make", {}, [](valuearray_t array) -> value_t {
+        RenderComponent* component = PoolProxy<RenderComponent>::New();
+        
+        if (component) {
+            return PoolProxy<RenderComponent>::GetPool().index(component);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_components_render_get_model", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Model* model = PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].GetModel();
+        return PoolProxy<Model>::GetPool().index(model);
+    });
+
+    SetFunction("__tram_impl_components_render_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Model* model = &PoolProxy<Model>::GetPool()[(uint32_t)array[1]];
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetModel(model->GetName());
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_set_lightmap", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Material* material = &PoolProxy<Material>::GetPool()[(uint32_t)array[1]];
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetLightmap(material->GetName());
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_set_armature", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        AnimationComponent* armature = &PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[1]];
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetArmature(armature);
+        return true;
+    });
+
+    SetFunction("__tram_impl_components_render_get_location", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].GetLocation();
+    });
+    
+    SetFunction("__tram_impl_components_render_get_rotation", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].GetRotation();
+    });
+    
+    SetFunction("__tram_impl_components_render_set_location", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetLocation(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_set_rotation", {TYPE_UINT32, TYPE_QUAT}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetRotation(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_set_scale", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetScale(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_set_color", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetColor(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_set_layer", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetLayer(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_set_directional_light", {TYPE_UINT32, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetDirectionaLight(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_init", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].Init();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_render_delete", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::Delete(&PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]]);
+        return true;
+    });
+
+
+
+
+
+
+    SetFunction("__tram_impl_components_light_make", {}, [](valuearray_t array) -> value_t {
+        LightComponent* component = PoolProxy<LightComponent>::New();
+        
+        if (component) {
+            return PoolProxy<LightComponent>::GetPool().index(component);
+        } else {
+            return -1;
+        }
+    });
+    
+    SetFunction("__tram_impl_components_light_init", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]].Init();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_light_delete", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::Delete(&PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]]);
+        return true;
+    });
+
+    SetFunction("__tram_impl_components_light_set_location", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]].SetLocation(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_light_set_color", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]].SetColor(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_light_set_distance", {TYPE_UINT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]].SetDistance(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_light_set_direction", {TYPE_UINT32, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]].SetDirection(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_light_set_exponent", {TYPE_UINT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]].SetExponent(array[1]);
+        return true;
+    });
 
 
 

@@ -9,7 +9,7 @@
 
 #include <config.h>
 
-#ifndef __WIN32
+#ifndef _WIN32
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
 #else
@@ -55,7 +55,7 @@ static LinkedShader linked_shaders[MAX_LINKED_SHADERS];
 
 static uint32_t linked_shader_lookup_table[MAX_VERTEX_FORMATS][MAX_MATERIAL_TYPES] = {0};
 
-#ifndef __WIN32
+#ifndef _WIN32
     const char* shader_path = "shaders/gles3/";
 #else
     const char* shader_path = "shaders/opengl3/";

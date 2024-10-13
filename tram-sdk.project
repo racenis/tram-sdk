@@ -176,8 +176,6 @@
         <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/platform/api.h"/>
-      <File Name="src/platform/time.cpp"/>
-      <File Name="src/platform/time.h"/>
       <File Name="src/platform/file.h"/>
       <File Name="src/platform/platform.h"/>
       <File Name="src/platform/file.cpp"/>

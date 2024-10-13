@@ -13,6 +13,16 @@ listener = 0
 
 countdown = 3
 
+
+chamberpot = tram.components.Render()
+chamberpot:SetModel("chamberpot2")
+chamberpot:Init()
+
+lamp = tram.components.Light()
+lamp:SetColor(tram.math.vec3(10, 10, 10))
+lamp:SetLocation(tram.math.vec3(0.1, 0.1, 0.1))
+lamp:Init()
+
 function event_function(event)
 	print("Hello! this is an event")
 	print("Type of this event is ", tram.event.GetName(event.type))
@@ -27,17 +37,29 @@ end
 
 listener = tram.event.AddListener(event, event_function)
 
+
+local mark_pos = tram.math.vec3(0, 1, 0)
+
 function tick_function()
 	crate = tram.entity.Find("nukta")
 	
 	if tram.ui.PollKeyboardKey(tram.ui.KEY_J) then
 		print("JJJJJ")
+		mark_pos = mark_pos + tram.math.vec3(0.05, 0, 0)
 	end
 	
 	if tram.ui.PollKeyboardKey(tram.ui.KEY_K) then
 		print("KKKKK")
+		mark_pos = mark_pos - tram.math.vec3(0.05, 0, 0)
 	end
 	
+	
+	tram.render.AddLineMarker(mark_pos, tram.render.COLOR_WHITE)
+	
+	
+	local pudding = chamberpot:GetLocation()
+	pudding.y = 3.25 + 0.5 * math.sin(tram.GetTickTime())
+	chamberpot:SetLocation(pudding)
 	
 	if crate == nil then
 		print("O NO WHERE CRATE")
