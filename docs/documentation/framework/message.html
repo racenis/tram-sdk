@@ -171,7 +171,7 @@
 
 <hr/>
 
-<h4>
+<h4 id="none">
 	None | <code>NONE</code>
 </h4>
 
@@ -179,7 +179,7 @@
 	Dummy message type, doesn't mean anything.
 </p>
 
-<h4>
+<h4 id="ping">
 	Ping | <code>PING</code>
 </h4>
 
@@ -188,7 +188,7 @@
 	entities will emit an event, or print text to console.
 </p>
 
-<h4>
+<h4 id="movepickup">
 	Move pick up | <code>MOVE_PICK_UP</code>
 </h4>
 
@@ -198,15 +198,7 @@
 	stacking.
 </p>
 
-<h4>
-	Open | <code>OPEN</code>
-</h4>
-
-<p>
-	Used to tell doors and similar entities to open.
-</p>
-
-<h4>
+<h4 id="open">
 	Open | <code>OPEN</code>
 </h4>
 
@@ -215,7 +207,7 @@
 	used for entities with two distinct states to assume the non-default state.
 </p>
 
-<h4>
+<h4 id="close">
 	Close | <code>CLOSE</code>
 </h4>
 
@@ -224,7 +216,7 @@
 	used for entities with two distinct states to assume the default state.
 </p>
 
-<h4>
+<h4 id="lock">
 	Lock | <code>LOCK</code>
 </h4>
 
@@ -234,7 +226,7 @@
 	to ignore certain inputs, such as the activation messages.
 </p>
 
-<h4>
+<h4 id="unlock">
 	Unlock | <code>UNLOCK</code>
 </h4>
 
@@ -242,7 +234,7 @@
 	Similar to locking message, but in reverse.
 </p>
 
-<h4>
+<h4 id="toggle">
 	Toggle | <code>TOGGLE</code>
 </h4>
 
@@ -251,7 +243,7 @@
 	state, that is, if closed, to open, or if open, to close.
 </p>
 
-<h4>
+<h4 id="kill">
 	Kill | <code>KILL</code>
 </h4>
 
@@ -259,7 +251,7 @@
 	Used to tell entities to yeet themselves.
 </p>
 
-<h4>
+<h4 id="trigger">
 	Trigger | <code>TRIGGER</code>
 </h4>
 
@@ -283,7 +275,7 @@
 <p>
 	Similar to open message, but used for entities that have some kind of
 	continuos action. For example, the
-	<a href="../enitities/sound.html">Sound</a> entity uses this message to
+	<a href="../entities/sound.html">Sound</a> entity uses this message to
 	begin playback of its associated sound.
 </p>
 
@@ -294,7 +286,7 @@
 <p>
 	This type is the counterpart to the start message. It tells entities to
 	stop their action. For example, the
-	<a href="../enitities/decoration.html">Decoration</a> entity uses this 
+	<a href="../entities/decoration.html">Decoration</a> entity uses this 
 	message to stop playing its animation, if it has one.
 </p>
 

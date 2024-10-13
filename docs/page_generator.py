@@ -54,6 +54,7 @@ pages = ["index",
 		 "documentation/extensions/kitchensink/soundtable",
 		 "documentation/extensions/scripting",
 		 
+		 "documentation/framework",
 		 "documentation/framework/async",
 		 "documentation/framework/core",
 		 "documentation/framework/entity",
@@ -95,6 +96,10 @@ pages = ["index",
 		 "documentation/render/material",
 		 "documentation/render/model",
 		 "documentation/render/sprite",
+		 
+		 "documentation/plugin",
+		 "documentation/leveleditor",
+		 "documentation/entitydefinition",
 		 ]
 template = "template"
 
