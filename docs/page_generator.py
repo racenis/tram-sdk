@@ -18,7 +18,7 @@ pages = ["index",
 		 "learn/walking",
 		 "learn/cameras",
 		 "learn/platforms",
-		 "learn/boomer",
+		 "learn/cake",
 		 
 		 "documentation",
 		 "documentation/index",

@@ -145,13 +145,231 @@
 				<td valign="top" class="middle-pane">
 					<!-- PAGE_TITLE: Adding 3D models | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
-<h1>Adding 3D models</h1>
+<h1>
+	Adding 3D models
+</h1>
+
+<hr/>
 
 <p>
-	<code>
-		// TODO: implement
-	</code>
+	After becoming experts in the coloring of teapots, how about we replace the
+	teapot model with something else?
 </p>
+
+<p>
+	First of all, make sure that you have
+	<a target="_blank" href="http://blender.org">Blender</a> either installed or
+	downloaded. After that, install the <code>tram_dynamic_obj_export.py</code>
+	plugin which can be found in the <code>/devtools/exporters</code> directory
+	in the main Tramway SDK repository.
+</p>
+
+<p>
+	If you have problems, or need a more detailed guide, take a look at the
+	<a href="../documentation/blender.html">exporter plugin</a> documentation
+	page.
+</p>
+
+<h2>
+	Creating and exporting a monkey
+</h2>
+
+<hr/>
+
+<h4>
+	Step 1: Create the monkey
+</h4>
+
+<p>
+	Look at the top bar. Locate the <i>Add</i> button. Then perform the
+	<i>Add</i> &raquo; <i>Mesh</i> &raquo; <i>Monkey</i> selection. A monkey
+	should appear in your Blender window.
+</p>
+
+<center>
+	<a target="_blank" href="monkeyexport1.jpg">
+		<img border="0" src="monkeyexport1.gif"/>
+	</a><br/>
+	<i>This is where you find the monkey button.</i>
+</center>
+
+<h4>
+	Step 2: Give the monkey a new material
+</h4>
+
+<p>
+	Next we need to give the monkey a material. Add a material in the selection
+	on the right side of the screen.
+</p>
+
+<center>
+	<img src="monkeyexport2.gif"/><br/>
+	<i>This is where the new material button is.</i>
+</center>
+
+<p>
+	Let's give the monkey the same material as the teapot. Rename the new
+	material to <code>teapot</code>.
+</p>
+
+<center>
+	<img src="monkeyexport3.gif"/><br/>
+	<i>You can click on the name of the material to edit it.</i>
+</center>
+
+<h4>
+	Step 3: Export!
+</h4>
+
+<p>
+	Look at the top bar. Locate the <i>File</i> button. Then perform the
+	<i>File</i> &raquo;<i>Export</i> &raquo; <i>Tram Dynamic Exporter</i> selection. A monkey
+	should appear in your Blender window.
+</p>
+
+<center>
+	<a target="_blank" href="monkeyexport4.jpg">
+		<img border="0" src="monkeyexport4.gif"/>
+	</a><br/>
+	<i>This is where you find the exporters.</i>
+</center>
+
+<p>
+	First, make sure that the monkey object is still selected. Now look at the
+	top bar. Locate the <i>Add</i> button. Then perform the
+	<i>Add</i> &raquo; <i>Mesh</i> &raquo; <i>Monkey</i> selection. A file
+	dialog should appear.
+</p>
+
+<center>
+	<a target="_blank" href="monkeyexport5.jpg">
+		<img border="0" src="monkeyexport5.gif"/>
+	</a><br/>
+	<i>The big blue button. It does the export.</i>
+</center>
+
+<p>
+	You will need to save the monkey to the <code>/data/models/</code>
+	directory, so that the framework can find it. You don't have to name it
+	<code>monkey.dymdl</code>, just remember to keep the file extension and to
+	not put any spaces in the file name.
+</p>
+
+<h2>
+	Replacing the teapot with a monkey
+</h2>
+
+<hr/>
+
+<p>
+	Now we just need to swap out the teapot for the monkey. Change this line of
+	code:
+</p>
+
+<code>
+	<del>teapot:<span class="codefunc">SetModel</span>(<span class="codelit">"teapot"</span>)</del><br/>
+	teapot:<span class="codefunc">SetModel</span>(<span class="codelit">"monkey"</span>)<br/>
+	<br/>
+</code>
+
+<center>
+	<img src="monkeyfail.gif"/><br/>
+	<i>It appears that we are inside a monkey.</i>
+</center>
+
+<p>
+	It appears that the default Blender monkey is much larger than our teapot.
+	Let's resize the monkey, so that we can better appreciate it:
+</p>
+
+<code>
+	teapot:<span class="codefunc">SetScale</span>(tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.5</span>, <span class="codelit">0.5</span>, <span class="codelit">0.5</span>))<br/>
+	<br/>
+</code>
+
+<center>
+	<img src="monkeyexplorer.gif"/><br/>
+	<i>It is much easier to appreciate the monkey from the outside.</i><br/>
+	<br/>
+</center>
+
+<h2>
+	How to texture a teapot
+</h2>
+
+<hr/>
+
+<p>
+	Going back into Blender, create another model. Maybe it will be another
+	monkey, maybe you will use Blender's teapot generation capabilities, or
+	perhaps you will create your own.
+</p>
+
+<p>
+	Now comes the difficult part. Open up
+	<a target="_blank" href="http://tuxpain.org">Tuxpaint</a> or some other
+	image editing program and create a texture. It's best if you use an image
+	size which is powers of two, i.e. 32x32, 128x128, 256x128, etc.
+</p>
+
+<p>
+	Once it's done, save it in the <code>/data/textures/</code> directory. I 
+	decided to name it <code>mybestwork.png</code>.
+</p>
+
+<center>
+	<img src="creatingmybestwork.gif"/><br/>
+	<i>I am very proud of how this turned out.</i>
+</center>
+
+<p>
+	Back in Blender, create the material the same way we did before. This time,
+	make sure that you give it the same name as you gave that texture image.
+	Once you do that, in the same material pane you should see a <i>Base
+	Color</i> selection. Click on that and select <i>Image Texture</i>. Now
+	click on <i>Open</i> and find that image.
+</p>
+
+<p>
+	The last thing left to do is to finish up the UVs. Enter edit mode by 
+	pressing the <code>Tab</code> key. Select all of the model by pressing
+	<code>Ctrl+A</code>. Click on the <i>UV</i> button in the top bar and then
+	select <i>Sphere Projection</i> or some othertexture projection. Not use
+	<code>Tab</code> to get back into object mode and perform the export as
+	before.
+</p>
+
+<p>
+	Change the init script to load the new 3D model.
+</p>
+
+<center>
+	<img src="mybestwork.gif"/><br/>
+	<i>My favorite teapot.</i>
+</center>
+
+<div class="infobox">
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		If you don't know how to already, learn to use Blender.
+	</p>
+
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Create a 3D model with several different textures. Load it into the 
+		teapot viewer.
+	</p>
+</div>
 
 <table class="navbar">
 	<tr>
