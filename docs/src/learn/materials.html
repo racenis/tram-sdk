@@ -2,11 +2,174 @@
 
 <h1>Adding Materials</h1>
 
+<hr/>
+
 <p>
-	<code>
-		// TODO: implement
-	</code>
+	If you followed the last guide and made your own teapot, you might have
+	noticed that the teapot is not shiny. Not shiny at all! Also the texture
+	was pixelated. Very pixelated!
 </p>
+
+<p>
+	The reason for this is very simple &ndash; by default all materials are
+	matte and not at all shiny. However, we can override this behavior by adding
+	a material definition ourselves, instead of letting the framework create a
+	default one.
+</p>
+
+<p>
+	Open up the <code>/data/material.list</code> file in a text editor. What you
+	will notice is a table of material definitions. Somewhere near the end you
+	should find the <code>teapot</code> material that we gave the monkey 3D
+	model.
+</p>
+
+<h2>
+	What do all of the values do?
+</h2>
+
+<hr/>
+
+<h4>
+	Material name
+</h4>
+
+<p>
+	This is the name of the material. It is used to reference it, such as by 3D
+	models. It is also used to lookup the texture image for the material.
+</p>
+
+<h4>
+	Type
+</h4>
+
+<p>
+	This tells the renderer how to render the material. For the OpenGL backend
+	this also determines which shader will be used to render this material.
+</p>
+
+<h4>
+	Filter
+</h4>
+
+<p>
+	This tells the renderer whether to blur the textures when upscaling them.
+	This is why they look pixelated &endash; by default blurring is disabled.
+</p>
+
+<h4>
+	Property
+</h4>
+
+<p>
+	This describes aural and other physical properties about the material. This
+	is not directly used by the renderer. We can ignore this for now.
+</p>
+
+<h4>
+	Color
+</h4>
+
+<p>
+	This is the color of the material. You might have noticed that a lot of 
+	materials have the white color. This is because if you use a texture image
+	and if you want it to look exactly it looks in your image editor, you need
+	to set it to white, since the material color and the texture color is
+	multiplied together. Changing this will tint the texture image, or just set
+	the material's color if there is no texture.
+</p>
+
+<h4>
+	Specularity
+</h4>
+
+<p>
+	This determines how intense the specularity of the material will be. Can be
+	set in the range from 0.0 to 1.0.
+</p>
+
+<h4>
+	Specularity
+</h4>
+
+<p>
+	This determines how narrow or wide the specular reflection will be. Needs to
+	be set to at least 1.0 or higher.
+</p>
+
+<h4>
+	Specular Transparency
+</h4>
+
+<p>
+	This determines whether the specular reflection will be multiplied with the
+	material's color, or added to it. Can be set in the range from 0.0 to 1.0.
+</p>
+
+<h4>
+	Source
+</h4>
+
+<p>
+	This determines the source of the material's texture image. If set to
+	<code>same</code>, the material's name will be used to lookup an image from
+	the <code>/data/materials</code>, directory. If set to <code>none</code>,
+	the material will have no texture and instead will use its color for
+	display. Finally, if this parameter is set to anything else, this will be
+	interpreted as the name of another material and this material will use the
+	other's texture image.
+</p>
+
+<p>
+	This is useful if, for example, you want to create multiple materials with
+	the same texture, but with different specular, color or other parameters.
+	This way all of the materials will share the same texture image in GPU
+	memory, thereby saving some space there.
+</p>
+
+<h2>
+	Fixing the teapot material
+</h2>
+
+<hr/>
+
+<p>
+	An easy way to do this would be to duplicate the <code>teapot</code>
+	material's line in the file and to replace the material's name with you
+	material's name. Also don't forget to change the source from
+	<code>none</code> to <code>same</code>. Perhaps also change the transparency
+	from <code>0.0</code> to <code>1.0</code>, to make the teapot look less
+	metallic.
+</p>
+
+<center>
+	<img src="mybestworkfixed.gif"/><br/>
+	<i>My best work: now shiny again.</i>
+</center>
+
+<div class="infobox">
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Try changing your teapot's material's properties. See what changing them
+		to different values does.
+	</p>
+	
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Use the texture source option and the color parameter to create
+		different colored variations of your material.
+	</p>
+</div>
 
 <table class="navbar">
 	<tr>
