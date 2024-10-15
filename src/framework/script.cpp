@@ -12,6 +12,9 @@
 #include <framework/event.h>
 #include <framework/ui.h>
 #include <audio/audio.h>
+#include <physics/physics.h>
+#include <physics/collisionshape.h>
+#include <physics/collisionmodel.h>
 #include <render/render.h>
 #include <render/material.h>
 #include <render/model.h>
@@ -363,6 +366,88 @@ void Init() {
         return true;
     });
 
+
+    // PHYSICS/PHYSICS.H
+    
+    
+    
+    
+    
+    
+    // PHYSICS/COLLISIONSHAPE.H
+    static vec3* hull_points = new vec3[100];
+    static Physics::CollisionTriangle* mesh_tris = new Physics::CollisionTriangle[100];
+    static size_t hull_point_count = 0;
+    static size_t mesh_tri_count = 0;
+    static Physics::CollisionShape coll_shape;
+    
+    SetFunction("__tram_impl_physics_collision_set_sphere", {TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        coll_shape = Physics::CollisionShape::Sphere(array[0]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_set_cylinder", {TYPE_FLOAT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        coll_shape = Physics::CollisionShape::Cylinder(array[0], array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_set_capsule", {TYPE_FLOAT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        coll_shape = Physics::CollisionShape::Cylinder(array[0], array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_set_cone", {TYPE_FLOAT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        coll_shape = Physics::CollisionShape::Cylinder(array[0], array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_set_box", {TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        coll_shape = Physics::CollisionShape::Box(array[0]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_set_hull", {}, [](valuearray_t) -> value_t {
+        coll_shape = Physics::CollisionShape::Hull(hull_points, 0);
+        hull_point_count = 0;
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_set_mesh", {}, [](valuearray_t) -> value_t {
+        coll_shape = Physics::CollisionShape::Mesh(mesh_tris, 0);
+        mesh_tri_count = 0;
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_append_point", {TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        hull_points[hull_point_count++] = array[0];
+        coll_shape.hull_size = hull_point_count;
+        return true;
+    });
+    
+    SetFunction("__tram_impl_physics_collision_append_triangle", {TYPE_VEC3, TYPE_VEC3, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        mesh_tris[mesh_tri_count++] = {array[0], array[1], array[2]};
+        coll_shape.mesh_size = mesh_tri_count;
+        return true;
+    });
+    
+    
+    
+    
+    
+    // PHYSICS/COLLISIONMODEL.H
+    SetFunction("__tram_impl_physics_collisionmodel_find", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        Model* model = Model::Find(array[0]);
+        
+        if (model) {
+            return PoolProxy<Model>::GetPool().index(model);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_physics_collisionmodel_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetName();
+    });
     
     
     
@@ -642,6 +727,125 @@ void Init() {
 
 
 
+
+
+
+
+    SetFunction("__tram_impl_components_animation_make", {}, [](valuearray_t array) -> value_t {
+        AnimationComponent* component = PoolProxy<AnimationComponent>::New();
+        
+        if (component) {
+            return PoolProxy<AnimationComponent>::GetPool().index(component);
+        } else {
+            return -1;
+        }
+    });
+    
+    SetFunction("__tram_impl_components_animation_init", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].Init();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_delete", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::Delete(&PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]]);
+        return true;
+    });
+
+
+    SetFunction("__tram_impl_components_animation_get_model", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Model* model = PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].GetModel();
+        return PoolProxy<Model>::GetPool().index(model);
+    });
+
+    SetFunction("__tram_impl_components_animation_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Model* model = &PoolProxy<Model>::GetPool()[(uint32_t)array[1]];
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetModel(model);
+        return true;
+    });
+
+    SetFunction("__tram_impl_components_animation_set_keyframe", {TYPE_UINT32, TYPE_NAME, TYPE_VEC3, TYPE_QUAT, TYPE_VEC3}, [](valuearray_t array) -> value_t {
+        Keyframe keyframe = {.location = array[2], .rotation = array[3], .scale = array[4]};
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetKeyframe(array[1], keyframe);
+        return true;
+    });
+
+    SetFunction("__tram_impl_components_animation_add_finish_callback", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetOnAnimationFinishCallback([](AnimationComponent* comp, name_t anim) {
+            uint32_t id = PoolProxy<AnimationComponent>::GetPool().index(comp);
+            CallFunction("__tram_impl_components_animation_finish_callback", {id, anim});
+        });
+        return true;
+    });
+
+
+    SetFunction("__tram_impl_components_animation_play", {TYPE_UINT32, TYPE_NAME, TYPE_UINT32, TYPE_FLOAT32, TYPE_FLOAT32, TYPE_BOOL, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        std::cout << "playing! " << (name_t)array[1] << " with " << (uint32_t)array[2] << std::endl;
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].Play(array[1], array[2], array[3], array[4], array[5], array[6]);
+        return true;
+    });
+
+    SetFunction("__tram_impl_components_animation_is_playing", {TYPE_UINT32, TYPE_NAME}, [](valuearray_t array) -> value_t {
+        return PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].IsPlaying(array[1]);
+    });
+    
+    SetFunction("__tram_impl_components_animation_stop", {TYPE_UINT32, TYPE_NAME}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].Stop(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_pause", {TYPE_UINT32, TYPE_NAME}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].Pause(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_continue", {TYPE_UINT32, TYPE_NAME}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].Continue(array[1]);
+        return true;
+    });
+    
+    
+    SetFunction("__tram_impl_components_animation_set_weight", {TYPE_UINT32, TYPE_NAME, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetWeight(array[1], array[2]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_set_speed", {TYPE_UINT32, TYPE_NAME, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetSpeed(array[1], array[2]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_set_repeats", {TYPE_UINT32, TYPE_NAME, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetRepeats(array[1], array[2]);
+        return true;
+    });
+    
+    
+    SetFunction("__tram_impl_components_animation_fade_in", {TYPE_UINT32, TYPE_NAME, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].FadeIn(array[1], array[2]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_fade_out", {TYPE_UINT32, TYPE_NAME, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].FadeOut(array[1], array[2]);
+        return true;
+    });
+    
+    
+    SetFunction("__tram_impl_components_animation_set_pause", {TYPE_UINT32, TYPE_NAME, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetPause(array[1], array[2]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_set_fade", {TYPE_UINT32, TYPE_NAME, TYPE_BOOL, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetFade(array[1], array[2], array[3]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_components_animation_set_frame", {TYPE_UINT32, TYPE_NAME, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].SetFrame(array[1], array[2]);
+        return true;
+    });
+    
 
     LoadScript("api");
 }

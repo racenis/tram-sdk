@@ -149,7 +149,7 @@ static value_t get_value_from_stack(int index, Type type) {
     }
 }
 
-const size_t MAX_LUA_FUNCTIONS = 100;
+const size_t MAX_LUA_FUNCTIONS = 200;
 
 // I think that this could acutally be easilier useed and switch to std::vector
 static struct {
@@ -200,7 +200,7 @@ static void set_global(name_t name, value_t value) {
 }*/
 
 static void set_function(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t)) {
-    // TODO: add check if registered_function_count not exceeding max functions
+    assert(registered_function_count < MAX_LUA_FUNCTIONS);
     registered_functions[registered_function_count] = {parameters, function};
     lua_pushinteger(L, registered_function_count);
     lua_pushcclosure(L, function_call_from_lua, 1);

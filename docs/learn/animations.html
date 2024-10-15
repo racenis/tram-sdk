@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="eeee" href="../favicon.gif">
-		<title>Making Ping Pong | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<title>Adding Animations | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
 		<style>
 		
 			body {
@@ -143,15 +143,74 @@
 					<a href="../learn/getstarted.html" class="menu-link">Get Started</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
-					<!-- PAGE_TITLE: Making Ping Pong | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+					<!-- PAGE_TITLE: Adding Animations | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
-<h1>Making Ping Pong</h1>
+<h1>Adding Animations</h1>
 
 <p>
-	<code>
-		// TODO: implement
-	</code>
+	First, make sure that you have installed the
+	<a href="../documentation/blender.html">Blender animation exporter
+	plugin</a>. Next up, create a 3D model of something, create an armature for
+	it and rig it.
 </p>
+
+
+<div class="infobox">
+	<h3>
+		Note
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Tramway SDK only allows 4 bones to influence a single vertex. Take this
+		into account when vertex weight painting. If the exporter sees that a
+		single vertex has weights for more than 4 bones, it will pick only 4 of
+		the vertex groups that have the greatest weight for export.
+	</p>
+</div>
+
+<p>
+	For the animations, you will need to open the Blender's <i>Action
+	Editor</i>. Each exported animation will be a single action.
+</p>
+
+<p>
+	When creating an animation, make sure that each bone that will be animated
+	has a keyframe at frame zero and another keyframe at the end of the
+	animation, on whichever frame you decide to put it.
+</p>
+
+<div class="infobox">
+	<h3>
+		Note
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Use only <i>LocRotScale</i> keyframes, otherwise the exporter will
+		explode and your computer will catch on fire. This might be fixed 
+		sometime in the future.
+	</p>
+	
+	<h3>
+		Note
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Tramway SDK only uses linear interpolation, so make sure to set it in 
+		your keyframes, so that you see the animation in Blender just like it
+		will look like when rendered by the framework.
+	</p>
+</div>
+
+<p>
+	After the animation or animations are finished, select
+</p>
+
 
 <table class="navbar">
 	<tr>

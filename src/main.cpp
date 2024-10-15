@@ -125,7 +125,7 @@ void mainloop() {
     follower->Advance(0.025f);
     
     Entity* mongus = Entity::Find("mongus");
-    
+       
     if (mongus && GetTick() > 120) {
         //AddLineMarker(mongus->GetLocation(), COLOR_RED);
         mongus->SetLocation(follower->GetPosition() - 0.7f * DIRECTION_UP);

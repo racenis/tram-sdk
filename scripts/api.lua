@@ -1,6 +1,8 @@
 -- TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 -- All rights reserved.
 
+print("\n\nLoading Lua API")
+
 if tram then return end
 tram = {}
 tram.math = {}
@@ -11,6 +13,8 @@ tram.ui = {}
 tram.audio = {}
 tram.render = {}
 tram.physics = {}
+tram.physics.shape = {}
+tram.physics.model = {}
 tram.resource = {}
 tram.components = {}
 
@@ -333,6 +337,8 @@ function tram.event.Post(event)
 	__tram_impl_event_post(event.type, event.subtype, event.poster, event.data)
 end
 
+-- this is dumb! we should instead use listener id as a key
+-- instead of _evt_ids as a key!!!
 tram.event._evt_act = {}
 tram.event._evt_ids = 1
 
@@ -695,6 +701,126 @@ end
 
 
 
+
+-- ============================ PHYSICS/PHYSICS.H =========================== --
+
+function tram.physics.shape.Sphere(radius)
+	local shape = {}
+	shape.shape = tram.physics.shape.SPHERE
+	shape.radius = radius
+	return shape
+end
+
+function tram.physics.shape.Cylinder(radius, height)
+	local shape = {}
+	shape.shape = tram.physics.shape.CYLINDER
+	shape.radius = radius
+	shape.height = height
+	return shape
+end
+
+function tram.physics.shape.Capsule(radius, height)
+	local shape = {}
+	shape.shape = tram.physics.shape.CAPSULE
+	shape.radius = radius
+	shape.height = height
+	return shape
+end
+
+
+function tram.physics.shape.Cone(radius, height)
+	local shape = {}
+	shape.shape = tram.physics.shape.CONE
+	shape.radius = radius
+	shape.height = height
+	return shape
+end
+
+
+function tram.physics.shape.Box(dimensions)
+	local shape = {}
+	shape.shape = tram.physics.shape.BOX
+	shape.dimensions = dimensions
+	return shape
+end
+
+
+function tram.physics.shape.Hull(points)
+	local shape = {}
+	shape.shape = tram.physics.shape.HULL
+	shape.points = points
+	return shape
+end
+
+
+function tram.physics.shape.Mesh(triangles)
+	local shape = {}
+	shape.shape = tram.physics.shape.MESH
+	shape.triangles = triangles
+	return shape
+end
+
+function tram.physics.shape._build(mesh)
+	if mesh.shape == tram.physics.shape.SPHERE then
+		__tram_impl_physics_collision_set_sphere(shape.radius)
+	elseif mesh.shape == tram.physics.shape.CYLINDER then
+		__tram_impl_physics_collision_set_cylinder(shape.radius, shape.height)
+	elseif mesh.shape == tram.physics.shape.CAPSULE then
+		__tram_impl_physics_collision_set_capsule(shape.radius, shape.height)
+	elseif mesh.shape == tram.physics.shape.CONE then
+		__tram_impl_physics_collision_set_cone(shape.radius, shape.height)
+	elseif mesh.shape == tram.physics.shape.BOX then
+		__tram_impl_physics_collision_set_box(shape.dimensions)
+	elseif mesh.shape == tram.physics.shape.HULL then
+		__tram_impl_physics_collision_set_hull()
+		for point in mesh.points do
+			print("adding point:", point)
+			__tram_impl_physics_collision_append_point(point)
+		end
+	elseif mesh.shape == tram.physics.shape.MESH then
+		__tram_impl_physics_collision_set_mesh()
+		for triangle in mesh.triangles do
+			print("adding triangle:", triangle[1], triangle[2], triangle[3])
+			__tram_impl_physics_collision_append_triangle(triangle[1], triangle[2], triangle[3])
+		end
+	end
+end
+
+-- -------------------------------  CONSTANTS ------------------------------- --
+
+tram.physics.shape.SPHERE = 0
+tram.physics.shape.CYLINDER = 1
+tram.physics.shape.CAPSULE = 2
+tram.physics.shape.CONE = 3
+tram.physics.shape.BOX = 4
+tram.physics.shape.HULL = 5
+tram.physics.shape.MESH = 6
+
+-- ========================= PHYSICS/COLLISIONMODEL.H ======================= --
+
+tram.physics._metatable_collisionmodel = {
+	__index = {
+		GetName = function(self)
+			return __tram_impl_physics_collisionmodel_get_name(self.index)
+		end
+	}
+}
+
+function tram.physics.model.Find(name)
+	local model_index = __tram_impl_physics_collisionmodel_find(name)
+	
+	if (model_index == -1) then
+		return nil
+	end
+	
+	local model = {}
+	model.index = model_index
+	
+	setmetatable(model, tram.render._metatable_collisionmodel)
+	
+	return model
+end
+
 -- ============================= RENDER/RENDER.H ============================ --
 
 function tram.render.SetSunDirection(direction, layer)
@@ -915,8 +1041,9 @@ tram.render._metatable_rendercomponent = {
 		end,
 		
 		SetArmature = function(self, armature)
-			--__tram_impl_components_set_armature
-			error("RenderComponent SetArmature not implemented!")
+			assert(getmetatable(armature) == tram.render._metatable_animationcomponent, "SetArmature() accepts only AnimationComponents.")
+			__tram_impl_components_set_armature(self.index, armature.index)
+			--error("RenderComponent SetArmature not implemented!")
 		end,
 		
 		GetLocation = function(self)
@@ -990,15 +1117,6 @@ end
 
 tram.render._metatable_lightcomponent = {
 	__index = {
-		GetModel = function(self)
-			local material = {}
-			material.index = __tram_impl_components_render_get_model(self.index)
-	
-			setmetatable(material, tram.render._metatable_material)
-		
-			return material
-		end,
-		
 		SetLocation = function(self, location)
 			return __tram_impl_components_light_set_location(self.index, location)
 		end,
@@ -1046,3 +1164,140 @@ function tram.components.Light()
 end
 
 
+
+
+
+tram.render._animationfinishcallbacks = {}
+
+function __tram_impl_components_animation_finish_callback(index, animation)
+	local component = {}
+	component.index = index
+	
+	setmetatable(component, tram.render._metatable_animationcomponent)
+	
+	tram.render._animationfinishcallbacks[index](component, animation)
+end
+
+tram.render._metatable_animationcomponent = {
+	__index = {
+		GetModel = function(self)
+			local material = {}
+			material.index = __tram_impl_components_animation_get_model(self.index)
+	
+			setmetatable(material, tram.render._metatable_material)
+		
+			return material
+		end,
+		
+		SetModel = function(self, model)
+			if getmetatable(model) ~= tram.render._metatable_model then
+				model = tram.render.model.Find(model)
+			end
+			__tram_impl_components_animation_set_model(self.index, model.index)
+		end,
+		
+		
+		
+		SetKeyframe = function(self, name, keyframe)
+			__tram_impl_components_animation_set_keyframe(self.index, name, keyframe.location, keyframe.rotation, keyframe.scale)
+		end,
+		
+		SetOnAnimationFinishCallback = function(self, name, callback)
+			tram.render._animationfinishcallbacks[self.index] = callback
+			__tram_impl_components_animation_add_finish_callback(self.index)
+		end,
+		
+		Play = function(self, name, repeats, weight, speed, interpolate, pause_on_last_frame)
+			if repeats == nil then repeats = -1 end
+			if weight == nil then weight = 1.0 end
+			if speed == nil then speed = 1.0 end
+			if interpolate == nil then interpolate = true end
+			if pause_on_last_frame == nil then pause_on_last_frame = false end
+		
+			__tram_impl_components_animation_play(self.index, name, repeats, weight, speed, interpolate, pause_on_last_frame)
+		end,
+		
+		SetKeyframe = function(self, name, keyframe)
+			__tram_impl_components_animation_set_keyframe(self.index, name, keyframe.location, keyframe.rotation, keyframe.scale)
+		end,
+		
+		IsPlaying = function(self, name)
+			return __tram_impl_components_animation_is_playing(self.index, name)
+		end,
+		
+		Stop = function(self, name)
+			__tram_impl_components_animation_stop(self.index, name)
+		end,
+		
+		Pause = function(self, name)
+			__tram_impl_components_animation_pause(self.index, name)
+		end,
+		
+		Continue = function(self, name)
+			__tram_impl_components_animation_continue(self.index, name)
+		end,
+		
+		
+		SetWeight = function(self, name, weight)
+			__tram_impl_components_animation_set_weight(self.index, name, weight)
+		end,
+		
+		SetSpeed = function(self, name, speed)
+			__tram_impl_components_animation_set_speed(self.index, name, speed)
+		end,
+		
+		SetRepeats = function(self, name, repeats)
+			__tram_impl_components_animation_set_repeats(self.index, name, repeats)
+		end,
+		
+		
+		FadeIn = function(self, name, length)
+			__tram_impl_components_animation_fade_in(self.index, name, length)
+		end,
+		
+		FadeOut = function(self, name, length)
+			__tram_impl_components_animation_fade_out(self.index, name, length)
+		end,
+		
+		
+		SetPause = function(self, name, pause)
+			__tram_impl_components_animation_set_pause(self.index, name, pause)
+		end,
+		
+		SetFade = function(self, name, fade_in, fade_length)
+			__tram_impl_components_animation_set_fade(self.index, name, fade_in, fade_length)
+		end,
+		
+		SetFrame = function(self, name, frame)
+			__tram_impl_components_animation_set_frame(self.index, name, frame)
+		end,
+		
+		
+		Init = function(self)
+			__tram_impl_components_animation_init(self.index)
+		end,
+		
+		Delete = function(self)
+			__tram_impl_components_animation_delete(self.index)
+			table.remove(self, "index")
+		end
+	}
+}
+
+function tram.components.Animation()
+	local component_index = __tram_impl_components_animation_make()
+	
+	if (component_index == -1) then
+		return nil
+	end
+	
+	local component = {}
+	component.index = component_index
+	
+	setmetatable(component, tram.render._metatable_animationcomponent)
+	
+	return component
+end
+
+
+print("\nFinished loading Lua API\n\n")
