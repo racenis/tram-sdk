@@ -43,7 +43,7 @@
 				text-align: right;
 			}
 			
-			h1, h2, h3, h4 {
+			h1, h2, h3, h4, h5 {
 				margin-top: 0;
 				margin-bottom: 0;
 			}
@@ -102,6 +102,13 @@
 				white-space: pre;
 			}
 			
+			.infobox {
+				/* margin: 0px 10px 0px 10px;*/
+				margin: 10px 0px 10px 0px;
+				padding: 10px 15px 10px 15px;
+				border: 2px groove gray;
+			}
+			
 		</style>
 	</head>
 	<body background="../images/sky2.jpg">
@@ -132,7 +139,8 @@
 					Tramway SDK 0.0.9<br/>
 					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
 					<b>Quick links</b><br/>
-					<a href="index.html" class="menu-link">Home</a><br/>
+					<a href="../index.html" class="menu-link">Home</a><br/>
+					<a href="../learn/getstarted.html" class="menu-link">Get Started</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
 					<!-- PAGE_TITLE: Structure of a project | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
@@ -140,9 +148,159 @@
 <h1>Structure of a project</h1>
 
 <p>
-	<code>
-		// TODO: implement
-	</code>
+	Your project files are located in your project directory. It also contains
+	several other directories. This is how these are structured and where
+	everything is located.
+</p>
+
+<h3>
+	<code>/assets/</code>
+</h3>
+
+<p>
+	Currently there are no tools which use this particular directory, but there
+	will be in the future.
+</p>
+
+<p>
+	The assets directory is meant to shadow the structure of the data directory,
+	with the main difference that the data files are stored in an editable
+	format. For example, the assets directory could contain
+	<code>/assets/models/frogs/green.blend</code> file and it would have its
+	counterpart <code>/data/models/frogs/green.dymdl</code> which is prepared
+	from the first file.
+</p>
+
+<h3>
+	<code>/data/</code>
+</h3>
+
+<p>
+	This is the main data directory. It contains the directories for various
+	resources, as well as language files, editor settings and entity definition
+	files (might be moved in the future) and the material definition files.
+</p>
+
+<h4>
+	<code>/data/animations/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/render/animation.html">Animation resources</a>.
+</p>
+
+<h4>
+	<code>/data/audio/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/audio.html">Sound resources</a>.
+</p>
+
+<h4>
+	<code>/data/models/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/render/model.html">3D model resources</a>.
+</p>
+
+<h4>
+	<code>/data/navmesh/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/framework/navmesh.html">Navhmeshes</a>.
+</p>
+
+<h4>
+	<code>/data/paths/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/framework/path.html">Paths</a>.
+</p>
+
+<h4>
+	<code>/data/sprites/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/render/sprite.html">Sprite resources</a>.
+</p>
+
+<h4>
+	<code>/data/textures/</code>
+</h4>
+
+<p>
+	This directory contains the all of the textures for the 
+	<a href="../documentation/render/material.html">Material resources</a>.
+</p>
+
+<h4>
+	<code>/data/sprites/</code>
+</h4>
+
+<p>
+	This directory contains the all of the
+	<a href="../documentation/framework/worldcell.html">WorldCells</a>.
+</p>
+
+<h3>
+	<code>/scripts/</code>
+</h3>
+
+<p>
+	This directory contains all of the scripts. When the
+	<a href="../documentation/framework/script.html">Script</a> system is
+	initialized with a scripting language initialized, it will load the
+	<code>api</code> file, which contains the language-specific script bindings.
+</p>
+
+<p>	
+	For Lua, this is the <code>api.lua</code> file. You probably should avoid
+	editing it, unless you know what you are doing.
+</p>
+
+<p>	
+	There is also an <code>init</code> file. This is loaded by the template
+	project after initializing all of the framework's systems. You can edit this
+	file and put whatever you want in it.
+</p>
+
+<h3>
+	<code>/shaders/</code>
+</h3>
+
+<p>	
+	This directory contains all of the shaders for the 
+	<a href="../documentation/render.html">rendering backends</a> that support
+	shaders. You can edit them if you want.
+</p>
+
+<h3>
+	<code>/src/</code>
+</h3>
+
+<p>	
+	Contains all of the C++ source code for the project.
+</p>
+
+<h3>
+	<code>/</code>
+</h3>
+
+<p>	
+	The project root directory contains the executable file for the application,
+	as well as various configuration files. This is also the working directory
+	from which the various tools and utilities need to be launched from.
 </p>
 
 <table class="navbar">

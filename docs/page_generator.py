@@ -124,7 +124,7 @@ for page in pages:
 	
 	for link in re.findall("<!-- MENU_LINK:(.+?):(.+?) -->", page_templated):
 		replace_match = "<!-- MENU_LINK:" + link[0] + ":" + link[1] + " -->"
-		replace_string = "<a href=\"" + link[0] + ".html\" class=\"menu-link" + (" menu-open-page" if page == link[0] else "") + "\">" + link[1] + "</a><br/>"
+		replace_string = "<a href=\"" + page_level + link[0] + ".html\" class=\"menu-link" + (" menu-open-page" if page == link[0] else "") + "\">" + link[1] + "</a><br/>"
 		page_templated = page_templated.replace(replace_match, replace_string)
 	
 	file = open(page + ".html", "w")

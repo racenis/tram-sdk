@@ -43,7 +43,7 @@
 				text-align: right;
 			}
 			
-			h1, h2, h3, h4 {
+			h1, h2, h3, h4, h5 {
 				margin-top: 0;
 				margin-bottom: 0;
 			}
@@ -102,6 +102,13 @@
 				white-space: pre;
 			}
 			
+			.infobox {
+				/* margin: 0px 10px 0px 10px;*/
+				margin: 10px 0px 10px 0px;
+				padding: 10px 15px 10px 15px;
+				border: 2px groove gray;
+			}
+			
 		</style>
 	</head>
 	<body background="../images/sky2.jpg">
@@ -132,7 +139,8 @@
 					Tramway SDK 0.0.9<br/>
 					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
 					<b>Quick links</b><br/>
-					<a href="index.html" class="menu-link">Home</a><br/>
+					<a href="../index.html" class="menu-link">Home</a><br/>
+					<a href="../learn/getstarted.html" class="menu-link menu-open-page">Get Started</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
 					<!-- PAGE_TITLE: Getting started | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
@@ -199,8 +207,9 @@
 <p>	
 	Download the <a href="https://github.com/racenis/tram-sdk">
 	repository</a>, either as a .zip file from the Github web interface, or
-	clone it through the git program. After that, download the template
-	repository, just like you downloaded the main framework repository.
+	clone it through the git program. After that, download the
+	<a href="https://github.com/racenis/tram-template">template	repository</a>,
+	just like you downloaded the main framework repository.
 </p>
 
 <h3>Creating your first app.</h3>
@@ -226,8 +235,14 @@
 <p>
 	The executable of the app is named <code>template.exe</code>, you might want
 	to rename it. Double-click on it or run it through command line and a window
-	with some interesting shapes should appear.
+	with a teapot should appear. You can rotate the teapot by pressing the
+	arrow keys on your keyboard.
 </p>
+
+<center>
+	<img src="teapotexplorer.gif"/><br/>
+	<i>This is what you should be seeing.</i>
+</center>
 
 <p>
 	If a window does not appear, check if your monitor is plugged in and turned

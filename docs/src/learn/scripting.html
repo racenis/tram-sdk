@@ -1,12 +1,382 @@
 <!-- PAGE_TITLE: Basic scripting | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
-<h1>Basic scripting</h1>
+<h1>
+	Basic scripting
+</h1>
+
+<hr/>
 
 <p>
-	<code>
-		// TODO: implement
-	</code>
+	In order to follow this guide, you might need the following:
 </p>
+
+<ul>
+	<li>
+		Basic computer programming skills
+	</li>
+	<ul>
+		<li>
+			Previous experience in object-oriented programming will prove to be
+			very useful
+		</li>
+	</ul>
+	<li>
+		Basic understanding of Lua or other Pascal-derived languages
+	</li>
+	<li>
+		General understanding of how game engines and similar software works
+	</li>
+</ul>
+
+<h2>
+	Reminder about Lua syntax
+</h2>
+
+<hr/>
+
+<p>
+	Anyway, here's a small reminder of how Lua works.
+</p>
+
+<code>
+	<span class="codecomm">-- this is a comment</span><br/>
+	<br/>
+	<span class="codecomm">-- creating a global variable</span><br/>
+	number_first = <span class="codelit">420</span><br/>
+	<br/>
+	<span class="codecomm">-- creating a local variable</span><br/>
+	<span class="codekeyw">local</span> number_second = <span class="codelit">69</span><br/>
+	<br/>
+	<span class="codecomm">-- printing stuff to the console</span><br/>
+	<span class="codefunc">print</span>(<span class="codelit">420</span> + <span class="codelit">69</span>)<br/>
+	<br/>
+	<span class="codecomm">-- Lua only has if/else statements. no switches</span><br/>
+	<span class="codekeyw">if</span> <span class="codelit">420</span> == <span class="codelit">69</span> <span class="codekeyw">then</span><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codecomm">-- ...</span><br/>
+	<span class="codekeyw">elseif</span> <span class="codelit">420</span> + <span class="codelit">69</span> == <span class="codelit">489</span> <span class="codekeyw">then</span><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codecomm">-- ...</span><br/>
+	<span class="codekeyw">else</span><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codecomm">-- ...</span><br/>
+	<span class="codekeyw">end</span><br/>
+	<br/>
+	<span class="codecomm">-- function</span><br/>
+	<span class="codekeyw">function</span> <span class="codefunc">add_special_number</span>(x)<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">return</span> x + <span class="codelit">420</span><br/>
+	<span class="codekeyw">end</span><br/>
+	<br/>
+	<span class="codecomm">-- Lua has tables, which are similar to</span><br/>
+	<span class="codecomm">-- JavaScript objects. they function as</span><br/>
+	<span class="codecomm">-- dynamic dictionaries, arrays, as objects</span><br/>
+	<span class="codecomm">-- with methods, etc.</span><br/>
+	<br/>
+	<span class="codecomm">-- array</span><br/>
+	array = {}<br/>
+	array[<span class="codelit">1</span>] = <span class="codelit">420</span><br/>
+	array[<span class="codelit">2</span>] = <span class="codelit">69</span><br/>
+	<br/>
+	<span class="codecomm">-- dynamic dictionary</span><br/>
+	dict = {}<br/>
+	dict[<span class="codelit">"hello"</span>] = <span class="codelit">"world"</span><br/>
+	<span class="codecomm">-- identical to previous statement</span><br/>
+	dict.hello = <span class="codelit">"world"</span><br/>
+	<br/>
+	<span class="codecomm">-- object</span><br/>
+	object = {}<br/>
+	object.number = <span class="codelit">420</span><br/>
+	object.add = <span class="codekeyw">function</span>(self, x)<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<span class="codekeyw">return</span> self.number + x<br/>
+	<span class="codekeyw">end</span><br/>
+	<br/>
+	<span class="codecomm">-- if using the colon symbol, you can</span><br/>
+	<span class="codecomm">-- call the method and the self parameter</span><br/>
+	<span class="codecomm">-- will be filled in automatically</span><br/>
+	number = object:<span class="codefunc">add</span>(<span class="codelit">69</span>)<br/>
+	<br/>
+</code>
+
+<h2>
+	What does the init script do?
+</h2>
+
+<hr/>
+
+<p>
+	First, let's go through the <code>init.lua</code> file and see what it does.
+	It can be found in the <code>/scripts/</code> directory in the project
+	template.
+</p>
+
+<code>
+	<span class="codefunc">print</span>(<span class="codelit">"\n\nHello! [...]\n"</span>)<br/>
+	<span class="codecomm">-- ...</span>
+</code>
+
+<p>
+	This part just prints some text to the console.
+</p>
+
+<code>
+	<span class="codecomm">-- Retitling the main window.</span><br/>
+	tram.ui.<span class="codefunc">SetWindowTitle</span>(<span class="codelit">"Teapot Explorer v1.0"</span>)<br/>
+	tram.ui.<span class="codefunc">SetWindowSize</span>(<span class="codelit">640</span>, <span class="codelit">480</span>)
+</code>
+
+<p>
+	This part sets the title of the window, which is opened automatically on
+	program start. It also sets the size of the window.
+</p>
+
+
+<code>
+	<span class="codecomm">-- Setting up the global lighting.</span></span><br/>
+	tram.render.<span class="codefunc">SetSunColor</span>(tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.0</span>, <span class="codelit">0.0</span>, <span class="codelit">0.0</span>))<br/>
+	tram.render.<span class="codefunc">SetSunDirection</span>(tram.math.DIRECTION_FORWARD)<br/>
+	<span class="codekeyw">local</span> ambient = tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.1</span>, <span class="codelit">0.1</span>, <span class="codelit">0.1</span>)<br/>
+	tram.render.<span class="codefunc">SetAmbientColor</span>(ambient)<br/>
+	tram.render.<span class="codefunc">SetScreenClearColor</span>(tram.render.COLOR_BLACK)<br/>
+</code>
+
+<p>
+	This section will set up the scene lighting. All of these functions accept
+	a <code>vec3</code> table. The <code>tram.math.vec3(x, y, z)</code> function
+	constructs a <code>vec3</code> table.
+</p>
+
+<code>
+	<span class="codecomm">-- Move the camera a bit away from the origin.</span><br/>
+	<span class="codekeyw">local</span> position = tram.math.DIRECTION_FORWARD * <span class="codelit">-1.2</span><br/>
+	tram.render.<span class="codefunc">SetViewPosition</span>(position)
+</code>
+
+<p>
+	By default, all new 3D models get created at the origin, which is the 
+	coordinates <code>(0.0, 0.0, 0.0)</code>. The view also starts at this
+	position, so we move it a bit back, so that it doesn't end up in the teapot.
+</p>
+
+<code>
+	<span class="codecomm">-- Setting up a light so that you can see something.</span><br/>
+	scene_light = tram.components.<span class="codeclass">Light</span>()<br/>
+	scene_light:<span class="codefunc">SetColor</span>(tram.render.COLOR_WHITE)<br/>
+	scene_light:<span class="codefunc">SetLocation</span>(tram.math.<span class="codeclass">vec3</span>(<span class="codelit">5.0</span>, <span class="codelit">5.0</span>, <span class="codelit">5.0</span>))<br/>
+	scene_light:<span class="codefunc">Init</span>()
+</code>
+
+<p>
+	Since the previous bit of code set the directional light's color to zero, it
+	won't contribute to the scene's illumination, so here we create a 
+	<a href="../documentation/components/light.html">light</a>, so that you can
+	actually see the teapot.
+</p>
+
+<code>
+	<span class="codecomm">-- Adding a teapot to the scene.</span><br/>
+	teapot = tram.components.<span class="codeclass">Render</span>()<br/>
+	teapot:<span class="codefunc">SetModel</span>(<span class="codelit">"teapot"</span>)<br/>
+	teapot:<span class="codefunc">Init</span>()
+</code>
+
+<p>
+	Finally, we add the 
+	<a href="../documentation/components/render.html">3D model</a> of the teapot
+	to the scene.
+</p>
+
+<code>
+	<span class="codecomm">-- This vector here will contain teapot euler angle rotation in radians.</span><br/>
+	<span class="codekeyw">local</span> teapot_modifier = tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.0</span>, <span class="codelit">0.0</span>, <span class="codelit">0.0</span>)
+</code>
+
+<p>
+	In order to rotate the teapot, we need to set up its initial rotation.
+</p>
+
+<pre class="max-width:370px;overflow:hidden;">
+<span class="codecomm">-- This function will be called every tick.</span>
+tram.event.<span class="codefunc">AddListener</span>(tram.event.TICK, <span class="codekeyw">function</span>()
+  <span class="codekeyw">if</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_LEFT)
+   <span class="codekeyw">or</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_A) <span class="codekeyw">then</span>
+    teapot_modifier = teapot_modifier
+	 - tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.01</span>, <span class="codelit">0.0</span></span>, <span class="codelit">0.0</span>)
+  <span class="codekeyw">end</span>
+  
+  <span class="codekeyw">if</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_RIGHT)
+   <span class="codekeyw">or</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_D) <span class="codekeyw">then</span>
+    teapot_modifier = teapot_modifier
+	 + tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.01</span>, <span class="codelit">0.0</span></span>, <span class="codelit">0.0</span>)
+  <span class="codekeyw">end</span>
+	
+  <span class="codekeyw">if</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_UP)
+   <span class="codekeyw">or</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_W) <span class="codekeyw">then</span>
+    teapot_modifier = teapot_modifier
+	 - tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.01</span>, <span class="codelit">0.0</span></span>, <span class="codelit">0.0</span>)
+  <span class="codekeyw">end</span>
+	
+  <span class="codekeyw">if</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_DOWN)
+   <span class="codekeyw">or</span> tram.ui.<span class="codefunc">PollKeyboardKey</span>(tram.ui.KEY_S) <span class="codekeyw">then</span>
+    teapot_modifier = teapot_modifier
+	 + tram.math.<span class="codeclass">vec3</span>(<span class="codelit">0.01</span>, <span class="codelit">0.0</span></span>, <span class="codelit">0.0</span>)
+  <span class="codekeyw">end</span>
+	
+  teapot:<span class="codefunc">SetRotation</span>(tram.math.<span class="codeclass">quat</span>(teapot_modifier))
+<span class="codekeyw">end</span>)
+</pre>
+
+<p>
+	We need to execute the rotation logic during runtime. A good way to do it is
+	to add an
+	<a href="../documentation/framework/event.html#listener">Event Listener</a>
+	and set it to listen to the 
+	<a href="../documentation/framework/event.html#tick">Tick</a> event, which
+	is emitted at regular intervals.
+</p>
+
+<p>
+	The code for the logic itself will check if the arrow keys are being
+	pressed, and if they are, it will modify the rotation of the teapot. After
+	all of the keys are checked and a new rotation is computed, it is assigned
+	to the teapot's 3D model.
+</p>
+
+<p>
+	Since all rotations use quaternions, we can pass the
+	<code>tram.math.quat()</code> quaternion constructor a <code>vec3</code>,
+	which will be interpreted as a vector containing euler angles, i.e. the
+	rotations around the x, y and z axis.
+</p>
+
+<h2>
+	Teapot coloring.
+</h2>
+
+<hr/>
+
+<p>
+	The default white teapot color is rather uninteresting. Let's change it to
+	something more interesting.
+</p>
+
+<p>
+	Add this line of code somewhere after the <code>teapot</code> variable is
+	initialized:
+</p>
+
+<code>
+teapot:<span class="codefunc">SetColor</span>(tram.render.COLOR_PINK)
+</code>
+
+<p>
+	All of the color definitions are just <code>vec3</code>s, so we can pass
+	them in as the colors. The only thing to remember is that each color value
+	needs to be in the range from 0.0 to 1.0.
+</p>
+
+<center>
+	<img src="teapotpink.gif"/><br/>
+	<i>The teapot has been colored pink.</i>
+</center>
+
+<div class="infobox">
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Look up the hex or integer color values for your favorite color. Convert
+		them into the range from 0.0 to 1.0 for each color channel and assign them
+		to the teapot.
+	</p>
+
+	<p>
+		At this point, you are probably very proud of your teapot coloring skills.
+		Press the <code>F12</code> key on your keyboard. This will save a screenshot
+		of the teapot in your project directory. Print it out and mail it to your
+		friends!
+	</p>
+</div>
+	
+<p>
+	Let's try doing something more interesting with the colors. Place these
+	lines of code somewhere in the update function:
+</p>
+
+<code>
+<span class="codekeyw">local</span> r = <span class="codekeyw">math</span>.<span class="codekeyw">sin</span>(tram.<span class="codefunc">GetTickTime</span>())<br/>
+<span class="codekeyw">local</span> g = <span class="codekeyw">math</span>.<span class="codekeyw">sin</span>(tram.<span class="codefunc">GetTickTime</span>())<br/>
+<span class="codekeyw">local</span> b = <span class="codekeyw">math</span>.<span class="codekeyw">sin</span>(tram.<span class="codefunc">GetTickTime</span>())<br/>
+<br/>
+<span class="codekeyw">local</span> color = tram.math.<span class="codeclass">vec3</span>(r, g, b)<br/>
+<br/>
+<span class="codecomm">-- the r, g, b values are in the range</span><br/>
+<span class="codecomm">-- from -1.0 to 1.0 due to the sin()</span><br/>
+<span class="codecomm">-- function, so we need to re-map them</span><br/>
+<span class="codecomm">-- to the 0.0 to 1.0 range for colors</span><br/>
+<br/>
+color = color + <span class="codelit">1.0</span><br/>
+color = color * <span class="codelit">0.5</span><br/>
+<br/>
+teapot:<span class="codefunc">SetColor</span>(color)<br/>
+<br/>
+</code>
+	
+<center>
+	<img src="teapotblink.gif"/><br/>
+	<i>The teapot fades from white to black and then back to white.</i>
+</center>
+
+<p>
+	We can make this even more interesting. Let's add a different phase shift to
+	each of the color channels.
+</p>
+
+<code>
+<span class="codekeyw">local</span> r = <span class="codekeyw">math</span>.<span class="codekeyw">sin</span>(tram.<span class="codefunc">GetTickTime</span>() + <span class="codelit">1.0</span>)<br/>
+<span class="codekeyw">local</span> g = <span class="codekeyw">math</span>.<span class="codekeyw">sin</span>(tram.<span class="codefunc">GetTickTime</span>() + <span class="codelit">2.0</span>)<br/>
+<span class="codekeyw">local</span> b = <span class="codekeyw">math</span>.<span class="codekeyw">sin</span>(tram.<span class="codefunc">GetTickTime</span>() + <span class="codelit">4.0</span>)<br/>
+<br/>
+</code>
+	
+<center>
+	<img src="teapotrainbow.gif"/><br/>
+	<i>The teapot cycles through all of the colors.</i>
+</center>
+
+<div class="infobox">
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Now that you can dynamically change a vec3 for colors, how about
+		dynamically changing the teapot's position and rotation?
+	</p>
+
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		Maybe try changing the color of the scene's light.
+	</p>
+	
+	<h3>
+		Exercise
+	</h3>
+	
+	<hr/>
+	
+	<p>
+		The code for controlling the teapot's rotation is already set up. Maybe
+		add the option to not only be able to change the rotation of the teapot,
+		but also its position?
+	</p>
+</div>
 
 <table class="navbar">
 	<tr>
