@@ -84,17 +84,86 @@
 	Each Blender action will get saved into its own animation file.
 </p>
 
-<pre>
+<p>
+	If you want an example of a rigged 3D model and an animation, take a look at
+	the <code>/assets/toilet.blend/</code> file.
+</p>
 
-TODO:
-- show how to replace the teapot with new model
-- show how to add animationcomponent
-- show how to attach animationcomponent to rendercomponent
-- add gif of final result
+<h2>
+	Playing the animation
+</h2>
 
-- exercise: try other animation playback options
+<hr/>
 
-</pre>
+<p>
+	First, set up the 3D model.
+</p>
+
+<code>
+	toilet = tram.components.<span class="codefunc">Render</span>()<br/>
+	toilet:<span class="codefunc">SetModel</span>(<span class="codelit">"toilet"</span>)<br/>
+	toilet:<span class="codefunc">Init</span>()
+</code>
+
+<p>
+	Then, let's load the Animation which we created.
+</p>
+
+<code>
+	animation = tram.render.animation.<span class="codefunc">Find</span>(<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="codelit">"toilet-lid-open-close"</span>)<br/>
+	animation:<span class="codefunc">Load</span>()
+</code>
+
+<p>
+	Next, let's set up the
+	<a href="../documentation/components/animation.html">AnimationComponent</a>,
+	which will be playing our animation.
+</p>
+
+<code>
+	armature = tram.components.<span class="codeclass">Animation</span>()<br/>
+	armature:<span class="codefunc">SetModel</span>(<span class="codelit">"toilet"</span>)<br/>
+	armature:<span class="codefunc">Init</span>()
+</code>
+
+<p>
+	After both the Render and the Animation components have been initialized, we
+	can link them together.
+</p>
+
+<code>
+	toilet:<span class="codefunc">SetArmature</span>(armature)
+</code>
+
+<p>
+	Finally, we can play back the Animation on the AnimationComponent, which
+	will be visible on the RenderComponent, to which we linked it to.
+</p>
+
+<code>
+	armature:<span class="codefunc">Play</span>(<span class="codelit">"toilet-lid-open-close"</span>)<br/>
+	<br/>
+</code>
+
+<center>
+	<img src="animatedtoilet.gif"/><br/>
+	<i>Animation being played on a 3D model.</i>
+</center>
+
+<div class="infobox">
+	<h3>
+		Exercise
+	</h3>
+
+	<hr/>
+	
+	<p>
+		The example above shows only the most basic animation playback option.
+		Try changing the animation playback parameters. Try pausing, continuing
+		and stopping animations. Fade them in and fade them out.
+	</p>
+</div>
 
 <table class="navbar">
 	<tr>

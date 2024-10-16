@@ -883,7 +883,7 @@ tram.render.COLOR_CYAN = tram.math.vec3(0.0, 1.0, 1.0)
 tram.render.COLOR_BLACK = tram.math.vec3(0.0, 0.0, 0.0)
 tram.render.COLOR_GRAY = tram.math.vec3(0.3, 0.3, 0.3)
 
--- ============================ RENDER/MATERIAL.H =========================== --
+-- =========================== RENDER/ANIMATION.H =========================== --
 
 -- TODO: implement the rest of the stuff
 
@@ -891,7 +891,11 @@ tram.render._metatable_animation = {
 	__index = {
 		GetName = function(self)
 			return __tram_impl_render_animation_get_name(self.index)
-		end
+		end,
+		
+		Load = function(self)
+			return __tram_impl_render_animation_load(self.index)
+		end,
 	}
 }
 

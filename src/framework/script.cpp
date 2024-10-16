@@ -530,6 +530,11 @@ void Init() {
     SetFunction("__tram_impl_render_animation_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
         return PoolProxy<Animation>::GetPool()[(uint32_t)array[0]].GetName();
     });
+    
+    SetFunction("__tram_impl_render_animation_load", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<Animation>::GetPool()[(uint32_t)array[0]].Load();
+        return true;
+    });
 
 
 
