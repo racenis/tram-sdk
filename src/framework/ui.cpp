@@ -134,8 +134,13 @@ void Update() {
         camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY * GetDeltaTime();
         camera_pitch = camera_pitch > 90.0f ? 90.0f : camera_pitch < -90.0f ? -90.0f : camera_pitch;
         
-        SetViewPosition(camera_position);
-        SetViewRotation(quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f)));
+        camera_rotation = quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f));
+        
+        SetViewPosition(camera_position, 0);
+        SetViewRotation(camera_rotation, 0);
+        
+        SetViewPosition(camera_position, 1);
+        SetViewRotation(camera_rotation, 1);
     }
     
     // generate keypress events. these need to be generated every tick that the

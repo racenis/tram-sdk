@@ -64,6 +64,12 @@ print("is playing bef ", player:IsPlaying("mongus-run"))
 player:Play("mongus-run", 100)
 print("is playing now ", player:IsPlaying("mongus-run"))
 
+tram.render.SetViewPosition(tram.math.vec3(0, 0, 0))
+tram.render.SetViewPosition(tram.math.vec3(0, 0, 0), 0)
+tram.render.SetViewPosition(tram.math.vec3(0, 0, 0), 1)
+tram.render.SetViewPosition(tram.math.vec3(0, 0, 0), 2)
+tram.render.SetViewPosition(tram.math.vec3(0, 0, 0), 3)
+
 --tram.ui.SetInputState(tram.ui.STATE_MENU_OPEN)
 
 --tram.ui.BindKeyboardKey(tram.ui.KEY_J, tram.ui.KEY_ACTION_JUMP)

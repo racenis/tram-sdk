@@ -148,11 +148,302 @@
 <h1>Making Ping Pong</h1>
 
 <p>
-	<code>
-		// TODO: implement
-	</code>
+	First of all, we will be using debug lines. Debug lines are drawn on layer 1
+	and up to this point we have been using layer 0, which is the default layer
+	for RenderComponents.
 </p>
 
+<p>
+	By default, when calling <code>tram.render.SetViewPosition()</code>, it will
+	affect the view position in the layer 0, so for the debug lines to appear
+	correctly, we will need to set the view in the layer 1 as well.
+</p>
+
+<code>
+	local view_pos = tram.math.DIRECTION_FORWARD * -3.0<br/>
+	<br/>
+	tram.render.SetViewPosition(view_pos, 0)<br/>
+	tram.render.SetViewPosition(view_pos, 1)<br/>
+</code>
+
+<p>
+	Most ping pongy games are 2D, but Tramway SDK uses 3D graphics. How do we
+	reconciliate this? The easiest way would be to just disregard the Z axis.
+	Whenever we need to pass in a Vec3, we will set the third component to 0.0.
+</p>
+
+<p>
+	Let's set up the ball and the paddles.
+</p>
+
+<code>
+	ball = {<br/>
+	&nbsp;&nbsp;position = tram.math.vec3(0.0, 0.0, 0.0),<br/>
+	&nbsp;&nbsp;velocity = tram.math.vec3(0.02, 0.02, 0.0)<br/>
+	}<br/>
+	<br/>
+	paddle_left = {<br/>
+	&nbsp;&nbsp;position = tram.math.vec3(-2.0, 0.0, 0.0)<br/>
+	}<br/>
+	<br/>
+	paddle_right = {<br/>
+	&nbsp;&nbsp;position = tram.math.vec3(2.0, 0.0, 0.0)<br/>
+	}<br/>
+</code>
+
+<p>
+	We'll set up the playing field so that the left and right borders are on the
+	-2.0 and 2.0 X coordinates respectively and top and bottom are on the -1.0
+	and 1.0 Y coordinates respectively.
+</p>
+
+<p>
+	The paddles will be moving along the left and the right sides of the field.
+	The ball will start in the middle. We also give it a starting velocity.
+</p>
+
+<p>
+	When drawing lines using the debug line functions, we need to call these
+	functions every frame. Up until now we have been using the Tick event
+	handler to drive the logic. Tick events get emitted at regular intervals,
+	but they might not be emitted for every frame. That's why we will be putting
+	all of the rendering related code in the event handler for the Frame event.
+</p>
+
+<p>
+	Let's draw the field first.
+</p>
+
+<code>
+	local corner1 = tram.math.vec3(-2.0, 1.0, 0.0)<br/>
+	local corner2 = tram.math.vec3(2.0, 1.0, 0.0)<br/>
+	local corner3 = tram.math.vec3(2.0, -1.0, 0.0)<br/>
+	local corner4 = tram.math.vec3(-2.0, -1.0, 0.0)<br/>
+	<br/>
+	local midpoint1 = tram.math.vec3(0.0, 1.0, 0.0)<br/>
+	local midpoint2 = tram.math.vec3(0.0, -1.0, 0.0)<br/>
+	<br/>
+	local color = tram.render.COLOR_WHITE<br/>
+	<br/>
+	tram.render.AddLine(corner1, corner2, color)<br/>
+	tram.render.AddLine(corner2, corner3, color)<br/>
+	tram.render.AddLine(corner3, corner4, color)<br/>
+	tram.render.AddLine(corner4, corner1, color)<br/>
+	tram.render.AddLine(midpoint1, midpoint2, color)<br/>
+</code>
+	
+<p>
+	Here we just define the corners of the field and use the debug line drawing functions to draw them. Let's draw the paddles next.
+</p>
+
+<code>
+	local left_top = paddle_left.position<br/>
+	&nbsp;&nbsp;+ tram.math.vec3(0.1, paddle_size, 0.0)<br/>
+	local left_btm = paddle_left.position<br/>
+	&nbsp;&nbsp;+ tram.math.vec3(0.1, -paddle_size, 0.0)<br/>
+	<br/>
+	tram.render.AddLine(left_top, left_btm, tram.render.COLOR_GREEN)<br/>
+	<br/>
+	local right_top = paddle_right.position<br/>
+	&nbsp;&nbsp;+ tram.math.vec3(-0.1, paddle_size, 0.0)<br/>
+	local right_btm = paddle_right.position<br/>
+	&nbsp;&nbsp;+ tram.math.vec3(-0.1, -paddle_size, 0.0)<br/>
+	<br/>
+	tram.render.AddLine(right_top, right_btm,<br/>
+	&nbsp;&nbsp;tram.render.COLOR_GREEN)<br/>
+</code>
+
+<p>
+	Here we just calculate the top and bottom coordinates of the paddles, then
+	draw them. Also we push them into the field a bit, so that they don't get
+	obscured by the lines that make up the sides of the field.
+</p>
+
+<p>
+	You can set the <code>paddle_size</code> to whatever size you want. I set it
+	to 0.2.
+</p>
+
+<p>
+	Finally, we draw the ball.
+</p>
+
+<code>
+	tram.render.AddLineMarker(ball.position,<br/>
+	&nbsp;&nbsp;tram.render.COLOR_RED)<br/>
+	<br/>
+</code>
+
+<center>
+	<img src="pingpong1.gif"/><br/>
+	<i>Initial field setup.</i>
+</center>
+
+<p>
+	Let's add the ability to move the paddles. This we should put in the Tick
+	event handler, since we want the paddles to move at a speed independently
+	of the frame rate.
+</p>
+
+<code>
+	if tram.ui.PollKeyboardKey(tram.ui.KEY_UP) then<br/>
+	&nbsp;&nbsp;if paddle_right.position.y<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ paddle_size &lt; 1.0 then <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;paddle_right.position.y =<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paddle_right.position.y + 0.05<br/>
+	&nbsp;&nbsp;end<br/>
+	end<br/>
+	<br/>
+	if tram.ui.PollKeyboardKey(tram.ui.KEY_DOWN) then<br/>
+	&nbsp;&nbsp;if paddle_right.position.y<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- paddle_size &gt; -1.0 then <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;paddle_right.position.y =<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paddle_right.position.y - 0.05<br/>
+	&nbsp;&nbsp;end<br/>
+	end<br/>
+	<br/>
+	if tram.ui.PollKeyboardKey(tram.ui.KEY_W) then<br/>
+	&nbsp;&nbsp;if paddle_left.position.y<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ paddle_size &lt; 1.0 then <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;paddle_left.position.y =<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paddle_left.position.y + 0.05<br/>
+	&nbsp;&nbsp;end<br/>
+	end<br/>
+	<br/>
+	if tram.ui.PollKeyboardKey(tram.ui.KEY_S) then<br/>
+	&nbsp;&nbsp;if paddle_left.position.y<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- paddle_size &gt; -1.0 then <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;paddle_left.position.y =<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paddle_left.position.y - 0.05<br/>
+	&nbsp;&nbsp;end<br/>
+	end<br/>
+</code>
+
+<p>
+	I set it up so that the left paddle can be moved up and down by the W and S
+	keys respectively, and the right paddle can be moved up and down by the 
+	Up and Down arrow keys respectively.
+</p>
+
+<center>
+	<img src="pingpong2.gif"/><br/>
+	<i>The paddles can be moved now.</i>
+</center>
+
+<p>
+	Let's make the ball move as well.
+</p>
+
+<code>
+	ball.position = ball.position + ball.velocity<br/>
+	<br/>
+</code>
+
+<center>
+	<img src="pingpong3.gif"/><br/>
+	<i>The ball flies out of the field.</i>
+</center>
+
+<p>
+	Adding collisions to the top and bottom sides of the field is very easy.
+</p>
+
+<code>
+	if ball.position.y &lt; -1.0<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;or ball.position.y &gt; 1.0 then<br/>
+	&nbsp;&nbsp;ball.velocity.y = -ball.velocity.y<br/>
+	end<br/>
+</code>
+	
+<p>
+	Adding collisons to the left and right sides is a little bit more
+	complicated, since we also have to take into account collisions with the
+	paddles.
+</p>
+
+<code>
+	if ball.position.x &lt; -2.0 then<br/>
+	&nbsp;&nbsp;local paddle_dist = math.abs(ball.position.y<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;- paddle_left.position.y)<br/>
+	<br/>
+	&nbsp;&nbsp;if paddle_dist &lt; paddle_size then<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;ball.velocity.x = -ball.velocity.x<br/>
+	&nbsp;&nbsp;else<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;ball.position.x = 0.0<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;ball.position.y = 0.0<br/>
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;player_right_score = player_right_score + 1<br/>
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;print("Left lost!!")<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;print("Score is",<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player_left_score,<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"|",<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player_right_score)<br/>
+	&nbsp;&nbsp;end<br/>
+	end<br/>
+	<br/>
+	if ball.position.x &gt; 2.0 then<br/>
+	&nbsp;&nbsp;local paddle_dist = math.abs(ball.position.y<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;- paddle_right.position.y)<br/>
+	<br/>
+	&nbsp;&nbsp;if paddle_dist &lt; paddle_size then<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;ball.velocity.x = -ball.velocity.x<br/>
+	&nbsp;&nbsp;else <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;ball.position.x = 0.0<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;ball.position.y = 0.0<br/>
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;player_left_score = player_left_score + 1<br/>
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;print("Right lost!!")<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;print("Score is",<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player_left_score,<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"|",<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player_right_score)<br/>
+	&nbsp;&nbsp;end<br/>
+	end<br/>
+</code>
+	
+<p>
+	We also need to define the player score counters for this.
+</p>
+
+<code>
+	player_left_score = 0<br/>
+	player_right_score = 0<br/>
+</code>
+
+<p>
+	At this point, the gameplay logic is finished. We just have to add the 3D
+	models. For the ball model, I decided to use the teapot model. For the 
+	paddles I used the default Blender cube, with some bevels applied to the
+	edges.
+</p>
+
+<center>
+	<img src="pingpong4.gif"/><br/>
+	<i> How it looks like with the 3D models replacing the debug lines.</i>
+</center>
+	
+<p>
+	One thing you might notice is that the 3D models are being drawn underneath
+	the debug lines. We can fix this by setting them to a higher layer.
+</p>
+
+<code>
+	paddle_model_left:SetLayer(1)<br/>
+	paddle_model_right:SetLayer(1)<br/>
+	<br/>
+</code>
+	
+<center>
+	<img src="pingpong5.gif"/><br/>
+	<i>In motion.</i>
+</center>
+<p>
+	If you want to look at the full code, it is available in the
+	<a href="https://github.com/racenis/tram-example">example repository.</a>
+</p>
+	
 <table class="navbar">
 	<tr>
 		<td class="left">&laquo; <a href="animations.html">Back</a></td>

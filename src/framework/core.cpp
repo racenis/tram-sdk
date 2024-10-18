@@ -46,6 +46,12 @@ void Core::Update() {
         .poster_id = 0
     });
     
+    // TODO: implement this properly
+    Event::Post({
+        .type = Event::FRAME,
+        .poster_id = 0
+    });
+    
     for (System::system_t i = 0; i < System::GetSystemCount(); i++) {
         System::SetUpdated(i, false);
     }

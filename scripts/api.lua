@@ -374,6 +374,7 @@ tram.event.KEYUP = tram.event.GetType("keyup")
 tram.event.KEYCHAR = tram.event.GetType("keychar")
 tram.event.CURSORPOS = tram.event.GetType("cursorpos")
 tram.event.TICK = tram.event.GetType("tick")
+tram.event.FRAME = tram.event.GetType("frame")
 tram.event.SELECTED = tram.event.GetType("selected")
 tram.event.LOOK_AT = tram.event.GetType("look-at")
 

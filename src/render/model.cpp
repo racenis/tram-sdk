@@ -367,7 +367,8 @@ void Model::LoadFromDisk() {
             vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
             vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
-            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+            // TODO: implement a better solution
+            if (tcount < 10000) model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             /*materialtype_t material_type = materials[material_index]->GetType();
             
@@ -566,7 +567,8 @@ void Model::LoadFromDisk() {
             vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
             vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
-            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+            // TODO: implement a better solution
+            if (tcount < 10000) model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             /*materialtype_t material_type = materials[material_index]->GetType();
             

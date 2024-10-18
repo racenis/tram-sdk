@@ -208,6 +208,7 @@ void UpdateCallbacks() {
             switch (event.type) {
                 case Event::KEYPRESS:
                 case Event::TICK:
+                case Event::FRAME:
                 case Event::CURSORPOS:
                 case Event::LOOK_AT:
                     intercept->time = GetTick();

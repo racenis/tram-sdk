@@ -454,19 +454,19 @@ void Init() {
     
     // RENDER/RENDER.H
     SetFunction("__tram_impl_render_set_sun_direction", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetSunDirection(array[0], layer);
         return true;
     });
     
     SetFunction("__tram_impl_render_set_sun_color", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetSunColor(array[0], layer);
         return true;
     });
     
     SetFunction("__tram_impl_render_set_ambient_color", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetAmbientColor(array[0], layer);
         return true;
     });
@@ -477,31 +477,31 @@ void Init() {
     });
     
     SetFunction("__tram_impl_render_set_view_fov", {TYPE_FLOAT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetViewFov(array[0], layer);
         return true;
     });
     
     SetFunction("__tram_impl_render_set_view_distance", {TYPE_FLOAT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetViewDistance(array[0], layer);
         return true;
     });
     
     SetFunction("__tram_impl_render_set_view_position", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetViewPosition(array[0], layer);
         return true;
     });
     
     SetFunction("__tram_impl_render_set_view_rotation", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[1].IsInt() ? array[1].GetInt() : 0;
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetViewRotation(array[0], layer);
         return true;
     });
     
     SetFunction("__tram_impl_render_get_view_position", {TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
-        layer_t layer = array[0].IsInt() ? array[0].GetInt() : 0;
+        layer_t layer = array[0].GetInt() ? array[0].GetInt() : 0;
         return Render::GetViewPosition(layer);
     });
     

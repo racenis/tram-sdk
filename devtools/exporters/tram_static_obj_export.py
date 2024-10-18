@@ -1,4 +1,5 @@
 import bpy
+import os
 
 bl_info = {
     "name": "Export Tram Static Model",
@@ -17,8 +18,12 @@ def write_tram_static_model(context, filepath, use_some_setting):
     for uv in ob.data.uv_layers['UVMap'].data:
         exp['uv'].append([uv.uv[0], uv.uv[1]])
     #now do the same thing but for lightmap
-    for uv in ob.data.uv_layers['LightMap'].data:
-        exp['lmap'].append([uv.uv[0], uv.uv[1]])
+    if ob.data.uv_layers.get('LightMap', None) is None:
+        for uv in ob.data.uv_layers['UVMap'].data:
+            exp['lmap'].append([uv.uv[0], uv.uv[1]])
+    else:
+        for uv in ob.data.uv_layers['LightMap'].data:
+            exp['lmap'].append([uv.uv[0], uv.uv[1]])
 
     #get info of the loop vertices
     for mloop in ob.data.loops:
@@ -117,6 +122,20 @@ class ExportTramStaticObj(Operator, ExportHelper):
         ),
         default='OPT_A',
     )
+
+    def invoke(self, context, _event):
+        if not self.filepath or True:
+            blend_filepath = context.blend_data.filepath
+            if not blend_filepath:
+                blend_filepath = bpy.context.object.name
+            else:
+                path_dir = os.path.dirname(blend_filepath)
+                blend_filepath = os.path.join(path_dir, bpy.context.object.name)
+
+            self.filepath = blend_filepath + self.filename_ext
+
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
 
     def execute(self, context):
         return write_tram_static_model(context, self.filepath, self.use_setting)

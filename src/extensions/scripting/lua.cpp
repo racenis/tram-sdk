@@ -88,12 +88,12 @@ static value_t get_value_from_stack(int index, Type type) {
         case TYPE_UNDEFINED:
             if (lua_isboolean(L, index)) {
                 return (bool) lua_toboolean(L, index);
-            } else if (lua_isstring(L, index)) {
-                return (const char*) lua_tostring(L, index);
             } else if (lua_isinteger(L, index)) {
                 return (int32_t) lua_tointeger(L, index);
             } else if (lua_isnumber(L, index)) {
                 return (float) lua_tonumber(L, index);
+            } else if (lua_isstring(L, index)) {
+                return (const char*) lua_tostring(L, index);
             } else {
                 return value_t();
             }
