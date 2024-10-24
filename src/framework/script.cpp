@@ -11,6 +11,7 @@
 #include <framework/entity.h>
 #include <framework/event.h>
 #include <framework/ui.h>
+#include <framework/worldcell.h>
 #include <audio/audio.h>
 #include <physics/physics.h>
 #include <physics/collisionshape.h>
@@ -346,6 +347,50 @@ void Init() {
     
     
     
+    // FRAMEWORK/SCRIPT.H
+    
+    SetFunction("__tram_impl_worldcell_find", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        WorldCell* cell = WorldCell::Find((name_t)array[0]);
+        
+        if (cell) {
+            return PoolProxy<WorldCell>::GetPool().index(cell);
+        } else {
+            return -1;
+        }
+    });
+    
+    SetFunction("__tram_impl_worldcell_make", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        WorldCell* cell = WorldCell::Make((name_t)array[0]);
+        
+        if (cell) {
+            return PoolProxy<WorldCell>::GetPool().index(cell);
+        } else {
+            return -1;
+        }
+    });
+
+    SetFunction("__tram_impl_worldcell_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].GetName();
+    });
+    
+    SetFunction("__tram_impl_worldcell_loadfromdisk", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].LoadFromDisk();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_worldcell_load", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].Load();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_worldcell_unload", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].Unload();
+        return true;
+    });
+    
+    
+    
+    
     // AUDIO/AUDIO.H
     SetFunction("__tram_impl_audio_set_volume", {TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
         Audio::SetVolume(array[0]);
@@ -369,7 +414,7 @@ void Init() {
 
     // PHYSICS/PHYSICS.H
     
-    
+    // TODO: add raycasting
     
     
     

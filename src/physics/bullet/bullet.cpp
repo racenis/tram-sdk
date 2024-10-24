@@ -109,7 +109,7 @@ struct RigidbodyMetadata {
     void* collision_data = nullptr;
 };
 
-Pool<RigidbodyMetadata> rigidbody_metadata_pool("rigibody emtadat pool", 200);
+Pool<RigidbodyMetadata> rigidbody_metadata_pool("rigibody emtadat pool", 500);
     
 static btCollisionShape* MakeBulletShape(CollisionShape shape) {
     switch (shape.type) {

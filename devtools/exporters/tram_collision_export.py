@@ -1,4 +1,5 @@
 import bpy
+import os
 
 bl_info = {
     "name": "Export Tram Collision Model",
@@ -8,6 +9,30 @@ bl_info = {
     "support": "COMMUNITY",
     "category": "Import-Export",
 }
+
+def object_to_collision_mesh(c):
+    out = ""
+    
+    exported_poly_count = 0
+            
+    poly_str = ""
+    
+    for poly in c.data.polygons:
+        for i in range(0, len(poly.loop_indices) - 2):
+            exported_poly_count += 1
+            poly_str += str(c.data.vertices[poly.vertices[0]].co[0]) + " "
+            poly_str += str(c.data.vertices[poly.vertices[0]].co[2]) + " "
+            poly_str += str(-c.data.vertices[poly.vertices[0]].co[1]) + " "
+            poly_str += str(c.data.vertices[poly.vertices[i+1]].co[0]) + " "
+            poly_str += str(c.data.vertices[poly.vertices[i+1]].co[2]) + " "
+            poly_str += str(-c.data.vertices[poly.vertices[i+1]].co[1]) + " "
+            poly_str += str(c.data.vertices[poly.vertices[i+2]].co[0]) + " "
+            poly_str += str(c.data.vertices[poly.vertices[i+2]].co[2]) + " "
+            poly_str += str(-c.data.vertices[poly.vertices[i+2]].co[1]) + "\n"
+    
+    out += "mesh " + str(exported_poly_count) + "\n" + poly_str
+    return out
+
 
 def write_tram_collision_model(context, filepath, use_some_setting):
     ob = bpy.context.active_object
@@ -36,33 +61,17 @@ def write_tram_collision_model(context, filepath, use_some_setting):
             out += str(c.rotation_euler[0]) + " " + str(c.rotation_euler[2]) + " " + str(-c.rotation_euler[1]) + " "
             out += str((c.scale[0] + c.scale[1] + c.scale[2]) / 3) + "\n"
         if ("Cloud") in c.name:
-            #verts = []
-            #for v in c.data.vertices:
-            #    verts.append([v.co[0], v.co[1], v.co[2]])
-            #    
-            #out += "cloud " + str(len(verts)) + "\n"
-            #
-            #for v in verts:
-            #    out += str(v[0]) + " " + str(v[1]) + " " + str(v[2]) + "\n"
             out += "cloud " + str(len(c.data.vertices)) + "\n"
             
             for v in c.data.vertices:
                 out += str(v.co[0]) + " " + str(v.co[2]) + " " + str(-v.co[1]) + "\n"
-        if ("Mesh") in c.name:
-            out += "mesh " + str(len(c.data.polygons)) + "\n"
+        if ("Mesh") in c.name:            
+            out += object_to_collision_mesh(c)
+                
+    if len(ob.children) == 0:
+        out = object_to_collision_mesh(ob)
             
-            for p in c.data.polygons:
-                out += str(c.data.vertices[p.vertices[0]].co[0]) + " "
-                out += str(c.data.vertices[p.vertices[0]].co[2]) + " "
-                out += str(-c.data.vertices[p.vertices[0]].co[1]) + " "
-                out += str(c.data.vertices[p.vertices[1]].co[0]) + " "
-                out += str(c.data.vertices[p.vertices[1]].co[2]) + " "
-                out += str(-c.data.vertices[p.vertices[1]].co[1]) + " "
-                out += str(c.data.vertices[p.vertices[2]].co[0]) + " "
-                out += str(c.data.vertices[p.vertices[2]].co[2]) + " "
-                out += str(-c.data.vertices[p.vertices[2]].co[1]) + "\n"
-                
-                
+   
 
 
     f = open(filepath, 'w', encoding='utf-8')
@@ -112,6 +121,20 @@ class ExportTramCollisionObj(Operator, ExportHelper):
         ),
         default='OPT_A',
     )
+
+    def invoke(self, context, _event):
+        if not self.filepath or True:
+            blend_filepath = context.blend_data.filepath
+            if not blend_filepath:
+                blend_filepath = bpy.context.object.name
+            else:
+                path_dir = os.path.dirname(blend_filepath)
+                blend_filepath = os.path.join(path_dir, bpy.context.object.name)
+
+            self.filepath = blend_filepath + self.filename_ext
+
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
 
     def execute(self, context):
         return write_tram_collision_model(context, self.filepath, self.use_setting)

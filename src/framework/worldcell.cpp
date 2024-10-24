@@ -26,6 +26,11 @@ template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, fa
 static Hashmap<WorldCell*> worldcell_list ("Worldcell list hashmap", 500);
 
 
+// TODO:
+// - check if transitions/into are needed to be tracked
+// - set up better entity transition lookup
+// - put cell linking back in
+
 WorldCell* WorldCell::Find (name_t name) {
     return worldcell_list.Find(name);
 }

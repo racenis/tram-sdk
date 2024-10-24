@@ -30,7 +30,7 @@ static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk()
 static Queue<ResourceRequest*> memory_loader_queue("Async::LoadResourcesFromMemory() queue", 500);
 static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", 500);
 
-static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 500);
+static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 750);
 
 /// Adds a resource to the loading queue.
 /// @param requester EntityComponent that will be notified when the resource is loaded.

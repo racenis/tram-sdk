@@ -10,6 +10,7 @@ tram.entity = {}
 tram.event = {}
 tram.message = {}
 tram.ui = {}
+tram.worldcell = {}
 tram.audio = {}
 tram.render = {}
 tram.physics = {}
@@ -680,6 +681,58 @@ end
 tram.resource.UNLOADED = 0
 tram.resource.LOADED = 1
 tram.resource.READY = 2
+
+-- ========================== FRAMEWORK/WORLDCELL.H ========================= --
+
+tram._metatable_worldcell = {
+	__index = {
+		GetName = function(self)
+			return __tram_impl_worldcell_get_name(self.index)
+		end,
+		
+		LoadFromDisk = function(self)
+			__tram_impl_worldcell_loadfromdisk(self.index)
+		end,
+		
+		Load = function(self)
+			__tram_impl_worldcell_load(self.index)
+		end,
+		
+		Unload = function(self)
+			__tram_impl_worldcell_unload(self.index)
+		end
+	}
+}
+
+function tram.worldcell.Make(name)
+	local worldcell_index = __tram_impl_worldcell_make(name)
+	
+	if (worldcell_index == -1) then
+		return nil
+	end
+	
+	local worldcell = {}
+	worldcell.index = worldcell_index
+	
+	setmetatable(worldcell, tram._metatable_worldcell)
+	
+	return worldcell
+end
+
+function tram.worldcell.Find(name)
+	local worldcell_index = __tram_impl_worldcell_find(name)
+	
+	if (worldcell_index == -1) then
+		return nil
+	end
+	
+	local worldcell = {}
+	worldcell.index = worldcell_index
+	
+	setmetatable(worldcell, tram._metatable_worldcell)
+	
+	return worldcell
+end
 
 -- ============================== AUDIO/AUDIO.H ============================= --
 
