@@ -6,13 +6,21 @@ namespace tram::Settings {
 
 Hashmap<ValuePtr> all_settings("settings map", 200);
     
-void Register(ValuePtr ptr, name_t name) {
+/*void Register(ValuePtr ptr, name_t name) {
     all_settings.Insert(name, ptr);
-}
+}*/
 
 void Register(Value value, name_t name) {
     Value* new_value = new Value(value);
     all_settings.Insert(name, *new_value);
+}
+
+void Register(bool* value, name_t name) {
+    all_settings.Insert(name, value);
+}
+
+void Register(float* value, name_t name) {
+    all_settings.Insert(name, value);
 }
 
 
@@ -44,7 +52,11 @@ void Parse(const char** argv, int argc) {
         }
         
         i++;
-        assert(i != argc);
+        if (i == argc) {
+            std::cout << "Setting '" << name << "' not bool and has no parameter." << std::endl;
+            return;
+        }
+        //assert(i != argc);
         
         switch (value.GetType()) {
             case TYPE_INT8:     value.SetValue((int8_t)atoi(argv[i])); break;

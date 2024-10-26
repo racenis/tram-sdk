@@ -8,8 +8,9 @@
 
 namespace tram::Settings {
 
-void Register(ValuePtr ptr, name_t name);
 void Register(Value value, name_t name);
+void Register(bool* value, name_t name);
+void Register(float* value, name_t name);
 
 Value Get(name_t name);
 void Set(name_t name, Value value);

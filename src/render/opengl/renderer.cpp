@@ -5,6 +5,8 @@
 #include <render/vertices.h>
 #include <render/api.h>
 
+#include <framework/settings.h>
+
 #include <templates/octree.h>
 
 #ifndef _WIN32
@@ -82,6 +84,8 @@ static float SCREEN_WIDTH = 800.0f;
 static float SCREEN_HEIGHT = 600.0f;
 
 static Render::Pose* null_pose = nullptr;
+
+bool render_debug = false;
 
 uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
     uint32_t handle;
@@ -166,6 +170,24 @@ void RenderFrame() {
 
     
     for (auto [_, robj] : rvec) {
+        
+        if (render_debug) {
+            char debug_text[250];
+            
+            uint32_t tex_hash = 0;
+            for (uint32_t tex = 0; tex < robj->texCount; tex++) {
+                tex_hash ^= robj->textures[tex];
+            }
+            
+            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i",
+                robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap,
+                robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0);
+            
+            // TODO: use AABB to center, instead of origin
+            vec3 pos = robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            
+            AddText(pos, debug_text);
+        }
         
         if (layer != robj->layer) {
             layer = robj->layer;
@@ -646,6 +668,8 @@ void Init() {
     bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
     
     //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
+
+    Settings::Register(&render_debug, "renderer-debug");
 
     // initialize the default pose
     null_pose = PoolProxy<Render::Pose>::New();

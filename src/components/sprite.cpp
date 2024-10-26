@@ -64,8 +64,8 @@ void SpriteComponent::UpdateRenderListObject() {
     float tex_height = (float)sprite->GetFrames()[anim_frame].height / (float)sprite->GetMaterial()->GetHeight(); //sprite->height;
     float tex_w_off = (float)sprite->GetFrames()[anim_frame].offset_x / (float)sprite->GetMaterial()->GetWidth();//(float)(anim_frame % sprite->frames_w) * tex_width;
     float tex_h_off = (float)sprite->GetFrames()[anim_frame].offset_y / (float)sprite->GetMaterial()->GetHeight();//(float)(anim_frame / sprite->frames_w) * tex_height;
-    float half_width = tex_width; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
-    float half_height = tex_height; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
+    //float half_width = tex_width; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
+    //float half_height = tex_height; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
 
     tex_h_off = 1.0f - tex_h_off - tex_height;
 

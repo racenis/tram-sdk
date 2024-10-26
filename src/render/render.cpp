@@ -47,7 +47,12 @@ bool DRAW_RENDER_DEBUG = false;
 vertexarray_t colorlines_vertex_array = {.generic = 0};
 drawlistentry_t colorlines_entry;
 
+vertexarray_t debugtext_vertex_array = {.generic = 0};
+drawlistentry_t debugtext_entry;
+Sprite* font_debug = nullptr;
+
 std::vector<LineVertex> colorlines;
+std::vector<SpriteVertex> textvertices;
 
 using namespace API;
 
@@ -119,6 +124,22 @@ void Init () {
     defaulttexture->MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
     defaulttexture->LoadFromMemory();
     
+    // this is for rendering debug text
+    Material::Make(UID("ui/font_debug"), MATERIAL_GLYPH)->Load();
+    font_debug = Sprite::Find(UID("font_debug"));
+    font_debug->AddReference();
+    font_debug->Load();
+    
+    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), debugtext_vertex_array);
+    debugtext_entry = InsertDrawListEntry();
+    SetDrawListVertexArray(debugtext_entry, debugtext_vertex_array);
+    SetDrawListShader(debugtext_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
+    SetFlags(debugtext_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
+    SetLayer(debugtext_entry, 2);
+    
+    texturehandle_t debugtext_texture = font_debug->GetMaterial()->GetTexture();
+    SetDrawListTextures(debugtext_entry, 1, &debugtext_texture);
+    
     System::SetInitialized(System::SYSTEM_RENDER, true);
 }
 
@@ -131,10 +152,16 @@ void Render () {
     for (auto& it : PoolProxy<ParticleComponent>::GetPool()) it.Update();
 #endif // ENGINE_EDITOR_MODE
     
+    // upload debug lines
     UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
     colorlines.clear();
+    
+    // upload debug texts
+    UpdateVertexArray(debugtext_vertex_array, textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
+    SetDrawListIndexRange(debugtext_entry, 0, textvertices.size());
+    textvertices.clear();
     
     RenderFrame();
     Stats::Stop(System::SYSTEM_RENDER);
@@ -290,6 +317,85 @@ void AddCylinder(vec3 pos, float height, float radius, color_t color) {
 
 void AddCube(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
+}
+
+void AddText(vec3 pos, const char* text, color_t color) {
+    Project(pos, pos);
+    if (pos.z > 1.0f) return;
+    AddText(pos.x, pos.y, text);
+}
+
+void AddText(float x, float y, const char* text, color_t color) {
+    float cur_x = x;
+    float cur_y = y;
+    
+    for (const char* c = text; *c != '\0'; c++) {
+        if (*c=='\n'){ cur_y += 16.0f;
+            cur_x = x;
+            continue;}
+            
+        const auto& info = font_debug->GetFrames()[*c];
+        
+        float x = cur_x;
+        float y = cur_y;
+        float w = info.width;
+        float h = info.height;
+        float tex_x = info.offset_x;
+        float tex_y = info.offset_y;
+        float tex_w = info.width;
+        float tex_h = info.height;
+        
+        SpriteVertex tleft;
+        SpriteVertex tright;
+        SpriteVertex bleft;
+        SpriteVertex bright;
+
+        tleft.co.x = x;
+        tleft.co.y = y;
+        tleft.co.z = 1;
+        tleft.texco.x = tex_x;
+        tleft.texco.y = tex_y;
+        
+        tright.co.x = x + w;
+        tright.co.y = y;
+        tright.co.z = 1;
+        tright.texco.x = tex_x + tex_w;
+        tright.texco.y = tex_y;
+        
+        bleft.co.x = x;
+        bleft.co.y = y + h;
+        bleft.co.z = 1;
+        bleft.texco.x = tex_x;
+        bleft.texco.y = tex_y + tex_h;
+        
+        bright.co.x = x + w;
+        bright.co.y = y + h;
+        bright.co.z = 1;
+        bright.texco.x = tex_x + tex_w;
+        bright.texco.y = tex_y + tex_h;
+        
+        tleft.color = COLOR_WHITE;
+        tleft.texture = 0;
+        tright.color = COLOR_WHITE;
+        tright.texture = 0;
+        bleft.color = COLOR_WHITE;
+        bleft.texture = 0;
+        bright.color = COLOR_WHITE;
+        bright.texture = 0;
+
+        textvertices.push_back(bleft);
+        textvertices.push_back(bright);
+        textvertices.push_back(tleft);
+        textvertices.push_back(bright);
+        textvertices.push_back(tright);
+        textvertices.push_back(tleft);
+        
+        //DrawGlyph(font, (unsigned char)*c, cursor_x, cursor_y);
+        
+        
+        //cursor_x += GlyphWidth(font, (unsigned char)*c);]
+        cur_x += info.width;
+    }
 }
 
 void Project(const vec3& point, vec3& result, layer_t layer) {

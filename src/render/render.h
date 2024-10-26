@@ -46,13 +46,6 @@ void SetViewRotation(quat rotation, layer_t layer = 0);
 vec3 GetViewPosition(layer_t layer = 0);
 quat GetViewRotation(layer_t layer = 0);
 
-void AddLine(vec3 from, vec3 to, color_t color);
-void AddLineMarker(vec3 location, color_t color);
-void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color);
-void AddSphere(vec3 pos, float radius, color_t color);
-void AddCylinder(vec3 pos, float height, float radius, color_t color);
-void AddCube(vec3 pos, float height, float radius, color_t color);
-
 const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
 const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);
 const color_t COLOR_GREEN  (0.0f, 1.0f, 0.0f);
@@ -62,6 +55,15 @@ const color_t COLOR_PINK   (1.0f, 0.0f, 1.0f);
 const color_t COLOR_CYAN   (0.0f, 1.0f, 1.0f);
 const color_t COLOR_BLACK  (0.0f, 0.0f, 0.0f);
 const color_t COLOR_GRAY   (0.3f, 0.3f, 0.3f);
+
+void AddLine(vec3 from, vec3 to, color_t color);
+void AddLineMarker(vec3 location, color_t color);
+void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color);
+void AddSphere(vec3 pos, float radius, color_t color);
+void AddCylinder(vec3 pos, float height, float radius, color_t color);
+void AddCube(vec3 pos, float height, float radius, color_t color);
+void AddText(vec3 pos, const char* text, color_t color = COLOR_WHITE);
+void AddText(float x, float y, const char* text, color_t color = COLOR_WHITE);
 
 enum VertexFormats : vertexformat_t {
     VERTEX_STATIC,

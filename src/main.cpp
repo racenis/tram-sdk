@@ -111,7 +111,7 @@ void mainloop() {
     Core::Update();
     UI::Update();
     
-    
+    Render::AddText({0, 0, 0}, "HELLOOO");
     
     //Path::Find("test")->Draw();
     
@@ -446,17 +446,17 @@ void mainloop() {
 int main(int argc, const char** argv) {
     std::cout << "CURRENT_PLATFORM: " << CURRENT_PLATFORM << std::endl; 
     
-    bool poopis = false;
+    //bool poopis = false;
 
-    Settings::Register(vec4(0, 0, 0, 0), "toopis");
-    Settings::Register(ValuePtr(&poopis), "poopis");
+    //Settings::Register(vec4(0, 0, 0, 0), "toopis");
+    //Settings::Register(&poopis, "poopis");
 
-    Settings::Parse(argv, argc);
+    
 
-    vec4 toopis = Settings::Get("toopis");
+    //vec4 toopis = Settings::Get("toopis");
 
-    std::cout << "toopis " << toopis.x << " " << toopis.y << " " << toopis.z << " " << toopis.w << " " << std::endl;
-    std::cout << "poopis " << poopis << std::endl;
+    //std::cout << "toopis " << toopis.x << " " << toopis.y << " " << toopis.z << " " << toopis.w << " " << std::endl;
+    //std::cout << "poopis " << poopis << std::endl;
     
     Path::Find("test")->LoadFromDisk();
     
@@ -530,6 +530,8 @@ int main(int argc, const char** argv) {
     Ext::Camera::Init();
     
     Ext::Scripting::Lua::Init();
+
+    Settings::Parse(argv, argc);
 
     Script::Init();
     
@@ -616,6 +618,16 @@ int main(int argc, const char** argv) {
     //lit->Init();
     //lit->SetColor({1.0f, 0.0f, 1.0f});
     //lit->SetDistance(100.0f);
+
+    /*for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < 20; y++) {
+            RenderComponent* pot = PoolProxy<RenderComponent>::New();
+            pot->SetModel("chamberpot2");
+            pot->SetScale({0.2, 0.2, 0.2});
+            pot->SetLocation({10 - x, 10, 10 - y});
+            pot->Init();
+        }
+    }*/
 
     // create the animation player for the mongus model
     //monguser_armature = PoolProxy<AnimationComponent>::New();
