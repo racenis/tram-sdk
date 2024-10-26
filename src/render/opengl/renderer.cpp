@@ -17,7 +17,7 @@
 
 namespace tram::Render::API {
 
-Pool<GLDrawListEntry> draw_list ("render list", 500, false);
+Pool<GLDrawListEntry> draw_list ("render list", 1000, false);
 Pool<GLLight> light_list ("light list", 200, false);
 Octree<uint32_t> light_tree("light tree", 200);
 std::vector<uint32_t> light_tree_ids (200);

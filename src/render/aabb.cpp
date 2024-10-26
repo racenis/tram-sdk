@@ -19,7 +19,7 @@ struct AABBLeaf {
 };
     
 static AABBTree scene_tree;
-static Pool<AABBLeaf> scene_tree_leaves("Scene AABB tree leaf pool", 250);
+static Pool<AABBLeaf> scene_tree_leaves("Scene AABB tree leaf pool", 1000);
 
 aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation) {
     vec3 min = component->GetModel()->GetAABBMin();

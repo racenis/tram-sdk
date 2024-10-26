@@ -13,7 +13,7 @@ namespace tram {
 using namespace tram::Render;
 using namespace tram::Render::API;
 
-template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render component pool", 250, false);
+template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render component pool", 1000, false);
 
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue
