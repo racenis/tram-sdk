@@ -11,6 +11,7 @@ flat in uint vert_tex_index;
 uniform sampler2D sampler[16];
 
 void main() {
+	fragment = vec4(1.0);
     fragment = texture(sampler[vert_tex_index], vert_uv);
 	if (fragment.w < 0.9) discard;
 }

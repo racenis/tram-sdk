@@ -50,6 +50,7 @@ protected:
     
     Render::drawlistentry_t draw_list_entry = {.generic = nullptr};
     Render::vertexarray_t vertex_array = {.generic = nullptr};
+    Render::spritearray_t sprite_array = {.generic = nullptr};
 };
 
 }

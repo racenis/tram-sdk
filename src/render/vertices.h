@@ -45,6 +45,17 @@ struct Triangle {
     ivec3 indices;          //< Triangle vertex indices.
 };
 
+struct SpritePoint {
+    vec3 position;
+    vec3 center;
+    vec3 color;
+    float rotation;
+    vec2 dimensions;
+    vec2 texture_offset;
+    vec2 texture_size;
+    uint32_t texture;
+};
+
 struct ModelData {};
 
 struct StaticModelData : public ModelData {

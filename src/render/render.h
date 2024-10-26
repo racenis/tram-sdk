@@ -124,6 +124,16 @@ struct indexarray_t {
     };
 };
 
+struct spritearray_t {
+    union {
+        vertexarray_t vertex_array;
+        void* generic;
+    };
+    
+    // TODO: add whatever you need for the D3D renderer
+    // TODO: also add everything for the SW renderer
+};
+
 namespace API { struct GLDrawListEntry; }
 namespace API { struct D3DDrawListEntry; }
 namespace API { struct SWDrawListEntry; }

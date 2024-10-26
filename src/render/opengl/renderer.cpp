@@ -2,6 +2,7 @@
 // All rights reserved.
 
 #include <render/opengl/renderer.h>
+#include <render/vertices.h>
 #include <render/api.h>
 
 #include <templates/octree.h>
@@ -318,6 +319,10 @@ void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handl
     // the index array is already bound to the vao
 }
 
+void SetDrawListSpriteArray(drawlistentry_t entry, spritearray_t sprite_array_handle) {
+    SetDrawListVertexArray(entry, sprite_array_handle.vertex_array);
+}
+
 void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length) {
     entry.gl->eboOff = index_offset;
     entry.gl->eboLen = index_length;
@@ -482,6 +487,92 @@ void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data
     glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+spritearray_t CreateSpriteArray() {
+    vertexarray_t vertex_array;
+    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
+    
+    return {vertex_array};
+}
+
+
+/*
+struct SpritePoint {
+    vec3 position;
+    vec3 center;
+    vec3 color;
+    float rotation;
+    vec2 dimensions;
+    vec2 texture_offset;
+    vec2 texture_size;
+    uint32_t texture;
+};
+ 
+struct SpriteVertex {
+    vec3 co;            //< Sprite position in object space.
+    vec2 voffset;       //< Vertex offset in projection space.
+    vec2 texco;         //< Vertex texture coordinates.
+    vec3 color;         //< Vertex color.
+    float verticality;  //< I don't remember.
+    uint32_t texture;   //< Vertex texture material index.
+};
+
+ */
+
+void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
+    SpritePoint* sprites = (SpritePoint*) data;
+    
+    std::vector<Render::SpriteVertex> vertices;
+    
+    for (size_t i = 0; i < data_size; i++) {
+        const SpritePoint& sprite = sprites[i];
+        
+        // TODO: make rotation do something
+        // TODO: make origin do something
+        
+        Render::SpriteVertex top_left {
+            .co =           sprite.position,
+            .voffset =      {sprite.dimensions.x * -0.5f, sprite.dimensions.y * 0.5f},
+            .texco =        {sprite.texture_offset.x, sprite.texture_offset.y + sprite.texture_size.y},
+            .verticality =  1.0f,
+            .texture =      sprite.texture  
+        };
+        
+        Render::SpriteVertex top_right {
+            .co =           sprite.position,
+            .voffset =      {sprite.dimensions.x * 0.5f, sprite.dimensions.y * 0.5f},
+            .texco =        {sprite.texture_offset.x + sprite.texture_size.x, sprite.texture_offset.y + sprite.texture_size.y},
+            .verticality =  1.0f,
+            .texture =      sprite.texture
+        };
+        
+        Render::SpriteVertex bottom_left {
+            .co =           sprite.position,
+            .voffset =      {sprite.dimensions.x * -0.5f, sprite.dimensions.y * -0.5f},
+            .texco =        {sprite.texture_offset.x, sprite.texture_offset.y},
+            .verticality =  1.0f,
+            .texture =      sprite.texture
+        };
+        
+        Render::SpriteVertex bottom_right {
+            .co =           sprite.position,
+            .voffset =      {sprite.dimensions.x * 0.5f, sprite.dimensions.y * -0.5f},
+            .texco =        {sprite.texture_offset.x + sprite.texture_size.x, sprite.texture_offset.y},
+            .verticality =  1.0f,
+            .texture =      sprite.texture
+        };
+
+        vertices.push_back(top_left);
+        vertices.push_back(bottom_left);
+        vertices.push_back(top_right);
+        vertices.push_back(top_right);
+        vertices.push_back(bottom_left);
+        vertices.push_back(bottom_right);
+    }
+    
+    UpdateVertexArray(array.vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+}
+
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
     LAYER[layer].view_matrix = matrix;

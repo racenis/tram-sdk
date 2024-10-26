@@ -23,12 +23,14 @@ SpriteComponent::~SpriteComponent() {
 void SpriteComponent::Start() {
     assert(!is_ready);
 
-    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
+    //CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
+    sprite_array = CreateSpriteArray();
     
     auto texture_handle = sprite->GetMaterial()->GetTexture();
     
     draw_list_entry = InsertDrawListEntry();
-    SetDrawListVertexArray(draw_list_entry, vertex_array);
+    //SetDrawListVertexArray(draw_list_entry, vertex_array);
+    SetDrawListSpriteArray(draw_list_entry, sprite_array);
     SetDrawListIndexRange(draw_list_entry, 0, 6);
     SetFlags(draw_list_entry, FLAG_RENDER);
     SetDrawListTextures(draw_list_entry, 1, &texture_handle);
@@ -47,6 +49,7 @@ void SpriteComponent::Update() {
         if (!(anim_bframe < anim_speed)) {
             anim_bframe = 0;
             anim_frame++;
+            
             if (!(anim_frame < sprite->GetFrames().size())) anim_frame = 0;
         }
         anim_bframe++;
@@ -64,48 +67,19 @@ void SpriteComponent::UpdateRenderListObject() {
     float half_width = tex_width; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
     float half_height = tex_height; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
 
-    Render::SpriteVertex top_left {
-        .co = vec3(0.0f, 0.0f, 0.0f),
-        .voffset = vec2(-half_width, half_height),
-        .texco = vec2(0.0f + tex_w_off, 1.0f - tex_h_off),
-        .verticality = 1.0f,
-        .texture = 0
-    };
-    
-    Render::SpriteVertex top_right {
-        .co = vec3(0.0f, 0.0f, 0.0f),
-        .voffset = vec2(half_width, half_height),
-        .texco = vec2(tex_width + tex_w_off, 1.0f - tex_h_off),
-        .verticality = 1.0f,
-        .texture = 0
-    };
-    
-    Render::SpriteVertex bottom_left {
-        .co = vec3(0.0f, 0.0f, 0.0f),
-        .voffset = vec2(-half_width, -half_height),
-        .texco = vec2(0.0f + tex_w_off, 1.0f - tex_height - tex_h_off),
-        .verticality = 1.0f,
-        .texture = 0
-    };
-    
-    Render::SpriteVertex bottom_right {
-        .co = vec3(0.0f, 0.0f, 0.0f),
-        .voffset = vec2(half_width, -half_height),
-        .texco = vec2(tex_width + tex_w_off, 1.0f - tex_height - tex_h_off),
-        .verticality = 1.0f,
-        .texture = 0
-    };
+    tex_h_off = 1.0f - tex_h_off - tex_height;
 
-    std::vector<Render::SpriteVertex> vertices;
-    
-    vertices.push_back(top_left);
-    vertices.push_back(bottom_left);
-    vertices.push_back(top_right);
-    vertices.push_back(top_right);
-    vertices.push_back(bottom_left);
-    vertices.push_back(bottom_right);
+    Render::SpritePoint point;
+    point.position = {0.0f, 0.0f, 0.0f};
+    point.center = {0.0f, 0.0f, 0.0f};
+    point.color = COLOR_WHITE;
+    point.rotation = 0.0f;
+    point.dimensions = {tex_width * 10.0f, tex_height * 10.0f};
+    point.texture_offset = {tex_w_off, tex_h_off};
+    point.texture_size = {tex_width, tex_height};
+    point.texture = 0;
 
-    UpdateVertexArray(vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+    UpdateSpriteArray(sprite_array, 1, &point);
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
 }
