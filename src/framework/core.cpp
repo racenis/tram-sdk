@@ -52,7 +52,7 @@ void Core::Update() {
         .poster_id = 0
     });
     
-    for (System::system_t i = 0; i < System::GetSystemCount(); i++) {
+    for (System::system_t i = System::SYSTEM_CORE; i < System::GetSystemCount(); i++) {
         System::SetUpdated(i, false);
     }
 }

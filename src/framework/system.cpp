@@ -3,6 +3,7 @@
 
 #include <framework/system.h>
 #include <cassert>
+#include <cstring>
 
 namespace tram::System {
 
@@ -14,6 +15,7 @@ struct SystemInfo {
 };
 
 static SystemInfo system_infos[128] = {
+    {"Invalid",                     "INV",      false, false},
     {"Core",                        "CORE",     false, false},
     {"Platform",                    "PLATFORM", false, false},
     {"User Interface",              "UI",       false, false},
@@ -30,7 +32,7 @@ static uint32_t last_system = SYSTEM_LAST;
 /// Registers a new system.
 /// @param name Full name of the system.
 /// @param short_name Name of the system that will be displayed in log messages.
-uint32_t Register (char const* name, char const* short_name) {
+uint32_t Register(char const* name, char const* short_name) {
     assert(last_system < 128);
     
     system_infos[last_system] = SystemInfo {
@@ -43,26 +45,41 @@ uint32_t Register (char const* name, char const* short_name) {
     return last_system++;
 }
 
+/// Registers a registered system.
+/// If the system was registered with the Register() function, its system_t
+/// identificator will be returned. If a system with the name was not
+/// registered, this function will return a SYSTEM_INVALID identificator.
+system_t Find(char const* name) {
+    for (system_t system = 0; system < last_system; system++) {
+        if (strcmp(system_infos[system].name, name) == 0) {
+            return system;
+        }
+    }
+    
+    return SYSTEM_INVALID;
+}
+
 /// Retrieves the full name of a system.
-char const* GetName (uint32_t system) {
+char const* GetName(uint32_t system) {
     assert(system < last_system);
     return system_infos[system].name;
 }
 
 /// Retrieves the short name of a system.
-char const* GetShortName (uint32_t system) {
+char const* GetShortName(uint32_t system) {
     assert(system < last_system);
     return system_infos[system].short_name;
 }
 
 /// Sets the initialization status of a system.
-void SetInitialized (uint32_t system, bool is_initialized) {
+void SetInitialized(uint32_t system, bool is_initialized) {
     assert(system < last_system);
+    assert(system != SYSTEM_INVALID);
     system_infos[system].is_initialized = is_initialized;
 }
 
 /// Checks if a system is initialized.
-bool IsInitialized (uint32_t system) {
+bool IsInitialized(uint32_t system) {
     if (system >= last_system) {
         return false;
     }
@@ -71,13 +88,14 @@ bool IsInitialized (uint32_t system) {
 }
 
 /// Sets the update status of a system.
-void SetUpdated (uint32_t system, bool is_updated) {
+void SetUpdated(uint32_t system, bool is_updated) {
     assert(system < last_system);
+    assert(system != SYSTEM_INVALID);
     system_infos[system].is_updated = is_updated;
 }
 
 /// Checks if a system is updated.
-bool IsUpdated (uint32_t system) {
+bool IsUpdated(uint32_t system) {
     if (system >= last_system) {
         return false;
     }
@@ -86,7 +104,7 @@ bool IsUpdated (uint32_t system) {
 }
 
 /// Returns the total count of registered systems.
-system_t GetSystemCount () {
+system_t GetSystemCount() {
     return last_system;
 }
 

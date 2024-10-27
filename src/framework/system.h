@@ -10,6 +10,7 @@ namespace tram::System {
 
 typedef uint32_t system_t;
 enum System : system_t {
+    SYSTEM_INVALID,
     SYSTEM_CORE,
     SYSTEM_PLATFORM,
     SYSTEM_UI,
@@ -23,6 +24,7 @@ enum System : system_t {
 };
 
 system_t Register(char const* name, char const* short_name);
+system_t Find(char const* name);
 void SetInitialized(system_t system, bool is_initialized);
 bool IsInitialized(system_t system);
 void SetUpdated(system_t system, bool is_updated);
