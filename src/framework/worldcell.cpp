@@ -25,17 +25,17 @@ template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, fa
 
 static Hashmap<WorldCell*> worldcell_list ("Worldcell list hashmap", 500);
 
-
-// TODO:
-// - check if transitions/into are needed to be tracked
-// - set up better entity transition lookup
-// - put cell linking back in
-
-WorldCell* WorldCell::Find (name_t name) {
+/// Finds a WorldCell by its name.
+/// @return Pointer to the cell if found, nullptr otherwise.
+WorldCell* WorldCell::Find(name_t name) {
     return worldcell_list.Find(name);
 }
 
-WorldCell* WorldCell::Make (name_t name) {
+/// Creates a WordlCell by name.
+/// If a cell with the given name already exists, this method will return that
+/// same cell, otherwise a new cell will be created.
+/// @return Always returns the pointer to the created WorldCell.
+WorldCell* WorldCell::Make(name_t name) {
     auto cell = worldcell_list.Find(name);
     
     if (!cell) {
@@ -46,7 +46,14 @@ WorldCell* WorldCell::Make (name_t name) {
     return cell;
 }
 
-WorldCell* WorldCell::Find (vec3 point) {
+/// Finds the WorldCell which contains a given point.
+/// This method will iterate through WorldCells and will try to find a WorldCell
+/// with a volume that contains the given point.
+/// It will first try finding a volume for an interior cell, otherwise it will
+/// try finding a volume for an exterior cell. If it can't find a cell, it will
+/// return a nullptr.
+/// @return Pointer to a WorldCell or a nullptr.
+WorldCell* WorldCell::Find(vec3 point) {
     for (auto& cell : PoolProxy<WorldCell>::GetPool()) {
         if (!cell.IsInterior()) continue;
         if (cell.IsInside(point)) return &cell;
@@ -59,20 +66,27 @@ WorldCell* WorldCell::Find (vec3 point) {
     return nullptr;
 }
 
+/// Loads the cell.
+/// This will flag the cell as loaded and will load all of the entities that
+/// have been flagged as being automatically loaded.
 void WorldCell::Load() {
     std::cout << "Loading cell: " << name << std::endl;
     
     if (!entities.size()) {
-        std::cout << "Cell " << name << " has no enitites. Forgot to load from disk?" << std::endl;
+        std::cout << "Cell " << name << " has no entities. Forgot to load from disk?" << std::endl;
     }
     
     for (auto it : entities) {
         if (it->IsAutoLoad()) it->Load();
     }
         
-    loaded = true;
+    SetFlag(LOADED, true);
 };
 
+/// Unloads the cell.
+/// This will flag the cell as unloaded and will unload all of the entities that
+/// have been flagged as being automatically loaded. It will also delete
+/// entities that have been flagged as being non-persistent.
 void WorldCell::Unload() {
     std::cout << "Unloading cell: " << name << std::endl;
     auto entities_copy = entities;
@@ -82,45 +96,59 @@ void WorldCell::Unload() {
         if (it->IsPersistent()) {
             it->Unload();
         } else {
-            std::cout << "Yeeting " << it->GetName() << " out of existance!" << std::endl;
+            std::cout << "Yeeting " << it->GetName() << " out of existence!" << std::endl;
             delete it;
         }
     }
 
-    loaded = false;
+   SetFlag(LOADED, false);
 };
 
-WorldCell* WorldCell::FindTransition (vec3 point) {
-    for (auto it : transitions_from) {
-        if (it->IsInside(point)) return it->GetInto();
+void WorldCell::Add(Transition* transition) {
+    if (transition->cell_into == this) {
+        volume.push_back(transition);
+    } else {
+        transitions.push_back(transition);
+    }
+}
+
+WorldCell* WorldCell::FindTransition(vec3 point) {
+    for (auto transition : transitions) {
+        if (transition->IsInside(point)) return transition->GetCell();
     }
     
     return nullptr;
 }
 
-bool WorldCell::IsInside (vec3 point) {
-    for (auto it : transitions_into) {
-        if (it->IsInside(point)) return true;
+bool WorldCell::IsInside(vec3 point) {
+    for (auto transition : volume) {
+        if (transition->IsInside(point)) return true;
     }
     
     return false;
 }
 
-void WorldCell::AddEntity (Entity* entity) {
+void WorldCell::Add(Entity* entity) {
+    assert(entity->cell != this);
+    
     entities.push_back(entity);
     
     entity->cell = this;
 
-    if(loaded && !entity->is_loaded && entity->auto_load){
+    if(flags & LOADED && !entity->is_loaded && entity->auto_load) {
         entity->Load();
     }
 
-    if (!loaded && entity->is_loaded && entity->auto_load){
+    if (!(flags & LOADED) && entity->is_loaded && entity->auto_load) {
         entity->Unload();
     }
 }
 
-void WorldCell::RemoveEntity (Entity* entity) {
+void WorldCell::Remove(Entity* entity) {
+    if (entity->cell == this) {
+        entity->cell = nullptr;
+    }
+    
     entities.erase(std::find(entities.begin(), entities.end(), entity));
 }
 
@@ -143,8 +171,8 @@ void WorldCell::LoadFromDisk() {
     
     file.read_name(); // skip over cell name in file
     
-    this->interior = file.read_uint32();
-    this->interior_lighting = file.read_uint32();
+    SetFlag(INTERIOR, file.read_uint32());
+    SetFlag(INTERIOR_LIGHTING, file.read_uint32());
     
     file.skip_linebreak();
     
@@ -163,7 +191,9 @@ void WorldCell::LoadFromDisk() {
                 std::cout << "Transition into cell '" << transition_into << "' defined in " << path << ", but can't find said cell." << std::endl;
             }
             
-            Transition* transition = Transition::Make(transition_name, this, into_ptr);
+            Transition* transition = Transition::Make(transition_name, into_ptr);
+            
+            this->Add(transition);
             
             size_t point_count = file.read_int32();
 
@@ -240,7 +270,7 @@ void WorldCell::LoadFromDisk() {
         if (!entity) {
             std::cout << "Entity type '" << entry_type << "' not recognized; in file " << path << std::endl;
         } else {
-            this->AddEntity(entity);
+            this->Add(entity);
         }
         
         file.skip_linebreak();

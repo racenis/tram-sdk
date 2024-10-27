@@ -14,12 +14,19 @@ namespace tram {
 template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", 250, false);
 static Hashmap<Transition*> transition_list ("transition list", 250);
 
-Transition* Transition::Find (name_t name) {
+/// Finds a transition with the given name.
+/// Pointer to the transition or a nullptr if wasn't found.
+Transition* Transition::Find(name_t name) {
     return transition_list.Find(name);
 }
 
-Transition* Transition::Make (name_t name, WorldCell* cell_from, WorldCell* cell_into) {
-    Transition* transition = PoolProxy<Transition>::New(name, cell_from, cell_into);
+/// Creates a new transition.
+/// @param name         Name of the transition. Can be set to "none" if the
+///                     transition doesn't need a name.
+/// @param cell_into    Pointer to the WorldCell into which the transition
+///                     will be leading into.
+Transition* Transition::Make (name_t name, WorldCell* cell_into) {
+    Transition* transition = PoolProxy<Transition>::New(name, cell_into);
     
     if (name) {
         if (transition_list.Find(name)) {
@@ -32,36 +39,22 @@ Transition* Transition::Make (name_t name, WorldCell* cell_from, WorldCell* cell
     return transition;
 }
 
-Transition::Transition (name_t name, WorldCell* cell_from, WorldCell* cell_into) {
+Transition::Transition(name_t name, WorldCell* cell_into) {
     this->cell_into = cell_into;
-    this->cell_from = cell_from;
     this->name = name;
-    
-    if (cell_from == cell_into && cell_into) {
-        cell_into->AddTransitionInto(this);
-        return;
-    }
-    
-    if (cell_from) {
-        cell_from->AddTransitionFrom(this);
-    }
-    
-    if (cell_into) {
-        cell_into->AddTransitionInto(this);
-    }
 }
 
-void Transition::AddPoint (vec3 point) {
+void Transition::AddPoint(vec3 point) {
     points.push_back(point);
 }
 
-bool Transition::IsInside (vec3 point) {
+bool Transition::IsInside(vec3 point) {
     for(size_t i = 0; i < planes.size(); i++)
         if(glm::dot(planes[i], vec4(point, 1.0f)) < 0.0f) return false;    
     return true;
 }
 
-void Transition::GeneratePlanes (bool disp) {
+void Transition::GeneratePlanes(bool disp) {
     assert(points.size() > 3);
     
     planes.clear();

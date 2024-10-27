@@ -7,7 +7,6 @@
 #include <framework/ui.h>
 #include <framework/event.h>
 #include <framework/entity.h>
-#include <framework/loader.h>
 
 #include <components/controller.h>
 
@@ -27,14 +26,12 @@ public:
     ~PlayerComponent();
     void SetControllerComponent (ControllerComponent* comp) { controller = comp; }
     void Start() {}
-    void MoveUpdate() { assert(cell_loader); cell_loader->UpdateLocation(parent->GetLocation()); }
 private:
     EventListener keydown;
     EventListener keypress;
     EventListener mouseposition;
     
     ControllerComponent* controller = nullptr;
-    Loader* cell_loader = nullptr;
 };
 
 }

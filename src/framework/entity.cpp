@@ -62,7 +62,7 @@ Entity::Entity(const SharedEntityData& shared_data) {
 }
 
 Entity::~Entity() {
-    if (cell) cell->RemoveEntity(this);
+    if (cell) cell->Remove(this);
 
     if (id) {
         if (entity_id_list.Find(id)) {
@@ -88,8 +88,8 @@ void Entity::CheckTransition() {
     
     std::cout << name << " transitioned into " << into->GetName() << std::endl;
     
-    cell->RemoveEntity (this);
-    into->AddEntity (this);
+    cell->Remove(this);
+    into->Add(this);
     
 #endif // ENGINE_EDITOR_MODE
 }

@@ -48,10 +48,7 @@ void Player::SerializeString(std::string& str) {
 }
 
 void Player::UpdateParameters() {
-    if (is_loaded) {
-        assert(plomp);
-        plomp->MoveUpdate();
-    }
+    
 }
 
 void Player::SetParameters() {

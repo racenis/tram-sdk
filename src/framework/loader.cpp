@@ -3,57 +3,70 @@
 
 #include <framework/loader.h>
 
+#include <framework/entity.h>
+#include <framework/worldcell.h>
+
 #include <framework/transition.h>
 #include <templates/pool.h>
 
 #include <set>
 
-namespace tram {
+namespace tram::Loader {
 
-template <> Pool<Loader> PoolProxy<Loader>::pool("worldcellloader pool", 10, false);
+std::set<id_t> tracked_entities;
 
-void Loader::SetLocation(vec3 location) {
-    this->location = location;
-    
-    current_cell = WorldCell::Find(location);
+void Track(Entity* entity) {
+    tracked_entities.insert(entity->GetID());
 }
 
-void Loader::UpdateLocation(vec3 location) {
-    this->location = location;
-    
-    if (!current_cell) {
-        current_cell = WorldCell::Find(location);
-    } else {
-        WorldCell* new_cell = current_cell->FindTransition(location);
-        
-        if (new_cell) {
-            current_cell = new_cell;
-        }
-    }
+void Untrack(Entity* entity) {
+    tracked_entities.erase(entity->GetID());
 }
 
-void Loader::Update() {
+void Update() {
+    auto safe_copy = tracked_entities;
+    
     std::set<WorldCell*> active_cells;
-    auto& loader_pool = PoolProxy<Loader>::GetPool();
-    auto& cell_pool = PoolProxy<WorldCell>::GetPool();
     
-    for (auto& loader : loader_pool) {
-        if (loader.current_cell) {
-            active_cells.insert(loader.current_cell);
-            for (auto trans : loader.current_cell->transitions_from) {
-                active_cells.insert(trans->GetInto());
-            }
+    // find all cells with tracked entities and remove lost entities
+    for (id_t entity_id : safe_copy) {
+        Entity* entity = Entity::Find(entity_id);
+        
+        if (!entity) {
+            std::cout << "Loader lost track of entity with id " << entity_id << std::endl;
+            tracked_entities.erase(entity_id);
+            continue;
+        }
+        
+        if (entity->GetCell()) {
+            active_cells.insert(entity->GetCell());
         }
     }
     
-    for (auto& cell : cell_pool) {
-        if(cell.IsLoaded() && !active_cells.contains(&cell)) {
+    // find all cells that need to be loaded
+    std::set<WorldCell*> marked_cells;
+    for (WorldCell* cell : active_cells) {
+        
+        // mark all cells with tracked entities
+        marked_cells.insert(cell);
+        
+        // mark all cells that are directly connected
+        for (Transition* transition : cell->GetTransitions()) {
+            marked_cells.insert(transition->GetCell());
+        }
+    }
+    
+    // load and unload cells as marked
+    for (auto& cell : PoolProxy<WorldCell>::GetPool()) {
+        if (!cell.HasAutomaticLoading()) continue;
+        
+        if (cell.IsLoaded() && !marked_cells.contains(&cell)) {
             cell.Unload();
         }
-    }
-    
-    for (auto cell : active_cells) {
-        if (!cell->IsLoaded()) cell->Load();
+        
+        if (!cell.IsLoaded() && marked_cells.contains(&cell)) {
+            cell.Load();
+        }
     }
 }
     

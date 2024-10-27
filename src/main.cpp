@@ -565,6 +565,8 @@ int main(int argc, const char** argv) {
     //player.SetLocation(vec3(0.0f, 1.0f, 0.0f));
     player->SetLocation(vec3(0.0f, (1.85f/2.0f) + 0.05f, 0.0f));
     player->Load();
+    Loader::Track(player);
+    WorldCell::Find(player->GetLocation())->Add(player);
     
     player->controllercomponent->SetFriction(0.82f);
     player->controllercomponent->SetWalkSpeed(0.2f);

@@ -17,14 +17,10 @@ void PlayerComponent::Init() {
     keydown.make(Event::KEYDOWN, this);
     keypress.make(Event::KEYPRESS, this);
     mouseposition.make(Event::CURSORPOS, this);
-
-    cell_loader = PoolProxy<Loader>::New();
-    cell_loader->SetLocation(parent->GetLocation());
 }
 
 PlayerComponent::~PlayerComponent() {
-    PoolProxy<Loader>::Delete(cell_loader);
-    cell_loader = nullptr;
+
 }
 
 void PlayerComponent::EventHandler(Event &event) {

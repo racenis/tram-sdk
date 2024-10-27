@@ -13,39 +13,42 @@ namespace tram {
 
 class Entity;
 class Transition;
-class Loader;
 
 class WorldCell {
 public:
-    WorldCell (name_t name) { this->name = name; }
+    WorldCell(name_t name) { this->name = name; }
 
-    bool IsLoaded() { return loaded; }
-    bool IsInterior() { return interior; }
-    bool HasInteriorLighting() { return interior_lighting; }
-    bool IsDebugDraw() { return debug_draw; }
+    inline name_t GetName() { return name; }
+
+    inline bool IsLoaded() { return flags & LOADED; }
+    inline bool IsInterior() { return flags & INTERIOR; }
+    inline bool HasInteriorLighting() { return flags & INTERIOR_LIGHTING; }
+    inline bool IsDebugDraw() { return flags & DEBUG_DRAW; }
+    inline bool HasAutomaticLoading() { return flags & AUTOMATIC_LOADING; }
     
-    name_t GetName() { return name; }
-    
-    void SetInterior (bool interior) { this->interior = interior; }
-    void SetInteriorLights (bool interior_lights) { this->interior_lighting = interior_lights; }
-    void SetDebugDraw (bool debug_draw) { this->debug_draw = debug_draw; }
+    inline void SetInterior (bool is) { SetFlag(INTERIOR, is); }
+    inline void SetInteriorLights (bool is) { SetFlag(INTERIOR_LIGHTING, is); }
+    inline void SetDebugDraw (bool is) { SetFlag(DEBUG_DRAW, is); }
+    inline void SetAutomaticLoading (bool is) { SetFlag(AUTOMATIC_LOADING, is); }
     
     void Load();
     void Unload();
 
     void LoadFromDisk();
 
-    void AddEntity(Entity* entity);
-    void RemoveEntity(Entity* entity);
+    void Add(Entity* entity);
+    void Remove(Entity* entity);
     
     size_t GetEntityCount() { return entities.size(); }
 
-    void AddTransitionInto (Transition* transition) { transitions_into.push_back(transition); }
-    void AddTransitionFrom (Transition* transition) { transitions_from.push_back(transition); }
-
-    WorldCell* FindTransition (vec3 point);
+    void Add(Transition* transition);
+    
+    WorldCell* FindTransition(vec3 point);
     
     inline const std::vector<Entity*>& GetEntities() { return entities; }
+    inline const std::vector<Transition*>& GetTransitions() { return transitions; }
+    inline const std::vector<Transition*>& GetVolume() { return volume; }
+    
     
     bool IsInside(vec3 point);
 
@@ -54,15 +57,21 @@ public:
     static WorldCell* Make (name_t name);
     
 protected:
+    enum {
+        LOADED = 1,
+        INTERIOR = 2,
+        INTERIOR_LIGHTING = 4,
+        DEBUG_DRAW = 8,
+        AUTOMATIC_LOADING = 16,
+    };
+
+    inline void SetFlag(uint32_t flag, bool value) { flags = value ? flags | flag : flags & ~flag; };
+
     name_t name;
-    bool interior = false;
-    bool interior_lighting = false;
-    bool loaded = false;
-    bool debug_draw = false;
+    uint32_t flags = AUTOMATIC_LOADING;
     std::vector<Entity*> entities;
-    std::vector<Transition*> transitions_into;
-    std::vector<Transition*> transitions_from;
-    friend class Loader;
+    std::vector<Transition*> transitions;
+    std::vector<Transition*> volume;
 };
 
 }
