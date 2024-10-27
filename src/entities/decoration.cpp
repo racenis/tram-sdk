@@ -63,16 +63,12 @@ void Decoration::SetParameters() {
     physicscomponent->SetRotation(rotation);
 }
 
-void Decoration::Load(){
+void Decoration::Load() {
     rendercomponent.make();
-    animationcomponent.make();
     physicscomponent.make();
     
     rendercomponent->SetParent(this);
     rendercomponent->SetModel(model);
-
-    animationcomponent->SetParent(this);
-    animationcomponent->SetModel(model);
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_STATICOBJ);
@@ -81,12 +77,14 @@ void Decoration::Load(){
     physicscomponent->SetMass(0.0f);
     
     rendercomponent->Init();
-    animationcomponent->Init();
+    
     physicscomponent->Init();
     
-    rendercomponent->SetArmature(animationcomponent);
+    
     
     if (animation) {
+        RequestAnimationComponent();
+        
         std::cout << "PLAYING " << animation << std::endl;
         animationcomponent->Play(animation, -1, 1.0f, 1.0f);
     }
@@ -94,6 +92,17 @@ void Decoration::Load(){
     is_loaded = true;
 
     UpdateParameters();
+}
+
+void Decoration::RequestAnimationComponent() {
+    if (animationcomponent) return;
+    
+    animationcomponent.make();
+    animationcomponent->SetParent(this);
+    animationcomponent->SetModel(model);
+    animationcomponent->Init();
+    
+    rendercomponent->SetArmature(animationcomponent);
 }
 
 void Decoration::Unload() {
@@ -134,6 +143,7 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::TOGGLE:
             if (animation) {
+                RequestAnimationComponent();
                 if (animationcomponent->IsPlaying(animation)) {
                     //animationcomponent->StopAnimation(animation);
                     //animationcomponent->FadeAnimation(animation, false, 0.05f);
@@ -149,6 +159,7 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::START:
             if (animation) {
+                RequestAnimationComponent();
                 animationcomponent->Play(animation, -1, 1.0f, 1.0f);
                 //animationcomponent->FadeAnimation(animation, true, 0.05f);
                 animationcomponent->FadeIn(animation, 1.0f);
@@ -156,6 +167,7 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::STOP:
             if (animation) {
+                RequestAnimationComponent();
                 //animationcomponent->StopAnimation(animation);
                 //animationcomponent->FadeAnimation(animation, false, 0.05f);
                 animationcomponent->FadeOut(animation, 1.0f);

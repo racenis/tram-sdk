@@ -33,6 +33,8 @@ protected:
     Component<AnimationComponent> animationcomponent;
     Component<PhysicsComponent> physicscomponent;
     
+    void RequestAnimationComponent();
+    
     name_t model;
     name_t animation;
     
