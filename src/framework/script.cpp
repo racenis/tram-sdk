@@ -616,6 +616,46 @@ void Init() {
         return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetName();
     });
 
+    SetFunction("__tram_impl_render_model_add_reference", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<Model>::GetPool()[(uint32_t)array[0]].AddReference();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_model_remove_reference", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<Model>::GetPool()[(uint32_t)array[0]].RemoveReference();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_model_load", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<Model>::GetPool()[(uint32_t)array[0]].Load();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_model_get_aabb_min", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetAABBMin();
+    });
+    
+    SetFunction("__tram_impl_render_model_get_aabb_max", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetAABBMax();
+    });
+    
+    SetFunction("__tram_impl_render_model_get_near_distance", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetNearDistance();
+    });
+    
+    SetFunction("__tram_impl_render_model_get_far_distance", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<Model>::GetPool()[(uint32_t)array[0]].GetFarDistance();
+    });
+    
+    SetFunction("__tram_impl_render_model_set_near_distance", {TYPE_UINT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<Model>::GetPool()[(uint32_t)array[0]].SetNearDistance(array[1]);
+        return true;
+    });
+    
+    SetFunction("__tram_impl_render_model_set_far_distance", {TYPE_UINT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<Model>::GetPool()[(uint32_t)array[0]].SetFarDistance(array[1]);
+        return true;
+    });
 
 
 

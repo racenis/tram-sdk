@@ -19,6 +19,7 @@ void SetPose(drawlistentry_t entry, Pose* pose);
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap);
 void SetLights(drawlistentry_t entry, light_t* lights);
 void SetMatrix(drawlistentry_t entry, const mat4& matrix);
+void SetFadeDistance(drawlistentry_t entry, float near, float far);
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle);
 void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle);

@@ -162,7 +162,12 @@ void RenderFrame() {
     rvec.clear();
 
     for (auto& robj : draw_list) {
-        // TODO: do view culling in here
+        const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        const float dist = glm::distance(pos, LAYER[robj.layer].view_position);
+        
+        if (dist > robj.fade_far || dist < robj.fade_near) {
+            continue;
+        }
 
         if (robj.flags & FLAG_USE_AABB) {
             auto matrix = LAYER[robj.layer].projection_matrix * LAYER[robj.layer].view_matrix;
@@ -233,9 +238,10 @@ void RenderFrame() {
                 tex_hash ^= robj->textures[tex];
             }
             
-            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f",
+            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
                 robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap,
-                robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max));
+                robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max),
+                robj->fade_near, robj->fade_far);
             
             vec3 pos = robj->matrix * glm::vec4(glm::mix(robj->aabb_min, robj->aabb_max, 0.5f), 1.0f);
             
@@ -403,7 +409,13 @@ void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
     
     entry.gl->matrix = matrix;
     
+    // wait do we need this even?
     light_tree.FindNearest(entry.gl->lights, origin.x, origin.y, origin.z);
+}
+
+void SetFadeDistance(drawlistentry_t entry, float near, float far) {
+    entry.gl->fade_near = near;
+    entry.gl->fade_far = far;
 }
 
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {

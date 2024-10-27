@@ -49,6 +49,11 @@ public:
     vec3 GetAABBMin() const { return aabb_min; }
     vec3 GetAABBMax() const { return aabb_max; }
     
+    float GetNearDistance() const { return fade_near; }
+    float GetFarDistance() const { return fade_far; }
+    void SetNearDistance(float dist) { fade_near = dist; }
+    void SetFarDistance(float dist) { fade_near = dist; }
+    
     static Model* Find(name_t name);
     
 protected:
@@ -61,6 +66,9 @@ protected:
     
     vec3 aabb_min = {0.0f, 0.0f, 0.0f};
     vec3 aabb_max = {0.0f, 0.0f, 0.0f};
+
+    float fade_near = 0.0f;
+    float fade_far = INFINITY;
     
     std::vector<Material*> materials;
 

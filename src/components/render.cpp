@@ -292,6 +292,8 @@ void RenderComponent::InsertDrawListEntries() {
             Render::API::SetFlags(entry, render_flags);
         }
         
+        Render::API::SetFadeDistance(entry, model->GetNearDistance(), model->GetFarDistance());
+        
         draw_list_entries.push_back(entry);
     }
 }

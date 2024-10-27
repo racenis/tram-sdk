@@ -974,6 +974,38 @@ tram.render._metatable_model = {
 	__index = {
 		GetName = function(self)
 			return __tram_impl_render_model_get_name(self.index)
+		end,
+		
+		AddReference = function(self)
+			__tram_impl_render_model_add_reference(self.index)
+		end,
+		RemoveReference = function(self)
+			__tram_impl_render_model_remove_reference(self.index)
+		end,
+		
+		Load = function(self)
+			__tram_impl_render_model_load(self.index)
+		end,
+		
+		GetAABBMin = function(self)
+			return __tram_impl_render_model_get_aabb_min(self.index)
+		end,
+		GetAABBMax = function(self)
+			return __tram_impl_render_model_get_aabb_max(self.index)
+		end,
+		
+		GetNearDistance = function(self)
+			return __tram_impl_render_model_get_near_distance(self.index)
+		end,
+		GetFarDistance = function(self)
+			return __tram_impl_render_model_get_far_distance(self.index)
+		end,
+		
+		SetNearDistance = function(self, dist)
+			__tram_impl_render_model_set_near_distance(self.index, dist)
+		end,
+		SetFarDistance = function(self, dist)
+			__tram_impl_render_model_set_far_distance(self.index, dist)
 		end
 	}
 }

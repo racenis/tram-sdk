@@ -54,7 +54,8 @@ struct GLDrawListEntry {
     vec3 aabb_min = {0.0f, 0.0f, 0.0f};
     vec3 aabb_max = {0.0f, 0.0f, 0.0f};
     
-    char padding [4];
+    float fade_near = 0.0f;
+    float fade_far = INFINITY;
 
     GLDrawListEntry() {
         for (int i = 0; i < 15; i++) {
