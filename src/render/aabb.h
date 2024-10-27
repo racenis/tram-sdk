@@ -29,7 +29,7 @@ struct QueryResponse {
     AABBTriangle triangle;
 };
     
-aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation);    
+aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale);    
 void RemoveLeaf(aabbleaf_t leaf);
 
 QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask);

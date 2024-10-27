@@ -673,6 +673,7 @@ int main(int argc, const char** argv) {
     
     Event::AddListener(Event::TICK, [](Event& event) {
         chamberpot->SetLocation({0, 1, 0});
+        //chamberpot->SetLocation({-10, 3, 0});
         chamberpot->SetRotation(quat(vec3{sinf(GetTickTime() / 3.0) / 3.0, GetTickTime(), cosf(GetTickTime() / 2.0) / 5.0}));
     });
     

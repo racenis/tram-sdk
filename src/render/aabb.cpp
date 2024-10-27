@@ -21,9 +21,9 @@ struct AABBLeaf {
 static AABBTree scene_tree;
 static Pool<AABBLeaf> scene_tree_leaves("Scene AABB tree leaf pool", 1000);
 
-aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation) {
-    vec3 min = component->GetModel()->GetAABBMin();
-    vec3 max = component->GetModel()->GetAABBMax();
+aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale) {
+    vec3 min = component->GetModel()->GetAABBMin() * scale;
+    vec3 max = component->GetModel()->GetAABBMax() * scale;
     
     vec3 extents[8] = {
         {min.x, min.y, min.z},
@@ -84,12 +84,14 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
         std::vector<AABBTriangle> intersected_triangles;
         intersected_triangles.reserve(10);
         
-        auto comp_position = leaf->rendercomponent->GetLocation();
-        auto comp_rotation = leaf->rendercomponent->GetRotation();
-        
-        vec3 ray_pos_local = glm::inverse(comp_rotation) * (ray_pos - comp_position);
-        vec3 ray_dir_local = glm::inverse(comp_rotation) * ray_dir;
-        
+        const mat4 matrix = PositionRotationScaleToMatrix(leaf->rendercomponent->GetLocation(),
+                                                          leaf->rendercomponent->GetRotation(),
+                                                          leaf->rendercomponent->GetScale());
+        const mat4 inv_matrix = glm::inverse(matrix);
+
+        vec3 ray_pos_local = vec3(inv_matrix * vec4(ray_pos, 1.0f));
+        vec3 ray_dir_local = glm::normalize(vec3(inv_matrix * vec4(ray_dir, 0.0f)));
+
         leaf->rendercomponent->GetModel()->FindAllFromRay(ray_pos_local, ray_dir_local, intersected_triangles);
         
         for (auto& tri : intersected_triangles) {
@@ -97,19 +99,19 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
             
             if (intersection.x == INFINITY) continue;
             
-            float intersection_distance = glm::distance(ray_pos_local, intersection);
+            float intersection_distance = glm::distance(ray_pos, vec3(matrix * vec4(intersection, 1.0f)));
             
             if (nearest > intersection_distance) {
                 nearest = intersection_distance;
                 
                 nearest_result.type = REFERENCE_RENDERCOMPONENT;
                 nearest_result.data = leaf->rendercomponent;
-                nearest_result.intersection = comp_position + (comp_rotation * intersection);
+                nearest_result.intersection = matrix * vec4(intersection, 1.0f);
                 nearest_result.triangle = {
-                    comp_position + (comp_rotation * tri.point1),
-                    comp_position + (comp_rotation * tri.point2),
-                    comp_position + (comp_rotation * tri.point3),
-                    comp_rotation * tri.normal,
+                    matrix * vec4(tri.point1, 1.0f),
+                    matrix * vec4(tri.point2, 1.0f),
+                    matrix * vec4(tri.point3, 1.0f),
+                    matrix * vec4(tri.normal, 0.0f),
                     tri.material
                 };
             }

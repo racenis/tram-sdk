@@ -52,7 +52,7 @@ public:
     float GetNearDistance() const { return fade_near; }
     float GetFarDistance() const { return fade_far; }
     void SetNearDistance(float dist) { fade_near = dist; }
-    void SetFarDistance(float dist) { fade_near = dist; }
+    void SetFarDistance(float dist) { fade_far = dist; }
     
     static Model* Find(name_t name);
     

@@ -238,7 +238,7 @@ void RenderComponent::RefreshAABB() {
         AABB::RemoveLeaf(aabb_tree_leaf);
     }
     
-    aabb_tree_leaf = AABB::InsertLeaf(this, location, rotation);
+    aabb_tree_leaf = AABB::InsertLeaf(this, location, rotation, scale);
 }
 
 void RenderComponent::InsertDrawListEntries() {

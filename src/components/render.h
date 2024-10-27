@@ -26,6 +26,7 @@ public:
 
     vec3 GetLocation() const { return location; }
     quat GetRotation() const { return rotation; }
+    vec3 GetScale() const { return scale; }
 
     void SetLocation(vec3 nlocation);
     void SetRotation(quat nrotation);

@@ -111,6 +111,9 @@ struct ModelAABB {
 };
 
 
+/// Finds triangles that intersect ray.
+/// Finds the triangles that intersect the given ray. The ray's origin and
+/// direction must be provided in the local model coordinates.
 void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result) {
     std::vector<uint32_t> results;
     results.reserve(10);
@@ -162,6 +165,11 @@ static void DrawAABBNodeChildren (AABBTree::Node* node, const std::vector<AABBTr
     }
 }
 
+/// Draws the AABB tree.
+/// Draws the AABB tree of the 3D model using debug lines. This might be useful
+/// for debugging if raycasts or some other lookups fail on the 3D model.
+/// @param position Position of the 3D model in the scene.
+/// @param rotation Rotation of the 3D model in the scene.
 void Model::DrawAABB(vec3 position, quat rotation) {
     if (!model_aabb) return;
     
