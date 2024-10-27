@@ -619,15 +619,15 @@ int main(int argc, const char** argv) {
     //lit->SetColor({1.0f, 0.0f, 1.0f});
     //lit->SetDistance(100.0f);
 
-    /*for (int x = 0; x < 20; x++) {
+    for (int x = 0; x < 20; x++) {
         for (int y = 0; y < 20; y++) {
             RenderComponent* pot = PoolProxy<RenderComponent>::New();
             pot->SetModel("chamberpot2");
             pot->SetScale({0.2, 0.2, 0.2});
-            pot->SetLocation({10 - x, 10, 10 - y});
+            pot->SetLocation({10 - x, 25, 10 - y});
             pot->Init();
         }
-    }*/
+    }
 
     // create the animation player for the mongus model
     //monguser_armature = PoolProxy<AnimationComponent>::New();

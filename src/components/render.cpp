@@ -106,6 +106,25 @@ void RenderComponent::SetDirectionaLight(bool enabled) {
     }
 }
 
+/// Sets render debugging.
+/// If set to false, the 3D model will not have debug text for it when the
+/// render debug text rendering is turned on.
+void RenderComponent::SetRenderDebug(bool enabled) {
+    if (!enabled) {
+        render_flags |= FLAG_NO_DEBUG;
+    } else {
+        render_flags &= ~FLAG_NO_DEBUG;
+    }
+    
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::SetFlags(entry, render_flags);
+            }
+        }
+    }
+}
+
 /// Sets the location of the model.
 void RenderComponent::SetLocation(vec3 nlocation){
     location = nlocation;
@@ -264,6 +283,14 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetMatrix(entry, PositionRotationScaleToMatrix(location, rotation, scale));
 
         Render::API::SetPose(entry, pose);
+        
+        const vec3 aabb_min = model->GetAABBMin();
+        const vec3 aabb_max = model->GetAABBMax();
+        if (glm::distance(aabb_min, aabb_max) > 0.001f) {
+            render_flags |= FLAG_USE_AABB;
+            Render::API::SetDrawListAABB(entry, aabb_min, aabb_max);
+            Render::API::SetFlags(entry, render_flags);
+        }
         
         draw_list_entries.push_back(entry);
     }

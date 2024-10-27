@@ -1,5 +1,7 @@
 #include <components/audio.h>
 
+#include <framework/event.h>
+
 #include <audio/api.h>
 #include <audio/sound.h>
 
@@ -9,6 +11,11 @@ using namespace tram::Audio;
 using namespace tram::Audio::API;
 
 template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("audio component pool", 150);
+
+static bool draw_source = false;
+static bool draw_info = false;
+
+EventListener frame_event;
 
 AudioComponent::~AudioComponent() {
     assert(is_ready);
@@ -34,6 +41,8 @@ void AudioComponent::Start() {
         PlayAudioSource(source);
     }
     
+    SetupModel();
+    
     is_ready = true;
 }
 
@@ -48,6 +57,10 @@ void AudioComponent::SetLocation(vec3 location) {
     
     if (is_ready) {
         SetAudioSourcePosition(source, location);
+    }
+    
+    if (model) {
+        model->SetLocation(location);
     }
 }
 
@@ -96,6 +109,67 @@ bool AudioComponent::IsPlaying() {
     } else {
         return play_on_start;
     }
+}
+
+
+void AudioComponent::SetupModel() {
+    if (draw_source) {
+        model.make();
+        model->SetModel("dev/sound");
+        model->SetLocation(this->location);
+        model->SetParent(this->parent);
+        model->SetLightmap("fullbright");
+        model->Init();
+    } else {
+        model.clear();
+    }
+}
+
+/// Checks whether the audio source is drawn.
+/// Check SetSourceDraw() for more info.
+bool AudioComponent::IsSourceDraw() {
+    return draw_source;
+}
+
+/// Checks whether the debug text is drawn.
+/// Check SetDebugInfoDraw() for more info.
+bool AudioComponent::IsDebugInfoDraw() {
+    return draw_info;
+}
+
+/// Sets the drawing of audio sources.
+/// If set to true, each audio component will initialize a 3D model, which will
+/// allow you to see the posiiton of the audio sources. Useful for debugging.
+void AudioComponent::SetSourceDraw(bool draw) {
+    if (draw_source == draw) return;
+    draw_source = draw;
+    
+    for (auto& source : PoolProxy<AudioComponent>::GetPool()) {
+        source.SetupModel();
+    }
+}
+
+/// Sets the drawing of debug info.
+/// If set to true, each frame some debug text will be drawn for each audio
+/// source. This is useful for debugging.
+void AudioComponent::SetDebugInfoDraw(bool draw) {
+    if (draw_info == draw) return;
+    draw_info = draw;
+    
+    if (draw) {
+        frame_event.make(Event::FRAME, [](Event&) {
+            for (auto& source : PoolProxy<AudioComponent>::GetPool()) {
+                char str[100];
+                sprintf(str, "Playing: %s\nRepeats: %s\nSound: %s",
+                        source.IsPlaying() ? "yes" : "no",
+                        source.repeat ? "yes" : " no",
+                        source.sound ? (const char*)source.sound->GetName() : "none");
+                Render::AddText(source.location, str);
+            }
+        });
+    } else {
+        frame_event.clear();
+    } 
 }
 
 }

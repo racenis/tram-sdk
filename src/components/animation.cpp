@@ -3,6 +3,10 @@
 
 #include <components/animation.h>
 
+#include <framework/entity.h>
+
+#include <cstring>
+
 namespace tram {
     
 template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("armature component pool", 50, false);
@@ -424,6 +428,46 @@ void AnimationComponent::Refresh() {
         Render::AddLine(o, poz * vec4(z, 1.0f), Render::COLOR_BLUE);
         */
     }
+}
+
+static EventListener frame_event;
+static bool draw_info = false;
+
+/// Checks whether the debug text is drawn.
+/// Check SetDebugInfoDraw() for more info.
+bool AnimationComponent::IsDebugInfoDraw() {
+    return draw_info;
+}
+
+/// Sets the drawing of debug info.
+/// If set to true, each frame some debug text will be drawn for each animation
+/// component. This is useful for debugging.
+void AnimationComponent::SetDebugInfoDraw(bool draw) {
+    if (draw_info == draw) return;
+    draw_info = draw;
+    
+    if (draw) {
+        frame_event.make(Event::FRAME, [](Event&) {
+            for (auto& comp : PoolProxy<AnimationComponent>::GetPool()) {
+                if (!comp.parent) continue;
+                char str[200] = "";
+                char buf[100];
+                for (size_t i = 0; i < ANIM_COUNT; i++) {
+                    if (!comp.anim_playing[i]) continue;
+                    sprintf(buf, "[%i] %.2f | %i | %s\n",
+                        (int)i,
+                        comp.anim_info[i].weight,
+                        comp.anim_info[i].repeats,
+                        (const char*)comp.anim_playing[i]);
+                    strcat(str, buf);
+                }
+                
+                Render::AddText(comp.GetParent()->GetLocation(), str);
+            }
+        });
+    } else {
+        frame_event.clear();
+    } 
 }
 
 }

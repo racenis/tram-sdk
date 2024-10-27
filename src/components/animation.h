@@ -41,6 +41,8 @@ public:
     
     void Refresh();
     void EventHandler(Event &event) { return; }
+    static bool IsDebugInfoDraw();
+    static void SetDebugInfoDraw(bool draw);
     static void Update();
 protected:
     static const size_t ANIM_COUNT = 8;

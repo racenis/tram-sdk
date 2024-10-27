@@ -31,6 +31,7 @@ void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehan
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color);
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies);
 void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset);
+void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max);
 
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
 
@@ -68,6 +69,9 @@ enum ContextType {
 ContextType GetContext();
 uint32_t GetMaxIndexRangeLength();
 void SetDevice(void*);
+
+bool IsDebugMode();
+void SetDebugMode(bool);
 
 }
 

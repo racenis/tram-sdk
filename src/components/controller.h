@@ -52,6 +52,8 @@ public:
     inline void SetFriction(float friction) { this->friction = friction; }
     inline void SetCollisionGroup(uint32_t group) { this->collision_group = group; }
     
+    static bool IsDebugInfoDraw();
+    static void SetDebugInfoDraw(bool);
     static void Update();
 protected:
     ControllerComponent() = default;

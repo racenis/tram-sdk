@@ -44,6 +44,9 @@ void main() {
 	vert_color *= sun_weight;
 	vert_color += 1.0 - sun_weight;
 	
+	// add material color
+	vert_color *= vec3(colors[TexIndex]);
+	
     vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;
 	vert_light_uv = VertLightUV;

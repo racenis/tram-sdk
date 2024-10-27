@@ -237,6 +237,11 @@ void EventListener::make(event_t event, EntityComponent* parent) {
     listener = Event::AddListener(event, parent);
 }
 
+void EventListener::make(event_t event, void (*handler)(Event& event)) {
+    clear();
+    listener = Event::AddListener(event, handler);
+}
+
 void EventListener::clear() {
     if (listener) {
         Event::RemoveListener(listener);

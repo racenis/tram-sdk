@@ -7,10 +7,14 @@
 #include <framework/entitycomponent.h>
 #include <framework/resource.h>
 
+#include <components/render.h>
+
 #include <audio/sound.h>
 
 namespace tram {
 
+class RenderComponent;
+    
 class AudioComponent : public EntityComponent {
 public:
     AudioComponent() : sound(this){}
@@ -25,12 +29,21 @@ public:
     void Stop();
     
     void EventHandler(Event &event){}
+    
+    static bool IsSourceDraw();
+    static bool IsDebugInfoDraw();
+    
+    static void SetSourceDraw(bool);
+    static void SetDebugInfoDraw(bool);
 protected:
     ResourceProxy<Audio::Sound> sound;
     Audio::audiosource_t source = {.generic = nullptr};
     vec3 location = {0.0f, 0.0f, 0.0f};
     bool repeat = false;
     bool play_on_start = false;
+    
+    void SetupModel();
+    Component<RenderComponent> model;
 };
 
 }

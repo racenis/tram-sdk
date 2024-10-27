@@ -128,6 +128,14 @@ protected:
     id_t entity_id = 0;
 };
 
+class Options : public Menu {
+public:
+    Options() = default;
+    uint32_t Layer() { return 1; }
+    void Display();
+    ~Options() = default;
+};
+
 }
 
 #endif

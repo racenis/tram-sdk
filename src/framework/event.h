@@ -67,6 +67,7 @@ public:
     ~EventListener();
     void make(event_t event, Entity* parent);
     void make(event_t event, EntityComponent* parent);
+    void make(event_t event, void (*handler)(Event& event));
     void clear();
     explicit operator bool() { return listener != 0; }
 protected:

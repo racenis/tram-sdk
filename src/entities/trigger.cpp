@@ -31,6 +31,8 @@ static const uint32_t fields[3] = {
     TYPE_NAME
 }; 
 
+static bool draw_trigger = false;
+
 void Trigger::Register() {
     Entity::RegisterType(
         "trigger", 
@@ -53,8 +55,11 @@ Trigger::Trigger(const SharedEntityData& shared_data, const ValueArray& field_ar
 
 void Trigger::UpdateParameters() {
     if (!is_loaded) return;
-    //rendercomponent->SetLocation(location);
-    //rendercomponent->SetRotation(rotation);
+    
+    if (rendercomponent) {
+        rendercomponent->SetLocation(location);
+        rendercomponent->SetRotation(rotation);
+    }
 }
 
 void Trigger::SetParameters() {
@@ -64,14 +69,10 @@ void Trigger::SetParameters() {
     triggercomponent->SetRotation(rotation);
 }
 
-void Trigger::Load(){
-    //rendercomponent.make();
-    triggercomponent.make();
-    
-    //rendercomponent->SetParent(this);
-    //rendercomponent->SetModel(model);
-    //rendercomponent->SetLightmap("fullbright");
+void Trigger::Load(){    
+    SetupModel();
 
+    triggercomponent.make();
     triggercomponent->SetParent(this);
     triggercomponent->SetCollisionMask(collision_mask);
     triggercomponent->SetCollisionGroup(COLL_TRIGGER);
@@ -80,7 +81,7 @@ void Trigger::Load(){
         dynamic_cast<Trigger*>(comp->GetParent())->Activate();
     });
     
-    //rendercomponent->Init();
+    
     triggercomponent->Init();
     
     is_loaded = true;
@@ -93,7 +94,7 @@ void Trigger::Unload() {
 
     Serialize();
 
-    //rendercomponent.clear();
+    rendercomponent.clear();
     triggercomponent.clear();
 }
 
@@ -121,6 +122,27 @@ void Trigger::MessageHandler(Message& msg) {
         default:
             std::cout << "Trigger " << name << " does not understand message " << Message::GetName(msg.type) << std::endl;  
     }
+}
+
+void Trigger::SetupModel() {
+    if (!draw_trigger) return;
+    
+    rendercomponent.make();
+    rendercomponent->SetParent(this);
+    rendercomponent->SetModel(model);
+    rendercomponent->SetLightmap("fullbright");
+    rendercomponent->Init();
+}
+
+
+bool Trigger::Trigger::IsDrawTrigger() {
+    return draw_trigger;
+}
+
+void Trigger::SetDrawTrigger(bool draw) {
+    draw_trigger = draw;
+    
+    // TODO: add code to notify every trigger about this
 }
 
 }

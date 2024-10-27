@@ -59,8 +59,8 @@ protected:
     
     std::vector<IndexRange> index_ranges;
     
-    vec3 aabb_min;
-    vec3 aabb_max;
+    vec3 aabb_min = {0.0f, 0.0f, 0.0f};
+    vec3 aabb_max = {0.0f, 0.0f, 0.0f};
     
     std::vector<Material*> materials;
 

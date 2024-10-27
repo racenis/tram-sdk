@@ -94,6 +94,30 @@ void RotateAABB(vec3& min, vec3& max, quat rotation) {
     }
 }
 
+void RotateAABB(vec3& min, vec3& max, mat4 rotation) {
+    vec3 extents[8] = {
+        {min.x, min.y, min.z},
+        {max.x, min.y, min.z},
+        {min.x, max.y, min.z},
+        {min.x, min.y, max.z},
+        {max.x, max.y, min.z},
+        {max.x, min.y, max.z},
+        {max.x, max.y, max.z},
+        {min.x, max.y, max.z}
+    };
+    
+    for (auto& extent : extents) {
+        extent = rotation * vec4(extent, 1.0f);
+    }
+    
+    min = extents[0];
+    max = extents[0];
+    
+    for (auto& extent : extents) {
+        min = MergeAABBMin(min, extent);
+        max = MergeAABBMax(max, extent);
+    }
+}
 
 
 mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation) {

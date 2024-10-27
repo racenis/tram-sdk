@@ -11,7 +11,8 @@
 namespace tram::Stats {
     
 enum Resource : uint32_t {
-    RESOURCE_VRAM
+    RESOURCE_VRAM,
+    RESOURCE_DRAWCALL
 };
 
 void Start(System::system_t system);

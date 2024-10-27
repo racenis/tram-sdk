@@ -35,6 +35,7 @@ public:
     void SetTextureOffset(name_t material, vec4 offset);
     
     void SetDirectionaLight(bool enabled);
+    void SetRenderDebug(bool enabled);
 
     void EventHandler(Event &event) { return; }
 protected:

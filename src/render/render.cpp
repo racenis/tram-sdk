@@ -322,7 +322,23 @@ void AddCube(vec3 pos, float height, float radius, color_t color) {
 void AddText(vec3 pos, const char* text, color_t color) {
     Project(pos, pos);
     if (pos.z > 1.0f) return;
-    AddText(pos.x, pos.y, text);
+    
+    uint16_t w = 0;
+    uint16_t h = 16;
+    
+    uint16_t line = 0;
+    for (const char* c = text; *c != '\0'; c++) {
+        if (*c=='\n') {
+            h += 16;
+            if (line > w) w = line;
+            line = 0;
+        } else {
+            //line += 16;
+            line += font_debug->GetFrames()[*c].width;
+        }
+    }
+    
+    AddText(pos.x - w / 2.0f, pos.y - h / 2.0f, text);
 }
 
 void AddText(float x, float y, const char* text, color_t color) {

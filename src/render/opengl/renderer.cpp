@@ -6,6 +6,7 @@
 #include <render/api.h>
 
 #include <framework/settings.h>
+#include <framework/stats.h>
 
 #include <templates/octree.h>
 
@@ -163,15 +164,68 @@ void RenderFrame() {
     for (auto& robj : draw_list) {
         // TODO: do view culling in here
 
+        if (robj.flags & FLAG_USE_AABB) {
+            auto matrix = LAYER[robj.layer].projection_matrix * LAYER[robj.layer].view_matrix;
+            
+            vec4 plane_l = {matrix[0][3] - matrix[0][0], 
+                            matrix[1][3] - matrix[1][0],
+                            matrix[2][3] - matrix[2][0],
+                            matrix[3][3] - matrix[3][0]};
+            
+            vec4 plane_r = {matrix[0][3] + matrix[0][0],
+                            matrix[1][3] + matrix[1][0],
+                            matrix[2][3] + matrix[2][0],
+                            matrix[3][3] + matrix[3][0]};
+
+            vec4 plane_t = {matrix[0][3] - matrix[0][1],
+                            matrix[1][3] - matrix[1][1],
+                            matrix[2][3] - matrix[2][1],
+                            matrix[3][3] - matrix[3][1]};
+
+            vec4 plane_b = {matrix[0][3] + matrix[0][1],
+                            matrix[1][3] + matrix[1][1],
+                            matrix[2][3] + matrix[2][1],
+                            matrix[3][3] + matrix[3][1]};
+
+            vec4 plane_f = {matrix[0][2],
+                            matrix[1][2],
+                            matrix[2][2],
+                            matrix[3][2]};
+
+            vec4 plane_n = {matrix[0][3] - matrix[0][2],
+                            matrix[1][3] - matrix[1][2],
+                            matrix[2][3] - matrix[2][2],
+                            matrix[3][3] - matrix[3][2]};
+            
+            vec3 min = robj.aabb_min;
+            vec3 max = robj.aabb_max;
+            
+            vec3 mid = robj.matrix * vec4(glm::mix(min, max, 0.5f), 1.0f);
+            
+            float len1 = glm::length(min);
+            float len2 = glm::length(max);
+            
+            float len = len1 > len2 ? len1 : len2;
+            
+            if (glm::dot(plane_l, vec4(mid, 1.0f)) < -len) continue;
+            if (glm::dot(plane_r, vec4(mid, 1.0f)) < -len) continue;
+            if (glm::dot(plane_t, vec4(mid, 1.0f)) < -len) continue;
+            if (glm::dot(plane_b, vec4(mid, 1.0f)) < -len) continue;
+            if (glm::dot(plane_f, vec4(mid, 1.0f)) < -len) continue;
+            if (glm::dot(plane_n, vec4(mid, 1.0f)) < -len) continue;
+        }
+
         rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj.CalcSortKey(LAYER[robj.layer].view_position), &robj));
     }
 
     sort(rvec.begin(), rvec.end());
 
-    
+    Stats::Remove(Stats::RESOURCE_DRAWCALL, Stats::GetStat(Stats::RESOURCE_DRAWCALL));
+    Stats::Add(Stats::RESOURCE_DRAWCALL, rvec.size());
+
     for (auto [_, robj] : rvec) {
         
-        if (render_debug) {
+        if (render_debug && !(robj->flags & FLAG_NO_DEBUG)) {
             char debug_text[250];
             
             uint32_t tex_hash = 0;
@@ -179,12 +233,11 @@ void RenderFrame() {
                 tex_hash ^= robj->textures[tex];
             }
             
-            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i",
+            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f",
                 robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap,
-                robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0);
+                robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max));
             
-            // TODO: use AABB to center, instead of origin
-            vec3 pos = robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            vec3 pos = robj->matrix * glm::vec4(glm::mix(robj->aabb_min, robj->aabb_max, 0.5f), 1.0f);
             
             AddText(pos, debug_text);
         }
@@ -269,6 +322,21 @@ void RenderFrame() {
 
 
     }
+    
+    if (render_debug) {
+        for (auto& light : light_list) {
+            char debug_text[250];
+            
+            sprintf(debug_text, "Index: %i\nDistance: %.2f\nColor: %.2f %.2f %.2f\nDirection: %.2f %.2f %.2f\nExponent: %.2f",
+                (int)light_list.index(&light),
+                light.distance,
+                light.color.r, light.color.g, light.color.b,
+                light.direction.x, light.direction.y, light.direction.z,
+                light.exponent);
+            
+            AddText(light.location, debug_text);
+        }
+    }
 }
 
 drawlistentry_t InsertDrawListEntry() {
@@ -297,6 +365,11 @@ void SetPose(drawlistentry_t entry, Pose* pose) {
 
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
     entry.gl->lightmap = lightmap.gl_texture_handle;
+}
+
+void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max) {
+    entry.gl->aabb_min = min;
+    entry.gl->aabb_max = max;
 }
 
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
@@ -696,6 +769,14 @@ uint32_t GetMaxIndexRangeLength() {
 
 void SetDevice(void*) {
     // OpenGL doesn't need a device!
+}
+
+bool IsDebugMode() {
+    return render_debug;
+}
+
+void SetDebugMode(bool mode) {
+    render_debug = mode;
 }
 
 }

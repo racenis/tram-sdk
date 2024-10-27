@@ -33,7 +33,11 @@ void ProjectLine(vec3& point, const vec3& from, const vec3& to);
 
 vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point2, vec3 point3);
 
+vec3 MergeAABBMin(vec3 a, vec3 b);
+vec3 MergeAABBMax(vec3 a, vec3 b);
+
 void RotateAABB(vec3& min, vec3& max, quat rotation);
+void RotateAABB(vec3& min, vec3& max, mat4 rotation);
 
 mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation);
 mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, const vec3& scale);

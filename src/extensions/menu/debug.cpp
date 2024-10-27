@@ -2,10 +2,15 @@
 
 #include <render/aabb.h>
 #include <physics/api.h>
-//#include <render/render.h>
+#include <render/api.h>
 #include <components/render.h>
+#include <components/audio.h>
+#include <components/animation.h>
+#include <components/controller.h>
+#include <components/light.h>
 #include <framework/entity.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 #include <framework/worldcell.h>
 #include <framework/stats.h>
 
@@ -272,7 +277,11 @@ void DebugMenu::Display() {
             Menu::Push(emit);
         }
         
-        GUI::Button("Options");
+        if (GUI::Button("Options"))  {
+            auto options = new Options;
+            
+            Menu::Push(options);
+        }
     
         if (GUI::CheckBox(intercept_enabled, "Intercept ")) {
             if (intercept_enabled) {
@@ -639,6 +648,7 @@ void StatisticsMenu::Display() {
 
         char render_str1[16];
         char render_str2[24];
+        char render_str3[16];
         char physics_str[24];
         
         uint32_t vram_kb = Stats::GetStat(Stats::RESOURCE_VRAM) / 1024;
@@ -647,22 +657,29 @@ void StatisticsMenu::Display() {
         
         snprintf(render_str1, 16, "Render %.2fms", 1000 * Stats::GetStatAverage(System::SYSTEM_RENDER));
         snprintf(render_str2, 24, "VRAM %i %i KB", vram_mb_w, vram_mb_f);
+        snprintf(render_str3, 16, "Draw %i", (int)Stats::GetStat(Stats::RESOURCE_DRAWCALL));
         snprintf(physics_str, 24, "Physics %.2fms", 1000 * Stats::GetStatAverage(System::SYSTEM_PHYSICS));
 
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
-        GUI::PushFrameRelative(GUI::FRAME_LEFT, 200);
+        GUI::PushFrameRelative(GUI::FRAME_LEFT, 275);
         GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
             GUI::Text(1, render_str1);
             
-            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 75);
+            
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 105);
+                GUI::Text(1, render_str3);
+            GUI::PopFrame();
+            
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 150);
                 GUI::Text(1, render_str2, GUI::TEXT_RIGHT);
             GUI::PopFrame();
+            
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
         
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 300);
+        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 375);
         GUI::PushFrameRelative(GUI::FRAME_LEFT, 100);
         GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
@@ -818,6 +835,43 @@ void SignalMenu::Display() {
         }
         
     GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
+
+
+
+void Options::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+
+        bool renderer_debug = Render::API::IsDebugMode();
+        
+        bool audio_debug = AudioComponent::IsDebugInfoDraw();
+        bool sound_debug = AudioComponent::IsSourceDraw();
+        
+        bool anim_debug = AnimationComponent::IsDebugInfoDraw();
+        bool light_debug = LightComponent::IsLightDraw();
+        bool controller_debug = ControllerComponent::IsDebugInfoDraw();
+        
+        GUI::CheckBox(renderer_debug, "Renderer Debug ");
+        GUI::CheckBox(audio_debug, "Audio Debug ");
+        GUI::CheckBox(sound_debug, "Draw AudioComponent ");
+        GUI::CheckBox(anim_debug, "Animation Debug ");
+        GUI::CheckBox(light_debug, "Light Debug ");
+        GUI::CheckBox(controller_debug, "Controller Debug ");
+        
+        
+        Render::API::SetDebugMode(renderer_debug);
+        AudioComponent::SetDebugInfoDraw(audio_debug);
+        AudioComponent::SetSourceDraw(sound_debug);
+        AnimationComponent::SetDebugInfoDraw(anim_debug);
+        LightComponent::SetLightDraw(light_debug);
+        ControllerComponent::SetDebugInfoDraw(controller_debug);
+        
     GUI::PopFrame();
     GUI::PopFrame();
     GUI::PopFrame();

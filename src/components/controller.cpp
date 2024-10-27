@@ -8,6 +8,8 @@
 #include <components/physics.h>
 #include <components/trigger.h>
 
+#include <render/render.h>
+
 namespace tram {
 
 template <> Pool<ControllerComponent> PoolProxy<ControllerComponent>::pool ("controller component pool", 25, false);
@@ -258,6 +260,7 @@ void ControllerComponent::ResetMove() {
     crouching = false;
 }
 
+static bool draw_debug = false;
 
 /// Updates the ControllerComponents.
 /// Updates all of the ControllerComponents. Should be called once per
@@ -285,6 +288,25 @@ void ControllerComponent::Update() {
         }
     }
     
+    if (!draw_debug) return;
+    for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+        char str[100];
+        sprintf(str, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nStanding: %s",
+                component.velocity.x, component.velocity.y, component.velocity.z,
+                component.is_in_air ? "yes" : "no",
+                component.running ? "yes" : "no",
+                component.crouching ? "yes" : "no",
+                component.standing_on ? (const char*)Entity::Find(component.standing_on)->GetName() : "[not standing]");
+        Render::AddText(component.GetParent()->GetLocation(), str);
+    }
+}
+
+bool ControllerComponent::IsDebugInfoDraw() {
+    return draw_debug;
+}
+
+void ControllerComponent::SetDebugInfoDraw(bool draw) {
+    draw_debug = draw;
 }
 
 /// Performs the action.
