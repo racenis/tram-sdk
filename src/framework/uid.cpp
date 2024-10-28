@@ -23,6 +23,7 @@ UID::UID (const std::string& value) {
 UID::UID (const char* value) {
     if (!value) {
         this->key = 0;
+        return;
     }
     
     uint64_t hash = MurmurHash2(value, strlen(value) + 1);

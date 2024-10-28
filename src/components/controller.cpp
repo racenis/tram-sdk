@@ -56,6 +56,10 @@ void ControllerComponent::Crouch() {
     crouching = true;
 }
 
+void ControllerComponent::Fly() {
+    flying = true;
+}
+
 void ControllerComponent::Jump() {
     if (!is_in_air) {
         velocity.y += 0.119f;
@@ -75,7 +79,7 @@ void ControllerComponent::TurnRight() {
 void ControllerComponent::ApplyDynamics() {
     
     // if in air, apply gravity; otherwise apply ground friction
-    if (is_in_air) {
+    if (is_in_air && !flying && collide) {
         // check for terminal velocity
         if (velocity.y > -0.12f) {
             velocity.y -= 0.0053f;
@@ -110,6 +114,10 @@ void ControllerComponent::ApplyDynamics() {
         
         velocity.x += add_velocity.x;
         velocity.z += add_velocity.z;
+        
+        if (flying || !collide) {
+            velocity.y += add_velocity.y;
+        }
     }
 }
 
@@ -118,6 +126,13 @@ void ControllerComponent::RecoverFromCollisions() {
     const float step = crouching ? step_height_crouch : step_height;
     const float half_height = height / 2.0f;
     const float width = collision_width;
+    
+    // if not colliding, just apply the velocity.
+    if (!collide) {
+        vec3 new_pos = parent->GetLocation() + velocity;
+        parent->UpdateTransform(new_pos, parent->GetRotation());
+        return;
+    }
     
     // compute character's new position
     vec3 old_pos = parent->GetLocation();
@@ -258,6 +273,7 @@ void ControllerComponent::ResetMove() {
     move_direction = {0.0f, 0.0f, 0.0f};
     running = false;
     crouching = false;
+    flying = false;
 }
 
 static bool draw_debug = false;
@@ -291,11 +307,12 @@ void ControllerComponent::Update() {
     if (!draw_debug) return;
     for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
         char str[100];
-        sprintf(str, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nStanding: %s",
+        sprintf(str, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nFlying: %s\nStanding: %s",
                 component.velocity.x, component.velocity.y, component.velocity.z,
                 component.is_in_air ? "yes" : "no",
                 component.running ? "yes" : "no",
                 component.crouching ? "yes" : "no",
+                component.flying ? "yes" : "no",
                 component.standing_on ? (const char*)Entity::Find(component.standing_on)->GetName() : "[not standing]");
         Render::AddText(component.GetParent()->GetLocation(), str);
     }

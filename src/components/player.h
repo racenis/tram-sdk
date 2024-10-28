@@ -26,10 +26,15 @@ public:
     ~PlayerComponent();
     void SetControllerComponent (ControllerComponent* comp) { controller = comp; }
     void Start() {}
+    void SetNoclip(bool value);
 private:
     EventListener keydown;
     EventListener keypress;
     EventListener mouseposition;
+    
+    vec3 direction_facing = {0.0f, 0.0f, 0.0f};
+    
+    bool noclipping = false;
     
     ControllerComponent* controller = nullptr;
 };

@@ -22,6 +22,7 @@ public:
     
     void Run();
     void Crouch();
+    void Fly();
     void Jump();
     void TurnLeft();
     void TurnRight();
@@ -46,11 +47,13 @@ public:
         wallbonk_callback = callback;
     }
     
-    inline void SetWalkSpeed(float walk_speed) { this->walk_speed = walk_speed; }
-    inline void SetRunSpeed(float run_speed) { this->run_speed = run_speed; }
-    inline void SetCrouchSpeed(float crouch_speed) { this->crouch_speed = crouch_speed; }
+    inline void SetWalkSpeed(float speed) { this->walk_speed = speed; }
+    inline void SetRunSpeed(float speed) { this->run_speed = speed; }
+    inline void SetCrouchSpeed(float speed) { this->crouch_speed = speed; }
+    inline void SetFlySpeed(float speed) { this->fly_speed = speed; }
     inline void SetFriction(float friction) { this->friction = friction; }
     inline void SetCollisionGroup(uint32_t group) { this->collision_group = group; }
+    inline void SetCollisions(bool collide) { this->collide = collide; }
     
     static bool IsDebugInfoDraw();
     static void SetDebugInfoDraw(bool);
@@ -84,11 +87,15 @@ protected:
     float walk_speed = 0.1f;
     float run_speed = 0.2f;
     float crouch_speed = 0.05f;
+    float fly_speed = 0.2f;
     
     float friction = 0.89f;
     
     bool crouching = false;
     bool running = false;
+    bool flying = false;
+    
+    bool collide = true;
     
     id_t standing_on = 0;
     id_t standing_on_prev = 0;

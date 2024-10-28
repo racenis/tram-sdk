@@ -91,6 +91,7 @@ enum KeyboardAction : keyboardaction_t {
     KEY_ACTION_JUMP,
     KEY_ACTION_CROUCH,
     KEY_ACTION_SPRINT,
+    KEY_ACTION_FLY,
     KEY_ACTION_ACTIVATE,
     KEY_ACTION_UP,
     KEY_ACTION_DOWN,

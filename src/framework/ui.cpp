@@ -64,6 +64,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_SPACE, KeyBinding {.action = KEY_ACTION_JUMP}},
     {KEY_LEFT_CONTROL, KeyBinding {.action = KEY_ACTION_CROUCH}},
     {KEY_LEFT_SHIFT, KeyBinding {.action = KEY_ACTION_SPRINT}},
+    {KEY_LEFT_ALT, KeyBinding {.action = KEY_ACTION_FLY}},
     {KEY_E, KeyBinding {.action = KEY_ACTION_ACTIVATE}},
     
     {KEY_UP, KeyBinding {.action = KEY_ACTION_UP}},
@@ -354,6 +355,7 @@ static const char* keyboardaction_names[MAX_KEYBOARDACTION_TYPES] = {
     "jump",
     "crouch",
     "sprint",
+    "fly",
     "activate",
     "up",
     "down",

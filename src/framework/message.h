@@ -32,6 +32,8 @@ struct Message {
         SELECT,
         SET_PROGRESS,
         SET_ANIMATION,
+        SET_FLAG_ON,
+        SET_FLAG_OFF,
         LAST_MESSAGE
     };
 

@@ -311,6 +311,16 @@ void DebugMenu::Display() {
             Physics::API::DrawDebug(draw_debug);
         }
         
+        static bool noclip = false;
+        if (GUI::CheckBox(noclip, "Noclip ")) {
+            Message msg;
+            msg.sender = 0;
+            msg.receiver = Entity::Find("player")->GetID();
+            msg.type = noclip ? Message::SET_FLAG_ON : Message::SET_FLAG_OFF;
+            msg.data_value = Message::AllocateData<Value>(UID("noclip"));
+            Message::Send(msg);
+        }
+        
         
     GUI::PopFrame();
     GUI::PopFrame();

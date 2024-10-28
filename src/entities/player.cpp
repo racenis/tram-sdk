@@ -60,6 +60,24 @@ void Player::MessageHandler(Message& msg) {
     if (msg.type == Message::PING) {
         Log ("Player was pinged with {}!", (long long) msg.data);
     }
+    
+    if (msg.type == Message::SET_FLAG_ON) {
+        if (msg.data_value && (name_t)*msg.data_value == "noclip") {
+            Log("Noclip turned on.");
+            plomp->SetNoclip(true);
+        } else {
+            Log ("Player does not have flag {}!", (name_t)*msg.data_value);
+        }
+    }
+    
+    if (msg.type == Message::SET_FLAG_OFF) {
+        if (msg.data_value && (name_t)*msg.data_value == "noclip") {
+            Log("Noclip turned off.");
+            plomp->SetNoclip(false);
+        } else {
+            Log ("Player does not have flag {}!", (name_t)*msg.data_value);
+        }
+    }
 }
 
 }
