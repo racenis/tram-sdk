@@ -516,8 +516,6 @@ int main(int argc, const char** argv) {
     StaticWorldObject::Register();
     Ext::Design::Button::Register();
 
-    SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
-
     Core::Init();           // core init should always be first
     UI::Init();
     Physics::Init(); // optional, but needed for StaticWorldObject, Crate and Player entities

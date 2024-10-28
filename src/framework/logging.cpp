@@ -14,7 +14,7 @@ static std::vector <Severity> severities;
 
 void SetSystemLoggingSeverity (System::system_t system, Severity min_severity) {
     if (system >= severities.size()) {
-        severities.resize(system + 1);
+        severities.assign(system + 1, SEVERITY_WARNING);
     }
     
     severities[system] = min_severity;
@@ -47,7 +47,8 @@ void concat_fmt (std::string_view& str) {
 }
 
 void flush_console(int severity, int system) {
-    if ((size_t) system < severities.size() && severity < severities[system]) {
+    const bool severity_known = (size_t) system < severities.size();
+    if ((!severity_known && severity < 1) || (severity_known && severity < severities[system])) {
         buffer[0] = '\0';
         return;
     }

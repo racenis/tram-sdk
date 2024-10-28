@@ -78,13 +78,13 @@ void Log(int severity, int system, const std::string_view& format, Args&&... arg
 template <typename... Args>
 void Log(int system, const std::string_view& format, Args&&... args) {
     std::string_view format_view = format;
-    implementation::log(implementation::flush_console, 0, system, format_view, args...);
+    implementation::log(implementation::flush_console, SEVERITY_DEFAULT, system, format_view, args...);
 }
 
 template <typename... Args>
 void Log(const std::string_view& format, Args&&... args) {
     std::string_view format_view = format;
-    implementation::log(implementation::flush_console, 0, 6, format_view, args...);
+    implementation::log(implementation::flush_console, SEVERITY_DEFAULT, 6, format_view, args...);
 }
 
 template <typename... Args>
