@@ -419,10 +419,22 @@ bool CursorOver(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
 }
 
 bool mouse_click_not_handled = true;
+bool mouse_click_not_handled_late = true;
 
+// call this to check if user just pressed click
 bool ClickHandled() {
     if (mouse_click_not_handled) {
         mouse_click_not_handled = false;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// call this to check if user released click
+bool ClickHandledLate() {
+    if (mouse_click_not_handled_late) {
+        mouse_click_not_handled_late = false;
         return true;
     } else {
         return false;
@@ -465,7 +477,7 @@ bool Button(const char* text, bool enabled, uint32_t width) {
     
     RestoreUserColor();
     
-    return enabled && CursorOver(x, y, w, h) && ClickHandled();
+    return enabled && CursorOver(x, y, w, h) && ClickHandledLate();
 }
 
 bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled) {
@@ -487,7 +499,7 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
     if (text) Text(1, text, TEXT_LEFT);
     
     if (enabled && CursorOver(x, y, frame_stack.top().cursor_x - x, 24)) {
-        if (ClickHandled()) {
+        if (ClickHandledLate()) {
             selected = index;
             return true;
         }
@@ -517,7 +529,7 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     if (text) Text(1, text, TEXT_LEFT);
     
     if (enabled && CursorOver(x, y, frame_stack.top().cursor_x - x, 24)) {
-        if (ClickHandled()) {
+        if (ClickHandledLate()) {
             selected = !selected;
             return true;
         }
@@ -652,7 +664,7 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
     }
     
     if (CursorOver(x, y, w, h)) {
-        if (Clicked()) {
+        if (ClickHandled()) {
             selected_text_string = text;
         }
         
@@ -672,7 +684,6 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
     
     RestoreUserColor();
     
-    //return CursorOver(x, y, w, h) && ClickHandled();
     return text_changed;
 }
 
@@ -727,6 +738,11 @@ void Begin() {
         selected_text_string = nullptr;
     } else {
         mouse_click_not_handled = false;
+    }
+    if (!UI::PollKeyboardKey(UI::KEY_LEFTMOUSE) && prev_mouse) {
+        mouse_click_not_handled_late = true;
+    } else {
+        mouse_click_not_handled_late = false;
     }
     prev_mouse = UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
     
