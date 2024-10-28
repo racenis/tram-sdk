@@ -132,6 +132,8 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
+- Add logging to file
+	- Add different severities according to where the logs are sent to
 - Fix Octree
 	- Write some unit tests
 	- Check what happens when point is put directly on plane or origin

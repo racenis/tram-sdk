@@ -40,6 +40,10 @@ Render::Sprite* fonts [16] = {nullptr};
 Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
 Render::drawlistentry_t glyphvertices_entry;
 
+UI::CursorType current_cursor = UI::CURSOR_DEFAULT;
+bool cursor_dirty = false;
+bool cursor_set = false;
+
 static uint32_t scaling = 1;
 
 std::vector<Render::SpriteVertex> glyphvertices;
@@ -69,6 +73,14 @@ void SetScaling(uint32_t scale) {
 
 uint32_t GetScaling() {
     return scaling;
+}
+
+void SetCursorDelayed(UI::CursorType cursor) {
+    if (current_cursor != cursor) {
+        current_cursor = cursor;
+        cursor_dirty = true;
+    }
+    cursor_set = true;
 }
 
 using namespace tram::Render::API;
@@ -127,6 +139,19 @@ void Update() {
     SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size());
     glyphvertices.clear();
     keycode_queue.clear();
+    
+    // this logic is not very logical, but it should work
+    if (cursor_dirty) {
+        UI::SetCursor(current_cursor);
+        std::cout << "setting cursor to: " << current_cursor << std::endl;
+        cursor_dirty = false;
+    } else {
+        if (!cursor_set && current_cursor != UI::CURSOR_DEFAULT) {
+            UI::SetCursor(UI::CURSOR_DEFAULT);
+            current_cursor = UI::CURSOR_DEFAULT;
+        }
+    }
+    cursor_set = false;
 }
 
 /// Registers a font.
@@ -425,7 +450,7 @@ bool Button(const char* text, bool enabled, uint32_t width) {
             style = WIDGET_BUTTON_SELECTED_ENABLED;
         }
         
-        UI::SetCursor(UI::CURSOR_CLICK);
+        SetCursorDelayed(UI::CURSOR_CLICK);
     }
     
     GlyphColor(Render::COLOR_WHITE);
@@ -467,7 +492,7 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
             return true;
         }
         
-        UI::SetCursor(UI::CURSOR_CLICK);
+        SetCursorDelayed(UI::CURSOR_CLICK);
     }
     
     return false;
@@ -497,7 +522,7 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
             return true;
         }
         
-        UI::SetCursor(UI::CURSOR_CLICK);
+        SetCursorDelayed(UI::CURSOR_CLICK);
     }
     
     return false;
@@ -520,7 +545,7 @@ bool Slider(float& value, bool enabled, uint32_t width) {
             style += 2;
         }
         
-        UI::SetCursor(UI::CURSOR_CLICK);
+        SetCursorDelayed(UI::CURSOR_CLICK);
     }
     
     GlyphColor(Render::COLOR_WHITE);
@@ -631,7 +656,7 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
             selected_text_string = text;
         }
         
-        UI::SetCursor(UI::CURSOR_TEXT);
+        SetCursorDelayed(UI::CURSOR_TEXT);
     }
     
     GlyphColor(Render::COLOR_WHITE);
@@ -658,7 +683,7 @@ void TextBox(const char* text, uint32_t w, uint32_t h) {
     if (h == 0) h = 22;
 
     if (CursorOver(x, y, w, h)) {
-        UI::SetCursor(UI::CURSOR_TEXT);
+        SetCursorDelayed(UI::CURSOR_TEXT);
     }
     
     GlyphColor(Render::COLOR_WHITE);
@@ -690,7 +715,7 @@ void Begin() {
     first_frame->stack_height = 0;
     
     // Resets cursor -> widgets might change it to something else.
-    UI::SetCursor(UI::CURSOR_DEFAULT);
+    //UI::SetCursor(UI::CURSOR_DEFAULT);
     
     // This is set up so that only a single button or other widget can handle
     // the mouse click for the duration of it.
