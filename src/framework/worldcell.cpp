@@ -240,7 +240,9 @@ void WorldCell::LoadFromDisk() {
                     *val = file.read_float32();
                 } else if (data_type == "name") {
                     *val = file.read_name();
-                } else {
+                } else if (data_type == "vec3") {
+                    *val = vec3 {file.read_float32(), file.read_float32(), file.read_float32()};
+                }  else {
                     *val = file.read_name();
                     std::cout << "Unknown data type for signal: " << data_type << std::endl;
                 }

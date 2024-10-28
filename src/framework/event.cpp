@@ -16,11 +16,12 @@ namespace tram {
 const size_t MAX_EVENT_TYPES = 100;
     
 struct ListenerInfo {
-    enum ListenerType : int64_t {
+    enum ListenerType : uint32_t {
         LISTENER_COMPONENT,
         LISTENER_ENTITY,
         LISTENER_DATA_FUNCTION,
-        LISTENER_FUNCTION
+        LISTENER_FUNCTION,
+        LISTENER_DELETED
     };
     
     union {
@@ -40,6 +41,7 @@ static Queue<Event> event_queue ("event queue", 500);
 static StackPool<char> data_pool ("event data pool", 2000);
 //static std::vector<Pool<ListenerInfo>> listener_table(Event::LAST_EVENT, {"EVENTListnerPoo", 50});
 static std::vector<std::vector<ListenerInfo>> listener_table(Event::LAST_EVENT, std::vector<ListenerInfo>());
+static std::vector<std::vector<ListenerInfo>> new_listeners(Event::LAST_EVENT, std::vector<ListenerInfo>());
 
 static const char* event_names[MAX_EVENT_TYPES] = {
     "keypress",
@@ -65,6 +67,7 @@ event_t Event::Register(const char* name) {
     assert(last_type < MAX_EVENT_TYPES);
     
     listener_table.push_back(std::vector<ListenerInfo>());
+    new_listeners.push_back(std::vector<ListenerInfo>());
     event_names[last_type] = name;
     return last_type++;
 }
@@ -110,7 +113,7 @@ listener_t Event::AddListener(event_t type, EntityComponent* component) {
     new_listener.type = ListenerInfo::LISTENER_COMPONENT;
     new_listener.handle = NewListenerHandle(type);
     
-    listener_table[type].push_back(new_listener);
+    new_listeners[type].push_back(new_listener);
     
     return new_listener.handle;
 }
@@ -123,7 +126,7 @@ listener_t Event::AddListener(event_t type, Entity* entity) {
     new_listener.type = ListenerInfo::LISTENER_ENTITY;
     new_listener.handle = NewListenerHandle(type);
     
-    listener_table[type].push_back(new_listener);
+    new_listeners[type].push_back(new_listener);
     
     return new_listener.handle;
 }
@@ -137,7 +140,7 @@ listener_t Event::AddListener(event_t type, void* data, void (*data_function)(Ev
     new_listener.type = ListenerInfo::LISTENER_DATA_FUNCTION;
     new_listener.handle = NewListenerHandle(type);
     
-    listener_table[type].push_back(new_listener);
+    new_listeners[type].push_back(new_listener);
     
     return new_listener.handle;
 }
@@ -150,7 +153,7 @@ listener_t Event::AddListener(event_t type, void (*function)(Event& event)) {
     new_listener.type = ListenerInfo::LISTENER_FUNCTION;
     new_listener.handle = NewListenerHandle(type);
     
-    listener_table[type].push_back(new_listener);
+    new_listeners[type].push_back(new_listener);
     
     return new_listener.handle;
 }
@@ -161,24 +164,43 @@ void Event::RemoveListener(listener_t listener_id) {
     // if it is too slow, then it could possibly be replaced with a binary search,
     // since each new handle is numerically larger than the previous, as well as
     // each listener being added to the end of the table makes it sorted.
-    
-    //listener_t id_part = listener_id >> 32;
+
     listener_t event_part = (listener_id << 16) >> 16;
     
+    // why is this code so weird
     auto it = listener_table[event_part].begin();
     auto end = listener_table[event_part].end();
     
+    // this bit searches for listener in the main table
     while (it != end) {
         if (it->handle == listener_id) break;
         it++;
     }
     
+    // this checks if it wasn't found
     if (it == end) {
-        std::cout << "Listener with key " << listener_id << "not found and not deleted!" << std::endl;
+        it = new_listeners[event_part].begin();
+        end = new_listeners[event_part].end();
+        
+        // this here will search it in the new listener table
+        while (it != end) {
+            if (it->handle == listener_id) break;
+            it++;
+        }
+        
+        if (it == end) {
+            std::cout << "Listener with key " << listener_id << "not found and not deleted!" << std::endl;
+            return;
+        }
+        
+        // deletes it if it is found
+        new_listeners[event_part].erase(it);
+        
         return;
     }
     
-    listener_table[event_part].erase(it);
+    // otherwise mark it as deleted for removal later
+    it->type = ListenerInfo::LISTENER_DELETED;
 }
 
 /// Dispatches events from the event queue.
@@ -200,6 +222,8 @@ void Event::Dispatch() {
                 case ListenerInfo::LISTENER_FUNCTION:
                     listener.function(event);
                     break;
+                case ListenerInfo::LISTENER_DELETED:
+                    break;
             }
         }
 
@@ -207,6 +231,22 @@ void Event::Dispatch() {
     }
     
     data_pool.Reset();
+    
+    // remove listeners pending for deletion
+    for (auto& table : listener_table) {
+        std::erase_if(table, [](ListenerInfo& info) {
+            return info.type == ListenerInfo::LISTENER_DELETED;
+        });
+    }
+    
+    // add in listeners pending for insertion
+    // TODO: change this to using zip when C++23 comes out
+    for (size_t event = 0; event < new_listeners.size(); event++) {
+        for (auto& listener : new_listeners[event]) {
+            listener_table[event].push_back(listener);
+        }
+        new_listeners[event].clear();
+    }
 }
 
 /// Adds an event to the event queue.

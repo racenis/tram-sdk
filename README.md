@@ -132,32 +132,16 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Should do sooner
 
-- Fix Event and Message data allocation
-    - If you allocate event data while inside event handler? it will probably not be very good
-    - Should add this to tests
-    - Need to figure out how to handle delayed message data
-- What if the event caller gets deleted while events are being dispatched?
-	- Or if messages are getting dispatched? Is it segfault?
-	- Event listener deleted? while dispatched?
-	
-	
-- RenderComponents should support offsetting textures
-	- A method like RenderComponent::SetTextureOffset(Material*, vec2).
-	- It would add an offset to the specified Material's texture.
-	- This would allow texture animations and the like.
+- Fix Octree
+	- Write some unit tests
+	- Check what happens when point is put directly on plane or origin
 - Sound table does not play if only one sound
 - Add logging during render initialization end especially shader loading
-- Split tick event into fixed tick event and frame event
-- Overhaul shader system
-	- Add some kind of flags to shaders
-	- These flags would inject glsl preprocessor #define's into the shader code 
 - If can't find shader for a material, then print material name	
 - If you don't RegisterShader() before Render::Init(), then the Uniform blocks won't be bound and you will get pancake models
 	- Add some kind of a code to bind 
 - Put triangle definition into math.h
-- Put MinAABB MaxAABB into there too
 - And also switch triangle intersection thingy
-- AddLine() drawlistentry is not being drawn on top
 - Add directional lights to lightmapper
 - Hashmap deletion does not get actually deleted?
 - Switch hashmap to uint32_t
