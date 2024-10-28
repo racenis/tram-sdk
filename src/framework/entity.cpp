@@ -54,7 +54,7 @@ Entity::Entity(const SharedEntityData& shared_data) {
     rotation = shared_data.rotation;
     
     if (!id) {
-        is_serializable = false;
+        flags |= NON_SERIALIZABLE;
         id = GenerateID();
     }
     

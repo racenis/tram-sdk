@@ -135,11 +135,11 @@ void WorldCell::Add(Entity* entity) {
     
     entity->cell = this;
 
-    if(flags & LOADED && !entity->is_loaded && entity->auto_load) {
+    if(flags & LOADED && !entity->IsLoaded() && entity->IsAutoLoad()) {
         entity->Load();
     }
 
-    if (!(flags & LOADED) && entity->is_loaded && entity->auto_load) {
+    if (!(flags & LOADED) && entity->IsLoaded() && entity->IsAutoLoad()) {
         entity->Unload();
     }
 }

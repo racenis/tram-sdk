@@ -69,7 +69,7 @@ Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
 }
 
 void Sound::UpdateParameters () {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     audio->SetLocation(location);
 }
 
@@ -91,11 +91,11 @@ void Sound::Load () {
         audio->Play();
     }
     
-    is_loaded = true;
+    flags |= LOADED;
 }
 
 void Sound::Unload () {
-    is_loaded = false;
+    flags &= ~LOADED;
 
     Serialize();
 

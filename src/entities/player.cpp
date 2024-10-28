@@ -13,7 +13,7 @@
 namespace tram {
 
 Player::Player() : Entity("player") {
-    auto_load = false;
+    SetAutoLoad(false);
 }
 
 name_t Player::GetType() {
@@ -32,7 +32,7 @@ void Player::Load(){
     plomp->Init();
     controllercomponent->Init();
 
-    is_loaded = true;
+    flags |= LOADED;
 
 }
 void Player::Unload() {
@@ -52,7 +52,7 @@ void Player::UpdateParameters() {
 }
 
 void Player::SetParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     UpdateParameters();
 }
 

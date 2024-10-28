@@ -34,19 +34,18 @@ public:
     inline name_t GetName() const { return name; }
     inline id_t GetID() const { return id; }
     inline WorldCell* GetCell() { return cell; }
-    inline bool IsLoaded() const { return is_loaded; }
-    inline bool IsAutoLoad() const { return auto_load; }
-    inline bool IsInInterior() const { return in_interior; }
-    inline bool IsPersistent() const { return is_persistent; }
-    inline bool IsChanged() const { return changed; }
+    inline bool IsLoaded() const { return flags & LOADED; }
+    inline bool IsAutoLoad() const { return !(flags & DISABLE_AUTO_LOAD); }
+    inline bool IsPersistent() const { return !(flags & NON_PERSISTENT); }
+    inline bool IsChanged() const { return flags & DIRTY; }
 
     void virtual UpdateParameters() = 0;
     void virtual SetParameters() = 0;
     
     void virtual Update() {}
     
-    inline void SetAutoLoad(bool auto_load) { this->auto_load = auto_load; }
-    inline void SetPersistent(bool persistent) { this->is_persistent = persistent; }
+    inline void SetAutoLoad(bool is) { flags = is ? flags & ~DISABLE_AUTO_LOAD : flags | DISABLE_AUTO_LOAD; }
+    inline void SetPersistent(bool is) { flags = is ? flags & ~NON_PERSISTENT : flags | NON_PERSISTENT; }
 
     void SetLocation(vec3 loc) { location = loc; SetParameters(); CheckTransition();}
     void SetRotation(quat rot) { rotation = rot; SetParameters(); }
@@ -88,24 +87,24 @@ public:
     static Entity* Find (id_t entity_id);
     static Entity* Find (name_t entity_name);
 protected:
+    enum : uint32_t {
+        NON_PERSISTENT = 1,
+        LOADED = 2,
+        DISABLE_AUTO_LOAD = 4,
+        NON_SERIALIZABLE = 8,
+        DIRTY = 16
+    };
+
     id_t id = 0;
     name_t name;
-    
-    uint32_t flags = 0;
-
-    bool is_persistent = true;
-    bool is_loaded = false;
-    bool auto_load = true;
-    bool in_interior = false;
-    
-    bool changed = false;
-    bool is_serializable = true;
     
     WorldCell* cell = nullptr;
     SignalTable* signals = nullptr;
     
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 location = {0.0f, 0.0f, 0.0f};
+
+    uint32_t flags = 0;
 
     void Register();
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }

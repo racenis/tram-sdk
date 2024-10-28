@@ -51,14 +51,14 @@ Crate::Crate (const char* nname, const char* modelname, const char* collisionmod
 }
 
 void Crate::UpdateParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     rendercomponent->SetLocation(location);
     rendercomponent->SetRotation(rotation);
     rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
 }
 
 void Crate::SetParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     UpdateParameters();
     physicscomponent->SetLocation(location);
     physicscomponent->SetRotation(rotation);
@@ -79,13 +79,13 @@ void Crate::Load(){
     
     rendercomponent->Init();
     physicscomponent->Init();
-    is_loaded = true;
+    flags |= LOADED;
 
     UpdateParameters();
 }
 
 void Crate::Unload() {
-    is_loaded = false;
+    flags &= ~LOADED;
 
     Serialize();
 
@@ -105,7 +105,7 @@ void Crate::MessageHandler(Message& msg){
 }
 
 void Crate::Testingolingo() {
-    assert(is_loaded);
+    assert(IsLoaded());
     assert(physicscomponent);
     physicscomponent->SetAngularFactor({0.0f, 0.0f, 0.0f});
     physicscomponent->SetRotation(vec3(0.0f, 0.785f, 0.0f));

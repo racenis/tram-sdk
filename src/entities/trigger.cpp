@@ -54,7 +54,7 @@ Trigger::Trigger(const SharedEntityData& shared_data, const ValueArray& field_ar
 }
 
 void Trigger::UpdateParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     
     if (rendercomponent) {
         rendercomponent->SetLocation(location);
@@ -63,7 +63,7 @@ void Trigger::UpdateParameters() {
 }
 
 void Trigger::SetParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     UpdateParameters();
     triggercomponent->SetLocation(location);
     triggercomponent->SetRotation(rotation);
@@ -84,13 +84,13 @@ void Trigger::Load(){
     
     triggercomponent->Init();
     
-    is_loaded = true;
+    flags |= LOADED;
 
     SetParameters();
 }
 
 void Trigger::Unload() {
-    is_loaded = false;
+    flags &= ~LOADED;
 
     Serialize();
 

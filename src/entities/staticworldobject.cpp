@@ -40,14 +40,14 @@ StaticWorldObject::StaticWorldObject(const SharedEntityData& shared_data, const 
 }
 
 void StaticWorldObject::UpdateParameters() {
-    if (is_loaded) {
+    if (IsLoaded()) {
         rendercomponent->SetLocation(location);
         rendercomponent->SetRotation(rotation);
     }
 }
 
 void StaticWorldObject::SetParameters() {
-    if (is_loaded) {
+    if (IsLoaded()) {
         rendercomponent->SetLocation(location);
         rendercomponent->SetRotation(rotation);
         physicscomponent->SetLocation(location);
@@ -71,13 +71,13 @@ void StaticWorldObject::Load(){
 
     rendercomponent->Init();
     physicscomponent->Init();
-    is_loaded = true;
+    flags |= LOADED;
 
     UpdateParameters();
 };
 
 void StaticWorldObject::Unload(){
-    is_loaded = false;
+    flags &= ~LOADED;
     Serialize();
 
     rendercomponent.clear();

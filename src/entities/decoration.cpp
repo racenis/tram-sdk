@@ -50,14 +50,14 @@ Decoration::Decoration(const SharedEntityData& shared_data, const ValueArray& fi
 }
 
 void Decoration::UpdateParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     rendercomponent->SetLocation(location);
     rendercomponent->SetRotation(rotation);
     rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
 }
 
 void Decoration::SetParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     UpdateParameters();
     physicscomponent->SetLocation(location);
     physicscomponent->SetRotation(rotation);
@@ -89,7 +89,7 @@ void Decoration::Load() {
         animationcomponent->Play(animation, -1, 1.0f, 1.0f);
     }
     
-    is_loaded = true;
+    flags |= LOADED;
 
     UpdateParameters();
 }
@@ -106,7 +106,7 @@ void Decoration::RequestAnimationComponent() {
 }
 
 void Decoration::Unload() {
-    is_loaded = false;
+    flags &= ~LOADED;
 
     Serialize();
 

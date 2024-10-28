@@ -42,7 +42,7 @@ Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array)
 }
 
 void Light::UpdateParameters () {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     light->SetLocation(location);
 }
 
@@ -58,13 +58,13 @@ void Light::Load () {
     light->SetExponent(exponent);
 
     light->Init();
-    is_loaded = true;
+    flags |= LOADED;
 
     UpdateParameters();
 }
 
 void Light::Unload () {
-    is_loaded = false;
+    flags &= ~LOADED;
 
     Serialize();
 

@@ -143,7 +143,7 @@ Button::Button(const SharedEntityData& shared_data, const ValueArray& field_arra
 }
 
 void Button::UpdateParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     
     // first we apply the progress to the position or rotation of the entity    
     vec3 pos = start_pos;
@@ -180,7 +180,7 @@ void Button::UpdateParameters() {
 }
 
 void Button::SetParameters() {
-    if (!is_loaded) return;
+    if (!IsLoaded()) return;
     UpdateParameters();
 }
 
@@ -202,13 +202,13 @@ void Button::Load(){
     rendercomponent->Init();
     physicscomponent->Init();
     
-    is_loaded = true;
+    Entity::flags |= LOADED;
 
     UpdateParameters();
 }
 
 void Button::Unload() {
-    is_loaded = false;
+    Entity::flags &= ~LOADED;
 
     Serialize();
 
