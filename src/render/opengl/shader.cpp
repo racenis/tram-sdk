@@ -75,14 +75,16 @@ uint32_t LoadVertexShader(name_t name) {
     strcat(path, name);
     strcat(path, ".vert");
     
-    FileReader file(path);
+    //FileReader file(path);
+    FileReader* file = FileReader::GetReader(path);
     
-    if (!file.is_open()) {
+    if (file->GetStatus() != FileStatus::READY) {
         Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Can't find vertex shader source file {}!", UID(path));
     }
 
     uint32_t compiled_program = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(compiled_program, 1, &file.contents, NULL);
+    const char* contents = file->GetContents();
+    glShaderSource(compiled_program, 1, &contents, NULL);
     glCompileShader(compiled_program);
 
     int32_t compile_status;
@@ -102,6 +104,8 @@ uint32_t LoadVertexShader(name_t name) {
 
     last_vertex_shader++;
 
+    file->Yeet();
+
     return compiled_program;   
 }
 
@@ -119,14 +123,15 @@ uint32_t LoadFragmentShader(name_t name) {
     strcat(path, name);
     strcat(path, ".frag");
     
-    FileReader file(path);
+    FileReader* file = FileReader::GetReader(path);
     
-    if (!file.is_open()) {
+    if (file->GetStatus() != FileStatus::READY) {
         Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Can't find fragment shader source file {}!", UID(path));
     }
 
     uint32_t compiled_program = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(compiled_program, 1, &file.contents, NULL);
+    const char* contents = file->GetContents();
+    glShaderSource(compiled_program, 1, &contents, NULL);
     glCompileShader(compiled_program);
 
     int32_t compile_status;
@@ -145,6 +150,8 @@ uint32_t LoadFragmentShader(name_t name) {
     fragment_shaders[last_fragment_shader].compiled_shader = compiled_program;
 
     last_fragment_shader++;
+
+    file->Yeet();
 
     return compiled_program;
 }

@@ -58,24 +58,15 @@ Entity::Entity(const SharedEntityData& shared_data) {
         id = GenerateID();
     }
     
+    flags |= LOADED_FROM_DISK;
+    
     Register();
 }
 
 Entity::~Entity() {
     if (cell) cell->Remove(this);
-
-    if (id) {
-        if (entity_id_list.Find(id)) {
-            entity_id_list.Insert(id, nullptr); // this eventually causes overflow
-            // TODO: fix
-        }
-    }
-
-    if (name) {
-        if (entity_name_list.Find(name)) {
-            entity_name_list.Insert(name, nullptr);
-        }
-    }
+    
+    Unregister();
 }
 
 void Entity::CheckTransition() {
@@ -118,6 +109,17 @@ void Entity::Register() {
     }
 }
 
+void Entity::Unregister() {
+    if (id && entity_id_list.Find(id)) {
+        entity_id_list.Remove(id);
+    }
+
+    if (name && entity_name_list.Find(name)) {
+        entity_name_list.Remove(name);
+    }
+}
+
+
 Entity* Entity::Find (id_t entityID) {
     return entity_id_list.Find(entityID);
 }
@@ -130,7 +132,7 @@ static std::vector<Entity*> yeetery;
 
 void Entity::Update() {
     for (auto ent : yeetery) {
-        if (ent->IsPersistent()) continue;
+        if (ent->IsLoadedFromDisk()) continue;
         
         auto type_info = registered_entity_types.Find(ent->GetType());
         
@@ -150,6 +152,7 @@ void Entity::Yeet() {
     
     this->flags |= DELETED;
     if (IsLoaded()) Unload();
+    Unregister();
 }
 
 /// Loads an Entity from a File.

@@ -129,20 +129,20 @@ void write_text_to_chars (T value, char*& cursor, char* cursor_end) {
 
 File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
     if (mode & MODE_READ) {
-        disk_reader = new FileReader(path, SOURCE_ANY);
+        disk_reader = FileReader::GetReader(path);
         
-        if (disk_reader->is_open()) {
-            cursor = disk_reader->contents;
-            cursor_end = disk_reader->contents + disk_reader->length;
+        if (disk_reader->GetStatus() == FileStatus::READY) {
+            cursor = disk_reader->GetContents();
+            cursor_end = disk_reader->GetContents() + disk_reader->GetSize();
         }
         
         pause_next = mode & MODE_PAUSE_LINE;
         
         skip_text_whitespace(cursor, cursor_end, pause_next);
     } else if (mode & MODE_WRITE) {
-        disk_writer = new FileWriter(path, SOURCE_ANY);
+        disk_writer = FileWriter::GetWriter(path, FileMedium::LOCAL_DISK);
         
-        if (disk_writer->is_open()) {
+        if (disk_writer->GetStatus() == FileStatus::READY) {
             buffer = new char [4 * 1024 * 1024]; // this is stupid. we need autoflush
             buffer_cursor = buffer;
             buffer_end = buffer + (4 * 1024 * 1024);
@@ -158,7 +158,7 @@ File::~File() {
     }
     
     if (disk_writer) {
-        disk_writer->write(buffer, buffer_cursor - buffer);
+        disk_writer->SetContents(buffer, buffer_cursor - buffer);
         
         delete disk_writer;
         delete[] buffer;
@@ -167,11 +167,11 @@ File::~File() {
 
 bool File::is_open() { 
     if (disk_reader) {
-        return disk_reader->is_open();
+        return disk_reader->GetStatus() == FileStatus::READY;
     }
     
     if (disk_writer) {
-        return disk_writer->is_open();
+        return disk_writer->GetStatus() == FileStatus::READY;
     }
     
     return false;

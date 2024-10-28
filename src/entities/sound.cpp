@@ -65,6 +65,8 @@ Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
     
     Message::Send(msg, s->GetLength());
     
+    flags |= NON_PERSISTENT;
+    
     Load();
 }
 

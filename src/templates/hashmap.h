@@ -6,6 +6,7 @@
 
 #include <framework/uid.h>
 #include <iostream> // error message
+#include <cstring>  // memset
 
 namespace tram {
 
@@ -15,18 +16,21 @@ public:
     Hashmap(std::string name, size_t max_size) {
         this->name = name;
         this->max_size = max_size;
+        this->hash_parameter = max_size * 2;
         
-        size_t memory_size = ((max_size * 2) + padding) * sizeof(PAIR);
+        size_t memory_size = ((max_size * 2) + padding) * sizeof(Record);
         
         char* memory = (char*)::operator new(memory_size);
         
-        first = (PAIR*) memory;
-        last = (PAIR*) (memory + memory_size);
+        first = (Record*) memory;
+        last = (Record*) (memory + memory_size);
         
-        for (PAIR* it = first; it != last; it++) new (it) PAIR(); // wait what the fuck
+        memset(memory, 0, memory_size);
+        
+        //for (Record* it = first; it != last; it++) new (it) Record(); // wait what the fuck
     }
     
-    Hashmap(std::string name, size_t max_size, std::initializer_list<std::pair<uint64_t, T>> list) : Hashmap(name, max_size) {
+    Hashmap(std::string name, size_t max_size, std::initializer_list<std::pair<uint32_t, T>> list) : Hashmap(name, max_size) {
         for (const auto& entry : list) {
             Insert(entry.first, entry.second);
         }
@@ -36,18 +40,23 @@ public:
         return Find(key.key);
     }
     
-    T Find(uint64_t key) {
-        uint64_t hash = key % max_size;
+    T Find(uint32_t key) {
+        uint32_t hash = key % hash_parameter;
         
-        PAIR* candidate = first + hash;
+        Record* candidate = first + hash;
         
         while (candidate != last) {
-            if (candidate->first == key) {
-                return candidate->second;
+            if (!(candidate->flags & (FLAG_DELETED | FLAG_RECORD))) {
+                break;
             }
             
-            if (candidate->first == 0) {
-                break;
+            if (candidate->key == key) {
+                if (candidate->flags & FLAG_DELETED) {
+                    break;
+                } else {
+                    return candidate->value;
+                }
+                
             }
             
             candidate++;
@@ -60,26 +69,32 @@ public:
         Insert(key.key, value);
     }
     
-    void Insert(uint64_t key, T value) {
-        if(size == max_size){
+    void Insert(uint32_t key, T value) {
+        if (size == max_size) {
             std::cout << "Hashmap " << name << " density reached!" << std::endl;
         }
         
-        uint64_t hash = key % max_size;
+        uint32_t hash = key % hash_parameter;
         
-        PAIR* candidate = first + hash;
+        Record* candidate = first + hash;
         
         while (candidate != last) {
-            if (candidate->first == key) {
-                candidate->second.~T();
+            if (candidate->flags & FLAG_RECORD) {
+                if (candidate->key == key) {
+                    candidate->value.~T();
+                    size--;
+                    break;
+                } else {
+                    candidate++;
+                    continue;
+                }
+            }
+            
+            if (candidate->flags & FLAG_DELETED) {
                 break;
             }
             
-            if (candidate->first == 0) {
-                break;
-            }
-            
-            candidate++;
+            break;
         }
         
         if (candidate == last) {
@@ -87,18 +102,61 @@ public:
             abort();
         }
         
-        candidate->first = key;
-        candidate->second = value;
+        size++;
+        
+        candidate->key = key;
+        candidate->flags = FLAG_RECORD;
+        candidate->value = value;
+    }
+    
+    void Remove(UID key) {
+        Remove(key.key);
+    }
+    
+    void Remove(uint32_t key) {
+        uint32_t hash = key % hash_parameter;
+        
+        Record* candidate = first + hash;
+        
+        while (candidate != last) {
+            if (!(candidate->flags & (FLAG_DELETED | FLAG_RECORD))) {
+                return;
+            }
+            
+            if (candidate->key == key) {
+                if (candidate->flags & FLAG_DELETED) {
+                    return;
+                } else {
+                    candidate->value.~T();
+                    candidate->flags = FLAG_DELETED;
+                    size--;
+                    return;
+                }
+                
+            }
+            
+            candidate++;
+        }
     }
 protected:
-    typedef std::pair<uint64_t, T> PAIR;
+    struct Record {
+        uint32_t key = 0;
+        uint32_t flags = 0;
+        T value;
+    };
     const size_t padding = 10;
+
+    enum {
+        FLAG_RECORD = 1,
+        FLAG_DELETED = 2
+    };
 
     std::string name;
     size_t size = 0;
     size_t max_size = 0;
-    PAIR* first = nullptr;
-    PAIR* last = nullptr;
+    uint32_t hash_parameter = 0;
+    Record* first = nullptr;
+    Record* last = nullptr;
 };
 
 }

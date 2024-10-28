@@ -5,37 +5,56 @@
 #define TRAM_SDK_PLATFORM_FILE_H
 
 #include <cstddef>
+#include <string>
+#include <vector>
 
 namespace tram {
 
-enum FileSource {
-    SOURCE_ANY,
-    SOURCE_DISK
+enum class FileStatus {
+    IO_ERROR,
+    READY
+};
+
+enum class FileMedium {
+    LOCAL_DISK,
+    ARCHIVE,
+    HTTP_DISK
+};
+
+struct FileSource {
+    FileMedium medium;
+    std::string path;
 };
 
 class FileReader {
 public:
-    FileReader (const char* path, FileSource source = SOURCE_ANY);
-    ~FileReader ();
+    virtual ~FileReader() = default;
     
-    bool is_open();
+    virtual const char* GetContents() = 0;
+    virtual size_t GetSize() = 0;
+    virtual FileStatus GetStatus() = 0;
+    virtual void Yeet() = 0;
     
-    const char* contents = nullptr;
-    size_t length = 0;
+    static FileReader* GetReader(const char* path);
+    
+    static void SetSearchList();
+    static std::vector<FileSource> GetSearchList();
 };
 
 class FileWriter {
 public:
-    FileWriter (const char* path, FileSource source = SOURCE_ANY);
-    ~FileWriter ();
+    virtual ~FileWriter() = default;
     
-    bool is_open();
-    void write (const char* data, size_t length);
+    virtual void SetContents(const char* contents, size_t size) = 0;
+    virtual FileStatus GetStatus() = 0;
+    virtual void Yeet() = 0;
     
-private:
-    void* file_handle = nullptr;
+    static FileWriter* GetWriter(const char* path, FileMedium medium);
+    
+    static void SetMediumList();
+    static std::vector<FileSource> GetMediumList();
 };
-    
+
 }
 
 #endif // PLATFORM_FILE_H

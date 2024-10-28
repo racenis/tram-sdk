@@ -39,6 +39,7 @@ public:
     inline bool IsPersistent() const { return !(flags & NON_PERSISTENT); }
     inline bool IsChanged() const { return flags & DIRTY; }
     inline bool IsDeleted() const { return flags & DELETED; }
+    inline bool IsLoadedFromDisk() const { return flags & LOADED_FROM_DISK; }
 
     void virtual UpdateParameters() = 0;
     void virtual SetParameters() = 0;
@@ -95,7 +96,8 @@ protected:
         DISABLE_AUTO_LOAD = 4,
         NON_SERIALIZABLE = 8,
         DIRTY = 16,
-        DELETED = 32
+        DELETED = 32,
+        LOADED_FROM_DISK = 64
     };
 
     id_t id = 0;
@@ -110,6 +112,7 @@ protected:
     uint32_t flags = 0;
 
     void Register();
+    void Unregister();
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
     inline void FireSignal(signal_t type, Value value) { if (signals) signals->Fire(type, this->id, value); }
 
