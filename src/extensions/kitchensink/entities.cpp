@@ -222,8 +222,9 @@ void Button::Serialize() {
 
 
 
-void Button::Update() {
-
+void Button::EventHandler(Event &event) {
+    if (event.type != Event::TICK) return;
+    
     switch (state) {   
      
         case BUTTON_STATE_NADIR_WAITING:
@@ -236,7 +237,7 @@ void Button::Update() {
             break;
             
         case BUTTON_STATE_NADIR_READY:
-            RemoveUpdate();
+            tick.clear();
             break;
             
         case BUTTON_STATE_RISING:
@@ -266,7 +267,7 @@ void Button::Update() {
             
         case BUTTON_STATE_ZENITH_READY:
             if (flags & BUTTON_FLAG_TOGGLE) {
-                RemoveUpdate();
+                tick.clear();
             } else {
                 state = BUTTON_STATE_LOWERING;
                 PlaySound(SOUND_CLOSE)
@@ -307,8 +308,8 @@ void Button::MessageHandler(Message& msg) {
     // button is pressed and it is not momentary
     if (msg.type == Message::ACTIVATE_ONCE /*&& !(flags & BUTTON_FLAG_MOMENTARY)*/ && !(flags & BUTTON_FLAG_LOCKED)) {
         switch (state) {
-            case BUTTON_STATE_NADIR_READY:  AddUpdate(); state = BUTTON_STATE_RISING;   PlaySound(SOUND_OPEN)   FireSignal(Signal::OPEN);   break;
-            case BUTTON_STATE_ZENITH_READY: AddUpdate(); state = BUTTON_STATE_LOWERING; PlaySound(SOUND_CLOSE)  FireSignal(Signal::CLOSE);  break;
+            case BUTTON_STATE_NADIR_READY:  tick.make(Event::TICK, this); state = BUTTON_STATE_RISING;   PlaySound(SOUND_OPEN)   FireSignal(Signal::OPEN);   break;
+            case BUTTON_STATE_ZENITH_READY: tick.make(Event::TICK, this); state = BUTTON_STATE_LOWERING; PlaySound(SOUND_CLOSE)  FireSignal(Signal::CLOSE);  break;
             default:                                                                                                break;
         }
         
@@ -334,12 +335,12 @@ void Button::MessageHandler(Message& msg) {
     if ((msg.type == Message::OPEN || msg.type == Message::TOGGLE) && state == BUTTON_STATE_NADIR_READY) {
         PlaySound(SOUND_OPEN)
         state = BUTTON_STATE_RISING;
-        AddUpdate(); 
+        tick.make(Event::TICK, this);
     }
     if ((msg.type == Message::CLOSE || msg.type == Message::TOGGLE) && state == BUTTON_STATE_ZENITH_READY) {
         PlaySound(SOUND_CLOSE)
         state = BUTTON_STATE_LOWERING;
-        AddUpdate(); 
+        tick.make(Event::TICK, this);
     }
     
     

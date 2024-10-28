@@ -20,7 +20,7 @@ public:
     Button(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
     void Load(); void Unload(); void Serialize();
-    void Update(); void MessageHandler(Message& msg);
+    void EventHandler(Event &event); void MessageHandler(Message& msg);
     name_t GetType();
     static void Register();
 protected:
@@ -28,6 +28,8 @@ protected:
     Component<PhysicsComponent> physicscomponent;
     
     void SwitchState(int);
+    
+    EventListener tick;
     
     uint32_t flags;
     name_t model;

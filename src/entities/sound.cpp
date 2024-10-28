@@ -116,7 +116,7 @@ void Sound::MessageHandler (Message& msg) {
             }
             break;
         case Message::KILL:
-            delete this;
+            Yeet();
             break;
         case Message::START:
             audio->Play();

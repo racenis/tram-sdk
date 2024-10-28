@@ -38,11 +38,13 @@ public:
     inline bool IsAutoLoad() const { return !(flags & DISABLE_AUTO_LOAD); }
     inline bool IsPersistent() const { return !(flags & NON_PERSISTENT); }
     inline bool IsChanged() const { return flags & DIRTY; }
+    inline bool IsDeleted() const { return flags & DELETED; }
 
     void virtual UpdateParameters() = 0;
     void virtual SetParameters() = 0;
     
-    void virtual Update() {}
+    static void Update();
+    void Yeet();
     
     inline void SetAutoLoad(bool is) { flags = is ? flags & ~DISABLE_AUTO_LOAD : flags | DISABLE_AUTO_LOAD; }
     inline void SetPersistent(bool is) { flags = is ? flags & ~NON_PERSISTENT : flags | NON_PERSISTENT; }
@@ -92,7 +94,8 @@ protected:
         LOADED = 2,
         DISABLE_AUTO_LOAD = 4,
         NON_SERIALIZABLE = 8,
-        DIRTY = 16
+        DIRTY = 16,
+        DELETED = 32
     };
 
     id_t id = 0;
@@ -109,8 +112,6 @@ protected:
     void Register();
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
     inline void FireSignal(signal_t type, Value value) { if (signals) signals->Fire(type, this->id, value); }
-    void AddUpdate();
-    void RemoveUpdate();
 
     friend class WorldCell;
 };

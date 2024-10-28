@@ -18,9 +18,9 @@ namespace tram {
 
 struct EntityTypeInfo {
     Entity* (*constructor)(const SharedEntityData&, const ValueArray&) = nullptr;
-    void (*destructor)(Entity*);
-    const uint32_t* fields;
-    size_t fieldcount;
+    void (*destructor)(Entity*) = nullptr;
+    const uint32_t* fields = nullptr;
+    size_t fieldcount = 0;
 };
     
 struct SharedEntityData {
@@ -126,25 +126,30 @@ Entity* Entity::Find(name_t entityName) {
     return entity_name_list.Find(entityName);
 }
 
-static std::vector<Entity*> update_list;
+static std::vector<Entity*> yeetery;
 
-/// Adds entity to update list.
-/// After being added to the update list, the entity's Update() method will be
-/// called every time UpdateFromList() is called.
-void Entity::AddUpdate() {
-    update_list.push_back(this);
-}
-
-/// Remove entity from the update list.
-void Entity::RemoveUpdate() {
-    update_list.erase(std::find(update_list.begin(), update_list.end(), this));
-}
-
-/// Updates all of the entities in the update list.
-void Entity::UpdateFromList() {
-    for (auto it : update_list) {
-        it->Update();
+void Entity::Update() {
+    for (auto ent : yeetery) {
+        if (ent->IsPersistent()) continue;
+        
+        auto type_info = registered_entity_types.Find(ent->GetType());
+        
+        std::cout << "Deleting " << ent->GetType() <<" entity " << ent->GetName() << " ID " << ent->GetID() << std::endl;
+        if (type_info.destructor) {
+            type_info.destructor(ent);
+        } else {
+            std::cout << "No type deleter found, using default!" << std::endl;
+            delete ent;
+        }
     }
+    yeetery.clear();
+}
+
+void Entity::Yeet() {
+    yeetery.push_back(this);
+    
+    this->flags |= DELETED;
+    if (IsLoaded()) Unload();
 }
 
 /// Loads an Entity from a File.

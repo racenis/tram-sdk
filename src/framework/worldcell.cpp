@@ -77,7 +77,7 @@ void WorldCell::Load() {
     }
     
     for (auto it : entities) {
-        if (it->IsAutoLoad()) it->Load();
+        if (it->IsAutoLoad() && !it->IsDeleted()) it->Load();
     }
         
     SetFlag(LOADED, true);
@@ -97,7 +97,7 @@ void WorldCell::Unload() {
             it->Unload();
         } else {
             std::cout << "Yeeting " << it->GetName() << " out of existence!" << std::endl;
-            delete it;
+            it->Yeet();
         }
     }
 

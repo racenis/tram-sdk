@@ -424,7 +424,7 @@ void mainloop() {
     Event::Dispatch();
     Message::Dispatch();
     
-    Entity::UpdateFromList();
+    Entity::Update();
     
     Loader::Update();
     

@@ -155,7 +155,7 @@ void Decoration::MessageHandler(Message& msg) {
             }
             break;
         case Message::KILL:
-            delete this;
+            Yeet();
             break;
         case Message::START:
             if (animation) {
