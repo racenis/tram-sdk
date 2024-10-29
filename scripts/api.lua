@@ -66,7 +66,48 @@ tram.math._methods_vec3 = {
 		value = string.format("(%.4f, %.4f, %.4f)", self.x, self.y, self.z)
 		print(value)
 		--print("vec3:", self.x, self.y, self.z)
-	end
+	end,
+	
+	length = function(self)
+		return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+	end,
+	
+	distance = function(self, other)
+		assert(getmetatable(other) == tram.math._metatable_vec3)
+		return (self - other):length()
+	end,
+	
+	dot = function(self, other)
+		assert(getmetatable(other) == tram.math._metatable_vec3)
+		return self.x * other.x + self.y * other.y + self.z * other.z
+	end,
+	
+	cross = function(self, other)
+		assert(getmetatable(other) == tram.math._metatable_vec3)
+		
+		local result = {}
+		
+		result.x = self.y * other.z - self.z * other.y
+		result.y = self.z * other.x - self.x * other.z
+		result.z = self.x * other.y - self.y * other.x
+		
+		setmetatable(result, tram.math._metatable_vec3)
+		
+		return result
+	end,
+	
+	normalize = function(self)
+		local result = {}
+		local length = self:length()
+		
+		result.x = self.x / length
+		result.y = self.y / length
+		result.z = self.z / length
+		
+		setmetatable(result, tram.math._metatable_vec3)
+		
+		return result
+	end,
 }
 
 tram.math._metatable_vec3 = {
