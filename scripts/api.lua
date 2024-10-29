@@ -306,41 +306,34 @@ tram.math.DIRECTION_UP = tram.math.vec3(0.0, 1.0, 0.0)
 
 -- FRAMEWORK/ENTITY.H
 
-function tram.entity._make(id)
-	entity = {}
-	entity.id = id
-	
-	
-	entity.GetName = function (self)
-		return __tram_impl_entity_get_name(self.id)
-	end
-	
-	entity.GetID = function (self)
-		return self.id
-	end
-	
-	
-	
-	entity.GetLocation = function (self)
-		local vector = __tram_impl_entity_get_location(self.id)
-		setmetatable(vector, tram.math._metatable_vec3)
-		return vector
-	end
-	entity.SetLocation = function (self, location)
-		return __tram_impl_entity_set_location(self.id, location)
-	end
-	
-	entity.GetRotation = function (self)
-		local vector = __tram_impl_entity_get_rotation(self.id)
-		setmetatable(vector, tram.math._metatable_quat)
-		return vector
-	end
-	entity.SetRotation = function (self, rotation)
-		return __tram_impl_entity_set_rotation(self.id, rotation)
-	end
-	
-	return entity
-end
+tram._metatable_entity = {
+	__index = {
+		GetName = function (self)
+			return __tram_impl_entity_get_name(self.id)
+		end,
+		GetID = function (self)
+			return self.id
+		end,
+		
+		GetLocation = function (self)
+			local vector = __tram_impl_entity_get_location(self.id)
+			setmetatable(vector, tram.math._metatable_vec3)
+			return vector
+		end,
+		SetLocation = function (self, location)
+			return __tram_impl_entity_set_location(self.id, location)
+		end,
+		
+		GetRotation = function (self)
+			local vector = __tram_impl_entity_get_rotation(self.id)
+			setmetatable(vector, tram.math._metatable_quat)
+			return vector
+		end,
+		SetRotation = function (self, rotation)
+			return __tram_impl_entity_set_rotation(self.id, rotation)
+		end
+	}
+}
 
 function tram.entity.Find(term)
 	if type(term) == "string" then
@@ -353,9 +346,32 @@ function tram.entity.Find(term)
 		return nil
 	end
 	
-	return tram.entity._make(id)
+	local entity = {}
+	entity.id = id
+	
+	setmetatable(entity, tram._metatable_entity)
+	
+	return entity
 end
 
+function tram.entity.Make(entity_type, entity_properties)
+	
+	-- for property in properties:
+	--		_impl_push_property
+	-- id = _impl_make_entity(ttype)
+	
+	-- make table with id and add metatable
+	-- return
+	
+end
+
+function tram.entity.Register(entity_type, entity_properties)
+
+end
+
+function tram.entity.Decorate(entity, new_entity)
+	
+end
 
 -- =========================== FRAMEWORK/EVENT.H ============================ --
 
