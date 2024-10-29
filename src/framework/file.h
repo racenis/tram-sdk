@@ -19,6 +19,8 @@ enum FileAccessMode : uint32_t {
 
 class FileReader;
 class FileWriter;
+class FileReaderParser;
+class FileWriterParser;
 
 class File {
 public:
@@ -65,6 +67,8 @@ public:
     void skip_linebreak();
     void reset_flags();
     
+    bool was_error();
+    
     std::string path;
     uint32_t mode;
     
@@ -75,12 +79,12 @@ public:
     char* buffer_cursor = nullptr;
     char* buffer_end = nullptr;
     
-    // cursors for reading
-    const char* cursor = nullptr;
-    const char* cursor_end = nullptr;
+
     
-    FileReader* disk_reader = nullptr;
-    FileWriter* disk_writer = nullptr;
+    FileReader* reader = nullptr;
+    FileWriter* writer = nullptr;
+    FileReaderParser* reader_parser = nullptr;
+    FileWriterParser* writer_parser = nullptr;
 };
     
 }

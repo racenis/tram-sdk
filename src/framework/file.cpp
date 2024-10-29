@@ -5,147 +5,330 @@
 #include <cstring>
 
 namespace tram {
+    
+class FileReaderParser {
+public:
+    virtual int8_t read_int8() = 0;
+    virtual int16_t read_int16() = 0;
+    virtual int32_t read_int32() = 0;
+    virtual int64_t read_int64() = 0;
+    
+    virtual uint8_t read_uint8() = 0;
+    virtual uint16_t read_uint16() = 0;
+    virtual uint32_t read_uint32() = 0;
+    virtual uint64_t read_uint64() = 0;
+    
+    virtual float read_float32() = 0;
+    virtual double read_float64() = 0;
+    
+    virtual name_t read_name() = 0;
+    virtual std::string_view read_string() = 0;
+    virtual std::string_view read_line() = 0;
+    
+    virtual void skip_newline() = 0;
+    virtual void skip_whitespace() = 0;
+    
+    virtual bool is_error() = 0;
+    virtual void reset_error() = 0;
+    
+    virtual bool is_continue() = 0;
+    
+    void set_skip_value(bool skip_value) { this->skip_value = skip_value; }
+    void set_skip_newline(bool skip_newline) { this->skip_newline_flag = skip_newline; }
+protected:
+    bool skip_newline_flag = true;
+    bool skip_value = true;
+};
 
-// skips until linebreak
-static void skip_text_line(const char*& cursor, const char* cursor_end) {
-    while (*cursor != '\r' && *cursor != '\n' && cursor < cursor_end) {
-        cursor++;
+
+class TextReaderParser : public FileReaderParser {
+public:
+    TextReaderParser(FileReader* reader) {
+        this->cur = reader->GetContents();
+        this->end = reader->GetContents() + reader->GetSize();
     }
-}
-
-// skips whitespace
-static void skip_text_whitespace(const char*& cursor, const char* cursor_end, bool pause_linebreak) {
-    while (cursor < cursor_end) {
-        if (*cursor == '\n' && pause_linebreak) {
-            return;
-        } else if (!isspace(*cursor)) {
-            if (*cursor != '#') {
+    
+    int8_t read_int8() {
+        return from_chars<int8_t>();
+    }
+    
+    int16_t read_int16() {
+        return from_chars<int16_t>();
+    }
+    
+    int32_t read_int32() {
+        return from_chars<int32_t>();
+    }
+    
+    int64_t read_int64() {
+        return from_chars<int64_t>();
+    }
+    
+    
+    uint8_t read_uint8() {
+        return from_chars<uint8_t>();
+    }
+    
+    uint16_t read_uint16() {
+        return from_chars<uint16_t>();
+    }
+    
+    uint32_t read_uint32() {
+        return from_chars<uint32_t>();
+    }
+    
+    uint64_t read_uint64() {
+        return from_chars<uint64_t>();
+    }
+    
+    
+    float read_float32() {
+        return from_chars<float>();
+    }
+    
+    double read_float64() {
+        return from_chars<double>();
+    }
+    
+    
+    name_t read_name() {
+        char buffer[200];
+        char* buf_it = buffer;
+        
+        const char* ncur = cur;
+        for (; ncur < end && !isspace(*ncur); ncur++) {
+            *buf_it++ = *ncur;
+        }
+        
+        if (skip_value) {
+            cur = ncur;
+        }
+        
+        error_flag = false;
+        
+        *buf_it = '\0';
+        
+        return UID(buffer);
+    }
+    
+    std::string_view read_string() {
+        return {};
+    }
+    
+    std::string_view read_line() {
+        const char* first_char = cur;
+        const char* last_char = cur;
+    
+        while (*last_char != '\r' && *last_char != '\n' && last_char < end) {
+            last_char++;
+        }
+        
+        size_t line_length = last_char - first_char;
+        
+        if (skip_value) {
+            cur = last_char;
+        }
+        
+        return std::string_view (first_char, line_length);
+    }
+    
+    
+    void skip_newline() {
+        while (*cur != '\r' && *cur != '\n' && cur < end) {
+            cur++;
+        }
+    }
+    
+    void skip_whitespace() {
+        while (cur < end) {
+            if (*cur == '\n' && !skip_newline_flag) {
+                return;
+            } else if (!isspace(*cur)) {
+                if (*cur != '#') {
+                    return;
+                }
+                
+                // skips over a comment
+                skip_newline();
+                skip_whitespace();
+                
                 return;
             }
             
-            // skips over a comment
-            skip_text_line(cursor, cursor_end);
-            skip_text_whitespace(cursor, cursor_end, false);
-            
-            return;
+            cur++;
         }
-        
-        cursor++;
-    }
-}
-
-// skips non-whitespace
-static void skip_text(const char*& cursor, const char* cursor_end, bool pause_linebreak) {
-    while (cursor < cursor_end) {
-        if (isspace(*cursor)) {
-            break;
-        }
-        
-        cursor++;
     }
     
-    skip_text_whitespace(cursor, cursor_end, pause_linebreak);
-}
-
-static bool is_text_continue(const char* cursor, const char* cursor_end) {
-    while (cursor < cursor_end) {
-        if (!isspace(*cursor)) return true;
-        cursor++;
+    bool is_continue() {
+        while (cur < end) {
+            if (!isspace(*cur)) return true;
+            cur++;
+        }
+        
+        return false;
     }
     
-    return false;
-}
-
-template <typename T>
-auto read_text_from_chars(const char*& cursor, const char* cursor_end) {
-    T value;
-    cursor = std::from_chars(cursor, cursor_end, value).ptr;
-    return value;
-}
-
+    bool is_error() {
+        return error_flag;
+    }
+    
+    void reset_error() {
+        error_flag = false;
+    }
+private:
+    template <typename T>
+    T from_chars() {
+        T value;
+        std::from_chars_result result = std::from_chars(cur, end, value);
+        if (result.ec != std::errc()) {
+            error_flag = true;
+        }
+        if (skip_value) {
+            cur = result.ptr;
+        }
+        return value;
+    }
+    
 #ifdef __clang__
-template <>
-auto read_text_from_chars<float> (const char*& cursor, const char* cursor_end) {
-    float value;
-    char* new_cursor = nullptr;
-    value = strtof(cursor, &new_cursor);
-    cursor = new_cursor;
-    return value;
-}
+    template <>
+    float from_chars<float>() {
+        float value;
+        char* new_cursor = nullptr;
+        value = strtof(cur, &new_cursor);
+        
+        if (skip_value) {
+            cur = new_cursor;
+        }
+        
+        return value;
+    }
 
-template <>
-auto read_text_from_chars<double> (const char*& cursor, const char* cursor_end) {
-    return read_text_from_chars<float> (cursor, cursor_end);
-}
+    template <>
+    double from_chars<double>() {
+        return from_chars<float>();
+    }
 #endif
 
-int32_t read_text_int32 (const char*& cursor, const char* cursor_end) {
-    return atoi (cursor);
-}
-
-int64_t read_text_int64 (const char*& cursor, const char* cursor_end) {
-    return atol (cursor);
-}
-
-float read_text_float32 (const char*& cursor, const char* cursor_end) {
-    return atof (cursor);
-}
-
-double read_text_float64 (const char*& cursor, const char* cursor_end) {
-    return atof (cursor);
-}
-
-UID read_text_name (const char*& cursor, const char* cursor_end) {
-    char buffer[200];
-    char* buf_it = buffer;
+    const char* cur = nullptr;
+    const char* end = nullptr;
+    bool error_flag = false;
+};
     
-    for (const char* cur = cursor; cur < cursor_end && !isspace(*cur); cur++) {
-        *buf_it++ = *cur;
+
+
+
+class FileWriterParser {
+public:
+    virtual void write_int8(int8_t value) = 0;
+    virtual void write_int16(int16_t value) = 0;
+    virtual void write_int32(int32_t value) = 0;
+    virtual void write_int64(int64_t value) = 0;
+    
+    virtual void write_uint8(uint8_t value) = 0;
+    virtual void write_uint16(uint16_t value) = 0;
+    virtual void write_uint32(uint32_t value) = 0;
+    virtual void write_uint64(uint64_t value) = 0;
+    
+    virtual void write_float32(float value) = 0;
+    virtual void write_float64(double value) = 0;
+    
+    virtual void write_name(name_t value) = 0;
+    virtual void write_string(const char* value) = 0;
+    virtual void write_newline() = 0;
+};
+
+class TextWriterParser : public FileWriterParser {
+public:
+    TextWriterParser(FileWriter* writer) {
+        this->writer = writer;
     }
     
-    *buf_it = '\0';
-    
-    return UID(buffer);
-}
-
-std::string_view read_text_line(const char*& cursor, const char* cursor_end) {
-    const char* first_char = cursor;
-    
-    while (*cursor != '\r' && *cursor != '\n' && cursor < cursor_end) {
-        cursor++;
+    virtual void write_int8(int8_t value) {
+        write_to_chars(value);
     }
     
-    const char* last_char = cursor;
+    virtual void write_int16(int16_t value) {
+        write_to_chars(value);
+    }
     
-    return std::string_view (first_char, last_char - first_char);
-}
+    virtual void write_int32(int32_t value) {
+        write_to_chars(value);
+    }
+    
+    virtual void write_int64(int64_t value) {
+        write_to_chars(value);
+    }
+    
+    
+    virtual void write_uint8(uint8_t value) {
+        write_to_chars(value);
+    }
+    
+    virtual void write_uint16(uint16_t value) {
+        write_to_chars(value);
+    }
+    
+    virtual void write_uint32(uint32_t value) {
+        write_to_chars(value);
+    }
+    
+    virtual void write_uint64(uint64_t value) {
+        write_to_chars(value);
+    }
+    
+    
+    virtual void write_float32(float value) {
+        write_to_chars(value);
+    }
+    
+    virtual void write_float64(double value) {
+        write_to_chars(value);
+    }
+    
+    
+    virtual void write_name(name_t value) {
+        writer->SetContents(value, strlen(value));
+        writer->SetContents(" ", 1);
+    }
+    
+    virtual void write_string(const char* value)  {
+        writer->SetContents(value, strlen(value));
+        writer->SetContents(" ", 1);
+    }
+    
+    virtual void write_newline() {
+        writer->SetContents("\n", 1);
+    }
+    
+private:
+    template <typename T>
+    void write_to_chars(T value) {
+        char buffer[25];
+        char* begin = buffer;
+        char* end = buffer + 25;
+        end = std::to_chars(begin, end, value).ptr;
+        writer->SetContents(buffer, end - begin);
+    }
+    FileWriter* writer = nullptr;
+};
 
-template <typename T>
-void write_text_to_chars (T value, char*& cursor, char* cursor_end) {
-    cursor = std::to_chars(cursor, cursor_end, value).ptr;
-    *cursor++ = ' ';
-    *cursor = '\0';
-}
 
 File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
     if (mode & MODE_READ) {
-        disk_reader = FileReader::GetReader(path);
+        reader = FileReader::GetReader(path);
         
-        if (disk_reader->GetStatus() == FileStatus::READY) {
-            cursor = disk_reader->GetContents();
-            cursor_end = disk_reader->GetContents() + disk_reader->GetSize();
+        if (reader->GetStatus() == FileStatus::READY) {
+            reader_parser = new TextReaderParser(reader);
         }
         
         pause_next = mode & MODE_PAUSE_LINE;
         
-        skip_text_whitespace(cursor, cursor_end, pause_next);
+        //skip_text_whitespace(cursor, cursor_end, pause_next);
     } else if (mode & MODE_WRITE) {
-        disk_writer = FileWriter::GetWriter(path, FileMedium::LOCAL_DISK);
+        writer = FileWriter::GetWriter(path, FileMedium::LOCAL_DISK);
         
-        if (disk_writer->GetStatus() == FileStatus::READY) {
-            buffer = new char [4 * 1024 * 1024]; // this is stupid. we need autoflush
-            buffer_cursor = buffer;
-            buffer_end = buffer + (4 * 1024 * 1024);
+        if (writer->GetStatus() == FileStatus::READY) {
+            // yippeee
         }
     } else {
         abort();
@@ -153,79 +336,82 @@ File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
 }
 
 File::~File() {
-    if (disk_reader) {
-        delete disk_reader;
+    if (reader) {
+        reader->Yeet();
     }
     
-    if (disk_writer) {
-        disk_writer->SetContents(buffer, buffer_cursor - buffer);
-        
-        delete disk_writer;
-        delete[] buffer;
+    if (writer) {
+        writer->Yeet();
     }
 }
 
 bool File::is_open() { 
-    if (disk_reader) {
-        return disk_reader->GetStatus() == FileStatus::READY;
+    if (reader) {
+        return reader->GetStatus() == FileStatus::READY;
     }
     
-    if (disk_writer) {
-        return disk_writer->GetStatus() == FileStatus::READY;
+    if (writer) {
+        return writer->GetStatus() == FileStatus::READY;
     }
     
     return false;
 }
 
 bool File::is_continue() {
-    if (disk_reader) {
-        return is_text_continue (cursor, cursor_end);
+    if (reader_parser) {
+        return reader_parser->is_continue();
     }
     
-    if (disk_writer) {
+    if (writer_parser) {
         return true;
     }
     
     return false;
 }
 
-void File::write_int8(int8_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_int16(int16_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_int32(int32_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_int64(int64_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_int8(int8_t value) { writer_parser->write_int8(value); }
+void File::write_int16(int16_t value) { writer_parser->write_int16(value); }
+void File::write_int32(int32_t value) { writer_parser->write_int32(value); }
+void File::write_int64(int64_t value) { writer_parser->write_int64(value); }
 
-void File::write_uint8(uint8_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_uint16(uint16_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_uint32(uint32_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_uint64(uint64_t value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_uint8(uint8_t value) { writer_parser->write_uint8(value); }
+void File::write_uint16(uint16_t value) { writer_parser->write_uint16(value); }
+void File::write_uint32(uint32_t value) { writer_parser->write_uint32(value); }
+void File::write_uint64(uint64_t value) { writer_parser->write_uint64(value); }
 
-void File::write_float32(float value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
-void File::write_float64(double value) { write_text_to_chars (value, buffer_cursor, buffer_end); }
+void File::write_float32(float value) { writer_parser->write_float32(value);}
+void File::write_float64(double value) { writer_parser->write_float64(value); }
 
-void File::write_name(name_t value) { strcpy(buffer_cursor, value); buffer_cursor += strlen(value); *buffer_cursor++ = ' '; }
-void File::write_string(const char* value) { *buffer_cursor++ = '"'; strcpy(buffer_cursor, value); buffer_cursor += strlen(value); *buffer_cursor++ = '"'; *buffer_cursor++ = ' '; }
-void File::write_newline() { *buffer_cursor++ = '\n'; }
+void File::write_name(name_t value) { writer_parser->write_name(value); }
+void File::write_string(const char* value) { writer_parser->write_string(value); }
+void File::write_newline() { writer_parser->write_newline(); }
 
-int8_t File::read_int8() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-int16_t File::read_int16() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-int32_t File::read_int32() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-int64_t File::read_int64() { auto ret = read_text_int64(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+int8_t File::read_int8() { reader_parser->skip_whitespace(); return reader_parser->read_int8(); }
+int16_t File::read_int16() { reader_parser->skip_whitespace(); return reader_parser->read_int16(); }
+int32_t File::read_int32() { reader_parser->skip_whitespace(); return reader_parser->read_int32(); }
+int64_t File::read_int64() { reader_parser->skip_whitespace(); return reader_parser->read_int64(); }
 
-uint8_t File::read_uint8() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-uint16_t File::read_uint16() { auto ret = read_text_from_chars<uint16_t>(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-uint32_t File::read_uint32() { auto ret = read_text_int32(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-uint64_t File::read_uint64() { auto ret = read_text_int64(cursor, cursor_end); skip_text(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+uint8_t File::read_uint8() { reader_parser->skip_whitespace(); return reader_parser->read_uint8(); }
+uint16_t File::read_uint16() { reader_parser->skip_whitespace(); return reader_parser->read_uint16(); }
+uint32_t File::read_uint32() { reader_parser->skip_whitespace(); return reader_parser->read_uint32(); }
+uint64_t File::read_uint64() { reader_parser->skip_whitespace(); return reader_parser->read_uint64(); }
 
-float File::read_float32() { auto ret = read_text_from_chars<float>(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
-double File::read_float64() { auto ret = read_text_from_chars<double>(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+float File::read_float32() { reader_parser->skip_whitespace(); return reader_parser->read_float32(); }
+double File::read_float64() { reader_parser->skip_whitespace(); return reader_parser->read_float64(); }
 
-name_t File::read_name() { auto ret = read_text_name(cursor, cursor_end); skip_text (cursor, cursor_end, pause_next); reset_flags(); return ret; }
+name_t File::read_name() { reader_parser->skip_whitespace(); return reader_parser->read_name(); }
 std::string_view File::read_string() { abort(); } // TODO: implement
-std::string_view File::read_line() { auto ret = read_text_line(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, pause_next); reset_flags(); return ret; }
+std::string_view File::read_line() { return reader_parser->read_line(); }
 
-void File::skip_linebreak() { skip_text_line(cursor, cursor_end); skip_text_whitespace(cursor, cursor_end, false); }
+void File::skip_linebreak() { reader_parser->skip_newline(); }
 
 void File::reset_flags() {
-    // nothing here idk
+    if (reader_parser) reader_parser->reset_error();
 }
+
+bool File::was_error() {
+    if (reader_parser) return reader_parser->is_error();
+    return false;
+}
+
 }
