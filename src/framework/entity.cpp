@@ -183,21 +183,15 @@ Entity* Entity::Make(name_t type, File* file) {
     for (size_t i = 0; i < record.fieldcount; i++) {
         switch (record.fields[i]) {
             case TYPE_BOOL:     fields.push_back((bool) file->read_uint32()); break; // hehe
-            //case TYPE_INT:      fields.push_back(file->read_int32());   break;
-            //case TYPE_UINT:     fields.push_back(file->read_uint32());  break;
-            //case TYPE_FLOAT:    fields.push_back(file->read_float32()); break;
             case TYPE_NAME:     fields.push_back(file->read_name());    break;
             case TYPE_STRING:   fields.push_back(nullptr);              break; // TODO: fix
-            //case TYPE_INT8:     fields.push_back(file->read_int8());    break;
-            //case TYPE_INT16:    fields.push_back(file->read_int16());   break;
+            case TYPE_INT8:     fields.push_back(file->read_int8());    break;
+            case TYPE_INT16:    fields.push_back(file->read_int16());   break;
             case TYPE_INT32:    fields.push_back(file->read_int32());   break;
-            //case TYPE_INT64:    fields.push_back(file->read_int64());   break;
-            //case TYPE_UINT8:    fields.push_back(file->read_uint8());   break;
-            //case TYPE_UINT16:   fields.push_back(file->read_uint16());  break;
+            case TYPE_UINT8:    fields.push_back(file->read_uint8());   break;
+            case TYPE_UINT16:   fields.push_back(file->read_uint16());  break;
             case TYPE_UINT32:   fields.push_back(file->read_uint32());  break;
-            //case TYPE_UINT64:   fields.push_back(file->read_uint64());  break;
             case TYPE_FLOAT32:  fields.push_back(file->read_float32()); break;
-            //case TYPE_FLOAT64:  fields.push_back(file->read_float64()); break;
             case TYPE_VEC2:     fields.push_back(vec2{file->read_float32(),      // evil formatting. do not DO NOT
                                 file->read_float32()});                 break;
             case TYPE_VEC3:     fields.push_back(vec3{file->read_float32(), 

@@ -112,7 +112,19 @@ public:
     }
     
     std::string_view read_string() {
-        return {};
+        char delimiter = *cur;
+        cur++;
+        
+        const char* begin = cur;
+        size_t length = 0;
+        
+        for (; *cur != delimiter && cur < end; cur++) {
+            length++;
+        }
+        
+        cur++;
+        
+        return {begin, length};
     }
     
     std::string_view read_line() {
@@ -321,15 +333,17 @@ File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
             reader_parser = new TextReaderParser(reader);
         }
         
-        pause_next = mode & MODE_PAUSE_LINE;
+        if (mode & MODE_PAUSE_LINE) {
+            reader_parser->set_skip_newline(false);
+        }
         
-        //skip_text_whitespace(cursor, cursor_end, pause_next);
     } else if (mode & MODE_WRITE) {
         writer = FileWriter::GetWriter(path, FileMedium::LOCAL_DISK);
         
         if (writer->GetStatus() == FileStatus::READY) {
-            // yippeee
+            writer_parser = new TextWriterParser(writer);
         }
+        
     } else {
         abort();
     }
@@ -400,7 +414,7 @@ float File::read_float32() { reader_parser->skip_whitespace(); return reader_par
 double File::read_float64() { reader_parser->skip_whitespace(); return reader_parser->read_float64(); }
 
 name_t File::read_name() { reader_parser->skip_whitespace(); return reader_parser->read_name(); }
-std::string_view File::read_string() { abort(); } // TODO: implement
+std::string_view File::read_string() { reader_parser->skip_whitespace(); return reader_parser->read_string(); }
 std::string_view File::read_line() { return reader_parser->read_line(); }
 
 void File::skip_linebreak() { reader_parser->skip_newline(); }

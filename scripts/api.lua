@@ -890,6 +890,26 @@ function tram.ui.GetKeyboardActionName(name)
 	return __tram_impl_ui_get_keyboard_action_name(name)
 end
 
+-- ============================ FRAMEWORK/TYPE.H ============================ --
+
+-- -------------------------------  CONSTANTS ------------------------------- --
+
+tram.type.UNDEFINED = 0
+tram.type.BOOL = 1
+tram.type.NAME = 2
+tram.type.STRING = 3
+tram.type.INT8 = 4
+tram.type.INT16 = 5
+tram.type.INT32 = 6
+tram.type.UINT8 = 7
+tram.type.UINT16 = 8
+tram.type.UINT32 = 9
+tram.type.FLOAT32 = 10
+tram.type.VEC2 = 11
+tram.type.VEC3 = 12
+tram.type.VEC4 = 13
+tram.type.QUAT = 14
+
 -- =========================== FRAMEWORK/RESOURCE.H ========================= --
 
 -- -------------------------------  CONSTANTS ------------------------------- --

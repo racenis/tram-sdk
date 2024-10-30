@@ -10,12 +10,12 @@ namespace tram::Ext::Scripting::Lua {
 
 static lua_State* L = nullptr;
 
+// Takes a Lua value from Lua stack and tries to find the best fit for it from
+// the types that are supported by value_t.
 static Type best_value(int index) {
     switch (lua_type(L, index)) {
-        //case LUA_TNUMBER:   return TYPE_FLOAT;
         case LUA_TNUMBER:   return lua_isinteger(L, index) ? TYPE_INT32 : TYPE_FLOAT32;
         case LUA_TBOOLEAN:  return TYPE_BOOL;
-        //case LUA_TSTRING:   return TYPE_NAME;
         case LUA_TSTRING:   return TYPE_STRING;
         case LUA_TTABLE:    {
             lua_getfield(L, index, "x");
@@ -52,6 +52,7 @@ static Type best_value(int index) {
         }
 }
 
+// Converts and pushes a value_t to Lua stack.
 static void push_value_to_stack(const value_t& value) {
     if (value.IsBool()) {
         lua_pushboolean(L, (bool)value);        return;
@@ -85,6 +86,7 @@ static void push_value_to_stack(const value_t& value) {
     }
 }
 
+// Takes a Lua value from the Lua stack and packs it into a value_t.
 static value_t get_value_from_stack(int index, Type type) {
     switch (type) {
         case TYPE_UNDEFINED: {
@@ -95,39 +97,22 @@ static value_t get_value_from_stack(int index, Type type) {
             }
             
             return get_value_from_stack(index, best_type);
-            /*if (lua_isboolean(L, index)) {
-                return (bool) lua_toboolean(L, index);
-            } else if (lua_isinteger(L, index)) {
-                return (int32_t) lua_tointeger(L, index);
-            } else if (lua_isnumber(L, index)) {
-                return (float) lua_tonumber(L, index);
-            } else if (lua_isstring(L, index)) {
-                return (const char*) lua_tostring(L, index);
-            } else {
-                return value_t();
-            }*/
         } break;
         
         case TYPE_BOOL:         return (bool) lua_toboolean(L, index);
         
         case TYPE_NAME:         return (name_t) lua_tostring(L, index);
         case TYPE_STRING:       return (const char*) lua_tostring(L, index);
-        
-        //case TYPE_INT8:         return (int8_t) lua_tointeger(L, index);
-        //case TYPE_INT16:        return (int16_t) lua_tointeger(L, index);
-        //case TYPE_INT:
+
+        case TYPE_INT8:
+        case TYPE_INT16:
         case TYPE_INT32:        return (int32_t) lua_tointeger(L, index);
-        //case TYPE_INT64:        return (int64_t) lua_tointeger(L, index);
-        //case TYPE_UINT8:        return (uint8_t) lua_tointeger(L, index);
-        //case TYPE_UINT16:       return (uint16_t) lua_tointeger(L, index);
-        //case TYPE_UINT:
+        case TYPE_UINT8:
+        case TYPE_UINT16:
         case TYPE_UINT32:       return (uint32_t) lua_tointeger(L, index);
-        //case TYPE_UINT64:       return (uint64_t) lua_tointeger(L, index);
-        
-        //case TYPE_FLOAT: 
+
         case TYPE_FLOAT32:      return (float) lua_tonumber(L, index);
-        //case TYPE_FLOAT64:      return (double) lua_tonumber(L, index);
-        
+
         case TYPE_VEC3: {
             lua_getfield(L, index, "x");
             lua_getfield(L, index, "y");

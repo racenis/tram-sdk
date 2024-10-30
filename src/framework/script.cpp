@@ -77,7 +77,7 @@ void Init() {
     });
     
     SetFunction("__tram_impl_core_get_tick_time", {}, [](valuearray_t) -> value_t {
-        return (float)GetTickTime();
+        return GetTickTime();
     });
     
     SetFunction("__tram_impl_core_get_delta_time", {}, [](valuearray_t) -> value_t {
@@ -118,19 +118,19 @@ void Init() {
         return Event::GetType(array[0]);
     });
     
-    SetFunction("__tram_impl_event_get_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        return Event::GetName((uint32_t)array[0]);
+    SetFunction("__tram_impl_event_get_name", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return Event::GetName(array[0]);
     });
     
     SetFunction("__tram_impl_event_get_last", {}, [](valuearray_t) -> value_t {
         return Event::GetLast();
     });
     
-    SetFunction("__tram_impl_event_post", {TYPE_UINT32, TYPE_UINT32, TYPE_UINT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+    SetFunction("__tram_impl_event_post", {TYPE_UINT16, TYPE_UINT16, TYPE_UINT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
         Event event;
         
-        event.type = (uint32_t)array[0];
-        event.subtype = (uint32_t)array[1];
+        event.type = array[0];
+        event.subtype = array[1];
         event.poster_id = array[2];
         
         if (array[3].GetType() == TYPE_UNDEFINED) {
@@ -144,11 +144,11 @@ void Init() {
         return name_t();
     });
     
-    SetFunction("__tram_impl_event_add_listener", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+    SetFunction("__tram_impl_event_add_listener", {TYPE_UINT16, TYPE_UINT32}, [](valuearray_t array) -> value_t {
         size_t data_int = (uint32_t)array[1];
         void* data_ptr = (void*)data_int;
         
-        return Event::AddListener((uint32_t)array[0], data_ptr, [](Event& event, void* data) {
+        return Event::AddListener(array[0], data_ptr, [](Event& event, void* data) {
             size_t data_ptr = (size_t)data;
             uint32_t data_int = (uint32_t)data_ptr;
             
@@ -280,12 +280,12 @@ void Init() {
     
     // ENTITIES/SCRIPT.H
     
-    SetFunction("__tram_impl_entity_add_listener", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+    SetFunction("__tram_impl_entity_add_listener", {TYPE_UINT16, TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Entity* entity = Entity::Find((uint32_t)array[1]);
         
         if (!entity) return -1;
         
-        return Event::AddListener((uint32_t)array[0], entity);
+        return Event::AddListener(array[0], entity);
     });
     
     static std::vector<std::pair<Value, Value>> key_values;
@@ -391,32 +391,32 @@ void Init() {
         return true;
     });
     
-    SetFunction("__tram_impl_ui_bind_keyboard_action", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        UI::BindKeyboardKey((UI::KeyboardKey)((uint32_t)array[0]), (uint32_t)array[1]);
+    SetFunction("__tram_impl_ui_bind_keyboard_action", {TYPE_UINT16, TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        UI::BindKeyboardKey((UI::KeyboardKey)((uint16_t)array[0]), (uint16_t)array[1]);
         return true;
     });
     
-    SetFunction("__tram_impl_ui_bind_keyboard_callback", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        UI::BindKeyboardKey((UI::KeyboardKey)((uint32_t)array[0]), [](UI::KeyboardKey key) {
+    SetFunction("__tram_impl_ui_bind_keyboard_callback", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        UI::BindKeyboardKey((UI::KeyboardKey)((uint16_t)array[0]), [](UI::KeyboardKey key) {
             CallFunction("__tram_impl_ui_keyboard_callback", {key});
         });
         return true;
     });
     
-    SetFunction("__tram_impl_ui_poll_keyboard_key", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        return UI::PollKeyboardKey((UI::KeyboardKey)((uint32_t)array[0]));
+    SetFunction("__tram_impl_ui_poll_keyboard_key", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::PollKeyboardKey((UI::KeyboardKey)((uint16_t)array[0]));
     });
     
-    SetFunction("__tram_impl_ui_poll_keyboard_axis", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        return UI::PollKeyboardAxis((UI::KeyboardAxis)((uint32_t)array[0]));
+    SetFunction("__tram_impl_ui_poll_keyboard_axis", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::PollKeyboardAxis((UI::KeyboardAxis)((uint16_t)array[0]));
     });
     
-    SetFunction("__tram_impl_ui_poll_keyboard_axis_delta", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        return UI::PollKeyboardAxis((UI::KeyboardAxis)((uint32_t)array[0]));
+    SetFunction("__tram_impl_ui_poll_keyboard_axis_delta", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::PollKeyboardAxis((UI::KeyboardAxis)((uint16_t)array[0]));
     });
     
-    SetFunction("__tram_impl_ui_set_input_state", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        UI::SetInputState((UI::InputState)((uint32_t)array[0]));
+    SetFunction("__tram_impl_ui_set_input_state", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        UI::SetInputState((UI::InputState)((uint16_t)array[0]));
         return true;
     });
     
@@ -424,12 +424,12 @@ void Init() {
         return UI::GetInputState();
     });
     
-    SetFunction("__tram_impl_ui_get_axis_sensitivity", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        return UI::GetAxisSensitivity((UI::KeyboardAxis)((uint32_t)array[0]));
+    SetFunction("__tram_impl_ui_get_axis_sensitivity", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::GetAxisSensitivity((UI::KeyboardAxis)((uint16_t)array[0]));
     });
     
-    SetFunction("__tram_impl_ui_set_axis_sensitivity", {TYPE_UINT32, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
-        UI::SetAxisSensitivity((UI::KeyboardAxis)((uint32_t)array[0]), array[1]);
+    SetFunction("__tram_impl_ui_set_axis_sensitivity", {TYPE_UINT16, TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
+        UI::SetAxisSensitivity((UI::KeyboardAxis)((uint16_t)array[0]), array[1]);
         return true;
     });
     
@@ -441,8 +441,8 @@ void Init() {
         return UI::GetKeyboardAction(array[0]);
     });
     
-    SetFunction("__tram_impl_ui_get_keyboard_action_name", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        return UI::GetKeyboardActionName((uint32_t)array[0]);
+    SetFunction("__tram_impl_ui_get_keyboard_action_name", {TYPE_UINT16}, [](valuearray_t array) -> value_t {
+        return UI::GetKeyboardActionName((uint16_t)array[0]);
     });
     
     
@@ -454,7 +454,7 @@ void Init() {
         WorldCell* cell = WorldCell::Find((name_t)array[0]);
         
         if (cell) {
-            return (uint32_t)PoolProxy<WorldCell>::GetPool().index(cell);
+            return PoolProxy<WorldCell>::GetPool().index(cell);
         } else {
             return -1;
         }
@@ -464,7 +464,7 @@ void Init() {
         WorldCell* cell = WorldCell::Make((name_t)array[0]);
         
         if (cell) {
-            return (uint32_t)PoolProxy<WorldCell>::GetPool().index(cell);
+            return PoolProxy<WorldCell>::GetPool().index(cell);
         } else {
             return -1;
         }
@@ -585,7 +585,7 @@ void Init() {
         Model* model = Model::Find(array[0]);
         
         if (model) {
-            return (uint32_t)PoolProxy<Model>::GetPool().index(model);
+            return PoolProxy<Model>::GetPool().index(model);
         } else {
             return -1;
         }
@@ -667,7 +667,7 @@ void Init() {
         Animation* animation = Animation::Find(array[0]);
         
         if (animation) {
-            return (uint32_t)PoolProxy<Animation>::GetPool().index(animation);
+            return PoolProxy<Animation>::GetPool().index(animation);
         } else {
             return -1;
         }
@@ -690,7 +690,7 @@ void Init() {
         Material* material = Material::Find(array[0]);
         
         if (material) {
-            return (uint32_t)PoolProxy<Material>::GetPool().index(material);
+            return PoolProxy<Material>::GetPool().index(material);
         } else {
             return -1;
         }
@@ -707,7 +707,7 @@ void Init() {
         Model* model = Model::Find(array[0]);
         
         if (model) {
-            return (uint32_t)PoolProxy<Model>::GetPool().index(model);
+            return PoolProxy<Model>::GetPool().index(model);
         } else {
             return -1;
         }
@@ -765,7 +765,7 @@ void Init() {
         Sprite* sprite = Sprite::Find(array[0]);
         
         if (sprite) {
-            return (uint32_t)PoolProxy<Sprite>::GetPool().index(sprite);
+            return PoolProxy<Sprite>::GetPool().index(sprite);
         } else {
             return -1;
         }
@@ -789,7 +789,7 @@ void Init() {
         RenderComponent* component = PoolProxy<RenderComponent>::New();
         
         if (component) {
-            return (uint32_t)PoolProxy<RenderComponent>::GetPool().index(component);
+            return PoolProxy<RenderComponent>::GetPool().index(component);
         } else {
             return -1;
         }
@@ -797,7 +797,7 @@ void Init() {
 
     SetFunction("__tram_impl_components_render_get_model", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Model* model = PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].GetModel();
-        return (uint32_t)PoolProxy<Model>::GetPool().index(model);
+        return PoolProxy<Model>::GetPool().index(model);
     });
 
     SetFunction("__tram_impl_components_render_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
@@ -875,7 +875,7 @@ void Init() {
         LightComponent* component = PoolProxy<LightComponent>::New();
         
         if (component) {
-            return (uint32_t)PoolProxy<LightComponent>::GetPool().index(component);
+            return PoolProxy<LightComponent>::GetPool().index(component);
         } else {
             return -1;
         }
@@ -926,7 +926,7 @@ void Init() {
         AnimationComponent* component = PoolProxy<AnimationComponent>::New();
         
         if (component) {
-            return (uint32_t)PoolProxy<AnimationComponent>::GetPool().index(component);
+            return PoolProxy<AnimationComponent>::GetPool().index(component);
         } else {
             return -1;
         }
@@ -945,7 +945,7 @@ void Init() {
 
     SetFunction("__tram_impl_components_animation_get_model", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Model* model = PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].GetModel();
-        return (uint32_t)PoolProxy<Model>::GetPool().index(model);
+        return PoolProxy<Model>::GetPool().index(model);
     });
 
     SetFunction("__tram_impl_components_animation_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
