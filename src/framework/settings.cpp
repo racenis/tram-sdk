@@ -59,16 +59,16 @@ void Parse(const char** argv, int argc) {
         //assert(i != argc);
         
         switch (value.GetType()) {
-            case TYPE_INT8:     value.SetValue((int8_t)atoi(argv[i])); break;
-            case TYPE_INT16:    value.SetValue((int16_t)atoi(argv[i])); break;
+            //case TYPE_INT8:     value.SetValue((int8_t)atoi(argv[i])); break;
+            //case TYPE_INT16:    value.SetValue((int16_t)atoi(argv[i])); break;
             case TYPE_INT32:    value.SetValue((int32_t)atoi(argv[i])); break;
-            case TYPE_INT64:    value.SetValue((int64_t)atoi(argv[i])); break;
-            case TYPE_UINT8:    value.SetValue((uint8_t)atoi(argv[i])); break;
-            case TYPE_UINT16:   value.SetValue((uint16_t)atoi(argv[i])); break;
+            //case TYPE_INT64:    value.SetValue((int64_t)atoi(argv[i])); break;
+            //case TYPE_UINT8:    value.SetValue((uint8_t)atoi(argv[i])); break;
+           // case TYPE_UINT16:   value.SetValue((uint16_t)atoi(argv[i])); break;
             case TYPE_UINT32:   value.SetValue((uint32_t)atoi(argv[i])); break;
-            case TYPE_UINT64:   value.SetValue((uint64_t)atoi(argv[i])); break;
+           // case TYPE_UINT64:   value.SetValue((uint64_t)atoi(argv[i])); break;
             case TYPE_FLOAT32:  value.SetValue((float)atof(argv[i])); break;
-            case TYPE_FLOAT64:  value.SetValue((double)atof(argv[i])); break;
+           // case TYPE_FLOAT64:  value.SetValue((double)atof(argv[i])); break;
             case TYPE_NAME:     value.SetValue((name_t)argv[i]); break;
             case TYPE_STRING:   value.SetValue(argv[i]); break;
             case TYPE_VEC2:     value.SetValue(vec2{atof(argv[i]), atof(argv[i+1])}); i += 1; break;

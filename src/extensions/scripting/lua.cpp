@@ -13,7 +13,7 @@ static lua_State* L = nullptr;
 static Type best_value(int index) {
     switch (lua_type(L, index)) {
         //case LUA_TNUMBER:   return TYPE_FLOAT;
-        case LUA_TNUMBER:   return lua_isinteger(L, index) ? TYPE_INT : TYPE_FLOAT;
+        case LUA_TNUMBER:   return lua_isinteger(L, index) ? TYPE_INT32 : TYPE_FLOAT32;
         case LUA_TBOOLEAN:  return TYPE_BOOL;
         //case LUA_TSTRING:   return TYPE_NAME;
         case LUA_TSTRING:   return TYPE_STRING;
@@ -113,20 +113,20 @@ static value_t get_value_from_stack(int index, Type type) {
         case TYPE_NAME:         return (name_t) lua_tostring(L, index);
         case TYPE_STRING:       return (const char*) lua_tostring(L, index);
         
-        case TYPE_INT8:         return (int8_t) lua_tointeger(L, index);
-        case TYPE_INT16:        return (int16_t) lua_tointeger(L, index);
-        case TYPE_INT:
+        //case TYPE_INT8:         return (int8_t) lua_tointeger(L, index);
+        //case TYPE_INT16:        return (int16_t) lua_tointeger(L, index);
+        //case TYPE_INT:
         case TYPE_INT32:        return (int32_t) lua_tointeger(L, index);
-        case TYPE_INT64:        return (int64_t) lua_tointeger(L, index);
-        case TYPE_UINT8:        return (uint8_t) lua_tointeger(L, index);
-        case TYPE_UINT16:       return (uint16_t) lua_tointeger(L, index);
-        case TYPE_UINT:
+        //case TYPE_INT64:        return (int64_t) lua_tointeger(L, index);
+        //case TYPE_UINT8:        return (uint8_t) lua_tointeger(L, index);
+        //case TYPE_UINT16:       return (uint16_t) lua_tointeger(L, index);
+        //case TYPE_UINT:
         case TYPE_UINT32:       return (uint32_t) lua_tointeger(L, index);
-        case TYPE_UINT64:       return (uint64_t) lua_tointeger(L, index);
+        //case TYPE_UINT64:       return (uint64_t) lua_tointeger(L, index);
         
-        case TYPE_FLOAT: 
+        //case TYPE_FLOAT: 
         case TYPE_FLOAT32:      return (float) lua_tonumber(L, index);
-        case TYPE_FLOAT64:      return (double) lua_tonumber(L, index);
+        //case TYPE_FLOAT64:      return (double) lua_tonumber(L, index);
         
         case TYPE_VEC3: {
             lua_getfield(L, index, "x");
