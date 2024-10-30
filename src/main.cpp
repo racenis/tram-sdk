@@ -822,6 +822,7 @@ using namespace tram::UI;
 #include <entities/sound.h>
 #include <entities/decoration.h>
 #include <entities/trigger.h>
+#include <entities/marker.h>
 
 #include <components/render.h>
 #include <components/animation.h>
@@ -857,6 +858,7 @@ int main() {
     Sound::Register();
     Decoration::Register();
     Trigger::Register();
+    Marker::Register();
     StaticWorldObject::Register();
     Ext::Design::Button::Register();
 

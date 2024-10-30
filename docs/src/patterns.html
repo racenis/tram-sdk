@@ -1,0 +1,211 @@
+<!-- PAGE_TITLE: Design Patterns | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Design Patterns Used
+</h1>
+
+<hr/>
+
+<p>
+	When all of the patterns get used I will rename the project to reflect the
+	fact that it has turned into an OOP heap.
+</p>
+
+<table border="1">
+	<tr>
+		<th>
+			Pattern
+		</th>
+		<th>
+			Where is it used?
+		</th>
+	</tr>
+	<tr>
+		<td>
+			Abstract factory
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Builder
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Factory method
+		</td>
+		<td>
+			Used all over the place.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Prototype
+		</td>
+		<td>
+			Used in the level editor for objects. Some objects can be cloned.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Singleton
+		</td>
+		<td>
+			PoolProxy class is used to force a single Pool template
+			instantiation per type.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Adapter
+		</td>
+		<td>
+			There's probably some adapters in there, but can't remember a
+			specific example.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Bridge
+		</td>
+		<td>
+			Definitely somewhere in there.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Composite
+		</td>
+		<td>
+			Used for level editor objects.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Decorator
+		</td>
+		<td>
+			Used for scripting API.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Facade
+		</td>
+		<td>
+			Used for the file abstraction.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Flyweight
+		</td>
+		<td>
+			Dynamically created collisionshapes use the same underlying object
+			if their types and dimensions are the same.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Proxy
+		</td>
+		<td>
+			Used by some resources.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Chain of responsiblity
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Command
+		</td>
+		<td>
+			Messages are essentially commands.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Interpreter
+		</td>
+		<td>
+			Used by the quest extension for nocode scripting.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Iterator
+		</td>
+		<td>
+			Used all over the place.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Mediator
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Memento
+		</td>
+		<td>
+			Used for undo/redo functionality in the level editor.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Observer
+		</td>
+		<td>
+			Event listeners are essentially observers.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			State
+		</td>
+		<td>
+			Used for tools in the level editor.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Strategy
+		</td>
+		<td>
+			Used by the file abstraction.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Template method
+		</td>
+		<td>
+			Used by resources, entities and entity components for their life
+			cycles and stuff.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Visitor
+		</td>
+		<td>
+			Probably used somewhere in there.
+		</td>
+	</tr>
+</table>

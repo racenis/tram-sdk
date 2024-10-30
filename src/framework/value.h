@@ -85,9 +85,26 @@ public:
     Value(float value) : float_value(value) { type = TYPE_FLOAT32; }
     Value(double value) : double_value(value) { type = TYPE_FLOAT64; }
     
-    operator bool() const { assert(type == TYPE_BOOL); return bool_value; } 
-    operator name_t() const { assert(type == TYPE_NAME); return name_value; }
-    operator const char*() const { assert(type == TYPE_STRING); return string_value; }
+    operator bool() const { assert(type == TYPE_BOOL); return bool_value; }
+    
+    operator name_t() const {
+        if (type == TYPE_STRING) {
+            return (name_t)string_value;
+        }
+        
+        assert(type == TYPE_NAME);
+        
+        return name_value;
+    }
+    operator const char*() const {
+        if (type == TYPE_NAME) {
+            return name_value;
+        }
+        
+        assert(type == TYPE_STRING);
+        
+        return string_value;
+    }
     
     operator int8_t() const { assert(type == TYPE_INT8); return int8_value; }
     operator int16_t() const { assert(type == TYPE_INT16); return int16_value; }

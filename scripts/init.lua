@@ -1,5 +1,49 @@
 print("\n\n\n SCRIPT INIT \n\n\n")
 
+--entity = {}
+--tram.entity.Init(entity)
+
+--print("ID:", entity:GetID())
+--print("Name:", entity:GetName())
+
+
+props = {}
+
+props.id = 0
+props.name = "chungus-crate"
+props.flags = 0
+props.location = tram.math.vec3(0.0, 10.0, 0.0)
+props.rotation = tram.math.quat(tram.math.vec3(0.0, 0.0, 0.0))
+
+props[0] = "crate_ligma"
+props[1] = "crate"
+
+crate = tram.entity.New("crate-ext", "crate", props)
+
+crate.OnLoad = function()
+	print("Extended immortal crate. Loading...")
+end
+
+crate.OnMessageHandler = function(self, message)
+	print("Message received:", tram.message.GetName(message.type))
+	
+	-- do not hand kill messages over to the base class
+	if message.type == tram.message.KILL then
+		return false
+	end
+	
+	-- allow base class to receive all other messages
+	return true
+end
+
+print("it has been newed.")
+print("my new creat: ", crate:GetName())
+print("loding now")
+crate:Load()
+print("yippee.")
+
+
+
 
 
 print("registering new event!")

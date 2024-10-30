@@ -13,6 +13,7 @@
 #include <framework/ui.h>
 #include <framework/worldcell.h>
 #include <audio/audio.h>
+#include <entities/script.h>
 #include <physics/physics.h>
 #include <physics/collisionshape.h>
 #include <physics/collisionmodel.h>
@@ -240,6 +241,20 @@ void Init() {
         return entity ? entity->GetName() : name_t();
     });
     
+    
+    SetFunction("__tram_impl_entity_load", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        if (entity) entity->Load();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_entity_unload", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[0]);
+        if (entity) entity->Unload();
+        return true;
+    });
+    
+    
     SetFunction("__tram_impl_entity_get_location", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Entity* entity = Entity::Find((uint32_t)array[0]);
         return entity ? entity->GetLocation() : vec3();
@@ -263,6 +278,92 @@ void Init() {
     });
     
     
+    // ENTITIES/SCRIPT.H
+    
+    SetFunction("__tram_impl_entity_add_listener", {TYPE_UINT16, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        Entity* entity = Entity::Find((uint32_t)array[1]);
+        
+        if (!entity) return -1;
+        
+        return Event::AddListener(array[0], entity);
+    });
+    
+    static std::vector<std::pair<Value, Value>> key_values;
+    SetFunction("__tram_impl_clear_key_value", {}, [](valuearray_t array) -> value_t {
+        key_values.clear();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_push_key_value", {TYPE_UNDEFINED, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        key_values.push_back({array[0], array[1]});
+        return true;
+    });
+    
+    static auto pack_key_values = [](SharedEntityData& shared_data, std::vector<Value>& properties) {
+        for (auto& [key, value] : key_values) {
+            if (key.GetType() == TYPE_STRING) {
+                const name_t key_name = (const char*)key;
+                
+                if (key_name == "id") {
+                    shared_data.id = value.GetInt();;
+                } else if (key_name == "name") {
+                    shared_data.name = (const char*)value;
+                } else if (key_name == "flags") {
+                    shared_data.flags = value.GetInt();
+                } else if (key_name == "location") {
+                    shared_data.position = value;
+                } else if (key_name == "rotation") {
+                    shared_data.rotation = value;
+                } else {
+                    std::cout << "__tram_impl_entity_make: key-value array has unknown key value: " << key_name << std::endl;
+                }
+                
+            } else if (key.IsInt()) {
+                assert(key.GetInt() >= 0);
+                assert(key.GetInt() < 100);
+                
+                if (properties.size() <= (size_t)key.GetInt()) {
+                    properties.resize(key.GetInt() + 1);
+                }
+                
+                properties[key.GetInt()] = value;
+            } else {
+                std::cout << "__tram_impl_entity_make: key-value array has unknown key type " << key.GetType() << std::endl;
+            }
+        }
+    };
+    
+    
+    SetFunction("__tram_impl_entity_make", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        name_t type = array[0];
+        
+        SharedEntityData shared_data;
+        std::vector<Value> properties;
+        
+        pack_key_values(shared_data, properties);
+        
+        ValueArray field_array(properties.data(), properties.size());
+        
+        Entity* new_entity = Entity::Make(type, shared_data, field_array);
+        
+        return new_entity->GetID();
+    });
+    
+    SetFunction("__tram_impl_entity_scriptable_make", {TYPE_NAME, TYPE_NAME}, [](valuearray_t array) -> value_t {
+        name_t base_type = array[0];
+        name_t new_type = array[1];
+        
+        SharedEntityData shared_data;
+        std::vector<Value> properties;
+        
+        pack_key_values(shared_data, properties);
+        
+        ValueArray field_array(properties.data(), properties.size());
+        
+        Entity* new_entity = ScriptableType::Make(base_type, new_type, shared_data, field_array);
+        
+        return new_entity->GetID();
+    });
     
     
     // FRAMEWORK/UI.H

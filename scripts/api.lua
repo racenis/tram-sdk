@@ -315,6 +315,13 @@ tram._metatable_entity = {
 			return self.id
 		end,
 		
+		Load = function (self)
+			__tram_impl_entity_load(self.id)
+		end,
+		Unload = function (self)
+			__tram_impl_entity_unload(self.id)
+		end,
+		
 		GetLocation = function (self)
 			local vector = __tram_impl_entity_get_location(self.id)
 			setmetatable(vector, tram.math._metatable_vec3)
@@ -356,22 +363,170 @@ end
 
 function tram.entity.Make(entity_type, entity_properties)
 	
-	-- for property in properties:
-	--		_impl_push_property
-	-- id = _impl_make_entity(ttype)
+	__tram_impl_clear_key_value()
 	
-	-- make table with id and add metatable
-	-- return
+	for key, value in pairs(entity_properties) do
+		if type(value) ~= "function" then
+			__tram_impl_push_key_value(key, value)
+		end
+	end
 	
+	local entity = {}
+	
+	entity.id = __tram_impl_entity_make(entity_type)
+	
+	setmetatable(entity, tram._metatable_entity)
+	
+	return entity
 end
 
-function tram.entity.Register(entity_type, entity_properties)
+tram.entity._scriptable_entities = {}
 
-end
-
-function tram.entity.Decorate(entity, new_entity)
+function __tram_impl_entity_update_parameters_callback(id)
+	local entity = tram.entity._scriptable_entities[id]
 	
+	assert(entity ~= nil)
+	
+	if (rawget(entity, "OnUpdateParameters") == nil) then
+		return true
+	end
+
+	local result = entity:OnUpdateParameters()
+	
+	if result == nil then
+		return true
+	end
+	
+	return result
 end
+
+function __tram_impl_entity_set_parameters_callback(id)
+	local entity = tram.entity._scriptable_entities[id]
+	
+	assert(entity ~= nil)
+	
+	if (rawget(entity, "OnSetParameters") == nil) then
+		return true
+	end
+
+	local result = entity:OnSetParameters()
+	
+	if result == nil then
+		return true
+	end
+	
+	return result
+end
+
+function __tram_impl_entity_load_callback(id)
+	local entity = tram.entity._scriptable_entities[id]
+	
+	assert(entity ~= nil)
+	
+	if (rawget(entity, "OnLoad") == nil) then
+		return true
+	end
+
+	local result = entity:OnLoad()
+	
+	if result == nil then
+		return true
+	end
+	
+	return result
+end
+
+function __tram_impl_entity_unload_callback(id)
+	local entity = tram.entity._scriptable_entities[id]
+	
+	assert(entity ~= nil)
+	
+	if (rawget(entity, "OnUnload") == nil) then
+		return true
+	end
+
+	local result = entity:OnUnload()
+	
+	if result == nil then
+		return true
+	end
+	
+	return result
+end
+
+function __tram_impl_entity_message_handler_callback(id, message_type, sender, receiver, data)
+	local entity = tram.entity._scriptable_entities[id]
+	
+	assert(entity ~= nil)
+	
+	if (entity.OnMessageHandler == nil) then
+		return true
+	end
+	
+	local message = {}
+	message.type = message_type
+	message.sender = sender
+	message.receiver = receiver
+	message.data = data	
+
+	local result = entity:OnMessageHandler(message)
+	
+	if result == nil then
+		return true
+	end
+	
+	return result
+end
+
+function __tram_impl_entity_event_handler_callback(id, event_type, subtype, poster, data)
+	local entity = tram.entity._scriptable_entities[id]
+	
+	assert(entity ~= nil)
+	
+	if (entity.OnEventHandler == nil) then
+		return true
+	end
+	
+	local event = {}
+	event.type = event_type
+	event.subtype = subtype
+	event.poster = poster
+	event.data = data
+
+	local result = entity:OnEventHandler(event)
+	
+	if result == nil then
+		return true
+	end
+	
+	return result
+end
+
+
+function tram.entity.New(entity_type, base_type, base_properties)
+	__tram_impl_clear_key_value()
+	
+	for key, value in pairs(base_properties) do
+		if type(value) ~= "function" then
+			__tram_impl_push_key_value(key, value)
+		end
+	end
+	
+	local entity = {}
+	
+	entity.id = __tram_impl_entity_scriptable_make(base_type, entity_type)
+	
+	setmetatable(entity, tram._metatable_entity)
+	
+	tram.entity._scriptable_entities[entity.id] = entity
+	
+	return entity
+end
+
+function tram.entity.Register(entity_type, entity_properties, constructor, destructor)
+
+end
+
 
 -- =========================== FRAMEWORK/EVENT.H ============================ --
 
@@ -400,10 +555,14 @@ end
 tram.event._evt_act = {}
 tram.event._evt_ids = 1
 
-function tram.event.AddListener(event_type, listener_action)
+function tram.event.AddListener(event_type, action)
+	if getmetatable(action) == tram._metatable_entity then
+		return __tram_impl_entity_add_listener(event_type, action.id)
+	end
+	
 	listener = __tram_impl_event_add_listener(event_type, tram.event._evt_ids)
 
-	tram.event._evt_act[tram.event._evt_ids] = listener_action
+	tram.event._evt_act[tram.event._evt_ids] = action
 	tram.event._evt_ids = tram.event._evt_ids + 1
 	
 	return listener

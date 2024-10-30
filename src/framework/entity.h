@@ -87,6 +87,7 @@ public:
     
     static void UpdateFromList();
     static Entity* Make (name_t type, File* file);
+    static Entity* Make (name_t type, const SharedEntityData&, const ValueArray&);
     static Entity* Find (id_t entity_id);
     static Entity* Find (name_t entity_name);
 protected:
@@ -117,6 +118,14 @@ protected:
     inline void FireSignal(signal_t type, Value value) { if (signals) signals->Fire(type, this->id, value); }
 
     friend class WorldCell;
+};
+
+struct SharedEntityData {
+    uint64_t id = 0;
+    name_t name;
+    uint32_t flags = 0;
+    vec3 position = {0.0f, 0.0f, 0.0f};
+    quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};;
 };
 
 }

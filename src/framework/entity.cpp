@@ -23,13 +23,13 @@ struct EntityTypeInfo {
     size_t fieldcount = 0;
 };
     
-struct SharedEntityData {
+/*struct SharedEntityData {
     uint64_t id;
     name_t name;
     uint32_t flags;
     vec3 position;
     quat rotation;
-};
+};*/
 
 static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", 5000);
 static Hashmap<Entity*> entity_name_list ("Entity name hashmap", 500);
@@ -131,7 +131,13 @@ Entity* Entity::Find(name_t entityName) {
 static std::vector<Entity*> yeetery;
 
 void Entity::Update() {
-    for (auto ent : yeetery) {
+    if (!yeetery.size()) return;
+    
+    auto safe_yeetery = yeetery;
+    
+    yeetery.clear();
+    
+    for (auto ent : safe_yeetery) {
         if (ent->IsLoadedFromDisk()) continue;
         
         auto type_info = registered_entity_types.Find(ent->GetType());
@@ -144,7 +150,6 @@ void Entity::Update() {
             delete ent;
         }
     }
-    yeetery.clear();
 }
 
 void Entity::Yeet() {
@@ -209,6 +214,14 @@ Entity* Entity::Make(name_t type, File* file) {
     }
     
     ValueArray field_array(fields.data(), fields.size());
+    
+    return record.constructor(shared_data, field_array);
+}
+
+Entity* Entity::Make(name_t type, const SharedEntityData& shared_data, const ValueArray& field_array) {
+    auto record = registered_entity_types.Find(type);
+    
+    if (!record.constructor) return nullptr;
     
     return record.constructor(shared_data, field_array);
 }

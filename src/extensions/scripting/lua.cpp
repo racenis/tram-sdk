@@ -12,19 +12,21 @@ static lua_State* L = nullptr;
 
 static Type best_value(int index) {
     switch (lua_type(L, index)) {
-        case LUA_TNUMBER:   return TYPE_FLOAT;
+        //case LUA_TNUMBER:   return TYPE_FLOAT;
+        case LUA_TNUMBER:   return lua_isinteger(L, index) ? TYPE_INT : TYPE_FLOAT;
         case LUA_TBOOLEAN:  return TYPE_BOOL;
-        case LUA_TSTRING:   return TYPE_NAME;
+        //case LUA_TSTRING:   return TYPE_NAME;
+        case LUA_TSTRING:   return TYPE_STRING;
         case LUA_TTABLE:    {
             lua_getfield(L, index, "x");
             lua_getfield(L, index, "y");
             lua_getfield(L, index, "z");
             lua_getfield(L, index, "w");
             
-            bool has_x = lua_tonumber(L, -4) == LUA_TNUMBER;
-            bool has_y = lua_tonumber(L, -3) == LUA_TNUMBER;
-            bool has_z = lua_tonumber(L, -2) == LUA_TNUMBER;
-            bool has_w = lua_tonumber(L, -1) == LUA_TNUMBER;
+            bool has_x = lua_type(L, -4) == LUA_TNUMBER;
+            bool has_y = lua_type(L, -3) == LUA_TNUMBER;
+            bool has_z = lua_type(L, -2) == LUA_TNUMBER;
+            bool has_w = lua_type(L, -1) == LUA_TNUMBER;
             
             lua_pop(L, 4);
             
@@ -85,8 +87,15 @@ static void push_value_to_stack(const value_t& value) {
 
 static value_t get_value_from_stack(int index, Type type) {
     switch (type) {
-        case TYPE_UNDEFINED:
-            if (lua_isboolean(L, index)) {
+        case TYPE_UNDEFINED: {
+            Type best_type = best_value(index);
+            
+            if (best_type == TYPE_UNDEFINED) {
+                return value_t();
+            }
+            
+            return get_value_from_stack(index, best_type);
+            /*if (lua_isboolean(L, index)) {
                 return (bool) lua_toboolean(L, index);
             } else if (lua_isinteger(L, index)) {
                 return (int32_t) lua_tointeger(L, index);
@@ -96,8 +105,8 @@ static value_t get_value_from_stack(int index, Type type) {
                 return (const char*) lua_tostring(L, index);
             } else {
                 return value_t();
-            }
-            break;
+            }*/
+        } break;
         
         case TYPE_BOOL:         return (bool) lua_toboolean(L, index);
         

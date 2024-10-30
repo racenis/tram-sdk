@@ -2,6 +2,7 @@
 // All rights reserved.
 
 #include <entities/marker.h>
+#include <entities/script.h>
 
 namespace tram {
     
@@ -14,6 +15,12 @@ void Marker::Register() {
         [](Entity* a) { delete a; },
         nullptr,
         0
+    );
+    
+    ScriptableType::Register(
+        "marker",
+        [](name_t type, const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Scriptable<Marker>(a, b, type); },
+        [](Entity* a) { delete a; }
     );
 }
 

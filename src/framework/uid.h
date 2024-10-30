@@ -34,6 +34,8 @@ struct UID {
     operator std::string() const;
     operator char const*() const;
     
+    static bool is_valid(const UID&);
+    
     uint32_t key = 0;
 };
 

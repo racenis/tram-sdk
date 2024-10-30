@@ -228,6 +228,8 @@
       <File Name="src/render/material.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="entities">
+      <File Name="src/entities/script.h"/>
+      <File Name="src/entities/script.cpp"/>
       <File Name="src/entities/trigger.h"/>
       <File Name="src/entities/trigger.cpp"/>
       <File Name="src/entities/decoration.h"/>

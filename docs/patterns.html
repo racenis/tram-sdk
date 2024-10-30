@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="eeee" href="favicon.gif">
-		<title>Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<title>Design Patterns | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
 		<style>
 		
 			body {
@@ -139,94 +139,221 @@
 					Tramway SDK 0.0.9<br/>
 					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
 					<b>Quick links</b><br/>
-					<a href="index.html" class="menu-link menu-open-page">Home</a><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
 					<a href="learn/getstarted.html" class="menu-link">Get Started</a><br/>
 				</td>
 				<td valign="top" class="middle-pane">
-					<!-- PAGE_TITLE: Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+					<!-- PAGE_TITLE: Design Patterns | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
 
-<h1 style="font-family: serif;">
-	Did you know...
+<h1>
+	Design Patterns Used
 </h1>
 
-<i>
-	That the Tramway Drifting and Dungeon Exploration Simulator Software
-	Development Kit is the bestest 3D graphics package?
-</i>
-
 <hr/>
 
-<h2>
-	What is goings on?
-</h2>
-
 <p>
-	Draft version of runtime <a href="documentation.html">documentation</a>
-	finished.
+	When all of the patterns get used I will rename the project to reflect the
+	fact that it has turned into an OOP heap.
 </p>
 
-<p>
-	Lua API maybe 3/4th of the way to being finished.
-</p>
-
-<p>
-	Short version of TODO list:
-</p>
-
-<ul>
-	<li>Quickly throw together a larger app.</li>
-	<ul>
-		<li>The library can handle smaller apps very well.</li>
-		<li>Unclear how well it scales.</li>
-		<li>This would also make a nice example.</li>
-	</ul>
-	<li>Continue improving the library.</li>
-	<li>Get some more users and some more feedback.</li>
-	<li>Make some more devtools.</li>
-</ul>
-
-<hr/>
-
-<center>
-	<h3>
-		Design Patterns Used
-	</h3>
-	
-	<h1>
-		82%
-	</h1>
-	
-	<a href="patterns.html">Click here to learn more.</a>
-</center>
-
-<hr/>
-
-<h2>
-	Very large open world project
-</h2>
-
-<br/>
-
-<center>
-	<a target="_blank" href="images/posts/verylarge.png">
-		<img border="0" src="images/posts/verylarge.gif"/>
-	</a>
-	<br/>
-	<i>
-		Rendering a lot of 3D models.
-	</i>
-</center>
-
-<p>
-	Making 3D models and placing them in the world. Will do a first pass and
-	then set up streaming.
-</p>
-
-<p>
-	Currently very slow performance due to a lot of draw calls. But could be
-	because of Intel HD 4000 being bad. Will need to optimize.
-</p>
-
+<table border="1">
+	<tr>
+		<th>
+			Pattern
+		</th>
+		<th>
+			Where is it used?
+		</th>
+	</tr>
+	<tr>
+		<td>
+			Abstract factory
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Builder
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Factory method
+		</td>
+		<td>
+			Used all over the place.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Prototype
+		</td>
+		<td>
+			Used in the level editor for objects. Some objects can be cloned.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Singleton
+		</td>
+		<td>
+			PoolProxy class is used to force a single Pool template
+			instantiation per type.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Adapter
+		</td>
+		<td>
+			There's probably some adapters in there, but can't remember a
+			specific example.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Bridge
+		</td>
+		<td>
+			Definitely somewhere in there.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Composite
+		</td>
+		<td>
+			Used for level editor objects.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Decorator
+		</td>
+		<td>
+			Used for scripting API.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Facade
+		</td>
+		<td>
+			Used for the file abstraction.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Flyweight
+		</td>
+		<td>
+			Dynamically created collisionshapes use the same underlying object
+			if their types and dimensions are the same.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Proxy
+		</td>
+		<td>
+			Used by some resources.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Chain of responsiblity
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Command
+		</td>
+		<td>
+			Messages are essentially commands.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Interpreter
+		</td>
+		<td>
+			Used by the quest extension for nocode scripting.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Iterator
+		</td>
+		<td>
+			Used all over the place.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Mediator
+		</td>
+		<td>
+			Not used.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Memento
+		</td>
+		<td>
+			Used for undo/redo functionality in the level editor.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Observer
+		</td>
+		<td>
+			Event listeners are essentially observers.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			State
+		</td>
+		<td>
+			Used for tools in the level editor.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Strategy
+		</td>
+		<td>
+			Used by the file abstraction.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Template method
+		</td>
+		<td>
+			Used by resources, entities and entity components for their life
+			cycles and stuff.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Visitor
+		</td>
+		<td>
+			Probably used somewhere in there.
+		</td>
+	</tr>
+</table>
 				</td>
 				<td width="90" valign="top" class="right-pane">
 					<img src="images/800x600.gif"/><br/>

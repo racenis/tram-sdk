@@ -131,6 +131,10 @@ bool WorldCell::IsInside(vec3 point) {
 void WorldCell::Add(Entity* entity) {
     assert(entity->cell != this);
     
+    if (entity->GetCell()) {
+        entity->GetCell()->Remove(entity);
+    }
+    
     entities.push_back(entity);
     
     entity->cell = this;

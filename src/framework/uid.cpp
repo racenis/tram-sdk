@@ -61,4 +61,8 @@ UID::operator char const*() const {
     return string_pool.begin() + key;
 }
 
+bool UID::is_valid(const UID& value) {
+    return value.key < string_pool.size();
+}
+
 }

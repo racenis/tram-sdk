@@ -4,6 +4,9 @@ pages = ["index",
 		 "features",
 		 "roadmap",
 		 "learn",
+		 
+		 "patterns",
+		 
 		 "learn/whatis",
 		 "learn/getstarted",
 		 "learn/structure",

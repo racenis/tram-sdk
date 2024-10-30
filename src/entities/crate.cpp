@@ -4,6 +4,7 @@
 #include <framework/worldcell.h>
 
 #include <entities/crate.h>
+#include <entities/script.h>
 
 #include <components/render.h>
 #include <components/physics.h>
@@ -30,6 +31,12 @@ void Crate::Register() {
             {FIELD_COLLMODEL,   TYPE_NAME,      FIELD_SERIALIZE}
         }
     );
+    
+    ScriptableType::Register(
+        "crate",
+        [](name_t type, const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Scriptable<Crate>(a, b, type); },
+        [](Entity* a) { delete a; }
+    );
 }
 
 name_t Crate::GetType() {
@@ -54,7 +61,11 @@ void Crate::UpdateParameters() {
     if (!IsLoaded()) return;
     rendercomponent->SetLocation(location);
     rendercomponent->SetRotation(rotation);
-    rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
+    if (cell) {
+        rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
+    } else {
+        rendercomponent->SetDirectionaLight(true);
+    }
 }
 
 void Crate::SetParameters() {
