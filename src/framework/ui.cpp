@@ -16,6 +16,7 @@
 #include <fstream>
 #include <cstring>
 #include <algorithm>
+#include <ctime>
 
 #include <templates/hashmap.h>
 
@@ -79,9 +80,21 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     //{KEY_BACKSPACE, KeyBinding {.special_option = [](){ CharacterBackspaceCallback(); }}}
     {KEY_F12, KeyBinding {.special_option = [](){
         char* buffer = (char*)malloc(screen_width * screen_height * 3);
-        std::string filename = std::string("screenshot") + std::to_string(GetTickTime()) + ".png";
+
+        std::time_t epoch_time;
+        std::time(&epoch_time);
+        std::tm date_time = *std::localtime(&epoch_time);
+        
+        char time_str[100];
+        std::strftime(time_str, 100, "--%Y-%b-%d--%H-%M-%S", &date_time);
+        
+        char file_name[200];
+        strcpy(file_name, "screenshot");
+        strcat(file_name, time_str);
+        strcat(file_name, ".png");
+        
         Render::API::GetScreen(buffer, screen_width, screen_height);
-        Platform::SaveImageToDisk(filename.c_str(), screen_width, screen_height, buffer);
+        Platform::SaveImageToDisk(file_name, screen_width, screen_height, buffer);
         free(buffer);
     }}},
 };
