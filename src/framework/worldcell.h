@@ -43,6 +43,8 @@ public:
 
     void Add(Transition* transition);
     
+    void Link(WorldCell* other);
+    
     WorldCell* FindTransition(vec3 point);
     
     inline const std::vector<Entity*>& GetEntities() { return entities; }

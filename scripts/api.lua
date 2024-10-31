@@ -999,7 +999,12 @@ tram._metatable_worldcell = {
 		
 		Unload = function(self)
 			__tram_impl_worldcell_unload(self.index)
-		end
+		end,
+		
+		Link = function(self, other)
+			assert(getmetatable(other) == tram._metatable_worldcell)
+			__tram_impl_worldcell_link(self.index, other.index)
+		end,
 	}
 }
 

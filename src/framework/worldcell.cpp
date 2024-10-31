@@ -104,6 +104,8 @@ void WorldCell::Unload() {
    SetFlag(LOADED, false);
 };
 
+/// Adds a transition.
+/// Adds an outgoing transition to the worldcell.
 void WorldCell::Add(Transition* transition) {
     if (transition->cell_into == this) {
         volume.push_back(transition);
@@ -112,6 +114,9 @@ void WorldCell::Add(Transition* transition) {
     }
 }
 
+/// Finds a transition from a position.
+/// This is meant to be used by entities that are seeking a WorldCell into which
+/// they can transition into.
 WorldCell* WorldCell::FindTransition(vec3 point) {
     // find if transition is possible
     WorldCell* next = nullptr;
@@ -147,6 +152,7 @@ WorldCell* WorldCell::FindTransition(vec3 point) {
     return nullptr;
 }
 
+/// Checks if point is inside the worldcell.
 bool WorldCell::IsInside(vec3 point) {
     for (auto transition : volume) {
         if (transition->IsInside(point)) return true;
@@ -155,6 +161,16 @@ bool WorldCell::IsInside(vec3 point) {
     return false;
 }
 
+/// Links a worldcell.
+/// This method will take the volume transitions assigned to the worldcell in
+/// other pointer parameter and assign them as transitions to the given cell.
+void WorldCell::Link(WorldCell* other) {
+    for (auto transition : other->GetVolume()) {
+        this->transitions.push_back(transition);
+    }
+}
+
+/// Adds an entity to the worldcell.
 void WorldCell::Add(Entity* entity) {
     assert(entity->cell != this);
     
@@ -175,6 +191,7 @@ void WorldCell::Add(Entity* entity) {
     }
 }
 
+/// Removes an entity from the worldcell.
 void WorldCell::Remove(Entity* entity) {
     if (entity->cell == this) {
         entity->cell = nullptr;
@@ -183,6 +200,7 @@ void WorldCell::Remove(Entity* entity) {
     entities.erase(std::find(entities.begin(), entities.end(), entity));
 }
 
+/// Loads worldcell data from disk.
 void WorldCell::LoadFromDisk() {
     char path[100] = "data/worldcells/";
     strcat(path, name);

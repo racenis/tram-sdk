@@ -529,6 +529,11 @@ void Init() {
         return true;
     });
     
+    SetFunction("__tram_impl_worldcell_link", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].Link(&PoolProxy<WorldCell>::GetPool()[(uint32_t)array[1]]);
+        return true;
+    });
+    
     
     
     
