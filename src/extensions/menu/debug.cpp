@@ -13,11 +13,15 @@
 #include <framework/settings.h>
 #include <framework/worldcell.h>
 #include <framework/stats.h>
+#include <framework/script.h>
 
 #include <cstring>
+#include <deque>
 
 namespace tram::Ext::Menu {
 
+std::deque<std::string> console_logs;
+    
 struct Intercept {
     virtual void Display() = 0;
     virtual ~Intercept() = default;
@@ -177,13 +181,18 @@ void InitCallbacks() {
         intercepts.push_back(intercept);
     });
     
-    SetLogCallback([](int time, const char* text) {
+    SetDisplayLogCallback([](int time, const char* text) {
         LogIntercept* intercept = new LogIntercept;
         
         intercept->message = text;
         intercept->time = time;
         
         intercepts.push_back(intercept);
+    });
+    
+    SetConsoleLogCallback([](int time, const char* text) {
+        if (console_logs.size() > 10) console_logs.pop_back();
+        console_logs.push_front(text);
     });
 }
 
@@ -281,6 +290,12 @@ void DebugMenu::Display() {
             auto options = new Options;
             
             Menu::Push(options);
+        }
+        
+        if (GUI::Button("Console"))  {
+            auto console = new Console;
+            
+            Menu::Push(console);
         }
     
         if (GUI::CheckBox(intercept_enabled, "Intercept ")) {
@@ -883,6 +898,96 @@ void Options::Display() {
         ControllerComponent::SetDebugInfoDraw(controller_debug);
         
     GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
+
+Console::Console() {
+    text = new char[250];
+    *text = '\0';
+}
+
+Console::~Console() {
+    delete[] text;
+}
+
+void Console::Display() {
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
+    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        
+        static std::vector<std::string> console_history;
+        
+        static bool last_enter = false;
+        static bool last_up = false;
+        static bool last_down = false;
+        
+        const bool this_enter = !last_enter && UI::PollKeyboardKey(UI::KEY_ENTER);
+        const bool this_up = !last_up && UI::PollKeyboardKey(UI::KEY_UP);
+        const bool this_down = !last_down && UI::PollKeyboardKey(UI::KEY_DOWN);
+    
+        last_enter = UI::PollKeyboardKey(UI::KEY_ENTER);
+        last_up = UI::PollKeyboardKey(UI::KEY_UP);
+        last_down = UI::PollKeyboardKey(UI::KEY_DOWN);
+    
+        if (GUI::TextBox(text, 250, true, 400)) {
+            GUI::SetSelectedText(text);
+        };
+
+        if (this_enter) {
+            history_cursor = -1;
+            console_history.push_back(text);
+            
+            value_t value = Script::Evaluate(text);
+            
+            //std::cout << TypeToString(value.GetType()) << " : " << value.ToString() <<std::endl;
+            Log("{} : {}", TypeToString(value.GetType()), value.ToString());
+            
+            *text = '\0';
+        }
+        
+        if (this_up) {
+            if (history_cursor == -1 && console_history.size()) {
+                history_cursor = (int)console_history.size() - 1;
+            } else if (history_cursor > 0) {
+                history_cursor--;
+            }
+            
+            if (history_cursor != -1) strcpy(text, console_history[history_cursor].data());
+        }
+        
+        if (this_down) {
+            if (history_cursor != -1) {
+                history_cursor++;
+                
+                if (history_cursor >= (int)console_history.size()) {
+                    history_cursor = -1;
+                    *text = '\0';
+                }
+            }
+            
+            if (history_cursor != -1) strcpy(text, console_history[history_cursor].data());
+        }
+            
+        
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 68);
+    GUI::SetColor(Render::COLOR_BLACK);
+    for (auto& log : console_logs) {
+        GUI::Text(1, log.c_str());
+        GUI::NewLine();
+    }
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
+        GUI::SetColor(Render::COLOR_WHITE);
+        for (auto& log : console_logs) {
+            GUI::Text(1, log.c_str());
+            GUI::NewLine();
+        }
+        GUI::SetColor(Render::COLOR_BLACK);
     GUI::PopFrame();
     GUI::PopFrame();
 }

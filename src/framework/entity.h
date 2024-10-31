@@ -81,6 +81,7 @@ public:
     };
 
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
+    static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const FieldInfo* fields, size_t fieldcount);
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields);
     
     inline SignalTable* GetSignalTable() { return signals; }
@@ -121,6 +122,7 @@ protected:
 };
 
 struct SharedEntityData {
+    name_t type;
     uint64_t id = 0;
     name_t name;
     uint32_t flags = 0;

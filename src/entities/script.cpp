@@ -34,6 +34,14 @@ Entity* Make(name_t base_type, name_t new_type, const SharedEntityData& data, co
     return info.constr_func(new_type, data, array);
 }
 
+void Yeet(Entity* yeetable) {
+    const auto& info = infos.Find(yeetable->GetType());
+    
+    assert(info.destr_func);
+    
+    return info.destr_func(yeetable);
+}
+
 }
 
 }

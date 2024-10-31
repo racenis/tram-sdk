@@ -136,6 +136,17 @@ public:
     ~Options() = default;
 };
 
+class Console : public Menu {
+public:
+    Console();
+    uint32_t Layer() { return 1; }
+    void Display();
+    ~Console();
+protected:
+    char* text = nullptr;
+    int history_cursor = -1;
+};
+
 }
 
 #endif

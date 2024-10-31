@@ -13,6 +13,7 @@ void SetGlobal(name_t name, value_t value);
 value_t GetGlobal(name_t name);
 void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t));
 value_t CallFunction(name_t name, std::vector<Value> parameters);
+value_t Evaluate(const char* code);
 
 
 struct Language {
@@ -24,6 +25,7 @@ struct Language {
     value_t (*call_function)(name_t name, std::vector<Value> parameters);
     
     void (*load_script)(const char* path);
+    value_t (*evaluate)(const char* code);
 };
 
 void SetLanguage(Language language);

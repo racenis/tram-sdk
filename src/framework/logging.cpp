@@ -20,10 +20,15 @@ void SetSystemLoggingSeverity (System::system_t system, Severity min_severity) {
     severities[system] = min_severity;
 }
 
-static void(*log_callback)(int, const char*) = nullptr;
+static void(*display_log_callback)(int, const char*) = nullptr;
+static void(*console_log_callback)(int, const char*) = nullptr;
 
-void SetLogCallback(void(*callback)(int, const char*)) {
-    log_callback = callback;
+void SetDisplayLogCallback(void(*callback)(int, const char*)) {
+    display_log_callback = callback;
+}
+
+void SetConsoleLogCallback(void(*callback)(int, const char*)) {
+    console_log_callback = callback;
 }
 
 }
@@ -70,13 +75,17 @@ void flush_console(int severity, int system) {
         std::cout << severity_text << ' ' << '[' << system_text << ']' << ' ';
     }
     
+    if (console_log_callback) {
+        console_log_callback(severity, buffer);
+    }
+    
     std::cout << buffer << std::endl;
     buffer[0] = '\0';
 }
 
-void flush_callback(int severity, int system) {
-    if (log_callback) {
-        log_callback(severity, buffer);
+void flush_display(int severity, int system) {
+    if (display_log_callback) {
+        display_log_callback(severity, buffer);
     }
     
     buffer[0] = '\0';

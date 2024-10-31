@@ -153,6 +153,24 @@ public:
         }
     }
     
+    inline std::string ToString() {
+        switch (type) {
+            case TYPE_UNDEFINED:    return "undefined";
+            case TYPE_BOOL:         return bool_value ? "true" : "false";
+            case TYPE_INT32:        return std::to_string(int32_value);
+            case TYPE_UINT32:       return std::to_string(uint32_value);
+            case TYPE_FLOAT32:      return std::to_string(float_value);
+            case TYPE_NAME:         return name_value;
+            case TYPE_STRING:       return string_value;
+            case TYPE_VEC2:         return std::to_string(vec2_value.x) + ";" + std::to_string(vec2_value.y);
+            case TYPE_VEC3:         return std::to_string(vec3_value.x) + ";" + std::to_string(vec3_value.y) + ";" + std::to_string(vec3_value.z);
+            case TYPE_VEC4:         return std::to_string(vec4_value.x) + ";" + std::to_string(vec4_value.y) + ";" + std::to_string(vec4_value.z) + ";" + std::to_string(vec4_value.w);
+            case TYPE_QUAT:         return std::to_string(quat_value.x) + ";" + std::to_string(quat_value.y) + ";" + std::to_string(quat_value.z) + ";" + std::to_string(quat_value.w);
+            default:                return "unknown";
+        }
+            
+    }
+    
     inline Type GetType() const { return type; }
 protected:
     Type type;

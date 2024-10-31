@@ -9,6 +9,7 @@ tram.math = {}
 tram.entity = {}
 tram.event = {}
 tram.message = {}
+tram.type = {}
 tram.ui = {}
 tram.worldcell = {}
 tram.audio = {}
@@ -381,6 +382,8 @@ function tram.entity.Make(entity_type, entity_properties)
 end
 
 tram.entity._scriptable_entities = {}
+tram.entity._scriptable_entity_constructor = {}
+tram.entity._scriptable_entity_destructor = {}
 
 function __tram_impl_entity_update_parameters_callback(id)
 	local entity = tram.entity._scriptable_entities[id]
@@ -523,10 +526,70 @@ function tram.entity.New(entity_type, base_type, base_properties)
 	return entity
 end
 
-function tram.entity.Register(entity_type, entity_properties, constructor, destructor)
 
+
+function tram.entity.Register(entity_type, entity_properties, constructor, destructor)
+	__tram_impl_clear_entity_fields()
+	
+	for index, field in pairs(entity_properties) do
+		if type(index) ~= "number" then
+			error("Property index needs to be a number, instead got"
+				  .. type(index)
+				  .. " (" .. type(index) .. ")")
+		elseif type(field) ~= "table" then
+			error("Property field needs to be a table, instead got"
+				  .. type(field)
+				  .. " (" .. type(field) .. ")")
+		elseif type(field.type) ~= "number" then
+			error("Property type needs to be a number, instead got"
+				  .. type(field.type)
+				  .. " (" .. type(field.type) .. ")")
+		elseif type(field.flag) ~= "number" then
+			error("Property type needs to be a number, instead got"
+				  .. type(field.flag)
+				  .. " (" .. type(field.flag) .. ")")
+		else
+			__tram_impl_push_entity_fields(index, field.type, field.flag)
+		end
+	end
+	
+	tram.entity._scriptable_entity_constructor[entity_type] = constructor
+	tram.entity._scriptable_entity_destructor[entity_type] = destructor
+	
+	__tram_impl_entity_type_register(entity_type)
 end
 
+
+
+function __tram_impl_entity_shared_data_callback(id, name, flags, location, rotation)
+	tram.entity._entity_data_holder = {}
+
+	tram.entity._entity_data_holder.id = id
+	tram.entity._entity_data_holder.name = name
+	tram.entity._entity_data_holder.flags = flags
+	tram.entity._entity_data_holder.location = location
+	tram.entity._entity_data_holder.rotation = rotation
+end
+
+function __tram_impl_entity_property_callback(key, value)
+	tram.entity._entity_data_holder[key] = value
+end
+
+function __tram_impl_entity_constructor_callback(entity_type)
+	local constructor = tram.entity._scriptable_entity_constructor[entity_type]
+	assert(type(constructor) == "function")
+	return constructor(tram.entity._entity_data_holder)
+end
+
+function __tram_impl_entity_destructor_callback(entity_type, entity_id)
+	local destructor = tram.entity._scriptable_entity_destructor[entity_type]
+	assert(type(destructor) == "function")
+	destructor(entity_id)
+end
+
+-- -------------------------------  CONSTANTS ------------------------------- --
+
+-- TODO: fill in
 
 -- =========================== FRAMEWORK/EVENT.H ============================ --
 

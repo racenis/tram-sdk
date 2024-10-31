@@ -89,6 +89,17 @@ void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntity
     registered_entity_types.Insert(name, {constr_func, destr_func, fields, fieldcount});
 }
 
+void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const FieldInfo* fields, size_t fieldcount) {
+    uint32_t* field_types = new uint32_t[fieldcount];
+    
+    for (size_t i = 0 ; i < fieldcount ; i++) {
+        auto& field = fields[i];
+        field_types[field.field_id] = field.field_type;
+    }
+    
+    registered_entity_types.Insert(name, {constr_func, destr_func, field_types, fieldcount});
+}
+
 void Entity::RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields) {
     uint32_t* field_types = new uint32_t[fields.size()];
     
@@ -167,6 +178,7 @@ Entity* Entity::Make(name_t type, File* file) {
     if (!record.constructor) return nullptr;
     
     SharedEntityData shared_data {
+        type,
         file->read_uint64(),
         file->read_name(),
         file->read_uint32(),

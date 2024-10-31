@@ -40,7 +40,7 @@ namespace implementation {
     
     void concat_fmt(std::string_view& str);
     void flush_console(int severity, int system);
-    void flush_callback(int severity, int system);
+    void flush_display(int severity, int system);
     
     
     inline void log(void(*flush)(int, int), int severity, int system, std::string_view& format) {
@@ -67,7 +67,8 @@ enum Severity {
 
 void SetSystemLoggingSeverity(System::system_t system, Severity min_severity);
 
-void SetLogCallback(void(int, const char*));
+void SetDisplayLogCallback(void(int, const char*));
+void SetConsoleLogCallback(void(int, const char*));
 
 template <typename... Args>
 void Log(int severity, int system, const std::string_view& format, Args&&... args) {
@@ -90,7 +91,7 @@ void Log(const std::string_view& format, Args&&... args) {
 template <typename... Args>
 void DisplayLog(int time, const std::string_view& format, Args&&... args) {
     std::string_view format_view = format;
-    implementation::log(implementation::flush_callback, time, 6, format_view, args...);
+    implementation::log(implementation::flush_display, time, 6, format_view, args...);
 }
 
 }

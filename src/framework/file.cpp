@@ -1,5 +1,6 @@
 #include <platform/file.h>
 #include <framework/file.h>
+#include <framework/logging.h>
 
 #include <charconv>
 #include <cstring>
@@ -108,6 +109,8 @@ public:
         
         *buf_it = '\0';
         
+        if (strlen(buffer) == 0 ) Log("NOT GOOD ZERO NAME");
+        
         return UID(buffer);
     }
     
@@ -149,6 +152,8 @@ public:
         while (*cur != '\r' && *cur != '\n' && cur < end) {
             cur++;
         }
+        
+        while (cur < end && (*cur == '\n' || *cur == '\r')) cur++;
     }
     
     void skip_whitespace() {
@@ -160,8 +165,13 @@ public:
                     return;
                 }
                 
-                // skips over a comment
-                skip_newline();
+                // skip until the end of the line
+                while (cur < end && *cur != '\n' && *cur != '\r') cur++;
+                
+                // skip over linebreak
+                while (cur < end && (*cur == '\n' || *cur == '\r')) cur++;
+                
+                // skip over comments, if any on next line
                 skip_whitespace();
                 
                 return;

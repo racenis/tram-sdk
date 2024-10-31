@@ -5,6 +5,7 @@
 #include <lua.hpp>
 
 #include <iostream>
+#include <cstring>
 
 namespace tram::Ext::Scripting::Lua {
 
@@ -217,6 +218,7 @@ static void load_script(const char* script) {
     if (luaL_loadfile(L, path.c_str())) {
         Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in loading {} \n {}", path, lua_tostring(L, -1));
         lua_pop(L, 1);
+        return;
     }
 
     if (lua_pcall(L, 0, LUA_MULTRET, 0)) {
@@ -225,6 +227,23 @@ static void load_script(const char* script) {
     }
 }
 
+static value_t evaluate(const char* script) {
+    if (luaL_loadbuffer(L, script, strlen(script), "eval_buffer")) {
+        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in loading {} \n {}", script, lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return value_t();
+    }
+
+    if (lua_pcall(L, 0, 1, 0)) {
+        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in executing {} \n {}", script, lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return value_t();
+    }
+    
+    value_t ret = get_value_from_stack(lua_gettop(L), best_value(lua_gettop(L)));
+    lua_pop(L, 1);
+    return ret;
+}
 
 
 void Init() {
@@ -239,6 +258,7 @@ void Init() {
     
     lua.name = "Lua";
     lua.load_script = load_script;
+    lua.evaluate = evaluate;
     lua.call_function = call_function;
     lua.set_function = set_function;
     lua.get_global = nullptr;

@@ -98,6 +98,7 @@
       <File Name="src/components/animation.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="framework">
+      <File Name="src/framework/type.cpp"/>
       <File Name="src/framework/settings.h"/>
       <File Name="src/framework/settings.cpp"/>
       <File Name="src/framework/cli.h"/>

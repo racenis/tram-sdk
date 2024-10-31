@@ -13,7 +13,7 @@ void Marker::Register() {
         "marker", 
         [](const SharedEntityData& a, const ValueArray& b) -> Entity* { return new Marker(a, b); },
         [](Entity* a) { delete a; },
-        nullptr,
+        (uint32_t*)nullptr,
         0
     );
     

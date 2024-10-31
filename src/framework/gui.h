@@ -118,6 +118,8 @@ void Text(font_t font, const char* text, uint32_t orientation = TEXT_LEFT);
 bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
 void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);
 
+void SetSelectedText(char* text);
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_GUI_H

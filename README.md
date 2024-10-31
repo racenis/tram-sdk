@@ -145,8 +145,10 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Put triangle definition into math.h
 - And also switch triangle intersection thingy
 - Add directional lights to lightmapper
-- Hashmap deletion does not get actually deleted?
-- Switch hashmap to uint32_t
+- Improve GUI::Textbox
+	- Add cursor movement
+	- Add selection
+	- Add copy-pasting
  
 #### Should do later
 
@@ -190,14 +192,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Make Raycast that returns multiple points
 	
 ### New features that would be nice to have, but are not very important
-- Animation state machine component for ControllerComponents
-	- Would have the same or similar API as ControllerComponent
-	- Would allow setting transitions between animations in the form of:
-		- State/from
-		- State/to
-		- Fade-out rate
-		- Fade-in rate
-	- Or something like that
 - Input recording and playback
 - AudioComponents can play more than 128 sounds at the same time
 - Split animation into animation and StreamableAnimation

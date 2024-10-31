@@ -16,6 +16,7 @@ namespace tram {
 namespace ScriptableType {
     void Register(name_t base_type, Entity* (*constr_func)(name_t new_type, const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*));
     Entity* Make(name_t base_type, name_t type, const SharedEntityData&, const ValueArray&);
+    void Yeet(Entity* yeetable);
 }
 
 template <typename T>

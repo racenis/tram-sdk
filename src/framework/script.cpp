@@ -6,11 +6,13 @@
 #include <cstring>
 
 #include <iostream>
+#include <algorithm>
 
 #include <framework/core.h>
 #include <framework/entity.h>
 #include <framework/event.h>
 #include <framework/ui.h>
+#include <framework/logging.h>
 #include <framework/worldcell.h>
 #include <audio/audio.h>
 #include <entities/script.h>
@@ -54,6 +56,10 @@ void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(
 
 value_t CallFunction(name_t name, std::vector<Value> parameters) {
     return language.call_function(name, parameters);
+}
+
+value_t Evaluate(const char* code) {
+    return language.evaluate(code);
 }
 
 void SetLanguage(Language lang) {
@@ -224,11 +230,8 @@ void Init() {
     // FRAMEWORK/ENTITY.H
     
     SetFunction("__tram_impl_entity_find_by_name", {TYPE_NAME}, [](valuearray_t array) -> value_t {
-        //std::cout << "findning !! " << (name_t)array[0] << std::endl;
         Entity* entity = Entity::Find((name_t)array[0]);
-        //std::cout << "found: " << entity << " | " << entity->GetID() << std::endl;
         return entity ? entity->GetID() : 0;
-        //return entity->GetID();
     });
     
     SetFunction("__tram_impl_entity_find_by_id", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
@@ -365,6 +368,43 @@ void Init() {
         return new_entity->GetID();
     });
     
+    
+    static std::vector<Entity::FieldInfo> field_infos;
+    SetFunction("__tram_impl_clear_entity_fields", {}, [](valuearray_t array) -> value_t {
+        field_infos.clear();
+        return true;
+    });
+    
+    SetFunction("__tram_impl_push_entity_fields", {TYPE_UINT32, TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        field_infos.push_back({array[0], array[1], array[2]});
+        return true;
+    });
+    
+    SetFunction("__tram_impl_entity_type_register", {TYPE_NAME}, [](valuearray_t array) -> value_t {
+        name_t new_type = array[0];
+        
+        // idk if we need this
+        std::sort(field_infos.begin(), field_infos.end(), [](const Entity::FieldInfo& a, const Entity::FieldInfo& b) { return a.field_id < b.field_id; });
+        
+        Entity::RegisterType(array[0], 
+            [](const SharedEntityData& data, const ValueArray& array) -> Entity* {
+                CallFunction("__tram_impl_entity_shared_data_callback", {data.id, data.name, data.flags, data.position, data.rotation});
+                for (size_t i = 0; i < array.size(); i++) {
+                    CallFunction("__tram_impl_entity_property_callback", {i, array[i]});
+                }
+                uint32_t entity_id = (int32_t)CallFunction("__tram_impl_entity_constructor_callback", {data.type});
+                return Entity::Find(entity_id);
+            },
+            [](Entity* entity) -> void {
+                CallFunction("__tram_impl_entity_destructor_callback", {entity->GetType(), entity->GetID()});
+                ScriptableType::Yeet(entity);
+            },
+            field_infos.data(),
+            field_infos.size()
+        );
+        
+        return true;
+    });
     
     // FRAMEWORK/UI.H
     

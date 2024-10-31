@@ -28,6 +28,8 @@ enum Type : uint32_t {
     TYPE_QUAT,      //< Normal precision floating-point quaternion.
 };
 
+const char* TypeToString(Type type);
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_TYPES_H

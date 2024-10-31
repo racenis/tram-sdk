@@ -183,6 +183,8 @@ void WorldCell::LoadFromDisk() {
     while (file.is_continue()) {
         name_t entry_type = file.read_name();
         
+        std::cout << "we doin " << entry_type << std::endl;
+        
         if (entry_type == "transition") {
             name_t transition_name = file.read_name();
             name_t transition_into = file.read_name();

@@ -726,7 +726,7 @@ int main(int argc, const char** argv) {
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){
         //WorldCell::Find(UID("demo_mov"))->Unload();
         
-        Script::LoadScript("bepis");
+        //Script::LoadScript("bepis");
         
         /*
         camera->SetFollowing(nullptr);

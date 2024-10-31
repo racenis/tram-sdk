@@ -51,6 +51,10 @@ std::vector<Render::SpriteVertex> glyphvertices;
 static std::vector<uint16_t> keycode_queue;
 static char* selected_text_string = nullptr;
 
+void SetSelectedText(char* text) {
+    selected_text_string = text;
+}
+
 static vec3 user_color = Render::COLOR_WHITE;
 static vec3 glyph_color = Render::COLOR_WHITE;
 

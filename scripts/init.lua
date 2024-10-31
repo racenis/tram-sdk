@@ -7,6 +7,38 @@ print("\n\n\n SCRIPT INIT \n\n\n")
 --print("Name:", entity:GetName())
 
 
+function crate2_c(props)
+	props[0] = "kadbusest"
+
+	crate = tram.entity.New("crate", "crate", props)
+
+	crate.OnLoad = function()
+		print("\n\n\nCRATE2 LOADING\n\n\n")
+	end
+
+	return crate:GetID()
+end
+
+function crate2_d()
+	print("destructing crate 2")
+end
+
+model_prop = {}
+model_prop.type = tram.type.NAME
+model_prop.flag = 0
+
+collmodel_prop = {}
+collmodel_prop.type = tram.type.NAME
+collmodel_prop.flag = 0
+
+prop_def = {}
+prop_def[0] = model_prop
+prop_def[1] = collmodel_prop
+
+tram.entity.Register("crate", prop_def, crate2_c, crate2_d)
+
+
+
 props = {}
 
 props.id = 0
