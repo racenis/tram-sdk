@@ -113,9 +113,36 @@ void WorldCell::Add(Transition* transition) {
 }
 
 WorldCell* WorldCell::FindTransition(vec3 point) {
+    // find if transition is possible
+    WorldCell* next = nullptr;
     for (auto transition : transitions) {
-        if (transition->IsInside(point)) return transition->GetCell();
+        if (transition->IsInside(point)) {
+            next = transition->GetCell();
+            break;
+        }
     }
+    
+    // if not, then return
+    if (!next) return nullptr;
+    
+    // if it is, then check if we still are in parent cell
+    bool in_parent = false;
+    for (auto transition : volume) {
+        if (transition->IsInside(point)) {
+            in_parent = true;
+            break;
+        }
+    }
+    
+    // if we are not, then transition
+    if (!in_parent) return next;
+    
+    // if we are, then check if parent is exterior and next is interior
+    bool this_exterior = !(this->flags & INTERIOR);
+    bool next_interior = next->flags & INTERIOR;
+    
+    // if it is, then transition
+    if (this_exterior && next_interior) return next;
     
     return nullptr;
 }

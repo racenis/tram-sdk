@@ -24,6 +24,8 @@ void Untrack(Entity* entity) {
 }
 
 void Update() {
+    if (!tracked_entities.size()) return;
+    
     auto safe_copy = tracked_entities;
     
     std::set<WorldCell*> active_cells;
