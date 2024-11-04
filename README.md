@@ -10,7 +10,7 @@ I am not reinventing the wheel, I am disrupting the wheel industry.
 
 Free func_door included with every install!
 
-![EditingApp](/docs/images/etc/editingapp.png)
+![Screenshot11](/docs/screens/screen11.png)
 
 ## What's it
 
@@ -19,7 +19,7 @@ Software library and tools for making the Tramway Drifting and Dungeon Explorati
 It's meant to work sort of like Quake, GoldSrc or Source engines, but it uses
 polygonal soup instead of BSPs and supports level streaming.
 
-![Screenshot11](/docs/screens/screen11.png)
+![EditingApp](/docs/images/etc/editingapp.png)
 
 ## Features
 - Polygonal soup graphics
@@ -34,7 +34,7 @@ polygonal soup instead of BSPs and supports level streaming.
 - Level streaming
 - Allows use of Quake level editors to create level geometry
 
-![Teapot](/docs/images/etc/teapot.png)
+![Teapot](/docs/images/etc/teapot.gif)
 
 ### Platforms
 - Windows (XP SP3 or later)
@@ -75,7 +75,7 @@ More information can be found on the [github.io page](https://racenis.github.io/
 - Pongpot ([source code](https://github.com/racenis/tram-example/tree/main/example-ping-pong))
 - ([All examples](https://github.com/racenis/tram-example))
 
-![PongPot](/docs/images/etc/pongpot.png)
+![PongPot](/docs/images/etc/pongpot.gif)
 
 ### Building
 #### Windows / MinGW
