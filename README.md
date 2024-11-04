@@ -10,6 +10,8 @@ I am not reinventing the wheel, I am disrupting the wheel industry.
 
 Free func_door included with every install!
 
+![EditingApp](/docs/images/etc/editingapp.png)
+
 ## What's it
 
 Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022 and similar applications.
@@ -31,6 +33,8 @@ polygonal soup instead of BSPs and supports level streaming.
 - Warn's lighting for directional lights
 - Level streaming
 - Allows use of Quake level editors to create level geometry
+
+![Teapot](/docs/images/etc/teapot.png)
 
 ### Platforms
 - Windows (XP SP3 or later)
@@ -65,6 +69,13 @@ More information can be found on the [github.io page](https://racenis.github.io/
 - Platformer ([source code](https://github.com/racenis/jam-game-ii) / [itch.io / web demo](https://racenis.itch.io/sulas-glaaze))
 
 - Adventure ([source code](https://github.com/racenis/jam-game-iii) / [itch.io / web demo](https://racenis.itch.io/froggy-garden))
+
+#### Examples
+
+- Pongpot ([source code](https://github.com/racenis/tram-example/tree/main/example-ping-pong))
+- ([All examples](https://github.com/racenis/tram-example))
+
+![PongPot](/docs/images/etc/pongpot.png)
 
 ### Building
 #### Windows / MinGW

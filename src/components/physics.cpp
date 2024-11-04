@@ -10,7 +10,7 @@ using namespace tram::Physics;
 
 namespace tram {
 
-template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 250, false);
+template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 500, false);
 
 void PhysicsComponent::Start() {
     if (collision_model.get()) {

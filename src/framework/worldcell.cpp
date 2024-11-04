@@ -31,7 +31,7 @@ WorldCell* WorldCell::Find(name_t name) {
     return worldcell_list.Find(name);
 }
 
-/// Creates a WordlCell by name.
+/// Creates a WorldCell by name.
 /// If a cell with the given name already exists, this method will return that
 /// same cell, otherwise a new cell will be created.
 /// @return Always returns the pointer to the created WorldCell.
@@ -197,7 +197,10 @@ void WorldCell::Remove(Entity* entity) {
         entity->cell = nullptr;
     }
     
-    entities.erase(std::find(entities.begin(), entities.end(), entity));
+    auto ptr = std::find(entities.begin(), entities.end(), entity);
+    if (ptr != entities.end()) {
+        entities.erase(ptr);
+    }
 }
 
 /// Loads worldcell data from disk.
