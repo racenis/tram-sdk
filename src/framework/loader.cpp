@@ -42,6 +42,8 @@ void Update() {
         
         if (entity->GetCell()) {
             active_cells.insert(entity->GetCell());
+        } else if (WorldCell* cell = WorldCell::Find(entity->GetLocation()); cell) {
+            active_cells.insert(cell);
         }
     }
     

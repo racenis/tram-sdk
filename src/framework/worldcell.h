@@ -26,10 +26,10 @@ public:
     inline bool IsDebugDraw() { return flags & DEBUG_DRAW; }
     inline bool HasAutomaticLoading() { return flags & AUTOMATIC_LOADING; }
     
-    inline void SetInterior (bool is) { SetFlag(INTERIOR, is); }
-    inline void SetInteriorLights (bool is) { SetFlag(INTERIOR_LIGHTING, is); }
-    inline void SetDebugDraw (bool is) { SetFlag(DEBUG_DRAW, is); }
-    inline void SetAutomaticLoading (bool is) { SetFlag(AUTOMATIC_LOADING, is); }
+    inline void SetInterior(bool is) { SetFlag(INTERIOR, is); }
+    inline void SetInteriorLights(bool is) { SetFlag(INTERIOR_LIGHTING, is); }
+    inline void SetDebugDraw(bool is) { SetFlag(DEBUG_DRAW, is); }
+    inline void SetAutomaticLoading(bool is) { SetFlag(AUTOMATIC_LOADING, is); }
     
     void Load();
     void Unload();

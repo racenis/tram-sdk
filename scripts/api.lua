@@ -1005,6 +1005,29 @@ tram._metatable_worldcell = {
 			assert(getmetatable(other) == tram._metatable_worldcell)
 			__tram_impl_worldcell_link(self.index, other.index)
 		end,
+		
+		IsLoaded = function(self)
+			return __tram_impl_worldcell_is_loaded(self.index)
+		end,
+		IsInterior = function(self)
+			return __tram_impl_worldcell_is_interior(self.index)
+		end,
+		HasInteriorLighting = function(self)
+			return __tram_impl_worldcell_has_interior_lighting(self.index)
+		end,
+		HasAutomaticLoading = function(self)
+			return __tram_impl_worldcell_has_automatic_loading(self.index)
+		end,
+		
+		SetInterior = function(self, is)
+			return __tram_impl_worldcell_set_interior(self.index, is)
+		end,
+		SetInteriorLighting = function(self, is)
+			return __tram_impl_worldcell_set_interior_lighting(self.index, is)
+		end,
+		SetAutomaticLoading = function(self, is)
+			return __tram_impl_worldcell_set_automatic_loading(self.index, is)
+		end
 	}
 }
 

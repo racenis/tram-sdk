@@ -327,8 +327,10 @@ private:
     void write_to_chars(T value) {
         char buffer[25];
         char* begin = buffer;
-        char* end = buffer + 25;
+        char* end = buffer + 24;
         end = std::to_chars(begin, end, value).ptr;
+        *end = ' ';
+        end++;
         writer->SetContents(buffer, end - begin);
     }
     FileWriter* writer = nullptr;

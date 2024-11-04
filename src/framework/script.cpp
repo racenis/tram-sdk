@@ -535,7 +535,32 @@ void Init() {
     });
     
     
+    SetFunction("__tram_impl_worldcell_is_loaded", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<WorldCell> ::GetPool()[(uint32_t)array[0]].IsLoaded();
+    });
+    SetFunction("__tram_impl_worldcell_is_interior", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].IsInterior();
+    });
+    SetFunction("__tram_impl_worldcell_has_interior_lighting", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].HasInteriorLighting();
+    });
+    SetFunction("__tram_impl_worldcell_has_automatic_loading", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
+        return PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].HasAutomaticLoading();
+    });
     
+    SetFunction("__tram_impl_worldcell_set_interior", {TYPE_UINT32, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].SetInterior(array[1]);
+        return true;
+    });
+    SetFunction("__tram_impl_worldcell_set_interior_lighting", {TYPE_UINT32, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].SetInteriorLights(array[1]);
+        return true;
+    });
+    SetFunction("__tram_impl_worldcell_set_automatic_loading", {TYPE_UINT32, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        PoolProxy<WorldCell>::GetPool()[(uint32_t)array[0]].SetAutomaticLoading(array[1]);
+        return true;
+    });
+   
     
     // AUDIO/AUDIO.H
     SetFunction("__tram_impl_audio_set_volume", {TYPE_FLOAT32}, [](valuearray_t array) -> value_t {
