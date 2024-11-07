@@ -16,15 +16,14 @@ typedef void (*item_action_func)(Inventory*, ItemInstance*);
 
 struct ItemClass {
     name_t name;
+    name_t base_class;
     
     name_t viewmodel;
     name_t worldmodel;
     
-    item_action_func primary_action = nullptr;
-    item_action_func secondary_action = nullptr;
-    item_action_func idle_action = nullptr;
-    
-    bool draw_hands = false;
+    name_t primary_action;
+    name_t secondary_action;
+    name_t idle_action;
     
     name_t equipped_slot;
     
@@ -38,6 +37,8 @@ struct ItemClass {
     
     float weight = 0.0f;
     
+    name_t default_compartment;
+    
     std::vector<Attribute> attributes;
     
     static ItemClass* Find(name_t item_class);
@@ -45,6 +46,7 @@ struct ItemClass {
 
 struct ItemInstance {
     name_t item_class;
+    name_t compartment;
     int count = 1;
     int x = 0, y = 0;
     bool equipped = false;

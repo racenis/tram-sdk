@@ -7,54 +7,64 @@
 namespace tram::Ext::Kitchensink {
 
 float AttributeContainer::GetAttribute(name_t name) {
-    float value = GetBaseAttribute(name);
-    for (auto& modifier : modifiers) {
-        if (modifier.name != name) continue;
-        
-        // do some logic in here...
-        
-        if (modifier.flags & ATTRIBUTE_MODIFIER_ADD) {
-            value += modifier.value;
-        }
-        
-        if (modifier.flags & ATTRIBUTE_MODIFIER_MULTIPLY) {
-            value *= modifier.value;
-        }
-    }
-    return value;
-}
-
-float AttributeContainer::GetBaseAttribute(name_t name) {
     for (auto& attribute : attributes) {
-        if (attribute.name == name) return attribute.value;
+        if (attribute.name == name) return attribute.effective_value;
     }
     return 0.0f;
 }
 
-void AttributeContainer::SetAttribute(name_t name, float value) {
+float AttributeContainer::GetAttributeBase(name_t name) {
+    for (auto& attribute : attributes) {
+        if (attribute.name == name) return attribute.base_value;
+    }
+    return 0.0f;
+}
+
+float AttributeContainer::GetAttributeRemaining(name_t name) {
+    for (auto& attribute : attributes) {
+        if (attribute.name == name) return attribute.remaining_value;
+    }
+    return 0.0f;
+}
+
+void AttributeContainer::SetAttribute(name_t name, float base_value, float remaining) {
     for (auto& attribute : attributes) {
         if (attribute.name != name) continue;
-        attribute.value = value;
+        attribute.base_value = base_value;
+        attribute.remaining_value = remaining;
         return;
     }
-    attributes.push_back({.name = name, .value = value});
+    attributes.push_back({.name = name,
+                          .base_value = base_value,
+                          .remaining_value = remaining,
+                          .effective_value = base_value});
 }
 
-void AttributeContainer::ApplyModifier(AttributeModifier modifier) {
-    modifier.time += GetTickTime();
-    modifiers.push_back(modifier);
+void AttributeContainer::ApplyEffect(Effect effect) {
+    effects.push_back(effect);
 }
 
-void AttributeContainer::RemoveModifier(name_t tag) {
-    std::erase_if(modifiers, [=](auto& value){return value.tag == tag;});
+void AttributeContainer::RemoveEffect(name_t tag) {
+    std::erase_if(effects, [=](auto& value){return value.tag == tag;});
 }
 
 bool AttributeContainer::HasAttribute(name_t type) {
-    return std::find_if(modifiers.begin(), modifiers.end(), [=](auto value){return value.name == type;}) != modifiers.end();
+    return std::find_if(attributes.begin(), attributes.end(), [=](auto value){return value.name == type;}) != attributes.end();
 }
 
 void AttributeContainer::Tick() {
-    std::erase_if(modifiers, [](auto& value){return value.time < GetTickTime();});
+    for (auto it = effects.begin(); it != effects.end(); it++) {
+        // TODO: whatever
+        
+        // if time == 0.0f then apply full effect
+        // other wise tick down
+        
+        it->time -= GetDeltaTime();
+        
+        if (0.0f >= it->time) {
+            
+        }
+    }
 }
     
 }
