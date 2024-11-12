@@ -59,6 +59,9 @@
 #include <extensions/kitchensink/soundtable.h>
 #include <extensions/scripting/lua.h>
 
+#include <extensions/kitchensink/quest.h>
+#include <extensions/kitchensink/menu.h>
+
 #include <render/api.h>
 #include <render/aabb.h>
 
@@ -547,6 +550,8 @@ int main(int argc, const char** argv) {
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
     Animation::Find(UID("mongus-jump"))->LoadFromDisk();
 
+    Ext::Kitchensink::Quest::LoadFromDisk("quests");
+
     //UID bepitong;
     
     UIDFunc("bepito");
@@ -760,6 +765,12 @@ int main(int argc, const char** argv) {
     
     UI::BindKeyboardKey(UI::KEY_R, [](){
         //record = !record;
+    });
+    
+    UI::BindKeyboardKey(UI::KEY_O, [](){
+        Ext::Menu::Menu* menu = new Ext::Kitchensink::KitchensinkMenuList;
+        Ext::Menu::Menu::Push(menu);
+        UI::SetInputState(UI::STATE_MENU_OPEN);
     });
     
     //UI::SetWindowSize(320, 240);

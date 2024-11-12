@@ -9,28 +9,46 @@
 #include <vector>
 
 namespace tram::Ext::Kitchensink {
+
+enum DialogType {
+    DIALOG_TOPIC,
+    DIALOG_IMPORT_SINGLE,
+    DIALOG_IMPORT_MULTIPLE
+};  
+
+struct DialogCondition {
+    name_t quest;
+    name_t variable;
     
+    bool IsMet();
+};
+
+struct DialogAction {
+    name_t quest;
+    name_t trigger;
+    
+    void Perform();
+};
+
 struct DialogTopic {
+    DialogType type = DIALOG_TOPIC;
+    
     name_t name;
     
     name_t prompt;
     name_t answer;
 
-    name_t condition_quest;
-    name_t condition_variable;
-    
-    name_t action_quest;
-    name_t action_variable;
+    DialogCondition condition;
+    DialogAction action;
 
     std::vector<name_t> next_topics;
     
-    bool ConditionMet();
-    void PerformAction();
+    std::vector<name_t> GetValidNextTopics();
+    void Gather(std::vector<name_t>& topics);
     
     static DialogTopic* Make(name_t);
     static DialogTopic* Find(name_t);
 };
-    
 
 }
 

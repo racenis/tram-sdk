@@ -10,23 +10,67 @@ static Hashmap<Ext::Kitchensink::DialogTopic*> item_class_list("DialogTopic list
 
 namespace tram::Ext::Kitchensink {
 
-bool DialogTopic::ConditionMet() {
-    if (!condition_quest) return true;
-    Value cond = Quest::Find(condition_quest)->GetVariable(condition_variable);
+bool DialogCondition::IsMet() {
+    if (!quest) return true;
+    Value cond = Quest::Find(quest)->GetVariable(variable);
     assert(cond.GetType() == TYPE_BOOL);
     return (bool)cond;
 }
 
-void DialogTopic::PerformAction() {
-    if (!action_quest) return;
-    Quest::Find(action_quest)->FireTrigger(action_variable);
+void DialogAction::Perform() {
+    if (!quest) return;
+    Quest::Find(quest)->FireTrigger(trigger);
+}
+
+std::vector<name_t> DialogTopic::GetValidNextTopics() {
+    std::vector<name_t> topics;
+    
+    for (auto topic_name : next_topics) {
+        DialogTopic* topic = DialogTopic::Find(topic_name);
+       
+        if (!topic) {
+            topics.push_back(topic_name);
+            continue;
+        }
+        
+        if (!topic->condition.IsMet()) continue;
+       
+        topic->Gather(topics);
+    }
+    
+    return topics;
+}
+
+void DialogTopic::Gather(std::vector<name_t>& topics) {
+    switch (type) {
+        case DIALOG_TOPIC:
+            topics.push_back(name);
+            break;
+        case DIALOG_IMPORT_SINGLE:
+        case DIALOG_IMPORT_MULTIPLE:
+            for (auto topic_name : next_topics) {
+                DialogTopic* topic = DialogTopic::Find(topic_name);
+               
+                if (!topic) {
+                    topics.push_back(topic_name);
+                    continue;
+                }
+                
+                if (!topic->condition.IsMet()) continue;
+                
+                topic->Gather(topics);
+                
+                if (type == DIALOG_IMPORT_SINGLE) break;
+            }
+    }
 }
 
 DialogTopic* DialogTopic::Make(name_t name) {
     DialogTopic* topic = item_class_list.Find(name);
     
     if (!topic) {
-        topic = PoolProxy<DialogTopic>::New(name);
+        topic = PoolProxy<DialogTopic>::New();
+        topic->name = name;
         item_class_list.Insert(UID(name), topic);
     }
     

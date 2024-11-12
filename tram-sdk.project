@@ -7,6 +7,8 @@
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
       <VirtualDirectory Name="kitchensink">
+        <File Name="src/extensions/kitchensink/menu.h"/>
+        <File Name="src/extensions/kitchensink/menu.cpp"/>
         <File Name="src/extensions/kitchensink/ai.h"/>
         <File Name="src/extensions/kitchensink/ai.cpp"/>
         <File Name="src/extensions/kitchensink/animationtable.h"/>

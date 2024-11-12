@@ -6,7 +6,7 @@ The header files for the various libraries used in the framework are provided he
 
 Some of these libraries are not covered under the MIT license, so check before modifying them.
 
-## Bullet physics
+## Bullet physics 3.17
 <https://github.com/bulletphysics/bullet3>
 
 ## glm
@@ -30,7 +30,10 @@ Some of these libraries are not covered under the MIT license, so check before m
 ## stb_vorbis
 <https://github.com/nothings/stb/blob/master/stb_vorbis.c>
 
-## lua
+## lua 5.4.6
 <https://www.lua.org/>
+
+## SDL 2.30.4
+<https://www.libsdl.org/>
 
 Thanks to everyone for licensing their work under free licenses, so that I can appropriate it.

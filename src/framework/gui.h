@@ -33,7 +33,9 @@ enum orientation:uint32_t {
     FRAME_RIGHT_INV,
     FRAME_TOP_INV,
     FRAME_BOTTOM_INV,
-    FRAME_INSET
+    FRAME_INSET,
+    FRAME_CENTER_VERTICAL,
+    FRAME_CENTER_HORIZONTAL
 };
 
 enum widget:glyph_t {
@@ -111,7 +113,9 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
 bool Button(const char* text, bool enabled = true, uint32_t width = 0);
 bool Slider(float& value, bool enabled = true, uint32_t width = 0);
 void PopFrame();
+void PopFrameKeepCursor(bool = false, bool = true);
 void PushFrameRelative(uint32_t orientation, uint32_t offset);
+void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool = false, bool = true);
 void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 void Glyph(font_t font, glyph_t glyph);
 void Text(font_t font, const char* text, uint32_t orientation = TEXT_LEFT);

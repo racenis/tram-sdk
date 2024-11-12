@@ -28,6 +28,7 @@ enum quest_t : int {
     
     QUEST_TGR_SET_VARIABLE,
     QUEST_TGR_SET_OBJECTIVE,
+    QUEST_TGR_INCREMENT,
     QUEST_TGR_SHOW_MESSAGE,
 };
     
@@ -46,15 +47,15 @@ struct QuestVariable {
     name_t quest2;
     
     void SetValue(Value);
-    void SetIs(name_t, name_t, name_t, name_t);
-    void SetIsNot(name_t, name_t, name_t, name_t);
-    void SetGreater(name_t, name_t, name_t, name_t);
-    void SetGreaterOrEqual(name_t, name_t, name_t, name_t);
-    void SetGreaterLess(name_t, name_t, name_t, name_t);
-    void SetGreaterLessOrEqual(name_t, name_t, name_t, name_t);
+    void SetIs(name_t, name_t, name_t, value_t);
+    void SetIsNot(name_t, name_t, name_t, value_t);
+    void SetGreater(name_t, name_t, name_t, value_t);
+    void SetGreaterOrEqual(name_t, name_t, name_t, value_t);
+    void SetLess(name_t, name_t, name_t, value_t);
+    void SetLessOrEqual(name_t, name_t, name_t, value_t);
     void SetNot(name_t, name_t);
-    void SetAnd(name_t, name_t, name_t, name_t);
-    void SetOr(name_t, name_t, name_t, name_t);
+    void SetAnd(name_t, name_t, name_t, value_t);
+    void SetOr(name_t, name_t, name_t, value_t);
     void SetScript(name_t);
     
     void SetObjective(name_t, name_t, int);
@@ -73,9 +74,12 @@ struct QuestTrigger {
     
     void SetValue(name_t variable, Value);
     void SetObjective(name_t name, int state);
+    void SetIncrement(name_t variable);
 };
 
 struct Quest {
+    Quest(name_t name) : name(name) {}
+    
     name_t name;
 
     std::vector<QuestVariable> variables;
@@ -91,6 +95,7 @@ struct Quest {
     
     static void Init();
     
+    static void LoadFromDisk(const char* filename);
     static Quest* Find(name_t quest);
 };
     

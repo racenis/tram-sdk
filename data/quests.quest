@@ -1,0 +1,27 @@
+QUESTv1
+
+# **************************************************************************** #
+# *                                                                          * #
+# *                               PANCAKE QUEST                              * #
+# *                                                                          * #
+# **************************************************************************** #
+
+quest pancake
+
+# --------------------------------- VARIABLES -------------------------------- #
+#            name                  type          quest    variable       value 
+variable pancake-count			value 									int 0
+variable pancakes-enough		greater-equal	pancake pancakecount 	int 15
+variable pancakes-not-enough	not 			pancake pancakes-enough
+
+# -------------------------------- OBJECTIVES -------------------------------- #
+#          name                 title           subtitle      state
+variable quest-get objective pancake-start 	pancake-gather 		1
+variable quest-mid objective pancake-middle pancake-gathered 	0
+variable quest-end objective pancake-end 	pancake-finished 	0
+
+# --------------------------------- TRIGGERS --------------------------------- #
+#           name       condition quest / variable     action          parameter
+trigger pancake-pickup pancake pancake-not-enough 	increment 		pancake-count
+trigger pancake-pickup pancake pancake-enough 		set-objective 	quest-get 2
+trigger pancake-pickup pancake pancake-enough 		set-objective 	quest-mid 1

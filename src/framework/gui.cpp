@@ -371,7 +371,7 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
     uint32_t h = frame_stack.top().h;
     
     switch (orientation) {
-        default: return;
+        default: break;
         case FRAME_LEFT:
             w = offset;
             break;
@@ -406,6 +406,14 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
             w -= offset * 2;
             h -= offset * 2;
             break;
+        case FRAME_CENTER_HORIZONTAL:
+            x += (w - offset) / 2;
+            w = offset;
+            break;
+        case FRAME_CENTER_VERTICAL:
+            y += (h - offset) / 2;
+            h = offset;
+            break;
     }
     
     PushFrame(x, y, w, h);
@@ -413,6 +421,22 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
 
 void PopFrame() {
     frame_stack.Remove();
+}
+
+void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool keep_x, bool keep_y) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    PushFrameRelative(orientation, offset);
+    if (keep_x) frame_stack.top().cursor_x = x;
+    if (keep_y) frame_stack.top().cursor_y = y;
+}
+
+void PopFrameKeepCursor(bool keep_x, bool keep_y) {
+    uint32_t x = frame_stack.top().cursor_x;
+    uint32_t y = frame_stack.top().cursor_y;
+    frame_stack.Remove();
+    if (keep_x) frame_stack.top().cursor_x = x;
+    if (keep_y) frame_stack.top().cursor_y = y;
 }
 
 bool CursorOver(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
