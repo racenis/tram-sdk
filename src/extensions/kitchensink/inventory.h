@@ -8,6 +8,10 @@
 
 #include <framework/gui.h>
 
+namespace tram {
+    class Entity;
+}
+
 namespace tram::Ext::Kitchensink {
 
 struct Inventory;
@@ -63,7 +67,7 @@ struct Inventory {
     int AddItem(name_t item_class, int count);
     int RemoveItem(name_t item_class, int count);
     int GetItemCount(name_t item_class);
-    static Inventory* Find(id_t id);
+    static Inventory* Find(Entity* entity);
 };
 
 

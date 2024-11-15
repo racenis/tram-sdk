@@ -19,8 +19,16 @@ class ListTrade : public Ext::Menu::Menu {
 };
 
 class ListDialog : public Ext::Menu::Menu {
+public:
+    ListDialog();
+    ListDialog(name_t);
+    ~ListDialog();
+    
     void Display();
     uint32_t Layer() { return 0; }
+private:
+    name_t dialog_topic;
+    char* search_string = nullptr;
 };
 
 class QuestList : public Ext::Menu::Menu {

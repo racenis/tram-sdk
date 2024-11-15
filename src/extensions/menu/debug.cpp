@@ -225,6 +225,7 @@ void UpdateCallbacks() {
                 case Event::FRAME:
                 case Event::CURSORPOS:
                 case Event::LOOK_AT:
+                case Event::SELECTED:
                     intercept->time = GetTick();
                     break;
                 default:

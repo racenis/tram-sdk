@@ -46,6 +46,8 @@ struct DialogTopic {
     std::vector<name_t> GetValidNextTopics();
     void Gather(std::vector<name_t>& topics);
     
+    static void LoadFromDisk(const char* filename);
+    
     static DialogTopic* Make(name_t);
     static DialogTopic* Find(name_t);
 };

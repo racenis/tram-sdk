@@ -59,6 +59,7 @@
 #include <extensions/kitchensink/soundtable.h>
 #include <extensions/scripting/lua.h>
 
+#include <extensions/kitchensink/dialog.h>
 #include <extensions/kitchensink/quest.h>
 #include <extensions/kitchensink/menu.h>
 
@@ -550,6 +551,7 @@ int main(int argc, const char** argv) {
     Animation::Find(UID("mongus-run"))->LoadFromDisk();
     Animation::Find(UID("mongus-jump"))->LoadFromDisk();
 
+    Ext::Kitchensink::DialogTopic::LoadFromDisk("dialogs");
     Ext::Kitchensink::Quest::LoadFromDisk("quests");
 
     //UID bepitong;

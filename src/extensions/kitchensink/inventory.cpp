@@ -3,6 +3,8 @@
 
 #include <templates/hashmap.h>
 
+#include <framework/entity.h>
+
 using namespace tram;
 template <> Pool<Ext::Kitchensink::ItemClass> PoolProxy<Ext::Kitchensink::ItemClass>::pool("itemclass pool", 500);
 template <> Pool<Ext::Kitchensink::Inventory> PoolProxy<Ext::Kitchensink::Inventory>::pool("inventory pool", 500);
@@ -75,12 +77,12 @@ int Inventory::GetItemCount(name_t item_class) {
     return 0;
 }
 
-Inventory* Inventory::Find(id_t id) {
-    Inventory* inventory = inventory_list.Find(id);
+Inventory* Inventory::Find(Entity* entity) {
+    Inventory* inventory = inventory_list.Find(entity->GetID());
     
     if (!inventory) {
         inventory = PoolProxy<Inventory>::New();
-        inventory_list.Insert(id, inventory);
+        inventory_list.Insert(entity->GetID(), inventory);
     }
     
     return inventory;

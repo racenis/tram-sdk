@@ -4,6 +4,8 @@
 #include <templates/pool.h>
 #include <templates/hashmap.h>
 
+#include <framework/file.h>
+
 using namespace tram;
 template <> Pool<Ext::Kitchensink::DialogTopic> PoolProxy<Ext::Kitchensink::DialogTopic>::pool("DialogTopic pool", 500);
 static Hashmap<Ext::Kitchensink::DialogTopic*> item_class_list("DialogTopic list", 500);
@@ -79,6 +81,96 @@ DialogTopic* DialogTopic::Make(name_t name) {
 
 DialogTopic* DialogTopic::Find(name_t name) {
     return item_class_list.Find(name);
+}
+
+void DialogTopic::LoadFromDisk(const char* filename) {
+    char path [100] = "data/";
+    strcat(path, filename);
+    strcat(path, ".dialog");
+
+    File file (path, MODE_READ);
+
+    if (!file.is_open()) {
+        std::cout << "Can't open dialog file '" << path << "'" << std::endl;
+        abort();
+    }
+
+    name_t file_type = file.read_name();
+
+    if (file_type != "DIALOGv1") {
+        std::cout << "Invalid quest file type " << path << std::endl;
+        abort();
+    }
+    
+    std::cout << "Loading: " << filename << std::endl;
+
+    while (file.is_continue()) {
+        auto record = file.read_name();
+        
+        if (record == "dialog") {
+            auto type = file.read_name();
+            auto name = file.read_name();
+            
+            DialogTopic* topic = DialogTopic::Make(name);
+            
+            topic->name = name;
+            topic->prompt = file.read_name();
+            topic->answer = file.read_name();
+            
+            if (type == "topic") {
+                topic->type = DIALOG_TOPIC;
+            } else if (type == "import-single") {
+                topic->type = DIALOG_IMPORT_SINGLE;
+            } else if (type == "import-multiple") {
+                topic->type = DIALOG_IMPORT_MULTIPLE;
+            } else {
+                std::cout << "unknown dialog topic type: " << type << std::endl;
+                abort();
+            }
+            
+        } else if (record == "action") {
+            auto name = file.read_name();
+            
+            DialogTopic* topic = DialogTopic::Find(name);
+            
+            if (!topic) {
+                std::cout << "can't find dialog topic: " << name << std::endl;
+                abort();
+            }
+            
+            topic->action.quest = file.read_name();
+            topic->action.trigger = file.read_name();
+
+        } else if (record == "condition") {
+            auto name = file.read_name();
+            
+            DialogTopic* topic = DialogTopic::Find(name);
+            
+            if (!topic) {
+                std::cout << "can't find dialog topic: " << name << std::endl;
+                abort();
+            }
+            
+            topic->condition.quest = file.read_name();
+            topic->condition.variable = file.read_name();
+            
+        } else if (record == "next") {
+            auto name = file.read_name();
+            
+            DialogTopic* topic = DialogTopic::Find(name);
+            
+            if (!topic) {
+                std::cout << "can't find dialog topic: " << name << std::endl;
+                abort();
+            }
+            
+            topic->next_topics.push_back(file.read_name());
+            
+        }  else {
+            std::cout << "unknown dialog record: " << record << std::endl;
+            abort();
+        }
+    }
 }
 
 }

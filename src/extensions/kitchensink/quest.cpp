@@ -111,7 +111,7 @@ Value QuestVariable::Evaluate() {
         case QUEST_VAR_HAS_ITEM: {
             Entity* entity = Entity::Find((name_t)value1);
             if (!entity) return false;
-            Inventory* inventory = Inventory::Find(entity->GetID());
+            Inventory* inventory = Inventory::Find(entity);
             if (!inventory) return false;
             return inventory->GetItemCount(value2);
         }
@@ -146,13 +146,16 @@ void QuestTrigger::SetIncrement(name_t name) {
     
     
 Value Quest::GetVariable(name_t name) {
+    //std::cout << "serch" << std::endl;
     for (auto& variable : variables) {
+        //std::cout << variable.name << "|" << name << std::endl;
         if (variable.name == name) {
             //std::cout << "Evaluating variable " << name << std::endl;
             return variable.Evaluate();
         }
     }
     //std::cout << "Returning default value for variable " << name << std::endl;
+    // TODO: write a error message
     return false;
 }
 
@@ -173,8 +176,18 @@ void Quest::SetVariable(name_t name, Value value) {
 }
 
 void Quest::FireTrigger(name_t name) {
+    std::cout << "finding tirgger" << std::endl;
     for (auto& trigger : triggers) {
         if (trigger.name != name) continue;
+        
+        if (trigger.condition) std::cout << trigger.name << " has condintuion!" << std::endl;
+        if (!trigger.condition) std::cout <<  trigger.name << " dosent condintuion!" << std::endl;
+        if (trigger.condition) std::cout << "condniton: " << trigger.condition << " = " << (bool)GetVariable(trigger.condition) << std::endl;
+        
+        // TODO: implement GetBool()
+        if (trigger.condition && !GetVariable(trigger.condition)/*.GetBool()*/) continue;
+        
+        
         
         switch (trigger.type) {
             case QUEST_TGR_SET_VARIABLE:
@@ -380,6 +393,8 @@ void Quest::LoadFromDisk(const char* filename) {
                 
                 QuestTrigger trigger;
                 trigger.name = trigger_name;
+                trigger.condition = condition_name;
+                // TODO: implement condition adding for quest also
                 
                 if (trigger_type == "set-value") {
                     auto [variable, value] = LoadVariableSecond(file);
@@ -396,6 +411,7 @@ void Quest::LoadFromDisk(const char* filename) {
                     abort();
                 }
                 
+                quest->triggers.push_back(trigger);
             } else {
                 std::cout << "unknown quest parameter: " << record_type << std::endl;
                 abort();
