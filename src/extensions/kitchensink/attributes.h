@@ -6,7 +6,12 @@
 
 #include <vector>
 
+#include <framework/core.h>
 #include <framework/uid.h>
+
+namespace tram {
+    class Entity;
+}
 
 namespace tram::Ext::Kitchensink {
 
@@ -61,6 +66,10 @@ struct AttributeContainer {
     bool HasAttribute(name_t type);
 
     void Tick();
+    
+    static AttributeContainer* Find(Entity*);
+    static AttributeContainer* Find(id_t);
+    static void LoadFromDisk(const char*);
     
     std::vector<Attribute> attributes;
     std::vector<Effect> effects;

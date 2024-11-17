@@ -18,6 +18,11 @@ struct Inventory;
 struct ItemInstance;
 typedef void (*item_action_func)(Inventory*, ItemInstance*);
 
+
+// TODO: ItemClass should not be struct, but rather a class
+// - it should also have virtual methods instead of action names!!
+// 
+
 struct ItemClass {
     name_t name;
     name_t base_class;
