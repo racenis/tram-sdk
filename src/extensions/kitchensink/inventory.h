@@ -21,7 +21,7 @@ typedef void (*item_action_func)(Inventory*, ItemInstance*);
 
 // TODO: ItemClass should not be struct, but rather a class
 // - it should also have virtual methods instead of action names!!
-// 
+// - there should also be a .. make? or something. register?
 
 struct ItemClass {
     name_t name;
@@ -48,6 +48,7 @@ struct ItemClass {
     
     name_t default_compartment;
     
+    // TODO: also add effects
     std::vector<Attribute> attributes;
     
     static ItemClass* Find(name_t item_class);
@@ -61,6 +62,9 @@ struct ItemInstance {
     bool equipped = false;
 };
 
+// TODO:
+// instead of holding itemInstances directly, inventories should hold compartments
+// then each compartment would have a type/manager class that is an instance of
 struct Inventory {
     std::vector<ItemInstance> items;
     

@@ -1,0 +1,180 @@
+# Tramway SDK Asset Manager Applet Database
+# Generated on: 2024.12.11. 16:35:58
+
+DYMDL     bingus               1451038290
+AUTHOR    racenis
+SOURCE    racenis
+DYMDL     bingus_old           1412124513
+AUTHOR    racenis
+SOURCE    racenis
+DYMDL     chamberpot           1497571598
+DYMDL     chamberpot2          1497572169
+DYMDL     crate_ligma          1451038306
+DYMDL     crate_plain          1451038309
+MDMDL     devukaste            1500974000
+DYMDL     errordynamic         1402226922
+STMDL     errorstatic          1502315629
+PROPERTY  LIGHTMAP_WIDTH       128
+PROPERTY  LIGHTMAP_HEIGHT      256
+DYMDL     floppa               1412064796
+STMDL     ftft                 1456034736
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+DYMDL     kadbusest            1427923056
+STMDL     kadbusest2           1427922710
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+DYMDL     kadbusest3           1427922755
+DYMDL     metalakaste          1451734536
+DYMDL     mongus               1491408027
+DYMDL     mongus_OLD           1402373124
+STMDL     movs                 1484359347
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     movs2                1481116810
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     paliktnis            1481386306
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+DYMDL     plane                1493467703
+STMDL     platforma            1481976518
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     square10x10          1411451034
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     tepik                1451735270
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     trigger              1483432077
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+DYMDL     turtle               1426818883
+DYMDL     untitled             1497043553
+DYMDL     viewmodel_aamuris    1430084120
+DYMDL     viewmodel_rifle      1430040979
+DYMDL     viewmodel_stapler    1430084161
+STMDL     worldspawn           1481976482
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     dev/button           1469911994
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+STMDL     dev/light            1481188761
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+DYMDL     dev/plane            1489087280
+STMDL     dev/sound            1483091120
+PROPERTY  LIGHTMAP_WIDTH       0
+PROPERTY  LIGHTMAP_HEIGHT      0
+ANIM      mongus-jump          1452057175
+AUTHOR    racenis
+ANIM      mongus-run           1452057158
+AUTHOR    racenis
+ANIM      mongus-sway          1452057172
+AUTHOR    racenis
+ANIM      mongus-turn-around   1452057179
+AUTHOR    racenis
+ANIM      mongus-wag-tail      1452057178
+AUTHOR    racenis
+ANIM      mongus-walk          1452057177
+AUTHOR    racenis
+AUDIO     apelsin              1447332082
+AUTHOR    racenis
+AUDIO     dekpunkta            1453531964
+AUTHOR    racenis
+AUDIO     derp                 1428246202
+AUTHOR    racenis
+AUDIO     impulse              1453532770
+AUTHOR    racenis
+AUDIO     miku                 1452962010
+AUTHOR    racenis
+AUDIO     step                 1483082540
+AUTHOR    racenis
+PATH      test                 1500348235
+AUTHOR    racenis
+SPRITE    font_debug           1499101941
+AUTHOR    racenis
+SPRITE    font_headers         1495046524
+AUTHOR    racenis
+SPRITE    font_pixelart        1495046517
+AUTHOR    racenis
+SPRITE    font_symbols         1495046541
+AUTHOR    racenis
+SPRITE    font_text            1495077510
+AUTHOR    racenis
+SPRITE    font_text_bold       1495077546
+AUTHOR    racenis
+SPRITE    font_widgets         1495074253
+AUTHOR    racenis
+SPRITE    poland               1495046528
+AUTHOR    racenis
+SPRITE    bold/Font            1495077527
+AUTHOR    racenis
+WORLDCELL demo_mov             1500454620
+AUTHOR    racenis
+DIALOG    dialogs              1500354740
+AUTHOR    racenis
+ENTDEF    entities             1493665593
+AUTHOR    racenis
+LANG      lv                   1451203123
+AUTHOR    racenis
+QUEST     quests               1500295969
+AUTHOR    racenis
+SHADER    1normal_static       1450679399
+AUTHOR    racenis
+SHADER    bright_static        1486732154
+AUTHOR    racenis
+SHADER    glyph                1497048146
+AUTHOR    racenis
+SHADER    line                 1493007953
+AUTHOR    racenis
+SHADER    normal_dynamic       1497048870
+AUTHOR    racenis
+SHADER    normal_dynamic_alpha 1489117909
+AUTHOR    racenis
+SHADER    normal_sprite        1497048156
+AUTHOR    racenis
+SHADER    normal_static        1499138240
+AUTHOR    racenis
+SHADER    normal_static_alpha  1463384392
+AUTHOR    racenis
+SHADER    normal_water         1497048152
+AUTHOR    racenis
+SHADER    poopwater_static     1493007880
+AUTHOR    racenis
+SHADER    text                 1463381603
+AUTHOR    racenis
+SCRIPT    api                  1499729761
+AUTHOR    racenis
+SCRIPT    bepis                1498419986
+AUTHOR    racenis
+SCRIPT    init                 1499406978
+AUTHOR    racenis
+COLLMDL   crate                1402232296
+AUTHOR    racenis
+COLLMDL   ftft                 1456034714
+AUTHOR    racenis
+COLLMDL   movs                 1484359346
+AUTHOR    racenis
+COLLMDL   platforma            1481976518
+AUTHOR    racenis
+COLLMDL   square10x10          1411451059
+AUTHOR    racenis
+COLLMDL   trigger              1483432077
+AUTHOR    racenis
+COLLMDL   worldspawn           1481976482
+AUTHOR    racenis
+COLLMDL   dev/button           1469911748
+AUTHOR    racenis
+AUTHOR    racenis              IDENTIFIER racenis
+AUTHOR    racenis              NAME       "Rācenis"
+AUTHOR    racenis              ADDRESS    "hatsunemiku42069@outlook.com"
+AUTHOR    racenis              ROLE       "CTO @ Trawmay SDK, SIA"
+AUTHOR    racenis              NOTES      "I like frogs."
+SOURCE    racenis              IDENTIFIER racenis
+SOURCE    racenis              CREDITS    "racenis @ Tramway SDK"
+SOURCE    racenis              ADDRESS    "github.com/racenis"
+SOURCE    racenis              LICENSE    "Allowed in North Korea"
+SOURCE    racenis              NOTES      "If you accidentally ship any of my assets in your project, it's fine, but try not to."
