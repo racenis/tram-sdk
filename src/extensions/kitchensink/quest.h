@@ -73,7 +73,7 @@ struct QuestTrigger {
     Value value; // variable name for which will be set
     
     void SetValue(name_t variable, Value);
-    void SetObjective(name_t name, int state);
+    void SetObjective(name_t name, name_t state);
     void SetIncrement(name_t variable);
 };
 

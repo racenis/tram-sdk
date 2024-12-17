@@ -132,7 +132,7 @@ void QuestTrigger::SetValue(name_t variable, Value value) {
     this->type = QUEST_TGR_SET_VARIABLE;
 }
 
-void QuestTrigger::SetObjective(name_t name, int state) {
+void QuestTrigger::SetObjective(name_t name, name_t state) {
     this->variable = name;
     this->value = state;
     this->type = QUEST_TGR_SET_OBJECTIVE;
@@ -401,7 +401,7 @@ void Quest::LoadFromDisk(const char* filename) {
                     trigger.SetValue(variable, value);
                 } else if (trigger_type == "set-objective") {
                     auto objective = file.read_name();
-                    auto state = file.read_int32();
+                    auto state = file.read_name();
                     trigger.SetObjective(objective, state);
                 } else if (trigger_type == "increment") {
                     auto variable = file.read_name();

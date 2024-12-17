@@ -12,8 +12,8 @@
 
 namespace tram {
 
-static StackPool<char> string_pool ("stringpool", 10000, {'n', 'o', 'n', 'e', '\0'});
-static Hashmap<UID> string_list("stringlist", 1000, {{MurmurHash("none"), UID()}});
+static StackPool<char> string_pool("stringpool", 20000, {'n', 'o', 'n', 'e', '\0'});
+static Hashmap<UID> string_list("stringlist", 2000, {{MurmurHash("none"), UID()}});
 
 UID::UID (const std::string& value) {
     const char* str = value.c_str();
