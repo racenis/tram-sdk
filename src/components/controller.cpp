@@ -12,9 +12,9 @@
 
 namespace tram {
 
-template <> Pool<ControllerComponent> PoolProxy<ControllerComponent>::pool ("controller component pool", 25, false);
+template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool ("fpscontroller component pool", 25, false);
 
-void ControllerComponent::Start() {
+void FPSControllerComponent::Start() {
     walk_collision.make();
     crouch_collision.make();
     physics_body.make();
@@ -40,43 +40,43 @@ void ControllerComponent::Start() {
     physics_body->Init();
 }
 
-void ControllerComponent::Push(vec3 direction) {
+void FPSControllerComponent::Push(vec3 direction) {
     
 }
 
-void ControllerComponent::Move(vec3 local_direction) {
+void FPSControllerComponent::Move(vec3 local_direction) {
     move_direction += local_direction;
 }
 
-void ControllerComponent::Run() {
+void FPSControllerComponent::Run() {
     running = true;
 }
 
-void ControllerComponent::Crouch() {
+void FPSControllerComponent::Crouch() {
     crouching = true;
 }
 
-void ControllerComponent::Fly() {
+void FPSControllerComponent::Fly() {
     flying = true;
 }
 
-void ControllerComponent::Jump() {
+void FPSControllerComponent::Jump() {
     if (!is_in_air) {
         velocity.y += 0.119f;
         is_in_air = true;
     }
 }
 
-void ControllerComponent::TurnLeft() {
+void FPSControllerComponent::TurnLeft() {
     // TODO: implement
 }
 
-void ControllerComponent::TurnRight() {
+void FPSControllerComponent::TurnRight() {
     // TODO: implement
 }
 
 
-void ControllerComponent::ApplyDynamics() {
+void FPSControllerComponent::ApplyDynamics() {
     
     // if in air, apply gravity; otherwise apply ground friction
     if (is_in_air && !flying && collide) {
@@ -121,7 +121,7 @@ void ControllerComponent::ApplyDynamics() {
     }
 }
 
-void ControllerComponent::RecoverFromCollisions() {
+void FPSControllerComponent::RecoverFromCollisions() {
     const float height = crouching ? collision_height_crouch : collision_height;
     const float step = crouching ? step_height_crouch : step_height;
     const float half_height = height / 2.0f;
@@ -269,7 +269,7 @@ void ControllerComponent::RecoverFromCollisions() {
     parent->UpdateTransform(new_pos, old_rot);
 }
 
-void ControllerComponent::ResetMove() {
+void FPSControllerComponent::ResetMove() {
     move_direction = {0.0f, 0.0f, 0.0f};
     running = false;
     crouching = false;
@@ -292,20 +292,20 @@ void ControllerComponent::Update() {
     update_counter = fmodf(update_counter, 1.0f / 60.0f);
 
     for (int i = 0; i < needed_updates; i++) {
-        for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+        for (auto& component : PoolProxy<FPSControllerComponent>::GetPool()) {
             component.ApplyDynamics();
             component.RecoverFromCollisions();;
         }
     }
 
     if (needed_updates) {
-        for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+        for (auto& component : PoolProxy<FPSControllerComponent>::GetPool()) {
             component.ResetMove();
         }
     }
     
     if (!draw_debug) return;
-    for (auto& component : PoolProxy<ControllerComponent>::GetPool()) {
+    for (auto& component : PoolProxy<FPSControllerComponent>::GetPool()) {
         char str[100];
         sprintf(str, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nFlying: %s\nStanding: %s",
                 component.velocity.x, component.velocity.y, component.velocity.z,

@@ -28,7 +28,7 @@ public:
 protected:
     Component<PlayerComponent> plomp;
 public:
-    Component<ControllerComponent> controllercomponent;
+    Component<FPSControllerComponent> controllercomponent;
 };
 
 }
