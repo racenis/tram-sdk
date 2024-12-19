@@ -205,7 +205,7 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
     btRigidBody::btRigidBodyConstructionInfo bullet_construction_info(rigidbody_mass, metadata->motion_state, shape.bt_shape, rigidbody_inertia);
     rigidbody_t rigidbody = {new btRigidBody(bullet_construction_info), metadata};
 
-    std::cout << "collisin mask " << metadata->collision_mask << " grop " << metadata->collision_group << std::endl;
+    //std::cout << "collisin mask " << metadata->collision_mask << " grop " << metadata->collision_group << std::endl;
 
     dynamics_world->addRigidBody(rigidbody.bt_rigidbody, metadata->collision_group, metadata->collision_mask);
     

@@ -26,11 +26,11 @@ struct ResourceRequest {
 #endif
 };
 
-static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", 500);
-static Queue<ResourceRequest*> memory_loader_queue("Async::LoadResourcesFromMemory() queue", 500);
-static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", 500);
+static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", 1000);
+static Queue<ResourceRequest*> memory_loader_queue("Async::LoadResourcesFromMemory() queue", 1000);
+static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", 1000);
 
-static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 750);
+static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 1750);
 
 /// Adds a resource to the loading queue.
 /// @param requester EntityComponent that will be notified when the resource is loaded.
