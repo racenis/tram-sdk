@@ -32,25 +32,29 @@ public:
     
     name_t equipped_slot;
     
+    // TODO: add getter methods
+    // in addition, these getter methods should descend the item class
+    // hierarchy and find the first valid thing to return
+    
     GUI::font_t sprite_font = 0;
     GUI::font_t icon_font = 0;
     GUI::glyph_t sprite_glyph = 0;
     GUI::glyph_t icon_glyph = 0;
     
     int width = 1, height = 1;
-    int stack = 1;
+    int stack = 1, value = 0;
     
     float weight = 0.0f;
     
     name_t default_compartment;
     
-    virtual bool OnEquip() { return false; }
-    virtual bool OnUnequip() { return false; }
-    virtual bool OnAdded() { return false; }
-    virtual bool OnRemoved() { return false; }
-    virtual bool OnPrimaryAction() { return false; }
-    virtual bool OnSecondaryAction() { return false; }
-    virtual bool OnIdle() { return false; }
+    virtual bool OnEquip(ItemClass*, Inventory*) { return false; }
+    virtual bool OnUnequip(ItemClass*, Inventory*) { return false; }
+    virtual bool OnAdded(ItemClass*, Inventory*) { return false; }
+    virtual bool OnRemoved(ItemClass*, Inventory*) { return false; }
+    virtual bool OnPrimaryAction(ItemClass*, Inventory*) { return false; }
+    virtual bool OnSecondaryAction(ItemClass*, Inventory*) { return false; }
+    virtual bool OnIdle(ItemClass*, Inventory*) { return false; }
     
     std::vector<Attribute> attributes;
     std::vector<Effect> effects;
@@ -73,6 +77,8 @@ public:
     virtual int RemoveItem(name_t item_class, int count) = 0;
     virtual int GetItemCount(name_t item_class) = 0;
     
+    virtual std::vector<name_t> GetItems() = 0;
+    
     virtual ~InventoryManager() = default;
     
     static InventoryManager* New(name_t compartment);
@@ -86,6 +92,8 @@ public:
     int RemoveItem(name_t item_class, int count) override;
     int GetItemCount(name_t item_class) override;
     
+    std::vector<name_t> GetItems() override;
+    
     ~ListInventoryManager() override = default;
     
     std::vector<std::pair<name_t, int>> items;
@@ -97,6 +105,8 @@ public:
 // then each compartment would have a type/manager class that is an instance of
 class Inventory {
 public:
+    Inventory(id_t parent) : parent(parent) {}
+
     int AddItem(name_t item_class, int count);
     int RemoveItem(name_t item_class, int count);
     int GetItemCount(name_t item_class);
@@ -104,12 +114,16 @@ public:
     bool EquipItem(name_t item_class);
     bool UnequipItem(name_t item_class);
     bool UnequipSlot(name_t item_slot);
+    bool IsEquippedItem(name_t item);
+    bool IsEquippedSlot(name_t slot);
+    name_t GetEquippedItem(name_t slot);
+    
+    InventoryManager* FindCompartment(name_t compartment);
+    
+    id_t parent = 0;
     
     std::vector<std::pair<name_t, name_t>> equipped;
     std::vector<std::pair<name_t, InventoryManager*>> compartments;
-    
-private:
-    InventoryManager* FindCompartment(name_t compartment);
 public:
     
     static void LoadFromDisk(const char* filename);

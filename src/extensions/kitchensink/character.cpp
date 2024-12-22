@@ -216,7 +216,7 @@ void CharacterClass::GatherBaseAttributes(AttributeContainer& container) {
         const float base_value = container.GetAttributeBase(attribute.name);
         const float new_value = base_value + attribute.value;
         
-        container.SetAttribute(attribute.name, new_value, 1.0f);
+        container.SetAttribute(attribute.name, new_value);
     }
     
     for (auto base_class : this->base_classes) {

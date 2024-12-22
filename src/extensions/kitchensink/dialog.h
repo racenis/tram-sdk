@@ -52,6 +52,23 @@ struct DialogTopic {
     static DialogTopic* Find(name_t);
 };
 
+class DialogController {
+public:
+    DialogController(name_t initial_topic);
+    
+    name_t GetAnswer();
+    std::vector<name_t> GetPrompts();
+    
+    bool ShouldExit();
+    void MoveTo(size_t prompt_index);
+private:
+    name_t initial_topic;
+    name_t current_topic;
+    name_t answer;
+    bool should_exit = false;
+    std::vector<name_t> next_topics;
+};
+
 }
 
 #endif // TRAM_SDK_EXTENSIONS_DESIGN_DIALOG_H

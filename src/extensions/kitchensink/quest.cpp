@@ -210,6 +210,22 @@ void Quest::FireTrigger(name_t name) {
     }
 }
 
+std::vector<Quest*> Quest::FindAll(bool unknown_also) {
+    std::vector<Quest*> quests;
+    for (auto& quest : PoolProxy<Quest>::GetPool()) {
+        bool is_known = false;
+        for (auto& objective : quest.variables) {
+            if (objective.type != QUEST_VAR_OBJECTIVE) continue;
+            
+            if (objective.value1 != (value_t)(name_t)"unknown") is_known = true; 
+        }
+        
+        if (is_known || unknown_also) quests.push_back(&quest);
+    }
+    
+    return quests;
+}
+
 class QuestEntity : public Entity {
 public:
     QuestEntity(name_t name) : Entity(name) {}
@@ -227,6 +243,8 @@ public:
 };
 
 Quest* Quest::Find(name_t quest) {
+    assert(quest);
+    
     for (auto& q : PoolProxy<Quest>::GetPool()) {
         if (q.name == quest) return &q;
     }
@@ -256,7 +274,8 @@ static std::pair<name_t, value_t> LoadVariableSecond(File& file) {
         quest = file.read_name();
         value = file.read_name();
     } else if (type == "bool") {
-        value = (bool)file.read_int32();
+        //value = (bool)file.read_int32();
+        value = file.read_name() == "true";
     } else if (type == "int") {
         value = file.read_int32();
     } else if (type == "float") {
@@ -316,7 +335,8 @@ void Quest::LoadFromDisk(const char* filename) {
                     name_t type = file.read_name();
 
                     if (type == "bool") {
-                        variable.SetValue((bool)file.read_int32());
+                        //variable.SetValue((bool)file.read_int32());
+                        variable.SetValue(file.read_name() == "true");
                     } else if (type == "int") {
                         variable.SetValue(file.read_int32());
                     } else if (type == "float") {

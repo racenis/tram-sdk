@@ -173,4 +173,85 @@ void DialogTopic::LoadFromDisk(const char* filename) {
     }
 }
 
+
+DialogController::DialogController(name_t initial_topic) {
+    this->initial_topic = initial_topic;
+    this->current_topic = initial_topic;
+    
+    // we could properly yeet in the greeting here
+    this->answer = DialogTopic::Find(initial_topic)->answer;
+}
+
+name_t DialogController::GetAnswer() {
+    return answer;
+}
+
+std::vector<name_t> DialogController::GetPrompts() {
+    std::vector<name_t> prompts;
+    for (auto topic : next_topics) {
+        prompts.push_back(DialogTopic::Find(topic)->prompt);
+    }
+    if (current_topic == initial_topic) prompts.push_back("[exit]");
+    return prompts;
+}
+
+bool DialogController::ShouldExit() {
+    return should_exit;
+}
+
+void RecursivelyAppendNextTopic(std::vector<name_t>& topics, name_t appendable) {
+    DialogTopic* topic = DialogTopic::Find(appendable);
+
+    if (topic->condition.IsMet()) return;    
+
+    switch (topic->type) {
+        case DIALOG_TOPIC:
+            topics.push_back(appendable);
+            break;
+        case DIALOG_IMPORT_SINGLE:
+            for (auto topic : DialogTopic::Find(appendable)->next_topics) {
+                DialogTopic* importable = DialogTopic::Find(appendable);
+                if (importable->condition.IsMet()) {
+                    RecursivelyAppendNextTopic(topics, topic);
+                    return;
+                }
+            }
+            break;
+        case DIALOG_IMPORT_MULTIPLE:
+            for (auto topic : DialogTopic::Find(appendable)->next_topics) {
+                DialogTopic* importable = DialogTopic::Find(appendable);
+                if (importable->condition.IsMet()) {
+                    RecursivelyAppendNextTopic(topics, topic);
+                }
+            }
+            break;
+    }
+}
+
+void DialogController::MoveTo(size_t prompt_index) {
+    if (prompt_index >= next_topics.size()) {
+        should_exit = true;
+        return;
+    }
+    
+    name_t next_topic = next_topics[prompt_index];
+    
+    next_topics.clear();
+    for (auto topic : DialogTopic::Find(next_topic)->next_topics) {
+        RecursivelyAppendNextTopic(next_topics, topic);
+    }
+    
+    if (!next_topics.size()) {
+        for (auto topic : DialogTopic::Find(initial_topic)->next_topics) {
+            RecursivelyAppendNextTopic(next_topics, topic);
+        }
+    }
+    
+    current_topic = next_topic;
+    
+    answer = DialogTopic::Find(current_topic)->answer;
+    
+    DialogTopic::Find(current_topic)->action.Perform();
+}
+
 }

@@ -125,6 +125,15 @@ int ListInventoryManager::GetItemCount(name_t item_class) {
     return 0;
 }
 
+std::vector<name_t> ListInventoryManager::GetItems() {
+    std::vector<name_t> new_items;
+    new_items.reserve(items.size());
+    
+    for (auto& item: items) new_items.push_back(item.first);
+    
+    return new_items;
+}
+
 InventoryManager* Inventory::FindCompartment(name_t compartment) {
     if (!compartment) compartment = "default";
     
@@ -142,7 +151,7 @@ int Inventory::AddItem(name_t item_class, int count) {
     auto item_info = ItemClass::Find(item_class);
     
     auto item_callback = item_info;
-    while (!item_callback->OnAdded() && item_callback->base_class) {
+    while (!item_callback->OnAdded(item_info, this) && item_callback->base_class) {
         item_callback = ItemClass::Find(item_callback->base_class);
     }
 
@@ -153,7 +162,7 @@ int Inventory::RemoveItem(name_t item_class, int count) {
     auto item_info = ItemClass::Find(item_class);
     
     auto item_callback = item_info;
-    while (!item_callback->OnRemoved() && item_callback->base_class) {
+    while (!item_callback->OnRemoved(item_info, this) && item_callback->base_class) {
         item_callback = ItemClass::Find(item_callback->base_class);
     }
 
@@ -181,13 +190,13 @@ bool Inventory::EquipItem(name_t item_class) {
         
         // unequip previous one
         auto prev_callback = ItemClass::Find(slot.second);;
-        while (!prev_callback->OnUnequip() && prev_callback->base_class) {
+        while (!prev_callback->OnUnequip(item_info, this) && prev_callback->base_class) {
             prev_callback = ItemClass::Find(prev_callback->base_class);
         }
         
         // equip this one
         auto next_callback = item_info;
-        while (!next_callback->OnEquip() && next_callback->base_class) {
+        while (!next_callback->OnEquip(item_info, this) && next_callback->base_class) {
             next_callback = ItemClass::Find(next_callback->base_class);
         }
         
@@ -196,7 +205,7 @@ bool Inventory::EquipItem(name_t item_class) {
     
     // otherwise equip and install slot
     auto next_callback = item_info;
-    while (!next_callback->OnEquip() && next_callback->base_class) {
+    while (!next_callback->OnEquip(item_info, this) && next_callback->base_class) {
         next_callback = ItemClass::Find(next_callback->base_class);
     }
     
@@ -209,10 +218,13 @@ bool Inventory::UnequipItem(name_t item_class) {
     for (auto& slot : equipped) {
         if (slot.second != item_class) continue;
         
-        auto callback = ItemClass::Find(item_class);;
-        while (!callback->OnUnequip() && callback->base_class) {
+        auto item_info = ItemClass::Find(item_class);
+        auto callback = item_info;
+        while (!callback->OnUnequip(item_info, this) && callback->base_class) {
             callback = ItemClass::Find(callback->base_class);
         }
+        
+        std::erase_if(equipped, [=](auto& slot) {return slot.second == item_class;});
         
         return true;
     }
@@ -224,10 +236,13 @@ bool Inventory::UnequipSlot(name_t item_slot) {
     for (auto& slot : equipped) {
         if (slot.first != item_slot) continue;
         
-        auto callback = ItemClass::Find(slot.second);;
-        while (!callback->OnUnequip() && callback->base_class) {
+        auto item_info = ItemClass::Find(slot.second);
+        auto callback = item_info;
+        while (!callback->OnUnequip(item_info, this) && callback->base_class) {
             callback = ItemClass::Find(callback->base_class);
         }
+        
+        std::erase_if(equipped, [=](auto& slot) {return slot.first == item_slot;});
         
         return true;
     }
@@ -235,13 +250,26 @@ bool Inventory::UnequipSlot(name_t item_slot) {
     return false;
 }
 
+bool Inventory::IsEquippedItem(name_t item) {
+    for (auto& entry : equipped) if (entry.second == item) return true;
+    return false;
+}
 
+bool Inventory::IsEquippedSlot(name_t slot) {
+    for (auto& entry : equipped) if (entry.first == slot) return true;
+    return false;
+}
+
+name_t Inventory::GetEquippedItem(name_t slot) {
+    for (auto& entry : equipped) if (entry.first == slot) return entry.second;
+    return "none";
+}
 
 Inventory* Inventory::Find(Entity* entity) {
     Inventory* inventory = inventory_list.Find(entity->GetID());
     
     if (!inventory) {
-        inventory = PoolProxy<Inventory>::New();
+        inventory = PoolProxy<Inventory>::New(entity->GetID());
         inventory_list.Insert(entity->GetID(), inventory);
     }
     
@@ -278,6 +306,7 @@ void Inventory::LoadFromDisk(const char* filename) {
             
             item->base_class = file.read_name();
             item->equipped_slot = file.read_name();
+            item->default_compartment = file.read_name();
         } else if (record == "world-display") {
             ItemClass* item = ItemClass::Find(file.read_name());
             
@@ -286,12 +315,13 @@ void Inventory::LoadFromDisk(const char* filename) {
         } else if (record == "item-layout") {
             ItemClass* item = ItemClass::Find(file.read_name());
             
-            item->width = file.read_uint32();
-            item->height  = file.read_uint32();
+            item->width = file.read_int32();
+            item->height  = file.read_int32();
             
-            item->stack  = file.read_uint32();
+            item->stack  = file.read_int32();
             
             item->weight  = file.read_float32();
+            item->value  = file.read_int32();
         } else if (record == "item-attribute") {
             ItemClass* item = ItemClass::Find(file.read_name());
             

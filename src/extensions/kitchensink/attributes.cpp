@@ -10,6 +10,7 @@
 #include <algorithm>
 
 const size_t ATTRIBUTE_CONTAINER_COUNT = 50;
+const size_t ATTRIBUTE_INFO_COUNT = 50;
 
 namespace tram {
 
@@ -20,7 +21,30 @@ template<> Pool<Ext::Kitchensink::AttributeContainer> PoolProxy<Ext::Kitchensink
 namespace tram::Ext::Kitchensink {
 
 Hashmap<AttributeContainer*> containers("Ext::Kitchensink::AttributeContainer Hashmap", ATTRIBUTE_CONTAINER_COUNT);
+Hashmap<AttributeInfo*> infos("Ext::Kitchensink::AttributeInfo Hashmap", ATTRIBUTE_INFO_COUNT);
+
+void AttributeInfo::Recalculate(Attribute& attribute, const AttributeContainer&) {
+    // default attribute behavior: effective = base + boost
     
+    attribute.effective_value = attribute.base_value;
+}
+
+void AttributeInfo::Register(AttributeInfo* info) {
+    infos.Insert(info->GetName(), info);
+}
+
+AttributeInfo* AttributeInfo::Find(name_t name) {
+    AttributeInfo* info = infos.Find(name);
+    
+    if (!info) {
+        info = new AttributeInfo;
+        info->name = name;
+        infos.Insert(name, info);
+    }
+    
+    return info;
+}
+
 float AttributeContainer::GetAttribute(name_t name) {
     for (auto& attribute : attributes) {
         if (attribute.name == name) return attribute.effective_value;
@@ -35,24 +59,18 @@ float AttributeContainer::GetAttributeBase(name_t name) {
     return 0.0f;
 }
 
-float AttributeContainer::GetAttributeRemaining(name_t name) {
-    for (auto& attribute : attributes) {
-        if (attribute.name == name) return attribute.remaining_value;
-    }
-    return 0.0f;
-}
-
-void AttributeContainer::SetAttribute(name_t name, float base_value, float remaining) {
+void AttributeContainer::SetAttribute(name_t name, float base_value) {
     for (auto& attribute : attributes) {
         if (attribute.name != name) continue;
         attribute.base_value = base_value;
-        attribute.remaining_value = remaining;
+        //attribute.affected_value = 0.0f;
+        //attribute.effective_value = 0.0f;
         return;
     }
     attributes.push_back({.name = name,
                           .base_value = base_value,
-                          .remaining_value = remaining,
-                          .effective_value = base_value});
+                          .affected_value = 0.0f,
+                          .effective_value = 0.0f});
 }
 
 void AttributeContainer::ApplyEffect(Effect effect) {
@@ -68,6 +86,14 @@ bool AttributeContainer::HasAttribute(name_t type) {
 }
 
 void AttributeContainer::Tick() {
+    
+    // for each attribute:
+    //      reset affected
+    //      add up change negate for each attribute
+    //      add up ...
+    // bwah
+    
+    
     for (auto it = effects.begin(); it != effects.end(); it++) {
         // TODO: whatever
         
@@ -80,6 +106,11 @@ void AttributeContainer::Tick() {
             
         }
     }
+    
+    for (auto& attribute : attributes) {
+        AttributeInfo::Find(attribute.name)->Recalculate(attribute, *this);
+    }
+    
 }
 
 AttributeContainer* AttributeContainer::Find(Entity* entity) {
@@ -128,7 +159,6 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
             
             new_attribute.name = file.read_name();
             new_attribute.base_value = file.read_float32();
-            new_attribute.remaining_value = file.read_float32();
             new_attribute.effective_value = file.read_float32();
 
             container->attributes.push_back(new_attribute);

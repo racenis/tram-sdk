@@ -39,6 +39,8 @@ public:
     void SetFade(name_t animation_name, bool fade_in, float fade_length);
     void SetFrame(name_t animation_name, float frame);
     
+    void Reparent(name_t bone_name, name_t new_parent);
+    
     void Refresh();
     void EventHandler(Event &event) { return; }
     static bool IsDebugInfoDraw();

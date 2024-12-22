@@ -31,10 +31,12 @@ enum quest_t : int {
     QUEST_TGR_INCREMENT,
     QUEST_TGR_SHOW_MESSAGE,
 };
-    
+
 struct QuestVariable {
     name_t name;
     quest_t type;
+    
+    // TODO: put the params in ??  union??
     
     name_t target;
     
@@ -94,6 +96,9 @@ struct Quest {
     void FireTrigger(name_t);
     
     static void Init();
+    
+    
+    static std::vector<Quest*> FindAll(bool unknown_also);
     
     static void LoadFromDisk(const char* filename);
     static Quest* Find(name_t quest);

@@ -78,6 +78,10 @@ void AnimationComponent::SetKeyframe(name_t bone_name, const Render::Keyframe& k
 ///                         false, then it will use only the latest keyframe.
 /// @param pause_on_last    If set to true, then the animation will pause on the last keyframe.
 void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame) {
+    if (!animation_name) return;
+    
+    // TODO: guard for negative weight? speed?
+    
     // find an empty slot for the animation
     size_t slot;
     for (slot = 0; slot < ANIM_COUNT; slot++) {
@@ -147,8 +151,10 @@ void AnimationComponent::FindKeyframePointers(size_t animation_index) {
 }
 
 /// Stops an animation if its playing.
-/// Will do nothing, if the animation is not playing.
+/// Will do nothing if the animation is not playing.
 void AnimationComponent::Stop(name_t animation_name) {
+    if (!animation_name) return;
+    
     for (size_t i = 0; i < ANIM_COUNT; i++) {
         if(anim_playing[i] == animation_name) {
             anim_playing[i] = UID();
@@ -170,6 +176,8 @@ void AnimationComponent::Stop(name_t animation_name) {
 /// @param animation_name   Name of the animation to pause.
 /// @param pause            Set to true to pause the animation, set to false to continue.
 void AnimationComponent::SetPause(name_t animation_name, bool pause) {
+    if (!animation_name) return;
+    
     for (size_t i = 0; i < ANIM_COUNT; i++) {
         if (anim_playing[i] == animation_name) {
             anim_info[i].pause = pause;
@@ -265,6 +273,28 @@ void AnimationComponent::SetFade(name_t animation_name, bool fade_in, float fade
     }
 }
 
+/// Reparents a bone.
+/// Make sure to not create cycles in the bone hierarchy.
+/// @param bone_name    Name of the bone for which a new parent will be set.
+/// @param new_parent   Name of the bone which will be the new parent.
+///                     Can be set to "none" to clear the bone's parent.
+void AnimationComponent::Reparent(name_t bone_name, name_t new_parent) {
+    int32_t bone_index = -1;
+    int32_t parent_index = -1;
+    
+    for (size_t i = 0; i < armature_bone_count; i++) {
+        if (armature_bones[i].name == bone_name) {
+            bone_index = i;
+        } else if (armature_bones[i].name == new_parent) {
+            parent_index = i;
+        }
+    }
+    
+    if (bone_index == -1) return;
+    
+    armature_bone_parents[bone_index] = parent_index;
+}
+
 /// Updates all of the armatures.
 /// This static function calls the Refresh() method on all of the ArmatureComponents.
 void AnimationComponent::Update() {
@@ -309,7 +339,8 @@ void AnimationComponent::Refresh() {
         } else if (anim.fade_out) {
             anim.fade_ammount -= frames_since_update * anim.fade_speed;
             if (anim.fade_ammount < 0.0f) {
-                Stop(anim.animation_header->first);
+                //Stop(anim.animation_header->first);
+                Stop(anim_playing[i]);
             }
         }
         
@@ -328,13 +359,14 @@ void AnimationComponent::Refresh() {
                     anim.pause = true;
                     
                     // maybe instead of calling finish callback? call pause callback?
-                    if (anim_finish_callback) anim_finish_callback(this, anim.animation_header->first);
+                    if (anim_finish_callback) anim_finish_callback(this, anim_playing[i]);
                 } else {
                     anim.repeats--;
                     anim.frame = 0.0f;
                     
                     if (anim.repeats == 0) {
-                        Stop(anim.animation_header->first);
+                        //Stop(anim.animation_header->first);
+                        Stop(anim_playing[i]);
                         continue;
                     }
                 }

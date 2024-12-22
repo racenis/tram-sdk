@@ -17,16 +17,14 @@ namespace tram::Ext::Kitchensink {
 
 enum : int {
     EFFECT_RAISE_BASE,
-    EFFECT_RAISE_REMAINING,
-    EFFECT_RAISE_EFFECTIVE,
-    
+    EFFECT_RAISE_CONSTANT,
     EFFECT_NEGATE_CHANGE,
 };
 
 struct Attribute {
     name_t name;
     float base_value;
-    float remaining_value;
+    float affected_value;
     float effective_value;
 };
 
@@ -44,7 +42,8 @@ struct AttributeContainer;
 
 class AttributeInfo {
 public:
-    virtual void CalculateEffective(Attribute&, const AttributeContainer&) = 0;
+    virtual void Recalculate(Attribute&, const AttributeContainer&);
+    
     name_t GetName() { return name; }
     static void Register(AttributeInfo*);
     static AttributeInfo* Find(name_t);
@@ -54,11 +53,9 @@ protected:
 
 struct AttributeContainer {
     float GetAttribute(name_t attribute);
-    
     float GetAttributeBase(name_t attribute);
-    float GetAttributeRemaining(name_t attribute);
     
-    void SetAttribute(name_t attribute, float base_value, float remaining);
+    void SetAttribute(name_t attribute, float base_value);
     
     void ApplyEffect(Effect effect);
     void RemoveEffect(name_t tag);
@@ -70,6 +67,9 @@ struct AttributeContainer {
     static AttributeContainer* Find(Entity*);
     static AttributeContainer* Find(id_t);
     static void LoadFromDisk(const char*);
+    
+    // maybe instead use global clock???
+    float last_tick = 0.0f;
     
     std::vector<Attribute> attributes;
     std::vector<Effect> effects;
