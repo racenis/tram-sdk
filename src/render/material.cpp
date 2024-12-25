@@ -1,5 +1,5 @@
-// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
-// All rights reserved.
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 
 // turning off an annoying warning in the library code
 #pragma GCC diagnostic push

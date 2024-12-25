@@ -1,5 +1,5 @@
-// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
-// All rights reserved.
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 
 #include <render/sprite.h>
 #include <render/renderer.h>

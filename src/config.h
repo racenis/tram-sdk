@@ -1,5 +1,5 @@
-// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
-// All rights reserved.
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 
 // This is the configuration file for the library portion of the framework.
 // If you change anything in here, you'll need to recompile everything.

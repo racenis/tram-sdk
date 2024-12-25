@@ -1,5 +1,5 @@
-// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
-// All rights reserved.
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 
 // This extension basically contains a bunch of random reusable game mechanics.
 // They could be used to implement a FPS-type or an RPG-type game.

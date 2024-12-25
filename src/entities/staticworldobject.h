@@ -1,5 +1,5 @@
-// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
-// All rights reserved.
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 
 #ifndef ENTITIES_STATICWORLDOBJECT_H
 #define ENTITIES_STATICWORLDOBJECT_H
