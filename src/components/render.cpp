@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <render/api.h>
 #include <components/render.h>
 #include <components/animation.h>
@@ -9,11 +8,21 @@
 
 #include <render/aabb.h>
 
+#include <config.h>
+
+/**
+ * @class RenderComponent
+ * 
+ * Renders a Model.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/render.html
+ */
+
 namespace tram {
+
 using namespace tram::Render;
 using namespace tram::Render::API;
 
-template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool ("render component pool", 1000, false);
+template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("RenderComponent pool", COMPONENT_LIMIT_RENDER, false);
 
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_COMPONENTS_TRIGGERCOMPONENT_H
 #define TRAM_SDK_COMPONENTS_TRIGGERCOMPONENT_H
 
@@ -8,9 +7,6 @@
 #include <components/physics.h>
 
 #include <vector>
-
-class btCollisionShape;
-class btCollisionObject;
 
 namespace tram {
 
@@ -26,6 +22,7 @@ public:
     void SetModel(Physics::CollisionModel* model) { this->model = model; }
     void SetShape(Physics::CollisionShape shape);
 
+    // TODO: typedef these callback functions?
     void SetActivationCallback(void (*activation_callback)(TriggerComponent*, Physics::Collision)) { this->activation_callback = activation_callback; }
     void SetDectivationCallback(void (*deactivation_callback)(TriggerComponent*, Physics::Collision)) { this->deactivation_callback = deactivation_callback; }
     void SetFilterCallback(bool (*filter_callback)(TriggerComponent*, PhysicsComponent*)) { this->filter_callback = filter_callback; }
@@ -43,16 +40,20 @@ public:
     
     const std::vector<Physics::Collision>& GetStoredCollisions() { return stored_collisions; }
     
+    // why are these not private/protected?
+    // TODO: fix
     void Collision(const Physics::Collision& collision);
     void ResetCollisions();
     
-    std::vector<Physics::Collision> Poll ();
+    std::vector<Physics::Collision> Poll();
 private:
     ResourceProxy<Physics::CollisionModel> model;
     
+    // TODO: why camelCase?
     uint32_t collisionMask = -1;
     uint32_t collisionGroup = -1;
     
+    // TODO: change to {} initialization?
     vec3 location = vec3(0.0f, 0.0f, 0.0f);
     quat rotation = vec3(0.0f, 0.0f, 0.0f);
     

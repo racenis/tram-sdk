@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/entity.h>
 #include <framework/message.h>
 
@@ -10,15 +9,51 @@
 
 #include <render/render.h>
 
+#include <config.h>
+
+/**
+ * @file components/controller.cpp
+ * 
+ * Implementations for ControllerComponents.
+ */
+
+/**
+ * @class ControllerComponent
+ * 
+ * Provides an API for character controllers.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/controller.html
+ */
+ 
+ /**
+ * @class FPSControllerComponent
+ * 
+ * Implementation of an FPS-style character controller.
+ * 
+ * It is relatively slow, due to the use of Shapecasts, which makes it suitable
+ * only for player characters. Consider useing a RaycastControllerComponent for
+ * other uses.
+ * @see ControllerComponent
+ */
+ 
+/**
+ * @class RaycastControllerComponent
+ * 
+ * Implementation of a simple character controller.
+ * @see ControllerComponent
+ */
+
 namespace tram {
 
-template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool ("fpscontroller component pool", 25, false);
-template <> Pool<RaycastControllerComponent> PoolProxy<RaycastControllerComponent>::pool ("raycast component pool", 25, false);
+template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool("FPSControllerComponent pool", COMPONENT_LIMIT_CONTROLLER, false);
+template <> Pool<RaycastControllerComponent> PoolProxy<RaycastControllerComponent>::pool("RaycastControllerComponent pool", COMPONENT_LIMIT_CONTROLLER, false);
 
+// TODO: make this a Setting?
 static bool draw_debug = false;
 
 /// Updates the ControllerComponents.
 /// Updates all of the ControllerComponents. Should be called once per update cycle.
+/// Best place to do so would be before updating any cameras, otherwise they will
+/// lag behind the controller for the rest of the frame.
 void ControllerComponent::Update() {
     if (GetTick() < 10) return; // helps with not falling through the floor!!!
     
@@ -120,7 +155,7 @@ void FPSControllerComponent::Start() {
 }
 
 void FPSControllerComponent::Push(vec3 direction) {
-    
+    // TODO: implement
 }
 
 void FPSControllerComponent::Move(vec3 local_direction) {
@@ -383,7 +418,7 @@ void RaycastControllerComponent::Start() {
 }
 
 void RaycastControllerComponent::Push(vec3 direction) {
-    
+    // TODO: implement
 }
 
 void RaycastControllerComponent::Move(vec3 local_direction) {

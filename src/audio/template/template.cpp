@@ -2,6 +2,16 @@
 
 #include <framework/logging.h>
 
+/**
+ * @file audio/template/template.cpp
+ * 
+ * Template for Audio backend implementations.
+ * 
+ * This template can also be used as a blank Audio backend if no audio is needed
+ * to be played and the system won't be used.
+ */
+
+
 namespace tram::Audio::API {
 
 void Init() {

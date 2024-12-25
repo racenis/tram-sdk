@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_COMPONENTS_AUDIOCOMPONENT_H
 #define TRAM_SDK_COMPONENTS_AUDIOCOMPONENT_H
 
@@ -14,7 +13,7 @@
 namespace tram {
 
 class RenderComponent;
-    
+
 class AudioComponent : public EntityComponent {
 public:
     AudioComponent() : sound(this){}

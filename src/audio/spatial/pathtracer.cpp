@@ -1,4 +1,6 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
+// prevent this file from compiling
 #if false
 
 #include <audio/spatial/pathtracer.h>

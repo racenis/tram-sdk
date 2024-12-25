@@ -1,16 +1,24 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <render/api.h>
 #include <render/vertices.h>
 #include <render/material.h>
 #include <components/sprite.h>
 #include <framework/logging.h>
 
+#include <config.h>
+
+/**
+ * @class SpriteComponent
+ * 
+ * Provides amusing graphical effects.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/sprite.html
+ */
+
 namespace tram {
 using namespace tram::Render;
 
-template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("sprite component pool", 100, false);
+template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("SpriteComponent pool", COMPONENT_LIMIT_SPRITE, false);
 
 using namespace API;
 

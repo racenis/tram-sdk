@@ -1,16 +1,24 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <components/physics.h>
 
 #include <physics/api.h>
 #include <framework/entity.h>
 
+#include <config.h>
+
+/**
+ * @class PhysicsComponent
+ * 
+ * Rigidbody wrapper.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/physics.html
+ */
+
 using namespace tram::Physics;
 
 namespace tram {
 
-template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("physics component pool", 500, false);
+template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("PhysicsComponent pool", COMPONENT_LIMIT_PHYSICS, false);
 
 void PhysicsComponent::Start() {
     if (collision_model.get()) {

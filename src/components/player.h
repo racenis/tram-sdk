@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_COMPONENTS_PLAYERCOMPONENT_H
 #define TRAM_SDK_COMPONENTS_PLAYERCOMPONENT_H
 
@@ -13,6 +12,8 @@
 #include <framework/logging.h>
 
 // this is for holding
+// re: for holding what??
+// TODO: find out
 #include <render/render.h>
 #include <framework/message.h>
 

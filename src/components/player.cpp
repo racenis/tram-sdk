@@ -1,8 +1,19 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <components/player.h>
+
+#include <config.h>
+
+/**
+ * @class PlayerComponent
+ * 
+ * Translates keyboard/mouse inputs into inputs for ControllerComponent.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/player.html
+ */
 
 namespace tram {
 
-template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool ("player component pool", 5, false);
+template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("PlayerComponent pool", COMPONENT_LIMIT_PLAYER, false);
 
 // technically incorrect, but it's not like we're going to have more than one
 // player components running at the same time.. right?

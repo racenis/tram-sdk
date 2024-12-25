@@ -1,17 +1,25 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <render/api.h>
 #include <render/vertices.h>
 #include <components/particle.h>
 #include <render/material.h>
+
+#include <config.h>
+
+/**
+ * @class ParticleComponent
+ * 
+ * Provides amusing graphical effects.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/particle.html
+ */
 
 namespace tram {
 
 using namespace tram::Render;
 using namespace tram::Render::API;
 
-template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool ("particle component pool", 100, false);
+template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool("ParticleComponent pool", COMPONENT_LIMIT_PARTICLE, false);
 
 ParticleComponent::~ParticleComponent(){
     is_ready = true;
@@ -23,7 +31,7 @@ void ParticleComponent::EmitParticle (const Particle& particle) {
     particles.push_back(particle);
 }
 
-void ParticleComponent::Start(){
+void ParticleComponent::Start() {
     if(is_ready) return;
 
     CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);

@@ -1,10 +1,18 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_AUDIO_API_H
 #define TRAM_SDK_AUDIO_API_H
 
 #include <audio/audio.h>
+
+/**
+ * @file audio/api.h
+ * 
+ * Audio API implementation header.
+ * 
+ * This file contains the function signatures which need to be implemented by an
+ * Audio API backend. 
+ */
 
 namespace tram::Audio::API {
 

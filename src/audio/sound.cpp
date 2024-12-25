@@ -1,3 +1,7 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
+// using the stb_vorbis library as a header-only library. we could compile it
+// separately, but I don't feel like it is worth the effort
 #include <stb_vorbis.c>
 
 // the stb_vorbis and glm use these same macroses
@@ -13,21 +17,40 @@
 
 #include <templates/hashmap.h>
 
-template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("sound pool", 100, false);
+#include <config.h>
+
+/**
+ * @file audio/sound.cpp
+ * 
+ * Sound resource implementation.
+ */
+
+template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("Sound Resource pool", RESOURCE_LIMIT_SOUND, false);
 
 namespace tram::Audio {
 
-static Hashmap<Sound*> sound_map("Sound hash map", 500);
+static Hashmap<Sound*> sound_map("Sound Resource hashmap", RESOURCE_LIMIT_SOUND);
 
 /// Loads the sound from the disk.
 void Sound::LoadFromDisk() {
-    sound_length = stb_vorbis_decode_filename((std::string("data/audio/") + std::string(name) + ".ogg").c_str(), &channels, &sample_rate, &sound_data);
+    char path[PATH_LIMIT];
+    
+    snprintf(path, PATH_LIMIT, "data/audio/%s.ogg", (const char*)name);
+    
+    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Loading: {} ", path);
+    sound_length = stb_vorbis_decode_filename(path, &channels, &sample_rate, &sound_data);
     
     Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Bytelength: {} Channels: {} SampleRate: {} ", sound_length, channels, sample_rate);
     
     if (sound_length < 0) {
         load_fail = true;
-        Log(SEVERITY_ERROR, System::SYSTEM_AUDIO, "There was an error loading the sound {}", name);
+        Log(SEVERITY_WARNING, System::SYSTEM_AUDIO, "Failed to load: {}", path);
+        
+        // TODO: generate an error audio
+        
+        // sort of how we use the pink checkerboard pattern when textures fail
+        // to load, we could generate some kind of an error sound also
+        
     } else {
         sound_buffer = API::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels);
     }
@@ -45,7 +68,7 @@ void Sound::Unload() {
 }
 
 /// Finds a sound by a name.
-/// If a sound by that name doesn't exist, then it will be created.
+/// If a sound by that name doesn't exist, it will be created.
 /// @return Always returns a pointer to a Sound.
 Sound* Sound::Find (name_t name) {
     auto sound = sound_map.Find(name);

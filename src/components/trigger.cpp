@@ -1,16 +1,22 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <components/trigger.h>
-//#include <physics/bullet/bullet.h>
 #include <physics/api.h>
 
+#include <config.h>
+
+/**
+ * @class TriggerComponent
+ * 
+ * Trigger wrapper.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/trigger.html
+ */
+
 using namespace tram::Physics;
-//using namespace tram::Physics::Bullet;
 
 namespace tram {
 
-template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("trigger component pool", 50, false);
+template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("TriggerComponent pool", COMPONENT_LIMIT_TRIGGER, false);
 
 void TriggerComponent::Start() {
     if (!shape.bt_shape && model) {
@@ -132,60 +138,12 @@ void TriggerComponent::ResetCollisions() {
         stored_collisions.clear();
     }
 }
-/*
-// For the Bullet physics.
-struct TriggerPollCallback : public btCollisionWorld::ContactResultCallback {
-    TriggerPollCallback(std::vector<Physics::Collision>& collisions) : collisions(collisions) {}
-    btScalar addSingleResult(btManifoldPoint& cp,
-        const btCollisionObjectWrapper* coll_obj0, int, int,
-        const btCollisionObjectWrapper* coll_obj1, int, int
-    ) {
-        if (cp.getDistance() > 0.0f) return 1;
-        
-        const btCollisionObject* ob0 = coll_obj0->getCollisionObject();
-        const btCollisionObject* ob1 = coll_obj1->getCollisionObject();
-        
-        if (ob0->getUserIndex() == USERINDEX_TRIGGERCOMPONENT &&
-            ob1->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
-            ((TriggerComponent*)ob0->getUserPointer())->GetCollisionMask() &
-            ((PhysicsComponent*)ob1->getUserPointer())->GetCollisionGroup()) {
-            assert(ob0->getUserPointer());
-            assert(ob1->getUserPointer());
-            auto& contact = cp.getPositionWorldOnB();
-            auto& normal = cp.m_normalWorldOnB;
-            collisions.push_back({
-                (PhysicsComponent*) ob1->getUserPointer(),
-                {contact.getX(), contact.getY(), contact.getZ()},
-                {-normal.getX(), normal.getY(), normal.getZ()}
-            });
-            
-            std::cout << "   hmm it seems like it does in fact work" << std::endl;
-        }
-        
-        if (ob0->getUserIndex() == USERINDEX_PHYSICSCOMPONENT &&
-            ob1->getUserIndex() == USERINDEX_TRIGGERCOMPONENT &&
-            ((PhysicsComponent*)ob0->getUserPointer())->GetCollisionGroup() &
-            ((TriggerComponent*)ob1->getUserPointer())->GetCollisionMask()) {
-            assert(ob0->getUserPointer());
-            assert(ob1->getUserPointer());
-            auto& contact = cp.getPositionWorldOnA();
-            auto& normal = cp.m_normalWorldOnB;
-            collisions.push_back({
-                (PhysicsComponent*) ob0->getUserPointer(),
-                {contact.getX(), contact.getY(), contact.getZ()},
-                {normal.getX(), normal.getY(), normal.getZ()}
-            });
-        }
-        
-        return 1; // tbh idk what this method is supposed to return
-    }
-    std::vector<Physics::Collision>& collisions;
-};*/
 
 /// Checks for collisions with the trigger.
-std::vector<Physics::Collision> TriggerComponent::Poll () {
+std::vector<Physics::Collision> TriggerComponent::Poll() {
     std::vector<Physics::Collision> collisions;
     
+    // TODO: move this into -> Physics::API?
     //TriggerPollCallback callback (collisions);
     //DYNAMICS_WORLD->contactTest(trigger.bt_collisionshape, callback);
     

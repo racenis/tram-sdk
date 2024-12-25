@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_COMPONENTS_ARMATURECOMPONENT_H
 #define TRAM_SDK_COMPONENTS_ARMATURECOMPONENT_H
 
@@ -10,6 +9,7 @@
 #include <render/model.h>
 
 namespace tram {
+
 class AnimationComponent : public EntityComponent {
 public:
     void Init();

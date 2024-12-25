@@ -1,14 +1,20 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_AUDIO_AUDIO_H
 #define TRAM_SDK_AUDIO_AUDIO_H
 
 #include <framework/core.h>
 #include <framework/math.h>
 
+/**
+ * @file audio/audio.h
+ * 
+ * Main interface for the Audio system.
+ */
+
 namespace tram::Audio {
 
+/// Audio source handle.
 struct audiosource_t {
     union {
         uint32_t al_source;
@@ -16,6 +22,7 @@ struct audiosource_t {
     };
 };
 
+/// Audio buffer handle.
 struct audiobuffer_t {
     union {
         struct {

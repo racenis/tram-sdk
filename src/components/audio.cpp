@@ -5,17 +5,35 @@
 #include <audio/api.h>
 #include <audio/sound.h>
 
+#include <config.h>
+
+/**
+ * @class AudioComponent
+ * 
+ * Plays back Sounds.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/audio.html
+ */
+
+/* TODO:
+ * I don't really like how the AudioComponent references the RenderComponent for
+ * the component's visualization.
+ * I feel like a better alternative would be to set up some kind of a
+ * Component<RenderComponent> array in this file and then reference them based
+ * Pool indices.
+ */
+
 namespace tram {
     
 using namespace tram::Audio;
 using namespace tram::Audio::API;
 
-template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("audio component pool", 150);
+template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("AudioComponent pool", COMPONENT_LIMIT_AUDIO);
 
+// TODO: convert these into Settings?
 static bool draw_source = false;
 static bool draw_info = false;
 
-EventListener frame_event;
+static EventListener frame_event;
 
 AudioComponent::~AudioComponent() {
     assert(is_ready);

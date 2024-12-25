@@ -1,5 +1,13 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
+/**
+ * @file audio/spatial/spatial.h
+ * 
+ * Definitions for the Spatial Audio backend.
+ * 
+ * It hasn't been compiled in years, so it is probably broken, but I will keep
+ * the code here, just in case I want to revive it in the future.
+ */
 
 #ifndef TRAM_SDK_AUDIO_SPATIAL_SPATIAL_H
 #define TRAM_SDK_AUDIO_SPATIAL_SPATIAL_H

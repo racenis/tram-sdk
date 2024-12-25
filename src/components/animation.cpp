@@ -1,15 +1,22 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <components/animation.h>
 
 #include <framework/entity.h>
+#include <config.h>
 
 #include <cstring>
 
+/**
+ * @class AnimationComponent
+ * 
+ * Plays back Animations.
+ * @see https://racenis.github.io/tram-sdk/documentation/components/animation.html
+ */
+
 namespace tram {
     
-template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("armature component pool", 50, false);
+template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION, false);
 
 void AnimationComponent::Init() {
     assert(!is_ready);

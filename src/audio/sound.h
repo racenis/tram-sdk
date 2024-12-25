@@ -1,12 +1,17 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_AUDIO_SOUND_H
 #define TRAM_SDK_AUDIO_SOUND_H
 
 #include <audio/audio.h>
 
 #include <framework/resource.h>
+
+/**
+ * @file audio/sound.h
+ * 
+ * Sound resource definition.
+ */
 
 namespace tram::Audio {
 
