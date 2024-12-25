@@ -107,12 +107,14 @@ void QuestList::Display() {
         for (const auto& objective : quest.variables) {
             if (objective.type != QUEST_VAR_OBJECTIVE) continue;
             
-            if (objective.state == 0) GUI::SetColor(Render::COLOR_GRAY);
-            if (objective.state == 1) GUI::SetColor(Render::COLOR_RED);
-            if (objective.state == 2) GUI::SetColor(Render::COLOR_BLACK);
+            if (objective.objective.value == "unknown") GUI::SetColor(Render::COLOR_GRAY);
+            if (objective.objective.value == "obsolete") GUI::SetColor(Render::COLOR_BLUE);
+            if (objective.objective.value == "finished") GUI::SetColor(Render::COLOR_GREEN);
+            if (objective.objective.value == "failed") GUI::SetColor(Render::COLOR_RED);
+            if (objective.objective.value == "known") GUI::SetColor(Render::COLOR_BLACK);
             
-            GUI::Text(Ext::Menu::FONT_TEXT_BOLD, objective.value1); GUI::NewLine(GUI::LINE_LOW);
-            GUI::Text(Ext::Menu::FONT_TEXT, objective.value2); GUI::NewLine();
+            GUI::Text(Ext::Menu::FONT_TEXT_BOLD, objective.objective.title); GUI::NewLine(GUI::LINE_LOW);
+            GUI::Text(Ext::Menu::FONT_TEXT, objective.objective.subtitle); GUI::NewLine();
         }
         
         GUI::SetColor(Render::COLOR_BLACK);

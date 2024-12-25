@@ -48,6 +48,14 @@ public:
     
     name_t default_compartment;
     
+    void FireEquip(Inventory*);
+    void FireUnequip(Inventory*);
+    void FireAdded(Inventory*);
+    void FireRemoved(Inventory*);
+    void FirePrimaryAction(Inventory*);
+    void FireSecondaryAction(Inventory*);
+    void FireIdle(Inventory*);
+    
     virtual bool OnEquip(ItemClass*, Inventory*) { return false; }
     virtual bool OnUnequip(ItemClass*, Inventory*) { return false; }
     virtual bool OnAdded(ItemClass*, Inventory*) { return false; }

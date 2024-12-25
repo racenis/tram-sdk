@@ -38,6 +38,55 @@ ItemClass* ItemClass::Find(name_t name) {
     return item_class;
 }
 
+void ItemClass::FireEquip(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnAdded(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
+void ItemClass::FireUnequip(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnUnequip(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
+void ItemClass::FireAdded(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnAdded(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
+void ItemClass::FireRemoved(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnRemoved(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
+void ItemClass::FirePrimaryAction(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnPrimaryAction(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
+void ItemClass::FireSecondaryAction(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnSecondaryAction(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
+void ItemClass::FireIdle(Inventory* inventory) {
+    ItemClass* item_class = this;
+    while (!item_class->OnIdle(this, inventory) && item_class->base_class) {
+        item_class = ItemClass::Find(item_class->base_class);
+    }
+}
+
 
 InventoryManager* InventoryManager::New(name_t compartment) {
     auto info = inv_factory.Find(compartment);
@@ -90,7 +139,7 @@ int ListInventoryManager::AddItem(name_t item_class, int count) {
         }
     }
     
-    if (count > max_stack) {
+    if (max_stack >= 0 && count > max_stack) {
         items.push_back({item_class, max_stack});
         return max_stack;
     }
@@ -105,7 +154,7 @@ int ListInventoryManager::RemoveItem(name_t item_class, int count) {
         
         if (item.second <= count) {
             int over = count - item.second;
-            std::erase_if(items, [=](auto& item){ return item.first = item_class;});
+            std::erase_if(items, [=](auto& item){ return item.first == item_class;});
             return over;
         } else {
             item.second -= count;
@@ -113,7 +162,7 @@ int ListInventoryManager::RemoveItem(name_t item_class, int count) {
         }
     }
     
-    return count;
+    return 0;
 }
 
 int ListInventoryManager::GetItemCount(name_t item_class) {
@@ -181,6 +230,7 @@ bool Inventory::EquipItem(name_t item_class) {
     
     // check if has item
     if (item_compartment->GetItemCount(item_class) < 1) {
+        std::cout << "can't equip item ("<<item_class<<") that not have; has " << item_compartment->GetItemCount(item_class) << std::endl;
         return false;
     }
     
@@ -200,8 +250,12 @@ bool Inventory::EquipItem(name_t item_class) {
             next_callback = ItemClass::Find(next_callback->base_class);
         }
         
+        std::cout <<"equipped to an existing slot" << std::endl;
+        
         return true;
     }
+    
+    std::cout <<"equipped to new slot" << std::endl;
     
     // otherwise equip and install slot
     auto next_callback = item_info;

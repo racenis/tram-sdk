@@ -16,104 +16,235 @@ template<> Pool<Quest> PoolProxy<Quest>::pool("qyuespool", 10);
 
 namespace tram::Ext::Kitchensink {
 
-void QuestVariable::SetValue(Value value) {
-    this->value1 = value;
-    this->type = QUEST_VAR_VALUE;
+QuestVariable::QuestVariable(const QuestVariable& other) {
+    memcpy(this, &other, sizeof(QuestVariable));
 }
 
-void QuestVariable::SetIs(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    this->quest1 = quest1;
-    this->quest2 = quest2;
-    this->value1 = var1;
-    this->value2 = var2;
-    this->type = QUEST_VAR_VALUE_IS;
+QuestVariable& QuestVariable::operator=(const QuestVariable& other) {
+    memcpy(this, &other, sizeof(QuestVariable));
+    return *this;
 }
-
-void QuestVariable::SetIsNot(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_VALUE_IS_NOT;
-}
-
-void QuestVariable::SetGreater(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_VALUE_GREATER;
-}
-
-void QuestVariable::SetGreaterOrEqual(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_VALUE_GREATER_OR_EQUAL;
-}
-
-void QuestVariable::SetLess(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_VALUE_LESS;
-}
-
-void QuestVariable::SetLessOrEqual(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_VALUE_LESS_OR_EQUAL;
-}
-
-void QuestVariable::SetNot(name_t quest, name_t var) {
-    this->quest1 = quest;
-    this->value1 = var;
-    this->type = QUEST_VAR_CONDITION_NOT;
-}
-
-void QuestVariable::SetAnd(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_CONDITION_AND;
-}
-
-void QuestVariable::SetOr(name_t quest1, name_t var1, name_t quest2, value_t var2) {
-    SetIs(quest1, var1, quest2, var2);
-    this->type = QUEST_VAR_CONDITION_OR;
-}
-
-void QuestVariable::SetScript(name_t script) {
-    this->value1 = script;
-    this->type = QUEST_VAR_CONDITION_SCRIPT;
-}
-
-
-void QuestVariable::SetObjective(name_t title, name_t description, int state) {
-    this->value1 = title;
-    this->value2 = description;
     
-    this->state = state;
-    this->type = QUEST_VAR_OBJECTIVE;
+QuestVariable QuestVariable::Value(name_t name, value_t value) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE;
+    var.name = name;
+    
+    var.value.value = value;
+    
+    return var;
 }
 
-Value QuestVariable::Evaluate() {
+QuestVariable QuestVariable::Is(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE_IS;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::IsNot(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE_IS_NOT;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::Greater(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE_GREATER;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::GreaterOrEqual(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE_GREATER_OR_EQUAL;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::Less(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE_LESS;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::LessOrEqual(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_VALUE_LESS_OR_EQUAL;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::Not(name_t name, name_t quest1, name_t var1) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_CONDITION_NOT;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest1;
+    var.comparison.variable2 = var1;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::And(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_CONDITION_AND;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::Or(name_t name, name_t quest1, name_t var1, name_t quest2, value_t var2) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_CONDITION_OR;
+    var.name = name;
+    
+    var.comparison.quest1 = quest1;
+    var.comparison.variable1 = var1;
+    var.comparison.quest2 = quest2;
+    var.comparison.variable2 = var2;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::Script(name_t name, name_t script) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_CONDITION_SCRIPT;
+    var.name = name;
+    
+    var.script.name = script;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::Objective(name_t name, name_t value, name_t title, name_t description) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_OBJECTIVE;
+    var.name = name;
+    
+    var.objective.value = value;
+    var.objective.title = title;
+    var.objective.subtitle = description;
+    
+    return var;
+}
+
+QuestVariable QuestVariable::ItemCount(name_t name, name_t entity, name_t item) {
+    QuestVariable var;
+    
+    var.type = QUEST_VAR_ENTITY_ITEM_COUNT;
+    var.name = name;
+    
+    var.item.entity = entity;
+    var.item.item = item;
+    
+    return var;
+}
+
+static value_t GetFirst(const QuestVariable* var) {
+    return Quest::Find(var->comparison.quest1)->GetVariable(var->comparison.variable1);
+}
+
+static value_t GetSecond(const QuestVariable* var) {
+    if (var->comparison.quest2) {
+        return Quest::Find(var->comparison.quest2)->GetVariable(var->comparison.variable2);
+    } else {
+        return var->comparison.variable2;
+    }
+}
+
+value_t QuestVariable::Evaluate() {
     switch (type) {
+        case QUEST_VAR_INVALID:
+            std::cout << "Attempting to evaluate invalid variable " << name << std::endl;
+            return false;
         case QUEST_VAR_VALUE:
-            return value1;
+            return value.value;
+        case QUEST_VAR_OBJECTIVE:
+            return value.value;
         case QUEST_VAR_VALUE_IS:
-            return Quest::Find(quest1)->GetVariable(value1) == (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2);
+            return GetFirst(this) == GetSecond(this);
         case QUEST_VAR_VALUE_IS_NOT:
-            return Quest::Find(quest1)->GetVariable(value1) != (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2);
+            return GetFirst(this) != GetSecond(this);
         case QUEST_VAR_VALUE_GREATER:
-            return Quest::Find(quest1)->GetVariable(value1).GetFloat() > (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2).GetFloat();
+            return GetFirst(this).GetFloat() > GetSecond(this).GetFloat();
         case QUEST_VAR_VALUE_GREATER_OR_EQUAL:
-            return Quest::Find(quest1)->GetVariable(value1).GetFloat() >= (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2).GetFloat();
+            return GetFirst(this).GetFloat() >= GetSecond(this).GetFloat();
         case QUEST_VAR_VALUE_LESS:
-            return Quest::Find(quest1)->GetVariable(value1).GetFloat() < (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2).GetFloat();
+            return GetFirst(this).GetFloat() < GetSecond(this).GetFloat();
         case QUEST_VAR_VALUE_LESS_OR_EQUAL:
-            return Quest::Find(quest1)->GetVariable(value1).GetFloat() <= (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2).GetFloat();
+            return GetFirst(this).GetFloat() <= GetSecond(this).GetFloat();
         case QUEST_VAR_CONDITION_NOT:
-            return !Quest::Find(quest1)->GetVariable(value1);
+            return !GetFirst(this);
         case QUEST_VAR_CONDITION_AND:
-            return Quest::Find(quest1)->GetVariable(value1) && (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2);
+            return GetFirst(this) && GetSecond(this);
         case QUEST_VAR_CONDITION_OR:
-            return Quest::Find(quest1)->GetVariable(value1) || (quest2 ? Quest::Find(quest2)->GetVariable(value2) : value2);
+            return GetFirst(this) || GetSecond(this);
         case QUEST_VAR_CONDITION_SCRIPT:
-            return Script::CallFunction(value1, {});
-        case QUEST_VAR_HAS_ITEM: {
-            Entity* entity = Entity::Find((name_t)value1);
+            return Script::CallFunction(script.name, {});
+        case QUEST_VAR_ENTITY_ITEM_COUNT: {
+            Entity* entity = Entity::Find(item.entity);
             if (!entity) return false;
             Inventory* inventory = Inventory::Find(entity);
             if (!inventory) return false;
-            return inventory->GetItemCount(value2);
+            return inventory->GetItemCount(item.item);
         }
         default:
             assert(false);
@@ -159,19 +290,25 @@ Value Quest::GetVariable(name_t name) {
     return false;
 }
 
-void Quest::SetVariable(name_t name, Value value) {
+void Quest::SetVariable(name_t name, value_t value) {
     for (auto& variable : variables) {
-        if (variable.name == name) {
-            variable.SetValue(value);
-            std::cout << "Set value of variable " << name << std::endl; 
-            return;
+        if (variable.name != name) continue;
+        
+        switch (variable.type) {
+            case QUEST_VAR_VALUE: variable.value.value = value;             break;
+            case QUEST_VAR_OBJECTIVE: variable.objective.value = value;     break;
+            default: variable = QuestVariable::Value(name, value);
         }
+        
+        
+        std::cout << "Set value of variable " << name << std::endl; 
+        return;
+        
     }
     
     std::cout << "Inserted new variable " << name << std::endl;
     
-    QuestVariable new_variable;
-    new_variable.SetValue(value);
+    QuestVariable new_variable = QuestVariable::Value(name, value);
     variables.push_back(new_variable);
 }
 
@@ -197,7 +334,7 @@ void Quest::FireTrigger(name_t name) {
                 std::cout << "Setting objective..." << std::endl;
                 for (auto& obj : variables) {
                     if (obj.name != trigger.variable) continue;
-                    obj.state = trigger.value;
+                    obj.objective.value = trigger.value;
                     std::cout << "Objective " << obj.name << " set to " << trigger.value.GetInt() << std::endl;
                 }
                 break;
@@ -217,7 +354,7 @@ std::vector<Quest*> Quest::FindAll(bool unknown_also) {
         for (auto& objective : quest.variables) {
             if (objective.type != QUEST_VAR_OBJECTIVE) continue;
             
-            if (objective.value1 != (value_t)(name_t)"unknown") is_known = true; 
+            if (objective.objective.value != "unknown") is_known = true; 
         }
         
         if (is_known || unknown_also) quests.push_back(&quest);
@@ -329,20 +466,18 @@ void Quest::LoadFromDisk(const char* filename) {
                 name_t variable_type = file.read_name();
                 
                 QuestVariable variable;
-                variable.name = variable_name;
                 
                 if (variable_type == "value") {
                     name_t type = file.read_name();
 
                     if (type == "bool") {
-                        //variable.SetValue((bool)file.read_int32());
-                        variable.SetValue(file.read_name() == "true");
+                        variable = QuestVariable::Value(variable_name, file.read_name() == "true");
                     } else if (type == "int") {
-                        variable.SetValue(file.read_int32());
+                        variable = QuestVariable::Value(variable_name, file.read_int32());
                     } else if (type == "float") {
-                        variable.SetValue(file.read_float32());
+                        variable = QuestVariable::Value(variable_name, file.read_float32());
                     } else if (type == "name") {
-                        variable.SetValue(file.read_name());
+                        variable = QuestVariable::Value(variable_name, file.read_name());
                     } else {
                         std::cout << "unknown variable value type: " << type << std::endl;
                         abort();
@@ -351,54 +486,54 @@ void Quest::LoadFromDisk(const char* filename) {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetIs(q1, v1, q2, v2);
+                    variable = QuestVariable::Is(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "is-not") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetIsNot(q1, v1, q2, v2);
+                    variable = QuestVariable::IsNot(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "greater") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetGreater(q1, v1, q2, v2);
+                    variable = QuestVariable::Greater(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "greater-equal") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetGreaterOrEqual(q1, v1, q2, v2);
+                    variable = QuestVariable::GreaterOrEqual(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "less") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetLess(q1, v1, q2, v2);
+                    variable = QuestVariable::Less(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "less-equal") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetLessOrEqual(q1, v1, q2, v2);
+                    variable = QuestVariable::LessOrEqual(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "not") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
-                    variable.SetNot(q1, v1);
+                    variable = QuestVariable::Not(variable_name, q1, v1);
                 } else if (variable_type == "and") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetAnd(q1, v1, q2, v2);
+                    variable = QuestVariable::And(variable_name, q1, v1, q2, v2);
                 }  else if (variable_type == "or") {
                     auto q1 = file.read_name();
                     auto v1 = file.read_name();
                     auto [q2, v2] = LoadVariableSecond(file);
-                    variable.SetOr(q1, v1, q2, v2);
+                    variable = QuestVariable::Or(variable_name, q1, v1, q2, v2);
                 } else if (variable_type == "script") {
                     auto q1 = file.read_name();
-                    variable.SetScript(q1);
+                    variable = QuestVariable::Script(variable_name, q1);
                 }  else if (variable_type == "objective") {
                     auto title = file.read_name();
                     auto desc = file.read_name();
-                    auto state = file.read_int32();
-                    variable.SetObjective(title, desc, state);
+                    auto state = file.read_name();
+                    variable = QuestVariable::Objective(variable_name, state, title, desc);
                 } else {
                     std::cout << "unknown variable type: " << variable_type << std::endl;
                     abort();
