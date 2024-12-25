@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class LightComponent
+ * @class tram::LightComponent
  * 
  * Provides a real-time illumination for the scene.
  * @see https://racenis.github.io/tram-sdk/documentation/components/light.html

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/worldcell.h>
 
 #include <entities/decoration.h>
@@ -11,6 +10,13 @@
 
 #include <framework/serialization.h>
 #include <framework/message.h>
+
+/**
+ * @class tram::Decpration
+ * 
+ * 3D Model with an AnimationComponent attached to it.
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/decoration.html
+ */
 
 namespace tram {
 
@@ -123,17 +129,21 @@ void Decoration::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::SELECT:
             if (decoration_flags & FLAG_LOCKED) return;
+            
             Event::Post({
                 .type = Event::SELECTED,
                 .poster_id = this->id
             });
+            
             break;
         case Message::ACTIVATE:
             break;
         case Message::ACTIVATE_ONCE:
             if (decoration_flags & FLAG_LOCKED) return;
+            
             FireSignal(Signal::ACTIVATE);
             FireSignal(Signal::USE);
+            
             break;
         case Message::LOCK:
             decoration_flags |= FLAG_LOCKED;
@@ -156,31 +166,27 @@ void Decoration::MessageHandler(Message& msg) {
             break;
         case Message::KILL:
             Yeet();
+            
             break;
         case Message::START:
             if (animation) {
                 RequestAnimationComponent();
                 animationcomponent->Play(animation, -1, 1.0f, 1.0f);
-                //animationcomponent->FadeAnimation(animation, true, 0.05f);
                 animationcomponent->FadeIn(animation, 1.0f);
             }
             break;
         case Message::STOP:
             if (animation) {
                 RequestAnimationComponent();
-                //animationcomponent->StopAnimation(animation);
-                //animationcomponent->FadeAnimation(animation, false, 0.05f);
                 animationcomponent->FadeOut(animation, 1.0f);
             }
             break;
         case Message::SET_ANIMATION:
             if (animation && animationcomponent->IsPlaying(animation)) {
-                //animationcomponent->StopAnimation(animation);
-                //animationcomponent->FadeAnimation(animation, false, 0.05f);
+                // TODO: add error checking (data == nullptr)
                 animationcomponent->FadeOut(animation, 1.0f);
                 animation = *(Value*)msg.data_value;
                 animationcomponent->Play(animation, -1, 1.0f, 1.0f);
-                //animationcomponent->FadeAnimation(animation, true, 0.05f);
                 animationcomponent->FadeIn(animation, 1.0f);
             } else {
                 animation = *(Value*)msg.data_value;

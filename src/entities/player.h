@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_ENTITIES_PLAYER_H
 #define TRAM_SDK_ENTITIES_PLAYER_H
 
@@ -16,6 +15,7 @@ namespace tram {
 class Player : public Entity {
 public:
     Player();
+    Player(name_t);
     ~Player() {std::cout << "Player destructor!" << std::endl; Unload();}
     void Load();
     void Unload();

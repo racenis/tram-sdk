@@ -8,7 +8,7 @@
 #include <cstring>
 
 /**
- * @class AnimationComponent
+ * @class tram::AnimationComponent
  * 
  * Plays back Animations.
  * @see https://racenis.github.io/tram-sdk/documentation/components/animation.html

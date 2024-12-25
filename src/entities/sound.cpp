@@ -1,11 +1,27 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/core.h>
 #include <entities/sound.h>
 #include <components/audio.h>
 
 #include <framework/serialization.h>
+
+/**
+ * @class tram::Sound entities/sound.h
+ * 
+ * AudioComponent wrapper.
+ * 
+ * Can be used for placing environmental sounds, or for playing sounds for
+ * Signal triggers, but since you're looking this up in the C++ docs, you are
+ * probably are intereseted in the Sound entity as an self-yeeting 
+ * AudioComponent. 
+ * 
+ * Which it can be used as.
+ * 
+ * Very successfully, might I add.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/sound.html
+ */
 
 namespace tram {
 

@@ -6,7 +6,7 @@
 #include <config.h>
 
 /**
- * @class TriggerComponent
+ * @class tram::TriggerComponent
  * 
  * Trigger wrapper.
  * @see https://racenis.github.io/tram-sdk/documentation/components/trigger.html

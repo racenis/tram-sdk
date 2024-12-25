@@ -5,7 +5,7 @@
 #include <config.h>
 
 /**
- * @class PlayerComponent
+ * @class tram::PlayerComponent
  * 
  * Translates keyboard/mouse inputs into inputs for ControllerComponent.
  * @see https://racenis.github.io/tram-sdk/documentation/components/player.html

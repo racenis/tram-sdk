@@ -18,14 +18,14 @@
  */
 
 /**
- * @class ControllerComponent
+ * @class tram::ControllerComponent
  * 
  * Provides an API for character controllers.
  * @see https://racenis.github.io/tram-sdk/documentation/components/controller.html
  */
  
  /**
- * @class FPSControllerComponent
+ * @class tram::FPSControllerComponent
  * 
  * Implementation of an FPS-style character controller.
  * 
@@ -36,7 +36,7 @@
  */
  
 /**
- * @class RaycastControllerComponent
+ * @class tram::RaycastControllerComponent
  * 
  * Implementation of a simple character controller.
  * @see ControllerComponent

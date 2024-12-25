@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class PhysicsComponent
+ * @class tram::PhysicsComponent
  * 
  * Rigidbody wrapper.
  * @see https://racenis.github.io/tram-sdk/documentation/components/physics.html

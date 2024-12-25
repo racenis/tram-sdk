@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/worldcell.h>
 
 #include <entities/crate.h>
@@ -11,6 +10,13 @@
 
 #include <framework/serialization.h>
 #include <framework/message.h>
+
+/**
+ * @class tram::Crate
+ * 
+ * 3D Model with a rigidbody attached to it.
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/crate.html
+ */
 
 namespace tram {
 
@@ -115,6 +121,7 @@ void Crate::MessageHandler(Message& msg){
     }
 }
 
+// TODO: yeet?
 void Crate::Testingolingo() {
     assert(IsLoaded());
     assert(physicscomponent);

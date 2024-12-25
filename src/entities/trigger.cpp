@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/worldcell.h>
 
 #include <entities/trigger.h>
@@ -10,6 +9,14 @@
 
 #include <framework/serialization.h>
 #include <framework/message.h>
+
+/**
+ * @class tram::Trigger entities/trigger.h
+ * 
+ * TriggerComponent wrapper.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/trigger.html
+ */
 
 namespace tram {
 

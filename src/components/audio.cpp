@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class AudioComponent
+ * @class tram::AudioComponent
  * 
  * Plays back Sounds.
  * @see https://racenis.github.io/tram-sdk/documentation/components/audio.html

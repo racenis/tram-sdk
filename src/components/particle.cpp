@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class ParticleComponent
+ * @class tram::ParticleComponent
  * 
  * Provides amusing graphical effects.
  * @see https://racenis.github.io/tram-sdk/documentation/components/particle.html

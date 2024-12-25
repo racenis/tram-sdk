@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_ENTITIES_LIGHT_H
 #define TRAM_SDK_ENTITIES_LIGHT_H
 

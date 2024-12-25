@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_ENTITIES_SCRIPT_H
 #define TRAM_SDK_ENTITIES_SCRIPT_H
 
@@ -13,6 +12,7 @@
 
 namespace tram {
 
+// TODO: make constr_func etc. into typedefs??
 namespace ScriptableType {
     void Register(name_t base_type, Entity* (*constr_func)(name_t new_type, const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*));
     Entity* Make(name_t base_type, name_t type, const SharedEntityData&, const ValueArray&);
@@ -61,12 +61,15 @@ public:
 
     inline void SanitizeData(Value& data) {
         // there might be some issues if the message's data pointer is not pointing
-        // to a value, but rather something else.
+        // to a value, but something else.
 
         // hopefully we won't get segfaults.
-        //auto type = data.GetType();
         bool valid_type = data.IsFloat() || data.IsInt() || data.IsBool() || data.GetType() == TYPE_NAME;
-
+        
+        // can we validate name_t's? bad floats, ints and bools are fine, but
+        // having a name_t with a bad key could segfault
+        // TODO: investigate
+        
         if (!valid_type) data = Value();
 
         if (data.GetType() == TYPE_NAME) {

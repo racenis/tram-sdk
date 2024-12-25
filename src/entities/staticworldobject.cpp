@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/worldcell.h>
 
 #include <entities/staticworldobject.h>
@@ -8,6 +7,14 @@
 #include <components/physics.h>
 
 #include <framework/serialization.h>
+
+/**
+ * @class tram::StaticWorldObject entities/staticworldobject.h
+ * 
+ * Worldspawn.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/staticwobj.html
+ */
 
 namespace tram {
 

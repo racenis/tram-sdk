@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <entities/player.h>
 
 #include <framework/message.h>
@@ -10,9 +9,26 @@
 #include <components/physics.h>
 #include <components/trigger.h>
 
+/**
+ * @class tram::Player entities/player.h
+ * 
+ * ControllerComponent with a PlayerComponent attached to it.
+ * Can be used to control a player for a video game, or could be used to simply
+ * be able to walk around the virtual world that you have created.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/player.html
+ */
+
 namespace tram {
 
-Player::Player() : Entity("player") {
+/// Creates a new player.
+Player::Player() : Player("player") {
+    
+}
+
+/// Creates a player with a custom name.
+/// @param name Name of the player.
+Player::Player(name_t name) : Entity(name) {
     SetAutoLoad(false);
 }
 

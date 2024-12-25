@@ -9,7 +9,7 @@
 #include <config.h>
 
 /**
- * @class SpriteComponent
+ * @class tram::SpriteComponent
  * 
  * Provides amusing graphical effects.
  * @see https://racenis.github.io/tram-sdk/documentation/components/sprite.html

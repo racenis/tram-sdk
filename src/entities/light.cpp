@@ -1,11 +1,17 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/core.h>
 #include <entities/light.h>
 #include <components/light.h>
 
 #include <framework/serialization.h>
+
+/**
+ * @class tram::Light
+ * 
+ * LightComponent wrapper.
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/light.html
+ */
 
 namespace tram {
 

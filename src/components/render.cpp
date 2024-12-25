@@ -11,7 +11,7 @@
 #include <config.h>
 
 /**
- * @class RenderComponent
+ * @class tram::RenderComponent
  * 
  * Renders a Model.
  * @see https://racenis.github.io/tram-sdk/documentation/components/render.html

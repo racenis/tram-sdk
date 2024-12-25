@@ -1,8 +1,16 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <entities/marker.h>
 #include <entities/script.h>
+
+/**
+ * @class tram::Marker
+ * 
+ * Functionally inert.
+ * Doesn't do anything and has no functionality. Can be used as a template.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/entities/marker.html
+ */
 
 namespace tram {
     
