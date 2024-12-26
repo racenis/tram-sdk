@@ -1,10 +1,17 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_PHYSICS_COLLISIONSHAPE_H
 #define TRAM_SDK_PHYSICS_COLLISIONSHAPE_H
 
 #include <framework/math.h>
+
+/**
+ * @struct tram::Physics::CollisionShape physics/collisionshape.h <physics/collisionshape.h>
+ * 
+ * Shape for a collider.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/physics/collisionshape.html
+ */
 
 namespace tram::Physics {
     
@@ -64,30 +71,41 @@ struct CollisionShape {
     static inline CollisionShape Mesh(CollisionTriangle* triangles, size_t size);
 };
 
+/// Creates a sphere.
 CollisionShape CollisionShape::Sphere(float radius) {
     return {SHAPE_SPHERE, radius, 0.0f, 0.0f};
 }
 
+/// Creates a cylinder.
 CollisionShape CollisionShape::Cylinder(float radius, float height) {
     return {SHAPE_CYLINDER, radius, height, radius};
 }
 
+/// Creates a capsule.
 CollisionShape CollisionShape::Capsule(float radius, float height) {
     return {SHAPE_CAPSULE, radius, height, 0.0f};
 }
 
+/// Creates a cone.
 CollisionShape CollisionShape::Cone(float radius, float height) {
     return {SHAPE_CONE, radius, height, 0.0f};
 }
 
+/// Creates a box.
 CollisionShape CollisionShape::Box(vec3 dimensions) {
     return {SHAPE_BOX, dimensions.x, dimensions.y, dimensions.z};
 }
 
+/// Creates a convex hull.
+/// @note Memory pointed to by the point pointer should not be freed until the
+///       CollisionShape is no longer in use.
 CollisionShape CollisionShape::Hull(vec3* points, size_t size) {
     return CollisionShape {.type = SHAPE_HULL, .hull_points = points, .hull_size = size};
 }
 
+/// Creates a triangle mesh.
+/// @note Memory pointed to by the triangle pointer should not be freed until
+///       the CollisionShape is no longer in use.
 CollisionShape CollisionShape::Mesh(CollisionTriangle* triangles, size_t size) {
     return CollisionShape {.type = SHAPE_MESH, .mesh_triangles = triangles, .mesh_size = size};
 }

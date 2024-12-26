@@ -1,6 +1,14 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <framework/settings.h>
 
 #include <templates/hashmap.h>
+
+/**
+ * @namespace tram::Settings
+ * 
+ * Application setting management and CLI command parser.
+ */
 
 namespace tram::Settings {
 

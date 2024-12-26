@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <physics/physics.h>
 #include <physics/api.h>
 #include <physics/collisionmodel.h>
@@ -8,22 +7,32 @@
 
 #include <framework/file.h>
 
+#include <config.h>
+
 #include <cstring>
+
+/**
+ * @class tram::Physics::CollisionModel physics/collisionmodel.h <physics/collisionmodel.h>
+ * 
+ * Physics CollisionShape model.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/physics/collisionmodel.html
+ */
 
 namespace tram::Physics {
 
-static Hashmap<CollisionModel*> collision_models ("Collision MODEL HASHMAP", 500);
+static Hashmap<CollisionModel*> collision_models ("CollisionModel list", RESOURCE_LIMIT_COLLISION_MODEL);
 
 /// Finds a model.
 /// Will either return a pointer to a model that already exists with that name,
 /// or will create a new one.
 /// @return Always will return a pointer to a CollisionModel.
-CollisionModel* CollisionModel::Find (name_t model_name) {
-    auto model = collision_models.Find (model_name);
+CollisionModel* CollisionModel::Find(name_t model_name) {
+    auto model = collision_models.Find(model_name);
     
     if (!model) {
-        model = new CollisionModel (model_name);
-        collision_models.Insert (model_name, model);
+        model = new CollisionModel(model_name);
+        collision_models.Insert(model_name, model);
     }
     
     return model;

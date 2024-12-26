@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_PLATFORM_FILE_H
 #define TRAM_SDK_PLATFORM_FILE_H
 
@@ -16,9 +15,10 @@ enum class FileStatus {
 };
 
 enum class FileMedium {
-    LOCAL_DISK,
+    DISK,
+    USER,
     ARCHIVE,
-    HTTP_DISK
+    HTTP
 };
 
 struct FileSource {

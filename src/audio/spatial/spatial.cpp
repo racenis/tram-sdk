@@ -1,5 +1,28 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
+/**
+ * @namespace tram::Audio::Spatial
+ * 
+ * Experimental path tracing audio system.
+ * 
+ * It uses bi-directional path tracing together with Primary Sample Space
+ * Metropolis Light Transport algorithm to find paths between the listener
+ * and audio sources.
+ * 
+ * It then attentuates sounds based on surface reflection absorption and
+ * distance, does panning based on the angle between the listener and the last
+ * reflection and then convolves the resulting impulse response with the sound
+ * being played back by the audio source.
+ * 
+ * Sounds pretty bad (needs tweaking), very slow as well (no optimizations).
+ * 
+ * I haven't tried recently, but it probably doesn't even compile.
+ * 
+ * @todo Make sure that it compiles and do some improvements
+ * @todo Investigate the possibilities of using hardware accelerated ray-tracing
+ * @todo I am very poor and can't afford a graphics card, NVIDIA pls sponsor me
+ */
+
 // prevent this file from compiling
 #if false
 

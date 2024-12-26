@@ -519,7 +519,7 @@ int main(int argc, const char** argv) {
     Decoration::Register();
     Trigger::Register();
     StaticWorldObject::Register();
-    Ext::Design::Button::Register();
+    Ext::Kitchensink::Button::Register();
 
     Core::Init();           // core init should always be first
     UI::Init();
@@ -875,7 +875,7 @@ int main() {
     Trigger::Register();
     Marker::Register();
     StaticWorldObject::Register();
-    Ext::Design::Button::Register();
+    Ext::Kitchensink::Button::Register();
 
     SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
     

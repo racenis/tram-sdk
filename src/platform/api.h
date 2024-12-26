@@ -1,10 +1,21 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_PLATFORM_API_H
 #define TRAM_SDK_PLATFORM_API_H
 
 #include <cstddef>
+
+/**
+ * @namespace tram::Platform::Window
+ * 
+ * Windowing backend API.
+ */
+ 
+/**
+ * @namespace tram::Platform::Input
+ * 
+ * Input backend API.
+ */
 
 namespace tram::Platform::Window {
 

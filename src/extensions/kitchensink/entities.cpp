@@ -9,7 +9,7 @@
 
 #include <templates/hashmap.h>
 
-namespace tram::Ext::Design {
+namespace tram::Ext::Kitchensink {
 
 // hacky parent/child transform thing.
 // it WILL crash if any of the entities gets killed, btw
@@ -40,7 +40,7 @@ void UpdateHierarchy(id_t parent_id) {
 /******************************************************************************/
 
 /**
- * @class tram::Ext::Design::Button
+ * @class tram::Ext::Kitchensink::Button
  * 
  * Essentially a func_door.
  * 

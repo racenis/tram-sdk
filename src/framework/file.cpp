@@ -360,7 +360,7 @@ File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
         }
         
     } else if (mode & MODE_WRITE) {
-        writer = FileWriter::GetWriter(path, FileMedium::LOCAL_DISK);
+        writer = FileWriter::GetWriter(path, FileMedium::DISK);
         
         if (writer->GetStatus() == FileStatus::READY) {
             writer_parser = new TextWriterParser(writer);

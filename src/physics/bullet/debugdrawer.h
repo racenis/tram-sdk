@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef PHYSICS_BULLET_DEBUGDRAWER_H
 #define PHYSICS_BULLET_DEBUGDRAWER_H
 

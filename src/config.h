@@ -19,6 +19,16 @@ const uint32_t MAX_LINKED_SHADERS = 40;
 
 
 
+
+// +---------------------------------------------------------------------------+
+// |                                                                           |
+// |                                  PHYSICS                                  |
+// |                                                                           |
+// +---------------------------------------------------------------------------+
+
+const float PHYSICS_GROUND_PLANE = -9.0f;
+const float PHYSICS_GRAVITY = -9.8f;
+
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // |                              RESOURCE LIMITS                              |
@@ -35,6 +45,7 @@ const uint32_t MAX_LINKED_SHADERS = 40;
 const uint32_t RESOURCE_LIMIT_SOUND = 100;
 const uint32_t RESOURCE_LIMIT_MODEL = 100;
 const uint32_t RESOURCE_LIMIT_PATH = 100;
+const uint32_t RESOURCE_LIMIT_COLLISION_MODEL = 500;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -54,7 +65,6 @@ const uint32_t COMPONENT_LIMIT_PLAYER = 5;
 const uint32_t COMPONENT_LIMIT_RENDER = 1000;
 const uint32_t COMPONENT_LIMIT_SPRITE = 100;
 const uint32_t COMPONENT_LIMIT_TRIGGER = 50;
-
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -110,6 +120,8 @@ const uint32_t UID_CHARACTER_LIMIT = 20000;
 const uint32_t UID_LIMIT = 2000
 ;
 const uint32_t WORLDCELL_LIMIT = 250;
+
+const uint32_t RIGIDBODY_LIMIT = 500;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |

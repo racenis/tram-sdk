@@ -41,7 +41,7 @@
  * @property tram::Event::data_int
  * Arbitrary data integer.
  * 
- * @property tram::Event::data
+ * @property tram::Event::data_value
  * Pointer to a value_t.
  * 
  * @see https://racenis.github.io/tram-sdk/documentation/framework/event.html

@@ -1,11 +1,12 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <physics/bullet/debugdrawer.h>
 
 #include <physics/api.h>
 
 #include <components/trigger.h>
+
+#include <config.h>
 
 #include <btBulletDynamicsCommon.h>
 
@@ -109,7 +110,7 @@ struct RigidbodyMetadata {
     void* collision_data = nullptr;
 };
 
-Pool<RigidbodyMetadata> rigidbody_metadata_pool("rigibody emtadat pool", 500);
+Pool<RigidbodyMetadata> rigidbody_metadata_pool("RigidbodyMetadata pool", RIGIDBODY_LIMIT);
     
 static btCollisionShape* MakeBulletShape(CollisionShape shape) {
     switch (shape.type) {
@@ -205,8 +206,6 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
     btRigidBody::btRigidBodyConstructionInfo bullet_construction_info(rigidbody_mass, metadata->motion_state, shape.bt_shape, rigidbody_inertia);
     rigidbody_t rigidbody = {new btRigidBody(bullet_construction_info), metadata};
 
-    //std::cout << "collisin mask " << metadata->collision_mask << " grop " << metadata->collision_group << std::endl;
-
     dynamics_world->addRigidBody(rigidbody.bt_rigidbody, metadata->collision_group, metadata->collision_mask);
     
     rigidbody.bt_rigidbody->setUserIndex(USERINDEX_RIGIDBODY);
@@ -236,14 +235,12 @@ void SetRigidbodyCollisionCallback(rigidbody_t rigidbody, col_callback callback,
 void SetRigidbodyCollisionMask(rigidbody_t rigidbody, uint32_t mask) {
     rigidbody.bt_metadata->collision_mask = mask;
     dynamics_world->removeRigidBody(rigidbody.bt_rigidbody);
-    std::cout << "SetRigidbodyCollisionMask mask " << rigidbody.bt_metadata->collision_mask << " grop " << rigidbody.bt_metadata->collision_group << std::endl;
     dynamics_world->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
 }
 
 void SetRigidbodyCollisionGroup(rigidbody_t rigidbody, uint32_t group) {
     rigidbody.bt_metadata->collision_group = group;
     dynamics_world->removeRigidBody(rigidbody.bt_rigidbody);
-    std::cout << "SetRigidbodyCollisionGroup mask " << rigidbody.bt_metadata->collision_mask << " grop " << rigidbody.bt_metadata->collision_group << std::endl;
     dynamics_world->addRigidBody(rigidbody.bt_rigidbody, rigidbody.bt_metadata->collision_group, rigidbody.bt_metadata->collision_mask);
 }
 
@@ -260,7 +257,7 @@ void SetRigidbodyRotation(rigidbody_t rigidbody, quat rotation) {
 }
 
 void SetRigidbodyMass(rigidbody_t rigidbody, float mass) {
-    
+    // ??? where did this go ???
 }
 
 void PushRigidbody(rigidbody_t rigidbody, vec3 direction) {
@@ -474,6 +471,7 @@ std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, v
 
     // that btConvexShape* cast will probably segfault if MakeBulletShape() 
     // didn't return a btConvexShape (of which there is only a mesh)
+    // TODO: fix
     dynamics_world->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
     
     delete shape_ptr;
@@ -494,7 +492,7 @@ void Init() {
 
     dynamics_world = new btDiscreteDynamicsWorld(collision_dispatcher, broadphase_interface, constraint_solver, collision_configuration);
 
-    dynamics_world->setGravity(btVector3(0.0f, -9.8f, 0.0f));
+    dynamics_world->setGravity(btVector3(0.0f, PHYSICS_GRAVITY, 0.0f));
 
     btIDebugDraw* debug_drawer  = new PhysicsDebugDraw;
     dynamics_world->setDebugDrawer(debug_drawer);
@@ -505,7 +503,8 @@ void Init() {
     // this will make a plane so that stuff doesn't fall out of the world
     btTransform trans;
     trans.setIdentity();
-    btCollisionShape* shape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), -9.0f);
+    // maybe we should check if PHYSICS_GROUND_PLANE is not inf or whatever? if it is then we not make plane??
+    btCollisionShape* shape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), PHYSICS_GROUND_PLANE);
     btDefaultMotionState* motionstate = new btDefaultMotionState(trans);
     btRigidBody::btRigidBodyConstructionInfo constructioninfo (0.0f, motionstate, shape, btVector3(0.0f, 0.0f, 0.0f));
     btRigidBody* rigidbody = new btRigidBody(constructioninfo);

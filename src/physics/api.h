@@ -1,11 +1,16 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_PHYSICS_API_H
 #define TRAM_SDK_PHYSICS_API_H
 
 #include <physics/physics.h>
 #include <physics/collisionshape.h>
+
+/**
+ * @namespace tram::Physics::API
+ * 
+ * Physics backend API.
+ */
 
 namespace tram::Physics::API {
 

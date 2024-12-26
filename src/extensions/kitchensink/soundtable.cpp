@@ -18,7 +18,7 @@
  */
 
 /**
- * @class tram::Ext::Design::SoundTable
+ * @class tram::Ext::Kitchensink::SoundTable
  * 
  * Maps actions to sounds.
  * 
@@ -28,9 +28,9 @@
  * specific sounds.
  */
 
-template <> tram::Pool<tram::Ext::Design::SoundTable> tram::PoolProxy<tram::Ext::Design::SoundTable>::pool("SoundTable pool", EXT_KITCHENSINK_SOUNDTABLE_LIMIT);
+template <> tram::Pool<tram::Ext::Kitchensink::SoundTable> tram::PoolProxy<tram::Ext::Kitchensink::SoundTable>::pool("SoundTable pool", EXT_KITCHENSINK_SOUNDTABLE_LIMIT);
 
-namespace tram::Ext::Design {
+namespace tram::Ext::Kitchensink {
 
 static Hashmap<SoundTable*> sound_table_list("SoundTable name list", EXT_KITCHENSINK_SOUNDTABLE_LIMIT);
     

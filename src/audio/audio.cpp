@@ -16,6 +16,12 @@
  * 
  * Main Audio system interface implementation.
  */
+ 
+ /**
+ * @namespace tram::Audio
+ * 
+ * System for doing audio related stuff.
+ */
 
 namespace tram::Audio {
 

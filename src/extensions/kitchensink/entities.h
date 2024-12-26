@@ -12,7 +12,7 @@ namespace tram {
     class PhysicsComponent;
 }
 
-namespace tram::Ext::Design {
+namespace tram::Ext::Kitchensink {
 
 class Button : public Entity {
 public:

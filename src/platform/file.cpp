@@ -1,9 +1,35 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <cassert>
 #include <iostream>
 
 #include <platform/file.h>
 
 #include <framework/logging.h>
+
+/**
+ * @class tram::Platform::FileReader
+ * 
+ * File reading backend API.
+ * 
+ * File readers will load a whole file in memory when constructed. This memory
+ * is freed when they are destructed, which can be done by calling the Yeet()
+ * method.
+ * 
+ * File contents can be accessed via GetContents() and GetSize() methods.
+ * 
+ * To open a file, call the GetReader() method, it will find search until it
+ * finds the file and then return an opened filereader for it.
+ */
+ 
+/**
+ * @class tram::Platform::FileWriter
+ * 
+ * File writing backend API.
+ * 
+ * Works basically the same as FileReader, except this API is used for writing
+ * to files, which can be performed with the SetContents() method.
+ */
 
 namespace tram {
 
@@ -69,8 +95,6 @@ private:
     size_t length = 0;
 };
 
-
-
 // TODO: implement sthese ones okey
 FileReader* FileReader::GetReader(const char* path) {
     return new DiskReader(path);
@@ -83,11 +107,6 @@ void FileReader::SetSearchList() {
 std::vector<FileSource> FileReader::GetSearchList() {
     return {};
 }
-
-
-
-
-
 
 class DiskWriter : public FileWriter {
 public:

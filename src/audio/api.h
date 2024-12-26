@@ -13,6 +13,12 @@
  * This file contains the function signatures which need to be implemented by an
  * Audio API backend. 
  */
+ 
+ /**
+ * @namespace tram::Audio::API
+ * 
+ * Audio backend API.
+ */
 
 namespace tram::Audio::API {
 

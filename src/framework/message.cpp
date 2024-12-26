@@ -42,7 +42,7 @@
  * @property tram::Message::data_int
  * Arbitrary data integer.
  * 
- * @property tram::Message::data
+ * @property tram::Message::data_value
  * Pointer to a value_t.
  * 
  * @see https://racenis.github.io/tram-sdk/documentation/framework/message.html

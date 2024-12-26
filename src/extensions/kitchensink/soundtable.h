@@ -7,7 +7,7 @@
 #include <framework/uid.h>
 #include <framework/math.h>
 
-namespace tram::Ext::Design {
+namespace tram::Ext::Kitchensink {
 
 enum SoundAction {
     SOUND_OPEN,

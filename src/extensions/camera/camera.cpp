@@ -10,6 +10,12 @@
 #include <components/controller.h>
 
 /**
+ * @namespace tram::Ext::Camera
+ * 
+ * Several different camera implementations.
+ */
+
+/**
  * @class tram::Ext::Camera::Camera extensions/camera/camera.h
  * 
  * Interface API for cameras.

@@ -20,9 +20,11 @@
 #include <config.h>
 
 /**
- * @file audio/sound.cpp
+ * @class tram::Audio::Sound audio/sound.h
  * 
- * Sound resource implementation.
+ * Audio data resource.
+ * 
+ * Currently we only support `.ogg` files, via the `stb_vorbis` library.
  */
 
 template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("Sound Resource pool", RESOURCE_LIMIT_SOUND, false);
