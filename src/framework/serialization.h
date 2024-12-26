@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_SERIALIZATION_H
 #define TRAM_SDK_FRAMEWORK_SERIALIZATION_H
 
@@ -10,6 +9,12 @@
 #include <framework/value.h>
 
 #include <framework/math.h>
+
+/**
+ * Serialization, i.e. saving application state is not implemented yet.
+ * 
+ * I will probably get around to it sometime.
+ */
 
 namespace tram {
 

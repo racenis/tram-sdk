@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_PATH_H
 #define TRAM_SDK_FRAMEWORK_PATH_H
 
@@ -11,12 +10,12 @@
 namespace tram {
 
 enum PathType {
-    PATH_STRAIGHT,
-    PATH_LEFT,
-    PATH_RIGHT,
+    PATH_STRAIGHT,  //< Path vertex connection interpreted as a straight line.
+    PATH_LEFT,      //< Path vertex connection interpreted as a left turn.
+    PATH_RIGHT,     //< Path vertex connection interpreted as a right turn.
     
-    PATH_LINEAR,
-    PATH_CURVE
+    PATH_LINEAR,    //< Path will be interpreted as being made of straight line segments.
+    PATH_CURVE      //< Not implemented.
 };
     
 struct PathEdgeInfo {

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <extensions/kitchensink/entities.h>
 
 #include <extensions/kitchensink/soundtable.h>
@@ -39,6 +38,15 @@ void UpdateHierarchy(id_t parent_id) {
 /*                             FUNC_BUTTON                                    */
 /*                                                                            */
 /******************************************************************************/
+
+/**
+ * @class tram::Ext::Design::Button
+ * 
+ * Essentially a func_door.
+ * 
+ * It can open. It can close. It responds to Signal inputs and gives out
+ * outputs. It can be a door. It can be a lift. It can even be a button.
+ */
 
 // this macro could be converted into a method
 #define PlaySound(TYPE) if (sound) SoundTable::Find(sound)->PlaySound(TYPE, origin, 1.0f);

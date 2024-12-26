@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_FILE_H
 #define TRAM_SDK_FRAMEWORK_FILE_H
 
@@ -15,6 +14,7 @@ enum FileAccessMode : uint32_t {
     MODE_READ = 1,
     MODE_WRITE = 2,
     MODE_PAUSE_LINE = 4
+    // TODO: add option to switch between text and binary
 };
 
 class FileReader;
@@ -68,6 +68,8 @@ public:
     void reset_flags();
     
     bool was_error();
+    
+    // TODO: check whichever of these can be private and private them
     
     std::string path;
     uint32_t mode;

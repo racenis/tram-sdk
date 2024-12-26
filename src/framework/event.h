@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_EVENT_H
 #define TRAM_SDK_FRAMEWORK_EVENT_H
 
@@ -56,8 +55,8 @@ struct Event {
     
     union {
         void* data = nullptr;
-        uint64_t data_int;
-        Value* data_value;
+        uint64_t data_int; // maybe change to int32? TODO: fix
+        Value* data_value; // change to value_t?
     };
 };
 

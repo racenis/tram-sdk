@@ -1,8 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
-#ifndef TRAM_SDK_EXTENSIONS_DESIGN_ENTITIES_H
-#define TRAM_SDK_EXTENSIONS_DESIGN_ENTITIES_H
+#ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_ENTITIES_H
+#define TRAM_SDK_EXTENSIONS_KITCHENSINK_ENTITIES_H
 
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
@@ -50,22 +49,6 @@ protected:
     int state;
     int last_activate;
 };
-
-/*class Decoration : public Entity {
-public:
-    Decoration(const SharedEntityData&, const ValueArray&);
-    void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
-    void MessageHandler(Message& msg);
-    static void Register();
-protected:
-    Component<RenderComponent> rendercomponent;
-    Component<PhysicsComponent> physicscomponent;
-    
-    name_t model;
-    name_t lightmap;
-};*/
-
 
 class Breakable : public Entity {
 public:
@@ -279,4 +262,4 @@ protected:
 
 }
 
-#endif // TRAM_SDK_EXTENSIONS_DESIGN_ENTITIES_H
+#endif // TRAM_SDK_EXTENSIONS_KITCHENSINK_ENTITIES_H

@@ -5,6 +5,16 @@
 #include <charconv>
 #include <cstring>
 
+/**
+ * @struct tram::File framework/file.h
+ * 
+ * File interface.
+ * 
+ * Very fast file reader/writer.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/file.html
+ */
+
 namespace tram {
     
 class FileReaderParser {

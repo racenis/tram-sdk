@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <extensions/kitchensink/attributes.h>
 
 #include <framework/core.h>
@@ -13,9 +15,7 @@ const size_t ATTRIBUTE_CONTAINER_COUNT = 50;
 const size_t ATTRIBUTE_INFO_COUNT = 50;
 
 namespace tram {
-
-template<> Pool<Ext::Kitchensink::AttributeContainer> PoolProxy<Ext::Kitchensink::AttributeContainer>::pool("Ext::Kitchensink::AttributeContainer Pool", ATTRIBUTE_CONTAINER_COUNT);
-
+    template<> Pool<Ext::Kitchensink::AttributeContainer> PoolProxy<Ext::Kitchensink::AttributeContainer>::pool("Ext::Kitchensink::AttributeContainer Pool", ATTRIBUTE_CONTAINER_COUNT);
 }
 
 namespace tram::Ext::Kitchensink {

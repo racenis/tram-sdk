@@ -1,20 +1,42 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/math.h>
+
+/**
+ * @file framework/math.cpp
+ * 
+ * GLM typedefs and useful math functions.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/math.html
+ */
 
 namespace tram {
 
+// TODO: create QuatLookAt that returns the quaternion as return instead of reference param 
+/// Rotates a quaternion to face a point.
+/// Useful for pointing objects at things.
 void QuatLookAt(quat& quaternion, const vec3& from, const vec3& to) {
     quaternion = glm::quatLookAt(glm::normalize(to - from), DIRECTION_UP);
 }
 
+/// Projects a point on a line.
+/// @param [in,out] point Point that will be projected.
+/// @param [in]     from  First endpoint of the line.
+/// @param [in]     to    Second endpoint of the line.
 void ProjectLine(vec3& point, const vec3& from, const vec3& to) {
     const vec3 projectable = point - from;
     const vec3 line = to - from;
     point = from + (glm::dot(projectable, line) / glm::dot(line, line) * line);
 }
 
+/// Finds the intersection between a ray and a triangle.
+/// If the ray intersects the triangle, the returned vector will be the 3D
+/// coordinates of the intersection. If the ray does not intersect the triangle,
+/// the function will return a vector with all of its components set to the
+/// floating-point INFINITY.
+/// @param ray_pos              Ray origin, 3D coordinate.
+/// @param ray_dir              Ray direction, normal vector. Needs to be normalized.
+/// @param point1,point2,point3 Triangle vertex coordinates.
 vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point2, vec3 point3) {
     const float epsilon = 0.000001;
     
@@ -53,6 +75,7 @@ vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point
 
 }
 
+/// Merges the min component of an AABB.
 vec3 MergeAABBMin(vec3 a, vec3 b) {
     return vec3 {
         a.x < b.x ? a.x : b.x,
@@ -61,6 +84,7 @@ vec3 MergeAABBMin(vec3 a, vec3 b) {
     };
 }
 
+/// Merges the max component of an AABB.
 vec3 MergeAABBMax(vec3 a, vec3 b) {
     return vec3 {
         a.x > b.x ? a.x : b.x,
@@ -69,6 +93,10 @@ vec3 MergeAABBMax(vec3 a, vec3 b) {
     };
 }
 
+// TODO: create an AABB struct and use that instead of the min/max
+// this kind of signature: AABB RotateAABB(AABB box, quat rotation)
+
+/// Rotates an AABB box by the given rotation.
 void RotateAABB(vec3& min, vec3& max, quat rotation) {
     vec3 extents[8] = {
         {min.x, min.y, min.z},
@@ -119,7 +147,9 @@ void RotateAABB(vec3& min, vec3& max, mat4 rotation) {
     }
 }
 
+// TODO: switch these to pass by value, not reference?
 
+/// Generates a transform matrix.
 mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation) {
     mat4 matrix = mat4(1.0f);
     matrix = glm::translate(matrix, position);
@@ -127,6 +157,7 @@ mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation) {
     return matrix;
 }
 
+/// Generates a transform matrix.
 mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, const vec3& scale) {
     mat4 matrix = mat4(1.0f);
     matrix = glm::translate(matrix, position);

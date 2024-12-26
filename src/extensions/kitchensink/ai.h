@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_AI_H
 #define TRAM_SDK_EXTENSIONS_KITCHENSINK_AI_H
 
@@ -9,6 +8,18 @@
 #include <framework/uid.h>
 #include <framework/math.h>
 #include <framework/value.h>
+
+/*
+ * AI framework for video game NPCs
+ * 
+ * This is a half-finished framework for creating AI packages that could be used
+ * to make video game NPCs.
+ * 
+ * Haven't tried using it, probably doesn't work.
+ * 
+ * Still working out the basic API and internal mechanics.
+ * 
+ */
 
 namespace tram {
     class ControllerComponent;

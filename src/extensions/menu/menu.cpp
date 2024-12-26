@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/gui.h>
 #include <framework/stats.h>
 #include <framework/worldcell.h>
@@ -19,12 +18,41 @@
 
 #include <algorithm>
 
+/**
+ * @namespace tram::Ext::Menu
+ * 
+ * Menu framework.
+ * 
+ * Built on top of the GUI system, this menu framework allows the creation of
+ * menus. 
+ * It also has some pre-built menus, like the debug menu and the system menu.
+ */
+
+/**
+ * @namespace tram::Ext::Menu::Menu
+ * 
+ * Menu base interface class.
+ * 
+ * To implement this interface, implement the Display() method. This method will
+ * be called once per frame and needs to draw the menu.
+ * Then implement the Layer() method. This method needs to return the layer
+ * index of the menu. 
+ * 
+ * The menu framework will draw only the topmost menu in the menu stack with any
+ * given index.
+ * 
+ * When you are ready to deploy a menu, create it using `new` and Push() it on
+ * the stack. After that, you can forget it. When it gets popped from the stack,
+ * it will be `delete`d for you.
+ */
+
 using namespace tram::GUI;
 using namespace tram::Render;
 
 namespace tram::Ext::Menu {
 
-font_t FONT_WIDGETS = 0;     //< Font that contains sprites for GUI widgets.
+// TODO: switch to invalid font initialization (zero is valid)
+font_t FONT_WIDGETS = 0;    //< Font that contains sprites for GUI widgets.
 font_t FONT_TEXT = 0;       //< Basic sans-serif font.
 font_t FONT_TEXT_BOLD = 0;  //< Basic bold sans-serif font.
 font_t FONT_HEADER = 0;     //< Font that contains some image headers.
@@ -37,18 +65,22 @@ DebugMenu* debug_menu = nullptr;
 // replace menu stack with just menu list
 // and make menu list act like menu stack
 // ALSO make sure that menu list is copied before iterating
+// TODO: fix pls
 std::vector<Menu*> menu_stack;
 std::vector<Menu*> menu_list;
 
+// is this even used??
 void ToggleMenuState() { UI::SetInputState((UI::GetInputState() == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT); }
 
+// is this used either?
+// TODO: fix
 void CloseAll() {
     if (debug_menu) Menu::Remove(debug_menu);
     
     debug_menu = nullptr;
 }
 
-void EscapeMenuKeyboard () {
+static void EscapeMenuKeyboard () {
     /*if (Menu::Pop()) {
         if (Menu::Empty()) {
             UI::SetInputState(UI::STATE_DEFAULT);
@@ -83,7 +115,7 @@ void EscapeMenuKeyboard () {
     }*/
 }
 
-void DebugMenuKeyboard () {
+static void DebugMenuKeyboard () {
     if (Menu::Empty()) {
         debug_menu = new DebugMenu();
         Menu::Push(debug_menu);
@@ -160,11 +192,15 @@ void Update() {
     UpdateCallbacks();
 }
 
+/// Pushes menu on the menu stack.
 void Menu::Push(Menu* menu) {
     //*menu_stack.AddNew() = menu;
     menu_stack.push_back(menu);
 }
 
+/// Pops the topmost menu from the stack
+/// @note   The menu will be `delete`d after removing it from the stack.
+/// @return True if a menu was popped, false if stack was empty.
 bool Menu::Pop() {
     if (menu_stack.size()) {
         delete menu_stack.back();
@@ -175,21 +211,32 @@ bool Menu::Pop() {
     }
 }
 
+/// Checks whether the menu stack is empty.
+/// @return True if it is empty.
 bool Menu::Empty() {
     return !menu_stack.size();
 }
 
+/// Clears the menu stack.
+/// This will behave as if Menu::Pop() was called until the menu stack was
+/// empty.
+/// @note All of the menus in the stack will be `delete`ed.
 void Menu::Clear() {
     while(menu_stack.size()) {
+        // maybe instead cal menu::pop??? TODO:fix
         delete menu_stack.back();
         menu_stack.pop_back();
     }
 }
 
+// tbh idk what this even does and if it is even used
+// TODO: look up what it does and what uses it 
 void Menu::Add(Menu* menu) {
     menu_list.push_back(menu);
 }
 
+// same as previours
+// TODO: fix
 void Menu::Remove(Menu* menu) {
     auto thing = std::find(menu_list.begin(), menu_list.end(), menu);
     

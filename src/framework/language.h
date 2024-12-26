@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_LANGUAGE_H
 #define TRAM_SDK_FRAMEWORK_LANGUAGE_H
 

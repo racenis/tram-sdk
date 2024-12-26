@@ -1,8 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
-#ifndef TRAM_SDK_EXTENSIONS_DESIGN_INVENTORY_H
-#define TRAM_SDK_EXTENSIONS_DESIGN_INVENTORY_H
+#ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_INVENTORY_H
+#define TRAM_SDK_EXTENSIONS_KITCHENSINK_INVENTORY_H
 
 #include <extensions/kitchensink/attributes.h>
 
@@ -138,9 +137,6 @@ public:
     static Inventory* Find(Entity* entity);
 };
 
-
-
-
 }
 
-#endif // TRAM_SDK_EXTENSIONS_DESIGN_INVENTORY_H
+#endif // TRAM_SDK_EXTENSIONS_KITCHENSINK_INVENTORY_H

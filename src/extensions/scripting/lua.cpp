@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <extensions/scripting/lua.h>
 #include <framework/script.h>
 #include <framework/logging.h>
@@ -6,6 +8,12 @@
 
 #include <iostream>
 #include <cstring>
+
+/**
+ * @namespace tram::Ext::Scripting::Lua
+ * 
+ * Lua bindings for the Script system.
+ */
 
 namespace tram::Ext::Scripting::Lua {
 

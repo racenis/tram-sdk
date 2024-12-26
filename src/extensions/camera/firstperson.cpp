@@ -1,11 +1,21 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <extensions/camera/firstperson.h>
 
 #include <framework/ui.h>
 #include <framework/entity.h>
 #include <audio/audio.h>
+
+/**
+ * @class tram::Ext::Camera::Camera extensions/camera/camera.h
+ * 
+ * First person camera.
+ * 
+ * This camera will look in the same direction that an entity is looking at,
+ * while also following it at a set distance.
+ * 
+ * Supports view bobbing
+ */
 
 namespace tram::Ext::Camera {
     
@@ -15,34 +25,48 @@ const float BOB_CHANGE_SPEED = 0.05f;
 
 extern float shake_multiplier;
     
-void FirstPersonCamera::SetTilt (float tilt) {
+void FirstPersonCamera::SetTilt(float tilt) {
     this->tilt_goal = tilt;
 }
 
-void FirstPersonCamera::SetMouselook (bool mouselook) {
+void FirstPersonCamera::SetMouselook(bool mouselook) {
     this->mouselook = mouselook;
 }
 
-void FirstPersonCamera::SetRotateFollowing (bool rotate_following) {
+void FirstPersonCamera::SetRotateFollowing(bool rotate_following) {
     this->rotate_following = rotate_following;
 }
 
-void FirstPersonCamera::SetBobbing (float bobbing_weight) {
+/// Sets the weight of the bobbing.
+/// The larger the weight, the more exaggerated the bobbing will be. This
+/// parameter can be used to change the ammount of bobbing for different
+/// activities, e.g. 1.0f for walking, 2.0f for running and 0.0f for standing.
+void FirstPersonCamera::SetBobbing(float bobbing_weight) {
     this->bobbing_weight_goal = bobbing_weight;
 }
 
-void FirstPersonCamera::SetBobbingDistance (float bobbing_distance) {
+/// Sets the distance bobbed during bobbing.
+/// @param bobbing_distance  Best if set to between 0.0f and 0.5f.
+void FirstPersonCamera::SetBobbingDistance(float bobbing_distance) {
     this->bobbing_distance = bobbing_distance;
 }
 
+/// Sets the tilt bobbed during bobbing.
+/// The camera will be tilted back and forth along the Z, i.e. forward axis.
+/// @note Try not to throw up if you set this value too high.
+/// @param bobbing_tilt Tilt, in radians.
 void FirstPersonCamera::SetBobbingTilt(float bobbing_tilt) {
     this->bobbing_tilt_goal = bobbing_tilt;
 }
 
+/// Sets the speed of the bobs during bobbing.
 void FirstPersonCamera::SetBobSpeed(float bob_speed) {
     this->bob_speed = bob_speed;
 }
 
+/// Sets the bobbing callback.
+/// The bobbing callback is called every time a full view bob is performed. This
+/// callback is very effective when used to trigger footstep sound effects.
 void FirstPersonCamera::SetBobbingCallback(void (*bob_callback)(FirstPersonCamera*)) {
     this->bob_callback = bob_callback;
 }

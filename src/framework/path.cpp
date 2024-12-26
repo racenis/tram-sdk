@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/path.h>
 
 #include <framework/file.h>
@@ -10,16 +9,44 @@
 #include <templates/pool.h>
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <unordered_map>
 #include <cstring>
 
+/**
+ * @class tram::Path framework/path.h
+ * 
+ * Sequence of line segments.
+ * 
+ * Can be used to push an object along a path, can be used as a rail, or as a
+ * path for guiding agents.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/path.html
+ */
+ 
+ /**
+ * @class tram::PathFollower framework/path.h
+ * 
+ * Point constrained to a Path.
+ * 
+ * When constructed, the PathFollower will project the initial position on the
+ * path, i.e. find the nearest point on the path.
+ * After that, you can use PathFollower::Advance() to push it back and forth on
+ * the path.
+ * The position of the PathFollower can be used to position an object, so that
+ * it appears to be following the given path.
+ */
+
 namespace tram {
 
-template <> Pool<Path> PoolProxy<Path>::pool("path pool", 100);
-static Hashmap<Path*> path_list("path list", 200);
+template <> Pool<Path> PoolProxy<Path>::pool("Path pool", RESOURCE_LIMIT_PATH);
+static Hashmap<Path*> path_list("Path list", RESOURCE_LIMIT_PATH);
 
-
-Path* Path::Find (name_t name) {
+/// Finds a path.
+/// Finds a path by its name, or creates a new path by that name if not found.
+/// @return Always returns a pointer to a Path.
+Path* Path::Find(name_t name) {
     Path* path = path_list.Find(name);
     
     if (!path) {
@@ -78,15 +105,14 @@ void Path::LoadFromDisk() {
     }
 }
 
+/// Draws the path's line segments.
 void Path::Draw() {
     for (auto edge : edges) {
         Render::AddLine(nodes[edge.from].position, nodes[edge.to].position, Render::COLOR_WHITE);
-        
     }
-    
 }
 
-
+/// Creates a new PathFollower for a path.
 PathFollower::PathFollower(Path* path, vec3 initial_pos, PathType type) {
     this->prev = 0;
     this->next = 0;
@@ -98,6 +124,8 @@ PathFollower::PathFollower(Path* path, vec3 initial_pos, PathType type) {
     Project(initial_pos);
 }
 
+/// Advances the follower along the path.
+/// @param distance Distance along the path, in meters.
 void PathFollower::Advance(float distance) {
     float segment = glm::distance(path->nodes[prev].position, path->nodes[next].position);
     float dist_left = (1.0f - progress) * segment;
@@ -130,6 +158,7 @@ void PathFollower::Advance(float distance) {
     }
 }
 
+/// TODO: move these into math.h??
 static vec3 nearest_point(vec3 a, vec3 b, vec3 p) {
     vec3 v = b - a;
     vec3 u = a - p;

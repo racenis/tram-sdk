@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/loader.h>
 
 #include <framework/entity.h>
@@ -11,18 +10,39 @@
 
 #include <set>
 
+/**
+ * @namespace tram::Loader
+ * 
+ * WorldCell streaming
+ * 
+ * Provides services for application localization, character re-encoding, 
+ * translation, etc.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/loader.html
+ */
+
 namespace tram::Loader {
 
 std::set<id_t> tracked_entities;
 
+/// Starts tracking an Entity.
+/// See Loader::Update().
 void Track(Entity* entity) {
     tracked_entities.insert(entity->GetID());
 }
 
+/// Stops tracking a tracked Entity.
+/// See Loader::Untrack().
 void Untrack(Entity* entity) {
     tracked_entities.erase(entity->GetID());
 }
 
+/// Performs WorldCell loading and unloading.
+/// Calling this function will apply a constraint to the load status of all
+/// WorldCells, whereby cells which either contain a tracked entity, or are
+/// directly connected to such a cell, will be loaded, and all other cells will
+/// be unloaded.
+/// See also Loader::Track() and Loader::Untrack().
 void Update() {
     if (!tracked_entities.size()) return;
     

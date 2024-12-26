@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_LOGGING_H
 #define TRAM_SDK_FRAMEWORK_LOGGING_H
 
@@ -12,8 +11,8 @@
 namespace tram {
 
 namespace implementation {
-    template <typename T> void concat (const T& value) {
-        concat<const char*> ("LOGGER_UNDEFINED_TYPE");
+    template <typename T> void concat(const T& value) {
+        concat<const char*>("LOGGER_UNDEFINED_TYPE");
     }
     
     template <> void concat(const std::string_view& value);
@@ -58,17 +57,20 @@ namespace implementation {
 }
 
 enum Severity {
-    SEVERITY_INFO,
-    SEVERITY_WARNING,
-    SEVERITY_ERROR,
-    SEVERITY_CRITICAL_ERROR,
-    SEVERITY_DEFAULT
+    SEVERITY_INFO,              //< For debugging and other verbose messages. Not printed by default.
+    SEVERITY_WARNING,           //< For errors that are corrected and require no end-user intervention.
+    SEVERITY_ERROR,             //< For significant erros that can be corrected, but require the end-user to be notified.
+    SEVERITY_CRITICAL_ERROR,    //< For errors that cannot be recovered from.
+    SEVERITY_DEFAULT            //< Informational messages, always printed.
 };
 
 void SetSystemLoggingSeverity(System::system_t system, Severity min_severity);
 
 void SetDisplayLogCallback(void(int, const char*));
 void SetConsoleLogCallback(void(int, const char*));
+
+// TODO: switch int severity to ... severity_t?? just Severity?
+// TODO: switch int system to system_t
 
 template <typename... Args>
 void Log(int severity, int system, const std::string_view& format, Args&&... args) {

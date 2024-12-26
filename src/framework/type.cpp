@@ -1,10 +1,10 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/type.h>
 
 namespace tram {
-    
+
+/// Converts type enum to string.
 const char* TypeToString(Type type) {
     switch (type) {
         case TYPE_UNDEFINED:    return "undefined";

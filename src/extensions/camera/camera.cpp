@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <extensions/camera/camera.h>
 #include <framework/system.h>
 #include <framework/entity.h>
@@ -10,9 +9,23 @@
 #include <audio/audio.h>
 #include <components/controller.h>
 
+/**
+ * @class tram::Ext::Camera::Camera extensions/camera/camera.h
+ * 
+ * Interface API for cameras.
+ */
+
 namespace tram::Ext::Camera {
 
+// TODO: switch to system_t??
 uint32_t CAMERA_SYSTEM = -1u;
+
+// see? this here is a problem. we have only a single selected camera... but
+// cameras can use a limited set of layers.
+// which means that we could have a camera for layer 0 and a different active
+// camera for layer 1. this current setup does not support it, and frankly, I
+// find is completely unacceptable!!
+// this must be remedied at the earliest convenience..
 Camera* selected_camera = nullptr;
 
 float shake_multiplier = 1.0f;
@@ -81,8 +94,5 @@ id_t Camera::GetFollowing() {
 void Camera::SetFollowingLookat(quat new_lookat) {
     following_lookat = new_lookat;
 }
-
-
-
 
 }

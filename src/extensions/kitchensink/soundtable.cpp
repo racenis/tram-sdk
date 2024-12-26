@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <extensions/kitchensink/soundtable.h>
 
 #include <render/render.h>
@@ -9,11 +8,31 @@
 #include <templates/hashmap.h>
 #include <templates/pool.h>
 
-template <> tram::Pool<tram::Ext::Design::SoundTable> tram::PoolProxy<tram::Ext::Design::SoundTable>::pool("sountbale pool", 100);
+#include <config.h>
+
+/*
+ * somehow I feel like SoundActions should be name_ts, but at the same time
+ * they also make sense as enums
+ * 
+ * we could totally do some kind of a mix between both
+ */
+
+/**
+ * @class tram::Ext::Design::SoundTable
+ * 
+ * Maps actions to sounds.
+ * 
+ * Perfect for storing the aural properties of various materials, or taking the
+ * actions that a door or some other container can perform, e.g. opening,
+ * closing, trying to open but failing due to being locked, and mappping them to
+ * specific sounds.
+ */
+
+template <> tram::Pool<tram::Ext::Design::SoundTable> tram::PoolProxy<tram::Ext::Design::SoundTable>::pool("SoundTable pool", EXT_KITCHENSINK_SOUNDTABLE_LIMIT);
 
 namespace tram::Ext::Design {
 
-static Hashmap<SoundTable*> sound_table_list("soundtbale name list", 200);
+static Hashmap<SoundTable*> sound_table_list("SoundTable name list", EXT_KITCHENSINK_SOUNDTABLE_LIMIT);
     
 void SoundTable::AddSound(SoundAction type, name_t sound) {
     this->sounds.push_back({type, sound});
@@ -41,8 +60,6 @@ void SoundTable::PlaySound(SoundAction type, vec3 position, float volume) {
     new Sound(sound, volume, position);
 }
 
-
-
 SoundTable* SoundTable::Find(name_t name) {
     SoundTable* sound_table = sound_table_list.Find(name);
     
@@ -53,6 +70,5 @@ SoundTable* SoundTable::Find(name_t name) {
     
     return sound_table;
 }
-    
 
 }

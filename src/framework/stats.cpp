@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/stats.h>
 #include <framework/core.h>
 
@@ -8,6 +7,17 @@
 
 #include <vector>
 #include <cassert>
+
+/**
+ * @namespace tram::Stats
+ * 
+ * Resource usage statistics.
+ * 
+ * Keeps track of resource usage, time spent by different systems, as well as
+ * various other counters.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/stats.html
+ */
 
 namespace tram::Stats {
 
@@ -21,8 +31,8 @@ struct SystemStat {
     int average_count = 0;
 };
 
-static std::vector<SystemStat> all_stats (100);
-static std::vector<size_t> all_resources (100);
+static std::vector<SystemStat> all_stats(100);
+static std::vector<size_t> all_resources(100);
 
 static uint32_t last_collate_frame = -1;
 static uint32_t last_collate_time = -1;
@@ -108,6 +118,7 @@ double GetStatUncollated(System::system_t system) {
     return all_stats[system].time_spent;
 }
 
+/// Returns the ammount of resource, averaged over the last second.
 double GetStatAverage(System::system_t system) {
     assert(all_stats.size() > system);
     return all_stats[system].time_spent_average_collated;

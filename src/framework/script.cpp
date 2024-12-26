@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/script.h>
 
 #include <cstring>
@@ -28,6 +27,17 @@
 #include <components/render.h>
 #include <components/animation.h>
 #include <components/light.h>
+
+/**
+ * @namespace tram::Script
+ * 
+ * Scripting API
+ * 
+ * Allows calling scripting language functions and allows them to call into
+ * framework functions.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/script.html
+ */
 
 using namespace tram::Render;
 

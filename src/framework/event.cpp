@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <vector>
 
 #include <templates/queue.h>
@@ -11,6 +10,56 @@
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
 
+/**
+ * @struct tram::Event framework/event.h
+ * 
+ * Event data.
+ * 
+ * Fill in the struct fields and then use Event::Post() to send it out to
+ * listeners.
+ * 
+ * @property tram::Event::type
+ * Type of the event.
+ * 
+ * @property tram::Event::subtype
+ * Arbitrary event subtype.
+ * Some event types have subtypes with specific semantics, but if you create
+ * your own event types, you can use the subtype field for anything.
+ * 
+ * @property tram::Event::poster_id
+ * ID of the Entity that emitted the event.
+ * Either set to the ID of an Entity, or can be set to zero.
+ * 
+ * @property tram::Event::data
+ * Pointer to arbitrary data.
+ * Can be set to a nullptr. Some event types have specific data, e.g. structs or
+ * other types that they need their data pointers to be pointing to.
+ * For your own event types, you can use this pointer for whatever purpose you
+ * want.
+ * If uncertain, set this to a nullptr.
+ * 
+ * @property tram::Event::data_int
+ * Arbitrary data integer.
+ * 
+ * @property tram::Event::data
+ * Pointer to a value_t.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/event.html
+ */
+
+/**
+ * @typedef uint16_t event_t
+ * Event type number.
+ * Can be set to any of the values in Event::Type, or you can use
+ * Event::Register() to allocate new event types.
+ */
+ 
+ /**
+ * @typedef uint32_t listener_t
+ * Event listener handle.
+ * Opaque handle, used to yeet event listeners.
+ */
+ 
 namespace tram {
 
 const size_t MAX_EVENT_TYPES = 100;
@@ -72,6 +121,7 @@ event_t Event::Register(const char* name) {
     return last_type++;
 }
 
+/// Returns the event_t associated with a given name.
 event_t Event::GetType(name_t name) {
     event_t type = name_t_to_event_t.Find(name);
     
@@ -87,6 +137,7 @@ event_t Event::GetType(name_t name) {
     return type;
 }
 
+/// 
 name_t Event::GetName(event_t type) {
     return event_names[type];
 }

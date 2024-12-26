@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/logging.h>
 #include <framework/system.h>
 #include <cstring>
@@ -8,11 +7,23 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @file framework/logging.cpp
+ * 
+ * Logging and console printing services.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/logging.html
+ */
+
 namespace tram {
 
-static std::vector <Severity> severities;
+static std::vector<Severity> severities;
 
-void SetSystemLoggingSeverity (System::system_t system, Severity min_severity) {
+/// Sets the logging severity filter.
+/// @param system       System for which the filter will apply.
+/// @param min_severity The lowest severity which the filter will let through
+///                     All lower severities will be filtered out.
+void SetSystemLoggingSeverity(System::system_t system, Severity min_severity) {
     if (system >= severities.size()) {
         severities.assign(system + 1, SEVERITY_WARNING);
     }
@@ -23,10 +34,16 @@ void SetSystemLoggingSeverity (System::system_t system, Severity min_severity) {
 static void(*display_log_callback)(int, const char*) = nullptr;
 static void(*console_log_callback)(int, const char*) = nullptr;
 
+/// Sets the display log callback.
+/// When a message is logged by calling DisplayLog(), it will be formatted and
+/// then the result will be passed in to the display log callback.
 void SetDisplayLogCallback(void(*callback)(int, const char*)) {
     display_log_callback = callback;
 }
 
+/// Sets the console log callback.
+/// Whenever a message is written to console, it will alos be passed to the
+/// console log callback.
 void SetConsoleLogCallback(void(*callback)(int, const char*)) {
     console_log_callback = callback;
 }
@@ -39,7 +56,7 @@ namespace tram::implementation {
 // sort of a lock or something. so that you can Log from multiple threads.
 char buffer[500] = {'\0'}; // yes.. haha .. YES!!
 
-void concat_fmt (std::string_view& str) {
+void concat_fmt(std::string_view& str) {
     size_t open_bracket = str.find_first_of('{');
     size_t close_bracket = str.find_first_of('}', open_bracket);
     
@@ -91,37 +108,37 @@ void flush_display(int severity, int system) {
     buffer[0] = '\0';
 }
 
-template <> void concat (const std::string_view& value) {
+template <> void concat(const std::string_view& value) {
     strncat(buffer, value.data(), value.size());
 }
 
-template <> void concat (const std::string& value) {
+template <> void concat(const std::string& value) {
     strncat(buffer, value.data(), value.size());
 }
 
-template <> void concat (const char* const& value) {
+template <> void concat(const char* const& value) {
     strcat(buffer, value);
 }
 
-template <> void concat (const UID& value) {
+template <> void concat(const UID& value) {
     concat<char const*> (value.operator char const*());
 }
 
-template <typename T> void to_chars_concat (const T& value) {
+template <typename T> void to_chars_concat(const T& value) {
     char buffer[100];
     *std::to_chars(buffer, buffer + 100, value).ptr = '\0';
     concat<const char*> (buffer);
 }
 
-template <> void concat_numeric (const int64_t& value) {
+template <> void concat_numeric(const int64_t& value) {
     to_chars_concat<int64_t>(value);
 }
 
-template <> void concat_numeric (const uint64_t& value) {
+template <> void concat_numeric(const uint64_t& value) {
     to_chars_concat<uint64_t>(value);
 }
 
-template <> void concat_numeric (const float& value) {
+template <> void concat_numeric(const float& value) {
     to_chars_concat<float>(value);
 }
 

@@ -54,7 +54,7 @@
 #include <extensions/camera/camera.h>
 #include <extensions/camera/firstperson.h>
 
-#include <extensions/kitchensink/design.h>
+#include <extensions/kitchensink/kitchensink.h>
 #include <extensions/kitchensink/entities.h>
 #include <extensions/kitchensink/inventory.h>
 #include <extensions/kitchensink/soundtable.h>
@@ -856,7 +856,7 @@ using namespace tram::UI;
 #include <extensions/camera/camera.h>
 #include <extensions/camera/firstperson.h>
 
-#include <extensions/kitchensink/design.h>
+#include <extensions/kitchensink/kitchensink.h>
 #include <extensions/kitchensink/entities.h>
 #include <extensions/kitchensink/soundtable.h>
 #include <extensions/scripting/lua.h>

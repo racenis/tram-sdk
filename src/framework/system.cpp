@@ -1,9 +1,26 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/system.h>
 #include <cassert>
 #include <cstring>
+
+/**
+ * @namespace tram::System
+ * 
+ * System tracking.
+ * 
+ * This system keeps track of other systems, their initialization status, as
+ * well as their names.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/system.html
+ */
+
+/**
+ * @typedef uint32_t system_t
+ * System type index.
+ * Can be set to any of the values in System::System, or you can use
+ * System::Register() to allocate new system types.
+ */
 
 namespace tram::System {
 

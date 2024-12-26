@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_QUEST_H
 #define TRAM_SDK_EXTENSIONS_KITCHENSINK_QUEST_H
 

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <templates/queue.h>
 #include <templates/pool.h>
 
@@ -10,12 +9,44 @@
 #include <framework/resource.h>
 #include <framework/entitycomponent.h>
 
+#include <config.h>
+
 #include <thread>
 #include <vector>
 
+/*
+ * currently with how everything is implemented, only EntityComponents can
+ * request resources.
+ * 
+ * it would be better if we instead would accept a function pointer and a
+ * void data pointer, so that more kinds of things could request resources
+ * 
+ * ideas:
+ * typedef an Async::task_t = uint32_t
+ * create a task_t EnqueueTask(function ptr, data ptr)
+ */
+
+/**
+ * @file framework/async.cpp
+ * 
+ * Implementation of the Async system.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/async.html
+ */
+
+
+/**
+ * @namespace tram::Async
+ * 
+ * Multi-threading and Resource streaming.
+ * 
+ * Currently Async only does Resource streaming, but we could do other kinds of
+ * Async processing in the future too.
+ */
+
 namespace tram::Async {
 
-static std::vector<std::thread>resource_loaders;
+static std::vector<std::thread> resource_loaders;
 static bool loaders_should_stop = false;
 
 struct ResourceRequest {
@@ -26,11 +57,11 @@ struct ResourceRequest {
 #endif
 };
 
-static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", 1000);
-static Queue<ResourceRequest*> memory_loader_queue("Async::LoadResourcesFromMemory() queue", 1000);
-static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", 1000);
+static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", RESOURCE_LOADER_QUEUE_LIMIT);
+static Queue<ResourceRequest*> memory_loader_queue("Async::LoadResourcesFromMemory() queue", RESOURCE_LOADER_QUEUE_LIMIT);
+static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", RESOURCE_LOADER_QUEUE_LIMIT);
 
-static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", 1750);
+static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", RESOURCE_LOADER_REQUEST_LIMIT);
 
 /// Adds a resource to the loading queue.
 /// @param requester EntityComponent that will be notified when the resource is loaded.
@@ -136,6 +167,9 @@ void FinishResources() {
             req->requester->ResourceReady();
         }
     }
+    
+    // I think we forgot to remove the request from the request_pool...
+    // TODO: fix
 }
 
 /// Starts the async resource loader thread.
@@ -144,7 +178,7 @@ void Init(size_t threads) {
     assert(System::IsInitialized(System::SYSTEM_CORE));
     
 #ifdef __EMSCRIPTEN__
-        threads = 0;
+    threads = 0;
 #endif
     
     if (threads) {
@@ -173,6 +207,7 @@ void Yeet() {
 
 /// Returns number of resources in queues.
 size_t GetWaitingResources() {
+    // I think that we could just use request_pool.size() instead
     size_t sum = 0;
     disk_loader_queue.lock();
     memory_loader_queue.lock();

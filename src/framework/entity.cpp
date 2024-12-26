@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/entity.h>
 #include <framework/worldcell.h>
 #include <framework/serialization.h>
@@ -9,10 +8,31 @@
 
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <iostream>
 #include <unordered_map>
 
 #include <algorithm>
+
+/**
+ * @class tram::Entity framework/entity.h
+ * 
+ * Entity base class.
+ * 
+ * Provides API for entities and some basic functionality.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/entity.html
+ */
+ 
+ /**
+ * @struct tram::SharedEntityData framework/entity.h
+ * 
+ * Basic Entity parameters.
+ * 
+ * Used for Entity serialization. This struct contains the parameters that every
+ * Entity type shares in common.
+ */
 
 namespace tram {
 
@@ -22,30 +42,27 @@ struct EntityTypeInfo {
     const uint32_t* fields = nullptr;
     size_t fieldcount = 0;
 };
-    
-/*struct SharedEntityData {
-    uint64_t id;
-    name_t name;
-    uint32_t flags;
-    vec3 position;
-    quat rotation;
-};*/
 
-static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", 5000);
-static Hashmap<Entity*> entity_name_list ("Entity name hashmap", 500);
-static Hashmap<EntityTypeInfo> registered_entity_types ("Entity type hashmap", 50);
 
+
+static Hashmap<Entity*> entity_id_list ("Entity ID hashmap", ENTITY_LIMIT);
+static Hashmap<Entity*> entity_name_list ("Entity name hashmap", NAMED_ENTITY_LIMIT);
+static Hashmap<EntityTypeInfo> registered_entity_types ("Entity type hashmap", ENTITY_TYPE_LIMIT);
+
+/// Creates an unnamed entity with a random ID.
 Entity::Entity() {
     this->id = GenerateID();
     Register();
 }
 
+/// Creates a named entity with a random ID.
 Entity::Entity(name_t name) {
     this->id = GenerateID();
     this->name = name;
     Register();
 }
 
+/// Creates an entity from a SharedEntityData.
 Entity::Entity(const SharedEntityData& shared_data) {
     id = shared_data.id;
     name = shared_data.name;

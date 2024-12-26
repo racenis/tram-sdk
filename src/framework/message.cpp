@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/message.h>
 #include <framework/entity.h>
 
@@ -9,22 +8,65 @@
 #include <templates/stackpool.h>
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <queue>
 
-namespace tram {
+/**
+ * @struct tram::Message framework/message.h
+ * 
+ * Message data.
+ * 
+ * Fill in the struct fields and then use Message::Send() to send it out to
+ * listeners.
+ * 
+ * @property tram::Message::type
+ * Type of the message.
+ * 
+ * @property tram::Message::sender
+ * ID of the Entity that sent the message.
+ * Either set to the ID of an Entity, or can be set to zero.
+ * 
+ * @property tram::Message::receiver
+ * ID of the Entity that will receive the message.
+ * Set to the ID of an Entity.
+ * 
+ * @property tram::Message::data
+ * Pointer to arbitrary data.
+ * Can be set to a nullptr. Some message types have specific data, e.g. structs
+ * or other types that they need their data pointers to be pointing to.
+ * For your own message types, you can use this pointer for whatever purpose you
+ * want.
+ * If uncertain, set this to a nullptr.
+ * 
+ * @property tram::Message::data_int
+ * Arbitrary data integer.
+ * 
+ * @property tram::Message::data
+ * Pointer to a value_t.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/message.html
+ */
 
-const size_t MAX_MESSAGE_TYPES = 100;
+/**
+ * @typedef uint32_t message_t
+ * Message type number.
+ * Can be set to any of the values in Message::Type, or you can use
+ * Message::Register() to allocate new message types.
+ */
+
+namespace tram {
     
-static Queue<Message> message_queue ("message queue", 500);
-static Pool<Message> message_pool ("message pool", 250);
-static StackPool<char> data_pool ("message data pool", 2000);
+static Queue<Message> message_queue("Message queue", MESSAGE_QUEUE_LIMIT);
+static Pool<Message> message_pool("Message pool", MESSAGE_PRIORITY_QUEUE_LIMIT);
+static StackPool<char> data_pool("Message data pool", MESSAGE_DATA_LIMIT);
 static void(*intercept_callback)(const Message&) = nullptr;
 
-std::priority_queue <std::pair<double, Message*>, std::vector<std::pair<double, Message*>>, std::greater<std::pair<double, Message*>>> future_messages;
+static std::priority_queue<std::pair<double, Message*>, std::vector<std::pair<double, Message*>>, std::greater<std::pair<double, Message*>>> future_messages;
 
-static Hashmap<message_t> name_t_to_message_t("name_t_to_message_t", (MAX_MESSAGE_TYPES*2)+11);
+static Hashmap<message_t> name_t_to_message_t("name_t_to_message_t", (MESSAGE_TYPE_LIMIT*2)+11);
 
-static const char* message_names[MAX_MESSAGE_TYPES] = {
+static const char* message_names[MESSAGE_TYPE_LIMIT] = {
     "none",
     "ping",
     "move-pick-up",

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/navmesh.h>
 
 #include <framework/file.h>
@@ -10,6 +9,14 @@
 
 #include <unordered_map>
 #include <cstring>
+
+/**
+ * @class tram::Navmesh framework/navmesh.h
+ * 
+ * Not fully implemented yet.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/navmesh.html
+ */
 
 namespace tram {
 

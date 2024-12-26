@@ -19,7 +19,6 @@ const uint32_t MAX_LINKED_SHADERS = 40;
 
 
 
-
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // |                              RESOURCE LIMITS                              |
@@ -35,6 +34,7 @@ const uint32_t MAX_LINKED_SHADERS = 40;
 
 const uint32_t RESOURCE_LIMIT_SOUND = 100;
 const uint32_t RESOURCE_LIMIT_MODEL = 100;
+const uint32_t RESOURCE_LIMIT_PATH = 100;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -68,7 +68,58 @@ const size_t PATH_LIMIT = 200;
 // Limit for scriptable entity types
 const uint32_t SCRIPTABLE_ENTITY_TYPE_LIMIT = 50;
 
+// Limit for all entity types
+const uint32_t ENTITY_TYPE_LIMIT = 50;
 
+// Limits for Async system resoruce streaming requests
+const uint32_t RESOURCE_LOADER_QUEUE_LIMIT = 1000;
+const uint32_t RESOURCE_LOADER_REQUEST_LIMIT = 1750;
+
+// Limits for entities
+const uint32_t ENTITY_LIMIT = 5000;
+const uint32_t NAMED_ENTITY_LIMIT = 500;
+
+// Limit for total sum of characters that can be stored in all language strings
+const uint32_t LANUGAGE_STRING_CHARACTER_LIMIT = 10000;
+
+// Limit for the number of lanugage strings
+const uint32_t LANGUAGE_STRING_LIMIT = 500;
+
+// Limit for enqueued messages before dispatch
+const uint32_t MESSAGE_QUEUE_LIMIT = 500;
+
+// Limit for enqueued messages with a delay
+const uint32_t MESSAGE_PRIORITY_QUEUE_LIMIT = 250;
+
+// Limit for message data, in bytes
+const uint32_t MESSAGE_DATA_LIMIT = 2000;
+
+// Limit for message types
+const uint32_t MESSAGE_TYPE_LIMIT = 100;
+
+// Limit for signal types
+const uint32_t SIGNAL_TYPE_LIMIT = 100;
+
+const uint32_t WORLDCELL_TRANSITION_LIMIT = 250;
+const uint32_t KEYBOARDACTION_LIMIT = 100;
+
+// Limit for total sum of characters that can be stored in all names
+const uint32_t UID_CHARACTER_LIMIT = 20000;
+
+// Limit for the number of names
+const uint32_t UID_LIMIT = 2000
+;
+const uint32_t WORLDCELL_LIMIT = 250;
+
+// +---------------------------------------------------------------------------+
+// |                                                                           |
+// |                             EXTENSION LIMITS                              |
+// |                                                                           |
+// +---------------------------------------------------------------------------+
+
+
+const uint32_t EXT_KITCHENSINK_ANIMATIONTABLE_LIMIT = 100;
+const uint32_t EXT_KITCHENSINK_SOUNDTABLE_LIMIT = 100;
 }
 
 #endif // TRAM_SDK_CONFIG_H

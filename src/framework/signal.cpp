@@ -1,18 +1,37 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <templates/hashmap.h>
 
 #include <framework/signal.h>
 #include <framework/entity.h>
 #include <framework/value.h>
 
-namespace tram {
-const size_t MAX_SIGNAL_TYPES = 100;
-    
-static Hashmap<signal_t> name_t_to_signal_t("name_t_to_signal_t", (MAX_SIGNAL_TYPES*2)+11);
+#include <config.h>
 
-static const char* signal_names[MAX_SIGNAL_TYPES] = {
+/**
+ * @struct tram::Signal framework/signal.h
+ * 
+ * Message template.
+ * 
+ * Table of Message templates that can be sent off by entities on certain triggers. 
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/signal.html
+ */
+
+/**
+ * @class tram::SignalTable framework/signal.h
+ * 
+ * List of Message templates.
+ * 
+ * Table of Message templates, i.e. Signal structs, that can be sent off by
+ * entities on certain triggers.
+ */
+
+namespace tram {
+
+static Hashmap<signal_t> name_t_to_signal_t("name_t_to_signal_t", SIGNAL_TYPE_LIMIT);
+
+static const char* signal_names[SIGNAL_TYPE_LIMIT] = {
     "none",
     "spawn",
     "kill",

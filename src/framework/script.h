@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_SCRIPT_H
 #define TRAM_SDK_FRAMEWORK_SCRIPT_H
 
@@ -15,7 +14,7 @@ void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(
 value_t CallFunction(name_t name, std::vector<Value> parameters);
 value_t Evaluate(const char* code);
 
-
+// TODO: make this a class?? maybe? with virtual methods
 struct Language {
     name_t name;
     

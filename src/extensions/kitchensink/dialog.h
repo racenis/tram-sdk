@@ -1,8 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
-#ifndef TRAM_SDK_EXTENSIONS_DESIGN_DIALOG_H
-#define TRAM_SDK_EXTENSIONS_DESIGN_DIALOG_H
+#ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_DIALOG_H
+#define TRAM_SDK_EXTENSIONS_KITCHENSINK_DIALOG_H
 
 #include <framework/value.h>
 
@@ -14,6 +13,8 @@ enum DialogType {
     DIALOG_TOPIC,
     DIALOG_IMPORT_SINGLE,
     DIALOG_IMPORT_MULTIPLE
+    
+    // TODO: add greetings, etc.
 };  
 
 struct DialogCondition {
@@ -71,4 +72,4 @@ private:
 
 }
 
-#endif // TRAM_SDK_EXTENSIONS_DESIGN_DIALOG_H
+#endif // TRAM_SDK_EXTENSIONS_KITCHENSINK_DIALOG_H

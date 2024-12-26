@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_MESSAGE_H
 #define TRAM_SDK_FRAMEWORK_MESSAGE_H
 
@@ -57,7 +56,7 @@ struct Message {
     union {
         void* data = nullptr;
         int64_t data_int;
-        Value* data_value;
+        Value* data_value; // TODO: switch to value_t?
     };
 };
 

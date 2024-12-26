@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/worldcell.h>
 
 #include <framework/entity.h>
@@ -13,17 +12,27 @@
 
 #include <render/render.h>
 
+#include <config.h>
+
 #include <fstream>
 #include <cstring>
 #include <sstream>
 
-
+/**
+ * @struct tram::WorldCell framework/worldcell.h
+ * 
+ * World streaming unit.
+ * 
+ * Contains entities, can be used to load and unload them.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/worldcell.html
+ */
 
 namespace tram {
 
-template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("worldcell pool", 250, false);
+template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("Worldcell pool", WORLDCELL_LIMIT, false);
 
-static Hashmap<WorldCell*> worldcell_list ("Worldcell list hashmap", 500);
+static Hashmap<WorldCell*> worldcell_list("Worldcell list hashmap", WORLDCELL_LIMIT);
 
 /// Finds a WorldCell by its name.
 /// @return Pointer to the cell if found, nullptr otherwise.

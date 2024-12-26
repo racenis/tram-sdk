@@ -7,6 +7,8 @@
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
       <VirtualDirectory Name="kitchensink">
+        <File Name="src/extensions/kitchensink/kitchensink.h"/>
+        <File Name="src/extensions/kitchensink/kitchensink.cpp"/>
         <File Name="src/extensions/kitchensink/menu.h"/>
         <File Name="src/extensions/kitchensink/menu.cpp"/>
         <File Name="src/extensions/kitchensink/ai.h"/>
@@ -23,8 +25,6 @@
         <File Name="src/extensions/kitchensink/entities.cpp"/>
         <File Name="src/extensions/kitchensink/dialog.h"/>
         <File Name="src/extensions/kitchensink/dialog.cpp"/>
-        <File Name="src/extensions/kitchensink/design.h"/>
-        <File Name="src/extensions/kitchensink/design.cpp"/>
         <File Name="src/extensions/kitchensink/character.h"/>
         <File Name="src/extensions/kitchensink/character.cpp"/>
         <File Name="src/extensions/kitchensink/attributes.h"/>
@@ -103,15 +103,12 @@
       <File Name="src/framework/type.cpp"/>
       <File Name="src/framework/settings.h"/>
       <File Name="src/framework/settings.cpp"/>
-      <File Name="src/framework/cli.h"/>
-      <File Name="src/framework/cli.cpp"/>
       <File Name="src/framework/graph.h"/>
       <File Name="src/framework/graph.cpp"/>
       <File Name="src/framework/script.h"/>
       <File Name="src/framework/script.cpp"/>
       <File Name="src/framework/signal.h"/>
       <File Name="src/framework/signal.cpp"/>
-      <File Name="src/framework/query.h"/>
       <File Name="src/framework/value.h"/>
       <File Name="src/framework/entitycomponent.cpp"/>
       <File Name="src/framework/serialization.h"/>

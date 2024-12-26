@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_ENTITY_H
 #define TRAM_SDK_FRAMEWORK_ENTITY_H
 
@@ -11,6 +10,7 @@
 #include <framework/signal.h>
 
 namespace tram {
+
 class WorldCell;
 class Message;
 struct SharedEntityData;
@@ -80,6 +80,7 @@ public:
         FIELD_SERIALIZE = 1
     };
 
+    // TODO convert constr_func and destr_func into typedefs
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const FieldInfo* fields, size_t fieldcount);
     static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields);
@@ -87,10 +88,10 @@ public:
     inline SignalTable* GetSignalTable() { return signals; }
     
     static void UpdateFromList();
-    static Entity* Make (name_t type, File* file);
-    static Entity* Make (name_t type, const SharedEntityData&, const ValueArray&);
-    static Entity* Find (id_t entity_id);
-    static Entity* Find (name_t entity_name);
+    static Entity* Make(name_t type, File* file);
+    static Entity* Make(name_t type, const SharedEntityData&, const ValueArray&);
+    static Entity* Find(id_t entity_id);
+    static Entity* Find(name_t entity_name);
 protected:
     enum : uint32_t {
         NON_PERSISTENT = 1,
@@ -106,6 +107,10 @@ protected:
     name_t name;
     
     WorldCell* cell = nullptr;
+    
+    // don't really need this, since we can use the entity ID number to lookup
+    // the SignalTable for each entity
+    // TODO: fix
     SignalTable* signals = nullptr;
     
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};

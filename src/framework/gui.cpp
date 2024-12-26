@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <templates/stack.h>
 
 #include <framework/gui.h>
@@ -17,13 +16,16 @@
 
 #include <cstring>
 
-// This whole file is a mess.
-// TODO: fix
-
-// A thing that could be done is that all of the floating-point coordinates
-// could be converted to integers, so that it is easier to work with them.
-
-// Also doing const float& all over the place wasn't the best idea.
+/**
+ * @namespace tram::GUI
+ * 
+ * Immediate mode GUI system.
+ * 
+ * If you don't like it, you can always integrate imgui, but I personally very
+ * much prefer this way of building GUIs.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/gui.html
+ */
 
 namespace tram::GUI {
 

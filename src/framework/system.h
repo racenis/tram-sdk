@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_FRAMEWORK_SYSTEM_H
 #define TRAM_SDK_FRAMEWORK_SYSTEM_H
 
@@ -9,6 +8,7 @@
 namespace tram::System {
 
 typedef uint32_t system_t;
+
 enum System : system_t {
     SYSTEM_INVALID,
     SYSTEM_CORE,

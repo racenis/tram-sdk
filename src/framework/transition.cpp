@@ -1,18 +1,27 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/transition.h>
 
 #include <framework/worldcell.h>
 #include <render/render.h>
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <algorithm>
+
+/**
+ * @class tram::Transition framework/transition.h
+ * 
+ * Connects WorldCells together.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/transition.html
+ */
 
 namespace tram {
 
-template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", 250, false);
-static Hashmap<Transition*> transition_list ("transition list", 250);
+template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", WORLDCELL_TRANSITION_LIMIT, false);
+static Hashmap<Transition*> transition_list ("transition list", WORLDCELL_TRANSITION_LIMIT);
 
 /// Finds a transition with the given name.
 /// Pointer to the transition or a nullptr if wasn't found.
@@ -25,7 +34,7 @@ Transition* Transition::Find(name_t name) {
 ///                     transition doesn't need a name.
 /// @param cell_into    Pointer to the WorldCell into which the transition
 ///                     will be leading into.
-Transition* Transition::Make (name_t name, WorldCell* cell_into) {
+Transition* Transition::Make(name_t name, WorldCell* cell_into) {
     Transition* transition = PoolProxy<Transition>::New(name, cell_into);
     
     if (name) {
@@ -44,20 +53,32 @@ Transition::Transition(name_t name, WorldCell* cell_into) {
     this->name = name;
 }
 
+/// Adds a point to the transition volume.
+/// @note After adding points make sure to call Transition::GeneratePlanes().
 void Transition::AddPoint(vec3 point) {
     points.push_back(point);
 }
 
+/// Checks whether a point is inside the transition volume.
 bool Transition::IsInside(vec3 point) {
     for(size_t i = 0; i < planes.size(); i++)
         if(glm::dot(planes[i], vec4(point, 1.0f)) < 0.0f) return false;    
     return true;
 }
 
+/// Finalizes the transition after adding points to it.
+/// @param disp Draws the transition planes for a single frame if set to true.
 void Transition::GeneratePlanes(bool disp) {
     assert(points.size() > 3);
     
     planes.clear();
+    
+    // this hull generation algorithm works in O(n^3), but there exist algorithms
+    // that can do the same thing in linear time
+    
+    // also the code is really bad, but don't touch it!! it works!
+    
+    // if we replace this with a faster algorithm, we can tidy this up
     
     for (size_t i = 0; i < points.size(); i++) {
         for (size_t j = i+1; j < points.size(); j++) {

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_ATTRIBUTES_H
 #define TRAM_SDK_EXTENSIONS_KITCHENSINK_ATTRIBUTES_H
 
@@ -74,7 +73,6 @@ struct AttributeContainer {
     std::vector<Attribute> attributes;
     std::vector<Effect> effects;
 };
-
 
 }
 

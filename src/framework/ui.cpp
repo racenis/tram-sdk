@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <platform/platform.h>
 #include <platform/image.h>
 #include <platform/api.h>
@@ -13,6 +12,8 @@
 #include <render/render.h>
 #include <render/api.h>
 
+#include <config.h>
+
 #include <fstream>
 #include <cstring>
 #include <algorithm>
@@ -20,12 +21,20 @@
 
 #include <templates/hashmap.h>
 
-
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
     #include <emscripten/html5.h>
 #endif
 
+/**
+ * @namespace tram::UI
+ * 
+ * User interface system.
+ * 
+ * Handles opening the window, taking in keyboard and mouse inputs.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/ui.html
+ */
 
 using namespace tram::Render;
 
@@ -45,11 +54,6 @@ static bool keyboard_keys_values[KEY_LASTKEY] = {false};
 static float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_deltas[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_sensitivity[KEY_LASTAXIS] = {1.0f, 1.0f, 1.0f};
-
-//static double cursorx_last = 0.0f, cursory_last = 0.0f;
-
-// static char* input_text = nullptr;
-// static uint32_t input_text_len = 0;
 
 struct KeyBinding {
     keyboardaction_t action = KEY_ACTION_NONE;
@@ -75,11 +79,8 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_LEFT, KeyBinding {.action = KEY_ACTION_LEFT}},
     {KEY_RIGHT, KeyBinding {.action = KEY_ACTION_RIGHT}},
 
-    {KEY_F1, KeyBinding {.special_option = [](){ exit = true; /*glfwSetWindowShouldClose(WINDOW, EXIT);*/ }}},
-    //{KEY_F5, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
-    //{KEY_F6, KeyBinding {.special_option = [](){ THIRD_PERSON = !THIRD_PERSON; }}},
+    {KEY_F1, KeyBinding {.special_option = [](){ exit = true; }}},
     {KEY_F9, KeyBinding {.special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
-    //{KEY_BACKSPACE, KeyBinding {.special_option = [](){ CharacterBackspaceCallback(); }}}
     {KEY_F12, KeyBinding {.special_option = [](){
         char* buffer = (char*)malloc(screen_width * screen_height * 3);
 
@@ -97,18 +98,12 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
         
         Render::API::GetScreen(buffer, screen_width, screen_height);
         Platform::SaveImageToDisk(file_name, screen_width, screen_height, buffer);
+        
         free(buffer);
     }}},
 };
 
 void BindKeyboardKey(KeyboardKey key, keyboardaction_t action) {
-    // this will check if any other key has already been bound to this action,
-    // and will unbind it if it has.
-    /*for (auto& binding : key_action_bindings) {
-        if (binding.second.action == action) {
-            binding.second.action = KEY_ACTION_NONE;
-        }
-    }*/
     key_action_bindings[key] = {.action = action};
 }
 
@@ -214,41 +209,29 @@ void SetWindowSize(int w, int h) {
 
 void SetCursor(CursorType cursor) {
     switch (cursor) {
-        //case CURSOR_NONE:
-            //Platform::Window::DisableCursor();
-            //break;
         case CURSOR_DEFAULT:
-            //Platform::Window::EnableCursor();
             Platform::Window::SetCursor(Platform::Window::CURSOR_DEFAULT);
             break;
         case CURSOR_TEXT:
-            //Platform::Window::EnableCursor();
             Platform::Window::SetCursor(Platform::Window::CURSOR_TEXT);
             break;
         case CURSOR_CLICK:
-            //Platform::Window::EnableCursor();
             Platform::Window::SetCursor(Platform::Window::CURSOR_CLICK);
             break;
     };
 }
 
-void SetInputState (InputState state) {
+void SetInputState(InputState state) {
     input_state = state;
     
     switch (state) {
         case STATE_DEFAULT:
         case STATE_NO_INPUT:
         case STATE_FLYING:
-            //keyboard_axis_values[KEY_MOUSE_X] = cursorx_last;
-            //keyboard_axis_values[KEY_MOUSE_Y] = cursory_last;
-            
             Platform::Window::DisableCursor();
         break;
         case STATE_MENU_OPEN:
         case STATE_CURSOR:
-            //cursorx_last = keyboard_axis_values[KEY_MOUSE_X];
-            //cursory_last = keyboard_axis_values[KEY_MOUSE_Y];
-            
             Platform::Window::EnableCursor();
     }
 }
@@ -359,9 +342,8 @@ bool ShouldExit() {
     return exit;
 }
 
-const size_t MAX_KEYBOARDACTION_TYPES = 100;
-static Hashmap<keyboardaction_t> name_t_to_keyboardaction_t("name_t_to_keyboardaction_t", (MAX_KEYBOARDACTION_TYPES*2)+11);
-static const char* keyboardaction_names[MAX_KEYBOARDACTION_TYPES] = {
+static Hashmap<keyboardaction_t> name_t_to_keyboardaction_t("name_t_to_keyboardaction_t", KEYBOARDACTION_LIMIT);
+static const char* keyboardaction_names[KEYBOARDACTION_LIMIT] = {
     "none",
     "forward",
     "backward",

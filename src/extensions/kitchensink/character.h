@@ -1,8 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
-#ifndef TRAM_SDK_EXTENSIONS_DESIGN_CHARACTER_H
-#define TRAM_SDK_EXTENSIONS_DESIGN_CHARACTER_H
+#ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_CHARACTER_H
+#define TRAM_SDK_EXTENSIONS_KITCHENSINK_CHARACTER_H
 
 #include <extensions/kitchensink/attributes.h>
 
@@ -112,4 +111,4 @@ protected:
 
 }
 
-#endif // TRAM_SDK_EXTENSIONS_DESIGN_CHARACTER_H
+#endif // TRAM_SDK_EXTENSIONS_KITCHENSINK_CHARACTER_H

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <extensions/kitchensink/animationtable.h>
 
 #include <render/render.h>
@@ -11,13 +10,32 @@
 #include <templates/hashmap.h>
 #include <templates/pool.h>
 
+#include <config.h>
+
 #include <algorithm>
 
-template <> tram::Pool<tram::Ext::Kitchensink::AnimationTable> tram::PoolProxy<tram::Ext::Kitchensink::AnimationTable>::pool("animatio pool", 100);
+/*
+ * as is, the animation table will probably work just fine for simple video game
+ * monsters and such things, but if you want to do something more advanced, we
+ * will need to change this a bit
+ * 
+ * first of all, the class saves all of the state transition weights and speeds
+ * and all these things. it would prove extremely useful to be able to calculate
+ * these values via a callback or a virtual method.
+ * 
+ * possible solution:
+ * 1. encapsulate all state transition, etc. data access into methods
+ * 2. make the data access methods of sound table abstract and virtual
+ * 3. implement data access in a subclass
+ * 
+ * or we could just make data access methods virtual, that might even be better
+ */
+
+template <> tram::Pool<tram::Ext::Kitchensink::AnimationTable> tram::PoolProxy<tram::Ext::Kitchensink::AnimationTable>::pool("AnimationTable pool", EXT_KITCHENSINK_ANIMATIONTABLE_LIMIT);
 
 namespace tram::Ext::Kitchensink {
 
-static Hashmap<AnimationTable*> sound_table_list("soundtbale name list", 200);
+static Hashmap<AnimationTable*> sound_table_list("AnimationTable name list", EXT_KITCHENSINK_ANIMATIONTABLE_LIMIT);
 
 AnimationTable* AnimationTable::Find(name_t name) {
     AnimationTable* sound_table = sound_table_list.Find(name);

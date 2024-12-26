@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/language.h>
 
 #include <framework/file.h>
@@ -8,14 +7,28 @@
 #include <templates/stackpool.h>
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <cstring>
 #include <fstream>
 
-namespace tram::Language {
+/**
+ * @namespace tram::Language
+ * 
+ * Localization services.
+ * 
+ * Provides services for application localization, character re-encoding, 
+ * translation, etc.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/language.html
+ */
 
-static StackPool<char> language_string_pool ("stringpool for langs", 10000);
-static Hashmap<const char*> language_string_map ("Hashmap for language strings", 500);
+namespace tram::Language {
     
+static StackPool<char> language_string_pool("Language string pool", LANUGAGE_STRING_CHARACTER_LIMIT);
+static Hashmap<const char*> language_string_map("Language string hashmap", LANGUAGE_STRING_LIMIT);
+
+/// Loads a language file.
 void Load(const char* filename){
     char path [100] = "data/";
     strcat (path, filename);
@@ -40,6 +53,7 @@ void Load(const char* filename){
     }
 }
 
+/// Retrieves a string from the loaded language files.
 const char* Get(name_t name) {
     const char* string = language_string_map.Find(name);
     
@@ -50,6 +64,7 @@ const char* Get(name_t name) {
     }
 }
 
+/// Converts a UTF16 codepoint to a Latin7 codepoint.
 char UTF16ToLatin7(uint16_t code) {
     switch (code) {
         case 0x0000: return 0x00;

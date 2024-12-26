@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #ifndef TRAM_SDK_EXTENSIONS_KITCHENSINK_MENU_H
 #define TRAM_SDK_EXTENSIONS_KITCHENSINK_MENU_H
 
@@ -40,7 +39,6 @@ class KitchensinkMenuList : public Ext::Menu::Menu {
     void Display();
     uint32_t Layer() { return 0; }
 };
-
     
 }
 
