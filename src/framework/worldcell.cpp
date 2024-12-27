@@ -3,7 +3,6 @@
 #include <framework/worldcell.h>
 
 #include <framework/entity.h>
-#include <framework/navigation.h>
 #include <framework/transition.h>
 #include <framework/file.h>
 
@@ -13,6 +12,8 @@
 #include <render/render.h>
 
 #include <config.h>
+
+#include <algorithm>
 
 #include <fstream>
 #include <cstring>

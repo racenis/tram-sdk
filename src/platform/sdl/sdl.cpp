@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <platform/api.h>
 
 #include <platform/platform.h>

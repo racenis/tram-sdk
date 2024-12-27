@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <extensions/kitchensink/menu.h>
 
 #include <extensions/kitchensink/quest.h>

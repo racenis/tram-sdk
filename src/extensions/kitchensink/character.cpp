@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <extensions/kitchensink/character.h>
 
 #include <extensions/kitchensink/attributes.h>
