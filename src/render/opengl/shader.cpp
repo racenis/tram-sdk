@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <cassert>
 #include <iostream>
 #include <fstream>

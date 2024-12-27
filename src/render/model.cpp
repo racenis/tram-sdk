@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/core.h>
 #include <framework/stats.h>
 #include <framework/file.h>

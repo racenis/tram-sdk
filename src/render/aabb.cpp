@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <render/aabb.h>
 
 #include <components/render.h>
@@ -6,6 +8,35 @@
 #include <templates/pool.h>
 #include <templates/aabb.h>
 #include <templates/octree.h>
+
+/*
+ * the AABB tree API is a bit cumbersome to use. it could be significantly
+ * improved.
+ * 
+ * perhaps we should rename the AABB tree to SceneTree??
+ */
+
+/**
+ * @namespace tram::Render::AABB
+ * 
+ * Scene tree.
+ * 
+ * Contains the AABBs of all 3D models in the scene. Useful for quickly querying
+ * the scene, doing raycasts on the 3D geometry, etc.
+ * 
+ * Internally uses an AABB tree, as the name suggests.
+ */
+ 
+ /**
+ * @namespace tram::Render::LightTree
+ * 
+ * Scene light tree.
+ * 
+ * Contains all of the dynamic lights in the scene. Useful for finding which
+ * lights are illuminating a certain 3D model in the scene.
+ * 
+ * Internally uses an Octree.
+ */
 
 namespace tram::Render::AABB {
 
@@ -21,6 +52,12 @@ struct AABBLeaf {
 static AABBTree scene_tree;
 static Pool<AABBLeaf> scene_tree_leaves("Scene AABB tree leaf pool", 1000);
 
+// this function here take sin position, rotation and scale.
+// why tho?? we could just query the component for this!!
+// TODO: fix
+
+/// Inserts a RenderComponent leaf into the scene tree.
+/// @return Handle to the inserted leaf.
 aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale) {
     vec3 min = component->GetModel()->GetAABBMin() * scale;
     vec3 max = component->GetModel()->GetAABBMax() * scale;
@@ -60,6 +97,7 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
     return leaf;
 }
 
+/// Removes a leaf from 
 void RemoveLeaf(aabbleaf_t leaf_id) {
     AABBLeaf* leaf = (AABBLeaf*) leaf_id;
     
@@ -67,6 +105,11 @@ void RemoveLeaf(aabbleaf_t leaf_id) {
     scene_tree_leaves.Remove(leaf);
 }
 
+// btw the mask is unused.. why tho??
+// we should add the mask!!! somewhere .. i guess .
+// maybe we could add an enum in render.h?
+
+/// Peforms a raycast and retrieves the nearest object.
 QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
     std::vector<uint32_t> results;
     results.reserve(10);
@@ -137,6 +180,7 @@ static void DrawAABBNodeChildren(AABBTree::Node* node) {
     }
 }
 
+/// Draws the scene tree for a single frame.
 void DebugDrawTree() {
     DrawAABBNodeChildren(scene_tree.root);
 }
@@ -155,6 +199,7 @@ struct Light {
 Pool<Light> light_list("lighttree pool", 200);
 Octree<Light*> light_tree("light tree", 200);;
 
+/// Adds a light to the light tree.
 void AddLight(light_t light, vec3 pos, float dist) {
     Light* new_light = light_list.AddNew();
     
@@ -165,6 +210,9 @@ void AddLight(light_t light, vec3 pos, float dist) {
     new_light->tree_handle = light_tree.AddLeaf(new_light, pos.x, pos.y, pos.z);
 }
 
+/// Finds the 4 nearest lights to a given position.
+/// @param position Position from which the lights will be searched.
+/// @param dest     Pointer to an array of 4 light_t.
 void FindLights(vec3 position, light_t* dest) {
     Light* lights[4] = {nullptr, nullptr, nullptr, nullptr};
     light_tree.FindNearest(lights, position.x, position.y, position.z);
@@ -178,6 +226,7 @@ void FindLights(vec3 position, light_t* dest) {
     }
 }
 
+/// Removes a light from the light tree.
 void RemoveLight(light_t light) {
     Light* remove_light = nullptr;
     

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 // turning off an annoying warning in the library code
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsign-compare"
@@ -22,18 +21,28 @@
 
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <fstream>
+
+/**
+ * @struct tram::Render::Material render/material.h <render/material.h>
+ * 
+ * Material resource.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/render/material.html
+ */
 
 using namespace tram;
 
-template <> Pool<Render::Material> PoolProxy<Render::Material>::pool("material pool", 500);
+template <> Pool<Render::Material> PoolProxy<Render::Material>::pool("Material pool", RESOURCE_LIMIT_MATERIAL);
 
 namespace tram::Render {
 
-static Hashmap<Material*> material_list ("material name list", 500);
+static Hashmap<Material*> material_list("Material name list", RESOURCE_LIMIT_MATERIAL);
 
 /// Loads a Material definition file.
-void Material::LoadMaterialInfo(const char* filename){
+void Material::LoadMaterialInfo(const char* filename) {
     using namespace tram::Render;
     
     char path [100] = "data/";
@@ -281,7 +290,10 @@ void Material::LoadFromDisk() {
 
 }
 
-void Material::LoadFromMemory(){
+/// Pushes material textures to GPU.
+/// Except if software rendering is used, in which case the texures will merely
+/// be copied and converted.
+void Material::LoadFromMemory() {
     assert(status == LOADED);
 
     if (texture_type == TEXTURE_SOURCE) {

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <render/sprite.h>
 #include <render/renderer.h>
 #include <render/material.h>
@@ -11,15 +10,29 @@
 
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <fstream>
 #include <sstream>
+
+/**
+ * @struct tram::Render::Sprite render/sprite.h <render/sprite.h>
+ * 
+ * Sprite resource.
+ * 
+ * Sprites essentially just hold positions and sizes of rectangles, which
+ * correspond to some kind of features in the textures of the referenced
+ * Material.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/render/sprite.html
+ */
 
 using namespace tram;
 using namespace tram::Render;
 
-Hashmap<Sprite*> sprite_list ("SPRITE_LIST", 500);
+Hashmap<Sprite*> sprite_list("Sprite name list", RESOURCE_LIMIT_SPRITE);
 
-template <> Pool<Render::Sprite> PoolProxy<Render::Sprite>::pool("sprite pool", 500);
+template <> Pool<Render::Sprite> PoolProxy<Render::Sprite>::pool("Sprite pool", RESOURCE_LIMIT_SPRITE);
 
 Sprite* Sprite::Find(name_t name){
     auto sprite = sprite_list.Find(name);

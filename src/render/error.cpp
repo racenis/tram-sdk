@@ -1,3 +1,5 @@
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
+
 #include <render/error.h>
 
 namespace tram::Render {

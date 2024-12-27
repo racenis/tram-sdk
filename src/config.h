@@ -46,6 +46,8 @@ const uint32_t RESOURCE_LIMIT_SOUND = 100;
 const uint32_t RESOURCE_LIMIT_MODEL = 100;
 const uint32_t RESOURCE_LIMIT_PATH = 100;
 const uint32_t RESOURCE_LIMIT_COLLISION_MODEL = 500;
+const uint32_t RESOURCE_LIMIT_MATERIAL = 500;
+const uint32_t RESOURCE_LIMIT_SPRITE = 500;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |

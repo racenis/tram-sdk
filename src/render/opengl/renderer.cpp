@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <render/opengl/renderer.h>
 #include <render/vertices.h>
 #include <render/api.h>

@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 #include <framework/core.h>
 #include <framework/system.h>
 #include <framework/stats.h>
@@ -16,6 +15,12 @@
 #include <config.h>
 
 #include <cstring>
+
+/**
+ * @namespace tram::Render
+ * 
+ * High-level Render system API.
+ */
 
 using namespace tram;
 using namespace tram::Render;
@@ -43,6 +48,8 @@ static float screen_height = 600.0f;
 
 bool THIRD_PERSON = false;
 bool DRAW_RENDER_DEBUG = false;
+
+// TODO: make these static???
 
 vertexarray_t colorlines_vertex_array = {.generic = 0};
 drawlistentry_t colorlines_entry;
@@ -104,7 +111,6 @@ void Init () {
     
     // this will initialize the projection matrices
     Render::SetScreenSize(screen_width, screen_height);
-    
     
     // this is for rendering lines
     CreateVertexArray (GetVertexDefinition(VERTEX_LINE), colorlines_vertex_array);
@@ -252,17 +258,20 @@ quat GetViewRotation (layer_t layer) {
     return view_properties[layer].view_rotation;
 }
 
+/// Draws a line for a single frame.
 void AddLine(vec3 from, vec3 to, vec3 color) {
     colorlines.push_back({from, color});
     colorlines.push_back({to, color});
 }
 
+/// Draws a cross marker for a single frame.
 void AddLineMarker(vec3 location, vec3 color) {
     AddLine(location + vec3(-1.0f, 0.0f, 0.0f), location + vec3(1.0f, 0.0f, 0.0f), color);
     AddLine(location + vec3(0.0f, -1.0f, 0.0f), location + vec3(0.0f, 1.0f, 0.0f), color);
     AddLine(location + vec3(0.0f, 0.0f, -1.0f), location + vec3(0.0f, 0.0f, 1.0f), color);
 }
 
+/// Draws an AABB box for a single frame.
 void AddLineAABB(vec3 min, vec3 max, vec3 center, quat rotation, vec3 color) {
     vec3 point1 = center + (rotation * vec3 {min.x, min.y, min.z});
     vec3 point2 = center + (rotation * vec3 {max.x, max.y, max.z});
@@ -303,6 +312,7 @@ static constexpr vec3 sphere_p(int h, int w) {
     return {x, z, y};
 }
 
+/// Draws a sphere for a single frame.
 void AddSphere(vec3 pos, float radius, color_t color) {
     for (int i = 0; i < SPHERE_HEIGHT; i++) {
         for (int j = 0; j < SPHERE_WIDTH; j++) {
@@ -310,15 +320,18 @@ void AddSphere(vec3 pos, float radius, color_t color) {
         }
     }
 }
-    
+
+/// Draws a cylinder for a single frame.
 void AddCylinder(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
 }
 
+/// Draws a cube for a single frame.
 void AddCube(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
 }
 
+/// Draws text, in 3D space, for a single frame.
 void AddText(vec3 pos, const char* text, color_t color) {
     Project(pos, pos);
     if (pos.z > 1.0f) return;
@@ -341,6 +354,7 @@ void AddText(vec3 pos, const char* text, color_t color) {
     AddText(pos.x - w / 2.0f, pos.y - h / 2.0f, text);
 }
 
+/// Draws text, on the screen, for a single frame.
 void AddText(float x, float y, const char* text, color_t color) {
     float cur_x = x;
     float cur_y = y;
@@ -414,6 +428,7 @@ void AddText(float x, float y, const char* text, color_t color) {
     }
 }
 
+/// Projects a point into screen coordinates.
 void Project(const vec3& point, vec3& result, layer_t layer) {
     result = glm::project(point, 
                           view_properties[layer].view, 
@@ -422,6 +437,7 @@ void Project(const vec3& point, vec3& result, layer_t layer) {
     result.y = screen_height - result.y;
 }
 
+/// Reverses screen coordinates into world coordinates.
 vec3 ProjectInverse(vec3 point, layer_t layer) {
     point.y =  screen_height - point.y;
     vec3 result = glm::unProject(point,
@@ -451,6 +467,7 @@ static const char* material_type_names[MAX_MATERIAL_TYPES] = {
     "MATERIAL_FLAT_COLOR"
 };
 
+/// Allocates a new vertex format.
 vertexformat_t RegisterVertexFormat(const char* name) {
     assert(last_vertex_format < MAX_MATERIAL_TYPES);
     
@@ -459,6 +476,7 @@ vertexformat_t RegisterVertexFormat(const char* name) {
     return last_vertex_format++;
 }
 
+/// Allocates a new material type. 
 materialtype_t RegisterMaterialType(const char* name) {
     assert(last_material_type < MAX_MATERIAL_TYPES);
     
@@ -467,6 +485,7 @@ materialtype_t RegisterMaterialType(const char* name) {
     return last_material_type++;
 }
 
+/// Finds an already allocated vertex format by its name.
 vertexformat_t FindVertexFormat(const char* name) {
     for (uint32_t i = 0; i < last_vertex_format; i++) {
         if (strcmp(vertex_format_names[i], name) == 0) return i;
@@ -475,6 +494,7 @@ vertexformat_t FindVertexFormat(const char* name) {
     return -1;
 }
 
+/// Finds an already material type format by its name.
 materialtype_t FindMaterialType(const char* name) {
     for (uint32_t i = 0; i < last_material_type; i++) {
         if (strcmp(material_type_names[i], name) == 0) return i;
@@ -483,12 +503,14 @@ materialtype_t FindMaterialType(const char* name) {
     return -1;
 }
 
+/// Finds an allocated vertex format's name.
 const char* GetVertexFormatName(vertexformat_t type) {
     assert(type < MAX_VERTEX_FORMATS);
     
     return vertex_format_names[type];
 }
 
+/// Finds an allocated material type's name.
 const char* GetMaterialTypeName(materialtype_t type) {
     assert(type < MAX_MATERIAL_TYPES);
     

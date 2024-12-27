@@ -1,5 +1,4 @@
-//clTabCtrl TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
-
+// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #ifndef TRAM_SDK_RENDER_ERROR_H
 #define TRAM_SDK_RENDER_ERROR_H
