@@ -1,6 +1,10 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <framework/system.h>
+
+#include <framework/logging.h>
+#include <config.h>
+
 #include <cassert>
 #include <cstring>
 
@@ -27,21 +31,20 @@ namespace tram::System {
 struct SystemInfo {
     char const* name;
     char const* short_name;
-    bool is_initialized;
-    bool is_updated;
+    SystemState state;
 };
 
-static SystemInfo system_infos[128] = {
-    {"Invalid",                     "INV",      false, false},
-    {"Core",                        "CORE",     false, false},
-    {"Platform",                    "PLATFORM", false, false},
-    {"User Interface",              "UI",       false, false},
-    {"Graphical User Interface",    "GUI",      false, false},
-    {"Async",                       "ASYNC",    false, false},
-    {"Rendering",                   "RENDER",   false, false},
-    {"Physics",                     "PHYSICS",  false, false},
-    {"Audio",                       "AUDIO",    false, false},
-    {"Misc",                        "MISC",     false, false},
+static SystemInfo system_infos[SYSTEM_LIMIT] = {
+    {"Invalid",                     "INV",      YEET},
+    {"Core",                        "CORE",     YEET},
+    {"Platform",                    "PLATFORM", YEET},
+    {"User Interface",              "UI",       YEET},
+    {"Graphical User Interface",    "GUI",      YEET},
+    {"Async",                       "ASYNC",    YEET},
+    {"Rendering",                   "RENDER",   YEET},
+    {"Physics",                     "PHYSICS",  YEET},
+    {"Audio",                       "AUDIO",    YEET},
+    {"Misc",                        "MISC",     YEET},
 };
 
 static uint32_t last_system = SYSTEM_LAST; 
@@ -50,13 +53,18 @@ static uint32_t last_system = SYSTEM_LAST;
 /// @param name Full name of the system.
 /// @param short_name Name of the system that will be displayed in log messages.
 uint32_t Register(char const* name, char const* short_name) {
-    assert(last_system < 128);
-    
+    if (last_system >= SYSTEM_LIMIT) {
+        Log("System {} could not be registered, SYSTEM_LIMIT exceeded!", name);
+        return System::INVALID;
+    }
+
+    // TODO: check if system with name doesn't already exist
+    // also short name
+
     system_infos[last_system] = SystemInfo {
         .name = name,
         .short_name = short_name,
-        .is_initialized = false,
-        .is_updated = false
+        .state = YEET
     };
     
     return last_system++;
@@ -73,7 +81,7 @@ system_t Find(char const* name) {
         }
     }
     
-    return SYSTEM_INVALID;
+    return System::INVALID;
 }
 
 /// Retrieves the full name of a system.
@@ -91,8 +99,8 @@ char const* GetShortName(uint32_t system) {
 /// Sets the initialization status of a system.
 void SetInitialized(uint32_t system, bool is_initialized) {
     assert(system < last_system);
-    assert(system != SYSTEM_INVALID);
-    system_infos[system].is_initialized = is_initialized;
+    assert(system != System::INVALID);
+    system_infos[system].state = READY;
 }
 
 /// Checks if a system is initialized.
@@ -101,23 +109,38 @@ bool IsInitialized(uint32_t system) {
         return false;
     }
     
-    return system_infos[system].is_initialized;
+    return system_infos[system].state == READY;
 }
 
-/// Sets the update status of a system.
-void SetUpdated(uint32_t system, bool is_updated) {
-    assert(system < last_system);
-    assert(system != SYSTEM_INVALID);
-    system_infos[system].is_updated = is_updated;
-}
-
-/// Checks if a system is updated.
-bool IsUpdated(uint32_t system) {
+void SetState(system_t system, SystemState state) {
     if (system >= last_system) {
-        return false;
+        Log(Severity::ERROR, System::CORE, "Attempting to set the state of an invalid system_t '{}'", system);
+        return;
     }
     
-    return system_infos[system].is_updated;
+    system_infos[system].state = state;
+}
+
+void AssertDependency(system_t system) {
+    if (system >= last_system) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Attempting assert dependency on invalid system_t '{}'", system);
+        return;
+    }
+    
+    // check if system is fully initialized
+    if (system_infos[system].state == READY) return;
+    
+    // otherwise proceed to crash
+    Log(Severity::CRITICAL_ERROR, System::CORE, "Dependency on system {} assertion failed", system);
+    
+    abort();
+    
+    // 3 possible messages:
+    // - assert while no system is initing
+    // - assert while a single system is initing
+    // - assert when multiple are initing
+    
+    // TODO: finish
 }
 
 /// Returns the total count of registered systems.

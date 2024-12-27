@@ -40,8 +40,8 @@ id_t look_at_entity = 0;
 quat look_at_direction = {1.0f, 0.0f, 0.0f, 0.0f};
 
 void Init() {
-    assert(System::IsInitialized(System::SYSTEM_RENDER) && "Render system needs to be initialized first!");
-    assert(System::IsInitialized(System::SYSTEM_AUDIO) && "Audio system needs to be initialized first!");
+    assert(System::IsInitialized(System::RENDER) && "Render system needs to be initialized first!");
+    assert(System::IsInitialized(System::AUDIO) && "Audio system needs to be initialized first!");
     assert(CAMERA_SYSTEM == -1u && "Camera system is already initialized!");
     
     Settings::Register(&shake_multiplier, "camerashake");

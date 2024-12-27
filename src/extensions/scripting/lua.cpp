@@ -224,26 +224,26 @@ static void load_script(const char* script) {
     std::string path = std::string("scripts/") + script + ".lua";
     
     if (luaL_loadfile(L, path.c_str())) {
-        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in loading {} \n {}", path, lua_tostring(L, -1));
+        Log(Severity::ERROR, System::MISC, "Was an error in loading {} \n {}", path, lua_tostring(L, -1));
         lua_pop(L, 1);
         return;
     }
 
     if (lua_pcall(L, 0, LUA_MULTRET, 0)) {
-        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in executing {} \n {}", path, lua_tostring(L, -1));
+        Log(Severity::ERROR, System::MISC, "Was an error in executing {} \n {}", path, lua_tostring(L, -1));
         lua_pop(L, 1);
     }
 }
 
 static value_t evaluate(const char* script) {
     if (luaL_loadbuffer(L, script, strlen(script), "eval_buffer")) {
-        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in loading {} \n {}", script, lua_tostring(L, -1));
+        Log(Severity::ERROR, System::MISC, "Was an error in loading {} \n {}", script, lua_tostring(L, -1));
         lua_pop(L, 1);
         return value_t();
     }
 
     if (lua_pcall(L, 0, 1, 0)) {
-        Log(System::SYSTEM_MISC, SEVERITY_ERROR, "Was an error in executing {} \n {}", script, lua_tostring(L, -1));
+        Log(Severity::ERROR, System::MISC, "Was an error in executing {} \n {}", script, lua_tostring(L, -1));
         lua_pop(L, 1);
         return value_t();
     }

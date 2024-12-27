@@ -683,10 +683,10 @@ void StatisticsMenu::Display() {
         uint32_t vram_mb_w = vram_kb / 1000;
         uint32_t vram_mb_f = vram_kb % 1000;
         
-        snprintf(render_str1, 16, "Render %.2fms", 1000 * Stats::GetStatAverage(System::SYSTEM_RENDER));
+        snprintf(render_str1, 16, "Render %.2fms", 1000 * Stats::GetStatAverage(System::RENDER));
         snprintf(render_str2, 24, "VRAM %i %i KB", vram_mb_w, vram_mb_f);
         snprintf(render_str3, 16, "Draw %i", (int)Stats::GetStat(Stats::RESOURCE_DRAWCALL));
-        snprintf(physics_str, 24, "Physics %.2fms", 1000 * Stats::GetStatAverage(System::SYSTEM_PHYSICS));
+        snprintf(physics_str, 24, "Physics %.2fms", 1000 * Stats::GetStatAverage(System::PHYSICS));
 
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
         GUI::PushFrameRelative(GUI::FRAME_LEFT, 275);

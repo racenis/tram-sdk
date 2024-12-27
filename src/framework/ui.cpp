@@ -116,11 +116,11 @@ void BindKeyboardKey(KeyboardKey key, void (*action)(KeyboardKey)) {
 }
 
 void Init() {
-    assert(System::IsInitialized(System::SYSTEM_CORE));
+    assert(System::IsInitialized(System::CORE));
     
     Platform::Window::Init();
     
-    System::SetInitialized(System::SYSTEM_UI, true);
+    System::SetInitialized(System::UI, true);
 }
 
 void Uninit() {

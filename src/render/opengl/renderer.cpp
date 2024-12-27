@@ -720,6 +720,8 @@ void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, u
         case GL_DEBUG_TYPE_OTHER_ARB:               type_str = "OTHER";                 break;
     }
 
+    
+
     switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH_ARB:            severity_str = "HIGH";              break;
         case GL_DEBUG_SEVERITY_MEDIUM_ARB:          severity_str = "MEDIUM";            break;

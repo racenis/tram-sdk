@@ -39,9 +39,9 @@ public:
         FILE* file_handle = fopen(path, "rb");
     
         if (file_handle != nullptr) {
-            Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Opened file for reading: {}", path);
+            Log (Severity::INFO, System::PLATFORM, "Opened file for reading: {}", path);
         } else {
-            Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Failed to open file for reading: {}", path);
+            Log (Severity::INFO, System::PLATFORM, "Failed to open file for reading: {}", path);
             return;
         }
         
@@ -52,7 +52,7 @@ public:
         char* file_data = new char[file_size + 1];
         
         fread(file_data, file_size, 1, file_handle);
-        Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Read {} bytes from file: {}", file_size, path);
+        Log (Severity::INFO, System::PLATFORM, "Read {} bytes from file: {}", file_size, path);
 
         file_data[file_size] = '\0';
 
@@ -61,7 +61,7 @@ public:
         this->contents = file_data;
         this->length = file_size;
         
-        Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Closed file: {}", path);
+        Log (Severity::INFO, System::PLATFORM, "Closed file: {}", path);
     }
     
     ~DiskReader() {
@@ -114,9 +114,9 @@ public:
         this->file_handle = fopen(path, "wb");
 
         if (file_handle != nullptr) {
-            Log (SEVERITY_INFO, System::SYSTEM_PLATFORM, "Opened file for writing: {}", path);
+            Log (Severity::INFO, System::PLATFORM, "Opened file for writing: {}", path);
         } else {
-            Log (SEVERITY_ERROR, System::SYSTEM_PLATFORM, "Failed to open file for writing: {}", path);
+            Log (Severity::ERROR, System::PLATFORM, "Failed to open file for writing: {}", path);
             return;
         }
     }

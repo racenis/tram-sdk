@@ -25,7 +25,7 @@ static std::vector<Severity> severities;
 ///                     All lower severities will be filtered out.
 void SetSystemLoggingSeverity(System::system_t system, Severity min_severity) {
     if (system >= severities.size()) {
-        severities.assign(system + 1, SEVERITY_WARNING);
+        severities.assign(system + 1, Severity::WARNING);
     }
     
     severities[system] = min_severity;
@@ -68,22 +68,22 @@ void concat_fmt(std::string_view& str) {
     str.remove_prefix(close_bracket + 1);
 }
 
-void flush_console(int severity, int system) {
+void flush_console(Severity severity, System::system_t system) {
     const bool severity_known = (size_t) system < severities.size();
-    if ((!severity_known && severity < 1) || (severity_known && severity < severities[system])) {
+    if ((!severity_known && severity < Severity::WARNING) || (severity_known && severity < severities[system])) {
         buffer[0] = '\0';
         return;
     }
     
-    const char* severity_text;
+    const char* severity_text = nullptr;
     
     switch (severity) {
-        case 4:     severity_text = "[    ]";   break;
-        case 3:     severity_text = "[CRIT]";   break;
-        case 2:     severity_text = "[ERRR]";   break;
-        case 1:     severity_text = "[WARN]";   break;
-        case 0:     severity_text = "[INFO]";   break;
-        default:    severity_text = "[    ]";   break;
+        case Severity::DEFAULT:         severity_text = "[    ]";   break;
+        case Severity::WARNING:         severity_text = "[CRIT]";   break;
+        case Severity::ERROR:           severity_text = "[ERRR]";   break;
+        case Severity::CRITICAL_ERROR:  severity_text = "[WARN]";   break;
+        case Severity::INFO:            severity_text = "[INFO]";   break;
+        default:                        severity_text = "[    ]";   break;     
     }
     
     const char* system_text = system == 6 ? nullptr : System::GetShortName(system);
@@ -93,16 +93,16 @@ void flush_console(int severity, int system) {
     }
     
     if (console_log_callback) {
-        console_log_callback(severity, buffer);
+        console_log_callback(0, buffer);
     }
     
     std::cout << buffer << std::endl;
     buffer[0] = '\0';
 }
 
-void flush_display(int severity, int system) {
+void flush_display(int time, int system) {
     if (display_log_callback) {
-        display_log_callback(severity, buffer);
+        display_log_callback(time, buffer);
     }
     
     buffer[0] = '\0';

@@ -27,15 +27,15 @@ static ALCcontext* sound_context = nullptr;
 void Init() {
     sound_device = alcOpenDevice(nullptr);
     if (!sound_device) {
-        Log(SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio device didn't open!");
+        Log(Severity::ERROR, System::AUDIO, "Audio device didn't open!");
     }
     
     sound_context = alcCreateContext(sound_device, nullptr);
     if (!sound_context) {
-        Log(SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio context didn't create!");
+        Log(Severity::ERROR, System::AUDIO, "Audio context didn't create!");
     }
     if (!alcMakeContextCurrent(sound_context)) {
-        Log(SEVERITY_ERROR, System::SYSTEM_AUDIO, "Audio context didn't get currented!");
+        Log(Severity::ERROR, System::AUDIO, "Audio context didn't get currented!");
     }
     
     const char* device_name = nullptr;
@@ -47,7 +47,7 @@ void Init() {
         device_name = alcGetString(sound_device, ALC_DEVICE_SPECIFIER);
     }
     
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "{}", device_name);
+    Log(Severity::INFO, System::AUDIO, "{}", device_name);
 }
 
 void Update() {        
@@ -83,7 +83,7 @@ audiobuffer_t MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t
     audiobuffer_t generated_buffer = {.al_buffers = new uint32_t[buffer_count],
                                       .al_buffer_count = buffer_count};
                                       
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Generating {} buffers", buffer_count);
+    Log(Severity::INFO, System::AUDIO, "Generating {} buffers", buffer_count);
 
     alGenBuffers(buffer_count, generated_buffer.al_buffers);
 

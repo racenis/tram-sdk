@@ -127,7 +127,7 @@ static void DebugMenuKeyboard () {
 }
 
 void Init() {
-    assert(System::IsInitialized(System::SYSTEM_GUI) && "GUI system needs to be initialized first!");
+    assert(System::IsInitialized(System::GUI) && "GUI system needs to be initialized first!");
     assert(MENU_SYSTEM == -1u && "Menu system is already initialized!");
     
     Material::Make(UID("ui/font_widgets"),     MATERIAL_GLYPH)->Load();
@@ -259,8 +259,8 @@ void DebugMenue() {
     //if (debugdraw_stats) {
         //char meminfobuffer[100]; char timeinfobuffer[100]; char fpsinfobuffer[100];
         //sprintf(meminfobuffer, "VRAM approximate usage: %lldKB", (Stats::GetStat(Stats::RESOURCE_VRAM) / 1024));
-        //sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::GetStat(System::SYSTEM_RENDER));
-        //sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::GetStat(System::SYSTEM_RENDER)));
+        //sprintf(timeinfobuffer, "Frame time avg: %.2fms", Stats::GetStat(System::RENDER));
+        //sprintf(fpsinfobuffer, "FPS last second: %.2ffps", (1000.0f / Stats::GetStat(System::RENDER)));
         //GUI::Text(meminfobuffer, 2); GUI::FrameBreakLine();
         //GUI::Text(timeinfobuffer, 2); GUI::FrameBreakLine();
         //GUI::Text(fpsinfobuffer, 2); GUI::FrameBreakLine();

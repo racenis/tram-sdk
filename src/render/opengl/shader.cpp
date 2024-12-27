@@ -78,7 +78,7 @@ uint32_t LoadVertexShader(name_t name) {
     FileReader* file = FileReader::GetReader(path);
     
     if (file->GetStatus() != FileStatus::READY) {
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Can't find vertex shader source file {}!", UID(path));
+        Log(Severity::ERROR, System::RENDER, "Can't find vertex shader source file {}!", UID(path));
     }
 
     uint32_t compiled_program = glCreateShader(GL_VERTEX_SHADER);
@@ -93,7 +93,7 @@ uint32_t LoadVertexShader(name_t name) {
         char compile_error[420];
         glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
         
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Vertex shader {} compile error:\n{}", UID(name), UID(compile_error));
+        Log(Severity::ERROR, System::RENDER, "Vertex shader {} compile error:\n{}", UID(name), UID(compile_error));
         
         abort();
     }
@@ -125,7 +125,7 @@ uint32_t LoadFragmentShader(name_t name) {
     FileReader* file = FileReader::GetReader(path);
     
     if (file->GetStatus() != FileStatus::READY) {
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Can't find fragment shader source file {}!", UID(path));
+        Log(Severity::ERROR, System::RENDER, "Can't find fragment shader source file {}!", UID(path));
     }
 
     uint32_t compiled_program = glCreateShader(GL_FRAGMENT_SHADER);
@@ -140,7 +140,7 @@ uint32_t LoadFragmentShader(name_t name) {
         char compile_error[420];
         glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
         
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Fragment shader {} compile error:\n{}", UID(name), UID(compile_error));
+        Log(Severity::ERROR, System::RENDER, "Fragment shader {} compile error:\n{}", UID(name), UID(compile_error));
         
         abort();
     }
@@ -171,7 +171,7 @@ uint32_t LinkShader(uint32_t vertex_shader, uint32_t fragment_shader) {
         char link_error[420];
         glGetShaderInfoLog(linked_shader, 420, NULL, link_error);
         
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "Shader link error:\n{}", UID(link_error));
+        Log(Severity::ERROR, System::RENDER, "Shader link error:\n{}", UID(link_error));
         
         abort();
     }
@@ -260,7 +260,7 @@ uint32_t FindShader(vertexformat_t format, materialtype_t type) {
     LinkedShader& shader = linked_shaders[shader_index];
     
     if (shader.material_type != type || shader.vertex_format != format) {
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, 
+        Log(Severity::ERROR, System::RENDER, 
             "Can't find shader for combination of {} and {}!",
             GetVertexFormatName(format), GetMaterialTypeName(type)
         );

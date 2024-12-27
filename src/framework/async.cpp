@@ -68,7 +68,7 @@ static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", RESOURC
 /// Can be set to nullptr, in which case nothing will be notified.
 /// @param requested_resource The resource that will be loaded.
 void RequestResource(EntityComponent* requester, Resource* resource) {
-    assert(System::IsInitialized(System::SYSTEM_ASYNC));
+    assert(System::IsInitialized(System::ASYNC));
     
     disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
         .requester = requester,
@@ -175,7 +175,8 @@ void FinishResources() {
 /// Starts the async resource loader thread.
 /// @param Number of threads for async loading.
 void Init(size_t threads) {
-    assert(System::IsInitialized(System::SYSTEM_CORE));
+    System::SetState(System::ASYNC, System::INIT);
+    System::AssertDependency(System::CORE);
     
 #ifdef __EMSCRIPTEN__
     threads = 0;
@@ -189,12 +190,12 @@ void Init(size_t threads) {
         }
     }
     
-    System::SetInitialized(System::SYSTEM_ASYNC, true);
+    System::SetState(System::ASYNC, System::READY);
 }
 
 /// Stops the async resource loader thread.
 void Yeet() {
-    assert(System::IsInitialized(System::SYSTEM_ASYNC));
+    assert(System::IsInitialized(System::ASYNC));
     
     loaders_should_stop = true;
     
@@ -202,7 +203,7 @@ void Yeet() {
         loader.join();
     }
     
-    System::SetInitialized(System::SYSTEM_ASYNC, false);
+    System::SetInitialized(System::ASYNC, false);
 }
 
 /// Returns number of resources in queues.

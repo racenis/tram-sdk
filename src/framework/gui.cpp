@@ -94,10 +94,10 @@ using namespace tram::Render::API;
 /// Performs initialization of the GUI system.
 /// Render system must be initialized first.
 void Init() {
-    assert(!System::IsInitialized(System::SYSTEM_GUI) && "GUI system already initialized!");
-    assert(System::IsInitialized(System::SYSTEM_RENDER) && "Need to initialize Render system first!");
+    assert(!System::IsInitialized(System::GUI) && "GUI system already initialized!");
+    assert(System::IsInitialized(System::RENDER) && "Need to initialize Render system first!");
     
-    Log (SEVERITY_INFO, System::SYSTEM_GUI, "Initializing GUI system.");
+    Log (Severity::INFO, System::GUI, "Initializing GUI system.");
     
     using namespace tram::Render;
     
@@ -112,7 +112,7 @@ void Init() {
         keycode_queue.push_back(evt.subtype);
     });
     
-    System::SetInitialized(System::SYSTEM_GUI, true);
+    System::SetInitialized(System::GUI, true);
 }
 
 /// Submits registered fonts to the renderer.
@@ -129,7 +129,7 @@ void UpdateDrawListFonts() {
         glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetTexture();
         
         if (fonts[i]->GetStatus() != Resource::READY) {
-            Log (SEVERITY_ERROR, System::SYSTEM_GUI, "Font {} is not loaded!", i);
+            Log (Severity::ERROR, System::GUI, "Font {} is not loaded!", i);
         }
     }
     
@@ -163,8 +163,8 @@ void Update() {
 /// Registers a font.
 /// @return     Font handle that can be used with all of the GUI widget functions.
 font_t RegisterFont (Render::Sprite* sprite) {
-    if (!System::IsInitialized (System::SYSTEM_GUI)) {
-        Log (System::SYSTEM_GUI, SEVERITY_ERROR, "GUI is not initialized, font {} was not registered!", sprite->GetName());
+    if (!System::IsInitialized (System::GUI)) {
+        Log(Severity::ERROR, System::GUI, "GUI is not initialized, font {} was not registered!", sprite->GetName());
         return -1;
     }
     
@@ -182,7 +182,7 @@ font_t RegisterFont (Render::Sprite* sprite) {
         }
     }
     
-    Log(System::SYSTEM_GUI, SEVERITY_ERROR, "Ran out of font slots, font {} was not registered!", sprite->GetName());
+    Log(Severity::ERROR, System::GUI,"Ran out of font slots, font {} was not registered!", sprite->GetName());
     
     return -1;
 }

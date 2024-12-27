@@ -877,7 +877,7 @@ int main() {
     StaticWorldObject::Register();
     Ext::Kitchensink::Button::Register();
 
-    SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
+    SetSystemLoggingSeverity(System::PLATFORM, Severity::WARNING);
     
 	Core::Init();
 	UI::Init();

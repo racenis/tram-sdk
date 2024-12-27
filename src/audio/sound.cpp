@@ -39,14 +39,14 @@ void Sound::LoadFromDisk() {
     
     snprintf(path, PATH_LIMIT, "data/audio/%s.ogg", (const char*)name);
     
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Loading: {} ", path);
+    Log(Severity::INFO, System::AUDIO, "Loading: {} ", path);
     sound_length = stb_vorbis_decode_filename(path, &channels, &sample_rate, &sound_data);
     
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Bytelength: {} Channels: {} SampleRate: {} ", sound_length, channels, sample_rate);
+    Log(Severity::INFO, System::AUDIO, "Bytelength: {} Channels: {} SampleRate: {} ", sound_length, channels, sample_rate);
     
     if (sound_length < 0) {
         load_fail = true;
-        Log(SEVERITY_WARNING, System::SYSTEM_AUDIO, "Failed to load: {}", path);
+        Log(Severity::WARNING, System::AUDIO, "Failed to load: {}", path);
         
         // TODO: generate an error audio
         

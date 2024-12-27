@@ -77,6 +77,9 @@ const uint32_t COMPONENT_LIMIT_TRIGGER = 50;
 // Limit for file path length, e.g. "data/textures/material001.png"
 const size_t PATH_LIMIT = 200;
 
+// Limit for system count
+const size_t SYSTEM_LIMIT = 128;
+
 // Limit for scriptable entity types
 const uint32_t SCRIPTABLE_ENTITY_TYPE_LIMIT = 50;
 

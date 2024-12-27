@@ -47,9 +47,9 @@ id_t GenerateID() {
 
 /// Initializes the core of the framework.
 void Core::Init() {
-    assert(!System::IsInitialized(System::SYSTEM_CORE));
+    assert(!System::IsInitialized(System::CORE));
     
-    System::SetInitialized(System::SYSTEM_CORE, true);
+    System::SetInitialized(System::CORE, true);
     
     std::cout << GetVersion() << std::endl;
 }
@@ -73,9 +73,7 @@ void Core::Update() {
         .poster_id = 0
     });
     
-    for (System::system_t i = System::SYSTEM_CORE; i < System::GetSystemCount(); i++) {
-        System::SetUpdated(i, false);
-    }
+    
 }
 
 /// Returns the current tick.

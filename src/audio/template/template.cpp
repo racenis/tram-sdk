@@ -17,7 +17,7 @@
 namespace tram::Audio::API {
 
 void Init() {
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Audio API initialized.");
+    Log(Severity::INFO, System::AUDIO, "Audio API initialized.");
 }
 
 void Update() {        
@@ -25,7 +25,7 @@ void Update() {
 }
 
 void Uninit() {
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Audio API uninitialized.");
+    Log(Severity::INFO, System::AUDIO, "Audio API uninitialized.");
 }
 
 /// Sets the listener position.
@@ -47,19 +47,19 @@ void SetListenerOrientation(quat orientation) {
 /// @param length           Length of the raw audio data, in samples.
 /// @param buffer_count     Created buffer count will be stored in this variable.
 audiobuffer_t MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels) {
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Created an audio buffer of {}@{}hz!", length, samples);
+    Log(Severity::INFO, System::AUDIO, "Created an audio buffer of {}@{}hz!", length, samples);
     return audiobuffer_t {.generic = nullptr};
 }
 
 /// Deletes audio buffers.
 void RemoveAudioBuffer(audiobuffer_t buffer) {
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Deleted audio buffer.");
+    Log(Severity::INFO, System::AUDIO, "Deleted audio buffer.");
 }
 
 /// Creates an audio source.
 /// @return A new audio source handle.
 audiosource_t MakeAudioSource() {
-    Log(SEVERITY_INFO, System::SYSTEM_AUDIO, "Created an audio source.");
+    Log(Severity::INFO, System::AUDIO, "Created an audio source.");
     return audiosource_t {.generic = nullptr};
 }
 

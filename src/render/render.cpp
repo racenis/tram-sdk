@@ -104,8 +104,8 @@ static void update_light(layer_t layer) {
 /// Initializes the rendering system.
 /// @note Core and UI systems need to be initialized before initializing the render system.
 void Init () {
-    assert(System::IsInitialized(System::SYSTEM_CORE));
-    assert(System::IsInitialized(System::SYSTEM_UI));
+    assert(System::IsInitialized(System::CORE));
+    assert(System::IsInitialized(System::UI));
     
     API::Init();
     
@@ -146,12 +146,12 @@ void Init () {
     texturehandle_t debugtext_texture = font_debug->GetMaterial()->GetTexture();
     SetDrawListTextures(debugtext_entry, 1, &debugtext_texture);
     
-    System::SetInitialized(System::SYSTEM_RENDER, true);
+    System::SetInitialized(System::RENDER, true);
 }
 
 /// Renders a single frame.
 void Render () {
-    Stats::Start(System::SYSTEM_RENDER);
+    Stats::Start(System::RENDER);
 #ifndef ENGINE_EDITOR_MODE
     // idk if these need to be here -> after all, the armatures aren't updated in here?
     for (auto& it : PoolProxy<SpriteComponent>::GetPool()) it.Update();
@@ -170,7 +170,7 @@ void Render () {
     textvertices.clear();
     
     RenderFrame();
-    Stats::Stop(System::SYSTEM_RENDER);
+    Stats::Stop(System::RENDER);
 }
 
 /// Sets the sun direction.

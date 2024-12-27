@@ -10,19 +10,19 @@ namespace tram::Physics {
 
 /// Initializes the physics system.
 void Init() {
-    assert(!System::IsInitialized(System::SYSTEM_PHYSICS));
+    assert(!System::IsInitialized(System::PHYSICS));
     
     API::Init();
     
-    System::SetInitialized(System::SYSTEM_PHYSICS, true);
+    System::SetInitialized(System::PHYSICS, true);
 }
 
 /// Updates the physics system.
 /// Should only be called once in the update cycle.
 void Update() {
-    Stats::Start(System::SYSTEM_PHYSICS);
+    Stats::Start(System::PHYSICS);
     API::StepPhysics();
-    Stats::Stop(System::SYSTEM_PHYSICS);
+    Stats::Stop(System::PHYSICS);
 }
 
 /// Performs a raycast.

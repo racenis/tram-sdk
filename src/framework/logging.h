@@ -10,6 +10,14 @@
 
 namespace tram {
 
+enum class Severity {
+    INFO,           //< For debugging and other verbose messages. Not printed by default.
+    WARNING,        //< For errors that are corrected and require no end-user intervention.
+    ERROR,          //< For significant erros that can be corrected, but require the end-user to be notified.
+    CRITICAL_ERROR, //< For errors that cannot be recovered from.
+    DEFAULT         //< Informational messages, always printed.
+};
+
 namespace implementation {
     template <typename T> void concat(const T& value) {
         concat<const char*>("LOGGER_UNDEFINED_TYPE");
@@ -38,17 +46,17 @@ namespace implementation {
     }
     
     void concat_fmt(std::string_view& str);
-    void flush_console(int severity, int system);
-    void flush_display(int severity, int system);
+    void flush_console(Severity severity, System::system_t system);
+    void flush_display(int time, System::system_t system);
     
     
-    inline void log(void(*flush)(int, int), int severity, int system, std::string_view& format) {
+    inline void log(void(*flush)(Severity, System::system_t), Severity severity, System::system_t system, std::string_view& format) {
         concat_fmt(format);
         flush(severity, system);
     }
 
     template <typename T, typename... Args>
-    void log(void(*flush)(int, int), int severity, int system, std::string_view& format, T value, Args&&... args) {
+    void log(void(*flush)(Severity, System::system_t), Severity severity, System::system_t system, std::string_view& format, T value, Args&&... args) {
         concat_fmt(format);
         concat<T>(value);
         
@@ -56,38 +64,27 @@ namespace implementation {
     }
 }
 
-enum Severity {
-    SEVERITY_INFO,              //< For debugging and other verbose messages. Not printed by default.
-    SEVERITY_WARNING,           //< For errors that are corrected and require no end-user intervention.
-    SEVERITY_ERROR,             //< For significant erros that can be corrected, but require the end-user to be notified.
-    SEVERITY_CRITICAL_ERROR,    //< For errors that cannot be recovered from.
-    SEVERITY_DEFAULT            //< Informational messages, always printed.
-};
-
 void SetSystemLoggingSeverity(System::system_t system, Severity min_severity);
 
 void SetDisplayLogCallback(void(int, const char*));
 void SetConsoleLogCallback(void(int, const char*));
 
-// TODO: switch int severity to ... severity_t?? just Severity?
-// TODO: switch int system to system_t
-
 template <typename... Args>
-void Log(int severity, int system, const std::string_view& format, Args&&... args) {
+void Log(Severity severity, System::system_t system, const std::string_view& format, Args&&... args) {
     std::string_view format_view = format;
     implementation::log(implementation::flush_console, severity, system, format_view, args...);
 }
 
 template <typename... Args>
-void Log(int system, const std::string_view& format, Args&&... args) {
+void Log(System::system_t system, const std::string_view& format, Args&&... args) {
     std::string_view format_view = format;
-    implementation::log(implementation::flush_console, SEVERITY_DEFAULT, system, format_view, args...);
+    implementation::log(implementation::flush_console, Severity::DEFAULT, system, format_view, args...);
 }
 
 template <typename... Args>
 void Log(const std::string_view& format, Args&&... args) {
     std::string_view format_view = format;
-    implementation::log(implementation::flush_console, SEVERITY_DEFAULT, 6, format_view, args...);
+    implementation::log(implementation::flush_console, Severity::DEFAULT, 6, format_view, args...);
 }
 
 template <typename... Args>

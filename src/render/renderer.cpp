@@ -62,7 +62,7 @@ void RegisterVertexDefinition (vertexformat_t format, VertexDefinition definitio
     assert(format < MAX_VERTEX_TYPES);
     
     if (all_vertex_definitions[format].registered) {
-        Log(SEVERITY_WARNING, System::SYSTEM_RENDER, "VertexDefinition for format {} already registered, overwriting.", format);
+        Log(Severity::WARNING, System::RENDER, "VertexDefinition for format {} already registered, overwriting.", format);
         // TODO: replace raw format int with a name
     }
     
@@ -77,7 +77,7 @@ VertexDefinition GetVertexDefinition(vertexformat_t format) {
     assert(format < MAX_VERTEX_TYPES);
     
     if (!all_vertex_definitions[format].registered) {
-        Log(SEVERITY_ERROR, System::SYSTEM_RENDER, "VertexDefinition for format {} not registered!", format);
+        Log(Severity::ERROR, System::RENDER, "VertexDefinition for format {} not registered!", format);
         // TODO: replace raw format int with a name
         
         format = 0; // we do need to return something.
