@@ -17,8 +17,11 @@ const uint32_t MAX_VERTEX_SHADERS = 20;
 const uint32_t MAX_FRAGMENT_SHADERS = 20;
 const uint32_t MAX_LINKED_SHADERS = 40;
 
+// Rate of fixed updates
+const float TICK_RATE = 1.0f / 60.0f;
 
-
+// Initial first person camera sensitivity
+const float CAMERA_MULTIPLIER = 1.0f / 8.0f;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |

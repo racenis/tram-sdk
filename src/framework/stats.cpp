@@ -73,7 +73,7 @@ void Remove(Resource resource, size_t ammount) {
 
 /// Collates all of the time statistics.
 void Collate() {
-    assert(last_collate_frame != GetTick() && "Don't call Collate() twice in an update cycle.");
+    assert(last_collate_frame != GetFrame() && "Don't call Collate() twice in an update cycle.");
     
     if (last_collate_time != (uint32_t)Platform::Window::GetTime()) {
         last_collate_time = Platform::Window::GetTime();
@@ -85,7 +85,7 @@ void Collate() {
         }
     }
     
-    last_collate_frame = GetTick();
+    last_collate_frame = GetFrame();
     
     for (auto& stat : all_stats) {
         assert(stat.time_started == -1.0f);

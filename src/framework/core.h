@@ -12,7 +12,12 @@ typedef uint32_t id_t;
 id_t GenerateID();
 
 uint32_t GetTick();
+uint32_t GetFrame();
+
 double GetTickTime();
+double GetFrameTime();
+
+uint32_t GetDeltaTick();
 float GetDeltaTime();
 
 const char* GetVersion();

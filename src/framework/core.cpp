@@ -4,8 +4,11 @@
 #include <framework/event.h>
 #include <framework/system.h>
 #include <framework/uid.h>
+#include <framework/logging.h>
 
 #include <platform/api.h>
+
+#include <config.h>
 
 #include <iostream>
 #include <cassert>
@@ -16,27 +19,17 @@
  * Core functionality of the framework.
  */
 
-/**
- * TODO:
- * - properly implement TICK event
- *          it gets emitted 60 times a second, no matter the frames
- *          set the tick number as data_int
- * - properly implement FRAME event
- *          it gets called every Core::Update()
- *          set the frame number as data_int
- * - properly implement GetTick()
- *          it returns f
- * - implement a GetTickDelta()
- *          it returns the delta between ticks for every frame
- * - implement a GetFrame()
- *          it returns the frames since the beginning of time
- */
-
 namespace tram {
 
-static double frame_time = 0.0f;
+static uint32_t ticks = 0;
+static uint32_t frames = 0;
+
+static uint32_t delta_tick = 0;
 static float delta_time = 0.0f;
-static uint32_t frame_tick = 0;
+
+static double frame_time = 0.0f;
+
+static float time_since_tick = 0.0f;
 
 /// Generates a unique ID number.
 id_t GenerateID() {
@@ -47,57 +40,92 @@ id_t GenerateID() {
 
 /// Initializes the core of the framework.
 void Core::Init() {
-    assert(!System::IsInitialized(System::CORE));
+    if (System::IsInitialized(System::CORE)) {
+       Log(Severity::CRITICAL_ERROR, System::CORE, "Can not initialize Core, it is already initialized"); 
+    }
     
-    System::SetInitialized(System::CORE, true);
+    // this will print out the version of the runtime to the console. I think
+    // that doing so looks very nice. maybe you disagree. if you disagree, you
+    // can comment out the following line
+    Log(GetVersion()); 
     
-    std::cout << GetVersion() << std::endl;
+    System::SetState(System::CORE, System::READY);
 }
 
 /// Updates the core system.
 /// @note This should be called only once per update cycle.
 void Core::Update() {
-    double last_frame_time = frame_time;
+    const double last_frame_time = frame_time;
     frame_time = Platform::Window::GetTime();
     delta_time = frame_time - last_frame_time;
-    frame_tick++;
-
-    Event::Post({
-        .type = Event::TICK,
-        .poster_id = 0
-    });
     
-    // TODO: implement this properly
+    frames++;
+    
     Event::Post({
         .type = Event::FRAME,
         .poster_id = 0
     });
     
+    time_since_tick += delta_time;
     
+    delta_tick = 0;
+    while (time_since_tick > TICK_RATE) {
+        time_since_tick -= TICK_RATE;
+        
+        delta_tick++;
+        ticks++;
+        
+        Event::Post({
+            .type = Event::TICK,
+            .poster_id = ticks
+        });
+    }
 }
 
 /// Returns the current tick.
-/// This value gets incremented once per update cycle.
-/// @return Count of update cycles since the application was started.
+/// This value gets incremented at a rate of 60 ticks per second.
+/// @note   Tick rate of 60 ticks per second is only the default. The actual
+///         value might have been changed in the runtime configuration.
+/// @return Count of ticks since the application was started.
 uint32_t GetTick() {
-    return frame_tick;
+    return ticks;
 }
 
-/// Returns the time at the start of the current tick.
-/// This value changes only once per update cycle.
-/// @return Time, in seconds, since the application was started.
+/// Returns the current frame.
+/// @return The number of times Core::Update() has been called.
+uint32_t GetFrame() {
+    return frames;
+}
+
+/// Returns the tick delta.
+/// If multiple ticks have occured between calls to Core::Update(), this value
+/// will reflect that.
+uint32_t GetDeltaTick() {
+    return delta_tick;
+}
+
+
+/// Same as GetFrameTime()
 double GetTickTime() {
     return frame_time;
 }
 
-/// Returns the time passed between ticks.
-/// This value changes only once per update cycle.
+/// Returns the time at the start of the current frame.
+/// This value changes only when Core::Update() is called.
+/// @return Time, in seconds, since the application was started.
+double GetFrameTime() {
+    return frame_time;
+}
+
+/// Returns the time passed between frames.
+/// This value changes only when Core::Update() is called.
 /// @return Time, in seconds, that has passed between the start of the previous
-///         and the start of the current tick.
+///         and the start of the current frame.
 float GetDeltaTime() {
     return delta_time;
 }
 
+/// Returns the version identifier of the runtime.
 const char* GetVersion() {
     return "Tramway SDK v0.1.0";
 }
