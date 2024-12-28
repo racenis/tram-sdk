@@ -24,6 +24,14 @@
  * If you don't like it, you can always integrate imgui, but I personally very
  * much prefer this way of building GUIs.
  * 
+ * First you need to register fonts, which are just Sprites. The glyphs are just
+ * sprite frame indices. There are some default fonts in the Ext::Menu system,
+ * if you don't want to make your own fonts.
+ * 
+ * To draw widgets, just call their respective functions once per frame.
+ * 
+ * To position the widgets, use the frame pushing and popping functions.
+ * 
  * @see https://racenis.github.io/tram-sdk/documentation/framework/gui.html
  */
 
@@ -35,52 +43,95 @@ struct FrameObject {
     uint32_t stack_height;
 };
 
-Stack<FrameObject> frame_stack("GUI Frame stack", 100);
+static Stack<FrameObject> frame_stack("GUI Frame stack", 100);
 
-Render::Sprite* fonts [16] = {nullptr};
+static Render::Sprite* fonts[16] = {nullptr};
 
-Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
-Render::drawlistentry_t glyphvertices_entry;
+// glyphvertices are where we put all of the GUI triangle vertices in
+// we upload them to the GPU each frame for drawing
+static Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
+static Render::drawlistentry_t glyphvertices_entry;
 
-UI::CursorType current_cursor = UI::CURSOR_DEFAULT;
-bool cursor_dirty = false;
-bool cursor_set = false;
+static std::vector<Render::SpriteVertex> glyphvertices;
 
+// instead of using these, use the SetCursorDelayed() to change the pointer
+static UI::CursorType current_cursor = UI::CURSOR_DEFAULT;
+static bool cursor_dirty = false;
+static bool cursor_set = false;
+
+// some users have screens with way too many pixels and they just keep
+// complaining that they can't see anything, so that's why I made this scaling
+// feature.
 static uint32_t scaling = 1;
 
-std::vector<Render::SpriteVertex> glyphvertices;
-
+// here we put all the keycodes that come in. the keycodes depend on the
+// keyboard layout, unlike regular UI keys. we use them for textboxes
 static std::vector<uint16_t> keycode_queue;
 static char* selected_text_string = nullptr;
 
+/// Sets the text which is selected in a textbox.
+/// The way the framework remembers which TextBox you have clicked on and are
+/// editing is that once a TextBox is clicked on, the framework remembers the
+/// pointer of the text that is being edited.
+/// The actual TextBox string is updated only when the TextBox() function is
+/// called.
+/// If you want to deselect any TextBox, call this function with a `nullptr`.
 void SetSelectedText(char* text) {
     selected_text_string = text;
 }
 
+// this is how we remember which colors the user has set.
+// the glyph color is for internal system use though.
 static vec3 user_color = Render::COLOR_WHITE;
 static vec3 glyph_color = Render::COLOR_WHITE;
 
+// restores the user color. useful to be called after the internal GlyphColor()
 static void RestoreUserColor() {
     glyph_color = user_color;
 }
 
+// sets the internal glyph color.
+// this color will be used when issuing the next glyph drawing commands.
 static void GlyphColor(vec3 color) {
     glyph_color = color;
 }
 
-void SetColor(vec3 color) {
+// this one is for the user, but it also sets internal color
+/// Sets the color.
+/// What this function does depends on the kinds of widgets that will be drawn
+/// after calling this function.
+/// For example, after calling this function and then calling the Text() 
+/// function, the text will be drawn in the selected color.
+/// @param color RGB color that will be set. Take a look at the Render system's
+///              header or docs to see what kinds of predefined colors are
+///              available.
+void SetColor(Render::color_t color) {
     user_color = color;
     glyph_color = color;
 }
 
+/// Sets the scaling factor.
+/// If set to `1`, the GUI will be drawn normally. If set to `2`, then
+/// everything will be drawn twice as large. If set to `3`, then everything
+/// will be drawn three times as large. I don't recommend going above that.
 void SetScaling(uint32_t scale) {
     scaling = scale;
 }
 
+/// Returns the scaling factor.
+/// See SetScaling().
 uint32_t GetScaling() {
     return scaling;
 }
 
+/// Sets the cursor.
+/// The difference between using this function and the cursor setting function
+/// in the UI system, is that this function will only switch the cursor if it
+/// has been changed, i.e. it will issue the UI::SetCursor() command only if
+/// this function receives a new parameter.
+/// This means that GUI widgets can change the cursor, but the it is also
+/// possible to change it using the UI function and this function will not
+/// override it, except if the cursor is placed over a widget.
 void SetCursorDelayed(UI::CursorType cursor) {
     if (current_cursor != cursor) {
         current_cursor = cursor;
@@ -94,10 +145,10 @@ using namespace tram::Render::API;
 /// Performs initialization of the GUI system.
 /// Render system must be initialized first.
 void Init() {
-    assert(!System::IsInitialized(System::GUI) && "GUI system already initialized!");
-    assert(System::IsInitialized(System::RENDER) && "Need to initialize Render system first!");
+    System::SetState(System::GUI, System::INIT);
+    System::AssertDependency(System::RENDER);
     
-    Log (Severity::INFO, System::GUI, "Initializing GUI system.");
+    Log(System::GUI, "Initializing GUI system.");
     
     using namespace tram::Render;
     
@@ -112,7 +163,7 @@ void Init() {
         keycode_queue.push_back(evt.subtype);
     });
     
-    System::SetInitialized(System::GUI, true);
+    System::SetState(System::GUI, System::READY);
 }
 
 /// Submits registered fonts to the renderer.
@@ -129,7 +180,7 @@ void UpdateDrawListFonts() {
         glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetTexture();
         
         if (fonts[i]->GetStatus() != Resource::READY) {
-            Log (Severity::ERROR, System::GUI, "Font {} is not loaded!", i);
+            Log(Severity::ERROR, System::GUI, "Font {} is not loaded!", i);
         }
     }
     
@@ -139,6 +190,7 @@ void UpdateDrawListFonts() {
 }
 
 /// Submits all of the glyphs for rendering.
+/// Also updates cursor, if needed by SetCursorDelayed().
 void Update() {
     using namespace tram::Render;
     UpdateVertexArray(glyphvertices_vertex_array, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
@@ -149,7 +201,6 @@ void Update() {
     // this logic is not very logical, but it should work
     if (cursor_dirty) {
         UI::SetCursor(current_cursor);
-        std::cout << "setting cursor to: " << current_cursor << std::endl;
         cursor_dirty = false;
     } else {
         if (!cursor_set && current_cursor != UI::CURSOR_DEFAULT) {
@@ -161,7 +212,7 @@ void Update() {
 }
 
 /// Registers a font.
-/// @return     Font handle that can be used with all of the GUI widget functions.
+/// @return Font handle that can be used with all of the GUI widget functions.
 font_t RegisterFont (Render::Sprite* sprite) {
     if (!System::IsInitialized (System::GUI)) {
         Log(Severity::ERROR, System::GUI, "GUI is not initialized, font {} was not registered!", sprite->GetName());
@@ -182,7 +233,7 @@ font_t RegisterFont (Render::Sprite* sprite) {
         }
     }
     
-    Log(Severity::ERROR, System::GUI,"Ran out of font slots, font {} was not registered!", sprite->GetName());
+    Log(Severity::ERROR, System::GUI, "Ran out of font slots, font {} was not registered!", sprite->GetName());
     
     return -1;
 }
@@ -259,6 +310,7 @@ void DrawGlyph(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w = 
     SetGlyph(x*scaling, y*scaling, frame_stack.top().stack_height, w*scaling, h*scaling, info.offset_x, info.offset_y, info.width, info.height, glyph_color, font);
 }
 
+/// Draws a glyph from a font.
 void Glyph(font_t font, glyph_t glyph) {
     uint32_t cursor_x = frame_stack.top().cursor_x;
     uint32_t cursor_y = frame_stack.top().cursor_y;
@@ -272,6 +324,14 @@ void Glyph(font_t font, glyph_t glyph) {
 }
 
 /// Draws a glyph box.
+/// Glyph boxes are set up so that the first glyph, i.e. the one that you pass 
+/// in the glyph parameter is the top-left corner. Then the numerically next
+/// glyph is take as the top-middle glpyh, then the top-right.
+/// This continues going left-to-right, top-to-bottom until all 9 squares are
+/// covered.
+/// If you are using a default widget layout font, you can use the enum values
+/// WIDGET_WINDOW, WIDGET_REVERSE_WINDOW, WIDGET_BUTTON, WIDGET_SELECT_BOX or
+/// WIDGET_BORDER for the glyph index.
 void DrawBox(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     const glyph_t top_lft = glyph + 0;
     const glyph_t top_mid = glyph + 1;
@@ -301,6 +361,9 @@ void DrawBox(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w, uin
     DrawGlyph(font, mid_mid, x+GlyphWidth(font, mid_lft), y+GlyphHeight(font, top_mid), w-GlyphWidth(font, mid_lft)-GlyphWidth(font, mid_rgt), h-GlyphHeight(font, top_mid)-GlyphHeight(font, btm_mid));
 }
 
+// measures the width of the text, as if the text was being drawn, except it is
+// not actually drawn and only the width of the text is returned, and it is
+// identical to the widht of the text if it was, in fact, drawn
 uint32_t TextWidth(font_t font, const char* text) {
     uint32_t width = 0;
     for (const char* c = text; *c != '\0'; c++) {
@@ -309,6 +372,10 @@ uint32_t TextWidth(font_t font, const char* text) {
     return width;
 }
 
+/// Draws text on the screen.
+/// @param orientation Either TEXT_LEFT, TEXT_CENTER, TEXT_RIGHT or
+///                    TEXT_JUSTIFIED. The default is TEXT_LEFT.
+/// @param text        The text that will drawn to screen.
 void Text(font_t font, const char* text, uint32_t orientation) {
     uint32_t cursor_x = frame_stack.top().cursor_x;
     uint32_t cursor_y = frame_stack.top().cursor_y;
@@ -342,6 +409,9 @@ void Text(font_t font, const char* text, uint32_t orientation) {
     frame_stack.top().cursor_y = cursor_y;
 }
 
+/// Draws a horizontal bar.
+/// Similar to how DrawBox() is used, except we only have 3 squares, the left,
+/// middle and right.
 void DrawBoxHorizontal(font_t font, glyph_t glyph,  uint32_t x, uint32_t y, uint32_t w) {
     const glyph_t lft = glyph + 0;
     const glyph_t mid = glyph + 1;
@@ -352,6 +422,9 @@ void DrawBoxHorizontal(font_t font, glyph_t glyph,  uint32_t x, uint32_t y, uint
     DrawGlyph(font, mid, x+GlyphWidth(font, lft), y, w-GlyphWidth(font, lft)-GlyphWidth(font, rgt), 0);
 }
 
+/// Pushes a frame.
+/// The coordinates are in absolute screen cooordinates. This function could be
+/// useful for something, I just can't think of anything.
 void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     uint32_t stack_height = frame_stack.top().stack_height;
     
@@ -366,6 +439,15 @@ void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     new_frame->stack_height = stack_height + 1;
 }
 
+/// Pushes a frame releative to the previous.
+/// Check the regulat HTML docs on the website for a graphical description with,
+/// i.e. with images, to see how this works.
+/// But essentially what this function does, is it takes the previous frame and
+/// measures out the offset from the specified orientation and then pushes a new
+/// frame with the are from the offset.
+/// Initially the first frame is pushed, and it takes up the whole screen. If
+/// you wanted to use make the topmost 200px part of the screen a frame, you 
+/// would set the orientation to FRAME_TOP and offset to 200.
 void PushFrameRelative(uint32_t orientation, uint32_t offset) {
     uint32_t x = frame_stack.top().x;
     uint32_t y = frame_stack.top().y;
@@ -421,10 +503,14 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
     PushFrame(x, y, w, h);
 }
 
+/// Removes a frame from the frame stack.
 void PopFrame() {
     frame_stack.Remove();
 }
 
+/// Pushes a frame, but keeps the cursor in place.
+/// Identical to PushFrameRelative(), except this function will not reset the
+/// cursor to the top-left corner of the frame.
 void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool keep_x, bool keep_y) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -475,6 +561,11 @@ bool Clicked() {
     return UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
 }
 
+/// Draws a button.
+/// @param text     Text of the button.
+/// @param enabled  If set to false, the button won't be clickable.
+/// @param width    Width of the button, in pixels.
+/// @return         True if the button was clicked on.
 bool Button(const char* text, bool enabled, uint32_t width) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -510,6 +601,13 @@ bool Button(const char* text, bool enabled, uint32_t width) {
     return enabled && CursorOver(x, y, w, h) && ClickHandledLate();
 }
 
+/// Draws a radio button.
+/// @param index    Index of this button.
+/// @param selected Index of the selected button.
+/// @param text     Text next to the button.
+/// @param enable   If set to true, the button won't be clickable
+/// @return         True if the button was clicked on. The new selected button
+///                 index will be written to the selected parameter.
 bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -540,6 +638,12 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
     return false;
 }
 
+/// Draws a checkbox.
+/// @param selected If set to true, the button will be drawn checked.
+/// @param text     Text of the button.
+/// @param enabled  If set to false, the button won't be clickable.
+/// @return         True if clicked on. The modified state of the button will be
+///                 written out to the selected parameter.
 bool CheckBox(bool& selected, const char* text, bool enabled) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -570,6 +674,12 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     return false;
 }
 
+/// Draws a horizontal slider.
+/// @param value    Value of the slider, between 0.0f and 1.0f.
+/// @param enabled  If set to false, the slider won't be draggable.
+/// @param width    Width of the slider, in pixels.
+/// @return         True if the slider was clicked on. The slider's new value
+///                 will be written out to the value variable.
 bool Slider(float& value, bool enabled, uint32_t width) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -616,6 +726,10 @@ bool Slider(float& value, bool enabled, uint32_t width) {
     }
 }
 
+/// Draws a new line.
+/// Essentially just moves the cursor down a little bit and resets it to the
+/// left side of the frame. Sort of like a line break.
+/// @param line Line type. Either LINE_LOW, LINE_NORMAL or LINE_HIGH.
 void NewLine(uint32_t line) {
     frame_stack.top().cursor_x = frame_stack.top().x;
     switch (line) {
@@ -632,6 +746,7 @@ void NewLine(uint32_t line) {
     }
 }
 
+/// Draws a horizontal divider.
 void HorizontalDivider() {
     NewLine();
     uint32_t x = frame_stack.top().cursor_x;
@@ -644,6 +759,10 @@ void HorizontalDivider() {
     frame_stack.top().cursor_y += GlyphHeight(0, WIDGET_DIVIDER_HORIZONTAL) + 4;
 }
 
+/// Fills the frame with a glyph.
+/// Uses the DrawBox() function internally, so it works just like it, except
+/// that it uses the topmost frame to determine the position and sixze of the
+/// box.
 void FillFrame(font_t font, glyph_t glyph) {
     GlyphColor(Render::COLOR_WHITE);
     DrawBox(font, glyph, frame_stack.top().x, 
@@ -654,6 +773,11 @@ void FillFrame(font_t font, glyph_t glyph) {
     RestoreUserColor();
 }
 
+/// Draws a textbox.
+/// @param text     Text in the textbox. This will be editable.
+/// @param length   Length of the text buffer.
+/// @param enabled  If false, the textbox won't be editable.
+/// @param w,h      Dimensions of the textbox, in pixels.
 bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -717,6 +841,10 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
     return text_changed;
 }
 
+/// Draws a textbox.
+/// Essentially identical to the other TextBox() function, except this one
+/// accepts a `const char*` text. This also means that the text in the textbox
+/// won't be editable and it will be drawn as disabled.
 void TextBox(const char* text, uint32_t w, uint32_t h) {
     uint32_t x = frame_stack.top().cursor_x;
     uint32_t y = frame_stack.top().cursor_y;
@@ -740,6 +868,9 @@ void TextBox(const char* text, uint32_t w, uint32_t h) {
     RestoreUserColor();
 }
 
+/// Begins the GUI commands for the frame.
+/// Pushes the first frame to the frame stack. This function has to be called
+/// first, before the End() and the Update() functions.
 void Begin() {
     
     // The first frame takes up the whole screen.
@@ -810,6 +941,8 @@ void Begin() {
     PopFrame();
 }
 
+/// Ends the GUI commands for the frame.
+/// This has to be called sometime after Begin(), but before Update().
 void End() {
     frame_stack.Reset();
 }

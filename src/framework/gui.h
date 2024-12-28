@@ -14,7 +14,7 @@ namespace tram::GUI {
 typedef uint32_t font_t;
 typedef uint32_t glyph_t;
 
-enum orientation:uint32_t {
+enum orientation : uint32_t {
     TEXT_LEFT,
     TEXT_CENTER,
     TEXT_RIGHT,
@@ -37,7 +37,39 @@ enum orientation:uint32_t {
     FRAME_CENTER_HORIZONTAL
 };
 
-enum widget:glyph_t {
+void Init();
+void Update();
+font_t RegisterFont(Render::Sprite* sprite);
+
+void SetScaling(uint32_t);
+uint32_t GetScaling();
+
+bool ClickHandled();
+
+void Begin();
+void End();
+
+void SetColor(Render::color_t color);
+void FillFrame(font_t font, glyph_t glyph);
+void HorizontalDivider();
+void NewLine(uint32_t line = LINE_NORMAL);
+bool CheckBox(bool& selected, const char* text, bool enabled = true);
+bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled = true);
+bool Button(const char* text, bool enabled = true, uint32_t width = 0);
+bool Slider(float& value, bool enabled = true, uint32_t width = 0);
+void PopFrame();
+void PopFrameKeepCursor(bool = false, bool = true);
+void PushFrameRelative(uint32_t orientation, uint32_t offset);
+void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool = false, bool = true);
+void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+void Glyph(font_t font, glyph_t glyph);
+void Text(font_t font, const char* text, uint32_t orientation = TEXT_LEFT);
+bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
+void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);
+
+void SetSelectedText(char* text);
+
+enum widget : glyph_t {
     WIDGET_TOP_LEFT = 0,
     WIDGET_TOP_MIDDLE = 1,
     WIDGET_TOP_RIGHT = 2,
@@ -90,38 +122,6 @@ enum widget:glyph_t {
     WIDGET_BUTTON_1_WINDOW = 222,
     WIDGET_DEFAULT = 255,
 };
-
-void Init();
-void Update();
-font_t RegisterFont(Render::Sprite* sprite);
-
-void SetScaling(uint32_t);
-uint32_t GetScaling();
-
-bool ClickHandled();
-
-void Begin();
-void End();
-
-void SetColor(vec3 color);
-void FillFrame(font_t font, glyph_t glyph);
-void HorizontalDivider();
-void NewLine(uint32_t line = LINE_NORMAL);
-bool CheckBox(bool& selected, const char* text, bool enabled = true);
-bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled = true);
-bool Button(const char* text, bool enabled = true, uint32_t width = 0);
-bool Slider(float& value, bool enabled = true, uint32_t width = 0);
-void PopFrame();
-void PopFrameKeepCursor(bool = false, bool = true);
-void PushFrameRelative(uint32_t orientation, uint32_t offset);
-void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool = false, bool = true);
-void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
-void Glyph(font_t font, glyph_t glyph);
-void Text(font_t font, const char* text, uint32_t orientation = TEXT_LEFT);
-bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
-void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);
-
-void SetSelectedText(char* text);
 
 }
 
