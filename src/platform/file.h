@@ -49,7 +49,7 @@ public:
     virtual FileStatus GetStatus() = 0;
     virtual void Yeet() = 0;
     
-    static FileWriter* GetWriter(const char* path, FileMedium medium);
+    static FileWriter* GetWriter(const char* path);
     
     static void SetMediumList();
     static std::vector<FileSource> GetMediumList();

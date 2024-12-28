@@ -93,7 +93,7 @@ void Animation::LoadFromDisk(){
     strcat (filename, name);
     strcat (filename, ".anim");
 
-    File file (filename, MODE_READ);
+    File file (filename, File::READ);
 
     if (!file.is_open()) {
         std::cout << "Can't open " << filename << "!" << std::endl; 

@@ -10,13 +10,6 @@
 
 namespace tram {
 
-enum FileAccessMode : uint32_t {
-    MODE_READ = 1,
-    MODE_WRITE = 2,
-    MODE_PAUSE_LINE = 4
-    // TODO: add option to switch between text and binary
-};
-
 class FileReader;
 class FileWriter;
 class FileReaderParser;
@@ -68,6 +61,14 @@ public:
     void reset_flags();
     
     bool was_error();
+    
+    enum AccessMode : uint32_t {
+        READ = 1,       //< Opens the file for reading.
+        WRITE = 2,      //< Opens the file for writing.
+        PAUSE_LINE = 4, //< Pauses the parsing on every linebreak.
+        TEXT = 8,       //< Opens file for reading/writing in whitespace seperated text format.
+        BINARY = 16     //< Not implemented yet.
+    };
     
     // TODO: check whichever of these can be private and private them
     

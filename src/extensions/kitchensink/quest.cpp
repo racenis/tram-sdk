@@ -439,7 +439,7 @@ void Quest::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".quest");
 
-    File file (path, MODE_READ);
+    File file (path, File::READ);
 
     if (!file.is_open()) {
         std::cout << "Can't open quest file '" << path << "'" << std::endl;

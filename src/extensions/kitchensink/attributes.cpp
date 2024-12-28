@@ -133,7 +133,7 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".attrib");
 
-    File file (path, MODE_READ);
+    File file (path, File::READ);
 
     if (!file.is_open()) {
         std::cout << "Can't open attribute file '" << path << "'" << std::endl;

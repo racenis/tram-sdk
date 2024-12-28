@@ -47,7 +47,7 @@ void CollisionModel::LoadFromDisk () {
     strcat(path, name);
     strcat(path, ".collmdl");
 
-    File file (path, MODE_READ);
+    File file (path, File::READ);
 
     if (!file.is_open()) {
         std::cout << "Can't find collisionmodel: " << path << std::endl;

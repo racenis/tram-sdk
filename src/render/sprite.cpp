@@ -54,7 +54,7 @@ void Sprite::LoadFromMemory() {
 void Sprite::LoadFromDisk() {
     std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
     
-    File file (filename.c_str(), MODE_READ);
+    File file (filename.c_str(), File::READ);
     
     if (!file.is_open()) {
         Log("Sprite not found: {}", filename);

@@ -49,7 +49,7 @@ void Material::LoadMaterialInfo(const char* filename) {
     strcat (path, filename);
     strcat (path, ".list");
 
-    File file (path, MODE_READ);
+    File file (path, File::READ);
     
     if (!file.is_open()) {
         std::cout << "Can't open texture info file '" << path << "'" << std::endl;

@@ -10,9 +10,24 @@
 /**
  * @struct tram::File framework/file.h
  * 
- * File interface.
- * 
  * Very fast file reader/writer.
+ * 
+ * For reading a file, set the File::READ flag in the mode bitmask.
+ * The file, referenced by the path, will be immediately opened, if possible.
+ * After opening, it will be fully read into memory. After that you can use
+ * all of the read_xyz() methods.
+ * 
+ * To check if the file has ended and no more reading can be done, use the
+ * is_continue() method.
+ * 
+ * To check whether the file was opened, use the is_open() method.
+ * 
+ * For writing to a file, set the File::WRITE flag in the mode bitmask.
+ * 
+ * After that you can use the various write_xyz() methods.
+ * 
+ * All of the writing will take place in a large buffer, which after the File
+ * class is destructed will be written to disk.
  * 
  * @see https://racenis.github.io/tram-sdk/documentation/framework/file.html
  */
@@ -52,7 +67,6 @@ protected:
     bool skip_newline_flag = true;
     bool skip_value = true;
 };
-
 
 class TextReaderParser : public FileReaderParser {
 public:
@@ -247,9 +261,6 @@ private:
     const char* end = nullptr;
     bool error_flag = false;
 };
-    
-
-
 
 class FileWriterParser {
 public:
@@ -348,28 +359,37 @@ private:
     FileWriter* writer = nullptr;
 };
 
-
-File::File (char const* path, uint32_t mode) : path(path), mode(mode) {
-    if (mode & MODE_READ) {
+/// Opens a file.
+/// @param path Path to the file. If no prefix is set, this path will be
+///             interpreted as being relative to the project/executable
+///             working directory.
+/// @param mode Mode is a bitmask consisting of flags that can be found in the
+///             AccessMode enum.
+File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
+    if (mode & BINARY) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Sorry, File::BINARY for files not implemented yet");
+    }
+    
+    if (mode & READ) {
         reader = FileReader::GetReader(path);
         
         if (reader->GetStatus() == FileStatus::READY) {
             reader_parser = new TextReaderParser(reader);
         }
         
-        if (mode & MODE_PAUSE_LINE) {
+        if (mode & PAUSE_LINE) {
             reader_parser->set_skip_newline(false);
         }
         
-    } else if (mode & MODE_WRITE) {
-        writer = FileWriter::GetWriter(path, FileMedium::DISK);
+    } else if (mode & WRITE) {
+        writer = FileWriter::GetWriter(path);
         
         if (writer->GetStatus() == FileStatus::READY) {
             writer_parser = new TextWriterParser(writer);
         }
         
     } else {
-        abort();
+        Log(Severity::CRITICAL_ERROR, System::CORE, "File doesn't have File::READ or File::WRITE flag set");
     }
 }
 
@@ -383,6 +403,7 @@ File::~File() {
     }
 }
 
+/// Returns true if file was opened.
 bool File::is_open() { 
     if (reader) {
         return reader->GetStatus() == FileStatus::READY;
@@ -395,6 +416,7 @@ bool File::is_open() {
     return false;
 }
 
+/// Returns true if file parser has not reached end.
 bool File::is_continue() {
     if (reader_parser) {
         return reader_parser->is_continue();
@@ -422,6 +444,9 @@ void File::write_float64(double value) { writer_parser->write_float64(value); }
 
 void File::write_name(name_t value) { writer_parser->write_name(value); }
 void File::write_string(const char* value) { writer_parser->write_string(value); }
+
+/// Writes a newline to the file.
+/// The newline is just the `\n` character.
 void File::write_newline() { writer_parser->write_newline(); }
 
 int8_t File::read_int8() { reader_parser->skip_whitespace(); return reader_parser->read_int8(); }
@@ -439,14 +464,28 @@ double File::read_float64() { reader_parser->skip_whitespace(); return reader_pa
 
 name_t File::read_name() { reader_parser->skip_whitespace(); return reader_parser->read_name(); }
 std::string_view File::read_string() { reader_parser->skip_whitespace(); return reader_parser->read_string(); }
+
+/// Parses off the remaining line.
 std::string_view File::read_line() { return reader_parser->read_line(); }
 
+/// Skips over a linebreak.
+/// Probably only useful if the file has been opened for reading in the
+/// `MODE_PAUSE_LINE` mode, since the parser will stop at any new line and the
+/// only way to continue parsing is to use this method.
 void File::skip_linebreak() { reader_parser->skip_newline(); }
 
+/// Resets the error flag.
 void File::reset_flags() {
     if (reader_parser) reader_parser->reset_error();
 }
 
+/// Checks if there has been an error.
+/// The error flag does not get cleared on its own, so if an error ocurred
+/// anywhere, this method will report that.
+/// To determine whether a certain value has been parsed correctly, first use
+/// the reset_flags() method to reset the error flag, then use the read_xyz()
+/// method to read in the value and then use this method to determine whether
+/// there was an error in parsing that specific method.
 bool File::was_error() {
     if (reader_parser) return reader_parser->is_error();
     return false;

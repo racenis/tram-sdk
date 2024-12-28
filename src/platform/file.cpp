@@ -152,7 +152,7 @@ private:
 
 
 // TODO: implemenet shtese ones okay
-FileWriter* FileWriter::GetWriter(const char* path, FileMedium medium) {
+FileWriter* FileWriter::GetWriter(const char* path) {
     return new DiskWriter(path);
 }
 

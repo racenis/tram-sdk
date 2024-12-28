@@ -219,7 +219,7 @@ void WorldCell::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".cell");
     
-    File file (path, MODE_READ | MODE_PAUSE_LINE);
+    File file (path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         std::cout << "Worldcell file " << path << " not found!" << std::endl;

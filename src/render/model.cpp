@@ -294,7 +294,7 @@ void Model::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".stmdl");
 
-    if (File file (path, MODE_READ); file.is_open()) {
+    if (File file (path, File::READ); file.is_open()) {
         vertex_format = VERTEX_STATIC;
         StaticModelData* data = new StaticModelData;
         model_data = data;
@@ -473,7 +473,7 @@ void Model::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".dymdl");
 
-    if (File file (path, MODE_READ); file.is_open()) {
+    if (File file (path, File::READ); file.is_open()) {
         vertex_format = VERTEX_DYNAMIC;
         DynamicModelData* data = new DynamicModelData;
         model_data = data;
@@ -689,7 +689,7 @@ void Model::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".mdmdl");
 
-    if (File file (path, MODE_READ); file.is_open()) {
+    if (File file (path, File::READ); file.is_open()) {
         name_t file_version = file.read_name();
         
         if (file_version != UID("MDMDLv1")) {

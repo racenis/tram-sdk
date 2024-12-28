@@ -90,7 +90,7 @@ void DialogTopic::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".dialog");
 
-    File file (path, MODE_READ);
+    File file (path, File::READ);
 
     if (!file.is_open()) {
         std::cout << "Can't open dialog file '" << path << "'" << std::endl;

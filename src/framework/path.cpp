@@ -62,7 +62,7 @@ void Path::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".path");
     
-    File file (path, MODE_READ);
+    File file (path, File::READ);
     
     if (!file.is_open()) {
         std::cout << "Can't find path file: " << path << std::endl; return;

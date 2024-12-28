@@ -34,7 +34,7 @@ void Load(const char* filename){
     strcat (path, filename);
     strcat (path, ".lang");
     
-    File file (path, MODE_READ);
+    File file (path, File::READ);
     
     if (!file.is_open()) {
         std::cout << "Can't find language file " << path << std::endl;
