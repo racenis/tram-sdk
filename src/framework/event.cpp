@@ -9,6 +9,7 @@
 #include <framework/event.h>
 #include <framework/entity.h>
 #include <framework/entitycomponent.h>
+#include <framework/logging.h>
 
 /**
  * @struct tram::Event framework/event.h
@@ -60,6 +61,24 @@
  * Opaque handle, used to yeet event listeners.
  */
  
+ /**
+ * @class tram::EventListener framework/event.h
+ * 
+ * Smart wrapper class for Event listeners.
+ * 
+ * Calling the make() method will initialize the event listener, just like
+ * calling Event::AddListener() will do.
+ * Calling the clear() method will delete the listener, just like calling
+ * Event::RemoveListener() will do.
+ * 
+ * When this class is destroyed, the event listener will also be automatically
+ * removed.
+ * 
+ * You can also call the make() and clear() methods as much as you want, no
+ * resources will be leaked. Any existing event listener will be removed before
+ * a new one gets added.
+ */
+ 
 namespace tram {
 
 const size_t MAX_EVENT_TYPES = 100;
@@ -93,6 +112,7 @@ static std::vector<std::vector<ListenerInfo>> listener_table(Event::LAST_EVENT, 
 static std::vector<std::vector<ListenerInfo>> new_listeners(Event::LAST_EVENT, std::vector<ListenerInfo>());
 
 static const char* event_names[MAX_EVENT_TYPES] = {
+    "none",
     "keypress",
     "keydown",
     "keyup",
@@ -109,15 +129,29 @@ static Hashmap<event_t> name_t_to_event_t("name_t_to_event_t", (MAX_EVENT_TYPES*
 
 /// Registers a new event type.
 event_t Event::Register(const char* name) {
-    // TODO: add a check that event with that name is not registered already!!!
-    // TODO: also check if name is valid
+    if (UID::is_empty(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Event name '{}' is empty", name);
+    }
     
-    assert(name);
-    assert(last_type < MAX_EVENT_TYPES);
+    if (!UID::no_quote(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Event name '{}' contains invalid characters", name);
+    }
     
+    for (event_t i = 0; i < last_type; i++) {
+        if (strcmp(event_names[i], name) != 0) continue;
+        
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Event name '{}' already in use", name);
+    }
+    
+    if (last_type < MAX_EVENT_TYPES) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Event count limit exceeded", name);
+    }
+
     listener_table.push_back(std::vector<ListenerInfo>());
     new_listeners.push_back(std::vector<ListenerInfo>());
+    
     event_names[last_type] = name;
+    
     return last_type++;
 }
 
@@ -125,7 +159,7 @@ event_t Event::Register(const char* name) {
 event_t Event::GetType(name_t name) {
     event_t type = name_t_to_event_t.Find(name);
     
-    if (!type) {
+    if (!type && name) {
         for (event_t i = 0; i < last_type; i++) {
             if (event_names[i] == name) {
                 name_t_to_event_t.Insert(name, i);
@@ -137,11 +171,15 @@ event_t Event::GetType(name_t name) {
     return type;
 }
 
-/// 
+/// Returns the name that was associated with a given event_t.
 name_t Event::GetName(event_t type) {
+    assert(type < last_type);
     return event_names[type];
 }
 
+/// Returns the last event_t plus one.
+/// Useful for iterating over all registered events, i.e. in a 
+/// `while (++event < Event::GetLast());` or a similar loop.
 event_t Event::GetLast() {
     return last_type;
 }
@@ -149,6 +187,8 @@ event_t Event::GetLast() {
 
 static listener_t NewListenerHandle(event_t type) {
     static listener_t last_id = 0;
+    
+    assert(type < last_type);
     
     listener_t id_part = (last_id++) << 16;
     listener_t event_part = type;
@@ -159,6 +199,9 @@ static listener_t NewListenerHandle(event_t type) {
 /// Registers a listener.
 listener_t Event::AddListener(event_t type, EntityComponent* component) {
     ListenerInfo new_listener;
+    
+    assert(type < last_type);
+    assert(component);
     
     new_listener.component = component;
     new_listener.type = ListenerInfo::LISTENER_COMPONENT;
@@ -173,6 +216,9 @@ listener_t Event::AddListener(event_t type, EntityComponent* component) {
 listener_t Event::AddListener(event_t type, Entity* entity) {
     ListenerInfo new_listener;
     
+    assert(type < last_type);
+    assert(entity);
+    
     new_listener.entity = entity;
     new_listener.type = ListenerInfo::LISTENER_ENTITY;
     new_listener.handle = NewListenerHandle(type);
@@ -185,6 +231,9 @@ listener_t Event::AddListener(event_t type, Entity* entity) {
 /// Registers a listener
 listener_t Event::AddListener(event_t type, void* data, void (*data_function)(Event& event, void* data)) {
     ListenerInfo new_listener;
+    
+    assert(type < last_type);
+    assert(data_function);
     
     new_listener.data = data;
     new_listener.data_function = data_function;
@@ -199,6 +248,9 @@ listener_t Event::AddListener(event_t type, void* data, void (*data_function)(Ev
 /// Registers a listener.
 listener_t Event::AddListener(event_t type, void (*function)(Event& event)) {
     ListenerInfo new_listener;
+    
+    assert(type < last_type);
+    assert(function);
     
     new_listener.function = function;
     new_listener.type = ListenerInfo::LISTENER_FUNCTION;
@@ -240,7 +292,7 @@ void Event::RemoveListener(listener_t listener_id) {
         }
         
         if (it == end) {
-            std::cout << "Listener with key " << listener_id << "not found and not deleted!" << std::endl;
+            Log(Severity::WARNING, System::CORE, "Listener with key {} not found and not deleted", listener_id);
             return;
         }
         
@@ -283,6 +335,13 @@ void Event::Dispatch() {
     
     data_pool.Reset();
     
+    // the reason why we mark listeners for deletion and peform the deletions
+    // later is because we are using std::vectors for the listener tables.
+    // if you are iterating through a vector and delete stuff from it, you might
+    // run into some memory errors, which could happen if you delete an event
+    // listener from an event handler.
+    // same applies to inserting new event listeners.
+    
     // remove listeners pending for deletion
     for (auto& table : listener_table) {
         std::erase_if(table, [](ListenerInfo& info) {
@@ -309,8 +368,11 @@ void Event::Post (const Event &event) {
 /// This allocation is useful for storing the additional data (Event::data pointer),
 /// for events, since all allocated space will be cleared once all events have been 
 /// dispatched.
-/// @note Only store POD data types in the allocated memory.
-void* Event::AllocateData (size_t ammount) {
+/// @note Only store POD data types in the allocated memory. Either that, or
+///       prepare for memory leaks. Altough an IDE might complain that a value_t
+///       is not POD, you can ignore the warning. Overwriting a value_t
+///       shouldn't cause memory leaks.
+void* Event::AllocateData(size_t ammount) {
     return data_pool.AddNew(ammount);
 }
 
@@ -318,21 +380,25 @@ EventListener::~EventListener() {
     clear();    
 }
 
+/// Essentially same as Event::AddListener().
 void EventListener::make(event_t event, Entity* parent) {
     clear();
     listener = Event::AddListener(event, parent);
 }
 
+/// Essentially same as Event::AddListener().
 void EventListener::make(event_t event, EntityComponent* parent) {
     clear();
     listener = Event::AddListener(event, parent);
 }
 
+/// Essentially same as Event::AddListener().
 void EventListener::make(event_t event, void (*handler)(Event& event)) {
     clear();
     listener = Event::AddListener(event, handler);
 }
 
+/// Essentially same as Event::RemoveListener().
 void EventListener::clear() {
     if (listener) {
         Event::RemoveListener(listener);

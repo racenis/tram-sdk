@@ -87,7 +87,7 @@ void Camera::SetFollowing(Entity* entity) {
     following_listener = Event::AddListener(Event::LOOK_AT, this, [](Event& event, void* data) {
         Camera* camera = (Camera*)data;
         
-        if (event.poster_id != camera->GetFollowing()) return;
+        if (event.poster != camera->GetFollowing()) return;
         
         camera->SetFollowingLookat((quat)*(Value*)event.data);
     });

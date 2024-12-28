@@ -730,7 +730,7 @@ int main(int argc, const char** argv) {
     });
     
     Event::AddListener(Event::SELECTED, [](Event& event) {
-        AddLineMarker(Entity::Find(event.poster_id)->GetLocation(), COLOR_PINK);
+        AddLineMarker(Entity::Find(event.poster)->GetLocation(), COLOR_PINK);
     });
     
     UI::BindKeyboardKey(UI::KEY_APOSTROPHE, [](){

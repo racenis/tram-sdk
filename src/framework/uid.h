@@ -33,6 +33,8 @@ struct UID {
     operator std::string() const;
     operator char const*() const;
     
+    static bool no_quote(const char*);
+    static bool is_empty(const char*);
     static bool is_valid(const UID&);
     
     uint32_t key = 0;

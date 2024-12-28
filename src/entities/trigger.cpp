@@ -32,7 +32,7 @@ enum {
     FIELD_MODEL,
 };
 
-static const uint32_t fields[3] = {
+static const Type fields[3] = {
     TYPE_UINT32,
     TYPE_UINT32,
     TYPE_NAME

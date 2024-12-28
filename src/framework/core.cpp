@@ -63,7 +63,7 @@ void Core::Update() {
     
     Event::Post({
         .type = Event::FRAME,
-        .poster_id = 0
+        .poster = 0
     });
     
     time_since_tick += delta_time;
@@ -77,7 +77,7 @@ void Core::Update() {
         
         Event::Post({
             .type = Event::TICK,
-            .poster_id = ticks
+            .poster = ticks
         });
     }
 }

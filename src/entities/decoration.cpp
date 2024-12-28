@@ -132,7 +132,7 @@ void Decoration::MessageHandler(Message& msg) {
             
             Event::Post({
                 .type = Event::SELECTED,
-                .poster_id = this->id
+                .poster = this->id
             });
             
             break;

@@ -17,6 +17,9 @@ struct SharedEntityData;
 struct ValueArray;
 class File;
 
+typedef Entity* (*entity_make)(const SharedEntityData&, const ValueArray&);
+typedef void (*entity_clear)(Entity*);
+
 class Entity {
 public:
     virtual void Load() = 0;
@@ -72,7 +75,7 @@ public:
 
     struct FieldInfo {
         uint32_t field_id;
-        uint32_t field_type;
+        Type field_type;
         uint32_t field_flags;
     };
 
@@ -80,14 +83,12 @@ public:
         FIELD_SERIALIZE = 1
     };
 
-    // TODO convert constr_func and destr_func into typedefs
-    static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const uint32_t* fields, size_t fieldcount);
-    static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), const FieldInfo* fields, size_t fieldcount);
-    static void RegisterType(name_t name, Entity* (*constr_func)(const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*), std::initializer_list<FieldInfo> fields);
+    static void RegisterType(name_t name, entity_make, entity_clear, const Type* fields, size_t fieldcount);
+    static void RegisterType(name_t name, entity_make, entity_clear, const FieldInfo* fields, size_t fieldcount);
+    static void RegisterType(name_t name, entity_make, entity_clear, std::initializer_list<FieldInfo> fields);
     
     inline SignalTable* GetSignalTable() { return signals; }
     
-    static void UpdateFromList();
     static Entity* Make(name_t type, File* file);
     static Entity* Make(name_t type, const SharedEntityData&, const ValueArray&);
     static Entity* Find(id_t entity_id);

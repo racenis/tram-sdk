@@ -36,7 +36,7 @@ enum {
     FIELD_VOLUME
 };
 
-static const uint32_t fields[3] = {
+static const Type fields[3] = {
     TYPE_INT32,
     TYPE_NAME,
     TYPE_FLOAT32

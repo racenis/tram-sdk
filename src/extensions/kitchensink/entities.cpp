@@ -68,7 +68,7 @@ enum {
 
 // speed, pause, distance,  parent, sound,
 
-static const uint32_t button_fields[BUTTON_FIELD_LAST] = {
+static const Type button_fields[BUTTON_FIELD_LAST] = {
     TYPE_UINT32,
     TYPE_NAME,
     TYPE_NAME,
@@ -309,7 +309,7 @@ void Button::MessageHandler(Message& msg) {
     if (msg.type == Message::SELECT && !(flags & BUTTON_FLAG_LOCKED) && (state == BUTTON_STATE_NADIR_READY || state == BUTTON_STATE_ZENITH_READY)) {
         Event::Post({
             .type = Event::SELECTED,
-            .poster_id = this->id
+            .poster = this->id
         });
     }
     

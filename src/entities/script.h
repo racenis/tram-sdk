@@ -92,7 +92,7 @@ public:
 
         SanitizeData(data);
 
-        if (Script::CallFunction("__tram_impl_entity_event_handler_callback", {this->id, evt.type, evt.subtype, evt.poster_id, data})) {
+        if (Script::CallFunction("__tram_impl_entity_event_handler_callback", {this->id, evt.type, evt.subtype, evt.poster, data})) {
             T::EventHandler(evt);
         }
     }

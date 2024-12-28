@@ -235,9 +235,9 @@ void UpdateCallbacks() {
             }
             
             
-            if (!event.poster_id) {
+            if (!event.poster) {
                 intercept->emitter = "GOD";
-            } else if (Entity* emitter = Entity::Find(event.poster_id); emitter) {
+            } else if (Entity* emitter = Entity::Find(event.poster); emitter) {
                 if (emitter->GetName()) {
                     intercept->emitter = (std::string)emitter->GetName();
                 } else {
@@ -753,7 +753,7 @@ void EventEmit::Display() {
             Event evt;
             evt.type = event_type;
             evt.subtype = subtype;
-            evt.poster_id = 0;
+            evt.poster = 0;
             
             switch (parameter_type) {
                 case 0:

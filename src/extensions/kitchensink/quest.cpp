@@ -18,12 +18,17 @@ template<> Pool<Quest> PoolProxy<Quest>::pool("qyuespool", 10);
 
 namespace tram::Ext::Kitchensink {
 
+// added (void*)s to make the compiler stop complaining.
+// it's proabably safe though.
+// might have to look it up, but I think it has something to do with glm using
+// tons of unions internally and the standards people at the C++ store don't
+// really like it, but on most compilers it should be fine
 QuestVariable::QuestVariable(const QuestVariable& other) {
-    memcpy(this, &other, sizeof(QuestVariable));
+    memcpy((void*)this, (void*)&other, sizeof(QuestVariable));
 }
 
 QuestVariable& QuestVariable::operator=(const QuestVariable& other) {
-    memcpy(this, &other, sizeof(QuestVariable));
+    memcpy((void*)this, (void*)&other, sizeof(QuestVariable));
     return *this;
 }
     

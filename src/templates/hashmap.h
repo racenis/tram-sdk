@@ -64,6 +64,35 @@ public:
         return T();
     }
     
+    bool Exists(UID key) {
+        return Exists(key.key);
+    }
+    
+    bool Exists(uint32_t key) {
+        uint32_t hash = key % hash_parameter;
+        
+        Record* candidate = first + hash;
+        
+        while (candidate != last) {
+            if (!(candidate->flags & (FLAG_DELETED | FLAG_RECORD))) {
+                break;
+            }
+            
+            if (candidate->key == key) {
+                if (candidate->flags & FLAG_DELETED) {
+                    break;
+                } else {
+                    return true;
+                }
+                
+            }
+            
+            candidate++;
+        }
+        
+        return false;
+    }
+    
     void Insert(UID key, T value) {
         Insert(key.key, value);
     }

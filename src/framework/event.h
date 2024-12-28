@@ -19,18 +19,20 @@ class EntityComponent;
 class Entity;
 
 struct Value;
+typedef Value value_t;
 
 struct Event {
     enum Type : event_t {
-        KEYPRESS,       // keyboard key still pressed
-        KEYDOWN,        // keyboard key pressed
-        KEYUP,          // keyboard key released
-        KEYCHAR,        // keyboard input registered
-        CURSORPOS,      // cursor moved
-        FRAME,          // emitted every frame
-        TICK,           // emitted every tick
-        SELECTED,       // cursor on top of an interactable object
-        LOOK_AT,        // entity is looking in a direction
+        NONE,           //< Invalid event type
+        KEYPRESS,       //< Keyboard key still pressed
+        KEYDOWN,        //< Keyboard key pressed
+        KEYUP,          //< Keyboard key released
+        KEYCHAR,        //< Keyboard input registered
+        CURSORPOS,      //< Cursor moved
+        FRAME,          //< Emitted every frame
+        TICK,           //< Emitted every tick
+        SELECTED,       //< Cursor on top of an interactable object
+        LOOK_AT,        //< Entity is looking in a direction
         LAST_EVENT
     };
 
@@ -38,29 +40,32 @@ struct Event {
     static event_t GetType(name_t name);
     static name_t GetName(event_t type);
     static event_t GetLast();
-    static void Post (const Event &event);
+    
+    static void Post(const Event &event);
     static void Dispatch();
+    
     static listener_t AddListener(event_t type, EntityComponent* component);
     static listener_t AddListener(event_t type, Entity* entity);
     static listener_t AddListener(event_t type, void* data, void (*handler)(Event& event, void* data));
     static listener_t AddListener(event_t type, void (*handler)(Event& event));
+    
     static void RemoveListener(listener_t listener_id);
+    
     static void* AllocateData(size_t ammount);
     template <typename T> static T* AllocateData() { return (T*)AllocateData(sizeof(T)); }
     template <typename T> static T* AllocateData(const T& data) { T* ptr = (T*)AllocateData(sizeof(T)); *ptr = data; return ptr; }
 
     event_t type;
     event_t subtype;
-    id_t poster_id;
+    id_t poster;
     
     union {
         void* data = nullptr;
-        uint64_t data_int; // maybe change to int32? TODO: fix
-        Value* data_value; // change to value_t?
+        int32_t data_int;
+        value_t* data_value;
     };
 };
 
-/// Smart wrapper class for Event listeners.
 class EventListener {
 public:
     ~EventListener();

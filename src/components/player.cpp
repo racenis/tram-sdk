@@ -59,7 +59,7 @@ void PlayerComponent::EventHandler(Event &event) {
         
         Event::Post({
             .type = Event::LOOK_AT,
-            .poster_id = parent->GetID(),
+            .poster = parent->GetID(),
             .data = Event::AllocateData<Value>(look_rotation)
         });
         

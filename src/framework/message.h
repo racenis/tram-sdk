@@ -11,6 +11,7 @@ typedef uint32_t message_t;
 typedef uint32_t id_t;
 
 struct Value;
+typedef Value value_t;
 
 struct Message {
     enum Type : message_t {
@@ -45,8 +46,8 @@ struct Message {
     static void Send(const Message& message, float delay);
     static void Dispatch();
     static void* AllocateData(size_t ammount);
-    template <typename T> static T* AllocateData() { static_assert(std::is_trivially_destructible_v<T>); return (T*)AllocateData(sizeof(T)); }
-    template <typename T> static T* AllocateData(const T& data) { /*static_assert(std::is_trivially_destructible_v<T>);*/ T* ptr = (T*)AllocateData(sizeof(T)); *ptr = data; return ptr; }
+    template <typename T> static T* AllocateData() { return (T*)AllocateData(sizeof(T)); }
+    template <typename T> static T* AllocateData(const T& data) { T* ptr = (T*)AllocateData(sizeof(T)); *ptr = data; return ptr; }
     static void SetInterceptCallback(void(const Message&));
 
     message_t type;
@@ -55,8 +56,8 @@ struct Message {
     
     union {
         void* data = nullptr;
-        int64_t data_int;
-        Value* data_value; // TODO: switch to value_t?
+        int32_t data_int;
+        value_t* data_value;
     };
 };
 

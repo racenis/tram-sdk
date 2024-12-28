@@ -147,7 +147,7 @@ void Init() {
         
         event.type = array[0];
         event.subtype = array[1];
-        event.poster_id = array[2];
+        event.poster = array[2];
         
         if (array[3].GetType() == TYPE_UNDEFINED) {
             event.data = nullptr;
@@ -170,7 +170,7 @@ void Init() {
             
             CallFunction("__tram_impl_event_event_callback", {event.type,
                                                               event.subtype,
-                                                              event.poster_id,
+                                                              event.poster,
                                                               (uint32_t)event.data_int,
                                                               data_int});
         });
@@ -386,7 +386,7 @@ void Init() {
     });
     
     SetFunction("__tram_impl_push_entity_fields", {TYPE_UINT32, TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        field_infos.push_back({array[0], array[1], array[2]});
+        field_infos.push_back({array[0], (Type)((uint32_t)array[1]), array[2]});
         return true;
     });
     
