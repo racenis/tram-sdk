@@ -52,6 +52,8 @@ void SetVsync(bool);
 bool IsRawInput();
 void SetRawInput(bool);
 
+bool IsRenderContextThread();
+
 }
 
 namespace tram::Platform::Input {

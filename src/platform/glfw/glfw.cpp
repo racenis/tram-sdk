@@ -5,6 +5,8 @@
 #include <platform/platform.h>
 #include <framework/ui.h>
 
+#include <thread>
+
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
     #include <emscripten/html5.h>
@@ -28,6 +30,8 @@ static GLFWwindow* WINDOW;
 static GLFWcursor* cursors[4] = {nullptr};
 
 static KeyboardKey GLFWKeyToKeyboardKey(int keycode);
+
+static std::thread::id render_context_thread = std::this_thread::get_id();
 
 void Window::Init() {
     glfwInit();
@@ -61,6 +65,7 @@ void Window::Init() {
     }
 
     glfwMakeContextCurrent(WINDOW);
+    render_context_thread = std::this_thread::get_id();
     
     // random settings that we don't need on web platform
 #ifdef _WIN32
@@ -244,7 +249,9 @@ void Window::SetVsync(bool value) {
     }
 }
 
-
+bool Window::IsRenderContextThread() {
+    return render_context_thread == std::this_thread::get_id();
+}
 
 
 void Input::Init() {

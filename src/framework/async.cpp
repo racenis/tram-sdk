@@ -8,6 +8,9 @@
 #include <framework/system.h>
 #include <framework/resource.h>
 #include <framework/entitycomponent.h>
+#include <framework/logging.h>
+
+#include <platform/api.h>
 
 #include <config.h>
 
@@ -30,8 +33,6 @@
  * @file framework/async.cpp
  * 
  * Implementation of the Async system.
- * 
- * @see https://racenis.github.io/tram-sdk/documentation/framework/async.html
  */
 
 
@@ -42,16 +43,35 @@
  * 
  * Currently Async only does Resource streaming, but we could do other kinds of
  * Async processing in the future too.
+ * 
+ * @see https://racenis.github.io/tram-sdk/documentation/framework/async.html
  */
 
 namespace tram::Async {
 
 static std::vector<std::thread> resource_loaders;
-static bool loaders_should_stop = false;
+static bool loaders_should_stop = true;
+
+enum RequestNotification {
+    NONE,
+    COMPONENT,
+    CALLBACK
+};
 
 struct ResourceRequest {
-    EntityComponent* requester;
-    Resource* resource;
+    RequestNotification notification_type;
+    Resource* resource = nullptr;
+    
+    union {
+        struct {
+            void (*callback)(void*);
+            void* callback_data;
+        };
+        
+        EntityComponent* requester;
+    };
+    
+    // TODO: check if we still need this padding
 #ifndef __x86_64__
     void* padding[2];
 #endif
@@ -64,15 +84,37 @@ static Queue<ResourceRequest*> finished_queue("Async::FinishResources() queue", 
 static Pool<ResourceRequest> request_pool("Async::ResourceRequest pool", RESOURCE_LOADER_REQUEST_LIMIT);
 
 /// Adds a resource to the loading queue.
-/// @param requester EntityComponent that will be notified when the resource is loaded.
-/// Can be set to nullptr, in which case nothing will be notified.
-/// @param requested_resource The resource that will be loaded.
+/// @param requester            EntityComponent that will be notified when the 
+///                             resource is loaded. Can be set to nullptr, in 
+///                             which case nothing will be notified.
+/// @param requested_resource   The resource that will be loaded.
 void RequestResource(EntityComponent* requester, Resource* resource) {
-    assert(System::IsInitialized(System::ASYNC));
+    if (!System::IsInitialized(System::ASYNC)) {
+        Log(Severity::CRITICAL_ERROR, System::ASYNC, "Can not request '{}' load, Async is not initialized", resource->GetName());
+    }
     
     disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
-        .requester = requester,
-        .resource = resource
+        .notification_type = RequestNotification::COMPONENT,
+        .resource = resource,
+        .requester = requester
+    }));
+}
+
+/// Adds a resource to the loading queue.
+/// @param callback             Callback function which will be called when the
+///                             resource has been loaded and is ready for use.
+/// @param data                 Data pointer, which will be passed to as a
+///                             parameter to the callback function.
+/// @param requested_resource   The resource that will be loaded.
+void RequestResource(void(*callback)(void* data), void* data, Resource* resource) {
+    if (!System::IsInitialized(System::ASYNC)) {
+        Log(Severity::CRITICAL_ERROR, System::ASYNC, "Can not request '{}' load, Async is not initialized", resource->GetName());
+    }
+    
+    disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
+        .notification_type = RequestNotification::COMPONENT,
+        .callback = callback,
+        .callback_data = data
     }));
 }
 
@@ -82,29 +124,30 @@ void RequestResource(EntityComponent* requester, Resource* resource) {
 /// @note The resource will be fully loaded anyway, but the requester will not
 ///       be notified.
 void CancelRequest(EntityComponent* requester, Resource* resource) {
-    for (auto& req : request_pool) {
-        if (req.requester == requester && req.resource == resource) {
-            req.requester = nullptr;
+    for (auto& request : request_pool) {
+        if (request.requester == requester && request.resource == resource) {
+            request.notification_type = RequestNotification::NONE;
+            request.requester = nullptr;
         }
     }
 }
 
 /// Loads a resource from disk, skipping the queue.
 /// Shouldn't be used outside of resource LoadFromDisk() methods. 
-void LoadDependency(Resource* res) {
-    if (res->GetStatus() == Resource::UNLOADED) {
-        res->LoadFromDisk();
+void LoadDependency(Resource* resource) {
+    if (resource->GetStatus() == Resource::UNLOADED) {
+        resource->LoadFromDisk();
     }
 
-    ResourceRequest* req = request_pool.AddNew(ResourceRequest {
-        .requester = nullptr,
-        .resource = res
+    ResourceRequest* request = request_pool.AddNew(ResourceRequest {
+        .notification_type = RequestNotification::NONE,
+        .resource = resource
     });
 
-    if (res->GetStatus() == Resource::READY) {
-        finished_queue.push(req);
+    if (resource->GetStatus() == Resource::READY) {
+        finished_queue.push(request);
     } else {
-        memory_loader_queue.push(req);
+        memory_loader_queue.push(request);
     }
 }
 
@@ -122,23 +165,48 @@ static void ResourceLoader() {
             continue;
         }
         
+        /* this will make the thread go to sleep when all requested resources
+         * have been loaded.
+         * 
+         * this will prevent the thread from wasting CPU cycles, but it will
+         * also make it slow to respond to new requests.
+         * 
+         * we could use a mutex or something to wake it up, instead of using a
+         * timout
+         * 
+         * TODO: fix
+         */
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
 /// Processes the first resource queue.
-/// If you started the Async system with at least one thread, you don't
-/// need to call this function.
-void LoadResourcesFromDisk() {        
-    if (ResourceRequest* req; disk_loader_queue.try_pop(req)) {
-        if (req->resource->GetStatus() == Resource::UNLOADED) {
-            req->resource->LoadFromDisk();
+/// If there are any resource loader threads active, this function will not do
+/// anything, instead allowing the loader threads to load the resources.
+void LoadResourcesFromDisk() {
+    if (resource_loaders.size()) {
+        // if any resource loader threads are active, we should check if this
+        // function is being called from one of them, otherwise we return. this
+        // is done in order to not slow down the main thread
+        bool called_from_loader = false;
+        for (const auto& loader : resource_loaders) {
+            if (loader.get_id() == std::this_thread::get_id()) {
+                called_from_loader = true;
+            }
+        }
+        
+        if (!called_from_loader) return;
+    }
+    
+    if (ResourceRequest* request; disk_loader_queue.try_pop(request)) {
+        if (request->resource->GetStatus() == Resource::UNLOADED) {
+            request->resource->LoadFromDisk();
         }
 
-        if (req->resource->GetStatus() == Resource::READY) {
-            finished_queue.push(req);
+        if (request->resource->GetStatus() == Resource::READY) {
+            finished_queue.push(request);
         } else {
-            memory_loader_queue.push(req);
+            memory_loader_queue.push(request);
         }
     }
 }
@@ -146,30 +214,35 @@ void LoadResourcesFromDisk() {
 /// Processes the second resource queue.
 /// @warning This function should only be called from the rendering thread.
 void LoadResourcesFromMemory() {
-    ResourceRequest* req;
-
-    while (memory_loader_queue.try_pop(req)) {
-        if (req->resource->GetStatus() == Resource::LOADED) {
-            req->resource->LoadFromMemory();
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::CRITICAL_ERROR, System::ASYNC, "Async::LoadResourcesFromMemory() not called from rendering thread");
+    }
+    
+    for (ResourceRequest* request; memory_loader_queue.try_pop(request);) {
+        if (request->resource->GetStatus() == Resource::LOADED) {
+            request->resource->LoadFromMemory();
         }
 
-        finished_queue.push(req);
+        finished_queue.push(request);
     }
-
 }
 
 /// Notifies EntityComponents about finished resources.
 void FinishResources() {
-    ResourceRequest* req;
-
-    while (finished_queue.try_pop(req)) {
-        if (req->requester) {
-            req->requester->ResourceReady();
+    for (ResourceRequest* request; finished_queue.try_pop(request);) {
+        switch (request->notification_type) {
+            case RequestNotification::CALLBACK:
+                request->callback(request->callback_data);
+                break;
+            case RequestNotification::COMPONENT:
+                request->requester->ResourceReady();
+                break;
+            case RequestNotification::NONE:
+                break;
         }
+        
+        request_pool.Remove(request);
     }
-    
-    // I think we forgot to remove the request from the request_pool...
-    // TODO: fix
 }
 
 /// Starts the async resource loader thread.
@@ -178,6 +251,8 @@ void Init(size_t threads) {
     System::SetState(System::ASYNC, System::INIT);
     System::AssertDependency(System::CORE);
     
+    // for some reason using threads makes the program not work in emscripten
+    // TODO: investigate
 #ifdef __EMSCRIPTEN__
     threads = 0;
 #endif
@@ -195,7 +270,9 @@ void Init(size_t threads) {
 
 /// Stops the async resource loader thread.
 void Yeet() {
-    assert(System::IsInitialized(System::ASYNC));
+    if (!System::IsInitialized(System::ASYNC)) {
+        Log(Severity::ERROR, System::ASYNC, "Async is not initialized, can not yeet it");
+    }
     
     loaders_should_stop = true;
     
@@ -203,23 +280,12 @@ void Yeet() {
         loader.join();
     }
     
-    System::SetInitialized(System::ASYNC, false);
+    System::SetState(System::ASYNC, System::YEET);
 }
 
 /// Returns number of resources in queues.
 size_t GetWaitingResources() {
-    // I think that we could just use request_pool.size() instead
-    size_t sum = 0;
-    disk_loader_queue.lock();
-    memory_loader_queue.lock();
-    finished_queue.lock();
-    sum += disk_loader_queue.size();
-    sum += memory_loader_queue.size();
-    sum += finished_queue.size();
-    disk_loader_queue.unlock();
-    memory_loader_queue.unlock();
-    finished_queue.unlock();
-    return sum;
+    return request_pool.size();
 }
 
 }
