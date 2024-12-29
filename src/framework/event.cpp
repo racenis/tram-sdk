@@ -173,7 +173,10 @@ event_t Event::GetType(name_t name) {
 
 /// Returns the name that was associated with a given event_t.
 name_t Event::GetName(event_t type) {
-    assert(type < last_type);
+    if (type >= MAX_EVENT_TYPES) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Attempting index {} invalid event", type);
+    }
+    
     return event_names[type];
 }
 

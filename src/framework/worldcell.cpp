@@ -5,6 +5,7 @@
 #include <framework/entity.h>
 #include <framework/transition.h>
 #include <framework/file.h>
+#include <framework/logging.h>
 
 #include <templates/pool.h>
 #include <templates/hashmap.h>
@@ -80,10 +81,10 @@ WorldCell* WorldCell::Find(vec3 point) {
 /// This will flag the cell as loaded and will load all of the entities that
 /// have been flagged as being automatically loaded.
 void WorldCell::Load() {
-    std::cout << "Loading cell: " << name << std::endl;
+    Log(Severity::INFO, System::CORE, "Loading cell:", name);
     
-    if (!entities.size()) {
-        std::cout << "Cell " << name << " has no entities. Forgot to load from disk?" << std::endl;
+    if (!entities.size() && !(flags & LOADED_FROM_DISK)) {
+        Log(Severity::ERROR, System::CORE, "Cell '{}' has no entities. Forgot to load from disk?", name);
     }
     
     for (auto it : entities) {
@@ -98,7 +99,8 @@ void WorldCell::Load() {
 /// have been flagged as being automatically loaded. It will also delete
 /// entities that have been flagged as being non-persistent.
 void WorldCell::Unload() {
-    std::cout << "Unloading cell: " << name << std::endl;
+    Log(Severity::INFO, System::CORE, "Unloading cell: {}", name);
+    
     auto entities_copy = entities;
     for (auto& it : entities_copy) {
         if (!it->IsAutoLoad() || !it->IsLoaded()) continue;
@@ -106,7 +108,7 @@ void WorldCell::Unload() {
         if (it->IsPersistent()) {
             it->Unload();
         } else {
-            std::cout << "Yeeting " << it->GetName() << " out of existence!" << std::endl;
+            Log(Severity::INFO, System::CORE, "Yeeting {} out of existence!", it->GetName());
             it->Yeet();
         }
     }
@@ -175,6 +177,11 @@ bool WorldCell::IsInside(vec3 point) {
 /// This method will take the volume transitions assigned to the worldcell in
 /// other pointer parameter and assign them as transitions to the given cell.
 void WorldCell::Link(WorldCell* other) {
+    if (!other) {
+        Log(Severity::WARNING, System::CORE, "Can't link '{}' cell to a nullptr", name);
+        return;
+    }
+    
     for (auto transition : other->GetVolume()) {
         this->transitions.push_back(transition);
     }
@@ -182,7 +189,21 @@ void WorldCell::Link(WorldCell* other) {
 
 /// Adds an entity to the worldcell.
 void WorldCell::Add(Entity* entity) {
-    assert(entity->cell != this);
+    if (!entity) {
+        Log(Severity::WARNING, System::CORE, "Can't put a nullptr entity in '{}' cell", name);
+        return;
+    }
+
+    /* the reason why we check for if the entity is nullptr is because sometimes
+     * the user might do something like cell->Add(Entity::Find("non-existing"));
+     * and if an entity can't be found, the Entity::Find() function returns a
+     * nullptr, so it is useful to check for that.
+     */
+
+    if (entity->cell == this) {
+        Log(Severity::WARNING, System::CORE, "Can't put entity '{}' into '{}' cell, it is already in it", name, entity->name);
+        return;
+    }
     
     if (entity->GetCell()) {
         entity->GetCell()->Remove(entity);
@@ -192,7 +213,7 @@ void WorldCell::Add(Entity* entity) {
     
     entity->cell = this;
 
-    if(flags & LOADED && !entity->IsLoaded() && entity->IsAutoLoad()) {
+    if (flags & LOADED && !entity->IsLoaded() && entity->IsAutoLoad()) {
         entity->Load();
     }
 
@@ -203,6 +224,10 @@ void WorldCell::Add(Entity* entity) {
 
 /// Removes an entity from the worldcell.
 void WorldCell::Remove(Entity* entity) {
+    if (!entity) {
+        Log(Severity::WARNING, System::CORE, "Can't remove a nullptr entity from '{}' cell", name);
+    }
+    
     if (entity->cell == this) {
         entity->cell = nullptr;
     }
@@ -210,28 +235,42 @@ void WorldCell::Remove(Entity* entity) {
     auto ptr = std::find(entities.begin(), entities.end(), entity);
     if (ptr != entities.end()) {
         entities.erase(ptr);
+    } else {
+        if (entity->name) {
+            Log(Severity::WARNING, System::CORE, "Can't remove '{}' from '{}' cell, it is not in it", entity->name, name);
+        } else {
+            Log(Severity::WARNING, System::CORE, "Can't remove {} from '{}' cell, it is not in it", entity->id, name);
+        }
     }
 }
 
 /// Loads worldcell data from disk.
 void WorldCell::LoadFromDisk() {
-    char path[100] = "data/worldcells/";
+    char path[PATH_LIMIT] = "data/worldcells/";
     strcat(path, name);
     strcat(path, ".cell");
     
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
-        std::cout << "Worldcell file " << path << " not found!" << std::endl;
-        abort();
+        Log(Severity::ERROR, System::CORE, "Worldcell file{} not found!", path);
+        return;
     }
 
     if (file.read_name() != "CELLv3") {
-        std::cout << "Cell format unrecognized " << path << "!" << std::endl;
-        abort();
+        Log(Severity::ERROR, System::CORE, "Cell format unrecognized in {}!", path);
+        return;
     }
     
+    
+    SetFlag(LOADED_FROM_DISK, true);
+    
     file.read_name(); // skip over cell name in file
+    
+    // wait why does the cell need a name inside the file
+    // the file already has a name
+    // also what happens when it doens't match???
+    // TODO: fix
     
     SetFlag(INTERIOR, file.read_uint32());
     SetFlag(INTERIOR_LIGHTING, file.read_uint32());
@@ -241,18 +280,14 @@ void WorldCell::LoadFromDisk() {
     while (file.is_continue()) {
         name_t entry_type = file.read_name();
         
-        std::cout << "we doin " << entry_type << std::endl;
-        
         if (entry_type == "transition") {
             name_t transition_name = file.read_name();
             name_t transition_into = file.read_name();
             
-            std::cout << "found transition " << transition_name << " into " << transition_into << std::endl;
-            
             WorldCell* into_ptr = WorldCell::Find(transition_into);
             
             if (!into_ptr) {
-                std::cout << "Transition into cell '" << transition_into << "' defined in " << path << ", but can't find said cell." << std::endl;
+                Log(Severity::WARNING, System::CORE, "Transition into cell '{}' defined in {}, but can't find said cell", transition_into, path);
             }
             
             Transition* transition = Transition::Make(transition_name, into_ptr);
@@ -276,10 +311,11 @@ void WorldCell::LoadFromDisk() {
         }
         
         if (entry_type == "signal") {
-            Entity* owner = Entity::Find(file.read_uint64());
+            id_t owner_id = file.read_uint32();
+            Entity* owner = Entity::Find(owner_id);
             
             if (!owner) {
-                std::cout << "Singal coudnlt find! find! signal ID for entity! " << std::endl;
+                Log(Severity::WARNING, System::CORE, "Cell '{}' defines a signal for entity {} but can't find it", name, owner_id);
                 file.skip_linebreak();
                 continue;
             }

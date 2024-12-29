@@ -3,6 +3,7 @@
 #include <framework/transition.h>
 
 #include <framework/worldcell.h>
+#include <framework/logging.h>
 #include <render/render.h>
 #include <templates/hashmap.h>
 
@@ -21,7 +22,7 @@
 namespace tram {
 
 template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", WORLDCELL_TRANSITION_LIMIT, false);
-static Hashmap<Transition*> transition_list ("transition list", WORLDCELL_TRANSITION_LIMIT);
+static Hashmap<Transition*> transition_list("transition list", WORLDCELL_TRANSITION_LIMIT);
 
 /// Finds a transition with the given name.
 /// Pointer to the transition or a nullptr if wasn't found.
@@ -51,6 +52,10 @@ Transition* Transition::Make(name_t name, WorldCell* cell_into) {
 Transition::Transition(name_t name, WorldCell* cell_into) {
     this->cell_into = cell_into;
     this->name = name;
+    
+    if (!cell_into) {
+        Log(Severity::ERROR, System::CORE, "Transition '{}' not leading to anywhere", name);
+    }
 }
 
 /// Adds a point to the transition volume.

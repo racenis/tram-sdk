@@ -3,6 +3,7 @@
 #include <framework/language.h>
 
 #include <framework/file.h>
+#include <framework/logging.h>
 
 #include <templates/stackpool.h>
 #include <templates/hashmap.h>
@@ -30,15 +31,20 @@ static Hashmap<const char*> language_string_map("Language string hashmap", LANGU
 
 /// Loads a language file.
 void Load(const char* filename){
-    char path [100] = "data/";
-    strcat (path, filename);
-    strcat (path, ".lang");
+    char path[PATH_LIMIT] = "data/";
+    strcat(path, filename);
+    strcat(path, ".lang");
     
-    File file (path, File::READ);
+    Log(Severity::INFO, System::CORE, "Loading: {}", path);
+    
+    File file(path, File::READ);
     
     if (!file.is_open()) {
-        std::cout << "Can't find language file " << path << std::endl;
+        Log(Severity::WARNING, System::CORE, "Can't find language file: {}", path);
     }
+    
+    // wait don't we have headers
+    // TODO: investigate
     
     while (file.is_continue()) {
         name_t string_name = file.read_name();

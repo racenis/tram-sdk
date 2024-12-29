@@ -6,6 +6,8 @@
 #include <framework/worldcell.h>
 
 #include <framework/transition.h>
+#include <framework/logging.h>
+
 #include <templates/pool.h>
 
 #include <set>
@@ -55,7 +57,7 @@ void Update() {
         Entity* entity = Entity::Find(entity_id);
         
         if (!entity) {
-            std::cout << "Loader lost track of entity with id " << entity_id << std::endl;
+            Log(Severity::WARNING, System::CORE, "Loader lost track of entity with ID {}", entity_id);
             tracked_entities.erase(entity_id);
             continue;
         }

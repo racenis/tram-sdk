@@ -53,13 +53,38 @@ static uint32_t last_system = SYSTEM_LAST;
 /// @param name Full name of the system.
 /// @param short_name Name of the system that will be displayed in log messages.
 uint32_t Register(char const* name, char const* short_name) {
+    if (UID::is_empty(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System name '{}' is empty", name);
+    }
+    
+    if (UID::is_empty(short_name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System short name '{}' is empty", short_name);
+    }
+    
+    if (!UID::no_quote(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System name '{}' contains invalid characters", name);
+    }
+    
+    if (!UID::no_quote(short_name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System short name '{}' contains invalid characters", short_name);
+    }
+    
+    for (system_t i = 0; i < last_system; i++) {
+        if (strcmp(system_infos[i].name, name) != 0) continue;
+
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System name '{}' already in use", name);
+    }
+    
+    for (system_t i = 0; i < last_system; i++) {
+        if (strcmp(system_infos[i].short_name, short_name) != 0) continue;
+
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System name '{}' already in use", short_name);
+    }
+    
     if (last_system >= SYSTEM_LIMIT) {
-        Log("System {} could not be registered, SYSTEM_LIMIT exceeded!", name);
+        Log(Severity::CRITICAL_ERROR, System::CORE, "System {} could not be registered, SYSTEM_LIMIT exceeded!", name);
         return System::INVALID;
     }
-
-    // TODO: check if system with name doesn't already exist
-    // also short name
 
     system_infos[last_system] = SystemInfo {
         .name = name,
@@ -86,20 +111,25 @@ system_t Find(char const* name) {
 
 /// Retrieves the full name of a system.
 char const* GetName(uint32_t system) {
-    assert(system < last_system);
+    if (system >= last_system) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Accessing invalid system_t {}", system);
+    }
     return system_infos[system].name;
 }
 
 /// Retrieves the short name of a system.
 char const* GetShortName(uint32_t system) {
-    assert(system < last_system);
+    if (system >= last_system) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Accessing invalid system_t {}", system);
+    }
     return system_infos[system].short_name;
 }
 
 /// Sets the initialization status of a system.
 void SetInitialized(uint32_t system, bool is_initialized) {
-    assert(system < last_system);
-    assert(system != System::INVALID);
+    if (system == System::INVALID || system >= last_system) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Accessing invalid system_t {}", system);
+    }
     system_infos[system].state = READY;
 }
 
@@ -112,8 +142,12 @@ bool IsInitialized(uint32_t system) {
     return system_infos[system].state == READY;
 }
 
+/// Sets the state of a system.
+/// - `YEET` when a system is uninitialized.
+/// - `INIT` when a system is initializing.
+/// - `READY` when a system is initialized.
 void SetState(system_t system, SystemState state) {
-    if (system >= last_system) {
+    if (system == System::INVALID || system >= last_system) {
         Log(Severity::ERROR, System::CORE, "Attempting to set the state of an invalid system_t '{}'", system);
         return;
     }
@@ -122,7 +156,7 @@ void SetState(system_t system, SystemState state) {
 }
 
 void AssertDependency(system_t system) {
-    if (system >= last_system) {
+    if (system == System::INVALID || system >= last_system) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "Attempting assert dependency on invalid system_t '{}'", system);
         return;
     }
@@ -130,17 +164,24 @@ void AssertDependency(system_t system) {
     // check if system is fully initialized
     if (system_infos[system].state == READY) return;
     
-    // otherwise proceed to crash
-    Log(Severity::CRITICAL_ERROR, System::CORE, "Dependency on system {} assertion failed", system);
+    // otherwise check which system is peforming initialization
+    int systems_loading = 0;
+    system_t system_loading = System::INVALID;
+    for (system_t i = 0; i < last_system; i++) {
+        if (system_infos[i].state == INIT) systems_loading++, system_loading = i;
+    }
     
+    // print out an error message
+    if (!systems_loading) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Dependency on system {} assertion failed", GetName(system));
+    } else if (systems_loading == 1) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Dependency on system {} assertion failed while loading", GetName(system), GetName(system_loading));
+    } else {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Dependency on system {} assertion failed while loading multiple systems", GetName(system));
+    }
+    
+    // and proceed to crash
     abort();
-    
-    // 3 possible messages:
-    // - assert while no system is initing
-    // - assert while a single system is initing
-    // - assert when multiple are initing
-    
-    // TODO: finish
 }
 
 /// Returns the total count of registered systems.

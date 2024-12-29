@@ -64,6 +64,7 @@ protected:
         INTERIOR_LIGHTING = 4,
         DEBUG_DRAW = 8,
         AUTOMATIC_LOADING = 16,
+        LOADED_FROM_DISK = 32
     };
 
     inline void SetFlag(uint32_t flag, bool value) { flags = value ? flags | flag : flags & ~flag; };

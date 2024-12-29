@@ -5,6 +5,7 @@
 #include <framework/signal.h>
 #include <framework/entity.h>
 #include <framework/value.h>
+#include <framework/logging.h>
 
 #include <config.h>
 
@@ -53,6 +54,24 @@ static signal_t last_type = Signal::LAST_SIGNAL;
 /// Registers a new message type.
 /// @return Unique message type number.
 signal_t Signal::Register(const char* name) {
+    if (UID::is_empty(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Signal name '{}' is empty", name);
+    }
+    
+    if (!UID::no_quote(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Signal name '{}' contains invalid characters", name);
+    }
+    
+    for (event_t i = 0; i < last_type; i++) {
+        if (strcmp(signal_names[i], name) != 0) continue;
+        
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Signal name '{}' already in use", name);
+    }
+    
+    if (last_type >= SIGNAL_TYPE_LIMIT) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Signal count limit exceeded when registering '{}'", name);
+    }
+    
     signal_names[last_type] = name;
     return last_type++;
 }
@@ -61,7 +80,7 @@ signal_t Signal::Register(const char* name) {
 signal_t Signal::GetType(name_t name) {
     signal_t type = name_t_to_signal_t.Find(name);
     
-    if (!type) {
+    if (!type && name) {
         for (signal_t i = 0; i < last_type; i++) {
             if (signal_names[i] == name) {
                 name_t_to_signal_t.Insert(name, i);
@@ -75,6 +94,10 @@ signal_t Signal::GetType(name_t name) {
 
 /// Gets a nessage type name.
 name_t Signal::GetName(signal_t type) {
+    if (type >= SIGNAL_TYPE_LIMIT) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Attempting index {} invalid signal", type);
+    }
+    
     return signal_names[type];
 }
 

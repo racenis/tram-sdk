@@ -2,6 +2,7 @@
 
 #include <framework/message.h>
 #include <framework/entity.h>
+#include <framework/logging.h>
 
 #include <templates/queue.h>
 #include <templates/pool.h>
@@ -93,6 +94,24 @@ static message_t last_type = Message::LAST_MESSAGE;
 /// Registers a new message type.
 /// @return Unique message type number.
 message_t Message::Register(const char* name) {
+    if (UID::is_empty(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Message name '{}' is empty", name);
+    }
+    
+    if (!UID::no_quote(name)) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Message name '{}' contains invalid characters", name);
+    }
+    
+    for (event_t i = 0; i < last_type; i++) {
+        if (strcmp(message_names[i], name) != 0) continue;
+        
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Message name '{}' already in use", name);
+    }
+    
+    if (last_type >= MESSAGE_TYPE_LIMIT) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Message count limit exceeded when registering '{}'", name);
+    }
+    
     message_names[last_type] = name;
     return last_type++;
 }
@@ -101,7 +120,7 @@ message_t Message::Register(const char* name) {
 message_t Message::GetType(name_t name) {
     message_t type = name_t_to_message_t.Find(name);
     
-    if (!type) {
+    if (!type && name) {
         for (message_t i = 0; i < last_type; i++) {
             if (message_names[i] == name) {
                 name_t_to_message_t.Insert(name, i);
@@ -115,9 +134,16 @@ message_t Message::GetType(name_t name) {
 
 /// Gets a nessage type name.
 name_t Message::GetName(message_t type) {
+    if (type >= last_type) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Attempting index {} invalid message", type);
+    }
+    
     return message_names[type];
 }
 
+/// Returns the last message_t plus one.
+/// Useful for iterating over all registered messages, i.e. in a 
+/// `while (++message < Message::GetLast());` or a similar loop.
 message_t Message::GetLast() {
     return last_type;
 }
@@ -151,7 +177,8 @@ void Message::Dispatch() {
 /// Sends a message.
 /// Message will be delivered to the Entity with the ID number specified in the
 /// Message::receiver field, by calling its Entity::MessageHandler() method.
-void Message::Send (const Message& message) {
+void Message::Send(const Message& message) {
+    // TODO: check if sending a valid message
     message_queue.push(message);
 }
 
@@ -162,10 +189,11 @@ void Message::Send (const Message& message) {
 /// @param when     How many ticks need to pass until the message will be sent
 ///                 out, i.e. if you want to send a message out in 1 secons,
 ///                 set this parameter to 60.
-void Message::Send (const Message& message, float delay) {
+void Message::Send(const Message& message, float delay) {
     auto message_copy = message_pool.AddNew(message);
     auto abs_when = GetTickTime() + delay;
     
+    // TODO: check if sending valid message
     future_messages.push({abs_when, message_copy});
 }
 
@@ -176,7 +204,7 @@ void Message::Send (const Message& message, float delay) {
 /// if you're sending messages with a delay, then you'll need to allocate memory for
 /// their data yourself.
 /// @note Remember to only use POD data types.
-void* Message::AllocateData (size_t ammount) {
+void* Message::AllocateData(size_t ammount) {
     return data_pool.AddNew(ammount);
 }
 

@@ -82,8 +82,7 @@ void LoadScript(const char* path) {
 
 void Init() {
     if (!language.name) {
-        std::cout << "Failed script initialization! Language not set!" << std::endl;
-        abort();
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Failed script initialization! Language not set!");
     }
     
     // FRAMEWORK/CORE.H

@@ -8,6 +8,7 @@
 #include <framework/event.h>
 #include <framework/ui.h>
 #include <framework/system.h>
+#include <framework/logging.h>
 
 #include <render/render.h>
 #include <render/api.h>
@@ -115,18 +116,27 @@ void BindKeyboardKey(KeyboardKey key, void (*action)(KeyboardKey)) {
     key_action_bindings[key] = {.special_option2 = action};
 }
 
+/// Initializes the UI system.
+/// This will open the window.
 void Init() {
-    assert(System::IsInitialized(System::CORE));
+    System::SetState(System::UI, System::INIT);
+    System::AssertDependency(System::CORE);
     
     Platform::Window::Init();
     
-    System::SetInitialized(System::UI, true);
+    System::SetState(System::UI, System::READY);
 }
 
+/// Uninitializes the UI system.
+/// Closes the window.
 void Uninit() {
+    System::SetState(System::UI, System::YEET);
     Platform::Window::Uninit();
 }
 
+/// Updates the UI system.
+/// When called, this will cause the UI state to be updated and all of the
+/// keypress and mouse movement events to be emitted.
 void Update() {
     if (input_state == STATE_FLYING) {
         vec3 camera_position = GetViewPosition();
@@ -174,9 +184,7 @@ void Update() {
     Platform::Input::Update();
 }
 
-
-
-
+/// Ends the frame and updates the window.
 void EndFrame() {
     Platform::Window::Update();
 }
@@ -198,12 +206,19 @@ float GetScreenHeight() {
     return screen_height;
 }
 
+
 void SetWindowTitle(const char* title) {
-    Platform::Window::SetTitle(title);
     
+    Platform::Window::SetTitle(title);
 }
 
+/// Sets the window size.
+/// The width and height are the pixel value of the window.
 void SetWindowSize(int w, int h) {
+    if (w < 1 || h < 1) {
+        Log(Severity::ERROR, System::UI, "Setting window size {} by {} too small", w, h);
+        return;
+    } 
     Platform::Window::SetSize(w, h);
 }
 
@@ -365,6 +380,24 @@ static const char* keyboardaction_names[KEYBOARDACTION_LIMIT] = {
 static keyboardaction_t last_type = KeyboardAction::KEY_ACTION_LAST;
 
 keyboardaction_t RegisterKeyboardAction(const char* name) {
+    if (UID::is_empty(name)) {
+        Log(Severity::CRITICAL_ERROR, System::UI, "Keyboard action name '{}' is empty", name);
+    }
+    
+    if (!UID::no_quote(name)) {
+        Log(Severity::CRITICAL_ERROR, System::UI, "Keyboard action name '{}' contains invalid characters", name);
+    }
+    
+    for (event_t i = 0; i < last_type; i++) {
+        if (strcmp(keyboardaction_names[i], name) != 0) continue;
+        
+        Log(Severity::CRITICAL_ERROR, System::UI, "Keyboard action name '{}' already in use", name);
+    }
+    
+    if (last_type >= KEYBOARDACTION_LIMIT) {
+        Log(Severity::CRITICAL_ERROR, System::UI, "Keyboard action count limit exceeded when registering '{}'", name);
+    }
+    
     keyboardaction_names[last_type] = name;
     return last_type++;
 }
@@ -372,7 +405,7 @@ keyboardaction_t RegisterKeyboardAction(const char* name) {
 keyboardaction_t GetKeyboardAction(name_t name) {
     keyboardaction_t type = name_t_to_keyboardaction_t.Find(name);
     
-    if (!type) {
+    if (!type && name) {
         for (keyboardaction_t i = 0; i < last_type; i++) {
             if (keyboardaction_names[i] == name) {
                 name_t_to_keyboardaction_t.Insert(name, i);
@@ -385,6 +418,10 @@ keyboardaction_t GetKeyboardAction(name_t name) {
 }
 
 name_t GetKeyboardActionName(keyboardaction_t type) {
+    if (type >= last_type) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Keyboard action type {} not found");
+    }
+    
     return keyboardaction_names[type];
 }
 
@@ -393,15 +430,7 @@ std::vector<std::pair<keyboardaction_t, std::vector<KeyboardKey>>> GetAllKeyboar
     for (keyboardaction_t i = 1; i < last_type; i++) {
         binding_list.push_back({i, {}});
     }
-    
-    /*std::unordered_map<keyboardaction_t, std::vector<KeyboardKey>> binding_map;
-    for (auto& binding : key_action_bindings) {
-        if (binding.second.action) {
-            binding_map[binding.second.action].push_back(binding.first);
-        }
-    }*/
-    
-    
+
     for (auto& binding : key_action_bindings) {
         if (binding.second.action) {
             for (auto& list_binding : binding_list) {
@@ -410,18 +439,14 @@ std::vector<std::pair<keyboardaction_t, std::vector<KeyboardKey>>> GetAllKeyboar
                 }
             }
         }
-        
-        //binding_list.push_back({binding.first, binding.second});
-        //binding_list.push_back({binding.first, binding.second});
+
     }
 
-    //std::sort(binding_list.begin(), binding_list.end());
     return binding_list;
 }
 
 const char* GetKeyboardKeyName(KeyboardKey key) {
     switch (key) {
-    
         case KEY_SPACE:             return "space";
         case KEY_APOSTROPHE:        return "'";
         case KEY_COMMA:             return ",";
