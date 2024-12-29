@@ -27,7 +27,13 @@ namespace implementation {
     template <> void concat(const std::string& value);
     template <> void concat(const char* const& value);
     template <> void concat(const UID& value);
+    template <size_t N>
+    void concat(const char (&value)[N]) {
+        concat<const char*>(value);
+    }
     
+    void concat(const char*);
+
     template <typename T> void concat_numeric(const T& value) {}
     template <> void concat_numeric(const int64_t& value);
     template <> void concat_numeric(const uint64_t& value);
@@ -56,9 +62,9 @@ namespace implementation {
     }
 
     template <typename T, typename... Args>
-    void log(void(*flush)(Severity, System::system_t), Severity severity, System::system_t system, std::string_view& format, T value, Args&&... args) {
+    void log(void(*flush)(Severity, System::system_t), Severity severity, System::system_t system, std::string_view& format, T& value, Args&&... args) {
         concat_fmt(format);
-        concat<T>(value);
+        concat(value);
         
         log(flush, severity, system, format, args...);
     }

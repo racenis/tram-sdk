@@ -61,10 +61,6 @@ uint32_t Register(char const* name, char const* short_name) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "System short name '{}' is empty", short_name);
     }
     
-    if (!UID::no_quote(name)) {
-        Log(Severity::CRITICAL_ERROR, System::CORE, "System name '{}' contains invalid characters", name);
-    }
-    
     if (!UID::no_quote(short_name)) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "System short name '{}' contains invalid characters", short_name);
     }

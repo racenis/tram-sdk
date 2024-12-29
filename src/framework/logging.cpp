@@ -54,6 +54,8 @@ namespace tram::implementation {
 
 // since all of the formats use the same buffer? we should probably add a some
 // sort of a lock or something. so that you can Log from multiple threads.
+// actually a better idea would be to allocate this on the Log() template
+// functions stack and then pass a pointer down into concatfmt etc.
 char buffer[500] = {'\0'}; // yes.. haha .. YES!!
 
 void concat_fmt(std::string_view& str) {
@@ -98,6 +100,14 @@ void flush_console(Severity severity, System::system_t system) {
     
     std::cout << buffer << std::endl;
     buffer[0] = '\0';
+    
+    // some people might say "loggers shouldn't act as asserts" but they are wrong!
+    // consider this:
+    // purpose of logger:       catching bugs
+    // purpose of an asserter:  catching bugs
+    // see? things should be grouped by what they do, not what they say they do
+    
+    if (severity == Severity::CRITICAL_ERROR) abort();
 }
 
 void flush_display(int time, int system) {
@@ -119,6 +129,11 @@ template <> void concat(const std::string& value) {
 template <> void concat(const char* const& value) {
     strcat(buffer, value);
 }
+
+void concat(const char* value) {
+    strcat(buffer, value);
+}
+
 
 template <> void concat(const UID& value) {
     concat<char const*> (value.operator char const*());

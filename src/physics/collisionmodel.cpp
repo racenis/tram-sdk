@@ -6,6 +6,7 @@
 #include <templates/hashmap.h>
 
 #include <framework/file.h>
+#include <framework/logging.h>
 
 #include <config.h>
 
@@ -42,16 +43,16 @@ CollisionModel* CollisionModel::Find(name_t model_name) {
 /// If the collision model file can't be found, the model will be replaced with
 /// a 25cm wide cube.
 void CollisionModel::LoadFromDisk () {
-    char path[200] = "data/models/";
+    char path[PATH_LIMIT] = "data/models/";
     
     strcat(path, name);
     strcat(path, ".collmdl");
 
-    File file (path, File::READ);
+    File file(path, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't find collisionmodel: " << path << std::endl;
-
+        Log(Severity::WARNING, System::PHYSICS, "Can't find collisionmodel: {}", path);
+        
         shape = Physics::API::MakeCollisionShape(nullptr, 0);
         load_fail = true;
         status = READY;
@@ -61,7 +62,7 @@ void CollisionModel::LoadFromDisk () {
 
     std::vector<API::CollisionShapeTransform> shapes;
 
-    std::cout << "Loading: " << path << std::endl;
+    Log(Severity::INFO, System::PHYSICS, "Loading: {}", path);
     
     while (file.is_continue()) {
         name_t type = file.read_name();

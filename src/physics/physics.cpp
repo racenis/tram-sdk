@@ -6,22 +6,50 @@
 #include <framework/system.h>
 #include <framework/stats.h>
 
+/**
+ * @struct tram::Physics::Collision physics/physics.h <physics/physics.h>
+ * 
+ * Physics collision data.
+ * 
+ * Used to represent a collision between two physics objects. Sometimes a
+ * function always returns a Collision struct, but it can still fail, such as
+ * the Raycast() function, which can perform a raycast that doesn't hit
+ * anything. In such a case the structs vector properties will be zeroed-out and
+ * the `collider` will be set to a `nullptr`.
+ * 
+ * @property tram::Physics::Collision::collider
+ * Pointer to a PhysicsComponent that owns the rigidbody with which the
+ * collision happened.
+ * 
+ * @property tram::Physics::Collision::point
+ * Position of the collision in world space.
+ * 
+ * @property tram::Physics::Collision::normal
+ * Normal vector of the surface that the collision happened with.
+ * 
+ * @property tram::Physics::Collision::distance
+ * Distance of the collision, i.e. how far the colliders penetrated each other.
+ */
+
 namespace tram::Physics {
 
 /// Initializes the physics system.
 void Init() {
-    assert(!System::IsInitialized(System::PHYSICS));
+    System::SetState(System::PHYSICS, System::INIT);
+    System::AssertDependency(System::CORE);
     
     API::Init();
     
-    System::SetInitialized(System::PHYSICS, true);
+    System::SetState(System::PHYSICS, System::READY);
 }
 
 /// Updates the physics system.
 /// Should only be called once in the update cycle.
 void Update() {
     Stats::Start(System::PHYSICS);
+    
     API::StepPhysics();
+    
     Stats::Stop(System::PHYSICS);
 }
 
@@ -32,7 +60,7 @@ void Update() {
 Collision Raycast(const vec3& from, const vec3& to, uint32_t collision_mask) {
     auto[result, object] = API::Raycast(from, to, collision_mask);
     
-    return {(PhysicsComponent*)object, result.point, result.normal};
+    return {(PhysicsComponent*)object, result.point, result.normal, result.distance};
 }
 
 /// I have no idea if this function works. (yes it does)

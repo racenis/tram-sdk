@@ -447,17 +447,11 @@ void mainloop() {
     UI::EndFrame();
 }
 
-
-
 int main(int argc, const char** argv) {
-    std::cout << "CURRENT_PLATFORM: " << CURRENT_PLATFORM << std::endl; 
-    
     //bool poopis = false;
 
     //Settings::Register(vec4(0, 0, 0, 0), "toopis");
     //Settings::Register(&poopis, "poopis");
-
-    
 
     //vec4 toopis = Settings::Get("toopis");
 
