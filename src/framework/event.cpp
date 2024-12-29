@@ -143,8 +143,8 @@ event_t Event::Register(const char* name) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "Event name '{}' already in use", name);
     }
     
-    if (last_type < MAX_EVENT_TYPES) {
-        Log(Severity::CRITICAL_ERROR, System::CORE, "Event count limit exceeded", name);
+    if (last_type >= MAX_EVENT_TYPES) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Event count limit exceeded when registering '{}'", name);
     }
 
     listener_table.push_back(std::vector<ListenerInfo>());

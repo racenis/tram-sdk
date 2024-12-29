@@ -29,7 +29,7 @@ selection:
     
     GUI::PushFrameRelative(GUI::FRAME_CENTER_HORIZONTAL, 640);
     GUI::PushFrameRelative(GUI::FRAME_CENTER_VERTICAL, 480);
-    GUI::FillFrame(Ext::Menu::FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
     
         GUI::TextBox(search_string, SEARCH_STRING_LENGTH, true, 400);
@@ -56,18 +56,18 @@ dialog:
     GUI::PushFrameRelative(GUI::FRAME_TOP, 200);
 
 
-    GUI::FillFrame(Ext::Menu::FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
 
         auto topic = DialogTopic::Find(dialog_topic);
     
         if (!topic) {
-            GUI::Text(Ext::Menu::FONT_TEXT, "Not found: ");
-            GUI::Text(Ext::Menu::FONT_TEXT, dialog_topic);
+            GUI::Text("Not found: ");
+            GUI::Text(dialog_topic);
         } else {
             auto next_topics = topic->GetValidNextTopics();
     
-            GUI::Text(Ext::Menu::FONT_TEXT, topic->answer);
+            GUI::Text(topic->answer);
             
             GUI::NewLine();
             
@@ -97,11 +97,11 @@ dialog:
 void QuestList::Display() {
     GUI::PushFrameRelative(GUI::FRAME_CENTER_HORIZONTAL, 640);
     GUI::PushFrameRelative(GUI::FRAME_CENTER_VERTICAL, 480);
-    GUI::FillFrame(Ext::Menu::FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
     
     for (const auto& quest : PoolProxy<Quest>::GetPool()) {
-        GUI::Text(Ext::Menu::FONT_TEXT_BOLD, quest.name);
+        GUI::Text(quest.name);
         GUI::NewLine();
         
         GUI::PushFrameRelativeKeepCursor(GUI::FRAME_LEFT_INV, 10);
@@ -115,8 +115,8 @@ void QuestList::Display() {
             if (objective.objective.value == "failed") GUI::SetColor(Render::COLOR_RED);
             if (objective.objective.value == "known") GUI::SetColor(Render::COLOR_BLACK);
             
-            GUI::Text(Ext::Menu::FONT_TEXT_BOLD, objective.objective.title); GUI::NewLine(GUI::LINE_LOW);
-            GUI::Text(Ext::Menu::FONT_TEXT, objective.objective.subtitle); GUI::NewLine();
+            GUI::Text(objective.objective.title); GUI::NewLine(GUI::LINE_LOW);
+            GUI::Text(objective.objective.subtitle); GUI::NewLine();
         }
         
         GUI::SetColor(Render::COLOR_BLACK);
@@ -132,7 +132,7 @@ void QuestList::Display() {
 void KitchensinkMenuList::Display() {
     GUI::PushFrameRelative(GUI::FRAME_CENTER_HORIZONTAL, 100);
     GUI::PushFrameRelative(GUI::FRAME_CENTER_VERTICAL, 100);
-    GUI::FillFrame(Ext::Menu::FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
     
     if (GUI::Button("Show dialogs", true, 90)) {

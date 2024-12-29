@@ -251,12 +251,12 @@ static void CheckEntityTypeDuplicate(name_t name, const Entity::FieldInfo* field
     const auto existing = registered_entity_types.Find(name);
     
     if (existing.fieldcount != count) {
-        Log(Severity::CRITICAL_ERROR, System::CORE, "Entity type named {} already exists, overriding", name);
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Entity type {} override {} -> {} field count", name, existing.fieldcount, count);
     }
     
     for (size_t i = 0; i < count; i++) {
         if (existing.fields[i].field_type != fields[i].field_type) {
-            Log(Severity::CRITICAL_ERROR, System::CORE, "Entity type {} override, parameter {} type {} -> {}",name, i, TypeToString(existing.fields[i].field_type), TypeToString(fields[i].field_type));
+            Log(Severity::CRITICAL_ERROR, System::CORE, "Entity type {} override, parameter {} type {} -> {}", name, i, TypeToString(existing.fields[i].field_type), TypeToString(fields[i].field_type));
         }
     }
 }

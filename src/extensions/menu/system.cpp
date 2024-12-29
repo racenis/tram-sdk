@@ -24,7 +24,7 @@ void SystemMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, menu_offset2);
     GUI::PushFrameRelative(GUI::FRAME_TOP, menu_height);
     GUI::PushFrameRelative(GUI::FRAME_LEFT, menu_width);
-    GUI::FillFrame(0, GUI::WIDGET_WINDOW);
+    GUI::FillFrame(GUI::WIDGET_WINDOW);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         GUI::Button("New", false, 90);
         GUI::NewLine();
@@ -51,15 +51,15 @@ void SystemMenu::Display() {
     
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 24);
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 5);
-    GUI::Text(1, GetVersion());
-    GUI::Text(1, " open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
+    GUI::Text(GetVersion());
+    GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
     
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 1);
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 1);
     GUI::SetColor(Render::COLOR_WHITE);
     
-    GUI::Text(1, GetVersion());
-    GUI::Text(1, " open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
+    GUI::Text(GetVersion());
+    GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
     
     GUI::SetColor(Render::COLOR_BLACK);
     GUI::PopFrame();
@@ -84,7 +84,7 @@ void SettingsMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, menu_offset2);
     GUI::PushFrameRelative(GUI::FRAME_TOP, menu_height);
     GUI::PushFrameRelative(GUI::FRAME_LEFT, menu_width);
-    GUI::FillFrame(0, GUI::WIDGET_WINDOW);
+    GUI::FillFrame(GUI::WIDGET_WINDOW);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         GUI::RadioButton(0, tab, "Engine ");
         GUI::RadioButton(1, tab, "Input ");
@@ -92,7 +92,7 @@ void SettingsMenu::Display() {
         GUI::RadioButton(3, tab, "Audio ");
     
         GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 22);
-        GUI::FillFrame(0, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::FillFrame(GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         switch (tab) {
             default: {
@@ -100,7 +100,7 @@ void SettingsMenu::Display() {
                 GUI::CheckBox(enable_debug, "Enable debug mode", false);
                 GUI::NewLine();
                 
-                GUI::Text(1, "GUI Scale ");
+                GUI::Text("GUI Scale ");
                 uint32_t gui_scale = GUI::GetScaling();
                 if (GUI::RadioButton(1, gui_scale, "1") ||
                     GUI::RadioButton(2, gui_scale, "2") ||
@@ -113,7 +113,7 @@ void SettingsMenu::Display() {
                 Value camera_shake = Settings::Get("camerashake");
                 if (camera_shake.GetType() == TYPE_FLOAT32) {
                     float shake = camera_shake.GetFloat();
-                    GUI::Text(1, "Camera shake ");
+                    GUI::Text("Camera shake ");
                     if (GUI::Slider(shake)) {
                         Settings::Set("camerashake", shake);
                     }
@@ -125,7 +125,7 @@ void SettingsMenu::Display() {
                 static bool inverse_x = false;
                 static bool inverse_y = false;
                 float sensitivity = fabsf(UI::GetAxisSensitivity(UI::KEY_MOUSE_X));
-                GUI::Text(1, "Mouse sensitivity ");
+                GUI::Text("Mouse sensitivity ");
                 sensitivity /= 5.0f;
                 bool changed_sensitivity = GUI::Slider(sensitivity, true, 150);
                 sensitivity *= 5.0f;
@@ -137,7 +137,7 @@ void SettingsMenu::Display() {
                     UI::SetAxisSensitivity(UI::KEY_MOUSE_X, sensitivity * (inverse_x ? -1.0f : 1.0f));
                     UI::SetAxisSensitivity(UI::KEY_MOUSE_Y, sensitivity * (inverse_y ? -1.0f : 1.0f));
                 }
-                GUI::Text(1, binding_action ? "Key bindings ... press any key to bind ..." : "Key bindings"); GUI::NewLine(GUI::LINE_LOW);
+                GUI::Text(binding_action ? "Key bindings ... press any key to bind ..." : "Key bindings"); GUI::NewLine(GUI::LINE_LOW);
                 
                 GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 150);
                 GUI::NewLine(GUI::LINE_NORMAL);
@@ -148,7 +148,7 @@ void SettingsMenu::Display() {
                 GUI::PopFrame();
                 
                 GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 116);
-                GUI::FillFrame(0, GUI::WIDGET_REVERSE_WINDOW);
+                GUI::FillFrame(GUI::WIDGET_REVERSE_WINDOW);
                 GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
                     
                     auto bindings = UI::GetAllKeyboardKeyBindings();
@@ -163,7 +163,7 @@ void SettingsMenu::Display() {
                     }
                     
                     for (auto& binding : bindings_in_page) {
-                        GUI::Text(1, UI::GetKeyboardActionName(binding.first));
+                        GUI::Text(UI::GetKeyboardActionName(binding.first));
                         GUI::NewLine();
                     }
                     
@@ -221,8 +221,8 @@ void SettingsMenu::Display() {
                 float fov = Render::GetViewFov() / 180.0f;
                 float clp = Render::GetViewDistance() / 500.0f;
                 
-                GUI::Text(1, "Field of view"); GUI::NewLine();
-                GUI::Text(1, "Render distance"); GUI::NewLine();
+                GUI::Text("Field of view"); GUI::NewLine();
+                GUI::Text("Render distance"); GUI::NewLine();
                 bool vsync = Platform::Window::IsVsync();
                 bool fullscreen = Platform::Window::IsFullscreen();
                 if (GUI::CheckBox(vsync, "VSync")) Platform::Window::SetVsync(vsync);
@@ -233,7 +233,7 @@ void SettingsMenu::Display() {
                 uint32_t monitor = Platform::Window::GetCurrentMonitor();
                 uint32_t monitor_count = Platform::Window::GetMonitorCount();
                 
-                GUI::Text(1, "Monitor ");
+                GUI::Text("Monitor ");
                 if (GUI::RadioButton(0, monitor, "1", monitor_count > 0) ||
                     GUI::RadioButton(1, monitor, "2", monitor_count > 1) ||
                     GUI::RadioButton(2, monitor, "3", monitor_count > 2) ||
@@ -274,7 +274,7 @@ void SettingsMenu::Display() {
                 GUI::PopFrame();
             } break;
             case 3: {
-                GUI::Text(1, "Audio volume"); GUI::NewLine();
+                GUI::Text("Audio volume"); GUI::NewLine();
                 
                 float vol = Audio::GetVolume();
                 

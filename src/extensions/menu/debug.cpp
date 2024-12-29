@@ -39,19 +39,19 @@ struct MessageIntercept : Intercept {
     std::string value;
     
     void Display() {
-        GUI::Text(1, "MSG");
+        GUI::Text("MSG");
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
-        GUI::Text(1, type.c_str());
+        GUI::Text(type.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        GUI::Text(1, sender.c_str());
+        GUI::Text(sender.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        GUI::Text(1, receiver.c_str());
+        GUI::Text(receiver.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        GUI::Text(1, value.c_str());
+        GUI::Text(value.c_str());
         
         GUI::PopFrame();
         GUI::PopFrame();
@@ -60,16 +60,16 @@ struct MessageIntercept : Intercept {
 
         /*GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
-        GUI::Text(1, type.c_str());
+        GUI::Text(type.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 90);
         
-        GUI::Text(1, sender.c_str());
+        GUI::Text(sender.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 50);
         
-        GUI::Text(1, receiver.c_str());
+        GUI::Text(receiver.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 50);
         
-        GUI::Text(1, value.c_str());
+        GUI::Text(value.c_str());
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
@@ -85,41 +85,41 @@ struct EventIntercept : Intercept {
     
     void Display() {
         
-        GUI::Text(1, "EVT");
+        GUI::Text("EVT");
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
-        GUI::Text(1, type.c_str());
+        GUI::Text(type.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        GUI::Text(1, emitter.c_str());
+        GUI::Text(emitter.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        //GUI::Text(1, receiver.c_str());
-        GUI::Text(1, subtype.c_str());
+        //GUI::Text(receiver.c_str());
+        GUI::Text(subtype.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        GUI::Text(1, value.c_str());
+        GUI::Text(value.c_str());
         
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
         
-        //GUI::Text(1, (std::string("event ") + std::to_string(time)).c_str());
+        //GUI::Text((std::string("event ") + std::to_string(time)).c_str());
         
-        /*GUI::Text(1, "EVT");
+        /*GUI::Text("EVT");
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
-        GUI::Text(1, type.c_str());
+        GUI::Text(type.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 90);
         
-        GUI::Text(1, subtype.c_str());
+        GUI::Text(subtype.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
-        GUI::Text(1, emitter.c_str());
+        GUI::Text(emitter.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 70);
         
-        GUI::Text(1, value.c_str());
+        GUI::Text(value.c_str());
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
@@ -133,10 +133,10 @@ struct LogIntercept : Intercept {
     std::string message;
     
     void Display() {
-        GUI::Text(1, "LOG");
+        GUI::Text("LOG");
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
-        GUI::Text(1, message.c_str());
+        GUI::Text(message.c_str());
         GUI::PopFrame();
     }
 };
@@ -259,7 +259,7 @@ StatisticsMenu* DebugMenu::statistics_menu = nullptr;
 
 void DebugMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
     
         if (GUI::Button("Worldcells")) {
@@ -351,21 +351,21 @@ void EntityProperties::SetPicked(id_t entity) {
 void EntityProperties::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         if (Entity* ptr = Entity::Find(entity); !ptr) {
-            GUI::Text(FONT_TEXT, "No entity available.");
+            GUI::Text("No entity available.");
         } else {
-            GUI::Text(FONT_TEXT, "Entity ID ");
+            GUI::Text("Entity ID ");
             GUI::TextBox(std::to_string(ptr->GetID()).c_str(), 50);
-            GUI::Text(FONT_TEXT, " Name ");
+            GUI::Text(" Name ");
             GUI::TextBox(ptr->GetName(), 100);
-            GUI::Text(FONT_TEXT, " Distance ");
+            GUI::Text(" Distance ");
             float dist = glm::distance(Render::GetViewPosition(), ptr->GetLocation());
             int dist0 = dist;
             int dist1 = dist*10 - dist0*10;
             GUI::TextBox((std::to_string(dist0) + "." + std::to_string(dist1)).c_str(), 50);
-            GUI::Text(FONT_TEXT, " Type ");
+            GUI::Text(" Type ");
             GUI::TextBox(ptr->GetType(), 75);
             
             if (GUI::Button("Load")) {
@@ -402,7 +402,7 @@ EntityPicker::EntityPicker(std::function<void(id_t)> callback) {
 void EntityPicker::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         float x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
         float y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y);
@@ -427,7 +427,7 @@ void EntityPicker::Display() {
                 text += std::to_string(comp->GetParent()->GetID());
                 text += " | ";
                 text += (const char*)comp->GetParent()->GetName();
-                GUI::Text(FONT_TEXT, text.c_str());
+                GUI::Text(text.c_str());
                 
                 if (GUI::ClickHandled()) {
                     callback(comp->GetParent()->GetID());
@@ -435,13 +435,13 @@ void EntityPicker::Display() {
                     return;
                 }
             } else {
-                GUI::Text(FONT_TEXT, "No entity found for RenderComponent.");
+                GUI::Text("No entity found for RenderComponent.");
             }
             
             UI::SetCursor(UI::CURSOR_CLICK);
             
         } else {
-            GUI::Text(FONT_TEXT, "No pick available.");
+            GUI::Text("No pick available.");
             UI::SetCursor(UI::CURSOR_DEFAULT);
         }
         
@@ -460,7 +460,7 @@ void ListSelection::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34 * 2);
     GUI::PushFrameRelative(GUI::FRAME_LEFT, 200);
     
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         
         uint32_t selected = 255;
@@ -494,13 +494,13 @@ void MessageSend::SetMessageType(uint32_t type) {
 void MessageSend::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         if (Entity* entity = Entity::Find(entity_id); !entity) {
-            GUI::Text(FONT_TEXT, "No entity available.");
+            GUI::Text("No entity available.");
         } else {
             // Send [type] to [name] parameter [none|int|uint|float] [entry] .. send
-            GUI::Text(FONT_TEXT, "Send ");
+            GUI::Text("Send ");
             GUI::TextBox(Message::GetName(message_type), 100);
             if (GUI::Button("(?)")) {
                 std::vector<std::string> messages;
@@ -510,13 +510,13 @@ void MessageSend::Display() {
                 auto select = new ListSelection([=, this](auto p){this->SetMessageType(p);}, messages);
                 Menu::Push(select);
             }
-            GUI::Text(FONT_TEXT, " to ");
+            GUI::Text(" to ");
             if (entity->GetName()) {
                 GUI::TextBox(entity->GetName(), 100);
             } else {
                 GUI::TextBox(std::to_string(entity->GetID()).c_str(), 100);
             }
-            GUI::Text(FONT_TEXT, " with a parameter of ");
+            GUI::Text(" with a parameter of ");
             GUI::RadioButton(0, parameter_type, "none");
             GUI::RadioButton(1, parameter_type, "int");
             GUI::RadioButton(2, parameter_type, "name");
@@ -556,7 +556,7 @@ void InterceptMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM_INV, offset);
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM, total_lines * 16 + 10);
     GUI::PushFrameRelative(GUI::FRAME_RIGHT, 400);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         for (auto intercept : intercepts) {
             GUI::PushFrameRelative(GUI::FRAME_BOTTOM, lines * 16);
@@ -578,19 +578,19 @@ void WorldCellProperties::SetPicked(WorldCell* cell) {
 void WorldCellProperties::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         if (!cell) {
-            GUI::Text(FONT_TEXT, "No cell available.");
+            GUI::Text("No cell available.");
         } else {
             bool loaded = cell->IsLoaded();
             bool interior = cell->IsInterior();
             bool interior_lighting = cell->HasInteriorLighting();
             bool debug_draw = cell->IsDebugDraw();
             
-            GUI::Text(FONT_TEXT, "Worldcell ");
+            GUI::Text("Worldcell ");
             GUI::TextBox(cell->GetName(), 100);
-            GUI::Text(FONT_TEXT, " Entities ");
+            GUI::Text(" Entities ");
             GUI::TextBox(std::to_string(cell->GetEntityCount()).c_str(), 50);
             if (GUI::Button("(view)")) {
                 std::vector<std::string> entities;
@@ -629,13 +629,13 @@ void WorldCellProperties::Display() {
             }
         }
         /*if (Entity* ptr = Entity::Find(entity); !ptr) {
-            GUI::Text(FONT_TEXT, "No entity available.");
+            GUI::Text("No entity available.");
         } else {
-            GUI::Text(FONT_TEXT, "Entity ID ");
+            GUI::Text("Entity ID ");
             GUI::TextBox(std::to_string(ptr->GetID()).c_str(), 50);
-            GUI::Text(FONT_TEXT, " Name ");
+            GUI::Text(" Name ");
             GUI::TextBox(ptr->GetName(), 100);
-            GUI::Text(FONT_TEXT, " Distance ");
+            GUI::Text(" Distance ");
             float dist = glm::distance(Render::GetViewPosition(), ptr->GetLocation());
             int dist0 = dist;
             int dist1 = dist*10 - dist0*10;
@@ -664,13 +664,13 @@ void WorldCellProperties::Display() {
 
 void StatisticsMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 24);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
 
         GUI::PushFrameRelative(GUI::FRAME_LEFT, 100);
-        GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::FillFrame(GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
-            GUI::Text(1, "Tramway SDK");
+            GUI::Text("Tramway SDK");
         GUI::PopFrame();
         GUI::PopFrame();
 
@@ -690,17 +690,17 @@ void StatisticsMenu::Display() {
 
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
         GUI::PushFrameRelative(GUI::FRAME_LEFT, 275);
-        GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::FillFrame(GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
-            GUI::Text(1, render_str1);
+            GUI::Text(render_str1);
             
             
             GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 105);
-                GUI::Text(1, render_str3);
+                GUI::Text(render_str3);
             GUI::PopFrame();
             
             GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 150);
-                GUI::Text(1, render_str2, GUI::TEXT_RIGHT);
+                GUI::Text(render_str2, GUI::TEXT_RIGHT);
             GUI::PopFrame();
             
         GUI::PopFrame();
@@ -709,9 +709,9 @@ void StatisticsMenu::Display() {
         
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 375);
         GUI::PushFrameRelative(GUI::FRAME_LEFT, 100);
-        GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_REVERSE_WINDOW);
+        GUI::FillFrame(GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
-            GUI::Text(1, physics_str);
+            GUI::Text(physics_str);
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
@@ -723,10 +723,10 @@ void StatisticsMenu::Display() {
 void EventEmit::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         // Emit [event] subtype [type] with parameter of ''
-        GUI::Text(FONT_TEXT, "Emit ");
+        GUI::Text("Emit ");
         GUI::TextBox(Event::GetName(event_type), 100);
         if (GUI::Button("(?)")) {
             std::vector<std::string> events;
@@ -736,14 +736,14 @@ void EventEmit::Display() {
             auto select = new ListSelection([=, this](auto p){this->SetEventType(p);}, events);
             Menu::Push(select);
         }
-        GUI::Text(FONT_TEXT, " subtype ");
+        GUI::Text(" subtype ");
         if (GUI::TextBox(subtype_string, 8, true, 100)) {
             if (strlen(subtype_string)) {
                 subtype = atoi(subtype_string);
                 snprintf(subtype_string, 8, "%i", subtype);
             }
         }
-        GUI::Text(FONT_TEXT, " with a parameter of ");
+        GUI::Text(" with a parameter of ");
         GUI::RadioButton(0, parameter_type, "none");
         GUI::RadioButton(1, parameter_type, "int");
         GUI::RadioButton(2, parameter_type, "name");
@@ -787,13 +787,13 @@ void SignalMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_LEFT, 500);
     GUI::PushFrameRelative(GUI::FRAME_TOP, signal_offset);
     
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         
         if (!entity)  {
-            GUI::Text(1, "Entity unavailable.");
+            GUI::Text("Entity unavailable.");
         } else if (!signals) {
-            GUI::Text(1, "Entity has no signals.");
+            GUI::Text("Entity has no signals.");
         } else {
             for (uint32_t i = 0; i < signals->signal_count; i++) {
                 Signal& signal = signals->signals[i];
@@ -802,31 +802,31 @@ void SignalMenu::Display() {
                 
                     
                 
-                    GUI::Text(1, Signal::GetName(signal.type));
+                    GUI::Text(Signal::GetName(signal.type));
                     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
                     
-                    GUI::Text(1, Message::GetName(signal.message_type));
+                    GUI::Text(Message::GetName(signal.message_type));
                     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
                     
-                    GUI::Text(1, std::to_string(signal.delay).c_str());
+                    GUI::Text(std::to_string(signal.delay).c_str());
                     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 60);
                     
-                    GUI::Text(1, std::to_string(signal.limit).c_str());
+                    GUI::Text(std::to_string(signal.limit).c_str());
                     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
                     
-                    GUI::Text(1, signal.receiver);
+                    GUI::Text(signal.receiver);
                     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
                     
                     if (Value* data = (Value*)signal.data; data) {
                         switch (data->GetType()) {
                             case TYPE_INT32:
-                                GUI::Text(1, std::to_string(data->GetInt()).c_str());
+                                GUI::Text(std::to_string(data->GetInt()).c_str());
                                 break;
                             case TYPE_FLOAT32:
-                                GUI::Text(1, std::to_string(data->GetFloat()).c_str());
+                                GUI::Text(std::to_string(data->GetFloat()).c_str());
                                 break;
                             case TYPE_NAME:
-                                GUI::Text(1, (name_t)*data);
+                                GUI::Text((name_t)*data);
                                 break;
                             default:
                                 break;
@@ -873,7 +873,7 @@ void SignalMenu::Display() {
 void Options::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
 
         bool renderer_debug = Render::API::IsDebugMode();
@@ -917,7 +917,7 @@ Console::~Console() {
 void Console::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
     GUI::PushFrameRelative(GUI::FRAME_TOP, 34);
-    GUI::FillFrame(FONT_WIDGETS, GUI::WIDGET_BUTTON);
+    GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         
         static std::vector<std::string> console_history;
@@ -981,13 +981,13 @@ void Console::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 68);
     GUI::SetColor(Render::COLOR_BLACK);
     for (auto& log : console_logs) {
-        GUI::Text(1, log.c_str());
+        GUI::Text(log.c_str());
         GUI::NewLine();
     }
     GUI::PushFrameRelative(GUI::FRAME_INSET, 2);
         GUI::SetColor(Render::COLOR_WHITE);
         for (auto& log : console_logs) {
-            GUI::Text(1, log.c_str());
+            GUI::Text(log.c_str());
             GUI::NewLine();
         }
         GUI::SetColor(Render::COLOR_BLACK);

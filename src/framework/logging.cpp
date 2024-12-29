@@ -79,9 +79,9 @@ void flush_console(Severity severity, System::system_t system) {
     
     switch (severity) {
         case Severity::DEFAULT:         severity_text = "[    ]";   break;
-        case Severity::WARNING:         severity_text = "[CRIT]";   break;
+        case Severity::WARNING:         severity_text = "[WARN]";   break;
         case Severity::ERROR:           severity_text = "[ERRR]";   break;
-        case Severity::CRITICAL_ERROR:  severity_text = "[WARN]";   break;
+        case Severity::CRITICAL_ERROR:  severity_text = "[CRIT]";   break;
         case Severity::INFO:            severity_text = "[INFO]";   break;
         default:                        severity_text = "[    ]";   break;     
     }
