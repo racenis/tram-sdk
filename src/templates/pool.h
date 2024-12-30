@@ -7,6 +7,14 @@
 #include <iostream>
 #include <cassert>
 
+/* this is one of the oldest files in the library, hence why it looks so awful.
+ * it probably would be a good idea to clean up the code, but editing this file
+ * causes the whole library to re-compile and I don't really feel like doing it
+ * now. also adding this comment caused the whole library to recompile. also
+ * adding this bit at the end caused the library to re-compile. I should
+ * probably stop editing this file.
+ */
+
 namespace tram {
 
 template <typename T>
@@ -44,8 +52,7 @@ public:
         last = first;
         lastfree = first;
 
-        if(skipFirst){
-            //new(first) T;
+        if (skipFirst) {
             last++;
             lastfree++;
         }

@@ -7,6 +7,15 @@
 #include <iostream> // error message
 #include <cstring>  // memset
 
+/* instead of having two sets of each method, one with uint32_t and the other
+ * with UID, maybe we could create some kind of a struct called Key and then we
+ * could add a uint32_t converter to it and then we could add a constructor from
+ * both uint32_t and UID and then we could just have only a single of each
+ * method and all of the conversions would happen automatically
+ * 
+ * TODO: investigate
+ */
+
 namespace tram {
 
 template <typename T>
@@ -25,8 +34,6 @@ public:
         last = (Record*) (memory + memory_size);
         
         memset(memory, 0, memory_size);
-        
-        //for (Record* it = first; it != last; it++) new (it) Record(); // wait what the fuck
     }
     
     Hashmap(std::string name, size_t max_size, std::initializer_list<std::pair<uint32_t, T>> list) : Hashmap(name, max_size) {
@@ -133,8 +140,8 @@ public:
         size++;
         
         candidate->key = key;
-        candidate->flags = FLAG_RECORD;
         candidate->value = value;
+        candidate->flags = FLAG_RECORD;
     }
     
     void Remove(UID key) {
@@ -166,6 +173,51 @@ public:
             candidate++;
         }
     }
+    
+    T& operator[](UID key) {
+        return operator[](key.key);
+    }
+    
+    T& operator[](uint32_t key) {
+        uint32_t hash = key % hash_parameter;
+        
+        Record* candidate = first + hash;
+        
+        while (candidate != last) {
+            if (candidate->key == key) {
+                return candidate->value;
+            }
+            
+            if (candidate->flags & FLAG_RECORD) {
+                candidate++;
+                continue;
+            }
+            
+            if (candidate->flags & FLAG_DELETED) {
+                break;
+            }
+            
+            break;
+        }
+        
+        if (candidate == last) {
+            std::cout << "Hashmap " << name << " overflow!" << std::endl;
+            abort();
+        }
+        
+        size++;
+        
+        if (size == max_size) {
+            std::cout << "Hashmap " << name << " density reached!" << std::endl;
+        }
+        
+        candidate->key = key;
+        candidate->value = T();
+        candidate->flags = FLAG_RECORD;
+        
+        return candidate->value;
+    }
+    
 protected:
     struct Record {
         uint32_t key = 0;

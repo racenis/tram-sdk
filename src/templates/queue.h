@@ -8,13 +8,18 @@
 
 namespace tram {
 
+/// Simple queue implementation.
+/// This queue uses a circular buffer internally. The push() and try_pop()
+/// methods have locks on them, so they can be used to create queues for passing
+/// messages between threads.
+/// I have no idea how multithreading works, use at your own risk.
 template <typename T>
 class Queue {
 public:
-    Queue () = delete;
-    Queue (const Queue&) = delete;
-    Queue (Queue&&) = delete;
-    Queue (const char* name, size_t count) : name(name), count(count) {
+    Queue() = delete;
+    Queue(const Queue&) = delete;
+    Queue(Queue&&) = delete;
+    Queue(const char* name, size_t count) : name(name), count(count) {
         T* allocated_memory = (T*)::operator new (count * sizeof(T));
         
         first = allocated_memory;
@@ -28,7 +33,7 @@ public:
     
     /// Thread safe.
     template <typename... Args>
-    void push (Args&&... args) {
+    void push(Args&&... args) {
         lock();
         
         if (count == csize) {
@@ -50,7 +55,7 @@ public:
         unlock();
     }
     
-    void pop () {
+    void pop() {
         first->~T();
         
         first++;
@@ -62,11 +67,11 @@ public:
         }
     }
     
-    T& front () {
+    T& front() {
         return *first;
     }
     
-    T& back () {
+    T& back() {
         if (T* elem = last - 1; elem < memory_start) {
             return *(memory_end - 1);
         } else {
@@ -78,7 +83,7 @@ public:
     /// Copies front of the queue into value.
     /// @return True if there was an element into the front of the queue and it
     ///         was copied into value. Otherwise false.
-    bool try_pop (T& value) {
+    bool try_pop(T& value) {
         lock();
         
         if (csize == 0) {
@@ -93,10 +98,10 @@ public:
         return true;
     }
     
-    size_t size () { return csize; }
+    size_t size() { return csize; }
 
-    void lock () { while (spinlock.exchange(true)); }
-    void unlock () { spinlock.store(false); }
+    void lock() { while (spinlock.exchange(true)); }
+    void unlock() { spinlock.store(false); }
     
 protected:
     const char* name;   // name of queue for log messages etc.

@@ -6,6 +6,12 @@
 #include <string>
 #include <iostream>
 
+/* copy-pasting queue code might have not been the best idea. anyway, it would
+ * be nice to yeet all of the old names of methods an keep only the new aliases.
+ * 
+ * the internal stuff should also be rewritten to be actually understandable
+ */
+
 namespace tram {
     template <typename T>
     class Stack{
@@ -60,7 +66,12 @@ namespace tram {
             stackLength = 0;
             last = first;
         }
+        
         T& top() { return *GetLastPtr(); }
+        void push(const T& value) { *AddNew() = value; }
+        T pop() { T value = top(); Remove(); return value; }
+        void reset() { Reset(); }
+        size_t size() {return GetLength(); }
     };
 }
 

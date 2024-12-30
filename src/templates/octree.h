@@ -33,10 +33,8 @@ public:
         NearestSearch search = {.point = point};
         search.point = point;
 
-        //std::cout << "search start " << std::endl;
         FindNearest(&search, root);
-        //std::cout << " " << std::endl;
-        
+
         for (int i = 0 ; i < search.found ; i++) {
             array[i] = search.nearest[i]->data;
         }
@@ -47,7 +45,6 @@ public:
     void Draw() {
         Draw(root);
     }
-    
     
     // temporary compatibility methods
     // TODO: remove
@@ -102,8 +99,6 @@ protected:
     
     Node* root = nullptr;
     
-    
-    
     void Insert(Node* parent, Node* leaf) {
         Octant octant_type = GetOctant(parent->mid_point, leaf->point);
         Node*& octant = parent->octants[octant_type];
@@ -130,10 +125,7 @@ protected:
         }
     }
     
-    
-    
     void Remove(Node* node) {
-        
         // don't allow removing root node
         if (!node->parent) return;
         
@@ -144,10 +136,7 @@ protected:
                 break;
             }
         }
-        
-        // remove parent if it has no other children
-        //if (node->parent->IsLeaf()) Remove(node->parent);
-        
+
         //delete node;
         nodes.Remove(node);
     }
@@ -160,16 +149,6 @@ protected:
         vec3 point;
         int found = 0;
     };
-    
-    /*struct NearestSearch {
-        vec3 nearest;
-        float nearest_distance = INFINITY;
-        
-        vec3 point;
-        bool found = false;
-    };*/
-    
-    
     
     void FindNearest(NearestSearch* search, Node* parent_node) {
         int first_octant = GetOctant(parent_node->mid_point, search->point);
@@ -197,9 +176,7 @@ protected:
         } else {
             if (search->found < 4) {
                 float distance = glm::distance(search_node->point, search->point);
-                
-                //std::cout << "packed " << distance << std::endl;
-                
+
                 search->nearest[search->found] = search_node;
                 search->distance[search->found] = distance;
                 
@@ -212,12 +189,8 @@ protected:
             } else {
                 float distance = glm::distance(search_node->point, search->point);
                 
-                //if (search->farthest_distance < distance) return;
                 if (search->farthest_distance < distance) {
-                    //std::cout << "ignore " << distance << "\t" << search->farthest_distance << std::endl;
                     return;
-                } else {
-                    //std::cout << "replace " << distance << "\t" << search->farthest_distance << std::endl;
                 }
                 
                 search->distance[search->farthest_index] = distance;
@@ -233,24 +206,6 @@ protected:
             }
         }
     }
-    
-    /*void Find(NearestSearch* search, Node* node) {
-        if (node->IsNode()) {
-            float nearest_possible = glm::distance(search->point, node->mid_point) - 1.73205f * node->half_extent;
-            if (nearest_possible > search->nearest_distance) return;
-            
-            for (int i = 0 ; i < 8; i++) {
-                if (node->octants[i]) Find(search, node->octants[i]);
-            }
-        } else {
-            float distance = glm::distance(search->point, node->point);
-            if (search->nearest_distance > distance) {
-                search->nearest_distance = distance;
-                search->nearest = node->point;
-                search->found = true;
-            }
-        }
-    }*/
     
     Node* NewNode(Octant octant, Node* parent) {
         Node* node = nodes.AddNew();
@@ -366,7 +321,7 @@ protected:
             AddLine(p03, p13, COLOR_YELLOW);*/
             
             for (int i = 0 ; i < 8; i++) {
-                if (node->octants[i]) Draw (node->octants[i]);
+                if (node->octants[i]) Draw(node->octants[i]);
             }
         } else {
             //AddLineMarker(node->point, COLOR_GREEN);
@@ -375,42 +330,6 @@ protected:
     
 };
 
-    
-/*
-template <typename T>
-class Octree {
-    // TODO: actually implement the octree
-    struct Node {
-        uint32_t id;
-        float x, y, z;
-        T type;
-    };
-
-    std::vector<Node> nodevec;
-    uint32_t last_id = 1;
-public:
-
-    uint32_t AddLeaf(T type, float x, float y, float z){
-        //Node n = {last_id, x, y, z, type};
-        nodevec.push_back(Node{last_id, x, y, z, type});
-        last_id++;
-        return last_id - 1;
-    }
-
-    void RemoveLeaf(uint32_t leaf_id){
-        nodevec.erase(std::find_if(nodevec.begin(), nodevec.end(), [=](Node& n){return n.id == leaf_id;}));
-    }
-
-    size_t FindNearest(T result[], float x, float y, float z){
-        std::sort(nodevec.begin(), nodevec.end(), [=](const Node& a, const Node& b){return glm::distance(vec3(x, y, z), vec3(a.x, a.y, a.z)) < glm::distance(vec3(x, y, z), vec3(b.x, b.y, b.z));});
-        for (size_t i = 0; i < 4 && i < nodevec.size(); i++){
-            result[i] = nodevec[i].type;
-        }
-        return nodevec.size() > 4 ? 4 : nodevec.size();
-    }
-};
-*/
-    
 }
 
 #endif  // TRAM_SDK_TEMPLATES_OCTREE_H

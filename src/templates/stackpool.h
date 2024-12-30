@@ -8,15 +8,20 @@
 
 namespace tram {
 
+/// Allocator.
+/// Very simple allocator for data types that don't need their destructors
+/// called. Just call allocate() and specify the size of the array that you want
+/// to allocated. Use the pointer to write and store data. After you are done,
+/// you can reset all of the allocated memory with reset().
 template <typename T>
 class StackPool {
 public:
-    StackPool(std::string name, size_t initialSize) {
-        poolName = name;
-        maxSize = initialSize;
-        poolSize = 0;
+    StackPool(std::string name, size_t size) {
+        this->name = name;
+        this->available_size = size;
+        this->allocated_size = 0;
 
-        first = static_cast<T*>(::operator new(initialSize * sizeof(T)));
+        first = static_cast<T*>(::operator new(size * sizeof(T)));
         last = first;
     }
     
@@ -27,34 +32,40 @@ public:
     }
 
     T* AddNew(size_t units) {
-        if (poolSize + units > maxSize) {
-            std::cout << "StackPool " << poolName << " out of space!" << std::endl;
+        if (allocated_size + units > available_size) {
+            std::cout << "StackPool " << name << " out of space!" << std::endl;
             return nullptr;
         }
 
-        T* newobj;
-
-        newobj = last;
-        poolSize += units;
+        T* allocation = last;
+        
+        allocated_size += units;
         last += units;
 
-        return newobj;
+        return allocation;
+    }
+    
+    T* allocate(size_t units) {
+        return AddNew(units);
     }
     
     void Reset() {
-        //return;
-        poolSize = 0;
+        allocated_size = 0;
         last = first;
     }
     
-    size_t size() { return poolSize; }
+    void reset() {
+        Reset();
+    }
+    
+    size_t size() { return allocated_size; }
     T* begin() { return first; }
     T* end() { return last; }
 
 protected:
-    std::string poolName;
-    size_t poolSize;
-    size_t maxSize;
+    std::string name;
+    size_t allocated_size;
+    size_t available_size;
     T* first;
     T* last;
 };
