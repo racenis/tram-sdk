@@ -131,6 +131,9 @@ void Init() {
     
     InitCallbacks();
     
+    GUI::SetGlyphDefaults(COLOR_WHITE, FONT_WIDGETS, GUI::WIDGET);
+    GUI::SetGlyphDefaults(COLOR_WHITE, FONT_TEXT, GUI::TEXT);
+    
     MENU_SYSTEM = System::Register("Default Menus", "MENU");
     System::SetInitialized(MENU_SYSTEM, true);
 }

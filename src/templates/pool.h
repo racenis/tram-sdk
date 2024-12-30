@@ -43,7 +43,7 @@ public:
         T* ptr;
     };
 
-    Pool(std::string name, uint64_t initialSize, bool skipFirst = false){
+    constexpr Pool(std::string name, uint64_t initialSize, bool skipFirst = false){
         poolName = name;
         maxSize = initialSize;
         poolSize = skipFirst ? 1 : 0;

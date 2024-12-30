@@ -503,6 +503,8 @@ int main(int argc, const char** argv) {
     octree.Insert({3.0f, -2.0f, -1.0f}, {3.0f, -2.0f, -1.0f});
     
     
+    Settings::Parse(argv, argc);
+    
     //std::cout << std::filesystem::current_path() << std::endl;
 
     // register the entity types, so that they can be loaded from level files
@@ -528,8 +530,6 @@ int main(int argc, const char** argv) {
     Ext::Camera::Init();
     
     Ext::Scripting::Lua::Init();
-
-    Settings::Parse(argv, argc);
 
     Script::Init();
     

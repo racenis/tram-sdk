@@ -85,7 +85,7 @@ static float SCREEN_HEIGHT = 600.0f;
 
 static Render::Pose* null_pose = nullptr;
 
-bool render_debug = false;
+static Settings::Property<bool> render_debug = {false, "renderer-debug", Settings::SERIALIZE_NONE};
 
 uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
     uint32_t handle;
@@ -755,7 +755,7 @@ void Init() {
     
     //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
 
-    Settings::Register(&render_debug, "renderer-debug");
+    //Settings::Register(render_debug, "renderer-debug", Settings::SERIALIZE_NONE);
 
     // initialize the default pose
     null_pose = PoolProxy<Render::Pose>::New();

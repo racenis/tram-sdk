@@ -8,6 +8,7 @@
 #include <framework/type.h>
 #include <framework/uid.h>
 #include <framework/math.h>
+#include <framework/logging.h>
 
 namespace tram {
 
@@ -77,14 +78,14 @@ public:
 
     Value(float value) : float_value(value) { type = TYPE_FLOAT32; }
     
-    operator bool() const { assert(type == TYPE_BOOL); return bool_value; }
+    operator bool() const { AssertType(TYPE_BOOL); return bool_value; }
     
     operator name_t() const {
         if (type == TYPE_STRING) {
             return (name_t)string_value;
         }
         
-        assert(type == TYPE_NAME);
+        AssertType(TYPE_NAME);
         
         return name_value;
     }
@@ -93,7 +94,7 @@ public:
             return name_value;
         }
         
-        assert(type == TYPE_STRING);
+        AssertType(TYPE_STRING);
         
         return string_value;
     }
@@ -109,18 +110,18 @@ public:
     
     operator double() const { return (float)*this; }
     
-    operator int32_t() const { assert(type == TYPE_INT32); return int32_value; }
+    operator int32_t() const { AssertType(TYPE_INT32); return int32_value; }
 
     //operator uint16_t() const { if (type != TYPE_UINT16) {__asm__ volatile("int $0x03");} /*assert(type == TYPE_UINT16);*/ return uint16_value; }
-    operator uint32_t() const { assert(type == TYPE_UINT32); return uint32_value; }
+    operator uint32_t() const { AssertType(TYPE_UINT32); return uint32_value; }
     
-    operator float() const { assert(type == TYPE_FLOAT32); return float_value; } 
+    operator float() const { AssertType(TYPE_FLOAT32); return float_value; } 
     
-    operator vec2() const { assert(type == TYPE_VEC2); return vec2_value; }
-    operator vec3() const { assert(type == TYPE_VEC3); return vec3_value; }
-    operator vec4() const { assert(type == TYPE_VEC4); return vec4_value; }
+    operator vec2() const { AssertType(TYPE_VEC2); return vec2_value; }
+    operator vec3() const { AssertType(TYPE_VEC3); return vec3_value; }
+    operator vec4() const { AssertType(TYPE_VEC4); return vec4_value; }
     
-    operator quat() const { assert(type == TYPE_QUAT); return quat_value; }
+    operator quat() const { AssertType(TYPE_QUAT); return quat_value; }
     
     
     
@@ -173,6 +174,12 @@ public:
     inline Type GetType() const { return type; }
 protected:
     Type type;
+    
+    void AssertType(Type type) const {
+        if (this->type != type) {
+            Log(Severity::CRITICAL_ERROR, System::CORE, "Value of type {} used in a {} context", TypeToString(this->type), TypeToString(type));
+        }
+    }
     
     union {
         bool bool_value;

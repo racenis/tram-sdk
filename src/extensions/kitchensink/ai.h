@@ -8,7 +8,7 @@
 #include <framework/uid.h>
 #include <framework/math.h>
 #include <framework/value.h>
-
+ 
 /*
  * AI framework for video game NPCs
  * 

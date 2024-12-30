@@ -16,7 +16,7 @@ namespace tram {
 template <typename T>
 class StackPool {
 public:
-    StackPool(std::string name, size_t size) {
+    constexpr StackPool(std::string name, size_t size) {
         this->name = name;
         this->available_size = size;
         this->allocated_size = 0;
@@ -25,7 +25,7 @@ public:
         last = first;
     }
     
-    StackPool(std::string name, size_t max_size, std::initializer_list<T> list) : StackPool(name, max_size) {
+    constexpr StackPool(std::string name, size_t max_size, std::initializer_list<T> list) : StackPool(name, max_size) {
         for (const auto& entry : list) {
             *AddNew(1) = entry; // not good, but works
         }
