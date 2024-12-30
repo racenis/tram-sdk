@@ -253,6 +253,35 @@ static value_t evaluate(const char* script) {
     return ret;
 }
 
+class Lua : public Script::Interface {
+    name_t GetName() {
+        return "lua";
+    }
+    
+    value_t GetGlobal(name_t name) {
+        return value_t();
+    }
+    
+    void SetGlobal(name_t name, value_t value) {
+        set_global(name, value);
+    }
+    
+    void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t)) {
+        set_function(name, parameters, function);
+    }
+    
+    value_t CallFunction(name_t name, std::vector<Value> parameters) {
+        return call_function(name, parameters);
+    }
+    
+    void LoadScript(const char* path) {
+        load_script(path);
+    }
+    
+    value_t Evaluate(const char* code) {
+        return evaluate(code);
+    }
+};
 
 void Init() {
     if (L) {
@@ -261,18 +290,8 @@ void Init() {
     
     L = luaL_newstate();
     luaL_openlibs(L);
-    
-    Script::Language lua;
-    
-    lua.name = "Lua";
-    lua.load_script = load_script;
-    lua.evaluate = evaluate;
-    lua.call_function = call_function;
-    lua.set_function = set_function;
-    lua.get_global = nullptr;
-    lua.set_global = set_global;
-    
-    Script::SetLanguage(lua);
+
+    Script::SetInterface(new Lua);
 }
 
 void Uninit() {

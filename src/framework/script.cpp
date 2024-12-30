@@ -43,45 +43,48 @@ using namespace tram::Render;
 
 namespace tram::Script {
 
-static Language language = {
-    name_t(),
-    nullptr,
-    nullptr,
-    nullptr,
-    nullptr,
-    nullptr
-};
+static Interface* language = nullptr;
     
 void SetGlobal(name_t name, value_t value) {
-    language.set_global(name, value);
+    language->SetGlobal(name, value);
 }
 
 value_t GetGlobal(name_t name) {
-    return language.get_global(name);
+    return language->GetGlobal(name);
 }
 
 void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t)) {
-    language.set_function(name, parameters, function);
+    language->SetFunction(name, parameters, function);
 }
 
 value_t CallFunction(name_t name, std::vector<Value> parameters) {
-    return language.call_function(name, parameters);
+    return language->CallFunction(name, parameters);
 }
 
 value_t Evaluate(const char* code) {
-    return language.evaluate(code);
+    return language->Evaluate(code);
 }
 
-void SetLanguage(Language lang) {
-    language = lang;
+
+/* in the future we might allow users to use multiple scripting languages at the
+ * same time.
+ * it is very well possible that different scripting languages are better suited
+ * for different tasks.
+ * there might be some issues when determining which function to call when there
+ * are scripting languages that have a function with the same name.
+ * for now I'll keep the single-language approach
+ */
+
+void SetInterface(Interface* new_language) {
+    language = new_language;
 }
 
 void LoadScript(const char* path) {
-    language.load_script(path);
+    language->LoadScript(path);
 }
 
 void Init() {
-    if (!language.name) {
+    if (!language) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "Failed script initialization! Language not set!");
     }
     

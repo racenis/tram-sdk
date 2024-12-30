@@ -14,20 +14,19 @@ void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(
 value_t CallFunction(name_t name, std::vector<Value> parameters);
 value_t Evaluate(const char* code);
 
-// TODO: make this a class?? maybe? with virtual methods
-struct Language {
-    name_t name;
+class Interface {
+public:
+    virtual name_t GetName() = 0;
+    virtual value_t GetGlobal(name_t name) = 0;
+    virtual void SetGlobal(name_t name, value_t value) = 0;
+    virtual void SetFunction(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t)) = 0;
+    virtual value_t CallFunction(name_t name, std::vector<Value> parameters) = 0;
     
-    value_t (*get_global)(name_t name);
-    void (*set_global)(name_t name, value_t value);
-    void (*set_function)(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t));
-    value_t (*call_function)(name_t name, std::vector<Value> parameters);
-    
-    void (*load_script)(const char* path);
-    value_t (*evaluate)(const char* code);
+    virtual void LoadScript(const char* path) = 0;
+    virtual value_t Evaluate(const char* code) = 0;
 };
 
-void SetLanguage(Language language);
+void SetInterface(Interface* language);
 void LoadScript(const char* path);
 
 void Init();
