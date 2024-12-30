@@ -364,6 +364,11 @@ void Event::Dispatch() {
 
 /// Adds an event to the event queue.
 void Event::Post (const Event &event) {
+    if (!event.type || event.type >= last_type) {
+        Log(Severity::WARNING, System::CORE, "Attempting to post an unregistered event type with {} index", event.type);
+        return;
+    }
+    
     event_queue.push(event);
 }
 

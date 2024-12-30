@@ -167,6 +167,8 @@
       <File Name="src/templates/hashmap.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="platform">
+      <File Name="src/platform/other.h"/>
+      <File Name="src/platform/other.cpp"/>
       <VirtualDirectory Name="sdl">
         <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>

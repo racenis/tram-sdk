@@ -772,6 +772,10 @@ int main(int argc, const char** argv) {
         UI::SetInputState(UI::STATE_MENU_OPEN);
     });
     
+    UI::BindKeyboardKey(UI::KEY_L, [](){
+        Log(Severity::ERROR, System::MISC, "Key L was pressed and that now is an error.");
+    });
+    
     //UI::SetWindowSize(320, 240);
         
     //auto crate_ent = Entity::Find(UID("estijs"));

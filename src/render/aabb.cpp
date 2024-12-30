@@ -221,7 +221,7 @@ void FindLights(vec3 position, light_t* dest) {
         if (lights[i]) {
             dest[i] = lights[i]->handle;
         } else {
-            dest[i] = light_t {.generic = nullptr};
+            dest[i] = {};
         }
     }
 }

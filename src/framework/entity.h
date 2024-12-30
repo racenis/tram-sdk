@@ -124,6 +124,8 @@ protected:
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
     inline void FireSignal(signal_t type, Value value) { if (signals) signals->Fire(type, this->id, value); }
 
+    inline void SetFlag(uint32_t flag, bool value) { flags = value ? flags | flag : flags & ~flag; }
+
     friend class WorldCell;
 };
 

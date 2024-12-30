@@ -2,6 +2,7 @@
 
 #include <framework/logging.h>
 #include <framework/system.h>
+#include <platform/other.h>
 #include <cstring>
 #include <charconv>
 #include <iostream>
@@ -99,7 +100,6 @@ void flush_console(Severity severity, System::system_t system) {
     }
     
     std::cout << buffer << std::endl;
-    buffer[0] = '\0';
     
     // some people might say "loggers shouldn't act as asserts" but they are wrong!
     // consider this:
@@ -107,7 +107,20 @@ void flush_console(Severity severity, System::system_t system) {
     // purpose of an asserter:  catching bugs
     // see? things should be grouped by what they do, not what they say they do
     
-    if (severity == Severity::CRITICAL_ERROR) abort();
+    switch (severity) {
+        default: break; 
+        case Severity::ERROR:
+            Platform::TryDebugging();
+            Platform::ShowErrorDialog(buffer, "Very bad error");
+            break;
+        case Severity::CRITICAL_ERROR:
+            Platform::TryDebugging();
+            Platform::ShowErrorDialog(buffer, "Fatal error");
+            abort();
+            break;
+    }
+    
+    buffer[0] = '\0';
 }
 
 void flush_display(int time, int system) {

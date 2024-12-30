@@ -64,7 +64,7 @@ public:
     static void LoadMaterialInfo(const char* filename);
     
 protected:
-    texturehandle_t texture = {.generic = 0};
+    texturehandle_t texture = {};
     materialtype_t type = MATERIAL_TEXTURE;
     MaterialFilter filter = FILTER_NEAREST;
     MaterialProperty property = PROPERTY_METAL;

@@ -47,9 +47,9 @@ protected:
     size_t anim_bframe = 0;
     bool anim_isplaying = false;
     
-    Render::drawlistentry_t draw_list_entry = {.generic = nullptr};
-    Render::vertexarray_t vertex_array = {.generic = nullptr};
-    Render::spritearray_t sprite_array = {.generic = nullptr};
+    Render::drawlistentry_t draw_list_entry = {};
+    Render::vertexarray_t vertex_array = {};
+    Render::spritearray_t sprite_array = {};
 };
 
 }

@@ -78,13 +78,16 @@ void StaticWorldObject::Load(){
 
     rendercomponent->Init();
     physicscomponent->Init();
-    flags |= LOADED;
+    
+    
+    SetFlag(LOADED, true);
 
     UpdateParameters();
 };
 
 void StaticWorldObject::Unload(){
-    flags &= ~LOADED;
+    SetFlag(LOADED, false);
+    
     Serialize();
 
     rendercomponent.clear();

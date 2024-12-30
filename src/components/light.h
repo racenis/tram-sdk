@@ -31,7 +31,7 @@ public:
 protected:
     void Update();
     
-    Render::light_t light = {.generic = nullptr};
+    Render::light_t light = {};
     vec3 location = {0.0f, 0.0f, 0.0f};
     Render::color_t color = {1.0f, 1.0f, 1.0f};
     float distance = 15.0f;

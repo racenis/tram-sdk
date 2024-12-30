@@ -81,48 +81,20 @@ void CloseAll() {
 }
 
 static void EscapeMenuKeyboard () {
-    /*if (Menu::Pop()) {
-        if (Menu::Empty()) {
-            UI::SetInputState(UI::STATE_DEFAULT);
-        }
-    }*/
-    
     if (Menu::Empty()) {
         SystemMenu* system_menu = new SystemMenu();
         Menu::Push(system_menu);
-        UI::SetInputState(UI::STATE_MENU_OPEN);
     } else {
         Menu::Pop();
-        
-        //Menu::Clear();
-        if (Menu::Empty()) {
-            UI::SetInputState(UI::STATE_DEFAULT);
-        }
-        
     }
-    
-    //CloseAll();
-    
-    
-    /*if (debug_menu) {
-        CloseAll();
-        UI::SetInputState(UI::STATE_DEFAULT);
-    } else  {
-        CloseAll();
-        debug_menu = new DebugMenu();
-        Menu::Add(debug_menu);
-        UI::SetInputState(UI::STATE_MENU_OPEN);
-    }*/
 }
 
 static void DebugMenuKeyboard () {
     if (Menu::Empty()) {
         debug_menu = new DebugMenu();
         Menu::Push(debug_menu);
-        UI::SetInputState(UI::STATE_MENU_OPEN);
     } else {
         Menu::Clear();
-        UI::SetInputState(UI::STATE_DEFAULT);
     }
 }
 
@@ -175,26 +147,23 @@ void Update() {
     bool displayed[3] = {false, false, false};
     auto menu_stack_copy = menu_stack;
     for (auto menu = menu_stack_copy.rbegin(); menu != menu_stack_copy.rend(); menu++) {
-
+        
         if (uint32_t layer = (*menu)->Layer(); !displayed[layer]) {
             displayed[layer] = true;
             (*menu)->Display();
         }
         
-        
-        //menu.
-        //*menu->Display();
     }
-    /*if (menu_stack.size()) {
-        menu_stack.top()->Display();
-    }*/
-    
+
     UpdateCallbacks();
 }
 
 /// Pushes menu on the menu stack.
 void Menu::Push(Menu* menu) {
-    //*menu_stack.AddNew() = menu;
+    if (Menu::Empty()) {
+        UI::SetInputState(UI::STATE_MENU_OPEN);
+    }
+    
     menu_stack.push_back(menu);
 }
 
@@ -205,6 +174,11 @@ bool Menu::Pop() {
     if (menu_stack.size()) {
         delete menu_stack.back();
         menu_stack.pop_back();
+        
+        if (Menu::Empty()) {
+            UI::SetInputState(UI::STATE_DEFAULT);
+        }
+        
         return true;
     } else {
         return false;
@@ -222,10 +196,8 @@ bool Menu::Empty() {
 /// empty.
 /// @note All of the menus in the stack will be `delete`ed.
 void Menu::Clear() {
-    while(menu_stack.size()) {
-        // maybe instead cal menu::pop??? TODO:fix
-        delete menu_stack.back();
-        menu_stack.pop_back();
+    while (!Menu::Empty()) {
+        Menu::Pop();
     }
 }
 

@@ -51,8 +51,8 @@ protected:
 
     vec3 location;
 
-    Render::drawlistentry_t draw_list_entry = {.generic = nullptr};
-    Render::vertexarray_t vertex_array = {.generic = nullptr};
+    Render::drawlistentry_t draw_list_entry = {};
+    Render::vertexarray_t vertex_array = {};
 };
 
 }

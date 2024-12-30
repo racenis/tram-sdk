@@ -178,7 +178,10 @@ void Message::Dispatch() {
 /// Message will be delivered to the Entity with the ID number specified in the
 /// Message::receiver field, by calling its Entity::MessageHandler() method.
 void Message::Send(const Message& message) {
-    // TODO: check if sending a valid message
+    if (!message.type || message.type >= last_type) {
+        Log(Severity::WARNING, System::CORE, "Sent out an unregistered message type with {} index", message.type);
+    }
+    
     message_queue.push(message);
 }
 
@@ -193,7 +196,10 @@ void Message::Send(const Message& message, float delay) {
     auto message_copy = message_pool.AddNew(message);
     auto abs_when = GetTickTime() + delay;
     
-    // TODO: check if sending valid message
+    if (!message.type || message.type >= last_type) {
+        Log(Severity::WARNING, System::CORE, "Sent out an unregistered message type with {} index", message.type);
+    }
+    
     future_messages.push({abs_when, message_copy});
 }
 

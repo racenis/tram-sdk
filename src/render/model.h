@@ -58,8 +58,8 @@ public:
 protected:
     vertexformat_t vertex_format = VERTEX_STATIC;
     
-    vertexarray_t vertex_array = {.generic = 0};
-    indexarray_t index_array = {.generic = 0};
+    vertexarray_t vertex_array = {};
+    indexarray_t index_array = {};
     
     std::vector<IndexRange> index_ranges;
     

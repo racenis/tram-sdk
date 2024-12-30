@@ -39,7 +39,7 @@ LightComponent::~LightComponent() {
     Render::API::DeleteLight(light);
     Render::LightTree::RemoveLight(light);
     
-    light.generic = nullptr;
+    light = {};
     is_ready = false;
 }
 

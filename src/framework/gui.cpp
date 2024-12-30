@@ -49,7 +49,7 @@ static Render::Sprite* fonts[16] = {nullptr};
 
 // glyphvertices are where we put all of the GUI triangle vertices in
 // we upload them to the GPU each frame for drawing
-static Render::vertexarray_t glyphvertices_vertex_array = {.generic = 0};
+static Render::vertexarray_t glyphvertices_vertex_array = {};
 static Render::drawlistentry_t glyphvertices_entry;
 
 static std::vector<Render::SpriteVertex> glyphvertices;

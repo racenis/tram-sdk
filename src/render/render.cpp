@@ -51,10 +51,10 @@ bool DRAW_RENDER_DEBUG = false;
 
 // TODO: make these static???
 
-vertexarray_t colorlines_vertex_array = {.generic = 0};
+vertexarray_t colorlines_vertex_array = {};
 drawlistentry_t colorlines_entry;
 
-vertexarray_t debugtext_vertex_array = {.generic = 0};
+vertexarray_t debugtext_vertex_array = {};
 drawlistentry_t debugtext_entry;
 Sprite* font_debug = nullptr;
 

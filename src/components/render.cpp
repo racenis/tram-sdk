@@ -53,7 +53,7 @@ void RenderComponent::SetLightmap (name_t name) {
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry.generic) {
-                Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t{.generic = 0});
+                Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
             }
         }
     }
@@ -285,7 +285,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
-        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t{.generic = 0});
+        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
         Render::API::SetFlags(entry, render_flags);
         Render::API::SetLayer(entry, layer);
 

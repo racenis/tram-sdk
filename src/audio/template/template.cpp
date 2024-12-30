@@ -48,7 +48,7 @@ void SetListenerOrientation(quat orientation) {
 /// @param buffer_count     Created buffer count will be stored in this variable.
 audiobuffer_t MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_t samples, int32_t channels) {
     Log(Severity::INFO, System::AUDIO, "Created an audio buffer of {}@{}hz!", length, samples);
-    return audiobuffer_t {.generic = nullptr};
+    return audiobuffer_t {};
 }
 
 /// Deletes audio buffers.
@@ -60,7 +60,7 @@ void RemoveAudioBuffer(audiobuffer_t buffer) {
 /// @return A new audio source handle.
 audiosource_t MakeAudioSource() {
     Log(Severity::INFO, System::AUDIO, "Created an audio source.");
-    return audiosource_t {.generic = nullptr};
+    return audiosource_t {};
 }
 
 /// Sets the pitch of an audio source.
