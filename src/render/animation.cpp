@@ -102,11 +102,16 @@ void Animation::LoadFromDisk(){
 
     std::cout << "Loading animation: " << filename << std::endl;
 
-
-    if (name_t header = file.read_name(); header != "ANIMv1") {
+    name_t header = file.read_name();
+    
+    if (header != "ANIMv1") {
         Log ("Unrecognized header '{}' in animation {}", header, filename);
         return;
     }
+    
+    // in the ANIMv1 format, there are 24 time units in a single second
+    // in the later formats, a time unit is a single second
+    const float time_scale = header == "ANIMv1" ? 1.0f / 24.0f : 1.0f;
     
     NameCount* anim_header = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
 
@@ -124,8 +129,10 @@ void Animation::LoadFromDisk(){
         for (uint64_t k = 0; k < bone_header->second; k++){
             Keyframe* kframe = (Keyframe*) animation_pool.AddNew(sizeof(Keyframe));
             
-            kframe->frame = file.read_float32();
+            kframe->frame = file.read_float32() * time_scale;
             kframe->location = {file.read_float32(), file.read_float32(), file.read_float32()};
+            // glm stores quaternions in wxyz, but the animation format stores
+            // them in xyzw, so we can't use the initializer list
             kframe->rotation.x = file.read_float32();
             kframe->rotation.y = file.read_float32();
             kframe->rotation.z = file.read_float32();

@@ -273,7 +273,7 @@ void AnimationComponent::SetFade(name_t animation_name, bool fade_in, float fade
         if (anim_playing[i] == animation_name) {
             anim_info[i].fade_in = fade_in;
             anim_info[i].fade_out = !fade_in;
-            anim_info[i].fade_speed = 1.0f/24.0f * fade_length;
+            anim_info[i].fade_speed = 1.0f / fade_length;
             anim_info[i].fade_ammount = fade_in ? 0.0f : 1.0f;
             return;
         }
@@ -336,7 +336,7 @@ void AnimationComponent::Refresh() {
         
         // increase the frames of the animation
         auto& anim = anim_info[i];
-        float frames_since_update = GetDeltaTime() * 24.0f;
+        float frames_since_update = GetDeltaTime();
         if (!anim.pause) anim.frame += frames_since_update * anim_info[i].speed;
         
         // do fade-ins/fade-outs
@@ -346,7 +346,6 @@ void AnimationComponent::Refresh() {
         } else if (anim.fade_out) {
             anim.fade_ammount -= frames_since_update * anim.fade_speed;
             if (anim.fade_ammount < 0.0f) {
-                //Stop(anim.animation_header->first);
                 Stop(anim_playing[i]);
             }
         }
