@@ -21,6 +21,13 @@
 
 namespace tram {
 
+// we should make these configurable in the future
+const float collision_width = 0.35f;
+const float collision_height = 1.85f;
+const float collision_height_crouch = 0.5f;
+
+const uint32_t collision_group = Physics::COLL_PLAYER;
+    
 /// Creates a new player.
 Player::Player() : Player("player") {
     
@@ -39,20 +46,32 @@ name_t Player::GetType() {
 void Player::Load(){
     plomp.make();
     controllercomponent.make();
+    physics_body.make();
     
     controllercomponent->SetParent(this);
+    controllercomponent->SetCollisionGroup(collision_group);
+    controllercomponent->SetCollisionSize(collision_width, collision_height, collision_height_crouch);
 
     plomp->SetParent(this);
     plomp->SetControllerComponent(controllercomponent);
     
+    physics_body->SetParent(this);
+    physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
+    physics_body->SetCollisionGroup(collision_group);
+    physics_body->SetKinematic(true);
+    physics_body->DisableDeactivation();
+    
     plomp->Init();
     controllercomponent->Init();
+    physics_body->Init();
 
-    flags |= LOADED;
-
+    SetFlag(LOADED, true);
 }
 void Player::Unload() {
-    std::cout << "Player is not unloadable!!!" << std::endl;
+    plomp.clear();
+    controllercomponent.clear();
+    
+    SetFlag(LOADED, false);
 }
 
 void Player::Serialize() {

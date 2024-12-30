@@ -83,9 +83,6 @@ protected:
     Component<TriggerComponent> walk_collision;
     Component<TriggerComponent> crouch_collision;
     
-    // TODO: consider removing the collider
-    Component<PhysicsComponent> physics_body;
-    
     void ApplyDynamics();
     void RecoverFromCollisions();
     void ResetMove();

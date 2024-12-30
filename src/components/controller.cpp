@@ -131,7 +131,6 @@ void ControllerComponent::SetDebugInfoDraw(bool draw) {
 void FPSControllerComponent::Start() {
     walk_collision.make();
     crouch_collision.make();
-    physics_body.make();
     
     walk_collision->SetCollisionMask(-1 ^ collision_group);
     walk_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
@@ -143,15 +142,8 @@ void FPSControllerComponent::Start() {
     crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
     crouch_collision->SetStoreCollisions(true);
     
-    physics_body->SetParent(parent);
-    physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
-    physics_body->SetCollisionGroup(collision_group);
-    physics_body->SetKinematic(true);
-    physics_body->DisableDeactivation();
-    
     walk_collision->Init();
     crouch_collision->Init();
-    physics_body->Init();
 }
 
 void FPSControllerComponent::Push(vec3 direction) {

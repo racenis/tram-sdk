@@ -27,7 +27,9 @@ public:
     name_t GetType();
 protected:
     Component<PlayerComponent> plomp;
+    Component<PhysicsComponent> physics_body;
 public:
+    // wait why is this public
     Component<RaycastControllerComponent> controllercomponent;
 };
 
