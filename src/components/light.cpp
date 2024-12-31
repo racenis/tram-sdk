@@ -2,7 +2,7 @@
 
 #include <components/light.h>
 
-#include <render/aabb.h>
+#include <render/scene.h>
 #include <render/api.h>
 
 #include <config.h>

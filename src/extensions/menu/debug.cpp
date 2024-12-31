@@ -2,7 +2,7 @@
 
 #include <extensions/menu/debug.h>
 
-#include <render/aabb.h>
+#include <render/scene.h>
 #include <physics/api.h>
 #include <render/api.h>
 #include <components/render.h>

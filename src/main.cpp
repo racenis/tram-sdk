@@ -65,7 +65,7 @@
 #include <extensions/kitchensink/menu.h>
 
 #include <render/api.h>
-#include <render/aabb.h>
+#include <render/scene.h>
 
 #include <platform/platform.h>
 #include <platform/image.h>
@@ -861,7 +861,7 @@ using namespace tram::UI;
 #include <extensions/scripting/lua.h>
 
 #include <render/api.h>
-#include <render/aabb.h>
+#include <render/scene.h>
 
 #include <platform/platform.h>
 #include <platform/image.h>

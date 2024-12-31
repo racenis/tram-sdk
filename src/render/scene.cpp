@@ -1,6 +1,6 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-#include <render/aabb.h>
+#include <render/scene.h>
 
 #include <components/render.h>
 #include <render/model.h>
@@ -17,14 +17,14 @@
  */
 
 /**
- * @namespace tram::Render::AABB
+ * @namespace tram::Render::SceneTree
  * 
  * Scene tree.
  * 
  * Contains the AABBs of all 3D models in the scene. Useful for quickly querying
  * the scene, doing raycasts on the 3D geometry, etc.
  * 
- * Internally uses an AABB tree, as the name suggests.
+ * Internally uses an AABB tree.
  */
  
  /**

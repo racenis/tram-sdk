@@ -44,7 +44,7 @@ void Init() {
     assert(System::IsInitialized(System::AUDIO) && "Audio system needs to be initialized first!");
     assert(CAMERA_SYSTEM == -1u && "Camera system is already initialized!");
     
-    Settings::Register(shake_multiplier, "camerashake", Settings::SERIALIZE_NONE);
+    Settings::Register(shake_multiplier, "camerashake", Settings::NONE);
     
     CAMERA_SYSTEM = System::Register("Camera control system", "CAMERA");
     System::SetInitialized(CAMERA_SYSTEM, true);

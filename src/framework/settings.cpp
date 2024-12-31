@@ -247,6 +247,15 @@ void Parse(const char** argv, int argc) {
     for (auto& setting : settings) SetFromRaw(setting);
 }
 
+uint32_t Flags(name_t name) {
+    // TODO: implement
+    return 0;
+}
+
+std::vector<name_t> GetSettings(uint32_t filter) {
+    // TODO: implement
+    return std::vector<name_t>();
+}
 
 void Save(const char* file) {
     // TODO: implement

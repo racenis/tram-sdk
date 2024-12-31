@@ -6,14 +6,18 @@
 #include <framework/value.h>
 
 #include <initializer_list>
+#include <vector>
 
 namespace tram::Settings {
 
 enum : uint32_t {
-    SERIALIZE_USER = 1,         //< Save the setting in user data
-    SERIALIZE_APPLICATION = 2,  //< Save the setting in application state data
+    USER = 1,         //< Save the setting in user data
+    APPLICATION = 2,  //< Save the setting in application state data
+    MENU = 4,         //< Show the setting in the setting menu
     
-    SERIALIZE_NONE = 0
+    // maybe we could add some read-only or write-only flags?
+    
+    NONE = 0
 };
 
 void Register(bool& value, const char* name, uint32_t flags);
@@ -28,6 +32,10 @@ void Parse(const char** argv, int argc);
 
 void Save(const char* file);
 void Load(const char* file);
+
+uint32_t Flags(name_t name);
+
+std::vector<name_t> GetSettings(uint32_t filter);
 
 template<typename T>
 struct Property {

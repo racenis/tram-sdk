@@ -85,7 +85,7 @@ static float SCREEN_HEIGHT = 600.0f;
 
 static Render::Pose* null_pose = nullptr;
 
-static Settings::Property<bool> render_debug = {false, "renderer-debug", Settings::SERIALIZE_NONE};
+static Settings::Property<bool> render_debug = {false, "renderer-debug", Settings::NONE};
 
 uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
     uint32_t handle;

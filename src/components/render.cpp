@@ -6,7 +6,7 @@
 
 #include <framework/entity.h>
 
-#include <render/aabb.h>
+#include <render/scene.h>
 
 #include <config.h>
 

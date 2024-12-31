@@ -1,7 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-#ifndef TRAM_SDK_RENDER_AABB_H
-#define TRAM_SDK_RENDER_AABB_H
+#ifndef TRAM_SDK_RENDER_SCENE_H
+#define TRAM_SDK_RENDER_SCENE_H
 
 #include <framework/math.h>
 #include <render/model.h>
@@ -45,4 +45,4 @@ void RemoveLight(light_t light);
     
 }
 
-#endif // TRAM_SDK_RENDER_AABB_H
+#endif // TRAM_SDK_RENDER_SCENE_H
