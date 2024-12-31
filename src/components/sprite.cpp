@@ -9,7 +9,7 @@
 #include <config.h>
 
 /**
- * @class tram::SpriteComponent
+ * @class tram::SpriteComponent components/sprite.h <components/sprite.h>
  * 
  * Provides amusing graphical effects.
  * @see https://racenis.github.io/tram-sdk/documentation/components/sprite.html
@@ -19,6 +19,8 @@ namespace tram {
 using namespace tram::Render;
 
 template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("SpriteComponent pool", COMPONENT_LIMIT_SPRITE, false);
+template <> void Component<SpriteComponent>::init() { ptr = PoolProxy<SpriteComponent>::New(); }
+template <> void Component<SpriteComponent>::yeet() { PoolProxy<SpriteComponent>::Delete(ptr); }
 
 using namespace API;
 

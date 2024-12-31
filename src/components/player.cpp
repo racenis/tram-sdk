@@ -5,7 +5,7 @@
 #include <config.h>
 
 /**
- * @class tram::PlayerComponent
+ * @class tram::PlayerComponent components/player.h <components/player.h>
  * 
  * Translates keyboard/mouse inputs into inputs for ControllerComponent.
  * @see https://racenis.github.io/tram-sdk/documentation/components/player.html
@@ -14,6 +14,8 @@
 namespace tram {
 
 template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("PlayerComponent pool", COMPONENT_LIMIT_PLAYER, false);
+template <> void Component<PlayerComponent>::init() { ptr = PoolProxy<PlayerComponent>::New(); }
+template <> void Component<PlayerComponent>::yeet() { PoolProxy<PlayerComponent>::Delete(ptr); }
 
 // technically incorrect, but it's not like we're going to have more than one
 // player components running at the same time.. right?

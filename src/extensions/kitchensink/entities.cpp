@@ -40,7 +40,7 @@ void UpdateHierarchy(id_t parent_id) {
 /******************************************************************************/
 
 /**
- * @class tram::Ext::Kitchensink::Button
+ * @class tram::Ext::Kitchensink::Button extensions/kitchensink/entities.h <extensions/kitchensink/entities.h>
  * 
  * Essentially a func_door.
  * 

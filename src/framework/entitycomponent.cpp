@@ -2,14 +2,16 @@
 
 #include <framework/entitycomponent.h>
 
+#include <framework/logging.h>
+
 /**
- * @class tram::EntityComponent framework/entitycomponent.h
+ * @class tram::EntityComponent framework/entitycomponent.h <framework/entitycomponent.h>
  * 
  * Component base class.
  * 
  * Usually the way that components work is that a user creates a component, i.e.
  * constructs an instance of a component, then they call setter methods on it to
- * feed it parameters and finally they call the Init() method in the comoponent.
+ * feed it parameters and finally they call the Init() method in the component.
  * 
  * In turn, the base component class checks whether all of the component's
  * requested resources have been loaded and then calls the component's Start()
@@ -29,26 +31,36 @@
  * @see https://racenis.github.io/tram-sdk/documentation/framework/entitycomponent.html
  */
  
- /* TODO:
-  * I don't really like how the Component<> template works. for example, what
-  * happens when a component needs to be allocated with some mechanism other
-  * than a Pool<>?
-  * 
-  * we could try the following:
-  * - remove make() and clear() definitions from the template
-  * - implement the make() and clear() in the implementation files for every
-  *   component type
-  * - maybe make a macro to do the implementation automatically
-  */
-
 namespace tram {
 
-EntityComponent::EntityComponent() {
-
+/// Initializes an entity component.
+/// If an entity component has all of its resources already loaded, this will
+/// immediately Start() the component.
+void EntityComponent::Init() {
+    if (is_init) {
+        Log(Severity::WARNING, System::CORE, "Called Init() multiple times on a {}", typeid(*this).name());
+        return;
+    }
+    
+    is_init = true;
+    
+    if (!resources_waiting) {
+         Start();
+    }
 }
 
-EntityComponent::~EntityComponent() {
-
+/// Notifies the component of a streamed-in resource.
+void EntityComponent::ResourceReady() {
+    if (!resources_waiting) {
+        Log(Severity::WARNING, System::CORE, "ResourceReady() called more than there are resources_waiting. This shouldn't happen.");
+        return;
+    }
+    
+    resources_waiting--;
+    
+    if (!resources_waiting && is_init) {
+        Start();
+    }
 }
 
 }

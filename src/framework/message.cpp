@@ -14,7 +14,7 @@
 #include <queue>
 
 /**
- * @struct tram::Message framework/message.h
+ * @struct tram::Message framework/message.h <framework/message.h>
  * 
  * Message data.
  * 

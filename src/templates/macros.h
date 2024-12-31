@@ -12,18 +12,15 @@
 /// Implements a pool.
 #define TRAM_SDK_IMPLEMENT_POOL(TYPE, NAME, SIZE) template <> Pool<TYPE> PoolProxy<TYPE>::pool (NAME, SIZE);
 
-/// Registers an entity.
-#define TRAM_SDK_REGISTER_ENTITY(NAME, TYPE) Entity::Register(#NAME, [](std::string_view& params) -> Entity* {return new TYPE(params);});
-
 
 // Asserts
 
 #ifndef NDEBUG
-#define TRAM_SDK_ASSERT_SYSTEM_LOADED(SYSTEM) if (!System::IsInitialized(SYSTEM)) { Log ("System {} is not loaded. It should be. Assert in {} at {}", System::GetShortName(SYSTEM), __FILE__, __LINE__); abort(); }
-#define TRAM_SDK_ASSERT_SYSTEM_UNLOADED(SYSTEM) if (System::IsInitialized(SYSTEM)) { Log ("System {} is loaded. It shouldn't be. Assert in {} at {}", System::GetShortName(SYSTEM), __FILE__, __LINE__); abort(); }
+#define TRAM_SDK_ASSERT(EXPRESSION) if (!(EXPRESSION)) { Log("{}\nAssert at line {} in {}", #EXPRESSION, __LINE__, __FILE__); abort(); }
+#define TRAM_SDK_ASSERT_MESSAGE(EXPRESSION, MESSAGE) if (!(EXPRESSION)) { Log("{}\n{}\nAssert at line {} in {}", MESSAGE, #EXPRESSION, __LINE__, __FILE__); abort(); }
 #else
-#define TRAM_SDK_ASSERT_SYSTEM_LOADED(SYSTEM) ;
-#define TRAM_SDK_ASSERT_SYSTEM_UNLOADED(SYSTEM) ;
+#define TRAM_SDK_ASSERT(EXPRESSION) ;
+#define TRAM_SDK_ASSERT_MESSAGE(EXPRESSION, MESSAGE) ;
 #endif
 
 

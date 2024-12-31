@@ -17,7 +17,8 @@ class AABBTree {
 public:
     AABBTree() {}
     ~AABBTree() {
-        RemoveHierarchy(root);
+        //RemoveHierarchy(root);
+        // TODO: fix 
     }
     
     vec3 GetAABBMin() { return root->min; }

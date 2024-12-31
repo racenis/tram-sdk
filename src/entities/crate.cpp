@@ -12,7 +12,7 @@
 #include <framework/message.h>
 
 /**
- * @class tram::Crate
+ * @class tram::Crate entities/crate.h <entities/crate.h>
  * 
  * 3D Model with a rigidbody attached to it.
  * @see https://racenis.github.io/tram-sdk/documentation/entities/crate.html

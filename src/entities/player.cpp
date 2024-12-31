@@ -10,7 +10,7 @@
 #include <components/trigger.h>
 
 /**
- * @class tram::Player entities/player.h
+ * @class tram::Player entities/player.h <entities/player.h>
  * 
  * ControllerComponent with a PlayerComponent attached to it.
  * Can be used to control a player for a video game, or could be used to simply

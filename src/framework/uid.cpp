@@ -12,7 +12,7 @@
 #include <murmur.h>
 
 /**
- * @struct tram::UID framework/uid.h
+ * @struct tram::UID framework/uid.h <framework/uid.h>
  * 
  * Interned string type.
  * 

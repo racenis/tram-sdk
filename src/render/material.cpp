@@ -26,7 +26,7 @@
 #include <fstream>
 
 /**
- * @struct tram::Render::Material render/material.h <render/material.h>
+ * @class tram::Render::Material render/material.h <render/material.h>
  * 
  * Material resource.
  * 

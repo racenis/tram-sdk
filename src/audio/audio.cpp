@@ -27,13 +27,14 @@ namespace tram::Audio {
 
 /// Starts the Audio system.
 void Init() {
-    assert(System::IsInitialized(System::CORE));
-    assert(System::IsInitialized(System::UI));
+    System::SetState(System::AUDIO, System::INIT);
+    System::AssertDependency(System::CORE);
+    System::AssertDependency(System::UI);
     // TODO: check if we actually need UI for this
     
     API::Init();
     
-    System::SetInitialized(System::AUDIO, true);
+    System::SetState(System::AUDIO, System::READY);
 }
 
 /// Updates the Audio system.

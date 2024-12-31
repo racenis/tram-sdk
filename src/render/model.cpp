@@ -18,8 +18,33 @@
 #include <templates/hashmap.h>
 #include <templates/aabb.h>
 
-//#include <set>
-
+/* it would be a good idea to yeet ModelData struct.
+ * 
+ * at first it seemed like we might need to upload some additional data to the
+ * GPU that would be different for each model type, but in the end it turned out
+ * that the only thing that is different between various 3D model format is just
+ * the layout of the vertex data
+ * 
+ * so it would probably be better to replace the ModelData with a union of the
+ * different vertex type pointers
+ * 
+ * we could also allow users to load in their own model formats that have their
+ * own custom vertex formats. to do this we could create a base ModelParser
+ * class as an interface that can be injected into the Model and would do the
+ * loading of the model data
+ * 
+ * another way to do this could be to have a Model::RegisterParser() static
+ * method that would take in a file extension and a function pointer. then when
+ * the model needs to be loaded, we would iterate through the list of all
+ * registered functions and try opening a file with the extension specified. if
+ * the file is opened successfully with that extension, the opened file will get
+ * passed into the callback. it will then write some data into the Model through
+ * reference parameters. the callback signature could be something like:
+ * ModelParser(File&, void*& vertex, AABBTriangle*&, size_t& size)
+ * 
+ * TODO: fix
+ */
+ 
 using namespace tram;
 
 template <> Pool<Render::Model> PoolProxy<Render::Model>::pool("model pool", 500);

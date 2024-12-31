@@ -12,7 +12,7 @@
 #include <algorithm>
 
 /**
- * @class tram::Transition framework/transition.h
+ * @class tram::Transition framework/transition.h <framework/transition.h>
  * 
  * Connects WorldCells together.
  * 

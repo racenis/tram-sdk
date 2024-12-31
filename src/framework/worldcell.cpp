@@ -21,7 +21,7 @@
 #include <sstream>
 
 /**
- * @struct tram::WorldCell framework/worldcell.h
+ * @struct tram::WorldCell framework/worldcell.h <framework/worldcell.h>
  * 
  * World streaming unit.
  * 

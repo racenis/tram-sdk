@@ -16,7 +16,7 @@
  */
 
 /**
- * @class tram::Ext::Camera::Camera extensions/camera/camera.h
+ * @class tram::Ext::Camera::Camera extensions/camera/camera.h <extensions/camera/camera.h>
  * 
  * Interface API for cameras.
  */
@@ -34,20 +34,20 @@ uint32_t CAMERA_SYSTEM = -1u;
 // this must be remedied at the earliest convenience..
 Camera* selected_camera = nullptr;
 
-float shake_multiplier = 1.0f;
+Settings::Property<float> shake_multiplier = {1.0f, "camerashake", Settings::NONE};
 
 id_t look_at_entity = 0;
 quat look_at_direction = {1.0f, 0.0f, 0.0f, 0.0f};
 
 void Init() {
-    assert(System::IsInitialized(System::RENDER) && "Render system needs to be initialized first!");
-    assert(System::IsInitialized(System::AUDIO) && "Audio system needs to be initialized first!");
-    assert(CAMERA_SYSTEM == -1u && "Camera system is already initialized!");
-    
-    Settings::Register(shake_multiplier, "camerashake", Settings::NONE);
-    
     CAMERA_SYSTEM = System::Register("Camera control system", "CAMERA");
-    System::SetInitialized(CAMERA_SYSTEM, true);
+    
+    System::SetState(CAMERA_SYSTEM, System::INIT);
+    
+    System::AssertDependency(System::RENDER);
+    System::AssertDependency(System::AUDIO);
+    
+    System::SetState(CAMERA_SYSTEM, System::READY);
 }
 
 void Update() {

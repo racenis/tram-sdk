@@ -6,7 +6,7 @@
 #include <config.h>
 
 /**
- * @class tram::TriggerComponent
+ * @class tram::TriggerComponent components/trigger.h <components/trigger.h>
  * 
  * Trigger wrapper.
  * @see https://racenis.github.io/tram-sdk/documentation/components/trigger.html
@@ -17,6 +17,8 @@ using namespace tram::Physics;
 namespace tram {
 
 template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("TriggerComponent pool", COMPONENT_LIMIT_TRIGGER, false);
+template <> void Component<TriggerComponent>::init() { ptr = PoolProxy<TriggerComponent>::New(); }
+template <> void Component<TriggerComponent>::yeet() { PoolProxy<TriggerComponent>::Delete(ptr); }
 
 void TriggerComponent::Start() {
     if (!shape.bt_shape && model) {

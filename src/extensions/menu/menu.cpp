@@ -99,9 +99,12 @@ static void DebugMenuKeyboard () {
 }
 
 void Init() {
-    assert(System::IsInitialized(System::GUI) && "GUI system needs to be initialized first!");
-    assert(MENU_SYSTEM == -1u && "Menu system is already initialized!");
+    MENU_SYSTEM = System::Register("Default Menus", "MENU");
     
+    System::SetState(MENU_SYSTEM, System::INIT);
+    
+    System::AssertDependency(System::GUI);
+
     Material::Make(UID("ui/font_widgets"),     MATERIAL_GLYPH)->Load();
     Material::Make(UID("ui/font_text"),        MATERIAL_GLYPH)->Load();
     Material::Make(UID("ui/font_text_bold"),   MATERIAL_GLYPH)->Load();
@@ -134,8 +137,7 @@ void Init() {
     GUI::SetGlyphDefaults(COLOR_WHITE, FONT_WIDGETS, GUI::WIDGET);
     GUI::SetGlyphDefaults(COLOR_WHITE, FONT_TEXT, GUI::TEXT);
     
-    MENU_SYSTEM = System::Register("Default Menus", "MENU");
-    System::SetInitialized(MENU_SYSTEM, true);
+    System::SetState(MENU_SYSTEM, System::READY);
 }
 
 void Update() {

@@ -7,7 +7,7 @@
 #include <audio/audio.h>
 
 /**
- * @class tram::Ext::Camera::Camera extensions/camera/camera.h
+ * @class tram::Ext::Camera::Camera extensions/camera/camera.h <extensions/camera/camera.h>
  * 
  * First person camera.
  * 

@@ -20,7 +20,7 @@
 #include <config.h>
 
 /**
- * @class tram::Audio::Sound audio/sound.h
+ * @class tram::Audio::Sound audio/sound.h <audio/sound.h>
  * 
  * Audio data resource.
  * 

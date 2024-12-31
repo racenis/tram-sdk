@@ -18,14 +18,14 @@
  */
 
 /**
- * @class tram::ControllerComponent
+ * @class tram::ControllerComponent components/controller.h <components/controller.h>
  * 
  * Provides an API for character controllers.
  * @see https://racenis.github.io/tram-sdk/documentation/components/controller.html
  */
  
  /**
- * @class tram::FPSControllerComponent
+ * @class tram::FPSControllerComponent components/controller.h <components/controller.h>
  * 
  * Implementation of an FPS-style character controller.
  * 
@@ -36,7 +36,7 @@
  */
  
 /**
- * @class tram::RaycastControllerComponent
+ * @class tram::RaycastControllerComponent components/controller.h <components/controller.h>
  * 
  * Implementation of a simple character controller.
  * @see ControllerComponent
@@ -46,6 +46,10 @@ namespace tram {
 
 template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool("FPSControllerComponent pool", COMPONENT_LIMIT_CONTROLLER, false);
 template <> Pool<RaycastControllerComponent> PoolProxy<RaycastControllerComponent>::pool("RaycastControllerComponent pool", COMPONENT_LIMIT_CONTROLLER, false);
+template <> void Component<FPSControllerComponent>::init() { ptr = PoolProxy<FPSControllerComponent>::New(); }
+template <> void Component<FPSControllerComponent>::yeet() { PoolProxy<FPSControllerComponent>::Delete(ptr); }
+template <> void Component<RaycastControllerComponent>::init() { ptr = PoolProxy<RaycastControllerComponent>::New(); }
+template <> void Component<RaycastControllerComponent>::yeet() { PoolProxy<RaycastControllerComponent>::Delete(ptr); }
 
 // TODO: make this a Setting?
 static bool draw_debug = false;

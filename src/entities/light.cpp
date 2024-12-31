@@ -7,7 +7,7 @@
 #include <framework/serialization.h>
 
 /**
- * @class tram::Light
+ * @class tram::Light entities/light.h <entities/light.h>
  * 
  * LightComponent wrapper.
  * @see https://racenis.github.io/tram-sdk/documentation/entities/light.html

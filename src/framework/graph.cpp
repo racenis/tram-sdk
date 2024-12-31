@@ -3,7 +3,7 @@
 #include <framework/graph.h>
 
 /**
- * @class tram::Path framework/path.h
+ * @class tram::Path framework/path.h <framework/path.h>
  * 
  * Base class for graphs.
  * 

@@ -11,7 +11,7 @@
 #include <framework/message.h>
 
 /**
- * @class tram::Trigger entities/trigger.h
+ * @class tram::Trigger entities/trigger.h <entities/trigger.h>
  * 
  * TriggerComponent wrapper.
  * 

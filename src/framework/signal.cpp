@@ -10,7 +10,7 @@
 #include <config.h>
 
 /**
- * @struct tram::Signal framework/signal.h
+ * @struct tram::Signal framework/signal.h <framework/signal.h>
  * 
  * Message template.
  * 
@@ -20,7 +20,7 @@
  */
 
 /**
- * @class tram::SignalTable framework/signal.h
+ * @class tram::SignalTable framework/signal.h <framework/signal.h>
  * 
  * List of Message templates.
  * 

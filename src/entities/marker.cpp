@@ -4,7 +4,7 @@
 #include <entities/script.h>
 
 /**
- * @class tram::Marker
+ * @class tram::Marker entities/marker.h <entities/marker.h>
  * 
  * Functionally inert.
  * Doesn't do anything and has no functionality. Can be used as a template.

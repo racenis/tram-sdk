@@ -18,7 +18,7 @@
  */
 
 /**
- * @class tram::Ext::Kitchensink::SoundTable
+ * @class tram::Ext::Kitchensink::SoundTable extensions/kitchensink/soundtable.h <extensions/kitchensink/soundtable.h>
  * 
  * Maps actions to sounds.
  * 

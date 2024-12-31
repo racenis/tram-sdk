@@ -8,7 +8,7 @@
 #include <cstring>
 
 /**
- * @struct tram::File framework/file.h
+ * @struct tram::File framework/file.h <framework/file.h>
  * 
  * Very fast file reader/writer.
  * 

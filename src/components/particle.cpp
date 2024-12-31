@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class tram::ParticleComponent
+ * @class tram::ParticleComponent components/particle.h <components/particle.h>
  * 
  * Provides amusing graphical effects.
  * @see https://racenis.github.io/tram-sdk/documentation/components/particle.html
@@ -20,6 +20,8 @@ using namespace tram::Render;
 using namespace tram::Render::API;
 
 template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool("ParticleComponent pool", COMPONENT_LIMIT_PARTICLE, false);
+template <> void Component<ParticleComponent>::init() { ptr = PoolProxy<ParticleComponent>::New(); }
+template <> void Component<ParticleComponent>::yeet() { PoolProxy<ParticleComponent>::Delete(ptr); }
 
 ParticleComponent::~ParticleComponent(){
     is_ready = true;

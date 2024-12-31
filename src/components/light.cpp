@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class tram::LightComponent
+ * @class tram::LightComponent components/light.h <components/light.h>
  * 
  * Provides a real-time illumination for the scene.
  * @see https://racenis.github.io/tram-sdk/documentation/components/light.html
@@ -21,6 +21,8 @@
 namespace tram {
 
 template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("LightComponent pool", COMPONENT_LIMIT_LIGHT, false);   
+template <> void Component<LightComponent>::init() { ptr = PoolProxy<LightComponent>::New(); }
+template <> void Component<LightComponent>::yeet() { PoolProxy<LightComponent>::Delete(ptr); }
 
 void LightComponent::Init() {
     light = Render::API::MakeLight();

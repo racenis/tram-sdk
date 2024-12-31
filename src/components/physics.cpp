@@ -8,7 +8,7 @@
 #include <config.h>
 
 /**
- * @class tram::PhysicsComponent
+ * @class tram::PhysicsComponent components/physics.h <components/physics.h>
  * 
  * Rigidbody wrapper.
  * @see https://racenis.github.io/tram-sdk/documentation/components/physics.html
@@ -19,6 +19,8 @@ using namespace tram::Physics;
 namespace tram {
 
 template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("PhysicsComponent pool", COMPONENT_LIMIT_PHYSICS, false);
+template <> void Component<PhysicsComponent>::init() { ptr = PoolProxy<PhysicsComponent>::New(); }
+template <> void Component<PhysicsComponent>::yeet() { PoolProxy<PhysicsComponent>::Delete(ptr); }
 
 void PhysicsComponent::Start() {
     if (collision_model.get()) {

@@ -10,7 +10,7 @@
 #include <config.h>
 
 /**
- * @class tram::AudioComponent
+ * @class tram::AudioComponent components/audio.h <components/audio.h>
  * 
  * Plays back Sounds.
  * @see https://racenis.github.io/tram-sdk/documentation/components/audio.html
@@ -30,6 +30,8 @@ using namespace tram::Audio;
 using namespace tram::Audio::API;
 
 template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("AudioComponent pool", COMPONENT_LIMIT_AUDIO);
+template <> void Component<AudioComponent>::init() { ptr = PoolProxy<AudioComponent>::New(); }
+template <> void Component<AudioComponent>::yeet() { PoolProxy<AudioComponent>::Delete(ptr); }
 
 // TODO: convert these into Settings?
 static bool draw_source = false;

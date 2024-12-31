@@ -8,7 +8,7 @@
 #include <cstring>
 
 /**
- * @class tram::AnimationComponent
+ * @class tram::AnimationComponent components/animation.h <components/animation.h>
  * 
  * Plays back Animations.
  * @see https://racenis.github.io/tram-sdk/documentation/components/animation.html
@@ -17,9 +17,13 @@
 namespace tram {
     
 template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION, false);
+template <> void Component<AnimationComponent>::init() { ptr = PoolProxy<AnimationComponent>::New(); }
+template <> void Component<AnimationComponent>::yeet() { PoolProxy<AnimationComponent>::Delete(ptr); }
 
 void AnimationComponent::Init() {
     assert(!is_ready);
+    
+    // I feel like this code should be in in the constructor instead
     
     is_init = true;
     pose = PoolProxy<Render::Pose>::New();
@@ -35,6 +39,10 @@ void AnimationComponent::Init() {
 AnimationComponent::~AnimationComponent() {
     assert(is_ready);
     assert(pose);
+    
+    // if delete this component before the model resource is lodaed, we will
+    // fail on these asserts
+    // TODO: fix
     
     PoolProxy<Render::Pose>::Delete(pose);
     

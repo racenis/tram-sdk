@@ -12,7 +12,7 @@
 #include <config.h>
 
 /**
- * @class tram::Scriptable entities/script.h
+ * @class tram::Scriptable entities/script.h <entities/script.h>
  * 
  * Provides script language subclassing.
  * 

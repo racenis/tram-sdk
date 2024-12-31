@@ -16,7 +16,7 @@
 #include <sstream>
 
 /**
- * @struct tram::Render::Sprite render/sprite.h <render/sprite.h>
+ * @class tram::Render::Sprite render/sprite.h <render/sprite.h>
  * 
  * Sprite resource.
  * 

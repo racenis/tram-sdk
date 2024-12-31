@@ -22,20 +22,19 @@ namespace tram::Ext::Kitchensink {
 uint32_t KITCHENSINK_SYSTEM = -1u;
 
 void Init() {
-    assert(System::IsInitialized(System::RENDER) && "Render system needs to be initialized first!");
-    assert(System::IsInitialized(System::AUDIO) && "Audio system needs to be initialized first!");
-    
-    // TODO: add physics check and other checks
-    assert(KITCHENSINK_SYSTEM == -1u && "Camera system is already initialized!");
-    
-    // here we register all the entities and stuff
-    
     KITCHENSINK_SYSTEM = System::Register("Random mechanics and stuff", "KITCHN");
-    System::SetInitialized(KITCHENSINK_SYSTEM, true);
+    
+    System::SetState(KITCHENSINK_SYSTEM, System::INIT);
+    
+    System::AssertDependency(System::AUDIO);
+    System::AssertDependency(System::RENDER);
+    System::AssertDependency(System::PHYSICS);
+    
+    System::SetState(KITCHENSINK_SYSTEM, System::READY);
 }
 
 void Update() {
-    assert(System::IsInitialized(KITCHENSINK_SYSTEM) && "Kitchensink system needs to be initialized first!");
+    
 }
 
 }

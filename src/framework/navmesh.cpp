@@ -11,7 +11,7 @@
 #include <cstring>
 
 /**
- * @class tram::Navmesh framework/navmesh.h
+ * @class tram::Navmesh framework/navmesh.h <framework/navmesh.h>
  * 
  * Not fully implemented yet.
  * 

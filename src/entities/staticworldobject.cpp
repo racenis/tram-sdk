@@ -9,7 +9,7 @@
 #include <framework/serialization.h>
 
 /**
- * @class tram::StaticWorldObject entities/staticworldobject.h
+ * @class tram::StaticWorldObject entities/staticworldobject.h <entities/staticworldobject.h>
  * 
  * Worldspawn.
  * 

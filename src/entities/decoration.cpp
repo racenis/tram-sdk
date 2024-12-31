@@ -12,7 +12,7 @@
 #include <framework/message.h>
 
 /**
- * @class tram::Decpration
+ * @class tram::Decoration entities/decoration.h <entities/decoration.h>
  * 
  * 3D Model with an AnimationComponent attached to it.
  * @see https://racenis.github.io/tram-sdk/documentation/entities/decoration.html

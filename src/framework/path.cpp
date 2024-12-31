@@ -16,7 +16,7 @@
 #include <cstring>
 
 /**
- * @class tram::Path framework/path.h
+ * @class tram::Path framework/path.h <framework/path.h>
  * 
  * Sequence of line segments.
  * 
@@ -27,7 +27,7 @@
  */
  
  /**
- * @class tram::PathFollower framework/path.h
+ * @class tram::PathFollower framework/path.h <framework/path.h>
  * 
  * Point constrained to a Path.
  * 

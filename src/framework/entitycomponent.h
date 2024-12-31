@@ -15,13 +15,10 @@ class Entity;
 
 class EntityComponent {
 public:
-    EntityComponent();
-    virtual ~EntityComponent();
+    EntityComponent() = default;
+    virtual ~EntityComponent() = default;
 
-    virtual void Init() {
-        is_init = true;
-        if (resources_waiting == 0) Start();
-    }
+    virtual void Init();
 
     virtual void EventHandler(Event &event) = 0;
 
@@ -36,8 +33,11 @@ protected:
     bool is_ready = false;
     bool is_init = false;
     Entity* parent = nullptr;
+    
+    // we could make resources_waiting a uint16_t and then we could even turn
+    // is_ready and is_init into a single bitmask, saving memory
 
-    void ResourceReady() { resources_waiting--; if (resources_waiting == 0 && is_init) Start(); }
+    void ResourceReady();
 
     virtual void Start() = 0;
     friend void Async::FinishResources();
@@ -51,15 +51,18 @@ template <typename T>
 class Component {
 public:
     Component() {}
-    ~Component() { if (ptr) PoolProxy<T>::Delete(ptr); }
-    void make() { ptr = PoolProxy<T>::New(); }
-    void clear() { if (ptr) PoolProxy<T>::Delete(ptr); ptr = nullptr; }
+    ~Component() { clear(); }
+    void make() { if (ptr) yeet(); init(); }
+    void clear() { if (ptr) yeet(); ptr = nullptr; }
     T* get() { return ptr; }
     T* operator->() { return ptr; }
     T& operator*() { return ptr; }
     operator T*() { return ptr; }
     explicit operator bool() { return ptr != nullptr; }
 protected:
+    void init();
+    void yeet();
+
     T* ptr = nullptr;
 };
     

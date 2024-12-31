@@ -12,7 +12,7 @@
 #include <framework/logging.h>
 
 /**
- * @struct tram::Event framework/event.h
+ * @struct tram::Event framework/event.h <framework/event.h>
  * 
  * Event data.
  * 
@@ -62,7 +62,7 @@
  */
  
  /**
- * @class tram::EventListener framework/event.h
+ * @class tram::EventListener framework/event.h <framework/event.h>
  * 
  * Smart wrapper class for Event listeners.
  * 

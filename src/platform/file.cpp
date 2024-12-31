@@ -8,7 +8,7 @@
 #include <framework/logging.h>
 
 /**
- * @class tram::Platform::FileReader
+ * @class tram::Platform::FileReader platform/file.h <platform/file.h>
  * 
  * File reading backend API.
  * 
@@ -23,7 +23,7 @@
  */
  
 /**
- * @class tram::Platform::FileWriter
+ * @class tram::Platform::FileWriter platform/file.h <platform/file.h>
  * 
  * File writing backend API.
  * 

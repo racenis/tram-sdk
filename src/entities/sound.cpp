@@ -7,7 +7,7 @@
 #include <framework/serialization.h>
 
 /**
- * @class tram::Sound entities/sound.h
+ * @class tram::Sound entities/sound.h <entities/sound.h>
  * 
  * AudioComponent wrapper.
  * 
