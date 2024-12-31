@@ -60,11 +60,11 @@ protected:
         bool fade_out;
         bool pause;
         bool pause_on_last_frame;
-        Render::NameCount* animation_header = nullptr;
-        Render::NameCount* keyframe_headers[Render::BONE_COUNT] = {nullptr};
+        Render::Keyframe* keyframes[Render::BONE_COUNT] = {nullptr};
+        uint32_t keyframe_count[Render::BONE_COUNT] = {0};
     };
 
-    void FindKeyframePointers(size_t animation_index);
+    void FindKeyframePointers(Render::Animation* animation, size_t animation_index);
 
     Render::Keyframe base_pose[Render::BONE_COUNT];
     

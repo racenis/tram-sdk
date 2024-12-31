@@ -36,21 +36,34 @@ struct Pose {
     mat4 pose[BONE_COUNT];
 };
 
+struct KeyframeHeader {
+    name_t bone;
+    uint32_t keyframe_offset;
+    uint32_t keyframe_count;
+};
+
 class Animation : public Resource {
 public:
     Animation(name_t name) : Resource(name) {}
 
-    NameCount* GetPointer() { return animation_pointer; }
+    Keyframe* GetKeyframes(name_t bone);
+    uint32_t GetKeyframeCount(name_t bone);
+    
+    inline KeyframeHeader* GetHeader(uint32_t index) { return &headers[index]; }
+    inline uint32_t GetHeaderCount() { return header_count; }
     
     void LoadFromDisk();
     void LoadFromMemory() {}
     
-    void Unload() {}
+    void Unload();
     
     static Animation* Find(name_t name);
     static void LoadAll();
 private:
-    NameCount* animation_pointer = nullptr;
+    Keyframe* keyframes = nullptr;
+    
+    KeyframeHeader* headers = nullptr;
+    uint32_t header_count = 0;
 };
 
 }

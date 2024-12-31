@@ -88,7 +88,7 @@ Hashmap<Animation*> animation_list ("model name list", 500);
 // TODO: fix
 StackPool<uint8_t> animation_pool ("animation keyframe pool", 1024 * 1024);
 
-void Animation::LoadFromDisk(){
+void Animation::LoadFromDisk() {
     char filename [100] = "data/animations/";
     strcat (filename, name);
     strcat (filename, ".anim");
@@ -113,26 +113,35 @@ void Animation::LoadFromDisk(){
     // in the later formats, a time unit is a single second
     const float time_scale = header == "ANIMv1" ? 1.0f / 24.0f : 1.0f;
     
-    NameCount* anim_header = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
-
-    anim_header->first = file.read_name();
-    anim_header->second = file.read_uint32();
+    // the older format also has a superfluous 
+    if (header == "ANIMv1") file.read_name();
     
-    this->animation_pointer = anim_header;
-
-    for (uint64_t j = 0; j < anim_header->second; j++){
-        NameCount* bone_header = (NameCount*) animation_pool.AddNew(sizeof(NameCount));
-
-        bone_header->first = file.read_name();
-        bone_header->second = file.read_uint32();
-
-        for (uint64_t k = 0; k < bone_header->second; k++){
-            Keyframe* kframe = (Keyframe*) animation_pool.AddNew(sizeof(Keyframe));
+    header_count = file.read_uint32();
+    
+    const size_t header_size = header_count * sizeof(KeyframeHeader);
+    headers = (KeyframeHeader*)malloc(header_size);
+    
+    uint32_t keyframe_count = 0;
+    uint32_t keyframe_offset = 0;
+    for (uint32_t j = 0; j < header_count; j++){
+        
+        keyframe_offset = keyframe_count;
+        
+        headers[j].bone = file.read_name();
+        headers[j].keyframe_count = file.read_uint32();
+        headers[j].keyframe_offset = keyframe_offset;
+        
+        keyframe_count += headers[j].keyframe_count;
+        
+        keyframes = (Keyframe*)realloc(keyframes, keyframe_count * sizeof(Keyframe));
+        
+        for (uint64_t k = 0; k < headers[j].keyframe_count; k++){
+            Keyframe* kframe = &keyframes[k + keyframe_offset];
             
             kframe->frame = file.read_float32() * time_scale;
             kframe->location = {file.read_float32(), file.read_float32(), file.read_float32()};
             // glm stores quaternions in wxyz, but the animation format stores
-            // them in xyzw, so we can't use the initializer list
+            // them in xyzw like blender, so we can't use the initializer list
             kframe->rotation.x = file.read_float32();
             kframe->rotation.y = file.read_float32();
             kframe->rotation.z = file.read_float32();
@@ -140,6 +149,32 @@ void Animation::LoadFromDisk(){
             kframe->scale = {file.read_float32(), file.read_float32(), file.read_float32()};
         }
     }
+    
+    status = Resource::READY;
+}
+
+void Animation::Unload() {
+
+}
+
+Keyframe* Animation::GetKeyframes(name_t bone) {
+    for (uint32_t i = 0; i < header_count; i++) {
+        if (headers[i].bone != bone) continue;
+        
+        return &keyframes[headers[i].keyframe_offset];
+    }
+    
+    return nullptr;
+}
+
+uint32_t Animation::GetKeyframeCount(name_t bone) {
+    for (uint32_t i = 0; i < header_count; i++) {
+        if (headers[i].bone != bone) continue;
+        
+        return headers[i].keyframe_count;
+    }
+    
+    return 0;
 }
 
 Animation* Animation::Find (name_t name) {

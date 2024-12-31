@@ -14,6 +14,19 @@
  * @see https://racenis.github.io/tram-sdk/documentation/components/animation.html
  */
 
+/* I feel like this component takes up too much space. I feel like it would be
+ * better for the component to just keep a list of pointers to 
+ * AnimationPlaybackInfo that are kept in some kind of a pool and then to
+ * allocate them only as needed.
+ * 
+ * there's also too much caching going on
+ * 
+ * what would be a good idea to cache:
+ * - skeletal hierarchy (neat effects)
+ * - skeleton bone to keyframe header mapping (expensive lookup)
+ * - bone space matrices
+ */
+
 namespace tram {
     
 template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION, false);
@@ -63,7 +76,7 @@ void AnimationComponent::Start() {
     }
     
     for (size_t i = 0; i < ANIM_COUNT; i++) {
-        if (anim_playing[i]) FindKeyframePointers(i);
+        if (anim_playing[i]) FindKeyframePointers(Render::Animation::Find(anim_playing[i]), i);
     }
 
     is_ready = true;
@@ -121,47 +134,32 @@ void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float wei
     anim_info[slot].fade_in = false; 
     anim_info[slot].fade_out = false; 
     anim_info[slot].pause_on_last_frame = pause_on_last_frame;
-    anim_info[slot].animation_header = nullptr;
     
-    for (size_t i = 0; i < Render::BONE_COUNT; i++) anim_info[slot].keyframe_headers[i] = nullptr;
+    for (size_t i = 0; i < Render::BONE_COUNT; i++) {
+        anim_info[slot].keyframes[i] = nullptr;
+        anim_info[slot].keyframe_count[i] = 0;
+    }
     
-    anim_info[slot].animation_header = Render::Animation::Find(animation_name)->GetPointer();
+    Render::Animation* animation = Render::Animation::Find(animation_name);
 
-    if(anim_info[slot].animation_header == nullptr){
+    if(animation->GetStatus() != Resource::READY){
         std::cout << "Animation " << animation_name << " not loaded!" << std::endl;
         anim_playing[slot] = 0;
         return;
     }
     
     if (is_ready) {
-        FindKeyframePointers(slot);
+        FindKeyframePointers(animation, slot);
     }
 }
 
 /// Extracts pointers to keyframes from animation data.
-void AnimationComponent::FindKeyframePointers(size_t animation_index) {
+void AnimationComponent::FindKeyframePointers(Render::Animation* animation, size_t animation_index) {
     const auto& slot = animation_index;
-    size_t anim_bone_count = anim_info[slot].animation_header->second;
     
-    Render::NameCount* keyframe_header = anim_info[slot].animation_header + 1;
-    
-    // match up bones in the armature to keyframe headers in the animation data
-    for (size_t i = 0; i < anim_bone_count; i++) {
-        size_t bone_slot = -1llu;
-
-        for(size_t j = 0; j < armature_bone_count; j++){
-            if(armature_bones[j].name == keyframe_header->first){
-                bone_slot = j;
-                break;
-            }
-        }
-
-        if(bone_slot != -1llu){
-            anim_info[slot].keyframe_headers[bone_slot] = keyframe_header;
-        }
-
-        // skip over all of the keyframes and get to the next header
-        keyframe_header = (Render::NameCount*)(((Render::Keyframe*)(keyframe_header + 1)) + keyframe_header->second);
+    for (size_t i = 0; i < armature_bone_count; i++) {
+        anim_info[slot].keyframes[i] = animation->GetKeyframes(armature_bones[i].name);
+        anim_info[slot].keyframe_count[i] = animation->GetKeyframeCount(armature_bones[i].name);
     }
 }
 
@@ -176,7 +174,8 @@ void AnimationComponent::Stop(name_t animation_name) {
 
             // reset headers
             for (size_t j = 0; j < Render::BONE_COUNT; j++) {
-                anim_info[i].keyframe_headers[j] = nullptr;
+                anim_info[i].keyframes[j] = nullptr;
+                anim_info[i].keyframe_count[j] = 0;
             }
             
             if (anim_finish_callback) anim_finish_callback(this, animation_name);
@@ -360,11 +359,10 @@ void AnimationComponent::Refresh() {
         
         // find the first keyframe header
         for (size_t k = 0; k < armature_bone_count; k++){
-            Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
-            if (keyframe_header == nullptr) continue;
+            if (anim_info[i].keyframes[k] == nullptr) continue;
             
-            Render::Keyframe* keyframes = (Render::Keyframe*)(keyframe_header + 1);
-            size_t keyframe_count = keyframe_header->second;
+            Render::Keyframe* keyframes = anim_info[i].keyframes[k];
+            size_t keyframe_count = anim_info[i].keyframe_count[k];
             
             // if playback's current frame is after the last frame of the animation
             if (anim.frame > keyframes[keyframe_count-1].frame) {
@@ -394,10 +392,9 @@ void AnimationComponent::Refresh() {
         if (!anim_playing[i]) continue;
                 
         for (size_t k = 0; k < armature_bone_count; k++) {
-            Render::NameCount* keyframe_header = anim_info[i].keyframe_headers[k];
-            if (keyframe_header != nullptr) {
-                Render::Keyframe* keyframes = (Render::Keyframe*)(keyframe_header + 1);
-                size_t keyframe_count = keyframe_header->second;
+            if (anim_info[i].keyframes[k] != nullptr) {
+                Render::Keyframe* keyframes = anim_info[i].keyframes[k];
+                size_t keyframe_count =anim_info[i].keyframe_count[k];
                 const auto& anim = anim_info[i];
                 
                 // find the first keyframe that happens after the animation's current frame

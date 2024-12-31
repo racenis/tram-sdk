@@ -263,7 +263,7 @@ void Material::LoadFromDisk() {
     stbi_set_flip_vertically_on_load(true);
     loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, channels);
 
-    if (loadchannels != channels) {
+    if (loadchannels < channels) {
         std::cout << "Texture " << path << " should have " << (int)channels << " channels, but it has " << (int)loadchannels << "!" << std::endl;
     }
 
