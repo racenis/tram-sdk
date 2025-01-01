@@ -3,6 +3,7 @@
 #include <components/audio.h>
 
 #include <framework/event.h>
+#include <framework/settings.h>
 
 #include <audio/api.h>
 #include <audio/sound.h>
@@ -33,9 +34,8 @@ template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("AudioComponent
 template <> void Component<AudioComponent>::init() { ptr = PoolProxy<AudioComponent>::New(); }
 template <> void Component<AudioComponent>::yeet() { PoolProxy<AudioComponent>::Delete(ptr); }
 
-// TODO: convert these into Settings?
-static bool draw_source = false;
-static bool draw_info = false;
+static Settings::Property<bool> draw_source = {false, "audio-draw-source", Settings::NONE};
+static Settings::Property<bool> draw_info = {false, "audio-draw-info", Settings::NONE};
 
 static EventListener frame_event;
 

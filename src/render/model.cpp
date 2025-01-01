@@ -197,41 +197,11 @@ static void DrawAABBNodeChildren (AABBTree::Node* node, const std::vector<AABBTr
 void Model::DrawAABB(vec3 position, quat rotation) {
     if (!model_aabb) return;
     
-    if (name == "kadbusest") return;
-    
-    //return ;
-    
     total_counter = 0;
     node_counter = 0;
     leaf_counter = 0;
-    //std::cout << name << " " << model_aabb->tree.GetAABBMin().x << " " << model_aabb->tree.GetAABBMin().y << " " << model_aabb->tree.GetAABBMin().z << " / ";
-    //std::cout << model_aabb->tree.GetAABBMax().x << " " << model_aabb->tree.GetAABBMax().y << " " << model_aabb->tree.GetAABBMax().z << std::endl;
-    
-    //lookedat_nodes.clear();
-    
+
     DrawAABBNodeChildren(model_aabb->tree.root, model_aabb->triangles, position, rotation);
-    
-    //std::cout << name << std::endl;
-    //std::cout << "nodes " << model_aabb->tree.nodes.size() << std::endl;
-    //std::cout << "total counter " << total_counter << std::endl;
-    //std::cout << "leaf counter " << leaf_counter << std::endl;
-    //std::cout << "node counter " << node_counter << std::endl << std::endl;
-    
-    return;
-    /*
-    for (uint32_t i = 0; i < model_aabb->tree.nodes.size(); i++) {
-        if (lookedat_nodes.contains(i)) continue;
-        
-        const auto& node = model_aabb->tree.nodes[i];
-        
-        std::cout << "id: " << i << " parent: " << node.parent << " l: " << model_aabb->tree.nodes[node.parent].left << " r: " << model_aabb->tree.nodes[node.parent].right << std::endl;
-    }
-    */
-    /*for (auto& node : model_aabb->tree.nodes) {
-        if (node.right == 0) {
-            AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
-        }
-    }*/
 }
 
 static vec3 TriangleAABBMin (vec3 point1, vec3 point2, vec3 point3) {

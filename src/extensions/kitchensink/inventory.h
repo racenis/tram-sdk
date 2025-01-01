@@ -17,10 +17,6 @@ struct Inventory;
 struct ItemInstance;
 typedef void (*item_action_func)(Inventory*, ItemInstance*);
 
-// TODO: ItemClass should not be struct, but rather a class
-// - it should also have virtual methods instead of action names!!
-// - there should also be a .. make? or something. register?
-
 class ItemClass {
 public:
     name_t name;
@@ -106,10 +102,6 @@ public:
     std::vector<std::pair<name_t, int>> items;
 };
 
-
-// TODO:
-// instead of holding itemInstances directly, inventories should hold compartments
-// then each compartment would have a type/manager class that is an instance of
 class Inventory {
 public:
     Inventory(id_t parent) : parent(parent) {}

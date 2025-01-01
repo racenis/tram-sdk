@@ -103,8 +103,6 @@ name_t Signal::GetName(signal_t type) {
 
 
 void SignalTable::Fire(signal_t signal, id_t sender) {
-    //std::cout << "firing signal " << Signal::GetName(signal);
-    
     for (size_t i = 0; i < signal_count; i++) {
         if (signals[i].type != signal || signals[i].limit == 0) continue;
         

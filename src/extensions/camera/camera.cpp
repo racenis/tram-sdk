@@ -23,8 +23,7 @@
 
 namespace tram::Ext::Camera {
 
-// TODO: switch to system_t??
-uint32_t CAMERA_SYSTEM = -1u;
+System::system_t CAMERA_SYSTEM = -1u;
 
 // see? this here is a problem. we have only a single selected camera... but
 // cameras can use a limited set of layers.

@@ -5,6 +5,7 @@
 
 #include <framework/system.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 
 #include <components/audio.h>
 #include <unordered_map>
@@ -25,6 +26,8 @@
 
 namespace tram::Audio {
 
+static Settings::Property<float> volume = {1.0f, "volume", Settings::NONE};
+
 /// Starts the Audio system.
 void Init() {
     System::SetState(System::AUDIO, System::INIT);
@@ -33,6 +36,8 @@ void Init() {
     // TODO: check if we actually need UI for this
     
     API::Init();
+    
+    API::SetListenerGain(volume);
     
     System::SetState(System::AUDIO, System::READY);
 }
@@ -52,8 +57,6 @@ void Uninit() {
     API::Uninit();
 }
 
-// TODO: make volume a setting that can be.. well used as a setting
-static float volume = 1.0f;
 void SetVolume(float value) {
     volume = value;
     API::SetListenerGain(value);

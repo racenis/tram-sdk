@@ -460,8 +460,6 @@ void DeleteLight(light_t light) {
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];
     
-    std::cout << "yeeted light with id " << light_id << std::endl;
-    
     light_list.Remove(light_ptr);
     light_tree.RemoveLeaf(leaf_id);
 }

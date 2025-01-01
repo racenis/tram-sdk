@@ -34,15 +34,15 @@ function tram.init()
 end
 
 function tram.GetTick()
-	return __tram_impl_core_get_tick()
+	return __impl_core_get_tick()
 end
 
 function tram.GetTickTime()
-	return __tram_impl_core_get_tick_time()
+	return __impl_core_get_tick_time()
 end
 
 function tram.GetDeltaTime()
-	return __tram_impl_core_get_delta_time()
+	return __impl_core_get_delta_time()
 end
 
 
@@ -252,7 +252,7 @@ tram.math._metatable_quat = {
 			result.y = other.w * self.y + other.x * self.z + other.y * self.w - other.z * self.x
 			result.z = other.w * self.z - other.x * self.y + other.y * self.x + other.z * self.w
 		elseif getmetatable(other) == tram.math._metatable_vec3 then
-			result = __tram_impl_math_quat_vec3_multiply(self, other)
+			result = __impl_math_quat_vec3_multiply(self, other)
 		else
 			error("quaternion invalid rotation")
 		end
@@ -310,44 +310,44 @@ tram.math.DIRECTION_UP = tram.math.vec3(0.0, 1.0, 0.0)
 tram._metatable_entity = {
 	__index = {
 		GetName = function (self)
-			return __tram_impl_entity_get_name(self.id)
+			return __impl_entity_get_name(self.id)
 		end,
 		GetID = function (self)
 			return self.id
 		end,
 		
 		Load = function (self)
-			__tram_impl_entity_load(self.id)
+			__impl_entity_load(self.id)
 		end,
 		Unload = function (self)
-			__tram_impl_entity_unload(self.id)
+			__impl_entity_unload(self.id)
 		end,
 		
 		GetLocation = function (self)
-			local vector = __tram_impl_entity_get_location(self.id)
+			local vector = __impl_entity_get_location(self.id)
 			setmetatable(vector, tram.math._metatable_vec3)
 			return vector
 		end,
 		SetLocation = function (self, location)
-			return __tram_impl_entity_set_location(self.id, location)
+			return __impl_entity_set_location(self.id, location)
 		end,
 		
 		GetRotation = function (self)
-			local vector = __tram_impl_entity_get_rotation(self.id)
+			local vector = __impl_entity_get_rotation(self.id)
 			setmetatable(vector, tram.math._metatable_quat)
 			return vector
 		end,
 		SetRotation = function (self, rotation)
-			return __tram_impl_entity_set_rotation(self.id, rotation)
+			return __impl_entity_set_rotation(self.id, rotation)
 		end
 	}
 }
 
 function tram.entity.Find(term)
 	if type(term) == "string" then
-		id = __tram_impl_entity_find_by_name(term)
+		id = __impl_entity_find_by_name(term)
 	else
-		id = __tram_impl_entity_find_by_id(term)
+		id = __impl_entity_find_by_id(term)
 	end
 
 	if id == 0 then
@@ -364,17 +364,17 @@ end
 
 function tram.entity.Make(entity_type, entity_properties)
 	
-	__tram_impl_clear_key_value()
+	__impl_clear_key_value()
 	
 	for key, value in pairs(entity_properties) do
 		if type(value) ~= "function" then
-			__tram_impl_push_key_value(key, value)
+			__impl_push_key_value(key, value)
 		end
 	end
 	
 	local entity = {}
 	
-	entity.id = __tram_impl_entity_make(entity_type)
+	entity.id = __impl_entity_make(entity_type)
 	
 	setmetatable(entity, tram._metatable_entity)
 	
@@ -385,7 +385,7 @@ tram.entity._scriptable_entities = {}
 tram.entity._scriptable_entity_constructor = {}
 tram.entity._scriptable_entity_destructor = {}
 
-function __tram_impl_entity_update_parameters_callback(id)
+function __impl_entity_update_parameters_callback(id)
 	local entity = tram.entity._scriptable_entities[id]
 	
 	assert(entity ~= nil)
@@ -403,7 +403,7 @@ function __tram_impl_entity_update_parameters_callback(id)
 	return result
 end
 
-function __tram_impl_entity_set_parameters_callback(id)
+function __impl_entity_set_parameters_callback(id)
 	local entity = tram.entity._scriptable_entities[id]
 	
 	assert(entity ~= nil)
@@ -421,7 +421,7 @@ function __tram_impl_entity_set_parameters_callback(id)
 	return result
 end
 
-function __tram_impl_entity_load_callback(id)
+function __impl_entity_load_callback(id)
 	local entity = tram.entity._scriptable_entities[id]
 	
 	assert(entity ~= nil)
@@ -439,7 +439,7 @@ function __tram_impl_entity_load_callback(id)
 	return result
 end
 
-function __tram_impl_entity_unload_callback(id)
+function __impl_entity_unload_callback(id)
 	local entity = tram.entity._scriptable_entities[id]
 	
 	assert(entity ~= nil)
@@ -457,7 +457,7 @@ function __tram_impl_entity_unload_callback(id)
 	return result
 end
 
-function __tram_impl_entity_message_handler_callback(id, message_type, sender, receiver, data)
+function __impl_entity_message_handler_callback(id, message_type, sender, receiver, data)
 	local entity = tram.entity._scriptable_entities[id]
 	
 	assert(entity ~= nil)
@@ -481,7 +481,7 @@ function __tram_impl_entity_message_handler_callback(id, message_type, sender, r
 	return result
 end
 
-function __tram_impl_entity_event_handler_callback(id, event_type, subtype, poster, data)
+function __impl_entity_event_handler_callback(id, event_type, subtype, poster, data)
 	local entity = tram.entity._scriptable_entities[id]
 	
 	assert(entity ~= nil)
@@ -507,17 +507,17 @@ end
 
 
 function tram.entity.New(entity_type, base_type, base_properties)
-	__tram_impl_clear_key_value()
+	__impl_clear_key_value()
 	
 	for key, value in pairs(base_properties) do
 		if type(value) ~= "function" then
-			__tram_impl_push_key_value(key, value)
+			__impl_push_key_value(key, value)
 		end
 	end
 	
 	local entity = {}
 	
-	entity.id = __tram_impl_entity_scriptable_make(base_type, entity_type)
+	entity.id = __impl_entity_scriptable_make(base_type, entity_type)
 	
 	setmetatable(entity, tram._metatable_entity)
 	
@@ -529,7 +529,7 @@ end
 
 
 function tram.entity.Register(entity_type, entity_properties, constructor, destructor)
-	__tram_impl_clear_entity_fields()
+	__impl_clear_entity_fields()
 	
 	for index, field in pairs(entity_properties) do
 		if type(index) ~= "number" then
@@ -549,19 +549,19 @@ function tram.entity.Register(entity_type, entity_properties, constructor, destr
 				  .. type(field.flag)
 				  .. " (" .. type(field.flag) .. ")")
 		else
-			__tram_impl_push_entity_fields(index, field.type, field.flag)
+			__impl_push_entity_fields(index, field.type, field.flag)
 		end
 	end
 	
 	tram.entity._scriptable_entity_constructor[entity_type] = constructor
 	tram.entity._scriptable_entity_destructor[entity_type] = destructor
 	
-	__tram_impl_entity_type_register(entity_type)
+	__impl_entity_type_register(entity_type)
 end
 
 
 
-function __tram_impl_entity_shared_data_callback(id, name, flags, location, rotation)
+function __impl_entity_shared_data_callback(id, name, flags, location, rotation)
 	tram.entity._entity_data_holder = {}
 
 	tram.entity._entity_data_holder.id = id
@@ -571,17 +571,17 @@ function __tram_impl_entity_shared_data_callback(id, name, flags, location, rota
 	tram.entity._entity_data_holder.rotation = rotation
 end
 
-function __tram_impl_entity_property_callback(key, value)
+function __impl_entity_property_callback(key, value)
 	tram.entity._entity_data_holder[key] = value
 end
 
-function __tram_impl_entity_constructor_callback(entity_type)
+function __impl_entity_constructor_callback(entity_type)
 	local constructor = tram.entity._scriptable_entity_constructor[entity_type]
 	assert(type(constructor) == "function")
 	return constructor(tram.entity._entity_data_holder)
 end
 
-function __tram_impl_entity_destructor_callback(entity_type, entity_id)
+function __impl_entity_destructor_callback(entity_type, entity_id)
 	local destructor = tram.entity._scriptable_entity_destructor[entity_type]
 	assert(type(destructor) == "function")
 	destructor(entity_id)
@@ -594,23 +594,23 @@ end
 -- =========================== FRAMEWORK/EVENT.H ============================ --
 
 function tram.event.Register(event_name)
-	return __tram_impl_event_register(event_name)
+	return __impl_event_register(event_name)
 end
 
 function tram.event.GetType(event_name)
-	return __tram_impl_event_get_type(event_name)
+	return __impl_event_get_type(event_name)
 end
 
 function tram.event.GetName(event_name)
-	return __tram_impl_event_get_name(event_name)
+	return __impl_event_get_name(event_name)
 end
 
 function tram.event.GetLast()
-	return __tram_impl_event_get_last()
+	return __impl_event_get_last()
 end
 
 function tram.event.Post(event)
-	__tram_impl_event_post(event.type, event.subtype, event.poster, event.data)
+	__impl_event_post(event.type, event.subtype, event.poster, event.data)
 end
 
 -- this is dumb! we should instead use listener id as a key
@@ -620,10 +620,10 @@ tram.event._evt_ids = 1
 
 function tram.event.AddListener(event_type, action)
 	if getmetatable(action) == tram._metatable_entity then
-		return __tram_impl_entity_add_listener(event_type, action.id)
+		return __impl_entity_add_listener(event_type, action.id)
 	end
 	
-	listener = __tram_impl_event_add_listener(event_type, tram.event._evt_ids)
+	listener = __impl_event_add_listener(event_type, tram.event._evt_ids)
 
 	tram.event._evt_act[tram.event._evt_ids] = action
 	tram.event._evt_ids = tram.event._evt_ids + 1
@@ -633,10 +633,10 @@ end
 
 function tram.event.RemoveListener(listener)
 	-- TODO: delete from _evt_act also
-	__tram_impl_event_remove_listener(listener)
+	__impl_event_remove_listener(listener)
 end
 
-function __tram_impl_event_event_callback(event_type, event_subtype, event_poster, event_data, callback_data)
+function __impl_event_event_callback(event_type, event_subtype, event_poster, event_data, callback_data)
 	event = {}
 	event.type = event_type
 	event.subtype = event_subtype
@@ -662,23 +662,23 @@ tram.event.LOOK_AT = tram.event.GetType("look-at")
 -- ========================== FRAMEWORK/MESSAGE.H =========================== --
 
 function tram.message.Register(message_name)
-	return __tram_impl_message_register(message_name)
+	return __impl_message_register(message_name)
 end
 
 function tram.message.GetType(message_name)
-	return __tram_impl_message_get_type(message_name)
+	return __impl_message_get_type(message_name)
 end
 
 function tram.message.GetName(message_name)
-	return __tram_impl_message_get_name(message_name)
+	return __impl_message_get_name(message_name)
 end
 
 function tram.message.GetLast()
-	return __tram_impl_message_get_last()
+	return __impl_message_get_last()
 end
 
 function tram.message.Send(message, delay)
-	__tram_impl_message_send(message.type, message.sender, message.receiver, message.data, delay)
+	__impl_message_send(message.type, message.sender, message.receiver, message.data, delay)
 end
 
 tram.message.NONE = tram.message.GetType("none")
@@ -877,80 +877,80 @@ tram.ui.CURSOR_TEXT = 12
 tram.ui.CURSOR_CLICK = 12
 
 function tram.ui.GetScreenWidth()
-	return __tram_impl_ui_get_screen_width()
+	return __impl_ui_get_screen_width()
 end
 
 function tram.ui.GetScreenHeight()
-	return __tram_impl_ui_get_screen_height()
+	return __impl_ui_get_screen_height()
 end
 
 function tram.ui.SetWindowTitle(title)
-	__tram_impl_ui_set_window_title(title)
+	__impl_ui_set_window_title(title)
 end
 
 function tram.ui.SetWindowSize(w, h)
-	__tram_impl_ui_set_window_size(w, h)
+	__impl_ui_set_window_size(w, h)
 end
 
 function tram.ui.SetCursor(cursor)
-	__tram_impl_ui_set_cursor(cursor)
+	__impl_ui_set_cursor(cursor)
 end
 
 tram.ui._keyboard_function = {}
 
 function tram.ui.BindKeyboardKey(key, action)
 	if type(action) == "function" then
-		__tram_impl_ui_bind_keyboard_callback(key)
+		__impl_ui_bind_keyboard_callback(key)
 		tram.ui._keyboard_function[key] = action
 	else 
-		__tram_impl_ui_bind_keyboard_action(key, action)
+		__impl_ui_bind_keyboard_action(key, action)
 	end
 end
 
-function __tram_impl_ui_keyboard_callback(key)
+function __impl_ui_keyboard_callback(key)
 	callback = tram.ui._keyboard_function[key]
 	callback()
 end
 
 function tram.ui.PollKeyboardKey(key)
-	return __tram_impl_ui_poll_keyboard_key(key)
+	return __impl_ui_poll_keyboard_key(key)
 end
 
 function tram.ui.PollKeyboardAxis(axis)
-	return __tram_impl_ui_poll_keyboard_axis(axis)
+	return __impl_ui_poll_keyboard_axis(axis)
 end
 
 function tram.ui.PollKeyboardAxisDelta(axis)
-	return __tram_impl_ui_poll_keyboard_axis_delta(axis)
+	return __impl_ui_poll_keyboard_axis_delta(axis)
 end
 
 function tram.ui.SetInputState(state)
-	__tram_impl_ui_set_input_state(state)
+	__impl_ui_set_input_state(state)
 end
 
 function tram.ui.GetInputState()
-	return __tram_impl_ui_get_input_state()
+	return __impl_ui_get_input_state()
 end
 
 
 function tram.ui.GetAxisSensitivity(axis)
-	return __tram_impl_ui_get_axis_sensitivity(axis)
+	return __impl_ui_get_axis_sensitivity(axis)
 end
 
 function tram.ui.SetAxisSensitivity(axis, value)
-	return __tram_impl_ui_set_axis_sensitivity(axis, value)
+	return __impl_ui_set_axis_sensitivity(axis, value)
 end
 
 function tram.ui.RegisterKeyboardAction(name)
-	return __tram_impl_ui_register_keyboard_action(name)
+	return __impl_ui_register_keyboard_action(name)
 end
 
 function tram.ui.GetKeyboardAction(name)
-	return __tram_impl_ui_get_keyboard_action(name)
+	return __impl_ui_get_keyboard_action(name)
 end
 
 function tram.ui.GetKeyboardActionName(name)
-	return __tram_impl_ui_get_keyboard_action_name(name)
+	return __impl_ui_get_keyboard_action_name(name)
 end
 
 -- ============================ FRAMEWORK/TYPE.H ============================ --
@@ -986,53 +986,53 @@ tram.resource.READY = 2
 tram._metatable_worldcell = {
 	__index = {
 		GetName = function(self)
-			return __tram_impl_worldcell_get_name(self.index)
+			return __impl_worldcell_get_name(self.index)
 		end,
 		
 		LoadFromDisk = function(self)
-			__tram_impl_worldcell_loadfromdisk(self.index)
+			__impl_worldcell_loadfromdisk(self.index)
 		end,
 		
 		Load = function(self)
-			__tram_impl_worldcell_load(self.index)
+			__impl_worldcell_load(self.index)
 		end,
 		
 		Unload = function(self)
-			__tram_impl_worldcell_unload(self.index)
+			__impl_worldcell_unload(self.index)
 		end,
 		
 		Link = function(self, other)
 			assert(getmetatable(other) == tram._metatable_worldcell)
-			__tram_impl_worldcell_link(self.index, other.index)
+			__impl_worldcell_link(self.index, other.index)
 		end,
 		
 		IsLoaded = function(self)
-			return __tram_impl_worldcell_is_loaded(self.index)
+			return __impl_worldcell_is_loaded(self.index)
 		end,
 		IsInterior = function(self)
-			return __tram_impl_worldcell_is_interior(self.index)
+			return __impl_worldcell_is_interior(self.index)
 		end,
 		HasInteriorLighting = function(self)
-			return __tram_impl_worldcell_has_interior_lighting(self.index)
+			return __impl_worldcell_has_interior_lighting(self.index)
 		end,
 		HasAutomaticLoading = function(self)
-			return __tram_impl_worldcell_has_automatic_loading(self.index)
+			return __impl_worldcell_has_automatic_loading(self.index)
 		end,
 		
 		SetInterior = function(self, is)
-			return __tram_impl_worldcell_set_interior(self.index, is)
+			return __impl_worldcell_set_interior(self.index, is)
 		end,
 		SetInteriorLighting = function(self, is)
-			return __tram_impl_worldcell_set_interior_lighting(self.index, is)
+			return __impl_worldcell_set_interior_lighting(self.index, is)
 		end,
 		SetAutomaticLoading = function(self, is)
-			return __tram_impl_worldcell_set_automatic_loading(self.index, is)
+			return __impl_worldcell_set_automatic_loading(self.index, is)
 		end
 	}
 }
 
 function tram.worldcell.Make(name)
-	local worldcell_index = __tram_impl_worldcell_make(name)
+	local worldcell_index = __impl_worldcell_make(name)
 	
 	if (worldcell_index == -1) then
 		return nil
@@ -1047,7 +1047,7 @@ function tram.worldcell.Make(name)
 end
 
 function tram.worldcell.Find(name)
-	local worldcell_index = __tram_impl_worldcell_find(name)
+	local worldcell_index = __impl_worldcell_find(name)
 	
 	if (worldcell_index == -1) then
 		return nil
@@ -1064,19 +1064,19 @@ end
 -- ============================== AUDIO/AUDIO.H ============================= --
 
 function tram.audio.SetVolume(volume)
-	return __tram_impl_audio_set_volume(name)
+	return __impl_audio_set_volume(name)
 end
 
 function tram.audio.GetVolume(volume)
-	return __tram_impl_audio_get_volume(name)
+	return __impl_audio_get_volume(name)
 end
 
 function tram.audio.SetListenerPosition(position)
-	return __tram_impl_audio_set_listener_position(position)
+	return __impl_audio_set_listener_position(position)
 end
 
 function tram.audio.SetListenerOrientation(orientation)
-	return __tram_impl_audio_set_listener_orientation(orientation)
+	return __impl_audio_set_listener_orientation(orientation)
 end
 
 
@@ -1143,26 +1143,26 @@ end
 
 function tram.physics.shape._build(mesh)
 	if mesh.shape == tram.physics.shape.SPHERE then
-		__tram_impl_physics_collision_set_sphere(shape.radius)
+		__impl_physics_collision_set_sphere(shape.radius)
 	elseif mesh.shape == tram.physics.shape.CYLINDER then
-		__tram_impl_physics_collision_set_cylinder(shape.radius, shape.height)
+		__impl_physics_collision_set_cylinder(shape.radius, shape.height)
 	elseif mesh.shape == tram.physics.shape.CAPSULE then
-		__tram_impl_physics_collision_set_capsule(shape.radius, shape.height)
+		__impl_physics_collision_set_capsule(shape.radius, shape.height)
 	elseif mesh.shape == tram.physics.shape.CONE then
-		__tram_impl_physics_collision_set_cone(shape.radius, shape.height)
+		__impl_physics_collision_set_cone(shape.radius, shape.height)
 	elseif mesh.shape == tram.physics.shape.BOX then
-		__tram_impl_physics_collision_set_box(shape.dimensions)
+		__impl_physics_collision_set_box(shape.dimensions)
 	elseif mesh.shape == tram.physics.shape.HULL then
-		__tram_impl_physics_collision_set_hull()
+		__impl_physics_collision_set_hull()
 		for point in mesh.points do
 			print("adding point:", point)
-			__tram_impl_physics_collision_append_point(point)
+			__impl_physics_collision_append_point(point)
 		end
 	elseif mesh.shape == tram.physics.shape.MESH then
-		__tram_impl_physics_collision_set_mesh()
+		__impl_physics_collision_set_mesh()
 		for triangle in mesh.triangles do
 			print("adding triangle:", triangle[1], triangle[2], triangle[3])
-			__tram_impl_physics_collision_append_triangle(triangle[1], triangle[2], triangle[3])
+			__impl_physics_collision_append_triangle(triangle[1], triangle[2], triangle[3])
 		end
 	end
 end
@@ -1182,13 +1182,13 @@ tram.physics.shape.MESH = 6
 tram.physics._metatable_collisionmodel = {
 	__index = {
 		GetName = function(self)
-			return __tram_impl_physics_collisionmodel_get_name(self.index)
+			return __impl_physics_collisionmodel_get_name(self.index)
 		end
 	}
 }
 
 function tram.physics.model.Find(name)
-	local model_index = __tram_impl_physics_collisionmodel_find(name)
+	local model_index = __impl_physics_collisionmodel_find(name)
 	
 	if (model_index == -1) then
 		return nil
@@ -1205,51 +1205,51 @@ end
 -- ============================= RENDER/RENDER.H ============================ --
 
 function tram.render.SetSunDirection(direction, layer)
-	__tram_impl_render_set_sun_direction(direction, layer)
+	__impl_render_set_sun_direction(direction, layer)
 end
 
 function tram.render.SetSunColor(color, layer)
-	__tram_impl_render_set_sun_color(color, layer)
+	__impl_render_set_sun_color(color, layer)
 end
 
 function tram.render.SetAmbientColor(color, layer)
-	__tram_impl_render_set_ambient_color(color, layer)
+	__impl_render_set_ambient_color(color, layer)
 end
 
 function tram.render.SetScreenClearColor(color)
-	__tram_impl_render_set_screen_clear_color(color)
+	__impl_render_set_screen_clear_color(color)
 end
 
 function tram.render.SetViewFov(fov, layer)
-	__tram_impl_render_set_view_fov(fov, layer)
+	__impl_render_set_view_fov(fov, layer)
 end
 
 function tram.render.SetViewDistance(distance, layer)
-	__tram_impl_render_set_view_distance(distance, layer)
+	__impl_render_set_view_distance(distance, layer)
 end
 
 function tram.render.SetViewPosition(direction, layer)
-	__tram_impl_render_set_view_position(direction, layer)
+	__impl_render_set_view_position(direction, layer)
 end
 
 function tram.render.SetViewRotation(direction, layer)
-	__tram_impl_render_set_view_rotation(direction, layer)
+	__impl_render_set_view_rotation(direction, layer)
 end
 
 function tram.render.GetViewPosition(layer)
-	return __tram_impl_render_get_view_position(layer)
+	return __impl_render_get_view_position(layer)
 end
 
 function tram.render.GetViewRotation(layer)
-	return __tram_impl_render_get_view_rotation(layer)
+	return __impl_render_get_view_rotation(layer)
 end
 
 function tram.render.AddLine(from, to, color)
-	__tram_impl_render_add_line(from, to, color)
+	__impl_render_add_line(from, to, color)
 end
 
 function tram.render.AddLineMarker(position, color)
-	__tram_impl_render_add_line_marker(position, color)
+	__impl_render_add_line_marker(position, color)
 end
 
 -- -------------------------------  CONSTANTS ------------------------------- --
@@ -1271,17 +1271,17 @@ tram.render.COLOR_GRAY = tram.math.vec3(0.3, 0.3, 0.3)
 tram.render._metatable_animation = {
 	__index = {
 		GetName = function(self)
-			return __tram_impl_render_animation_get_name(self.index)
+			return __impl_render_animation_get_name(self.index)
 		end,
 		
 		Load = function(self)
-			return __tram_impl_render_animation_load(self.index)
+			return __impl_render_animation_load(self.index)
 		end,
 	}
 }
 
 function tram.render.animation.Find(name)
-	local animation_index = __tram_impl_render_animation_find(name)
+	local animation_index = __impl_render_animation_find(name)
 	
 	if (animation_index == -1) then
 		return nil
@@ -1300,45 +1300,45 @@ end
 tram.render._metatable_model = {
 	__index = {
 		GetName = function(self)
-			return __tram_impl_render_model_get_name(self.index)
+			return __impl_render_model_get_name(self.index)
 		end,
 		
 		AddReference = function(self)
-			__tram_impl_render_model_add_reference(self.index)
+			__impl_render_model_add_reference(self.index)
 		end,
 		RemoveReference = function(self)
-			__tram_impl_render_model_remove_reference(self.index)
+			__impl_render_model_remove_reference(self.index)
 		end,
 		
 		Load = function(self)
-			__tram_impl_render_model_load(self.index)
+			__impl_render_model_load(self.index)
 		end,
 		
 		GetAABBMin = function(self)
-			return __tram_impl_render_model_get_aabb_min(self.index)
+			return __impl_render_model_get_aabb_min(self.index)
 		end,
 		GetAABBMax = function(self)
-			return __tram_impl_render_model_get_aabb_max(self.index)
+			return __impl_render_model_get_aabb_max(self.index)
 		end,
 		
 		GetNearDistance = function(self)
-			return __tram_impl_render_model_get_near_distance(self.index)
+			return __impl_render_model_get_near_distance(self.index)
 		end,
 		GetFarDistance = function(self)
-			return __tram_impl_render_model_get_far_distance(self.index)
+			return __impl_render_model_get_far_distance(self.index)
 		end,
 		
 		SetNearDistance = function(self, dist)
-			__tram_impl_render_model_set_near_distance(self.index, dist)
+			__impl_render_model_set_near_distance(self.index, dist)
 		end,
 		SetFarDistance = function(self, dist)
-			__tram_impl_render_model_set_far_distance(self.index, dist)
+			__impl_render_model_set_far_distance(self.index, dist)
 		end
 	}
 }
 
 function tram.render.model.Find(name)
-	local model_index = __tram_impl_render_model_find(name)
+	local model_index = __impl_render_model_find(name)
 	
 	if (model_index == -1) then
 		return nil
@@ -1364,13 +1364,13 @@ end
 tram.render._metatable_material = {
 	__index = {
 		GetName = function(self)
-			return __tram_impl_render_material_get_name(self.index)
+			return __impl_render_material_get_name(self.index)
 		end
 	}
 }
 
 function tram.render.material.Find(name)
-	local material_index = __tram_impl_render_material_find(name)
+	local material_index = __impl_render_material_find(name)
 	
 	if (material_index == -1) then
 		return nil
@@ -1396,13 +1396,13 @@ end
 tram.render._metatable_sprite = {
 	__index = {
 		GetName = function(self)
-			return __tram_impl_render_sprite_get_name(self.index)
+			return __impl_render_sprite_get_name(self.index)
 		end
 	}
 }
 
 function tram.render.sprite.Find(name)
-	local sprite_index = __tram_impl_render_sprite_find(name)
+	local sprite_index = __impl_render_sprite_find(name)
 	
 	if (sprite_index == -1) then
 		return nil
@@ -1436,7 +1436,7 @@ tram.render._metatable_rendercomponent = {
 	__index = {
 		GetModel = function(self)
 			local material = {}
-			material.index = __tram_impl_components_render_get_model(self.index)
+			material.index = __impl_components_render_get_model(self.index)
 	
 			setmetatable(material, tram.render._metatable_material)
 		
@@ -1447,52 +1447,52 @@ tram.render._metatable_rendercomponent = {
 			if getmetatable(model) ~= tram.render._metatable_model then
 				model = tram.render.model.Find(model)
 			end
-			__tram_impl_components_render_set_model(self.index, model.index)
+			__impl_components_render_set_model(self.index, model.index)
 		end,
 		
 		SetLightmap = function(self, material)
 			if getmetatable(material) ~= tram.render._metatable_material then
 				material = tram.render.material.Find(material)
 			end
-			__tram_impl_components_render_set_lightmap(self.index, material.index)
+			__impl_components_render_set_lightmap(self.index, material.index)
 		end,
 		
 		SetArmature = function(self, armature)
 			assert(getmetatable(armature) == tram.render._metatable_animationcomponent, "SetArmature() accepts only AnimationComponents.")
-			__tram_impl_components_set_armature(self.index, armature.index)
+			__impl_components_set_armature(self.index, armature.index)
 			--error("RenderComponent SetArmature not implemented!")
 		end,
 		
 		GetLocation = function(self)
-			local vector = __tram_impl_components_render_get_location(self.index)
+			local vector = __impl_components_render_get_location(self.index)
 			setmetatable(vector, tram.math._metatable_vec3)
 			return vector
 		end,
 		
 		GetRotation = function(self)
-			local vector = __tram_impl_components_render_get_rotation(self.index)
+			local vector = __impl_components_render_get_rotation(self.index)
 			setmetatable(vector, tram.math._metatable_quat)
 			return vector
 		end,
 		
 		SetLocation = function(self, location)
-			return __tram_impl_components_render_set_location(self.index, location)
+			return __impl_components_render_set_location(self.index, location)
 		end,
 		
 		SetRotation = function(self, rotation)
-			return __tram_impl_components_render_set_rotation(self.index, rotation)
+			return __impl_components_render_set_rotation(self.index, rotation)
 		end,
 		
 		SetScale = function(self, scale)
-			return __tram_impl_components_render_set_scale(self.index, scale)
+			return __impl_components_render_set_scale(self.index, scale)
 		end,
 		
 		SetColor = function(self, color)
-			return __tram_impl_components_render_set_color(self.index, color)
+			return __impl_components_render_set_color(self.index, color)
 		end,
 		
 		SetLayer = function(self, layer)
-			return __tram_impl_components_render_set_layer(self.index, layer)
+			return __impl_components_render_set_layer(self.index, layer)
 		end,
 		
 		SetTextureOffset = function(self, material, offset)
@@ -1500,22 +1500,22 @@ tram.render._metatable_rendercomponent = {
 		end,
 		
 		SetDirectionalLight = function(self, enabled)
-			return __tram_impl_components_render_set_directional_light(self.index, enabled)
+			return __impl_components_render_set_directional_light(self.index, enabled)
 		end,
 		
 		Init = function(self)
-			__tram_impl_components_render_init(self.index)
+			__impl_components_render_init(self.index)
 		end,
 		
 		Delete = function(self)
-			__tram_impl_components_render_delete(self.index)
+			__impl_components_render_delete(self.index)
 			table.remove(self, "index")
 		end
 	}
 }
 
 function tram.components.Render()
-	local component_index = __tram_impl_components_render_make()
+	local component_index = __impl_components_render_make()
 	
 	if (component_index == -1) then
 		return nil
@@ -1535,38 +1535,38 @@ end
 tram.render._metatable_lightcomponent = {
 	__index = {
 		SetLocation = function(self, location)
-			return __tram_impl_components_light_set_location(self.index, location)
+			return __impl_components_light_set_location(self.index, location)
 		end,
 		
 		SetColor = function(self, color)
-			return __tram_impl_components_light_set_color(self.index, color)
+			return __impl_components_light_set_color(self.index, color)
 		end,
 		
 		SetDistance = function(self, distance)
-			return __tram_impl_components_light_set_distance(self.index, distance)
+			return __impl_components_light_set_distance(self.index, distance)
 		end,
 		
 		SetDirection = function(self, direction)
-			return __tram_impl_components_light_set_direction(self.index, direction)
+			return __impl_components_light_set_direction(self.index, direction)
 		end,
 		
 		SetExponent = function(self, exponent)
-			return __tram_impl_components_light_set_exponent(self.index, exponent)
+			return __impl_components_light_set_exponent(self.index, exponent)
 		end,
 		
 		Init = function(self)
-			__tram_impl_components_light_init(self.index)
+			__impl_components_light_init(self.index)
 		end,
 		
 		Delete = function(self)
-			__tram_impl_components_light_delete(self.index)
+			__impl_components_light_delete(self.index)
 			table.remove(self, "index")
 		end
 	}
 }
 
 function tram.components.Light()
-	local component_index = __tram_impl_components_light_make()
+	local component_index = __impl_components_light_make()
 	
 	if (component_index == -1) then
 		return nil
@@ -1586,7 +1586,7 @@ end
 
 tram.render._animationfinishcallbacks = {}
 
-function __tram_impl_components_animation_finish_callback(index, animation)
+function __impl_components_animation_finish_callback(index, animation)
 	local component = {}
 	component.index = index
 	
@@ -1599,7 +1599,7 @@ tram.render._metatable_animationcomponent = {
 	__index = {
 		GetModel = function(self)
 			local material = {}
-			material.index = __tram_impl_components_animation_get_model(self.index)
+			material.index = __impl_components_animation_get_model(self.index)
 	
 			setmetatable(material, tram.render._metatable_material)
 		
@@ -1610,18 +1610,18 @@ tram.render._metatable_animationcomponent = {
 			if getmetatable(model) ~= tram.render._metatable_model then
 				model = tram.render.model.Find(model)
 			end
-			__tram_impl_components_animation_set_model(self.index, model.index)
+			__impl_components_animation_set_model(self.index, model.index)
 		end,
 		
 		
 		
 		SetKeyframe = function(self, name, keyframe)
-			__tram_impl_components_animation_set_keyframe(self.index, name, keyframe.location, keyframe.rotation, keyframe.scale)
+			__impl_components_animation_set_keyframe(self.index, name, keyframe.location, keyframe.rotation, keyframe.scale)
 		end,
 		
 		SetOnAnimationFinishCallback = function(self, name, callback)
 			tram.render._animationfinishcallbacks[self.index] = callback
-			__tram_impl_components_animation_add_finish_callback(self.index)
+			__impl_components_animation_add_finish_callback(self.index)
 		end,
 		
 		Play = function(self, name, repeats, weight, speed, interpolate, pause_on_last_frame)
@@ -1631,78 +1631,78 @@ tram.render._metatable_animationcomponent = {
 			if interpolate == nil then interpolate = true end
 			if pause_on_last_frame == nil then pause_on_last_frame = false end
 		
-			__tram_impl_components_animation_play(self.index, name, repeats, weight, speed, interpolate, pause_on_last_frame)
+			__impl_components_animation_play(self.index, name, repeats, weight, speed, interpolate, pause_on_last_frame)
 		end,
 		
 		SetKeyframe = function(self, name, keyframe)
-			__tram_impl_components_animation_set_keyframe(self.index, name, keyframe.location, keyframe.rotation, keyframe.scale)
+			__impl_components_animation_set_keyframe(self.index, name, keyframe.location, keyframe.rotation, keyframe.scale)
 		end,
 		
 		IsPlaying = function(self, name)
-			return __tram_impl_components_animation_is_playing(self.index, name)
+			return __impl_components_animation_is_playing(self.index, name)
 		end,
 		
 		Stop = function(self, name)
-			__tram_impl_components_animation_stop(self.index, name)
+			__impl_components_animation_stop(self.index, name)
 		end,
 		
 		Pause = function(self, name)
-			__tram_impl_components_animation_pause(self.index, name)
+			__impl_components_animation_pause(self.index, name)
 		end,
 		
 		Continue = function(self, name)
-			__tram_impl_components_animation_continue(self.index, name)
+			__impl_components_animation_continue(self.index, name)
 		end,
 		
 		
 		SetWeight = function(self, name, weight)
-			__tram_impl_components_animation_set_weight(self.index, name, weight)
+			__impl_components_animation_set_weight(self.index, name, weight)
 		end,
 		
 		SetSpeed = function(self, name, speed)
-			__tram_impl_components_animation_set_speed(self.index, name, speed)
+			__impl_components_animation_set_speed(self.index, name, speed)
 		end,
 		
 		SetRepeats = function(self, name, repeats)
-			__tram_impl_components_animation_set_repeats(self.index, name, repeats)
+			__impl_components_animation_set_repeats(self.index, name, repeats)
 		end,
 		
 		
 		FadeIn = function(self, name, length)
-			__tram_impl_components_animation_fade_in(self.index, name, length)
+			__impl_components_animation_fade_in(self.index, name, length)
 		end,
 		
 		FadeOut = function(self, name, length)
-			__tram_impl_components_animation_fade_out(self.index, name, length)
+			__impl_components_animation_fade_out(self.index, name, length)
 		end,
 		
 		
 		SetPause = function(self, name, pause)
-			__tram_impl_components_animation_set_pause(self.index, name, pause)
+			__impl_components_animation_set_pause(self.index, name, pause)
 		end,
 		
 		SetFade = function(self, name, fade_in, fade_length)
-			__tram_impl_components_animation_set_fade(self.index, name, fade_in, fade_length)
+			__impl_components_animation_set_fade(self.index, name, fade_in, fade_length)
 		end,
 		
 		SetFrame = function(self, name, frame)
-			__tram_impl_components_animation_set_frame(self.index, name, frame)
+			__impl_components_animation_set_frame(self.index, name, frame)
 		end,
 		
 		
 		Init = function(self)
-			__tram_impl_components_animation_init(self.index)
+			__impl_components_animation_init(self.index)
 		end,
 		
 		Delete = function(self)
-			__tram_impl_components_animation_delete(self.index)
+			__impl_components_animation_delete(self.index)
 			table.remove(self, "index")
 		end
 	}
 }
 
 function tram.components.Animation()
-	local component_index = __tram_impl_components_animation_make()
+	local component_index = __impl_components_animation_make()
 	
 	if (component_index == -1) then
 		return nil

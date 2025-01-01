@@ -12,7 +12,6 @@ namespace tram {
 
 class AnimationComponent : public EntityComponent {
 public:
-    void Init();
     void Start();
     void SetModel(Render::Model* model) { this->model = model; }
     void SetModel(name_t model) { this->model = Render::Model::Find(model); }
@@ -80,7 +79,7 @@ protected:
     name_t anim_playing[ANIM_COUNT];
     AnimationPlaybackInfo anim_info[ANIM_COUNT];
     
-    AnimationComponent() : model(this) {}
+    AnimationComponent();
     ~AnimationComponent();
     template <typename> friend class Pool;
 };

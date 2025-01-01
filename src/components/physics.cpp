@@ -33,12 +33,10 @@ void PhysicsComponent::Start() {
     if (update_parent_transform && parent) {
         get_callback = [](void* data) -> std::pair<vec3, quat> {
             Entity* parent = ((PhysicsComponent*)data)->GetParent();
-            //std::cout << "getting parent: " << ((PhysicsComponent*)data)->GetParent()->GetName() << std::endl;
             return {parent->GetLocation(), parent->GetRotation()};
         };
         set_callback = [](void* data, std::pair<vec3, quat> transform) {
             ((PhysicsComponent*)data)->GetParent()->UpdateTransform(transform.first, transform.second);
-            //std::cout << "setting parent: " << ((PhysicsComponent*)data)->GetParent()->GetName() << std::endl;
         };
     } else {
         get_callback = [](void* data) -> std::pair<vec3, quat> {

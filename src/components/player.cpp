@@ -43,9 +43,7 @@ void PlayerComponent::SetNoclip(bool value) {
 
 void PlayerComponent::EventHandler(Event &event) {
     using namespace tram::UI;
-    //using enum tram::ControllerComponent::Action;
-    //using enum tram::ControllerComponent::ActionModifier;
-
+    
     // Map cursor position into camera and entity orientation.
     if (event.type == Event::CURSORPOS) {
         yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_MULTIPLIER; //* UI::CAMERA_SENSITIVITY; //* GetDeltaTime();
@@ -55,9 +53,6 @@ void PlayerComponent::EventHandler(Event &event) {
         quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
         
         this->direction_facing = look_rotation * DIRECTION_FORWARD;
-        
-        //std::cout << yaw <<" " << pitch << std::endl;
-        //std::cout << PollKeyboardAxisDelta(KEY_MOUSE_X) <<" delta " << PollKeyboardAxisDelta(KEY_MOUSE_Y) << std::endl;
         
         Event::Post({
             .type = Event::LOOK_AT,

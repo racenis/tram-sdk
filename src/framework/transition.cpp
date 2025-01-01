@@ -40,7 +40,7 @@ Transition* Transition::Make(name_t name, WorldCell* cell_into) {
     
     if (name) {
         if (transition_list.Find(name)) {
-            std::cout << "Transition named " << name << " already exists!" << std::endl;
+            Log(Severity::WARNING, System::CORE, "Transition named {} already exists!", name);
         }
         
         transition_list.Insert(name, transition);

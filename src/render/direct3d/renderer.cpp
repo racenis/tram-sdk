@@ -214,17 +214,11 @@ void RenderFrame() {
                                          entry->vertex_count,
                                          entry->index_offset * 3, // hmm
                                          entry->index_length);
-            //std::cout << "drawing index" << std::endl;
-            
-            //glDrawElements(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
         } else {
             device->DrawPrimitive(entry->flags & FLAG_DRAW_LINES ? D3DPT_LINELIST : D3DPT_TRIANGLELIST,
                                   0,
                                   //entry->vertex_count);
                                   entry->vertex_count / 2);
-                                  
-            //std::cout << "drawing primitive" << std::endl;
-            //glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
         }
 
         

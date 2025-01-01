@@ -96,16 +96,16 @@ void Animation::LoadFromDisk() {
     File file (filename, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't open " << filename << "!" << std::endl; 
+        Log(Severity::WARNING, System::RENDER, "Can't open {}!", filename);
         return;
     }
 
-    std::cout << "Loading animation: " << filename << std::endl;
+    Log(Severity::WARNING, System::RENDER, "Loading animation: {}", filename);
 
     name_t header = file.read_name();
     
     if (header != "ANIMv1") {
-        Log ("Unrecognized header '{}' in animation {}", header, filename);
+        Log("Unrecognized header '{}' in animation {}", header, filename);
         return;
     }
     

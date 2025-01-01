@@ -29,32 +29,31 @@ public:
     ~Scriptable() {}
 
     void UpdateParameters() {
-        if (Script::CallFunction("__tram_impl_entity_update_parameters_callback", {this->id})) {
+        if (Script::CallFunction("__impl_entity_update_parameters_callback", {this->id})) {
             T::UpdateParameters();
         }
     }
     
     void SetParameters() {
-        if (Script::CallFunction("__tram_impl_entity_set_parameters_callback", {this->id})) {
+        if (Script::CallFunction("__impl_entity_set_parameters_callback", {this->id})) {
             T::SetParameters();
         }
     }
     
     void Load() {
-        std::cout << "LOADING FROM  C++" << std::endl;
-        if (Script::CallFunction("__tram_impl_entity_load_callback", {this->id})) {
+        if (Script::CallFunction("__impl_entity_load_callback", {this->id})) {
             T::Load();
         }
     }
     
     void Unload() {
-        if (Script::CallFunction("__tram_impl_entity_unload_callback", {this->id})) {
+        if (Script::CallFunction("__impl_entity_unload_callback", {this->id})) {
             T::Unload();
         }
     }
     
     void Serialize() {
-        /*if (Script::CallFunction("__tram_impl_entity_serialize_callback", {this->id})) {
+        /*if (Script::CallFunction("__impl_entity_serialize_callback", {this->id})) {
             if (entity) entity->Serialize();
         }*/
     }
@@ -65,11 +64,7 @@ public:
 
         // hopefully we won't get segfaults.
         bool valid_type = data.IsFloat() || data.IsInt() || data.IsBool() || data.GetType() == TYPE_NAME;
-        
-        // can we validate name_t's? bad floats, ints and bools are fine, but
-        // having a name_t with a bad key could segfault
-        // TODO: investigate
-        
+                
         if (!valid_type) data = Value();
 
         if (data.GetType() == TYPE_NAME) {
@@ -82,7 +77,7 @@ public:
 
         SanitizeData(data);
 
-        if (Script::CallFunction("__tram_impl_entity_message_handler_callback", {this->id, msg.type, msg.sender, msg.receiver, data})) {
+        if (Script::CallFunction("__impl_entity_message_handler_callback", {this->id, msg.type, msg.sender, msg.receiver, data})) {
             T::MessageHandler(msg);
         }
     }
@@ -92,7 +87,7 @@ public:
 
         SanitizeData(data);
 
-        if (Script::CallFunction("__tram_impl_entity_event_handler_callback", {this->id, evt.type, evt.subtype, evt.poster, data})) {
+        if (Script::CallFunction("__impl_entity_event_handler_callback", {this->id, evt.type, evt.subtype, evt.poster, data})) {
             T::EventHandler(evt);
         }
     }

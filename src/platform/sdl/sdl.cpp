@@ -4,6 +4,7 @@
 
 #include <platform/platform.h>
 #include <framework/ui.h>
+#include <framework/logging.h>
 
 #include <render/api.h>
 
@@ -14,6 +15,8 @@
 #ifdef _WIN32
 #include <d3dx9.h>
 #endif
+
+#undef ERROR
 
 using namespace tram::UI;
 
@@ -54,7 +57,7 @@ static void SoftwareRenderContextUpdate() {
 
 void Window::Init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cout << "SDL2 window didn't open!" << std::endl;
+        Log(Severity::WARNING, System::PLATFORM, "SDL2 didn't open!");
         abort();
     }
     
@@ -69,19 +72,19 @@ void Window::Init() {
     
     window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, window_flags);
     if (window == nullptr) {
-        std::cout << "SDL2 window didn't open! " << SDL_GetError() << std::endl;
+        Log(Severity::WARNING, System::ERROR, "SDL2 window didn't open! {}", SDL_GetError());
         abort();
     }
     
     if (Render::API::GetContext() == Render::API::CONTEXT_OPENGL) {
         void* context = SDL_GL_CreateContext(window);
         if (context == nullptr) {
-            std::cout << "SDL2 context didn't open! " << SDL_GetError() << std::endl;
+            Log(Severity::ERROR, System::PLATFORM, "SDL2 context didn't open! {}", SDL_GetError());
             abort();
         }
         
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-            std::cout << "OpenGL context didn't open!" << std::endl;
+            Log(Severity::ERROR, System::PLATFORM, "OpenGL context didn't open!");
             abort();
         }
         
@@ -92,7 +95,7 @@ void Window::Init() {
     if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
         IDirect3D9* d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
         if (!d3d9) {
-            std::cout << "Direct3D didn't open!" << std::endl;
+            Log(Severity::ERROR, System::PLATFORM, "Direct3D didn't open!");
             abort();
         }
         
@@ -102,15 +105,15 @@ void Window::Init() {
         int vertex_processing = 0;
         if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) {
             vertex_processing = D3DCREATE_HARDWARE_VERTEXPROCESSING;
-            std::cout << "Hardware T&L available." << std::endl;
+            Log(Severity::DEFAULT, System::PLATFORM, "Hardware T&L available.");
         } else {
             vertex_processing = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-            std::cout << "Hardware T&L unavailable." << std::endl;
+            Log(Severity::DEFAULT, System::PLATFORM, "Hardware T&L unavailable.");
         }
         
         if (caps.MaxVertexBlendMatrixIndex == 0) {
             vertex_processing = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-            std::cout << "Hardware matrix blending unavailable." << std::endl;
+            Log(Severity::DEFAULT, System::PLATFORM, "Hardware matrix blending unavailable.");
         }
         
         SDL_SysWMinfo wm_info;
@@ -169,7 +172,7 @@ void Window::Init() {
         renderer = SDL_CreateRenderer(window, -1, 0 /*SDL_RENDERER_SOFTWARE*/);
         
         if (!renderer) {
-            std::cout << "SDL_Renderer didn't open! " << std::endl;
+            Log(Severity::ERROR, System::PLATFORM, "SDL_Renderer didn't open!");
             abort();
         }
 
@@ -465,8 +468,8 @@ static KeyboardKey SDLKeyToKeyboardKey(SDL_Keysym keycode) {
         case SDL_SCANCODE_RSHIFT: return KEY_RIGHT_SHIFT;
         case SDL_SCANCODE_RALT: return KEY_RIGHT_ALT;
         
-        default: 
-            std::cout << "UNRECOGNIZED KEYCODE: " << keycode.scancode << std::endl;
+        default:
+            Log(Severity::WARNING, System::PLATFORM, "UNRECOGNIZED KEYCODE: {}", keycode.scancode);
             return KEY_SPACE;
 }}
 

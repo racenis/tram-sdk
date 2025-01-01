@@ -788,25 +788,19 @@ bool Slider(float& value, bool enabled, uint32_t width) {
         SetCursorDelayed(UI::CURSOR_CLICK);
     }
     
-    //DrawBox(0, style, x, y, w, h);
     DrawBoxHorizontal(0, WIDGET_SLIDER_TRACK_HORIZONTAL, x, y + 8, w);
     
     PushFrame(x, y + 3, w, h);
-    //GlyphColor(enabled ? Render::COLOR_BLACK : Render::COLOR_GRAY);
-    //Text(1, text, TEXT_CENTER);
     DrawGlyph(0, style, widget_color_stack.top(), x + (uint32_t)(value * w) - (GlyphWidth(0, style) / 2), y);
     PopFrame();
     
     frame_stack.top().cursor_x += w;
-    
-    
     
     if (enabled && CursorOver(x, y, w, h) && Clicked()) {
         
         uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
         uint32_t progress = cur_x - x;
         value = (float)progress / (float)w;
-        std::cout << cur_x << " prog " << progress << std::endl;
         return true;
     } else {
         return false;

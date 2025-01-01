@@ -4,6 +4,8 @@
 
 #include <platform/platform.h>
 #include <framework/ui.h>
+#include <framework/system.h>
+#include <framework/logging.h>
 
 #include <thread>
 
@@ -20,6 +22,7 @@
     #include <glfw3.h>
 #endif
 
+#undef ERROR
 
 using namespace tram::UI;
 
@@ -36,8 +39,8 @@ static std::thread::id render_context_thread = std::this_thread::get_id();
 void Window::Init() {
     glfwInit();
 
-    glfwSetErrorCallback([](int code, const char* message){
-        std::cout << "GLFW error code: " << code << " message: " << message << std::endl;
+    glfwSetErrorCallback([](int code, const char* message) {
+        Log(Severity::WARNING, System::UI, "GLFW error code: {} message: {}", code, message);
     });
     
 #ifndef _WIN32
@@ -59,7 +62,7 @@ void Window::Init() {
     
     WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", nullptr, nullptr);
     if (WINDOW == nullptr) {
-        std::cout << "GLFW window didn't open!" << std::endl;
+        Log(Severity::ERROR, System::UI, "GLFW window didn't open!");
         glfwTerminate();
         abort();
     }
@@ -70,7 +73,7 @@ void Window::Init() {
     // random settings that we don't need on web platform
 #ifdef _WIN32
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cout << "OpenGL context didn't open" << std::endl;
+            Log(Severity::ERROR, System::UI, "OpenGL context didn't open");
             abort();
         }
 
@@ -265,24 +268,6 @@ void Input::Update() {
 void Input::Uninit() {
 
 }
-
-/*static void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
-    std::cout << "Character callback: " << codepoint << std::endl;
-    auto len = strlen(input_text);
-    if (len < input_text_len-1) {
-        input_text[len] = codepoint;
-        input_text[len+1] = '\0';
-    }
-}*/
-
-/*static void CharacterBackspaceCallback() {
-    std::cout << "Backspace callback! " << std::endl;
-    if (!input_text) return;
-    auto len = strlen(input_text);
-    if (len > 0) {
-        input_text[len-1] = '\0';
-    }
-}*/
 
 /// Maps a glfw keycode to a KeyboardKey.
 static KeyboardKey GLFWKeyToKeyboardKey (int keycode) {

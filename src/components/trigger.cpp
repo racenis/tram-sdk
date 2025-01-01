@@ -96,7 +96,7 @@ void TriggerComponent::SetRotation (quat rotation) {
 /// Registers a collision.
 /// This method is called from Phyics::Update().
 void TriggerComponent::Collision(const Physics::Collision& collision) {
-    if (!filter_callback || filter_callback(this, collision.collider)) {
+    if (!filter || filter(this, collision.collider)) {
         
         bool new_collision = true;
         for (auto& active_collision : active_collisions) {
@@ -113,8 +113,8 @@ void TriggerComponent::Collision(const Physics::Collision& collision) {
         if (new_collision) {
             active_collisions.push_back({GetTick(), collision});
             
-            if (activation_callback) {
-                activation_callback(this, collision);
+            if (activation) {
+                activation(this, collision);
             }
         }
         
@@ -126,8 +126,8 @@ void TriggerComponent::Collision(const Physics::Collision& collision) {
 void TriggerComponent::ResetCollisions() {
     for (auto it = active_collisions.begin(); it != active_collisions.end();) {
         if (GetTick() - it->first > 1) {
-            if (deactivation_callback) {
-                deactivation_callback(this, it->second);
+            if (deactivation) {
+                deactivation(this, it->second);
             }
 
             it = active_collisions.erase(it);

@@ -111,10 +111,7 @@ void Trigger::Serialize() {
 
 void Trigger::Activate() {
     if (!(trigger_flags & TRIGGER_DISABLED)) {
-        std::cout << "firing trigger " << name << std::endl;
         FireSignal(Signal::ACTIVATE);
-    } else {
-        std::cout << "trigger disabled " << name << std::endl; 
     }
 }
 
@@ -127,7 +124,7 @@ void Trigger::MessageHandler(Message& msg) {
             trigger_flags &= ~TRIGGER_DISABLED;
             break;
         default:
-            std::cout << "Trigger " << name << " does not understand message " << Message::GetName(msg.type) << std::endl;  
+            Log(Severity::WARNING, System::CORE, "Trigger {} does not understand message {}", name, Message::GetName(msg.type));
     }
 }
 

@@ -390,11 +390,10 @@ void Entity::Update() {
         
         auto type_info = registered_entity_types.Find(ent->GetType());
         
-        std::cout << "Deleting " << ent->GetType() <<" entity " << ent->GetName() << " ID " << ent->GetID() << std::endl;
         if (type_info.destructor) {
             type_info.destructor(ent);
         } else {
-            std::cout << "No type deleter found, using default!" << std::endl;
+            Log(Severity::WARNING, System::CORE, "No destructor for {} typed {} {} found, using default", ent->GetType(), ent->GetName(), ent->GetID());
             delete ent;
         }
     }

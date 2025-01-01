@@ -23,7 +23,6 @@ public:
     void Unload();
     void Serialize();
     void MessageHandler(Message& msg);
-    void Testingolingo();
     name_t GetType();
     static void Register();
 protected:

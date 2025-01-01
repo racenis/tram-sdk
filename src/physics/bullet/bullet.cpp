@@ -223,7 +223,6 @@ void YeetRigidbody(rigidbody_t rigidbody) {
 }
 
 void SetRigidbodyTransformCallback(rigidbody_t rigidbody, std::pair<vec3, quat>(*get_transform_callback)(void*), void(*set_transform_callback)(void*, std::pair<vec3, quat>), void* data) {
-    std::cout << "insignde callback setter" << std::endl;
     rigidbody.bt_metadata->motion_state->SetTransformCallback(get_transform_callback, set_transform_callback, data);
 }
 
@@ -562,8 +561,6 @@ void StepPhysics() {
             
             // this is to avoid accidental division by zero
             if (contact.getDistance() == 0.0f) normal = {0.0f, 1.0f, 0.0f};
-            
-            //std::cout << "collision! " << point.x << " " << point.z << std::endl;
             
             API::RigidbodyMetadata* metadata_a = (API::RigidbodyMetadata*)obj_a->getUserPointer();
             API::RigidbodyMetadata* metadata_b = (API::RigidbodyMetadata*)obj_b->getUserPointer();

@@ -2,6 +2,7 @@
 
 #include <framework/entity.h>
 #include <framework/message.h>
+#include <framework/settings.h>
 
 #include <components/controller.h>
 #include <components/physics.h>
@@ -51,8 +52,7 @@ template <> void Component<FPSControllerComponent>::yeet() { PoolProxy<FPSContro
 template <> void Component<RaycastControllerComponent>::init() { ptr = PoolProxy<RaycastControllerComponent>::New(); }
 template <> void Component<RaycastControllerComponent>::yeet() { PoolProxy<RaycastControllerComponent>::Delete(ptr); }
 
-// TODO: make this a Setting?
-static bool draw_debug = false;
+static Settings::Property<bool> draw_debug = {false, "controller-draw", Settings::NONE};
 
 /// Updates the ControllerComponents.
 /// Updates all of the ControllerComponents. Should be called once per update cycle.
@@ -289,8 +289,6 @@ void FPSControllerComponent::RecoverFromCollisions() {
                 new_pos.y = lowest_collision.y + half_height + 0.01f;
                 velocity.y = 0.0f;
                 is_in_air = false;
-            } else {
-                //std::cout << "failed " << lowest_collision_normal.y << "\t" << step_height << std::endl;
             }
         } else if (!is_in_air) {
             // if character is a certain distance above the ground, we will move the
@@ -307,7 +305,6 @@ void FPSControllerComponent::RecoverFromCollisions() {
             float character_bottom_height = new_pos.y - half_height;
             float step_height = highest_collision - character_bottom_height;
             
-            //std::cout << step_height << std::endl;
             if (step_height < 0.0f && step_height > -0.1f) {
                 new_pos.y = highest_collision + half_height + 0.01f;
                 velocity.y = 0.0f;
@@ -349,13 +346,8 @@ void FPSControllerComponent::RecoverFromCollisions() {
         }
         
         did_v = true;
-        //velocity = vec3(0.0f, 0.0f, 0.0f);
     }
-    
-    /*if (collider->GetStoredCollisions().size() > 2) {
-        std::cout << "BUMP " << ground_collisions.size() << std::endl;
-    }*/
-    
+        
     // make controller follow whatever entity it is standing on
     if (standing_on == standing_on_prev && standing_on) {
         vec3 standing_new_pos = Entity::Find(standing_on)->GetLocation();
@@ -369,11 +361,8 @@ void FPSControllerComponent::RecoverFromCollisions() {
     }
     standing_on_prev = standing_on;
     
-    
     walk_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
     crouch_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
-    
-    //new_pos.y = 1.0f;
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);
@@ -396,21 +385,13 @@ void FPSControllerComponent::ResetMove() {
 
 void RaycastControllerComponent::Start() {
     wall_collision.make();
-    physics_body.make();
     
     wall_collision->SetCollisionMask(-1 ^ collision_group);
     wall_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
     wall_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height/2.0f) - step_height ));//* 2.0f));
     wall_collision->SetStoreCollisions(true);
     
-    physics_body->SetParent(parent);
-    physics_body->SetShape(Physics::CollisionShape::Capsule(collision_width, collision_height/2.0f));
-    physics_body->SetCollisionGroup(collision_group);
-    physics_body->SetKinematic(true);
-    physics_body->DisableDeactivation();
-    
     wall_collision->Init();
-    physics_body->Init();
 }
 
 void RaycastControllerComponent::Push(vec3 direction) {

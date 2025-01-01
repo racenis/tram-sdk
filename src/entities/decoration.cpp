@@ -91,7 +91,6 @@ void Decoration::Load() {
     if (animation) {
         RequestAnimationComponent();
         
-        std::cout << "PLAYING " << animation << std::endl;
         animationcomponent->Play(animation, -1, 1.0f, 1.0f);
     }
     
@@ -182,18 +181,26 @@ void Decoration::MessageHandler(Message& msg) {
             }
             break;
         case Message::SET_ANIMATION:
+            if (!msg.data_value) {
+                Log(Severity::WARNING, System::MISC, "Decoration {} received a SET_ANIMATION without a parameter", name);
+                return;
+            }
+            if (msg.data_value->GetType() != TYPE_NAME) {
+                Log(Severity::WARNING, System::MISC, "Decoration {} received a SET_ANIMATION with a non-name parameter", name);
+                return;
+            }
+        
             if (animation && animationcomponent->IsPlaying(animation)) {
-                // TODO: add error checking (data == nullptr)
                 animationcomponent->FadeOut(animation, 1.0f);
-                animation = *(Value*)msg.data_value;
+                animation = *msg.data_value;
                 animationcomponent->Play(animation, -1, 1.0f, 1.0f);
                 animationcomponent->FadeIn(animation, 1.0f);
             } else {
-                animation = *(Value*)msg.data_value;
+                animation = *msg.data_value;
             }
             break;
         default:
-            std::cout << "Decoration " << name << " does not understand message " << Message::GetName(msg.type) << std::endl;  
+            Log(Severity::WARNING, System::MISC, "Decoration {} does not understand message {}", name, Message::GetName(msg.type)); 
     }
 }
 

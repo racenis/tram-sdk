@@ -40,16 +40,12 @@ static Type best_value(int index) {
             lua_pop(L, 4);
             
             if (has_x && has_y && has_z && !has_w) {
-                std::cout << "returning vec3" << std::endl;
                 return TYPE_VEC3;
             }
             
             if (has_x && has_y && has_z && has_w) {
-                std::cout << "returning quat" << std::endl;
                 return TYPE_QUAT;
             }
-            
-            std::cout << "returning other" << std::endl;
             
             return TYPE_UNDEFINED;
         }

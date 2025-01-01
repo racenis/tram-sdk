@@ -17,7 +17,7 @@
 namespace tram::Settings {
 
 const int SETTING_LIMIT = 200;
-    
+
 struct SettingInfo {
     union {
         int32_t* int32;
@@ -31,7 +31,8 @@ struct SettingInfo {
     uint32_t flags;
 };
 
-Pool<SettingInfo> settings("Setting info pool", SETTING_LIMIT);
+static SettingInfo settings[SETTING_LIMIT];
+static size_t last_setting = 0;
 
 struct RawSetting {
     const char* key;
@@ -42,22 +43,13 @@ struct RawSetting {
 static std::vector<RawSetting> raw_settings;
 
 void SetFromRaw(SettingInfo& info) {
-    Log("Checking if can set {}", info.name);
-    
-    Log("raw setting size {}", raw_settings.size());
-    
     if (!info.bool32) {
         Log("Setting {} has no data pointer!", info.name);
         return;
     }
     
-    
-    
     for (auto& setting : raw_settings) {
-        Log("Comparing {} and {}",setting.key, info.name);
         if (strcmp(setting.key, info.name) != 0) continue;
-        
-        Log("Found a value for {}", info.name);
         
         switch (info.type) {
             case TYPE_BOOL:
@@ -97,15 +89,8 @@ void SetFromRaw(SettingInfo& info) {
 }
 
 void SetAndStore(SettingInfo info) {
-    Log("Registered setting {}", info.name);
     SetFromRaw(info);
-    settings.AddNew(info);
-    
-    // this function can be called via Register() via templated setting proxy
-    // that means that it can be called during static member initialization
-    // so that if for some reason this translation unit gets loaded only after
-    // the translation unit that is using the setting, we will get a crash...
-    // TODO: fix
+    settings[last_setting++] = info;
 }
 
 void Register(bool& value, const char* name, uint32_t flags) {
@@ -124,16 +109,16 @@ void Register(uint32_t& value, const char* name, uint32_t flags) {
     SetAndStore(SettingInfo{.uint32 = &value, .type = TYPE_UINT32, .name = name, .flags = flags});
 }
 
-Hashmap<SettingInfo*> all_settings("settings map", SETTING_LIMIT);
+static Hashmap<SettingInfo*> all_settings("settings map", SETTING_LIMIT);
 
 Value Get(name_t name) {
     auto setting = all_settings.Find(name);
     
     if (!setting) {
-        for (auto& probs : settings) {
-            if (probs.name != name) continue;
+        for (size_t i = 0; i < last_setting; i++) {
+            if (settings[i].name != name) continue;
             
-            setting = &probs;
+            setting = &settings[i];
             
             all_settings.Insert(name, setting);
         }
@@ -164,10 +149,10 @@ void Set(name_t name, Value value) {
     auto setting = all_settings.Find(name);
     
     if (!setting) {
-        for (auto& probs : settings) {
-            if (probs.name != name) continue;
+        for (size_t i = 0; i < last_setting; i++) {
+            if (settings[i].name != name) continue;
             
-            setting = &probs;
+            setting = &settings[i];
             
             all_settings.Insert(name, setting);
         }
@@ -193,13 +178,11 @@ void Set(name_t name, Value value) {
 void Parse(const char** argv, int argc) {
     Log("Parsing settings from CLI");
     
-    std::cout << (bool)Settings::Get("renderer-debug") <<std::endl;
-    
     for (int i = 1; i < argc; i++) {
         const char* name = argv[i];
         
         if (*name != '-') {
-            std::cout << "unrexcoginzed parameter: " << name << std::endl;
+            Log(Severity::WARNING, System::CORE, "Unrecognized CLI parameter: {}", name);
             continue;
         }
         
@@ -244,7 +227,7 @@ void Parse(const char** argv, int argc) {
     
     Log("Applying CLI values to settings");
     
-    for (auto& setting : settings) SetFromRaw(setting);
+    for (size_t i = 0; i < last_setting; i++) SetFromRaw(settings[i]);
 }
 
 uint32_t Flags(name_t name) {

@@ -28,35 +28,21 @@
  */
 
 namespace tram {
-    
+
 template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION, false);
 template <> void Component<AnimationComponent>::init() { ptr = PoolProxy<AnimationComponent>::New(); }
 template <> void Component<AnimationComponent>::yeet() { PoolProxy<AnimationComponent>::Delete(ptr); }
 
-void AnimationComponent::Init() {
-    assert(!is_ready);
-    
-    // I feel like this code should be in in the constructor instead
-    
-    is_init = true;
+AnimationComponent::AnimationComponent() : model(this) {
     pose = PoolProxy<Render::Pose>::New();
 
     // initialize animation matrices to identity matrix
     for (size_t i = 0; i < Render::BONE_COUNT; i++) {
         pose->pose[i] = mat4(1.0f);
     }
-
-    if (resources_waiting == 0) Start();
 }
 
 AnimationComponent::~AnimationComponent() {
-    assert(is_ready);
-    assert(pose);
-    
-    // if delete this component before the model resource is lodaed, we will
-    // fail on these asserts
-    // TODO: fix
-    
     PoolProxy<Render::Pose>::Delete(pose);
     
     pose = nullptr;
@@ -64,8 +50,6 @@ AnimationComponent::~AnimationComponent() {
 }
 
 void AnimationComponent::Start() {
-    assert(!is_ready);
-    
     // it's probably not necessary to cache this, but whatever
     armature_bone_count = model->GetArmature().size();
     armature_bones = &model->GetArmature()[0];
@@ -109,6 +93,7 @@ void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float wei
     if (!animation_name) return;
     
     // TODO: guard for negative weight? speed?
+    // maybe negative speed could make the animation play in reverse
     
     // find an empty slot for the animation
     size_t slot;
@@ -142,8 +127,8 @@ void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float wei
     
     Render::Animation* animation = Render::Animation::Find(animation_name);
 
-    if(animation->GetStatus() != Resource::READY){
-        std::cout << "Animation " << animation_name << " not loaded!" << std::endl;
+    if (animation->GetStatus() != Resource::READY) {
+        Log(Severity::WARNING, System::RENDER, "Animation '{}' not loaded!", animation_name);
         anim_playing[slot] = 0;
         return;
     }

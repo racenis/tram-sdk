@@ -233,9 +233,6 @@ void RegisterShader(vertexformat_t format, materialtype_t type, const char* vert
     
     uint32_t linked = LinkShader(vertex, fragment);
     
-    //std::cout << vertex_shader << " and " << fragment_shader << " for " << GetVertexFormatName(format) << " and " << GetMaterialTypeName(type) << std::endl;
-    //std::cout << vertex << " and " << fragment << " to " << linked << std::endl;
-    
     linked_shaders[last_linked_shader].material_type = type;
     linked_shaders[last_linked_shader].vertex_format = format;
     

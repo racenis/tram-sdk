@@ -10,6 +10,11 @@
 
 namespace tram {
 
+class TriggerComponent;
+
+typedef void (*collision_callback)(TriggerComponent*, Physics::Collision);
+typedef bool (*filter_callback)(TriggerComponent*, PhysicsComponent*);
+    
 class TriggerComponent : public EntityComponent {
 public:
     TriggerComponent() : model(this){}
@@ -22,10 +27,9 @@ public:
     void SetModel(Physics::CollisionModel* model) { this->model = model; }
     void SetShape(Physics::CollisionShape shape);
 
-    // TODO: typedef these callback functions?
-    void SetActivationCallback(void (*activation_callback)(TriggerComponent*, Physics::Collision)) { this->activation_callback = activation_callback; }
-    void SetDectivationCallback(void (*deactivation_callback)(TriggerComponent*, Physics::Collision)) { this->deactivation_callback = deactivation_callback; }
-    void SetFilterCallback(bool (*filter_callback)(TriggerComponent*, PhysicsComponent*)) { this->filter_callback = filter_callback; }
+    void SetActivationCallback(collision_callback activation) { this->activation = activation; }
+    void SetDectivationCallback(collision_callback deactivation) { this->deactivation = deactivation; }
+    void SetFilterCallback(filter_callback filter) { this->filter = filter; }
 
     void SetCollisionMask(uint32_t flags);
     void SetCollisionGroup(uint32_t flags);
@@ -60,9 +64,9 @@ private:
     Physics::collisionshape_t shape = {nullptr};
     Physics::trigger_t trigger = {nullptr};
     
-    void (*activation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
-    void (*deactivation_callback)(TriggerComponent*, Physics::Collision) = nullptr;
-    bool (*filter_callback)(TriggerComponent*, PhysicsComponent*) = nullptr;
+    collision_callback activation = nullptr;
+    collision_callback deactivation = nullptr;
+    filter_callback filter = nullptr;
 
     bool store_collisions = false;
     

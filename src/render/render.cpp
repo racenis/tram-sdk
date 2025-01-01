@@ -78,7 +78,6 @@ static void update_projection(layer_t layer) {
     
     mat4 matrix;
     if (fov == 0.0f) {
-        std::cout << "REGEN ORHTO " << ratio << std::endl; 
         matrix = glm::ortho((-ratio) / view_properties[layer].ortho_ratio,
                             (+ratio) / view_properties[layer].ortho_ratio,
                             (-(1.0f/ratio)) / view_properties[layer].ortho_ratio,
@@ -322,11 +321,13 @@ void AddSphere(vec3 pos, float radius, color_t color) {
 }
 
 /// Draws a cylinder for a single frame.
+/// @note Not implmented.
 void AddCylinder(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
 }
 
 /// Draws a cube for a single frame.
+/// @note Not implmented.
 void AddCube(vec3 pos, float height, float radius, color_t color) {
     // TODO: implement
 }

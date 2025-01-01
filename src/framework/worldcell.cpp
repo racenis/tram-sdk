@@ -344,7 +344,7 @@ void WorldCell::LoadFromDisk() {
                     *val = vec3 {file.read_float32(), file.read_float32(), file.read_float32()};
                 }  else {
                     *val = file.read_name();
-                    std::cout << "Unknown data type for signal: " << data_type << std::endl;
+                    Log(Severity::WARNING, System::CORE, "Unknown data type for signal: ", data_type);
                 }
                 
                 signal.data = val;
@@ -362,7 +362,6 @@ void WorldCell::LoadFromDisk() {
         
         
         if (entry_type == "path" || entry_type == "navmesh" || entry_type == "group") {
-            std::cout << "skipping " << entry_type << ": " << file.read_line() << std::endl;
             file.skip_linebreak();
             continue;
         }
@@ -370,7 +369,7 @@ void WorldCell::LoadFromDisk() {
         Entity* entity = Entity::Make(entry_type, &file);
         
         if (!entity) {
-            std::cout << "Entity type '" << entry_type << "' not recognized; in file " << path << std::endl;
+            Log(Severity::WARNING, System::CORE, "Entity type '{}' not recognized; in file {}", entry_type, path);
         } else {
             this->Add(entity);
         }

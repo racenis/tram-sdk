@@ -121,12 +121,4 @@ void Crate::MessageHandler(Message& msg){
     }
 }
 
-// TODO: yeet?
-void Crate::Testingolingo() {
-    assert(IsLoaded());
-    assert(physicscomponent);
-    physicscomponent->SetAngularFactor({0.0f, 0.0f, 0.0f});
-    physicscomponent->SetRotation(vec3(0.0f, 0.785f, 0.0f));
-}
-
 }

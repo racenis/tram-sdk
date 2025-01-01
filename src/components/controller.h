@@ -166,9 +166,6 @@ protected:
     
     Component<TriggerComponent> wall_collision;
     
-    // TODO: consider removing the collider
-    Component<PhysicsComponent> physics_body;
-    
     void ApplyDynamics();
     void RecoverFromCollisions();
     void ResetMove();

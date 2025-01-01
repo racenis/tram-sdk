@@ -284,15 +284,11 @@ void QuestTrigger::SetIncrement(name_t name) {
     
     
 Value Quest::GetVariable(name_t name) {
-    //std::cout << "serch" << std::endl;
     for (auto& variable : variables) {
-        //std::cout << variable.name << "|" << name << std::endl;
         if (variable.name == name) {
-            //std::cout << "Evaluating variable " << name << std::endl;
             return variable.Evaluate();
         }
     }
-    //std::cout << "Returning default value for variable " << name << std::endl;
     // TODO: write a error message
     return false;
 }
@@ -398,14 +394,8 @@ Quest* Quest::Find(name_t quest) {
     return PoolProxy<Quest>::New(quest);
 }
 
-
-
-
-// TODO: yeet. instead create on constructor!!
 void Quest::Init() {
-    /*for (auto& q : PoolProxy<Quest>::GetPool()) {
-        new QuestEntity(q.name);
-    }*/
+
 }
 
 static std::pair<name_t, value_t> LoadVariableSecond(File& file) {
