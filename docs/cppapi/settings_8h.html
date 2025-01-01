@@ -67,28 +67,52 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">settings.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="value_8h_source.html">framework/value.h</a>&gt;</code><br />
+<code>#include &lt;initializer_list&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="settings_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_settings_1_1_property.html">tram::Settings::Property&lt; T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_settings"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html">tram::Settings</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_settings"><td class="mdescLeft">&#160;</td><td class="mdescRight">Application setting management and CLI command parser. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a0861538a476a71457a80e698e710eef1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">: uint32_t { <a class="el" href="namespacetram_1_1_settings.html#a0861538a476a71457a80e698e710eef1ab553ee57502969cce370c35c3f47fa20">tram::Settings::USER</a> = 1
+, <a class="el" href="namespacetram_1_1_settings.html#a0861538a476a71457a80e698e710eef1a5e8d3d37d3d54ed5793dfc159630d0db">tram::Settings::APPLICATION</a> = 2
+, <a class="el" href="namespacetram_1_1_settings.html#a0861538a476a71457a80e698e710eef1a451735aa4dbc8730e0238c1d87758273">tram::Settings::MENU</a> = 4
+, <a class="el" href="namespacetram_1_1_settings.html#a0861538a476a71457a80e698e710eef1abc55e02cfcd95615d38f62a14ebbc530">tram::Settings::NONE</a> = 0
+ }</td></tr>
+<tr class="separator:a0861538a476a71457a80e698e710eef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af673f1284771957f47546a9da206eee6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#af673f1284771957f47546a9da206eee6">tram::Settings::Register</a> (ValuePtr ptr, name_t name)</td></tr>
-<tr class="separator:af673f1284771957f47546a9da206eee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a7133aeaf9315c09e9b4a8829deda83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a6a7133aeaf9315c09e9b4a8829deda83">tram::Settings::Register</a> (Value value, name_t name)</td></tr>
-<tr class="separator:a6a7133aeaf9315c09e9b4a8829deda83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56e0d9f488dcff9a350929bf4ef3f8d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a56e0d9f488dcff9a350929bf4ef3f8d5">tram::Settings::Register</a> (bool &amp;value, const char *name, uint32_t flags)</td></tr>
+<tr class="separator:a56e0d9f488dcff9a350929bf4ef3f8d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae777d5373a811ea16bac85f681608054"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#ae777d5373a811ea16bac85f681608054">tram::Settings::Register</a> (float &amp;value, const char *name, uint32_t flags)</td></tr>
+<tr class="separator:ae777d5373a811ea16bac85f681608054"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa67d64e20ae324efb9693944c7a56823"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#aa67d64e20ae324efb9693944c7a56823">tram::Settings::Register</a> (int32_t &amp;value, const char *name, uint32_t flags)</td></tr>
+<tr class="separator:aa67d64e20ae324efb9693944c7a56823"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a4aec9c01b32664d1849fe0afde230c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a8a4aec9c01b32664d1849fe0afde230c">tram::Settings::Register</a> (uint32_t &amp;value, const char *name, uint32_t flags)</td></tr>
+<tr class="separator:a8a4aec9c01b32664d1849fe0afde230c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e673200f6c75070a5e40f65e46f92dd"><td class="memItemLeft" align="right" valign="top">Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a2e673200f6c75070a5e40f65e46f92dd">tram::Settings::Get</a> (name_t name)</td></tr>
 <tr class="separator:a2e673200f6c75070a5e40f65e46f92dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33ec2bfcebab7ee764566a172fab7cb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a33ec2bfcebab7ee764566a172fab7cb5">tram::Settings::Set</a> (name_t name, Value value)</td></tr>
@@ -99,6 +123,10 @@ Functions</h2></td></tr>
 <tr class="separator:af223a059620ac414794cb974b5923b77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a455697cb70a2b3f4f481dba130d6b181"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a455697cb70a2b3f4f481dba130d6b181">tram::Settings::Load</a> (const char *file)</td></tr>
 <tr class="separator:a455697cb70a2b3f4f481dba130d6b181"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a482e75867f85885025dc262763b8df40"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a482e75867f85885025dc262763b8df40">tram::Settings::Flags</a> (name_t name)</td></tr>
+<tr class="separator:a482e75867f85885025dc262763b8df40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d6040ae5a9915dcc4d905693a63b67a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; name_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_settings.html#a4d6040ae5a9915dcc4d905693a63b67a">tram::Settings::GetSettings</a> (uint32_t filter)</td></tr>
+<tr class="separator:a4d6040ae5a9915dcc4d905693a63b67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

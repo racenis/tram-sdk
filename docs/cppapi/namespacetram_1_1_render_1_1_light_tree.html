@@ -73,6 +73,9 @@ $(function() {
   <div class="headertitle"><div class="title">tram::Render::LightTree Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Scene light tree.  
+<a href="namespacetram_1_1_render_1_1_light_tree.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -84,10 +87,13 @@ Functions</h2></td></tr>
 <tr class="memitem:a6baeaf6a8a379247c5a02079c1ef92cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_octree.html">Octree</a>&lt; <a class="el" href="structtram_1_1_render_1_1_light_tree_1_1_light.html">Light</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_light_tree.html#a6baeaf6a8a379247c5a02079c1ef92cb">light_tree</a> (&quot;light tree&quot;, 200)</td></tr>
 <tr class="separator:a6baeaf6a8a379247c5a02079c1ef92cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad6c0b080cf76a2e64216adc9318807e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_light_tree.html#aad6c0b080cf76a2e64216adc9318807e">AddLight</a> (<a class="el" href="structtram_1_1_render_1_1light__t.html">light_t</a> light, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> pos, float dist)</td></tr>
+<tr class="memdesc:aad6c0b080cf76a2e64216adc9318807e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a light to the light tree.  <a href="namespacetram_1_1_render_1_1_light_tree.html#aad6c0b080cf76a2e64216adc9318807e">More...</a><br /></td></tr>
 <tr class="separator:aad6c0b080cf76a2e64216adc9318807e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae353165809c1cd85edb8e42944c0dee4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_light_tree.html#ae353165809c1cd85edb8e42944c0dee4">FindLights</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> position, <a class="el" href="structtram_1_1_render_1_1light__t.html">light_t</a> *dest)</td></tr>
+<tr class="memdesc:ae353165809c1cd85edb8e42944c0dee4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the 4 nearest lights to a given position.  <a href="namespacetram_1_1_render_1_1_light_tree.html#ae353165809c1cd85edb8e42944c0dee4">More...</a><br /></td></tr>
 <tr class="separator:ae353165809c1cd85edb8e42944c0dee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbb22184ab1cca95ca3dd1f250e3f12d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_light_tree.html#acbb22184ab1cca95ca3dd1f250e3f12d">RemoveLight</a> (<a class="el" href="structtram_1_1_render_1_1light__t.html">light_t</a> light)</td></tr>
+<tr class="memdesc:acbb22184ab1cca95ca3dd1f250e3f12d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a light from the light tree.  <a href="namespacetram_1_1_render_1_1_light_tree.html#acbb22184ab1cca95ca3dd1f250e3f12d">More...</a><br /></td></tr>
 <tr class="separator:acbb22184ab1cca95ca3dd1f250e3f12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -95,7 +101,11 @@ Variables</h2></td></tr>
 <tr class="memitem:ace17f1d05c614eb447987103188f6fe8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_pool.html">Pool</a>&lt; <a class="el" href="structtram_1_1_render_1_1_light_tree_1_1_light.html">Light</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_light_tree.html#ace17f1d05c614eb447987103188f6fe8">light_list</a> (&quot;lighttree pool&quot;, 200)</td></tr>
 <tr class="separator:ace17f1d05c614eb447987103188f6fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Scene light tree. </p>
+<p >Contains all of the dynamic lights in the scene. Useful for finding which lights are illuminating a certain 3D model in the scene.</p>
+<p >Internally uses an <a class="el" href="classtram_1_1_octree.html">Octree</a>. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="aad6c0b080cf76a2e64216adc9318807e" name="aad6c0b080cf76a2e64216adc9318807e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aad6c0b080cf76a2e64216adc9318807e">&#9670;&nbsp;</a></span>AddLight()</h2>
 
@@ -128,6 +138,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Adds a light to the light tree. </p>
+
 </div>
 </div>
 <a id="ae353165809c1cd85edb8e42944c0dee4" name="ae353165809c1cd85edb8e42944c0dee4"></a>
@@ -155,6 +167,15 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Finds the 4 nearest lights to a given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>Position from which the lights will be searched. </td></tr>
+    <tr><td class="paramname">dest</td><td>Pointer to an array of 4 <a class="el" href="structtram_1_1_render_1_1light__t.html">light_t</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -201,6 +222,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Removes a light from the light tree. </p>
 
 </div>
 </div>

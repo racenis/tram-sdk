@@ -66,9 +66,98 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">character.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><code>#include &lt;<a class="el" href="character_8h_source.html">extensions/kitchensink/character.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="attributes_8h_source.html">extensions/kitchensink/attributes.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="entity_8h_source.html">framework/entity.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="framework_2file_8h_source.html">framework/file.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="hashmap_8h_source.html">templates/hashmap.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="pool_8h_source.html">templates/pool.h</a>&gt;</code><br />
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_ext_1_1_kitchensink_1_1_initial_attribute.html">tram::Ext::Kitchensink::InitialAttribute</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacetram_1_1_ext"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext.html">tram::Ext</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacetram_1_1_ext_1_1_kitchensink"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html">tram::Ext::Kitchensink</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_ext_1_1_kitchensink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extension containing random stuff that doesn't fit in anywhere else. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ab0abcbf31d67465bc42fb01a8eec2bef"><td class="memItemLeft" align="right" valign="top">Hashmap&lt; Faction * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#ab0abcbf31d67465bc42fb01a8eec2bef">tram::Ext::Kitchensink::factions</a> (&quot;Ext::Kitchensink::Faction Hashmap&quot;, FACTION_COUNT)</td></tr>
+<tr class="separator:ab0abcbf31d67465bc42fb01a8eec2bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4573e832ec8b71f1590c7f8e05a5c6c7"><td class="memItemLeft" align="right" valign="top">Hashmap&lt; CharacterClass * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#a4573e832ec8b71f1590c7f8e05a5c6c7">tram::Ext::Kitchensink::character_classes</a> (&quot;Ext::Kitchensink::Character Hashmap&quot;, CHARACTER_COUNT)</td></tr>
+<tr class="separator:a4573e832ec8b71f1590c7f8e05a5c6c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4518a370e2bb8c8160f21d50cd952c4"><td class="memItemLeft" align="right" valign="top">Hashmap&lt; Character * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#ad4518a370e2bb8c8160f21d50cd952c4">tram::Ext::Kitchensink::characters</a> (&quot;Ext::Kitchensink::CharacterClass Hashmap&quot;, CLASS_COUNT)</td></tr>
+<tr class="separator:ad4518a370e2bb8c8160f21d50cd952c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ae5c94b904d8f09d1f4fab73abcb58758"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="character_8cpp.html#ae5c94b904d8f09d1f4fab73abcb58758">FACTION_COUNT</a> = 50</td></tr>
+<tr class="separator:ae5c94b904d8f09d1f4fab73abcb58758"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6d152c6a0610a977ca689f1a964a1cf"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="character_8cpp.html#af6d152c6a0610a977ca689f1a964a1cf">CHARACTER_COUNT</a> = 50</td></tr>
+<tr class="separator:af6d152c6a0610a977ca689f1a964a1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b511158ca6796bb813f3bdb64369417"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="character_8cpp.html#a1b511158ca6796bb813f3bdb64369417">CLASS_COUNT</a> = 50</td></tr>
+<tr class="separator:a1b511158ca6796bb813f3bdb64369417"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="af6d152c6a0610a977ca689f1a964a1cf" name="af6d152c6a0610a977ca689f1a964a1cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6d152c6a0610a977ca689f1a964a1cf">&#9670;&nbsp;</a></span>CHARACTER_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t CHARACTER_COUNT = 50</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1b511158ca6796bb813f3bdb64369417" name="a1b511158ca6796bb813f3bdb64369417"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b511158ca6796bb813f3bdb64369417">&#9670;&nbsp;</a></span>CLASS_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t CLASS_COUNT = 50</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5c94b904d8f09d1f4fab73abcb58758" name="ae5c94b904d8f09d1f4fab73abcb58758"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5c94b904d8f09d1f4fab73abcb58758">&#9670;&nbsp;</a></span>FACTION_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t FACTION_COUNT = 50</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

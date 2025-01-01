@@ -11,6 +11,6 @@ var searchData=
   ['blitlineoctant0_8',['BlitLineOctant0',['../namespacetram_1_1_render_1_1_a_p_i.html#abad5cda7dcbf4bc90ed26a65e9cc5fde',1,'tram::Render::API']]],
   ['blitlineoctant1_9',['BlitLineOctant1',['../namespacetram_1_1_render_1_1_a_p_i.html#ae135a0bcb76598854ab17a5edafbb69c',1,'tram::Render::API']]],
   ['box_10',['Box',['../structtram_1_1_physics_1_1_collision_shape.html#a2fe0b464de813a7b9e4756ed81882bd3',1,'tram::Physics::CollisionShape']]],
-  ['breakable_11',['Breakable',['../classtram_1_1_ext_1_1_design_1_1_breakable.html#a4f7b2cb1bc4fa10a503299246d28b85c',1,'tram::Ext::Design::Breakable']]],
-  ['button_12',['Button',['../classtram_1_1_ext_1_1_design_1_1_button.html#a221be63630cad47bb512e37e46292967',1,'tram::Ext::Design::Button::Button()'],['../namespacetram_1_1_g_u_i.html#a36df4e7f162a96882c85976374864e7a',1,'tram::GUI::Button()']]]
+  ['breakable_11',['Breakable',['../classtram_1_1_ext_1_1_kitchensink_1_1_breakable.html#a391835e621041d6ff5d42830deb4551d',1,'tram::Ext::Kitchensink::Breakable']]],
+  ['button_12',['Button',['../classtram_1_1_ext_1_1_kitchensink_1_1_button.html#a1cdc713f455d7e0df9815ce1c75b67b9',1,'tram::Ext::Kitchensink::Button::Button()'],['../namespacetram_1_1_g_u_i.html#a36df4e7f162a96882c85976374864e7a',1,'tram::GUI::Button()']]]
 ];

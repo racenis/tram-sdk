@@ -72,10 +72,13 @@ $(function() {
   <div class="headertitle"><div class="title">tram::Script Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Scripting API.  
+<a href="namespacetram_1_1_script.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_script_1_1_language.html">Language</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_script_1_1_interface.html">Interface</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -88,14 +91,20 @@ Functions</h2></td></tr>
 <tr class="separator:a446f2631dceec969ceccee5841e8e019"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8e8489ae939b80cca8c7b220c230447"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a7d506d80abf93dd017a92dbcb169f9c4">value_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_script.html#af8e8489ae939b80cca8c7b220c230447">CallFunction</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> name, std::vector&lt; <a class="el" href="classtram_1_1_value.html">Value</a> &gt; parameters)</td></tr>
 <tr class="separator:af8e8489ae939b80cca8c7b220c230447"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d601f41f81643060037ab238452e643"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_script.html#a8d601f41f81643060037ab238452e643">SetLanguage</a> (<a class="el" href="structtram_1_1_script_1_1_language.html">Language</a> lang)</td></tr>
-<tr class="separator:a8d601f41f81643060037ab238452e643"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a658aaf0911ed091e1f6566375fc45142"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a7d506d80abf93dd017a92dbcb169f9c4">value_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_script.html#a658aaf0911ed091e1f6566375fc45142">Evaluate</a> (const char *code)</td></tr>
+<tr class="separator:a658aaf0911ed091e1f6566375fc45142"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad66379be86f633359248ee30b1d7b073"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_script.html#ad66379be86f633359248ee30b1d7b073">SetInterface</a> (<a class="el" href="classtram_1_1_script_1_1_interface.html">Interface</a> *new_language)</td></tr>
+<tr class="separator:ad66379be86f633359248ee30b1d7b073"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadbf03d624e136dc8f25ab15c15e9f1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_script.html#aadbf03d624e136dc8f25ab15c15e9f1a">LoadScript</a> (const char *path)</td></tr>
 <tr class="separator:aadbf03d624e136dc8f25ab15c15e9f1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3df9d0d4778b39ca7c95328ae4fd5a22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_script.html#a3df9d0d4778b39ca7c95328ae4fd5a22">Init</a> ()</td></tr>
 <tr class="separator:a3df9d0d4778b39ca7c95328ae4fd5a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Scripting API. </p>
+<p >Allows calling scripting language functions and allows them to call into framework functions.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/script.html">https://racenis.github.io/tram-sdk/documentation/framework/script.html</a> </dd></dl>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="af8e8489ae939b80cca8c7b220c230447" name="af8e8489ae939b80cca8c7b220c230447"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8e8489ae939b80cca8c7b220c230447">&#9670;&nbsp;</a></span>CallFunction()</h2>
 
@@ -118,6 +127,24 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a658aaf0911ed091e1f6566375fc45142" name="a658aaf0911ed091e1f6566375fc45142"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a658aaf0911ed091e1f6566375fc45142">&#9670;&nbsp;</a></span>Evaluate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram.html#a7d506d80abf93dd017a92dbcb169f9c4">value_t</a> tram::Script::Evaluate </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>code</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -239,17 +266,17 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8d601f41f81643060037ab238452e643" name="a8d601f41f81643060037ab238452e643"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d601f41f81643060037ab238452e643">&#9670;&nbsp;</a></span>SetLanguage()</h2>
+<a id="ad66379be86f633359248ee30b1d7b073" name="ad66379be86f633359248ee30b1d7b073"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad66379be86f633359248ee30b1d7b073">&#9670;&nbsp;</a></span>SetInterface()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::Script::SetLanguage </td>
+          <td class="memname">void tram::Script::SetInterface </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structtram_1_1_script_1_1_language.html">Language</a>&#160;</td>
-          <td class="paramname"><em>lang</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classtram_1_1_script_1_1_interface.html">Interface</a> *&#160;</td>
+          <td class="paramname"><em>new_language</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

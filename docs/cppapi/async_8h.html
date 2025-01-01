@@ -79,8 +79,10 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_async"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html">tram::Async</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_async"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multi-threading and <a class="el" href="classtram_1_1_resource.html">Resource</a> streaming. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -88,12 +90,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a9db009e1493d70c2ce388b2910e32fa2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a9db009e1493d70c2ce388b2910e32fa2">tram::Async::RequestResource</a> (EntityComponent *requester, Resource *resource)</td></tr>
 <tr class="memdesc:a9db009e1493d70c2ce388b2910e32fa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resource to the loading queue.  <a href="namespacetram_1_1_async.html#a9db009e1493d70c2ce388b2910e32fa2">More...</a><br /></td></tr>
 <tr class="separator:a9db009e1493d70c2ce388b2910e32fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#aa2234c4cb0590d5672aa3bf4bb78703f">tram::Async::RequestResource</a> (void(*callback)(void *data), void *data, Resource *resource)</td></tr>
+<tr class="memdesc:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resource to the loading queue.  <a href="namespacetram_1_1_async.html#aa2234c4cb0590d5672aa3bf4bb78703f">More...</a><br /></td></tr>
+<tr class="separator:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00df174c441553df6c3728c4355a4b7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a00df174c441553df6c3728c4355a4b7e">tram::Async::CancelRequest</a> (EntityComponent *requester, Resource *resource)</td></tr>
 <tr class="memdesc:a00df174c441553df6c3728c4355a4b7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels a resource load request.  <a href="namespacetram_1_1_async.html#a00df174c441553df6c3728c4355a4b7e">More...</a><br /></td></tr>
 <tr class="separator:a00df174c441553df6c3728c4355a4b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2195d4da0c29e9cf6595ee523f483a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#ac2195d4da0c29e9cf6595ee523f483a2">tram::Async::LoadDependency</a> (Resource *res)</td></tr>
-<tr class="memdesc:ac2195d4da0c29e9cf6595ee523f483a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a resource from disk, skipping the queue.  <a href="namespacetram_1_1_async.html#ac2195d4da0c29e9cf6595ee523f483a2">More...</a><br /></td></tr>
-<tr class="separator:ac2195d4da0c29e9cf6595ee523f483a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e1b28345fded87fa20aee192ddcce0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a9e1b28345fded87fa20aee192ddcce0f">tram::Async::LoadDependency</a> (Resource *resource)</td></tr>
+<tr class="memdesc:a9e1b28345fded87fa20aee192ddcce0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a resource from disk, skipping the queue.  <a href="namespacetram_1_1_async.html#a9e1b28345fded87fa20aee192ddcce0f">More...</a><br /></td></tr>
+<tr class="separator:a9e1b28345fded87fa20aee192ddcce0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf1180d68deb60ea65e90073f8f8eaf0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#abf1180d68deb60ea65e90073f8f8eaf0">tram::Async::Init</a> (size_t threads)</td></tr>
 <tr class="memdesc:abf1180d68deb60ea65e90073f8f8eaf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the async resource loader thread.  <a href="namespacetram_1_1_async.html#abf1180d68deb60ea65e90073f8f8eaf0">More...</a><br /></td></tr>
 <tr class="separator:abf1180d68deb60ea65e90073f8f8eaf0"><td class="memSeparator" colspan="2">&#160;</td></tr>

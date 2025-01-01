@@ -74,6 +74,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Simple queue implementation.  
+ <a href="classtram_1_1_queue.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="queue_8h_source.html">queue.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -125,7 +128,11 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:aa0cce633bc90e45e142d32a0e7827d88"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_queue.html#aa0cce633bc90e45e142d32a0e7827d88">spinlock</a> = {false}</td></tr>
 <tr class="separator:aa0cce633bc90e45e142d32a0e7827d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+class tram::Queue&lt; T &gt;</div><p >Simple queue implementation. </p>
+<p >This queue uses a circular buffer internally. The <a class="el" href="classtram_1_1_queue.html#a85bfdb354ca6e34201d6554bc541bfe1" title="Thread safe.">push()</a> and <a class="el" href="classtram_1_1_queue.html#a0c059b66ef5b9bac992a134da0b9768a" title="Thread safe.">try_pop()</a> methods have locks on them, so they can be used to create queues for passing messages between threads. I have no idea how multithreading works, use at your own risk. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="adbc2d690665b980a97b26eb2cf0fb4e4" name="adbc2d690665b980a97b26eb2cf0fb4e4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adbc2d690665b980a97b26eb2cf0fb4e4">&#9670;&nbsp;</a></span>Queue() <span class="overload">[1/4]</span></h2>
 

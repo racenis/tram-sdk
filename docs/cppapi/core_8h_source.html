@@ -69,43 +69,50 @@ $(function() {
   <div class="headertitle"><div class="title">core.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="core_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// All rights reserved.</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifndef TRAM_SDK_FRAMEWORK_CORE_H</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define TRAM_SDK_FRAMEWORK_CORE_H</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram.html">tram</a> {</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">   11</a></span><span class="keyword">typedef</span> uint32_t <a class="code hl_typedef" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>;</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><a class="code hl_typedef" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a> <a class="code hl_function" href="namespacetram.html#ad9db30198d176e4ffed5b38273c4beb0">GenerateID</a>();</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>uint32_t <a class="code hl_function" href="namespacetram.html#a45d3de117b68f4c584f4b9012b230557">GetTick</a>();</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keywordtype">double</span> <a class="code hl_function" href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">GetTickTime</a>();</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keywordtype">float</span> <a class="code hl_function" href="namespacetram.html#af8af5a4731abe7a1b4cc34780bd1eb06">GetDeltaTime</a>();</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="namespacetram.html#a3b5616291800641604306bbf678b3873">GetVersion</a>();</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="namespacetram_1_1_core.html">   21</a></span><span class="keyword">namespace </span>Core {</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_core.html#a1704d5ca7badba9cc7486134bf2cc578">Init</a>();</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_core.html#aca02676414df9541f853df2376da13bd">Update</a>();</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>}</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>}</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif </span><span class="comment">// TRAM_SDK_FRAMEWORK_CORE_H</span></div>
-<div class="ttc" id="anamespacetram_1_1_core_html_a1704d5ca7badba9cc7486134bf2cc578"><div class="ttname"><a href="namespacetram_1_1_core.html#a1704d5ca7badba9cc7486134bf2cc578">tram::Core::Init</a></div><div class="ttdeci">void Init()</div><div class="ttdoc">Initializes the core of the framework.</div><div class="ttdef"><b>Definition:</b> core.cpp:28</div></div>
-<div class="ttc" id="anamespacetram_1_1_core_html_aca02676414df9541f853df2376da13bd"><div class="ttname"><a href="namespacetram_1_1_core.html#aca02676414df9541f853df2376da13bd">tram::Core::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdoc">Updates the core system.</div><div class="ttdef"><b>Definition:</b> core.cpp:38</div></div>
-<div class="ttc" id="anamespacetram_html"><div class="ttname"><a href="namespacetram.html">tram</a></div><div class="ttdef"><b>Definition:</b> api.h:9</div></div>
-<div class="ttc" id="anamespacetram_html_a25ae39989bce3dab64401c3956be9c03"><div class="ttname"><a href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">tram::id_t</a></div><div class="ttdeci">uint32_t id_t</div><div class="ttdef"><b>Definition:</b> core.h:11</div></div>
-<div class="ttc" id="anamespacetram_html_a370b9480a4f179e6e4c41d9d6a70fcb7"><div class="ttname"><a href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">tram::GetTickTime</a></div><div class="ttdeci">double GetTickTime()</div><div class="ttdoc">Returns the time at the start of the current tick.</div><div class="ttdef"><b>Definition:</b> core.cpp:64</div></div>
-<div class="ttc" id="anamespacetram_html_a3b5616291800641604306bbf678b3873"><div class="ttname"><a href="namespacetram.html#a3b5616291800641604306bbf678b3873">tram::GetVersion</a></div><div class="ttdeci">const char * GetVersion()</div><div class="ttdef"><b>Definition:</b> core.cpp:72</div></div>
-<div class="ttc" id="anamespacetram_html_a45d3de117b68f4c584f4b9012b230557"><div class="ttname"><a href="namespacetram.html#a45d3de117b68f4c584f4b9012b230557">tram::GetTick</a></div><div class="ttdeci">uint32_t GetTick()</div><div class="ttdoc">Returns the current tick.</div><div class="ttdef"><b>Definition:</b> core.cpp:57</div></div>
-<div class="ttc" id="anamespacetram_html_ad9db30198d176e4ffed5b38273c4beb0"><div class="ttname"><a href="namespacetram.html#ad9db30198d176e4ffed5b38273c4beb0">tram::GenerateID</a></div><div class="ttdeci">id_t GenerateID()</div><div class="ttdoc">Generates a unique ID number.</div><div class="ttdef"><b>Definition:</b> core.cpp:21</div></div>
-<div class="ttc" id="anamespacetram_html_af8af5a4731abe7a1b4cc34780bd1eb06"><div class="ttname"><a href="namespacetram.html#af8af5a4731abe7a1b4cc34780bd1eb06">tram::GetDeltaTime</a></div><div class="ttdeci">float GetDeltaTime()</div><div class="ttdef"><b>Definition:</b> core.cpp:68</div></div>
+<a href="core_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#ifndef TRAM_SDK_FRAMEWORK_CORE_H</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#define TRAM_SDK_FRAMEWORK_CORE_H</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram.html">tram</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">   10</a></span><span class="keyword">typedef</span> uint32_t <a class="code hl_typedef" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><a class="code hl_typedef" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a> <a class="code hl_function" href="namespacetram.html#ad9db30198d176e4ffed5b38273c4beb0">GenerateID</a>();</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>uint32_t <a class="code hl_function" href="namespacetram.html#a45d3de117b68f4c584f4b9012b230557">GetTick</a>();</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>uint32_t <a class="code hl_function" href="namespacetram.html#aa3909d6bfd02679f663541f787f9c7b4">GetFrame</a>();</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keywordtype">double</span> <a class="code hl_function" href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">GetTickTime</a>();</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keywordtype">double</span> <a class="code hl_function" href="namespacetram.html#aed55d85a1ab5cc85a558d180313eb64e">GetFrameTime</a>();</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>uint32_t <a class="code hl_function" href="namespacetram.html#ac5510fd86603682d0cac4954bff11620">GetDeltaTick</a>();</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keywordtype">float</span> <a class="code hl_function" href="namespacetram.html#af8af5a4731abe7a1b4cc34780bd1eb06">GetDeltaTime</a>();</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="namespacetram.html#a3b5616291800641604306bbf678b3873">GetVersion</a>();</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="namespacetram_1_1_core.html">   25</a></span><span class="keyword">namespace </span>Core {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_core.html#a1704d5ca7badba9cc7486134bf2cc578">Init</a>();</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_core.html#aca02676414df9541f853df2376da13bd">Update</a>();</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>}</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#endif </span><span class="comment">// TRAM_SDK_FRAMEWORK_CORE_H</span></div>
+<div class="ttc" id="anamespacetram_1_1_core_html_a1704d5ca7badba9cc7486134bf2cc578"><div class="ttname"><a href="namespacetram_1_1_core.html#a1704d5ca7badba9cc7486134bf2cc578">tram::Core::Init</a></div><div class="ttdeci">void Init()</div><div class="ttdoc">Initializes the core of the framework.</div><div class="ttdef"><b>Definition:</b> core.cpp:42</div></div>
+<div class="ttc" id="anamespacetram_1_1_core_html_aca02676414df9541f853df2376da13bd"><div class="ttname"><a href="namespacetram_1_1_core.html#aca02676414df9541f853df2376da13bd">tram::Core::Update</a></div><div class="ttdeci">void Update()</div><div class="ttdoc">Updates the core system.</div><div class="ttdef"><b>Definition:</b> core.cpp:57</div></div>
+<div class="ttc" id="anamespacetram_html"><div class="ttname"><a href="namespacetram.html">tram</a></div><div class="ttdoc">Serialization, i.e.</div></div>
+<div class="ttc" id="anamespacetram_html_a25ae39989bce3dab64401c3956be9c03"><div class="ttname"><a href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">tram::id_t</a></div><div class="ttdeci">uint32_t id_t</div><div class="ttdef"><b>Definition:</b> core.h:10</div></div>
+<div class="ttc" id="anamespacetram_html_a370b9480a4f179e6e4c41d9d6a70fcb7"><div class="ttname"><a href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">tram::GetTickTime</a></div><div class="ttdeci">double GetTickTime()</div><div class="ttdoc">Same as GetFrameTime()</div><div class="ttdef"><b>Definition:</b> core.cpp:109</div></div>
+<div class="ttc" id="anamespacetram_html_a3b5616291800641604306bbf678b3873"><div class="ttname"><a href="namespacetram.html#a3b5616291800641604306bbf678b3873">tram::GetVersion</a></div><div class="ttdeci">const char * GetVersion()</div><div class="ttdoc">Returns the version identifier of the runtime.</div><div class="ttdef"><b>Definition:</b> core.cpp:129</div></div>
+<div class="ttc" id="anamespacetram_html_a45d3de117b68f4c584f4b9012b230557"><div class="ttname"><a href="namespacetram.html#a45d3de117b68f4c584f4b9012b230557">tram::GetTick</a></div><div class="ttdeci">uint32_t GetTick()</div><div class="ttdoc">Returns the current tick.</div><div class="ttdef"><b>Definition:</b> core.cpp:90</div></div>
+<div class="ttc" id="anamespacetram_html_aa3909d6bfd02679f663541f787f9c7b4"><div class="ttname"><a href="namespacetram.html#aa3909d6bfd02679f663541f787f9c7b4">tram::GetFrame</a></div><div class="ttdeci">uint32_t GetFrame()</div><div class="ttdoc">Returns the current frame.</div><div class="ttdef"><b>Definition:</b> core.cpp:96</div></div>
+<div class="ttc" id="anamespacetram_html_ac5510fd86603682d0cac4954bff11620"><div class="ttname"><a href="namespacetram.html#ac5510fd86603682d0cac4954bff11620">tram::GetDeltaTick</a></div><div class="ttdeci">uint32_t GetDeltaTick()</div><div class="ttdoc">Returns the tick delta.</div><div class="ttdef"><b>Definition:</b> core.cpp:103</div></div>
+<div class="ttc" id="anamespacetram_html_ad9db30198d176e4ffed5b38273c4beb0"><div class="ttname"><a href="namespacetram.html#ad9db30198d176e4ffed5b38273c4beb0">tram::GenerateID</a></div><div class="ttdeci">id_t GenerateID()</div><div class="ttdoc">Generates a unique ID number.</div><div class="ttdef"><b>Definition:</b> core.cpp:35</div></div>
+<div class="ttc" id="anamespacetram_html_aed55d85a1ab5cc85a558d180313eb64e"><div class="ttname"><a href="namespacetram.html#aed55d85a1ab5cc85a558d180313eb64e">tram::GetFrameTime</a></div><div class="ttdeci">double GetFrameTime()</div><div class="ttdoc">Returns the time at the start of the current frame.</div><div class="ttdef"><b>Definition:</b> core.cpp:116</div></div>
+<div class="ttc" id="anamespacetram_html_af8af5a4731abe7a1b4cc34780bd1eb06"><div class="ttname"><a href="namespacetram.html#af8af5a4731abe7a1b4cc34780bd1eb06">tram::GetDeltaTime</a></div><div class="ttdeci">float GetDeltaTime()</div><div class="ttdoc">Returns the time passed between frames.</div><div class="ttdef"><b>Definition:</b> core.cpp:124</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

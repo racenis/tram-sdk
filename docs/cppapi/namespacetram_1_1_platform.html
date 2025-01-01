@@ -77,14 +77,22 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram_1_1_platform_1_1_input"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_platform_1_1_input.html">Input</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_platform_1_1_input"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespacetram_1_1_platform_1_1_input.html" title="Input backend API.">Input</a> backend API. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_platform_1_1_window"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_platform_1_1_window.html">Window</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_platform_1_1_window"><td class="mdescLeft">&#160;</td><td class="mdescRight">Windowing backend API. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a62f1df4ce7fc6c46cd5cf3d348d1ac5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_platform.html#a62f1df4ce7fc6c46cd5cf3d348d1ac5d">SaveImageToDisk</a> (const char *name, int w, int h, const char *image)</td></tr>
+<tr class="memdesc:a62f1df4ce7fc6c46cd5cf3d348d1ac5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves image to disk.  <a href="namespacetram_1_1_platform.html#a62f1df4ce7fc6c46cd5cf3d348d1ac5d">More...</a><br /></td></tr>
 <tr class="separator:a62f1df4ce7fc6c46cd5cf3d348d1ac5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abafedf61de1bb3dc299c601f678ca6d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_platform.html#abafedf61de1bb3dc299c601f678ca6d5">TryDebugging</a> ()</td></tr>
+<tr class="memdesc:abafedf61de1bb3dc299c601f678ca6d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to break into debugger.  <a href="namespacetram_1_1_platform.html#abafedf61de1bb3dc299c601f678ca6d5">More...</a><br /></td></tr>
+<tr class="separator:abafedf61de1bb3dc299c601f678ca6d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ffc908587bc0a0680d4e923bf6fb54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_platform.html#a43ffc908587bc0a0680d4e923bf6fb54">ShowErrorDialog</a> (const char *message, const char *title)</td></tr>
+<tr class="separator:a43ffc908587bc0a0680d4e923bf6fb54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13e3e0fd03175cb1a3fcab404e3f0ef5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_platform.html#a13e3e0fd03175cb1a3fcab404e3f0ef5">SetScale</a> (int s)</td></tr>
 <tr class="separator:a13e3e0fd03175cb1a3fcab404e3f0ef5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -136,6 +144,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Saves image to disk. </p>
+<p >Image needs to be in a RGB 8-bit format. </p>
+
 </div>
 </div>
 <a id="a13e3e0fd03175cb1a3fcab404e3f0ef5" name="a13e3e0fd03175cb1a3fcab404e3f0ef5"></a>
@@ -153,6 +164,54 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a43ffc908587bc0a0680d4e923bf6fb54" name="a43ffc908587bc0a0680d4e923bf6fb54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43ffc908587bc0a0680d4e923bf6fb54">&#9670;&nbsp;</a></span>ShowErrorDialog()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Platform::ShowErrorDialog </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>message</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>title</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abafedf61de1bb3dc299c601f678ca6d5" name="abafedf61de1bb3dc299c601f678ca6d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abafedf61de1bb3dc299c601f678ca6d5">&#9670;&nbsp;</a></span>TryDebugging()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Platform::TryDebugging </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Attempts to break into debugger. </p>
+<p >This function will try to determine if the program is being debugged, and if it is, then it will break into debugger. If it isn't being debugged, it will do nothing. </p>
 
 </div>
 </div>

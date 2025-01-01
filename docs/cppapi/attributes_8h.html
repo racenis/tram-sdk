@@ -74,6 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;<a class="el" href="core_8h_source.html">framework/core.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="uid_8h_source.html">framework/uid.h</a>&gt;</code><br />
 </div>
 <p><a href="attributes_8h_source.html">Go to the source code of this file.</a></p>
@@ -82,7 +83,9 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_ext_1_1_kitchensink_1_1_attribute.html">tram::Ext::Kitchensink::Attribute</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_ext_1_1_kitchensink_1_1_attribute_modifier.html">tram::Ext::Kitchensink::AttributeModifier</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_ext_1_1_kitchensink_1_1_effect.html">tram::Ext::Kitchensink::Effect</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_ext_1_1_kitchensink_1_1_attribute_info.html">tram::Ext::Kitchensink::AttributeInfo</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_ext_1_1_kitchensink_1_1_attribute_container.html">tram::Ext::Kitchensink::AttributeContainer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -90,16 +93,19 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_ext"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext.html">tram::Ext</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_ext_1_1_kitchensink"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html">tram::Ext::Kitchensink</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_ext_1_1_kitchensink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extension containing random stuff that doesn't fit in anywhere else. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a6c0031a7853f40659433180bd98fb62a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">: int { <a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#a6c0031a7853f40659433180bd98fb62aa01020604e4925e409914b5e178df7b49">tram::Ext::Kitchensink::ATTRIBUTE_MODIFIER_ADD</a>
-, <a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#a6c0031a7853f40659433180bd98fb62aa10e89501bb14b896efda9472c0f29663">tram::Ext::Kitchensink::ATTRIBUTE_MODIFIER_MULTIPLY</a>
+<tr class="memitem:a6c0031a7853f40659433180bd98fb62a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">: int { <a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#a6c0031a7853f40659433180bd98fb62aa92bb5b3112a435f52d9cee38c24cff0f">tram::Ext::Kitchensink::EFFECT_RAISE_BASE</a>
+, <a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#a6c0031a7853f40659433180bd98fb62aa423e4ab891e299f94c62e8e47d1d0b56">tram::Ext::Kitchensink::EFFECT_RAISE_CONSTANT</a>
+, <a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#a6c0031a7853f40659433180bd98fb62aa09ec84b29c3ed038c814ca806a69c13b">tram::Ext::Kitchensink::EFFECT_NEGATE_CHANGE</a>
  }</td></tr>
 <tr class="separator:a6c0031a7853f40659433180bd98fb62a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

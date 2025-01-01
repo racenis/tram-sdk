@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Tramway SDK: tram::File Class Reference</title>
+<title>Tramway SDK: tram::File Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,24 +67,44 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classtram_1_1_file-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">tram::File Class Reference</div></div>
+  <div class="headertitle"><div class="title">tram::File Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="framework_2file_8h_source.html">file.h</a>&gt;</code></p>
+<p>Very fast file reader/writer.  
+ <a href="classtram_1_1_file.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="framework_2file_8h_source.html">framework/file.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ab340a7edca3c73f54d764cd17b362477"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477">AccessMode</a> : uint32_t { <br />
+&#160;&#160;<a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a5e3d5e80c10e5d25d26a648c1f26e02d">READ</a> = 1
+, <a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a4e4881217ac0f0eed34368fb2d5fcece">WRITE</a> = 2
+, <a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a3498da60161cfd421524d4b5a5262d1f">PAUSE_LINE</a> = 4
+, <a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a6518ec116fa14720023ab555ac98fc78">TEXT</a> = 8
+, <br />
+&#160;&#160;<a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a48058d1f6460f840218c5f0f3cf9189d">BINARY</a> = 16
+<br />
+ }</td></tr>
+<tr class="separator:ab340a7edca3c73f54d764cd17b362477"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab1b5812649adfd4ed0b16998c08beed6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#ab1b5812649adfd4ed0b16998c08beed6">File</a> (char const *<a class="el" href="classtram_1_1_file.html#a3d25cbe667ab658dbaea6655a6321782">path</a>, uint32_t <a class="el" href="classtram_1_1_file.html#acd6ce0e7642fe94f378dc8a749efdcb9">mode</a>)</td></tr>
+<tr class="memdesc:ab1b5812649adfd4ed0b16998c08beed6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file.  <a href="classtram_1_1_file.html#ab1b5812649adfd4ed0b16998c08beed6">More...</a><br /></td></tr>
 <tr class="separator:ab1b5812649adfd4ed0b16998c08beed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56f8b809eeff67f9d5ed18580d8fe857"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a56f8b809eeff67f9d5ed18580d8fe857">~File</a> ()</td></tr>
 <tr class="separator:a56f8b809eeff67f9d5ed18580d8fe857"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35ac8b7f25c9644484adb16e6315ac13"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a35ac8b7f25c9644484adb16e6315ac13">is_open</a> ()</td></tr>
+<tr class="memdesc:a35ac8b7f25c9644484adb16e6315ac13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if file was opened.  <a href="classtram_1_1_file.html#a35ac8b7f25c9644484adb16e6315ac13">More...</a><br /></td></tr>
 <tr class="separator:a35ac8b7f25c9644484adb16e6315ac13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a613cfcd9ed88d5edacd33b345ddaa558"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a613cfcd9ed88d5edacd33b345ddaa558">is_continue</a> ()</td></tr>
+<tr class="memdesc:a613cfcd9ed88d5edacd33b345ddaa558"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if file parser has not reached end.  <a href="classtram_1_1_file.html#a613cfcd9ed88d5edacd33b345ddaa558">More...</a><br /></td></tr>
 <tr class="separator:a613cfcd9ed88d5edacd33b345ddaa558"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89b2859ed0ef1b7d66c5a4d9a2d536b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a89b2859ed0ef1b7d66c5a4d9a2d536b2">write_int8</a> (int8_t value)</td></tr>
 <tr class="separator:a89b2859ed0ef1b7d66c5a4d9a2d536b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,6 +131,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acc94c6e5b903c64232ac97079038db91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#acc94c6e5b903c64232ac97079038db91">write_string</a> (const char *value)</td></tr>
 <tr class="separator:acc94c6e5b903c64232ac97079038db91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c2767ad1dfe1bc5d644f1a255ba9875"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a7c2767ad1dfe1bc5d644f1a255ba9875">write_newline</a> ()</td></tr>
+<tr class="memdesc:a7c2767ad1dfe1bc5d644f1a255ba9875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a newline to the file.  <a href="classtram_1_1_file.html#a7c2767ad1dfe1bc5d644f1a255ba9875">More...</a><br /></td></tr>
 <tr class="separator:a7c2767ad1dfe1bc5d644f1a255ba9875"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a039568453770acbc144c9fdce0f3fc68"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a039568453770acbc144c9fdce0f3fc68">read_int8</a> ()</td></tr>
 <tr class="separator:a039568453770acbc144c9fdce0f3fc68"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,11 +158,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a384df5b223c9e0d2535a622e282a356e"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a384df5b223c9e0d2535a622e282a356e">read_string</a> ()</td></tr>
 <tr class="separator:a384df5b223c9e0d2535a622e282a356e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa1c1eca4e5feb35b576da5533408b17"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#aaa1c1eca4e5feb35b576da5533408b17">read_line</a> ()</td></tr>
+<tr class="memdesc:aaa1c1eca4e5feb35b576da5533408b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses off the remaining line.  <a href="classtram_1_1_file.html#aaa1c1eca4e5feb35b576da5533408b17">More...</a><br /></td></tr>
 <tr class="separator:aaa1c1eca4e5feb35b576da5533408b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5086d2c4a3d374fbf26241e6c14c64f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#ab5086d2c4a3d374fbf26241e6c14c64f">skip_linebreak</a> ()</td></tr>
+<tr class="memdesc:ab5086d2c4a3d374fbf26241e6c14c64f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Skips over a linebreak.  <a href="classtram_1_1_file.html#ab5086d2c4a3d374fbf26241e6c14c64f">More...</a><br /></td></tr>
 <tr class="separator:ab5086d2c4a3d374fbf26241e6c14c64f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c4dc235347eed3842168ad548d1d5a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a5c4dc235347eed3842168ad548d1d5a6">reset_flags</a> ()</td></tr>
+<tr class="memdesc:a5c4dc235347eed3842168ad548d1d5a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the error flag.  <a href="classtram_1_1_file.html#a5c4dc235347eed3842168ad548d1d5a6">More...</a><br /></td></tr>
 <tr class="separator:a5c4dc235347eed3842168ad548d1d5a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14fa0ae7b7ebe485fddf204df95c905f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a14fa0ae7b7ebe485fddf204df95c905f">was_error</a> ()</td></tr>
+<tr class="memdesc:a14fa0ae7b7ebe485fddf204df95c905f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if there has been an error.  <a href="classtram_1_1_file.html#a14fa0ae7b7ebe485fddf204df95c905f">More...</a><br /></td></tr>
+<tr class="separator:a14fa0ae7b7ebe485fddf204df95c905f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -157,15 +184,46 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aa4875014953235da2776dac766558fad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5dfaae97d414184a8999f401fe07b01f"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a5dfaae97d414184a8999f401fe07b01f">buffer_end</a> = nullptr</td></tr>
 <tr class="separator:a5dfaae97d414184a8999f401fe07b01f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05cff1730438eb6f3e92326a02637cfd"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a05cff1730438eb6f3e92326a02637cfd">cursor</a> = nullptr</td></tr>
-<tr class="separator:a05cff1730438eb6f3e92326a02637cfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6e49e24dfdf6b4661ce990faaa0c693"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#ae6e49e24dfdf6b4661ce990faaa0c693">cursor_end</a> = nullptr</td></tr>
-<tr class="separator:ae6e49e24dfdf6b4661ce990faaa0c693"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab46928bf23804121764d46323dd96699"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_file_reader.html">FileReader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#ab46928bf23804121764d46323dd96699">disk_reader</a> = nullptr</td></tr>
-<tr class="separator:ab46928bf23804121764d46323dd96699"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f89690500563575b1e020ae05b1ddb0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_file_writer.html">FileWriter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a9f89690500563575b1e020ae05b1ddb0">disk_writer</a> = nullptr</td></tr>
-<tr class="separator:a9f89690500563575b1e020ae05b1ddb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13e1dda97ae8a262ce9e28257c2aea1e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_file_reader.html">FileReader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a13e1dda97ae8a262ce9e28257c2aea1e">reader</a> = nullptr</td></tr>
+<tr class="separator:a13e1dda97ae8a262ce9e28257c2aea1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae80f51acbe4f7c016309d1525b00e25a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_file_writer.html">FileWriter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#ae80f51acbe4f7c016309d1525b00e25a">writer</a> = nullptr</td></tr>
+<tr class="separator:ae80f51acbe4f7c016309d1525b00e25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00a329e60e55d43c3df1159b5f36de18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_file_reader_parser.html">FileReaderParser</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a00a329e60e55d43c3df1159b5f36de18">reader_parser</a> = nullptr</td></tr>
+<tr class="separator:a00a329e60e55d43c3df1159b5f36de18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a53d60bca18a5afefa92a1ed1b70bd1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_file_writer_parser.html">FileWriterParser</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file.html#a3a53d60bca18a5afefa92a1ed1b70bd1">writer_parser</a> = nullptr</td></tr>
+<tr class="separator:a3a53d60bca18a5afefa92a1ed1b70bd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Very fast file reader/writer. </p>
+<p >For reading a file, set the <a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a5e3d5e80c10e5d25d26a648c1f26e02d">File::READ</a> flag in the mode bitmask. The file, referenced by the path, will be immediately opened, if possible. After opening, it will be fully read into memory. After that you can use all of the read_xyz() methods.</p>
+<p >To check if the file has ended and no more reading can be done, use the <a class="el" href="classtram_1_1_file.html#a613cfcd9ed88d5edacd33b345ddaa558" title="Returns true if file parser has not reached end.">is_continue()</a> method.</p>
+<p >To check whether the file was opened, use the <a class="el" href="classtram_1_1_file.html#a35ac8b7f25c9644484adb16e6315ac13" title="Returns true if file was opened.">is_open()</a> method.</p>
+<p >For writing to a file, set the <a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477a4e4881217ac0f0eed34368fb2d5fcece">File::WRITE</a> flag in the mode bitmask.</p>
+<p >After that you can use the various write_xyz() methods.</p>
+<p >All of the writing will take place in a large buffer, which after the <a class="el" href="classtram_1_1_file.html" title="Very fast file reader/writer.">File</a> class is destructed will be written to disk.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/file.html">https://racenis.github.io/tram-sdk/documentation/framework/file.html</a> </dd></dl>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="ab340a7edca3c73f54d764cd17b362477" name="ab340a7edca3c73f54d764cd17b362477"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab340a7edca3c73f54d764cd17b362477">&#9670;&nbsp;</a></span>AccessMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classtram_1_1_file.html#ab340a7edca3c73f54d764cd17b362477">tram::File::AccessMode</a> : uint32_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab340a7edca3c73f54d764cd17b362477a5e3d5e80c10e5d25d26a648c1f26e02d" name="ab340a7edca3c73f54d764cd17b362477a5e3d5e80c10e5d25d26a648c1f26e02d"></a>READ&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab340a7edca3c73f54d764cd17b362477a4e4881217ac0f0eed34368fb2d5fcece" name="ab340a7edca3c73f54d764cd17b362477a4e4881217ac0f0eed34368fb2d5fcece"></a>WRITE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab340a7edca3c73f54d764cd17b362477a3498da60161cfd421524d4b5a5262d1f" name="ab340a7edca3c73f54d764cd17b362477a3498da60161cfd421524d4b5a5262d1f"></a>PAUSE_LINE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab340a7edca3c73f54d764cd17b362477a6518ec116fa14720023ab555ac98fc78" name="ab340a7edca3c73f54d764cd17b362477a6518ec116fa14720023ab555ac98fc78"></a>TEXT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab340a7edca3c73f54d764cd17b362477a48058d1f6460f840218c5f0f3cf9189d" name="ab340a7edca3c73f54d764cd17b362477a48058d1f6460f840218c5f0f3cf9189d"></a>BINARY&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab1b5812649adfd4ed0b16998c08beed6" name="ab1b5812649adfd4ed0b16998c08beed6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab1b5812649adfd4ed0b16998c08beed6">&#9670;&nbsp;</a></span>File()</h2>
@@ -192,6 +250,15 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Opens a file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td><a class="el" href="classtram_1_1_path.html" title="Base class for graphs.">Path</a> to the file. If no prefix is set, this path will be interpreted as being relative to the project/executable working directory. </td></tr>
+    <tr><td class="paramname">mode</td><td>Mode is a bitmask consisting of flags that can be found in the AccessMode enum. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -228,6 +295,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Returns true if file parser has not reached end. </p>
+
 </div>
 </div>
 <a id="a35ac8b7f25c9644484adb16e6315ac13" name="a35ac8b7f25c9644484adb16e6315ac13"></a>
@@ -244,6 +313,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Returns true if file was opened. </p>
 
 </div>
 </div>
@@ -364,6 +435,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Parses off the remaining line. </p>
+
 </div>
 </div>
 <a id="aca554d85c9430ee8d39ddb16c41e72e3" name="aca554d85c9430ee8d39ddb16c41e72e3"></a>
@@ -483,6 +556,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Resets the error flag. </p>
+
 </div>
 </div>
 <a id="ab5086d2c4a3d374fbf26241e6c14c64f" name="ab5086d2c4a3d374fbf26241e6c14c64f"></a>
@@ -499,6 +574,29 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Skips over a linebreak. </p>
+<p >Probably only useful if the file has been opened for reading in the <code>MODE_PAUSE_LINE</code> mode, since the parser will stop at any new line and the only way to continue parsing is to use this method. </p>
+
+</div>
+</div>
+<a id="a14fa0ae7b7ebe485fddf204df95c905f" name="a14fa0ae7b7ebe485fddf204df95c905f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14fa0ae7b7ebe485fddf204df95c905f">&#9670;&nbsp;</a></span>was_error()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::File::was_error </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if there has been an error. </p>
+<p >The error flag does not get cleared on its own, so if an error ocurred anywhere, this method will report that. To determine whether a certain value has been parsed correctly, first use the <a class="el" href="classtram_1_1_file.html#a5c4dc235347eed3842168ad548d1d5a6" title="Resets the error flag.">reset_flags()</a> method to reset the error flag, then use the read_xyz() method to read in the value and then use this method to determine whether there was an error in parsing that specific method. </p>
 
 </div>
 </div>
@@ -643,6 +741,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Writes a newline to the file. </p>
+<p >The newline is just the <code>\n</code> character. </p>
+
 </div>
 </div>
 <a id="acc94c6e5b903c64232ac97079038db91" name="acc94c6e5b903c64232ac97079038db91"></a>
@@ -778,62 +879,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a05cff1730438eb6f3e92326a02637cfd" name="a05cff1730438eb6f3e92326a02637cfd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05cff1730438eb6f3e92326a02637cfd">&#9670;&nbsp;</a></span>cursor</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* tram::File::cursor = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae6e49e24dfdf6b4661ce990faaa0c693" name="ae6e49e24dfdf6b4661ce990faaa0c693"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6e49e24dfdf6b4661ce990faaa0c693">&#9670;&nbsp;</a></span>cursor_end</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* tram::File::cursor_end = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab46928bf23804121764d46323dd96699" name="ab46928bf23804121764d46323dd96699"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab46928bf23804121764d46323dd96699">&#9670;&nbsp;</a></span>disk_reader</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_file_reader.html">FileReader</a>* tram::File::disk_reader = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9f89690500563575b1e020ae05b1ddb0" name="a9f89690500563575b1e020ae05b1ddb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f89690500563575b1e020ae05b1ddb0">&#9670;&nbsp;</a></span>disk_writer</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_file_writer.html">FileWriter</a>* tram::File::disk_writer = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="acd6ce0e7642fe94f378dc8a749efdcb9" name="acd6ce0e7642fe94f378dc8a749efdcb9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acd6ce0e7642fe94f378dc8a749efdcb9">&#9670;&nbsp;</a></span>mode</h2>
 
@@ -876,7 +921,63 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a id="a13e1dda97ae8a262ce9e28257c2aea1e" name="a13e1dda97ae8a262ce9e28257c2aea1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13e1dda97ae8a262ce9e28257c2aea1e">&#9670;&nbsp;</a></span>reader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_file_reader.html">FileReader</a>* tram::File::reader = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a00a329e60e55d43c3df1159b5f36de18" name="a00a329e60e55d43c3df1159b5f36de18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00a329e60e55d43c3df1159b5f36de18">&#9670;&nbsp;</a></span>reader_parser</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_file_reader_parser.html">FileReaderParser</a>* tram::File::reader_parser = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae80f51acbe4f7c016309d1525b00e25a" name="ae80f51acbe4f7c016309d1525b00e25a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae80f51acbe4f7c016309d1525b00e25a">&#9670;&nbsp;</a></span>writer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_file_writer.html">FileWriter</a>* tram::File::writer = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a53d60bca18a5afefa92a1ed1b70bd1" name="a3a53d60bca18a5afefa92a1ed1b70bd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a53d60bca18a5afefa92a1ed1b70bd1">&#9670;&nbsp;</a></span>writer_parser</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_file_writer_parser.html">FileWriterParser</a>* tram::File::writer_parser = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/<a class="el" href="framework_2file_8h_source.html">file.h</a></li>
 <li>C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/<a class="el" href="framework_2file_8cpp.html">file.cpp</a></li>
 </ul>

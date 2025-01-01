@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['inputstate_0',['InputState',['../namespacetram_1_1_u_i.html#aef59b5ccd9382ca4fdd1f951a9b68aef',1,'tram::UI']]]
+  ['filemedium_0',['FileMedium',['../namespacetram.html#a529c8d3e049a7dcc4425fbe040e4c531',1,'tram']]],
+  ['filestatus_1',['FileStatus',['../namespacetram.html#a972c59287ba467dbfe003f137609550d',1,'tram']]]
 ];

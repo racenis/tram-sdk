@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['worldcell_0',['WorldCell',['../classtram_1_1_entity.html#a84136aa23993ba45f0745a9d9488ab54',1,'tram::Entity::WorldCell()'],['../classtram_1_1_transition.html#a84136aa23993ba45f0745a9d9488ab54',1,'tram::Transition::WorldCell()']]]
+  ['valueptr_0',['ValuePtr',['../classtram_1_1_value.html#a32a3f364acb79fb996044d7d31bc994e',1,'tram::Value']]]
 ];

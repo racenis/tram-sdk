@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['fileaccessmode_0',['FileAccessMode',['../namespacetram.html#aef7e11d8b986598ae3dba0495bb9ec9c',1,'tram']]],
-  ['filesource_1',['FileSource',['../namespacetram.html#a77556f44e3343383e7a9c563d31ba382',1,'tram']]]
+  ['dialogtype_0',['DialogType',['../namespacetram_1_1_ext_1_1_kitchensink.html#a9ab8b667486c023b0e1defc92b807c54',1,'tram::Ext::Kitchensink']]]
 ];

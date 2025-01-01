@@ -77,7 +77,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="path_8h_source.html">path.h</a>&gt;</code></p>
+<p>Base class for graphs.  
+ <a href="classtram_1_1_path.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="path_8h_source.html">framework/path.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::Path:</div>
 <div class="dyncontent">
@@ -95,11 +98,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a03b3057af03cc8870dc7a699cdb1a77c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path.html#a03b3057af03cc8870dc7a699cdb1a77c">LoadFromDisk</a> ()</td></tr>
 <tr class="separator:a03b3057af03cc8870dc7a699cdb1a77c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5f2edca27bfb5eccec30976a3bb9b29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path.html#aa5f2edca27bfb5eccec30976a3bb9b29">Draw</a> ()</td></tr>
+<tr class="memdesc:aa5f2edca27bfb5eccec30976a3bb9b29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the path's line segments.  <a href="classtram_1_1_path.html#aa5f2edca27bfb5eccec30976a3bb9b29">More...</a><br /></td></tr>
 <tr class="separator:aa5f2edca27bfb5eccec30976a3bb9b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ace5eac8a595a419404e4b4489f91a62a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_path.html">Path</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path.html#ace5eac8a595a419404e4b4489f91a62a">Find</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_path.html#a7933eedcc33af28cc227944e586fee3f">name</a>)</td></tr>
+<tr class="memdesc:ace5eac8a595a419404e4b4489f91a62a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a path.  <a href="classtram_1_1_path.html#ace5eac8a595a419404e4b4489f91a62a">More...</a><br /></td></tr>
 <tr class="separator:ace5eac8a595a419404e4b4489f91a62a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
@@ -124,7 +129,14 @@ Friends</h2></td></tr>
 <tr class="memitem:a7c5bae106d82b3014171a0347a70d2a8"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path.html#a7c5bae106d82b3014171a0347a70d2a8">PathFollower</a></td></tr>
 <tr class="separator:a7c5bae106d82b3014171a0347a70d2a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Base class for graphs. </p>
+<p >Sequence of line segments.</p>
+<p >This class is used as a base for <a class="el" href="classtram_1_1_navmesh.html" title="Not fully implemented yet.">Navmesh</a> and <a class="el" href="classtram_1_1_path.html" title="Base class for graphs.">Path</a>.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/graph.html">https://racenis.github.io/tram-sdk/documentation/framework/graph.html</a></dd></dl>
+<p>Can be used to push an object along a path, can be used as a rail, or as a path for guiding agents.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/path.html">https://racenis.github.io/tram-sdk/documentation/framework/path.html</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9a0e7ff4de05db6ced2dd6ef0e1a2d75" name="a9a0e7ff4de05db6ced2dd6ef0e1a2d75"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a0e7ff4de05db6ced2dd6ef0e1a2d75">&#9670;&nbsp;</a></span>Path()</h2>
 
@@ -192,6 +204,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws the path's line segments. </p>
+
 </div>
 </div>
 <a id="ace5eac8a595a419404e4b4489f91a62a" name="ace5eac8a595a419404e4b4489f91a62a"></a>
@@ -217,6 +231,9 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Finds a path. </p>
+<p >Finds a path by its name, or creates a new path by that name if not found. </p><dl class="section return"><dt>Returns</dt><dd>Always returns a pointer to a <a class="el" href="classtram_1_1_path.html" title="Base class for graphs.">Path</a>. </dd></dl>
 
 </div>
 </div>

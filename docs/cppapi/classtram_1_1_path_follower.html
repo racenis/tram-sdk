@@ -74,13 +74,18 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="path_8h_source.html">path.h</a>&gt;</code></p>
+<p>Point constrained to a <a class="el" href="classtram_1_1_path.html" title="Base class for graphs.">Path</a>.  
+ <a href="classtram_1_1_path_follower.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="path_8h_source.html">framework/path.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a86f5375b9ad4e9ee064df8782c357b49"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path_follower.html#a86f5375b9ad4e9ee064df8782c357b49">PathFollower</a> (<a class="el" href="classtram_1_1_path.html">Path</a> *<a class="el" href="classtram_1_1_path_follower.html#afef4ecc46377cb395a63dbd67bc16c9c">path</a>, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> initial_pos, <a class="el" href="namespacetram.html#a8285e82eb5cb49da9f6a5a02dd0560a2">PathType</a> <a class="el" href="classtram_1_1_path_follower.html#ad11ffc06ffa7fa6b5fd4732ee7ec70ab">type</a>)</td></tr>
+<tr class="memdesc:a86f5375b9ad4e9ee064df8782c357b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new <a class="el" href="classtram_1_1_path_follower.html" title="Point constrained to a Path.">PathFollower</a> for a path.  <a href="classtram_1_1_path_follower.html#a86f5375b9ad4e9ee064df8782c357b49">More...</a><br /></td></tr>
 <tr class="separator:a86f5375b9ad4e9ee064df8782c357b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3517e3cd4fbc2f47b7a4b46743bcbaa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path_follower.html#a3517e3cd4fbc2f47b7a4b46743bcbaa0">Advance</a> (float)</td></tr>
+<tr class="memdesc:a3517e3cd4fbc2f47b7a4b46743bcbaa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advances the follower along the path.  <a href="classtram_1_1_path_follower.html#a3517e3cd4fbc2f47b7a4b46743bcbaa0">More...</a><br /></td></tr>
 <tr class="separator:a3517e3cd4fbc2f47b7a4b46743bcbaa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada75b25602de0ccf13cc6a3c46885132"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path_follower.html#ada75b25602de0ccf13cc6a3c46885132">Project</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>)</td></tr>
 <tr class="separator:ada75b25602de0ccf13cc6a3c46885132"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,7 +117,10 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:afef4ecc46377cb395a63dbd67bc16c9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_path.html">Path</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_path_follower.html#afef4ecc46377cb395a63dbd67bc16c9c">path</a></td></tr>
 <tr class="separator:afef4ecc46377cb395a63dbd67bc16c9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Point constrained to a <a class="el" href="classtram_1_1_path.html" title="Base class for graphs.">Path</a>. </p>
+<p >When constructed, the <a class="el" href="classtram_1_1_path_follower.html" title="Point constrained to a Path.">PathFollower</a> will project the initial position on the path, i.e. find the nearest point on the path. After that, you can use <a class="el" href="classtram_1_1_path_follower.html#a3517e3cd4fbc2f47b7a4b46743bcbaa0" title="Advances the follower along the path.">PathFollower::Advance()</a> to push it back and forth on the path. The position of the <a class="el" href="classtram_1_1_path_follower.html" title="Point constrained to a Path.">PathFollower</a> can be used to position an object, so that it appears to be following the given path. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a86f5375b9ad4e9ee064df8782c357b49" name="a86f5375b9ad4e9ee064df8782c357b49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a86f5375b9ad4e9ee064df8782c357b49">&#9670;&nbsp;</a></span>PathFollower()</h2>
 
@@ -145,6 +153,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Creates a new <a class="el" href="classtram_1_1_path_follower.html" title="Point constrained to a Path.">PathFollower</a> for a path. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -163,6 +173,14 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Advances the follower along the path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">distance</td><td>Distance along the path, in meters. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

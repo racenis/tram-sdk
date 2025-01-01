@@ -67,19 +67,45 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">loader.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="loader_8h_source.html">framework/loader.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="entity_8h_source.html">framework/entity.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="worldcell_8h_source.html">framework/worldcell.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="transition_8h_source.html">framework/transition.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="pool_8h_source.html">templates/pool.h</a>&gt;</code><br />
 <code>#include &lt;set&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memitem:namespacetram_1_1_loader"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_loader.html">tram::Loader</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_loader"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> streaming. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a682ad9ccb8fee9638cfea657405e9d54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_loader.html#a682ad9ccb8fee9638cfea657405e9d54">tram::Loader::Track</a> (Entity *entity)</td></tr>
+<tr class="memdesc:a682ad9ccb8fee9638cfea657405e9d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts tracking an <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a>.  <a href="namespacetram_1_1_loader.html#a682ad9ccb8fee9638cfea657405e9d54">More...</a><br /></td></tr>
+<tr class="separator:a682ad9ccb8fee9638cfea657405e9d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add220f7fedcb52197b68d9d17115ceaa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_loader.html#add220f7fedcb52197b68d9d17115ceaa">tram::Loader::Untrack</a> (Entity *entity)</td></tr>
+<tr class="memdesc:add220f7fedcb52197b68d9d17115ceaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops tracking a tracked <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a>.  <a href="namespacetram_1_1_loader.html#add220f7fedcb52197b68d9d17115ceaa">More...</a><br /></td></tr>
+<tr class="separator:add220f7fedcb52197b68d9d17115ceaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2ff0e373bfa20733197131513624505"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_loader.html#aa2ff0e373bfa20733197131513624505">tram::Loader::Update</a> ()</td></tr>
+<tr class="memdesc:aa2ff0e373bfa20733197131513624505"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> loading and unloading.  <a href="namespacetram_1_1_loader.html#aa2ff0e373bfa20733197131513624505">More...</a><br /></td></tr>
+<tr class="separator:aa2ff0e373bfa20733197131513624505"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:acc765a2553ec7b9c33e50b473d38d371"><td class="memItemLeft" align="right" valign="top">std::set&lt; id_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_loader.html#acc765a2553ec7b9c33e50b473d38d371">tram::Loader::tracked_entities</a></td></tr>
+<tr class="separator:acc765a2553ec7b9c33e50b473d38d371"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

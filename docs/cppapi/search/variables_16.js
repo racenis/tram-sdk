@@ -1,4 +1,20 @@
 var searchData=
 [
-  ['x_0',['x',['../structtram_1_1_ext_1_1_kitchensink_1_1_item_instance.html#aba27042000b273495cc18583b811d66a',1,'tram::Ext::Kitchensink::ItemInstance::x()'],['../structtram_1_1_g_u_i_1_1_frame_object.html#a5b80eddf57e0744b870d933958f2d70e',1,'tram::GUI::FrameObject::x()'],['../structtram_1_1_render_1_1_a_p_i_1_1_point2_d.html#acb12d46b028d44cca7d143396173c039',1,'tram::Render::API::Point2D::x()']]]
+  ['w_0',['w',['../structtram_1_1_g_u_i_1_1_frame_object.html#aaa17bd9855c951ce25ef26a5e0c97cd6',1,'tram::GUI::FrameObject']]],
+  ['walk_5fcollision_1',['walk_collision',['../classtram_1_1_f_p_s_controller_component.html#af2a12d9cc7a245087852634e14b9bb2d',1,'tram::FPSControllerComponent']]],
+  ['walk_5fspeed_2',['walk_speed',['../classtram_1_1_f_p_s_controller_component.html#a1180c411c80596ee1d75daa987ce96f7',1,'tram::FPSControllerComponent::walk_speed()'],['../classtram_1_1_raycast_controller_component.html#ad0e8ba76175ff6d4adabaa860ea82bd3',1,'tram::RaycastControllerComponent::walk_speed()']]],
+  ['wall_5fcollision_3',['wall_collision',['../classtram_1_1_raycast_controller_component.html#a4989dfffd26974233d53a1d6c4eb8407',1,'tram::RaycastControllerComponent']]],
+  ['wallbonk_5fcallback_4',['wallbonk_callback',['../classtram_1_1_f_p_s_controller_component.html#a179230b5c2c207d38f12b1e784f00bb2',1,'tram::FPSControllerComponent::wallbonk_callback()'],['../classtram_1_1_raycast_controller_component.html#aa0b73d887c0b9349667c2dc9271e45cd',1,'tram::RaycastControllerComponent::wallbonk_callback()']]],
+  ['weight_5',['weight',['../structtram_1_1_animation_component_1_1_animation_playback_info.html#ab88da3c134852e675a0a1b0138dd6b81',1,'tram::AnimationComponent::AnimationPlaybackInfo::weight()'],['../structtram_1_1_ext_1_1_kitchensink_1_1_anim_state.html#ae1d093333e0433d071a618226768270e',1,'tram::Ext::Kitchensink::AnimState::weight()'],['../classtram_1_1_ext_1_1_kitchensink_1_1_item_class.html#ad2e897d231ebf85514642793c8595175',1,'tram::Ext::Kitchensink::ItemClass::weight()']]],
+  ['wgt_6',['wgt',['../structtram_1_1_render_1_1_a_p_i_1_1_dynamic_vertex.html#a0db7472217610a8c7032a85aeef22413',1,'tram::Render::API::DynamicVertex']]],
+  ['wgt_5f1_7',['wgt_1',['../structtram_1_1_render_1_1_a_p_i_1_1_dynamic_vertex.html#a078c81bb38d4951accfc6df9c00a92d5',1,'tram::Render::API::DynamicVertex']]],
+  ['wgt_5f2_8',['wgt_2',['../structtram_1_1_render_1_1_a_p_i_1_1_dynamic_vertex.html#a924179d40de8890d819f55b061c720dc',1,'tram::Render::API::DynamicVertex']]],
+  ['wgt_5f3_9',['wgt_3',['../structtram_1_1_render_1_1_a_p_i_1_1_dynamic_vertex.html#a73488e66a1c64254438c49676239f567',1,'tram::Render::API::DynamicVertex']]],
+  ['wgt_5fi_10',['wgt_i',['../structtram_1_1_render_1_1_a_p_i_1_1_dynamic_vertex.html#ab36ec5e7ab8d27a963c2a160a8dfe359',1,'tram::Render::API::DynamicVertex']]],
+  ['width_11',['width',['../classtram_1_1_ext_1_1_kitchensink_1_1_item_class.html#af21e13dba2bf5003456f23075e616c9f',1,'tram::Ext::Kitchensink::ItemClass::width()'],['../classtram_1_1_render_1_1_material.html#a39fdf6cc003568ca64a0b47af65d0cca',1,'tram::Render::Material::width()'],['../structtram_1_1_render_1_1_a_p_i_1_1_s_w_texture.html#ae907dbc5c37e4a1e92440c7518e242d6',1,'tram::Render::API::SWTexture::width()'],['../structtram_1_1_render_1_1_sprite_frame.html#ae3a9270cdf9fc55044ab6eea633efb58',1,'tram::Render::SpriteFrame::width()']]],
+  ['worldcell_5flimit_12',['WORLDCELL_LIMIT',['../namespacetram.html#ab751286624cca492c1abca52f7e0be8c',1,'tram']]],
+  ['worldcell_5ftransition_5flimit_13',['WORLDCELL_TRANSITION_LIMIT',['../namespacetram.html#a1423ecbdc7b2879d47ac484d812fda50',1,'tram']]],
+  ['worldmodel_14',['worldmodel',['../classtram_1_1_ext_1_1_kitchensink_1_1_item_class.html#af12183588fa7ee60e0f173f60a0e841a',1,'tram::Ext::Kitchensink::ItemClass']]],
+  ['writer_15',['writer',['../classtram_1_1_file.html#ae80f51acbe4f7c016309d1525b00e25a',1,'tram::File']]],
+  ['writer_5fparser_16',['writer_parser',['../classtram_1_1_file.html#a3a53d60bca18a5afefa92a1ed1b70bd1',1,'tram::File']]]
 ];

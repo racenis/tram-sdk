@@ -74,6 +74,9 @@ $(function() {
   <div class="headertitle"><div class="title">tram::Render::API Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Rendering backend <a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html" title="Rendering backend API.">API</a>.  
+<a href="namespacetram_1_1_render_1_1_a_p_i.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -161,8 +164,12 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a3333e144d9fcb3f23192760dabce0d0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a3333e144d9fcb3f23192760dabce0d0d">Init</a> ()</td></tr>
 <tr class="separator:a3333e144d9fcb3f23192760dabce0d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d75088dd180366fb45cb86654694db9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a0d75088dd180366fb45cb86654694db9">RenderFrame</a> ()</td></tr>
+<tr class="separator:a0d75088dd180366fb45cb86654694db9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a5a35d0071849e1f4a44362df772ce1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a1a5a35d0071849e1f4a44362df772ce1">InsertDrawListEntry</a> ()</td></tr>
 <tr class="separator:a1a5a35d0071849e1f4a44362df772ce1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a13fea5192ecde4d6483fd7ac4109d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a4a13fea5192ecde4d6483fd7ac4109d2">RemoveDrawListEntry</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry)</td></tr>
+<tr class="separator:a4a13fea5192ecde4d6483fd7ac4109d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01464db10e614acc7db508e0ecdc642c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a01464db10e614acc7db508e0ecdc642c">GetFlags</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry)</td></tr>
 <tr class="separator:a01464db10e614acc7db508e0ecdc642c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10a6b549dc7e27d1f27c14bd2e3fc896"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a10a6b549dc7e27d1f27c14bd2e3fc896">SetFlags</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, uint32_t flags)</td></tr>
@@ -177,18 +184,28 @@ Functions</h2></td></tr>
 <tr class="separator:ac9af752a04919c1be9443f491ba9364a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad62b8a1dc88abdbcf24dbcbc97571b22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ad62b8a1dc88abdbcf24dbcbc97571b22">SetMatrix</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, const <a class="el" href="namespacetram.html#aa105cf31ac2e470934e6b0827a14d942">mat4</a> &amp;matrix)</td></tr>
 <tr class="separator:ad62b8a1dc88abdbcf24dbcbc97571b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a664d9f1a7426b3a1505975402100480a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a664d9f1a7426b3a1505975402100480a">SetFadeDistance</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, float near, float far)</td></tr>
+<tr class="separator:a664d9f1a7426b3a1505975402100480a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4642bc504c6d77fde8a824bb95c5ec16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a4642bc504c6d77fde8a824bb95c5ec16">SetDrawListVertexArray</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, <a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">vertexarray_t</a> vertex_array_handle)</td></tr>
 <tr class="separator:a4642bc504c6d77fde8a824bb95c5ec16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a411524f6804a132bdfdf7e95d318fe6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a411524f6804a132bdfdf7e95d318fe6a">SetDrawListIndexArray</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, <a class="el" href="structtram_1_1_render_1_1indexarray__t.html">indexarray_t</a> index_array_handle)</td></tr>
 <tr class="separator:a411524f6804a132bdfdf7e95d318fe6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac78a374d698ab9d252afd86163c19440"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ac78a374d698ab9d252afd86163c19440">SetDrawListIndexRange</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, uint32_t index_offset, uint32_t index_length)</td></tr>
 <tr class="separator:ac78a374d698ab9d252afd86163c19440"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9089059c10db7896ab1796273aab81b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a9089059c10db7896ab1796273aab81b7">SetDrawListSpriteArray</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, <a class="el" href="structtram_1_1_render_1_1spritearray__t.html">spritearray_t</a> sprite_array_handle)</td></tr>
+<tr class="separator:a9089059c10db7896ab1796273aab81b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3724426196e2fad6e190726003249aed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a3724426196e2fad6e190726003249aed">SetDrawListShader</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, <a class="el" href="namespacetram_1_1_render.html#a4e5691f40b84e848c0d9b19b285bf0e2">vertexformat_t</a> vertex_format, <a class="el" href="namespacetram_1_1_render.html#a9be8283c1665f7d42c97367d857d43cc">materialtype_t</a> material_type)</td></tr>
 <tr class="separator:a3724426196e2fad6e190726003249aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac05dea68d3b978e4303cf1c2164f44c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#aac05dea68d3b978e4303cf1c2164f44c">SetDrawListTextures</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t texture_count, <a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">texturehandle_t</a> *textures)</td></tr>
 <tr class="separator:aac05dea68d3b978e4303cf1c2164f44c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a13fea5192ecde4d6483fd7ac4109d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a4a13fea5192ecde4d6483fd7ac4109d2">RemoveDrawListEntry</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry)</td></tr>
-<tr class="separator:a4a13fea5192ecde4d6483fd7ac4109d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab591dae55495d78c86d150973ea3bef1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ab591dae55495d78c86d150973ea3bef1">SetDrawListColors</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t count, <a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a> *color)</td></tr>
+<tr class="separator:ab591dae55495d78c86d150973ea3bef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96595ff7b2190bcc3b764d3ff9f6f5b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a96595ff7b2190bcc3b764d3ff9f6f5b8">SetDrawListSpecularities</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t count, float *weights, float *exponents, float *transparencies)</td></tr>
+<tr class="separator:a96595ff7b2190bcc3b764d3ff9f6f5b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabd8944a6224d5713a02ab8805acf20d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#aabd8944a6224d5713a02ab8805acf20d">SetDrawListTextureOffsets</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t count, <a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a> *offset)</td></tr>
+<tr class="separator:aabd8944a6224d5713a02ab8805acf20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68a28820f27f670a90c2a644aa199728"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a68a28820f27f670a90c2a644aa199728">SetDrawListAABB</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max)</td></tr>
+<tr class="separator:a68a28820f27f670a90c2a644aa199728"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72ff5f43fc09f16266e3fc9ed33715af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">texturehandle_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a72ff5f43fc09f16266e3fc9ed33715af">CreateTexture</a> (<a class="el" href="namespacetram_1_1_render.html#ac973dc59905532e29e79841ae76af894">ColorMode</a> color_mode, <a class="el" href="namespacetram_1_1_render.html#ad3c2cb5af20e13497cc81f62d22b430c">TextureFilter</a> texture_filter, uint32_t width, uint32_t height, void *data)</td></tr>
 <tr class="separator:a72ff5f43fc09f16266e3fc9ed33715af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae22f8a73faf3d561003265a51e3ca2b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ae22f8a73faf3d561003265a51e3ca2b3">CreateIndexedVertexArray</a> (<a class="el" href="structtram_1_1_render_1_1_vertex_definition.html">VertexDefinition</a> vertex_format, <a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">vertexarray_t</a> &amp;vertex_array, <a class="el" href="structtram_1_1_render_1_1indexarray__t.html">indexarray_t</a> &amp;index_array, size_t vertex_size, void *vertex_data, size_t index_size, void *index_data)</td></tr>
@@ -197,8 +214,10 @@ Functions</h2></td></tr>
 <tr class="separator:a76f3030e7ef229bee087b336d8882232"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23acf51fa4097aecd557d23f73131463"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a23acf51fa4097aecd557d23f73131463">UpdateVertexArray</a> (<a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">vertexarray_t</a> &amp;vertex_buffer, size_t data_size, void *data)</td></tr>
 <tr class="separator:a23acf51fa4097aecd557d23f73131463"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d75088dd180366fb45cb86654694db9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a0d75088dd180366fb45cb86654694db9">RenderFrame</a> ()</td></tr>
-<tr class="separator:a0d75088dd180366fb45cb86654694db9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af87e801d1160ed2235b7188a506f753d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1spritearray__t.html">spritearray_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#af87e801d1160ed2235b7188a506f753d">CreateSpriteArray</a> ()</td></tr>
+<tr class="separator:af87e801d1160ed2235b7188a506f753d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c690bed4e6f7ccf1e001526b6b6f013"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a2c690bed4e6f7ccf1e001526b6b6f013">UpdateSpriteArray</a> (<a class="el" href="structtram_1_1_render_1_1spritearray__t.html">spritearray_t</a> array, size_t data_size, void *data)</td></tr>
+<tr class="separator:a2c690bed4e6f7ccf1e001526b6b6f013"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a453419fa3a31de6918ce7c54454b1314"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a453419fa3a31de6918ce7c54454b1314">SetScreenSize</a> (float width, float height)</td></tr>
 <tr class="separator:a453419fa3a31de6918ce7c54454b1314"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4546d61832af8f8af9038e5d060afe70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a4546d61832af8f8af9038e5d060afe70">SetScreenClear</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> clear_color, bool clear)</td></tr>
@@ -215,12 +234,6 @@ Functions</h2></td></tr>
 <tr class="separator:a832d87127faad4c76d3b09fb0efcbb39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63b87913acfc6af2fd7e39754dc1522d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a63b87913acfc6af2fd7e39754dc1522d">RegisterShader</a> (<a class="el" href="namespacetram_1_1_render.html#a4e5691f40b84e848c0d9b19b285bf0e2">vertexformat_t</a> format, <a class="el" href="namespacetram_1_1_render.html#a9be8283c1665f7d42c97367d857d43cc">materialtype_t</a> type, const char *vertex_shader, const char *fragment_shader)</td></tr>
 <tr class="separator:a63b87913acfc6af2fd7e39754dc1522d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab591dae55495d78c86d150973ea3bef1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ab591dae55495d78c86d150973ea3bef1">SetDrawListColors</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t count, <a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a> *color)</td></tr>
-<tr class="separator:ab591dae55495d78c86d150973ea3bef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96595ff7b2190bcc3b764d3ff9f6f5b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a96595ff7b2190bcc3b764d3ff9f6f5b8">SetDrawListSpecularities</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t count, float *weights, float *exponents, float *transparencies)</td></tr>
-<tr class="separator:a96595ff7b2190bcc3b764d3ff9f6f5b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabd8944a6224d5713a02ab8805acf20d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#aabd8944a6224d5713a02ab8805acf20d">SetDrawListTextureOffsets</a> (<a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a> entry, size_t count, <a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a> *offset)</td></tr>
-<tr class="separator:aabd8944a6224d5713a02ab8805acf20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23c877f60360662f3a1de1fd11957936"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a23c877f60360662f3a1de1fd11957936">SetViewMatrix</a> (const <a class="el" href="namespacetram.html#aa105cf31ac2e470934e6b0827a14d942">mat4</a> &amp;matrix, <a class="el" href="namespacetram_1_1_render.html#a92b94ac310d4c8df9a4294518ffd75c8">layer_t</a> layer)</td></tr>
 <tr class="separator:a23c877f60360662f3a1de1fd11957936"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8712a5ab1b0f028eb8559586b458262d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a8712a5ab1b0f028eb8559586b458262d">SetProjectionMatrix</a> (const <a class="el" href="namespacetram.html#aa105cf31ac2e470934e6b0827a14d942">mat4</a> &amp;matrix, <a class="el" href="namespacetram_1_1_render.html#a92b94ac310d4c8df9a4294518ffd75c8">layer_t</a> layer)</td></tr>
@@ -233,12 +246,18 @@ Functions</h2></td></tr>
 <tr class="separator:a18bc917a04c062cb18a310880301f545"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66b8323eef7ab765ad466ec90da6ed6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ae66b8323eef7ab765ad466ec90da6ed6">SetDevice</a> (void *)</td></tr>
 <tr class="separator:ae66b8323eef7ab765ad466ec90da6ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5310d3f1d84890fdd8b6c9b8ceead3f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#aa5310d3f1d84890fdd8b6c9b8ceead3f">IsDebugMode</a> ()</td></tr>
+<tr class="separator:aa5310d3f1d84890fdd8b6c9b8ceead3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d69a7f95415804042a41c3580a7c56f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a7d69a7f95415804042a41c3580a7c56f">SetDebugMode</a> (bool)</td></tr>
+<tr class="separator:a7d69a7f95415804042a41c3580a7c56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e818c0f10852d65d1464fa7db96faaa"><td class="memItemLeft" align="right" valign="top">std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a8e818c0f10852d65d1464fa7db96faaa">light_tree_ids</a> (200)</td></tr>
 <tr class="separator:a8e818c0f10852d65d1464fa7db96faaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4057f1a8dc032f5f4aded5bc14b5119"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_f_v_f_helper.html">FVFHelper</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ab4057f1a8dc032f5f4aded5bc14b5119">VertexDefinitionToFVF</a> (<a class="el" href="structtram_1_1_render_1_1_vertex_definition.html">VertexDefinition</a> vertex_format)</td></tr>
 <tr class="separator:ab4057f1a8dc032f5f4aded5bc14b5119"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9c8b1770aeeff3ea24c789c104551ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ac9c8b1770aeeff3ea24c789c104551ae">PackVertexBuffer</a> (<a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">vertexarray_t</a> &amp;vertex_array, <a class="el" href="structtram_1_1_render_1_1_vertex_definition.html">VertexDefinition</a> vertex_format, <a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_f_v_f_helper.html">FVFHelper</a> helper, size_t vertex_count, void *vertex_data)</td></tr>
 <tr class="separator:ac9c8b1770aeeff3ea24c789c104551ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0afba50452a4e999c834d249f4cc7593"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_pool.html">Pool</a>&lt; <a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html">GLDrawListEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a0afba50452a4e999c834d249f4cc7593">draw_list</a> (&quot;render list&quot;, 1000, false)</td></tr>
+<tr class="separator:a0afba50452a4e999c834d249f4cc7593"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca91e5c5d0e94bb8ef70d26c3fc73fa7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_octree.html">Octree</a>&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#aca91e5c5d0e94bb8ef70d26c3fc73fa7">light_tree</a> (&quot;light tree&quot;, 200)</td></tr>
 <tr class="separator:aca91e5c5d0e94bb8ef70d26c3fc73fa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe7ed6af822251d71e03add10aa5c14e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#abe7ed6af822251d71e03add10aa5c14e">MakeUniformBuffer</a> (const char *name, uint32_t binding, uint32_t initial_size)</td></tr>
@@ -394,7 +413,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a98aac604b36b4bd1c29a5580cd309cb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_scanline_buffer.html">ScanlineBuffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a98aac604b36b4bd1c29a5580cd309cb7">scanlines</a> = new <a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_scanline_buffer.html">ScanlineBuffer</a></td></tr>
 <tr class="separator:a98aac604b36b4bd1c29a5580cd309cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Rendering backend <a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html" title="Rendering backend API.">API</a>. </p>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a4aa628366e46526d2722302d9ce9d230" name="a4aa628366e46526d2722302d9ce9d230"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4aa628366e46526d2722302d9ce9d230">&#9670;&nbsp;</a></span>ContextType</h2>
 
@@ -1222,6 +1243,23 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="af87e801d1160ed2235b7188a506f753d" name="af87e801d1160ed2235b7188a506f753d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af87e801d1160ed2235b7188a506f753d">&#9670;&nbsp;</a></span>CreateSpriteArray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structtram_1_1_render_1_1spritearray__t.html">spritearray_t</a> tram::Render::API::CreateSpriteArray </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a72ff5f43fc09f16266e3fc9ed33715af" name="a72ff5f43fc09f16266e3fc9ed33715af"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72ff5f43fc09f16266e3fc9ed33715af">&#9670;&nbsp;</a></span>CreateTexture()</h2>
 
@@ -1308,6 +1346,40 @@ Variables</h2></td></tr>
           <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1light__t.html">light_t</a>&#160;</td>
           <td class="paramname"><em>light</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0afba50452a4e999c834d249f4cc7593" name="a0afba50452a4e999c834d249f4cc7593"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0afba50452a4e999c834d249f4cc7593">&#9670;&nbsp;</a></span>draw_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_pool.html">Pool</a>&lt; <a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html">GLDrawListEntry</a> &gt; tram::Render::API::draw_list </td>
+          <td>(</td>
+          <td class="paramtype">&quot;render list&quot;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">1000&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">false&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1473,6 +1545,23 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
           <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa5310d3f1d84890fdd8b6c9b8ceead3f" name="aa5310d3f1d84890fdd8b6c9b8ceead3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5310d3f1d84890fdd8b6c9b8ceead3f">&#9670;&nbsp;</a></span>IsDebugMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::Render::API::IsDebugMode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -2274,6 +2363,24 @@ template&lt;bool set_span_first&gt; </div>
 
 </div>
 </div>
+<a id="a7d69a7f95415804042a41c3580a7c56f" name="a7d69a7f95415804042a41c3580a7c56f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d69a7f95415804042a41c3580a7c56f">&#9670;&nbsp;</a></span>SetDebugMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::API::SetDebugMode </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae66b8323eef7ab765ad466ec90da6ed6" name="ae66b8323eef7ab765ad466ec90da6ed6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae66b8323eef7ab765ad466ec90da6ed6">&#9670;&nbsp;</a></span>SetDevice()</h2>
 
@@ -2286,6 +2393,40 @@ template&lt;bool set_span_first&gt; </div>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>new_device</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a68a28820f27f670a90c2a644aa199728" name="a68a28820f27f670a90c2a644aa199728"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68a28820f27f670a90c2a644aa199728">&#9670;&nbsp;</a></span>SetDrawListAABB()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::API::SetDrawListAABB </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a>&#160;</td>
+          <td class="paramname"><em>entry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -2468,6 +2609,34 @@ template&lt;bool set_span_first&gt; </div>
 
 </div>
 </div>
+<a id="a9089059c10db7896ab1796273aab81b7" name="a9089059c10db7896ab1796273aab81b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9089059c10db7896ab1796273aab81b7">&#9670;&nbsp;</a></span>SetDrawListSpriteArray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::API::SetDrawListSpriteArray </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a>&#160;</td>
+          <td class="paramname"><em>entry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1spritearray__t.html">spritearray_t</a>&#160;</td>
+          <td class="paramname"><em>sprite_array_handle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aabd8944a6224d5713a02ab8805acf20d" name="aabd8944a6224d5713a02ab8805acf20d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aabd8944a6224d5713a02ab8805acf20d">&#9670;&nbsp;</a></span>SetDrawListTextureOffsets()</h2>
 
@@ -2553,6 +2722,40 @@ template&lt;bool set_span_first&gt; </div>
           <td></td>
           <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">vertexarray_t</a>&#160;</td>
           <td class="paramname"><em>vertex_array_handle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a664d9f1a7426b3a1505975402100480a" name="a664d9f1a7426b3a1505975402100480a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a664d9f1a7426b3a1505975402100480a">&#9670;&nbsp;</a></span>SetFadeDistance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::API::SetFadeDistance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">drawlistentry_t</a>&#160;</td>
+          <td class="paramname"><em>entry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>near</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>far</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2993,6 +3196,40 @@ template&lt;bool set_span_first&gt; </div>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a>&#160;</td>
           <td class="paramname"><em>p2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c690bed4e6f7ccf1e001526b6b6f013" name="a2c690bed4e6f7ccf1e001526b6b6f013"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c690bed4e6f7ccf1e001526b6b6f013">&#9670;&nbsp;</a></span>UpdateSpriteArray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::API::UpdateSpriteArray </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_render_1_1spritearray__t.html">spritearray_t</a>&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

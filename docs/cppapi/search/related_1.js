@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loader_0',['Loader',['../classtram_1_1_world_cell.html#ac8e5438321e35520c4088ff6ca4116ee',1,'tram::WorldCell']]]
+  ['controllercomponent_0',['ControllerComponent',['../classtram_1_1_f_p_s_controller_component.html#a9fd3c58ec8707c5995232f089e6ef91b',1,'tram::FPSControllerComponent::ControllerComponent()'],['../classtram_1_1_raycast_controller_component.html#a9fd3c58ec8707c5995232f089e6ef91b',1,'tram::RaycastControllerComponent::ControllerComponent()']]]
 ];

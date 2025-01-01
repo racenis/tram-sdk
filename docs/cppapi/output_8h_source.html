@@ -69,30 +69,29 @@ $(function() {
   <div class="headertitle"><div class="title">output.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="output_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// All rights reserved.</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifndef TRAM_SDK_AUDIO_SPATIAL_OUTPUT_H</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define TRAM_SDK_AUDIO_SPATIAL_OUTPUT_H</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;<a class="code" href="definitions_8h.html">audio/spatial/definitions.h</a>&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram_1_1_audio_1_1_spatial.html">tram::Audio::Spatial</a> {</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#a1d958660cb3bf23f87e78a3a2a36d912">   13</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#a1d958660cb3bf23f87e78a3a2a36d912">InitOutput</a>();</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#a1369d0d3a2339c9205f38130aaa18b05">   14</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#a1369d0d3a2339c9205f38130aaa18b05">UpdateOutput</a>();</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#abd2e06cbc247c1a503526098fb084789">   15</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#abd2e06cbc247c1a503526098fb084789">UninitOutput</a>();</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#af0ceb28e435bdcb3504d0702785e2ad4">   17</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#af0ceb28e435bdcb3504d0702785e2ad4">LockRenderlist</a>();</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#a1f2da687a7b846d596f35af37ae63841">   18</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#a1f2da687a7b846d596f35af37ae63841">UnlockRenderlist</a>();</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#endif </span><span class="comment">// TRAM_SDK_AUDIO_SPATIAL_OUTPUT_H</span></div>
+<a href="output_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#ifndef TRAM_SDK_AUDIO_SPATIAL_OUTPUT_H</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#define TRAM_SDK_AUDIO_SPATIAL_OUTPUT_H</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;<a class="code" href="definitions_8h.html">audio/spatial/definitions.h</a>&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram_1_1_audio_1_1_spatial.html">tram::Audio::Spatial</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#a1d958660cb3bf23f87e78a3a2a36d912">   12</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#a1d958660cb3bf23f87e78a3a2a36d912">InitOutput</a>();</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#a1369d0d3a2339c9205f38130aaa18b05">   13</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#a1369d0d3a2339c9205f38130aaa18b05">UpdateOutput</a>();</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#abd2e06cbc247c1a503526098fb084789">   14</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#abd2e06cbc247c1a503526098fb084789">UninitOutput</a>();</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#af0ceb28e435bdcb3504d0702785e2ad4">   16</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#af0ceb28e435bdcb3504d0702785e2ad4">LockRenderlist</a>();</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="namespacetram_1_1_audio_1_1_spatial.html#a1f2da687a7b846d596f35af37ae63841">   17</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_audio_1_1_spatial.html#a1f2da687a7b846d596f35af37ae63841">UnlockRenderlist</a>();</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>}</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#endif </span><span class="comment">// TRAM_SDK_AUDIO_SPATIAL_OUTPUT_H</span></div>
 <div class="ttc" id="adefinitions_8h_html"><div class="ttname"><a href="definitions_8h.html">definitions.h</a></div></div>
-<div class="ttc" id="anamespacetram_1_1_audio_1_1_spatial_html"><div class="ttname"><a href="namespacetram_1_1_audio_1_1_spatial.html">tram::Audio::Spatial</a></div><div class="ttdef"><b>Definition:</b> definitions.h:11</div></div>
+<div class="ttc" id="anamespacetram_1_1_audio_1_1_spatial_html"><div class="ttname"><a href="namespacetram_1_1_audio_1_1_spatial.html">tram::Audio::Spatial</a></div><div class="ttdoc">Experimental path tracing audio system.</div><div class="ttdef"><b>Definition:</b> definitions.h:10</div></div>
 <div class="ttc" id="anamespacetram_1_1_audio_1_1_spatial_html_a1369d0d3a2339c9205f38130aaa18b05"><div class="ttname"><a href="namespacetram_1_1_audio_1_1_spatial.html#a1369d0d3a2339c9205f38130aaa18b05">tram::Audio::Spatial::UpdateOutput</a></div><div class="ttdeci">void UpdateOutput()</div></div>
 <div class="ttc" id="anamespacetram_1_1_audio_1_1_spatial_html_a1d958660cb3bf23f87e78a3a2a36d912"><div class="ttname"><a href="namespacetram_1_1_audio_1_1_spatial.html#a1d958660cb3bf23f87e78a3a2a36d912">tram::Audio::Spatial::InitOutput</a></div><div class="ttdeci">void InitOutput()</div></div>
 <div class="ttc" id="anamespacetram_1_1_audio_1_1_spatial_html_a1f2da687a7b846d596f35af37ae63841"><div class="ttname"><a href="namespacetram_1_1_audio_1_1_spatial.html#a1f2da687a7b846d596f35af37ae63841">tram::Audio::Spatial::UnlockRenderlist</a></div><div class="ttdeci">void UnlockRenderlist()</div></div>

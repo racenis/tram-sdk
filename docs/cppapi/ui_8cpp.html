@@ -69,8 +69,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">ui.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -81,11 +80,14 @@ $(function() {
 <code>#include &lt;<a class="el" href="event_8h_source.html">framework/event.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="ui_8h_source.html">framework/ui.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="framework_2system_8h_source.html">framework/system.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="render_2render_8h_source.html">render/render.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="render_2api_8h_source.html">render/api.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="config_8h_source.html">config.h</a>&gt;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;ctime&gt;</code><br />
 <code>#include &lt;<a class="el" href="hashmap_8h_source.html">templates/hashmap.h</a>&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -95,9 +97,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_u_i"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html">tram::UI</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_u_i"><td class="mdescLeft">&#160;</td><td class="mdescRight">User interface system. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -109,12 +113,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a581823cdaa8ed3cef6f48d2610961511"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a581823cdaa8ed3cef6f48d2610961511">tram::UI::BindKeyboardKey</a> (KeyboardKey key, void(*action)(KeyboardKey))</td></tr>
 <tr class="separator:a581823cdaa8ed3cef6f48d2610961511"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34c539a00c1e5228b2ee9d9f69de5af8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a34c539a00c1e5228b2ee9d9f69de5af8">tram::UI::Init</a> ()</td></tr>
+<tr class="memdesc:a34c539a00c1e5228b2ee9d9f69de5af8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the <a class="el" href="namespacetram_1_1_u_i.html" title="User interface system.">UI</a> system.  <a href="namespacetram_1_1_u_i.html#a34c539a00c1e5228b2ee9d9f69de5af8">More...</a><br /></td></tr>
 <tr class="separator:a34c539a00c1e5228b2ee9d9f69de5af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5206ed605c69006a0d6ad1b2dafb2a80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a5206ed605c69006a0d6ad1b2dafb2a80">tram::UI::Uninit</a> ()</td></tr>
+<tr class="memdesc:a5206ed605c69006a0d6ad1b2dafb2a80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uninitializes the <a class="el" href="namespacetram_1_1_u_i.html" title="User interface system.">UI</a> system.  <a href="namespacetram_1_1_u_i.html#a5206ed605c69006a0d6ad1b2dafb2a80">More...</a><br /></td></tr>
 <tr class="separator:a5206ed605c69006a0d6ad1b2dafb2a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d6af6713f2e6c053cacfaab7e628438"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a8d6af6713f2e6c053cacfaab7e628438">tram::UI::Update</a> ()</td></tr>
+<tr class="memdesc:a8d6af6713f2e6c053cacfaab7e628438"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the <a class="el" href="namespacetram_1_1_u_i.html" title="User interface system.">UI</a> system.  <a href="namespacetram_1_1_u_i.html#a8d6af6713f2e6c053cacfaab7e628438">More...</a><br /></td></tr>
 <tr class="separator:a8d6af6713f2e6c053cacfaab7e628438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a303b8e17aa7e0dff5839a0b1ab33d391"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a303b8e17aa7e0dff5839a0b1ab33d391">tram::UI::EndFrame</a> ()</td></tr>
+<tr class="memdesc:a303b8e17aa7e0dff5839a0b1ab33d391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ends the frame and updates the window.  <a href="namespacetram_1_1_u_i.html#a303b8e17aa7e0dff5839a0b1ab33d391">More...</a><br /></td></tr>
 <tr class="separator:a303b8e17aa7e0dff5839a0b1ab33d391"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a654d5f4b77f90147a9098acce21b19df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a654d5f4b77f90147a9098acce21b19df">tram::UI::SetWebMainLoop</a> (void(*loop_function)(void))</td></tr>
 <tr class="separator:a654d5f4b77f90147a9098acce21b19df"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,6 +133,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a390f8622eafc311400a2454f11dfc016"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a390f8622eafc311400a2454f11dfc016">tram::UI::SetWindowTitle</a> (const char *title)</td></tr>
 <tr class="separator:a390f8622eafc311400a2454f11dfc016"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39ef71fa7757a83fa159686920f16f78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a39ef71fa7757a83fa159686920f16f78">tram::UI::SetWindowSize</a> (int w, int h)</td></tr>
+<tr class="memdesc:a39ef71fa7757a83fa159686920f16f78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the window size.  <a href="namespacetram_1_1_u_i.html#a39ef71fa7757a83fa159686920f16f78">More...</a><br /></td></tr>
 <tr class="separator:a39ef71fa7757a83fa159686920f16f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ca596524ffb0c21621d8cfdcf9c5fbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a6ca596524ffb0c21621d8cfdcf9c5fbf">tram::UI::SetCursor</a> (CursorType cursor)</td></tr>
 <tr class="separator:a6ca596524ffb0c21621d8cfdcf9c5fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -171,11 +180,6 @@ Functions</h2></td></tr>
 <tr class="separator:a95733211eecad5c91c9f4ae453765a91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c013d6464921c3bdcb5b3a2906148ce"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a6c013d6464921c3bdcb5b3a2906148ce">tram::UI::GetKeyboardKeyName</a> (KeyboardKey key)</td></tr>
 <tr class="separator:a6c013d6464921c3bdcb5b3a2906148ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a78746421416ba905c189d9d31d5bcecd"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_u_i.html#a78746421416ba905c189d9d31d5bcecd">tram::UI::MAX_KEYBOARDACTION_TYPES</a> = 100</td></tr>
-<tr class="separator:a78746421416ba905c189d9d31d5bcecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

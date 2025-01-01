@@ -69,27 +69,26 @@ $(function() {
   <div class="headertitle"><div class="title">language.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="language_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// All rights reserved.</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifndef TRAM_SDK_FRAMEWORK_LANGUAGE_H</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define TRAM_SDK_FRAMEWORK_LANGUAGE_H</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;<a class="code" href="uid_8h.html">framework/uid.h</a>&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram_1_1_language.html">tram::Language</a> {</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="namespacetram_1_1_language.html#af059d31d855f0bf0fc06dfc1a170c834">Get</a>(<a class="code hl_typedef" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> name);</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_language.html#a33a74954652fedfbc85aab8cdd4c99f3">Load</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* filename);</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">char</span> <a class="code hl_function" href="namespacetram_1_1_language.html#aef5799e241bda18ef51f887437408573">UTF16ToLatin7</a>(uint16_t);</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>}</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#endif </span><span class="comment">// TRAM_SDK_FRAMEWORK_LANGUAGE_H</span></div>
-<div class="ttc" id="anamespacetram_1_1_language_html"><div class="ttname"><a href="namespacetram_1_1_language.html">tram::Language</a></div><div class="ttdef"><b>Definition:</b> language.cpp:14</div></div>
-<div class="ttc" id="anamespacetram_1_1_language_html_a33a74954652fedfbc85aab8cdd4c99f3"><div class="ttname"><a href="namespacetram_1_1_language.html#a33a74954652fedfbc85aab8cdd4c99f3">tram::Language::Load</a></div><div class="ttdeci">void Load(const char *filename)</div><div class="ttdef"><b>Definition:</b> language.cpp:19</div></div>
-<div class="ttc" id="anamespacetram_1_1_language_html_aef5799e241bda18ef51f887437408573"><div class="ttname"><a href="namespacetram_1_1_language.html#aef5799e241bda18ef51f887437408573">tram::Language::UTF16ToLatin7</a></div><div class="ttdeci">char UTF16ToLatin7(uint16_t code)</div><div class="ttdef"><b>Definition:</b> language.cpp:53</div></div>
-<div class="ttc" id="anamespacetram_1_1_language_html_af059d31d855f0bf0fc06dfc1a170c834"><div class="ttname"><a href="namespacetram_1_1_language.html#af059d31d855f0bf0fc06dfc1a170c834">tram::Language::Get</a></div><div class="ttdeci">const char * Get(name_t name)</div><div class="ttdef"><b>Definition:</b> language.cpp:43</div></div>
-<div class="ttc" id="anamespacetram_html_ad77b577436f476438699a1c4da9d549c"><div class="ttname"><a href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">tram::name_t</a></div><div class="ttdeci">UID name_t</div><div class="ttdef"><b>Definition:</b> uid.h:40</div></div>
+<a href="language_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#ifndef TRAM_SDK_FRAMEWORK_LANGUAGE_H</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#define TRAM_SDK_FRAMEWORK_LANGUAGE_H</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;<a class="code" href="uid_8h.html">framework/uid.h</a>&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram_1_1_language.html">tram::Language</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="namespacetram_1_1_language.html#af059d31d855f0bf0fc06dfc1a170c834">Get</a>(<a class="code hl_typedef" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> name);</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="namespacetram_1_1_language.html#a33a74954652fedfbc85aab8cdd4c99f3">Load</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* filename);</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keywordtype">char</span> <a class="code hl_function" href="namespacetram_1_1_language.html#aef5799e241bda18ef51f887437408573">UTF16ToLatin7</a>(uint16_t);</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>}</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#endif </span><span class="comment">// TRAM_SDK_FRAMEWORK_LANGUAGE_H</span></div>
+<div class="ttc" id="anamespacetram_1_1_language_html"><div class="ttname"><a href="namespacetram_1_1_language.html">tram::Language</a></div><div class="ttdoc">Localization services.</div></div>
+<div class="ttc" id="anamespacetram_1_1_language_html_a33a74954652fedfbc85aab8cdd4c99f3"><div class="ttname"><a href="namespacetram_1_1_language.html#a33a74954652fedfbc85aab8cdd4c99f3">tram::Language::Load</a></div><div class="ttdeci">void Load(const char *filename)</div><div class="ttdoc">Loads a language file.</div><div class="ttdef"><b>Definition:</b> language.cpp:33</div></div>
+<div class="ttc" id="anamespacetram_1_1_language_html_aef5799e241bda18ef51f887437408573"><div class="ttname"><a href="namespacetram_1_1_language.html#aef5799e241bda18ef51f887437408573">tram::Language::UTF16ToLatin7</a></div><div class="ttdeci">char UTF16ToLatin7(uint16_t code)</div><div class="ttdoc">Converts a UTF16 codepoint to a Latin7 codepoint.</div><div class="ttdef"><b>Definition:</b> language.cpp:74</div></div>
+<div class="ttc" id="anamespacetram_1_1_language_html_af059d31d855f0bf0fc06dfc1a170c834"><div class="ttname"><a href="namespacetram_1_1_language.html#af059d31d855f0bf0fc06dfc1a170c834">tram::Language::Get</a></div><div class="ttdeci">const char * Get(name_t name)</div><div class="ttdoc">Retrieves a string from the loaded language files.</div><div class="ttdef"><b>Definition:</b> language.cpp:63</div></div>
+<div class="ttc" id="anamespacetram_html_ad77b577436f476438699a1c4da9d549c"><div class="ttname"><a href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">tram::name_t</a></div><div class="ttdeci">UID name_t</div><div class="ttdef"><b>Definition:</b> uid.h:43</div></div>
 <div class="ttc" id="auid_8h_html"><div class="ttname"><a href="uid_8h.html">uid.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

@@ -68,122 +68,168 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classtram_1_1_file_writer-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">tram::FileWriter Class Reference</div></div>
+  <div class="headertitle"><div class="title">tram::FileWriter Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="platform_2file_8h_source.html">file.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for tram::FileWriter:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classtram_1_1_file_writer.png" usemap="#tram::FileWriter_map" alt=""/>
+  <map id="tram::FileWriter_map" name="tram::FileWriter_map">
+<area href="classtram_1_1_disk_writer.html" alt="tram::DiskWriter" shape="rect" coords="0,56,100,80"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a36eae8f51104de246667836307e03595"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a36eae8f51104de246667836307e03595">FileWriter</a> (const char *path, <a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382">FileSource</a> source=<a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382ac8e9e734724f8387be4e58904aa2dc9e">SOURCE_ANY</a>)</td></tr>
-<tr class="memdesc:a36eae8f51104de246667836307e03595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file for writing.  <a href="classtram_1_1_file_writer.html#a36eae8f51104de246667836307e03595">More...</a><br /></td></tr>
-<tr class="separator:a36eae8f51104de246667836307e03595"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a900339239101019ff5b75099914558f5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a900339239101019ff5b75099914558f5">~FileWriter</a> ()</td></tr>
-<tr class="memdesc:a900339239101019ff5b75099914558f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes the file for writing.  <a href="classtram_1_1_file_writer.html#a900339239101019ff5b75099914558f5">More...</a><br /></td></tr>
-<tr class="separator:a900339239101019ff5b75099914558f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f350a6357f2bb7c60950d961c17b880"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a3f350a6357f2bb7c60950d961c17b880">is_open</a> ()</td></tr>
-<tr class="memdesc:a3f350a6357f2bb7c60950d961c17b880"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a file was opened for writing.  <a href="classtram_1_1_file_writer.html#a3f350a6357f2bb7c60950d961c17b880">More...</a><br /></td></tr>
-<tr class="separator:a3f350a6357f2bb7c60950d961c17b880"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87ae626ab261085c34f007a3a9e413c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a87ae626ab261085c34f007a3a9e413c5">write</a> (const char *data, size_t length)</td></tr>
-<tr class="memdesc:a87ae626ab261085c34f007a3a9e413c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes to a file.  <a href="classtram_1_1_file_writer.html#a87ae626ab261085c34f007a3a9e413c5">More...</a><br /></td></tr>
-<tr class="separator:a87ae626ab261085c34f007a3a9e413c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9657acc04bba611bd8f061dcd207f1c"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#ab9657acc04bba611bd8f061dcd207f1c">~FileWriter</a> ()=default</td></tr>
+<tr class="separator:ab9657acc04bba611bd8f061dcd207f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74186dc3ea104ae0fa72c23f96ef7e80"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a74186dc3ea104ae0fa72c23f96ef7e80">SetContents</a> (const char *contents, size_t size)=0</td></tr>
+<tr class="separator:a74186dc3ea104ae0fa72c23f96ef7e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae51986fead14e4b024fea535c0986cec"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550d">FileStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#ae51986fead14e4b024fea535c0986cec">GetStatus</a> ()=0</td></tr>
+<tr class="separator:ae51986fead14e4b024fea535c0986cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83856556c818cf185c04b5e5e26a0021"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a83856556c818cf185c04b5e5e26a0021">Yeet</a> ()=0</td></tr>
+<tr class="separator:a83856556c818cf185c04b5e5e26a0021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:acdf5bcd53cc32c0c7f268d73a9fca3cc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_file_writer.html">FileWriter</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#acdf5bcd53cc32c0c7f268d73a9fca3cc">GetWriter</a> (const char *path)</td></tr>
+<tr class="separator:acdf5bcd53cc32c0c7f268d73a9fca3cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c50a8afb948a19a9bc89d6353046aab"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#a9c50a8afb948a19a9bc89d6353046aab">SetMediumList</a> ()</td></tr>
+<tr class="separator:a9c50a8afb948a19a9bc89d6353046aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcf99237a3774981e16c871ec68b1473"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structtram_1_1_file_source.html">FileSource</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html#abcf99237a3774981e16c871ec68b1473">GetMediumList</a> ()</td></tr>
+<tr class="separator:abcf99237a3774981e16c871ec68b1473"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a36eae8f51104de246667836307e03595" name="a36eae8f51104de246667836307e03595"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36eae8f51104de246667836307e03595">&#9670;&nbsp;</a></span>FileWriter()</h2>
+<a id="ab9657acc04bba611bd8f061dcd207f1c" name="ab9657acc04bba611bd8f061dcd207f1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9657acc04bba611bd8f061dcd207f1c">&#9670;&nbsp;</a></span>~FileWriter()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tram::FileWriter::FileWriter </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382">FileSource</a>&#160;</td>
-          <td class="paramname"><em>source</em> = <code><a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382ac8e9e734724f8387be4e58904aa2dc9e">SOURCE_ANY</a></code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Opens a file for writing. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td><a class="el" href="classtram_1_1_path.html">Path</a> to the file. </td></tr>
-    <tr><td class="paramname">source</td><td>Source to which the file will be written. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a900339239101019ff5b75099914558f5" name="a900339239101019ff5b75099914558f5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a900339239101019ff5b75099914558f5">&#9670;&nbsp;</a></span>~FileWriter()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">tram::FileWriter::~FileWriter </td>
+          <td class="memname">virtual tram::FileWriter::~FileWriter </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-
-<p>Closes the file for writing. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3f350a6357f2bb7c60950d961c17b880" name="a3f350a6357f2bb7c60950d961c17b880"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f350a6357f2bb7c60950d961c17b880">&#9670;&nbsp;</a></span>is_open()</h2>
+<a id="abcf99237a3774981e16c871ec68b1473" name="abcf99237a3774981e16c871ec68b1473"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcf99237a3774981e16c871ec68b1473">&#9670;&nbsp;</a></span>GetMediumList()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool tram::FileWriter::is_open </td>
+          <td class="memname">std::vector&lt; <a class="el" href="structtram_1_1_file_source.html">FileSource</a> &gt; tram::FileWriter::GetMediumList </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Checks if a file was opened for writing. </p>
-
 </div>
 </div>
-<a id="a87ae626ab261085c34f007a3a9e413c5" name="a87ae626ab261085c34f007a3a9e413c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87ae626ab261085c34f007a3a9e413c5">&#9670;&nbsp;</a></span>write()</h2>
+<a id="ae51986fead14e4b024fea535c0986cec" name="ae51986fead14e4b024fea535c0986cec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae51986fead14e4b024fea535c0986cec">&#9670;&nbsp;</a></span>GetStatus()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::FileWriter::write </td>
+          <td class="memname">virtual <a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550d">FileStatus</a> tram::FileWriter::GetStatus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_disk_writer.html#a8b530f156118353d4ba12d332d4e832a">tram::DiskWriter</a>.</p>
+
+</div>
+</div>
+<a id="acdf5bcd53cc32c0c7f268d73a9fca3cc" name="acdf5bcd53cc32c0c7f268d73a9fca3cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdf5bcd53cc32c0c7f268d73a9fca3cc">&#9670;&nbsp;</a></span>GetWriter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_file_writer.html">FileWriter</a> * tram::FileWriter::GetWriter </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a74186dc3ea104ae0fa72c23f96ef7e80" name="a74186dc3ea104ae0fa72c23f96ef7e80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74186dc3ea104ae0fa72c23f96ef7e80">&#9670;&nbsp;</a></span>SetContents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tram::FileWriter::SetContents </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>contents</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>length</em>&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -191,17 +237,66 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Writes to a file. </p>
-<dl class="section note"><dt>Note</dt><dd>This will completely overwrite the file contents. </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">data</td><td>Data which will be written to the file. </td></tr>
-    <tr><td class="paramname">length</td><td>Length of the data, in bytes, pointed to by data parameter. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Implemented in <a class="el" href="classtram_1_1_disk_writer.html#a6430c8e4e068ca19c9b31f1d0899b34c">tram::DiskWriter</a>.</p>
+
+</div>
+</div>
+<a id="a9c50a8afb948a19a9bc89d6353046aab" name="a9c50a8afb948a19a9bc89d6353046aab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c50a8afb948a19a9bc89d6353046aab">&#9670;&nbsp;</a></span>SetMediumList()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::FileWriter::SetMediumList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a83856556c818cf185c04b5e5e26a0021" name="a83856556c818cf185c04b5e5e26a0021"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83856556c818cf185c04b5e5e26a0021">&#9670;&nbsp;</a></span>Yeet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tram::FileWriter::Yeet </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_disk_writer.html#a564c3fea7e402a81699e563310b58acb">tram::DiskWriter</a>.</p>
 
 </div>
 </div>

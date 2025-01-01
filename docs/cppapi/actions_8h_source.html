@@ -69,40 +69,38 @@ $(function() {
   <div class="headertitle"><div class="title">actions.h</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="actions_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">// All rights reserved.</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#ifndef PHYSICS_BULLET_ACTIONS_H</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#define PHYSICS_BULLET_ACTIONS_H</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;btBulletDynamicsCommon.h&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;<a class="code" href="components_2physics_8h.html">components/physics.h</a>&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram_1_1_physics.html">tram::Physics</a> {</div>
+<a href="actions_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// Tramway Drifting and Dungeon Exploration Simulator SDK Runtime</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#ifndef PHYSICS_BULLET_ACTIONS_H</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#define PHYSICS_BULLET_ACTIONS_H</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;btBulletDynamicsCommon.h&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;<a class="code" href="components_2physics_8h.html">components/physics.h</a>&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetram_1_1_physics.html">tram::Physics</a> {</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html">   11</a></span>    <span class="keyword">class </span><a class="code hl_class" href="classtram_1_1_physics_1_1_path_action.html">PathAction</a> : <span class="keyword">public</span> btActionInterface {</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html#a22e23ed7cfd09968f5bc0663befd1d9c">   14</a></span>        <a class="code hl_function" href="classtram_1_1_physics_1_1_path_action.html#a22e23ed7cfd09968f5bc0663befd1d9c">PathAction</a>(<a class="code hl_class" href="classtram_1_1_physics_component.html">PhysicsComponent</a>* physComponent){</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>            physcomp = physComponent;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        }</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html#a41ae4385e939b2c9eca055424032d050">   18</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtram_1_1_physics_1_1_path_action.html#a41ae4385e939b2c9eca055424032d050">updateAction</a>(btCollisionWorld* collisionWorld, btScalar deltaTimeStep);</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html#a8dce3b286d6b2e756a8b9890bf9d9992">   20</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtram_1_1_physics_1_1_path_action.html#a8dce3b286d6b2e756a8b9890bf9d9992">debugDraw</a>(btIDebugDraw* debugDrawer){}</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <a class="code hl_class" href="classtram_1_1_physics_component.html">PhysicsComponent</a>* physcomp = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    };</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>}</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif </span><span class="comment">// PHYSICS_BULLET_ACTIONS_H</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html#a22e23ed7cfd09968f5bc0663befd1d9c">   13</a></span>        <a class="code hl_function" href="classtram_1_1_physics_1_1_path_action.html#a22e23ed7cfd09968f5bc0663befd1d9c">PathAction</a>(<a class="code hl_class" href="classtram_1_1_physics_component.html">PhysicsComponent</a>* physComponent){</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>            physcomp = physComponent;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        }</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html#a41ae4385e939b2c9eca055424032d050">   17</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtram_1_1_physics_1_1_path_action.html#a41ae4385e939b2c9eca055424032d050">updateAction</a>(btCollisionWorld* collisionWorld, btScalar deltaTimeStep);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classtram_1_1_physics_1_1_path_action.html#a8dce3b286d6b2e756a8b9890bf9d9992">   19</a></span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classtram_1_1_physics_1_1_path_action.html#a8dce3b286d6b2e756a8b9890bf9d9992">debugDraw</a>(btIDebugDraw* debugDrawer){}</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <a class="code hl_class" href="classtram_1_1_physics_component.html">PhysicsComponent</a>* physcomp = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    };</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>}</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#endif </span><span class="comment">// PHYSICS_BULLET_ACTIONS_H</span></div>
 <div class="ttc" id="aclasstram_1_1_physics_1_1_path_action_html"><div class="ttname"><a href="classtram_1_1_physics_1_1_path_action.html">tram::Physics::PathAction</a></div><div class="ttdef"><b>Definition:</b> actions.h:11</div></div>
-<div class="ttc" id="aclasstram_1_1_physics_1_1_path_action_html_a22e23ed7cfd09968f5bc0663befd1d9c"><div class="ttname"><a href="classtram_1_1_physics_1_1_path_action.html#a22e23ed7cfd09968f5bc0663befd1d9c">tram::Physics::PathAction::PathAction</a></div><div class="ttdeci">PathAction(PhysicsComponent *physComponent)</div><div class="ttdef"><b>Definition:</b> actions.h:14</div></div>
+<div class="ttc" id="aclasstram_1_1_physics_1_1_path_action_html_a22e23ed7cfd09968f5bc0663befd1d9c"><div class="ttname"><a href="classtram_1_1_physics_1_1_path_action.html#a22e23ed7cfd09968f5bc0663befd1d9c">tram::Physics::PathAction::PathAction</a></div><div class="ttdeci">PathAction(PhysicsComponent *physComponent)</div><div class="ttdef"><b>Definition:</b> actions.h:13</div></div>
 <div class="ttc" id="aclasstram_1_1_physics_1_1_path_action_html_a41ae4385e939b2c9eca055424032d050"><div class="ttname"><a href="classtram_1_1_physics_1_1_path_action.html#a41ae4385e939b2c9eca055424032d050">tram::Physics::PathAction::updateAction</a></div><div class="ttdeci">virtual void updateAction(btCollisionWorld *collisionWorld, btScalar deltaTimeStep)</div></div>
-<div class="ttc" id="aclasstram_1_1_physics_1_1_path_action_html_a8dce3b286d6b2e756a8b9890bf9d9992"><div class="ttname"><a href="classtram_1_1_physics_1_1_path_action.html#a8dce3b286d6b2e756a8b9890bf9d9992">tram::Physics::PathAction::debugDraw</a></div><div class="ttdeci">virtual void debugDraw(btIDebugDraw *debugDrawer)</div><div class="ttdef"><b>Definition:</b> actions.h:20</div></div>
-<div class="ttc" id="aclasstram_1_1_physics_component_html"><div class="ttname"><a href="classtram_1_1_physics_component.html">tram::PhysicsComponent</a></div><div class="ttdef"><b>Definition:</b> physics.h:13</div></div>
+<div class="ttc" id="aclasstram_1_1_physics_1_1_path_action_html_a8dce3b286d6b2e756a8b9890bf9d9992"><div class="ttname"><a href="classtram_1_1_physics_1_1_path_action.html#a8dce3b286d6b2e756a8b9890bf9d9992">tram::Physics::PathAction::debugDraw</a></div><div class="ttdeci">virtual void debugDraw(btIDebugDraw *debugDrawer)</div><div class="ttdef"><b>Definition:</b> actions.h:19</div></div>
+<div class="ttc" id="aclasstram_1_1_physics_component_html"><div class="ttname"><a href="classtram_1_1_physics_component.html">tram::PhysicsComponent</a></div><div class="ttdoc">Rigidbody wrapper.</div><div class="ttdef"><b>Definition:</b> physics.h:12</div></div>
 <div class="ttc" id="acomponents_2physics_8h_html"><div class="ttname"><a href="components_2physics_8h.html">physics.h</a></div></div>
-<div class="ttc" id="anamespacetram_1_1_physics_html"><div class="ttname"><a href="namespacetram_1_1_physics.html">tram::Physics</a></div><div class="ttdef"><b>Definition:</b> api.h:10</div></div>
+<div class="ttc" id="anamespacetram_1_1_physics_html"><div class="ttname"><a href="namespacetram_1_1_physics.html">tram::Physics</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

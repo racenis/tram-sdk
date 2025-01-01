@@ -70,14 +70,16 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="#properties">Properties</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classtram_1_1_render_1_1_material-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">tram::Render::Material Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="material_8h_source.html">material.h</a>&gt;</code></p>
+<p><a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> resource.  
+ <a href="classtram_1_1_render_1_1_material.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="material_8h_source.html">render/material.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::Render::Material:</div>
 <div class="dyncontent">
@@ -116,7 +118,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a25207b8d6b7c4ed0805a732bc196125e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37155313cda78e8032afeed80b2dc8bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a37155313cda78e8032afeed80b2dc8bc">SetMaterialFilter</a> (<a class="el" href="namespacetram_1_1_render.html#aab519c3dc6ead26c1a7695e4c3b5501c">MaterialFilter</a> <a class="el" href="classtram_1_1_render_1_1_material.html#a8793fc03d8f1a34076f3af8739323a42">filter</a>)</td></tr>
 <tr class="separator:a37155313cda78e8032afeed80b2dc8bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15456a50f775b0b406e376947b71bb04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a15456a50f775b0b406e376947b71bb04">SetMaterialProperty</a> (<a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43f">MaterialProperty</a> property)</td></tr>
+<tr class="memitem:a15456a50f775b0b406e376947b71bb04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a15456a50f775b0b406e376947b71bb04">SetMaterialProperty</a> (<a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43f">MaterialProperty</a> <a class="el" href="classtram_1_1_render_1_1_material.html#a758d1a53191fd27bec22aa269b1edd21">property</a>)</td></tr>
 <tr class="separator:a15456a50f775b0b406e376947b71bb04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac450fbb7d4e815d5d84aee35acf40fc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#ac450fbb7d4e815d5d84aee35acf40fc8">SetColor</a> (<a class="el" href="namespacetram_1_1_render.html#a32fb4b5bd9e12e48f08e6ff4ce8817b8">color_t</a> <a class="el" href="classtram_1_1_render_1_1_material.html#a22ce9caef788daf431d1e339fe72423d">color</a>)</td></tr>
 <tr class="separator:ac450fbb7d4e815d5d84aee35acf40fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,11 +129,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5f29589bc4853e8f7a7b321be58fc51b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a5f29589bc4853e8f7a7b321be58fc51b">SetSource</a> (<a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> *<a class="el" href="classtram_1_1_render_1_1_material.html#a0106a7e3c671374dcfd7b68b7b363394">source</a>)</td></tr>
 <tr class="separator:a5f29589bc4853e8f7a7b321be58fc51b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfdd1c7fb5e2c4057855d2dcf7ee75a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#acfdd1c7fb5e2c4057855d2dcf7ee75a7">MakePattern</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> color1, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> color2)</td></tr>
-<tr class="memdesc:acfdd1c7fb5e2c4057855d2dcf7ee75a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> a pattern.  <a href="classtram_1_1_render_1_1_material.html#acfdd1c7fb5e2c4057855d2dcf7ee75a7">More...</a><br /></td></tr>
+<tr class="memdesc:acfdd1c7fb5e2c4057855d2dcf7ee75a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> a pattern.  <a href="classtram_1_1_render_1_1_material.html#acfdd1c7fb5e2c4057855d2dcf7ee75a7">More...</a><br /></td></tr>
 <tr class="separator:acfdd1c7fb5e2c4057855d2dcf7ee75a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a50eea94634fac18b6a8fc13332f9f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a0a50eea94634fac18b6a8fc13332f9f5">LoadFromDisk</a> ()</td></tr>
 <tr class="separator:a0a50eea94634fac18b6a8fc13332f9f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3006d4a771167841597b0ee169213744"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a3006d4a771167841597b0ee169213744">LoadFromMemory</a> ()</td></tr>
+<tr class="memdesc:a3006d4a771167841597b0ee169213744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes material textures to GPU.  <a href="classtram_1_1_render_1_1_material.html#a3006d4a771167841597b0ee169213744">More...</a><br /></td></tr>
 <tr class="separator:a3006d4a771167841597b0ee169213744"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefa2777f79de1882362e0fc50099a46e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#aefa2777f79de1882362e0fc50099a46e">Unload</a> ()</td></tr>
 <tr class="separator:aefa2777f79de1882362e0fc50099a46e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,23 +159,25 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a79794b5c6356b0a4da39a6c9cf468fbc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a79794b5c6356b0a4da39a6c9cf468fbc">Find</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_resource.html#a1fdc62041e403a7a4a49c9860ff00b83">name</a>)</td></tr>
-<tr class="memdesc:a79794b5c6356b0a4da39a6c9cf468fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a>.  <a href="classtram_1_1_render_1_1_material.html#a79794b5c6356b0a4da39a6c9cf468fbc">More...</a><br /></td></tr>
+<tr class="memdesc:a79794b5c6356b0a4da39a6c9cf468fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a>.  <a href="classtram_1_1_render_1_1_material.html#a79794b5c6356b0a4da39a6c9cf468fbc">More...</a><br /></td></tr>
 <tr class="separator:a79794b5c6356b0a4da39a6c9cf468fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25c1c97007d7229c7adb8a4e9986e70d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a25c1c97007d7229c7adb8a4e9986e70d">Make</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_resource.html#a1fdc62041e403a7a4a49c9860ff00b83">name</a>, <a class="el" href="namespacetram_1_1_render.html#a9be8283c1665f7d42c97367d857d43cc">materialtype_t</a> <a class="el" href="classtram_1_1_render_1_1_material.html#adafa815945158f89825308d5286869d2">type</a>)</td></tr>
 <tr class="memdesc:a25c1c97007d7229c7adb8a4e9986e70d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a material.  <a href="classtram_1_1_render_1_1_material.html#a25c1c97007d7229c7adb8a4e9986e70d">More...</a><br /></td></tr>
 <tr class="separator:a25c1c97007d7229c7adb8a4e9986e70d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d94a73e4b23271686808101fd33211a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a5d94a73e4b23271686808101fd33211a">LoadMaterialInfo</a> (const char *filename)</td></tr>
-<tr class="memdesc:a5d94a73e4b23271686808101fd33211a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> definition file.  <a href="classtram_1_1_render_1_1_material.html#a5d94a73e4b23271686808101fd33211a">More...</a><br /></td></tr>
+<tr class="memdesc:a5d94a73e4b23271686808101fd33211a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> definition file.  <a href="classtram_1_1_render_1_1_material.html#a5d94a73e4b23271686808101fd33211a">More...</a><br /></td></tr>
 <tr class="separator:a5d94a73e4b23271686808101fd33211a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a5a6e15bdcaf42aaab5e8553733663037"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">texturehandle_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a5a6e15bdcaf42aaab5e8553733663037">texture</a> = {.generic = 0}</td></tr>
+<tr class="memitem:a5a6e15bdcaf42aaab5e8553733663037"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">texturehandle_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a5a6e15bdcaf42aaab5e8553733663037">texture</a> = {}</td></tr>
 <tr class="separator:a5a6e15bdcaf42aaab5e8553733663037"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adafa815945158f89825308d5286869d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#a9be8283c1665f7d42c97367d857d43cc">materialtype_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#adafa815945158f89825308d5286869d2">type</a> = <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ead42b4d3349a29728811b787cc7bc7632">MATERIAL_TEXTURE</a></td></tr>
 <tr class="separator:adafa815945158f89825308d5286869d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8793fc03d8f1a34076f3af8739323a42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#aab519c3dc6ead26c1a7695e4c3b5501c">MaterialFilter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a8793fc03d8f1a34076f3af8739323a42">filter</a> = <a class="el" href="namespacetram_1_1_render.html#aab519c3dc6ead26c1a7695e4c3b5501ca3f92e1775eab20a3d572e3256446199c">FILTER_NEAREST</a></td></tr>
 <tr class="separator:a8793fc03d8f1a34076f3af8739323a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a758d1a53191fd27bec22aa269b1edd21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43f">MaterialProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a758d1a53191fd27bec22aa269b1edd21">property</a> = <a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43faf0f9e334f61c84e46541a7cc6a568b96">PROPERTY_METAL</a></td></tr>
+<tr class="separator:a758d1a53191fd27bec22aa269b1edd21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5eecc16043ab3c30d158f22429c3fd43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#ae823e9f58d9c8060a531459eec5ff811">TextureType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a5eecc16043ab3c30d158f22429c3fd43">texture_type</a> = <a class="el" href="namespacetram_1_1_render.html#ae823e9f58d9c8060a531459eec5ff811af6589e2c02fc50470840c08b9892f043">TEXTURE_SAME</a></td></tr>
 <tr class="separator:a5eecc16043ab3c30d158f22429c3fd43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0106a7e3c671374dcfd7b68b7b363394"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a0106a7e3c671374dcfd7b68b7b363394">source</a> = nullptr</td></tr>
@@ -205,11 +210,6 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a9f937078a3f7e3df1ad275528e615539 inherit pro_attribs_classtram_1_1_resource"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_resource.html#a9f937078a3f7e3df1ad275528e615539">references</a> = 0</td></tr>
 <tr class="separator:a9f937078a3f7e3df1ad275528e615539 inherit pro_attribs_classtram_1_1_resource"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
-Properties</h2></td></tr>
-<tr class="memitem:a7e3b38b78a8cf0bb37f2bf22281d7928"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43f">MaterialProperty</a>=&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a7e3b38b78a8cf0bb37f2bf22281d7928">PROPERTY_METAL</a></td></tr>
-<tr class="separator:a7e3b38b78a8cf0bb37f2bf22281d7928"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a3292175d54d93d126ba2829249316344"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_material.html#a3292175d54d93d126ba2829249316344">Sprite</a></td></tr>
@@ -224,7 +224,10 @@ Additional Inherited Members</h2></td></tr>
  }</td></tr>
 <tr class="separator:a7a4ce943d482665189305b828868c2a4 inherit pub_types_classtram_1_1_resource"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p ><a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> resource. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/render/material.html">https://racenis.github.io/tram-sdk/documentation/render/material.html</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5174425b4875181d93adc3926d2d7441" name="a5174425b4875181d93adc3926d2d7441"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5174425b4875181d93adc3926d2d7441">&#9670;&nbsp;</a></span>Material() <span class="overload">[1/2]</span></h2>
 
@@ -304,8 +307,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Finds a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a>. </p>
-<p >Finds a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> by its associated name. If <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> with that names does not exist, then it is created (with the TEXTURE_LIGHTMAP type). In addition, for a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> to be found, it must have been created with the <a class="el" href="classtram_1_1_render_1_1_material.html#a5d94a73e4b23271686808101fd33211a" title="Loads a Material definition file.">LoadMaterialInfo()</a>, <a class="el" href="classtram_1_1_render_1_1_material.html#a25c1c97007d7229c7adb8a4e9986e70d" title="Creates a material.">Make()</a> or <a class="el" href="classtram_1_1_render_1_1_material.html#a79794b5c6356b0a4da39a6c9cf468fbc" title="Finds a Material.">Find()</a> methods. </p><dl class="section return"><dt>Returns</dt><dd>Always returns a pointer to a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a>. </dd></dl>
+<p>Finds a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a>. </p>
+<p >Finds a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> by its associated name. If <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> with that names does not exist, then it is created (with the TEXTURE_LIGHTMAP type). In addition, for a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> to be found, it must have been created with the <a class="el" href="classtram_1_1_render_1_1_material.html#a5d94a73e4b23271686808101fd33211a" title="Loads a Material definition file.">LoadMaterialInfo()</a>, <a class="el" href="classtram_1_1_render_1_1_material.html#a25c1c97007d7229c7adb8a4e9986e70d" title="Creates a material.">Make()</a> or <a class="el" href="classtram_1_1_render_1_1_material.html#a79794b5c6356b0a4da39a6c9cf468fbc" title="Finds a Material.">Find()</a> methods. </p><dl class="section return"><dt>Returns</dt><dd>Always returns a pointer to a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a>. </dd></dl>
 
 </div>
 </div>
@@ -584,6 +587,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Pushes material textures to GPU. </p>
+<p >Except if software rendering is used, in which case the texures will merely be copied and converted. </p>
+
 <p>Implements <a class="el" href="classtram_1_1_resource.html#aabc50d5a44a79da0f323e829711a6b0b">tram::Resource</a>.</p>
 
 </div>
@@ -612,7 +618,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Loads a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> definition file. </p>
+<p>Loads a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> definition file. </p>
 
 </div>
 </div>
@@ -651,7 +657,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates a material. </p>
-<p >If a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> already exists with that name, then the existing <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> is returned. </p><dl class="section return"><dt>Returns</dt><dd>Always returns a pointer to a <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a>. </dd></dl>
+<p >If a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> already exists with that name, then the existing <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> is returned. </p><dl class="section return"><dt>Returns</dt><dd>Always returns a pointer to a <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a>. </dd></dl>
 
 </div>
 </div>
@@ -681,7 +687,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Makes <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> a pattern. </p>
+<p>Makes <a class="el" href="classtram_1_1_render_1_1_material.html" title="Material resource.">Material</a> a pattern. </p>
 <p >This method does the same thing as <a class="el" href="classtram_1_1_render_1_1_material.html#a0a50eea94634fac18b6a8fc13332f9f5">LoadFromDisk()</a>, but instead of loading the texture from disk, it will generate a 64x64 pixel checkerboard pattern, like the one used for errored materials. </p>
 
 </div>
@@ -1045,6 +1051,28 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a758d1a53191fd27bec22aa269b1edd21" name="a758d1a53191fd27bec22aa269b1edd21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a758d1a53191fd27bec22aa269b1edd21">&#9670;&nbsp;</a></span>property</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43f">MaterialProperty</a> tram::Render::Material::property = <a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43faf0f9e334f61c84e46541a7cc6a568b96">PROPERTY_METAL</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0106a7e3c671374dcfd7b68b7b363394" name="a0106a7e3c671374dcfd7b68b7b363394"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0106a7e3c671374dcfd7b68b7b363394">&#9670;&nbsp;</a></span>source</h2>
 
@@ -1143,7 +1171,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">texturehandle_t</a> tram::Render::Material::texture = {.generic = 0}</td>
+          <td class="memname"><a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">texturehandle_t</a> tram::Render::Material::texture = {}</td>
         </tr>
       </table>
   </td>
@@ -1232,29 +1260,6 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">uint32_t tram::Render::Material::width = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Property Documentation</h2>
-<a id="a7e3b38b78a8cf0bb37f2bf22281d7928" name="a7e3b38b78a8cf0bb37f2bf22281d7928"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e3b38b78a8cf0bb37f2bf22281d7928">&#9670;&nbsp;</a></span>PROPERTY_METAL</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetram_1_1_render.html#aa55781f294a5a76e9cba54376f45a43f">MaterialProperty</a>= tram::Render::Material::PROPERTY_METAL</td>
         </tr>
       </table>
   </td>

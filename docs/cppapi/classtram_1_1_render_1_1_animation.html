@@ -74,7 +74,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="render_2animation_8h_source.html">animation.h</a>&gt;</code></p>
+<p>Skeletal animation for a 3D model.  
+ <a href="classtram_1_1_render_1_1_animation.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="render_2animation_8h_source.html">render/animation.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::Render::Animation:</div>
 <div class="dyncontent">
@@ -89,8 +92,14 @@ Inheritance diagram for tram::Render::Animation:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aeb52730a357d678921b547c4eae16405"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#aeb52730a357d678921b547c4eae16405">Animation</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_resource.html#a1fdc62041e403a7a4a49c9860ff00b83">name</a>)</td></tr>
 <tr class="separator:aeb52730a357d678921b547c4eae16405"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5678b9a23b5e213764554a458884350"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#a5c915c417ac6870808de6e5dff23c287">NameCount</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#ae5678b9a23b5e213764554a458884350">GetPointer</a> ()</td></tr>
-<tr class="separator:ae5678b9a23b5e213764554a458884350"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa51937c2a487fe82bafdb2d4056e30c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_keyframe.html">Keyframe</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#afa51937c2a487fe82bafdb2d4056e30c">GetKeyframes</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> bone)</td></tr>
+<tr class="separator:afa51937c2a487fe82bafdb2d4056e30c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a815b1115dfa11c8e21cf305d24ac49f8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#a815b1115dfa11c8e21cf305d24ac49f8">GetKeyframeCount</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> bone)</td></tr>
+<tr class="separator:a815b1115dfa11c8e21cf305d24ac49f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97148015f708147071e224e18128b442"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_keyframe_header.html">KeyframeHeader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#a97148015f708147071e224e18128b442">GetHeader</a> (uint32_t index)</td></tr>
+<tr class="separator:a97148015f708147071e224e18128b442"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d75cbe7f57a4b7b77f38ca710cadf30"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#a8d75cbe7f57a4b7b77f38ca710cadf30">GetHeaderCount</a> ()</td></tr>
+<tr class="separator:a8d75cbe7f57a4b7b77f38ca710cadf30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0a4327e94e5babd310c67593cf4dae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#aa0a4327e94e5babd310c67593cf4dae7">LoadFromDisk</a> ()</td></tr>
 <tr class="separator:aa0a4327e94e5babd310c67593cf4dae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a256a3c4dc1998b67c26aab28b7684d9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_animation.html#a256a3c4dc1998b67c26aab28b7684d9d">LoadFromMemory</a> ()</td></tr>
@@ -140,7 +149,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a9f937078a3f7e3df1ad275528e615539 inherit pro_attribs_classtram_1_1_resource"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_resource.html#a9f937078a3f7e3df1ad275528e615539">references</a> = 0</td></tr>
 <tr class="separator:a9f937078a3f7e3df1ad275528e615539 inherit pro_attribs_classtram_1_1_resource"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Skeletal animation for a 3D model. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/render/animation.html">https://racenis.github.io/tram-sdk/documentation/render/animation.html</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aeb52730a357d678921b547c4eae16405" name="aeb52730a357d678921b547c4eae16405"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb52730a357d678921b547c4eae16405">&#9670;&nbsp;</a></span>Animation()</h2>
 
@@ -194,8 +206,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ae5678b9a23b5e213764554a458884350" name="ae5678b9a23b5e213764554a458884350"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5678b9a23b5e213764554a458884350">&#9670;&nbsp;</a></span>GetPointer()</h2>
+<a id="a97148015f708147071e224e18128b442" name="a97148015f708147071e224e18128b442"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97148015f708147071e224e18128b442">&#9670;&nbsp;</a></span>GetHeader()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -204,7 +216,33 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacetram_1_1_render.html#a5c915c417ac6870808de6e5dff23c287">NameCount</a> * tram::Render::Animation::GetPointer </td>
+          <td class="memname"><a class="el" href="structtram_1_1_render_1_1_keyframe_header.html">KeyframeHeader</a> * tram::Render::Animation::GetHeader </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>index</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8d75cbe7f57a4b7b77f38ca710cadf30" name="a8d75cbe7f57a4b7b77f38ca710cadf30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d75cbe7f57a4b7b77f38ca710cadf30">&#9670;&nbsp;</a></span>GetHeaderCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t tram::Render::Animation::GetHeaderCount </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -215,6 +253,42 @@ Additional Inherited Members</h2></td></tr>
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a815b1115dfa11c8e21cf305d24ac49f8" name="a815b1115dfa11c8e21cf305d24ac49f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a815b1115dfa11c8e21cf305d24ac49f8">&#9670;&nbsp;</a></span>GetKeyframeCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t tram::Render::Animation::GetKeyframeCount </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td>
+          <td class="paramname"><em>bone</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afa51937c2a487fe82bafdb2d4056e30c" name="afa51937c2a487fe82bafdb2d4056e30c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa51937c2a487fe82bafdb2d4056e30c">&#9670;&nbsp;</a></span>GetKeyframes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structtram_1_1_render_1_1_keyframe.html">Keyframe</a> * tram::Render::Animation::GetKeyframes </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td>
+          <td class="paramname"><em>bone</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -316,7 +390,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

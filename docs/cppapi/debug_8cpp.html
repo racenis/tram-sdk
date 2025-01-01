@@ -75,14 +75,22 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="debug_8h_source.html">extensions/menu/debug.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="render_2aabb_8h_source.html">render/aabb.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="scene_8h_source.html">render/scene.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="physics_2api_8h_source.html">physics/api.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="render_2api_8h_source.html">render/api.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="components_2render_8h_source.html">components/render.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="components_2audio_8h_source.html">components/audio.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="components_2animation_8h_source.html">components/animation.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="controller_8h_source.html">components/controller.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="components_2light_8h_source.html">components/light.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="entity_8h_source.html">framework/entity.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="settings_8h_source.html">framework/settings.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="worldcell_8h_source.html">framework/worldcell.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="stats_8h_source.html">framework/stats.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="framework_2script_8h_source.html">framework/script.h</a>&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;deque&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -98,10 +106,12 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_ext"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext.html">tram::Ext</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_ext_1_1_menu"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_menu.html">tram::Ext::Menu</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_ext_1_1_menu"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtram_1_1_ext_1_1_menu_1_1_menu.html">Menu</a> framework. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -113,6 +123,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:af86d588e63468dd9f7b354da13f18124"><td class="memItemLeft" align="right" valign="top">std::deque&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_menu.html#af86d588e63468dd9f7b354da13f18124">tram::Ext::Menu::console_logs</a></td></tr>
+<tr class="separator:af86d588e63468dd9f7b354da13f18124"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8d4e5481ecd0bb091a930107037e0c2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Intercept * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_menu.html#ad8d4e5481ecd0bb091a930107037e0c2">tram::Ext::Menu::intercepts</a></td></tr>
 <tr class="separator:ad8d4e5481ecd0bb091a930107037e0c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

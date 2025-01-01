@@ -75,14 +75,17 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="components_2render_8h_source.html">render.h</a>&gt;</code></p>
+<p>Renders a Model.  
+ <a href="classtram_1_1_render_component.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="components_2render_8h_source.html">components/render.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::RenderComponent:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classtram_1_1_render_component.png" usemap="#tram::RenderComponent_map" alt=""/>
   <map id="tram::RenderComponent_map" name="tram::RenderComponent_map">
-<area href="classtram_1_1_entity_component.html" alt="tram::EntityComponent" shape="rect" coords="0,0,146,24"/>
+<area href="classtram_1_1_entity_component.html" title="Component base class." alt="tram::EntityComponent" shape="rect" coords="0,0,146,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -103,7 +106,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a3eb6d145b4258093f8fcd1487edf2874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the lightmap for the model.  <a href="classtram_1_1_render_component.html#a3eb6d145b4258093f8fcd1487edf2874">More...</a><br /></td></tr>
 <tr class="separator:a3eb6d145b4258093f8fcd1487edf2874"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab67dd56c013753efd5c8fa9866daab88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#ab67dd56c013753efd5c8fa9866daab88">SetArmature</a> (<a class="el" href="classtram_1_1_animation_component.html">AnimationComponent</a> *armature)</td></tr>
-<tr class="memdesc:ab67dd56c013753efd5c8fa9866daab88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Links an <a class="el" href="classtram_1_1_animation_component.html">AnimationComponent</a>.  <a href="classtram_1_1_render_component.html#ab67dd56c013753efd5c8fa9866daab88">More...</a><br /></td></tr>
+<tr class="memdesc:ab67dd56c013753efd5c8fa9866daab88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Links an <a class="el" href="classtram_1_1_animation_component.html" title="Plays back Animations.">AnimationComponent</a>.  <a href="classtram_1_1_render_component.html#ab67dd56c013753efd5c8fa9866daab88">More...</a><br /></td></tr>
 <tr class="separator:ab67dd56c013753efd5c8fa9866daab88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97f294652a7627376510082ca4935490"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a97f294652a7627376510082ca4935490">Start</a> ()</td></tr>
 <tr class="separator:a97f294652a7627376510082ca4935490"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,6 +114,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac1c0477f22ef04154367915c0294848b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb6747392d707e0dca643a0400adef75"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#abb6747392d707e0dca643a0400adef75">GetRotation</a> () const</td></tr>
 <tr class="separator:abb6747392d707e0dca643a0400adef75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82831dd25d49e53768209fe6b22ec736"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a82831dd25d49e53768209fe6b22ec736">GetScale</a> () const</td></tr>
+<tr class="separator:a82831dd25d49e53768209fe6b22ec736"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81f2ac27fa4516443e6a11f3371736d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a81f2ac27fa4516443e6a11f3371736d4">SetLocation</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> nlocation)</td></tr>
 <tr class="memdesc:a81f2ac27fa4516443e6a11f3371736d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the location of the model.  <a href="classtram_1_1_render_component.html#a81f2ac27fa4516443e6a11f3371736d4">More...</a><br /></td></tr>
 <tr class="separator:a81f2ac27fa4516443e6a11f3371736d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,19 +135,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6f3130e436973f3e9f9f949e642df68d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a6f3130e436973f3e9f9f949e642df68d">SetDirectionaLight</a> (bool enabled)</td></tr>
 <tr class="memdesc:a6f3130e436973f3e9f9f949e642df68d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the world parameters for model rendering.  <a href="classtram_1_1_render_component.html#a6f3130e436973f3e9f9f949e642df68d">More...</a><br /></td></tr>
 <tr class="separator:a6f3130e436973f3e9f9f949e642df68d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5957906efb717b5596b1c6f12fbe6ded"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a5957906efb717b5596b1c6f12fbe6ded">SetRenderDebug</a> (bool enabled)</td></tr>
+<tr class="memdesc:a5957906efb717b5596b1c6f12fbe6ded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets render debugging.  <a href="classtram_1_1_render_component.html#a5957906efb717b5596b1c6f12fbe6ded">More...</a><br /></td></tr>
+<tr class="separator:a5957906efb717b5596b1c6f12fbe6ded"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18fa5b9e63b9ef19051e0c705a19e46e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a18fa5b9e63b9ef19051e0c705a19e46e">EventHandler</a> (<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event)</td></tr>
 <tr class="separator:a18fa5b9e63b9ef19051e0c705a19e46e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
-<tr class="memitem:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4b6c8ec03356f2471bb7a3dd40fb36e6">EntityComponent</a> ()</td></tr>
-<tr class="separator:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab0daa42f3e539d6160e28fa43e37274e">~EntityComponent</a> ()</td></tr>
-<tr class="separator:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#af7444b7aaf205a8d3f120de11241a1a4">Init</a> ()</td></tr>
-<tr class="separator:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a843b4cdf5844c3fbd85c92f1c30cc108">IsReady</a> ()</td></tr>
-<tr class="separator:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a8ca5d5e94fee475a88428d4f072e77c7">IsInit</a> ()</td></tr>
-<tr class="separator:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a407901dc86e2eeb0b594d3730081f3e8">EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4c959cc80467ad2e753972bdc4eb7c33">~EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">Init</a> ()</td></tr>
+<tr class="memdesc:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an entity component.  <a href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">More...</a><br /></td></tr>
+<tr class="separator:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">IsReady</a> ()</td></tr>
+<tr class="memdesc:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's readiness.  <a href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">More...</a><br /></td></tr>
+<tr class="separator:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">IsInit</a> ()</td></tr>
+<tr class="memdesc:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's init status.  <a href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">More...</a><br /></td></tr>
+<tr class="separator:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a678a0fce6a2deac1fa04baaed4db3009">GetParent</a> ()</td></tr>
 <tr class="separator:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1683ad236bce69ab4b2c2dac75ef526a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1683ad236bce69ab4b2c2dac75ef526a">SetParent</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *<a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a>)</td></tr>
@@ -156,6 +167,7 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a51f449b6197db27708cbd4ebfb6ed433"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
 <tr class="memitem:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">ResourceReady</a> ()</td></tr>
+<tr class="memdesc:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies the component of a streamed-in resource.  <a href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">More...</a><br /></td></tr>
 <tr class="separator:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
@@ -192,7 +204,10 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a> = nullptr</td></tr>
 <tr class="separator:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Renders a Model. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/components/render.html">https://racenis.github.io/tram-sdk/documentation/components/render.html</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa32cca5b26feda97cbbed341d6633285" name="aa32cca5b26feda97cbbed341d6633285"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa32cca5b26feda97cbbed341d6633285">&#9670;&nbsp;</a></span>RenderComponent()</h2>
 
@@ -356,6 +371,31 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a82831dd25d49e53768209fe6b22ec736" name="a82831dd25d49e53768209fe6b22ec736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82831dd25d49e53768209fe6b22ec736">&#9670;&nbsp;</a></span>GetScale()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::RenderComponent::GetScale </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aae0ec9b022b64f9cfc19885dc6eee2c1" name="aae0ec9b022b64f9cfc19885dc6eee2c1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aae0ec9b022b64f9cfc19885dc6eee2c1">&#9670;&nbsp;</a></span>InsertDrawListEntries()</h2>
 
@@ -422,8 +462,8 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Links an <a class="el" href="classtram_1_1_animation_component.html">AnimationComponent</a>. </p>
-<p >This needs to be set, so that the model can be rendered with the animations played by the <a class="el" href="classtram_1_1_animation_component.html">AnimationComponent</a>. Alternatively, this can be set to a nullptr, if no animations are to be played. This affects only dynamic models, static models don't play animations. </p>
+<p>Links an <a class="el" href="classtram_1_1_animation_component.html" title="Plays back Animations.">AnimationComponent</a>. </p>
+<p >This needs to be set, so that the model can be rendered with the animations played by the <a class="el" href="classtram_1_1_animation_component.html" title="Plays back Animations.">AnimationComponent</a>. Alternatively, this can be set to a nullptr, if no animations are to be played. This affects only dynamic models, static models don't play animations. </p>
 
 </div>
 </div>
@@ -544,6 +584,27 @@ Protected Attributes</h2></td></tr>
 
 <p>Set the model that the component will render. </p>
 <p >If the model is not already loaded, then it will be added to loader queue and the component will start when it the loading is complete. </p>
+
+</div>
+</div>
+<a id="a5957906efb717b5596b1c6f12fbe6ded" name="a5957906efb717b5596b1c6f12fbe6ded"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5957906efb717b5596b1c6f12fbe6ded">&#9670;&nbsp;</a></span>SetRenderDebug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::RenderComponent::SetRenderDebug </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets render debugging. </p>
+<p >If set to false, the 3D model will not have debug text for it when the render debug text rendering is turned on. </p>
 
 </div>
 </div>

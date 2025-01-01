@@ -82,45 +82,52 @@ Macros</h2></td></tr>
 <tr class="memitem:ad00c543490e5b3b7db91b1fdb62d44cb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#ad00c543490e5b3b7db91b1fdb62d44cb">TRAM_SDK_IMPLEMENT_POOL</a>(TYPE,  NAME,  SIZE)&#160;&#160;&#160;template &lt;&gt; Pool&lt;TYPE&gt; PoolProxy&lt;TYPE&gt;::pool (NAME, SIZE);</td></tr>
 <tr class="memdesc:ad00c543490e5b3b7db91b1fdb62d44cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implements a pool.  <a href="macros_8h.html#ad00c543490e5b3b7db91b1fdb62d44cb">More...</a><br /></td></tr>
 <tr class="separator:ad00c543490e5b3b7db91b1fdb62d44cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebc83293c6b4516f0a29bbb1a2be3650"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#aebc83293c6b4516f0a29bbb1a2be3650">TRAM_SDK_REGISTER_ENTITY</a>(NAME,  TYPE)&#160;&#160;&#160;Entity::Register(#NAME, [](std::string_view&amp; params) -&gt; Entity* {return new TYPE(params);});</td></tr>
-<tr class="memdesc:aebc83293c6b4516f0a29bbb1a2be3650"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers an entity.  <a href="macros_8h.html#aebc83293c6b4516f0a29bbb1a2be3650">More...</a><br /></td></tr>
-<tr class="separator:aebc83293c6b4516f0a29bbb1a2be3650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a760b7eb41b15c2c0f78131387332b818"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a760b7eb41b15c2c0f78131387332b818">TRAM_SDK_ASSERT_SYSTEM_LOADED</a>(SYSTEM)&#160;&#160;&#160;if (!System::IsInitialized(SYSTEM)) { Log (&quot;System {} is not loaded. It should be. Assert in {} at {}&quot;, System::GetShortName(SYSTEM), __FILE__, __LINE__); abort(); }</td></tr>
-<tr class="separator:a760b7eb41b15c2c0f78131387332b818"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1862085c8cab045168f5363b64f0e0b6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a1862085c8cab045168f5363b64f0e0b6">TRAM_SDK_ASSERT_SYSTEM_UNLOADED</a>(SYSTEM)&#160;&#160;&#160;if (System::IsInitialized(SYSTEM)) { Log (&quot;System {} is loaded. It shouldn't be. Assert in {} at {}&quot;, System::GetShortName(SYSTEM), __FILE__, __LINE__); abort(); }</td></tr>
-<tr class="separator:a1862085c8cab045168f5363b64f0e0b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8acc3253ef25e7241078bb72714f386"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#ab8acc3253ef25e7241078bb72714f386">TRAM_SDK_ASSERT</a>(EXPRESSION)&#160;&#160;&#160;if (!(EXPRESSION)) { Log(&quot;{}\nAssert at line {} in {}&quot;, #EXPRESSION, __LINE__, __FILE__); abort(); }</td></tr>
+<tr class="separator:ab8acc3253ef25e7241078bb72714f386"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a152c2304044652f7572e5759c6535a2c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a152c2304044652f7572e5759c6535a2c">TRAM_SDK_ASSERT_MESSAGE</a>(EXPRESSION,  MESSAGE)&#160;&#160;&#160;if (!(EXPRESSION)) { Log(&quot;{}\n{}\nAssert at line {} in {}&quot;, MESSAGE, #EXPRESSION, __LINE__, __FILE__); abort(); }</td></tr>
+<tr class="separator:a152c2304044652f7572e5759c6535a2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a760b7eb41b15c2c0f78131387332b818" name="a760b7eb41b15c2c0f78131387332b818"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a760b7eb41b15c2c0f78131387332b818">&#9670;&nbsp;</a></span>TRAM_SDK_ASSERT_SYSTEM_LOADED</h2>
+<a id="ab8acc3253ef25e7241078bb72714f386" name="ab8acc3253ef25e7241078bb72714f386"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8acc3253ef25e7241078bb72714f386">&#9670;&nbsp;</a></span>TRAM_SDK_ASSERT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRAM_SDK_ASSERT_SYSTEM_LOADED</td>
+          <td class="memname">#define TRAM_SDK_ASSERT</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">SYSTEM</td><td>)</td>
-          <td>&#160;&#160;&#160;if (!System::IsInitialized(SYSTEM)) { Log (&quot;System {} is not loaded. It should be. Assert in {} at {}&quot;, System::GetShortName(SYSTEM), __FILE__, __LINE__); abort(); }</td>
+          <td class="paramname">EXPRESSION</td><td>)</td>
+          <td>&#160;&#160;&#160;if (!(EXPRESSION)) { Log(&quot;{}\nAssert at line {} in {}&quot;, #EXPRESSION, __LINE__, __FILE__); abort(); }</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a1862085c8cab045168f5363b64f0e0b6" name="a1862085c8cab045168f5363b64f0e0b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1862085c8cab045168f5363b64f0e0b6">&#9670;&nbsp;</a></span>TRAM_SDK_ASSERT_SYSTEM_UNLOADED</h2>
+<a id="a152c2304044652f7572e5759c6535a2c" name="a152c2304044652f7572e5759c6535a2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a152c2304044652f7572e5759c6535a2c">&#9670;&nbsp;</a></span>TRAM_SDK_ASSERT_MESSAGE</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRAM_SDK_ASSERT_SYSTEM_UNLOADED</td>
+          <td class="memname">#define TRAM_SDK_ASSERT_MESSAGE</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">SYSTEM</td><td>)</td>
-          <td>&#160;&#160;&#160;if (System::IsInitialized(SYSTEM)) { Log (&quot;System {} is loaded. It shouldn't be. Assert in {} at {}&quot;, System::GetShortName(SYSTEM), __FILE__, __LINE__); abort(); }</td>
+          <td class="paramname">EXPRESSION, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">MESSAGE&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;if (!(EXPRESSION)) { Log(&quot;{}\n{}\nAssert at line {} in {}&quot;, MESSAGE, #EXPRESSION, __LINE__, __FILE__); abort(); }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -160,36 +167,6 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements a pool. </p>
-
-</div>
-</div>
-<a id="aebc83293c6b4516f0a29bbb1a2be3650" name="aebc83293c6b4516f0a29bbb1a2be3650"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebc83293c6b4516f0a29bbb1a2be3650">&#9670;&nbsp;</a></span>TRAM_SDK_REGISTER_ENTITY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define TRAM_SDK_REGISTER_ENTITY</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">NAME, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">TYPE&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;Entity::Register(#NAME, [](std::string_view&amp; params) -&gt; Entity* {return new TYPE(params);});</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Registers an entity. </p>
 
 </div>
 </div>

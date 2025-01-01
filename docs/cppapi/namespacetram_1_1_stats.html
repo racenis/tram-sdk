@@ -73,6 +73,9 @@ $(function() {
   <div class="headertitle"><div class="title">tram::Stats Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><a class="el" href="classtram_1_1_resource.html">Resource</a> usage statistics.  
+<a href="namespacetram_1_1_stats.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -82,6 +85,7 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a3308525cd94517390ff06b22b9fef78e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_stats.html#a3308525cd94517390ff06b22b9fef78e">Resource</a> : uint32_t { <a class="el" href="namespacetram_1_1_stats.html#a3308525cd94517390ff06b22b9fef78ea5562dbf309e54c68ea2c9be9659c3998">RESOURCE_VRAM</a>
+, <a class="el" href="namespacetram_1_1_stats.html#a3308525cd94517390ff06b22b9fef78ea30dfa36d594401ff8bc2fa42bdaef635">RESOURCE_DRAWCALL</a>
  }</td></tr>
 <tr class="separator:a3308525cd94517390ff06b22b9fef78e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -112,9 +116,14 @@ Functions</h2></td></tr>
 <tr class="memdesc:adc7ecc593e1e434e5df1f573651e146a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the uncollated time of a system.  <a href="namespacetram_1_1_stats.html#adc7ecc593e1e434e5df1f573651e146a">More...</a><br /></td></tr>
 <tr class="separator:adc7ecc593e1e434e5df1f573651e146a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fb3323e6726d2010fab092bc9180dd1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_stats.html#a9fb3323e6726d2010fab092bc9180dd1">GetStatAverage</a> (<a class="el" href="namespacetram_1_1_system.html#a3480b59cb32a6f70ad1fce1626b64e40">System::system_t</a> system)</td></tr>
+<tr class="memdesc:a9fb3323e6726d2010fab092bc9180dd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the ammount of resource, averaged over the last second.  <a href="namespacetram_1_1_stats.html#a9fb3323e6726d2010fab092bc9180dd1">More...</a><br /></td></tr>
 <tr class="separator:a9fb3323e6726d2010fab092bc9180dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p ><a class="el" href="classtram_1_1_resource.html">Resource</a> usage statistics. </p>
+<p >Keeps track of resource usage, time spent by different systems, as well as various other counters.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/stats.html">https://racenis.github.io/tram-sdk/documentation/framework/stats.html</a> </dd></dl>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a3308525cd94517390ff06b22b9fef78e" name="a3308525cd94517390ff06b22b9fef78e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3308525cd94517390ff06b22b9fef78e">&#9670;&nbsp;</a></span>Resource</h2>
 
@@ -128,6 +137,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3308525cd94517390ff06b22b9fef78ea5562dbf309e54c68ea2c9be9659c3998" name="a3308525cd94517390ff06b22b9fef78ea5562dbf309e54c68ea2c9be9659c3998"></a>RESOURCE_VRAM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3308525cd94517390ff06b22b9fef78ea30dfa36d594401ff8bc2fa42bdaef635" name="a3308525cd94517390ff06b22b9fef78ea30dfa36d594401ff8bc2fa42bdaef635"></a>RESOURCE_DRAWCALL&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -237,6 +247,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Returns the ammount of resource, averaged over the last second. </p>
 
 </div>
 </div>

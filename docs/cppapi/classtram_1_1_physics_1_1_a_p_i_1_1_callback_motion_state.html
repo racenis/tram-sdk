@@ -68,6 +68,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">tram::Physics::API::CallbackMotionState Class Reference</div></div>
 </div><!--header-->
@@ -81,7 +82,7 @@ Inheritance diagram for tram::Physics::API::CallbackMotionState:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa3c82472daee6498cab94722d7d43a05"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#aa3c82472daee6498cab94722d7d43a05">CallbackMotionState</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> position, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> rotation, <a class="el" href="namespacetram_1_1_physics_1_1_a_p_i.html#a36463524ce5c3d5ee5d8c9bf2d4258bd">get_trf_callback</a> get_callback, <a class="el" href="namespacetram_1_1_physics_1_1_a_p_i.html#a8e2158a307c228002d615529011ac455">set_trf_callback</a> set_callback, void *data)</td></tr>
+<tr class="memitem:aa3c82472daee6498cab94722d7d43a05"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#aa3c82472daee6498cab94722d7d43a05">CallbackMotionState</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> <a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#a2374bce1a3ea318d53f293d90231d431">position</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> <a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#a8eb70310ddfbbf5915e9f243317e845e">rotation</a>, <a class="el" href="namespacetram_1_1_physics_1_1_a_p_i.html#a36463524ce5c3d5ee5d8c9bf2d4258bd">get_trf_callback</a> get_callback, <a class="el" href="namespacetram_1_1_physics_1_1_a_p_i.html#a8e2158a307c228002d615529011ac455">set_trf_callback</a> set_callback, void *data)</td></tr>
 <tr class="separator:aa3c82472daee6498cab94722d7d43a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1563529ba951ebec065cf23c7f9d6d59"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#a1563529ba951ebec065cf23c7f9d6d59">~CallbackMotionState</a> ()</td></tr>
 <tr class="separator:a1563529ba951ebec065cf23c7f9d6d59"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -89,8 +90,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3c4651578a5cc3573ddf5dad03eb305f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a813941aee5728ff97d671972b1b180b7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#a813941aee5728ff97d671972b1b180b7">setWorldTransform</a> (const btTransform &amp;world_transform)</td></tr>
 <tr class="separator:a813941aee5728ff97d671972b1b180b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4cd905f3f85673090c5cd67957a8307"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#aa4cd905f3f85673090c5cd67957a8307">SetTransformCallback</a> (std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;(*get_transform_callback)(void *), void(*set_transform_callback)(void *, std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;), void *data)</td></tr>
+<tr class="memitem:aa4cd905f3f85673090c5cd67957a8307"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#aa4cd905f3f85673090c5cd67957a8307">SetTransformCallback</a> (std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;(*<a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#ab97d0dfa12197e6fa79055fd3bfc57ba">get_transform_callback</a>)(void *), void(*<a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#af92a134178d01636e1b003a46daafdda">set_transform_callback</a>)(void *, std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;), void *data)</td></tr>
 <tr class="separator:aa4cd905f3f85673090c5cd67957a8307"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:ab97d0dfa12197e6fa79055fd3bfc57ba"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#ab97d0dfa12197e6fa79055fd3bfc57ba">get_transform_callback</a> )(void *) = nullptr</td></tr>
+<tr class="separator:ab97d0dfa12197e6fa79055fd3bfc57ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af92a134178d01636e1b003a46daafdda"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#af92a134178d01636e1b003a46daafdda">set_transform_callback</a> )(void *, std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;) = nullptr</td></tr>
+<tr class="separator:af92a134178d01636e1b003a46daafdda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2374bce1a3ea318d53f293d90231d431"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#a2374bce1a3ea318d53f293d90231d431">position</a></td></tr>
+<tr class="separator:a2374bce1a3ea318d53f293d90231d431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eb70310ddfbbf5915e9f243317e845e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#a8eb70310ddfbbf5915e9f243317e845e">rotation</a></td></tr>
+<tr class="separator:a8eb70310ddfbbf5915e9f243317e845e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae865860d86b2764693cf6e37a49c7d97"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_physics_1_1_a_p_i_1_1_callback_motion_state.html#ae865860d86b2764693cf6e37a49c7d97">data_pointer</a> = nullptr</td></tr>
+<tr class="separator:ae865860d86b2764693cf6e37a49c7d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa3c82472daee6498cab94722d7d43a05" name="aa3c82472daee6498cab94722d7d43a05"></a>
@@ -261,6 +275,117 @@ Public Member Functions</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ae865860d86b2764693cf6e37a49c7d97" name="ae865860d86b2764693cf6e37a49c7d97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae865860d86b2764693cf6e37a49c7d97">&#9670;&nbsp;</a></span>data_pointer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* tram::Physics::API::CallbackMotionState::data_pointer = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab97d0dfa12197e6fa79055fd3bfc57ba" name="ab97d0dfa12197e6fa79055fd3bfc57ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab97d0dfa12197e6fa79055fd3bfc57ba">&#9670;&nbsp;</a></span>get_transform_callback</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;(* tram::Physics::API::CallbackMotionState::get_transform_callback) (void *) = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2374bce1a3ea318d53f293d90231d431" name="a2374bce1a3ea318d53f293d90231d431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2374bce1a3ea318d53f293d90231d431">&#9670;&nbsp;</a></span>position</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::Physics::API::CallbackMotionState::position</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8eb70310ddfbbf5915e9f243317e845e" name="a8eb70310ddfbbf5915e9f243317e845e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb70310ddfbbf5915e9f243317e845e">&#9670;&nbsp;</a></span>rotation</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> tram::Physics::API::CallbackMotionState::rotation</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af92a134178d01636e1b003a46daafdda" name="af92a134178d01636e1b003a46daafdda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af92a134178d01636e1b003a46daafdda">&#9670;&nbsp;</a></span>set_transform_callback</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void(* tram::Physics::API::CallbackMotionState::set_transform_callback) (void *, std::pair&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>, <a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> &gt;) = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

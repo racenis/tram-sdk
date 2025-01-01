@@ -69,75 +69,68 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classtram_1_1_controller_component-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">tram::ControllerComponent Class Reference</div></div>
+  <div class="headertitle"><div class="title">tram::ControllerComponent Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="controller_8h_source.html">controller.h</a>&gt;</code></p>
+<p>Provides an API for character controllers.  
+ <a href="classtram_1_1_controller_component.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="controller_8h_source.html">components/controller.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::ControllerComponent:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classtram_1_1_controller_component.png" usemap="#tram::ControllerComponent_map" alt=""/>
   <map id="tram::ControllerComponent_map" name="tram::ControllerComponent_map">
-<area href="classtram_1_1_entity_component.html" alt="tram::EntityComponent" shape="rect" coords="0,0,161,24"/>
+<area href="classtram_1_1_entity_component.html" title="Component base class." alt="tram::EntityComponent" shape="rect" coords="108,0,314,24"/>
+<area href="classtram_1_1_f_p_s_controller_component.html" title="Implementation of an FPS-style character controller." alt="tram::FPSControllerComponent" shape="rect" coords="0,112,206,136"/>
+<area href="classtram_1_1_raycast_controller_component.html" title="Implementation of a simple character controller." alt="tram::RaycastControllerComponent" shape="rect" coords="216,112,422,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab7048932e5d1d564c03cf7c0db7704f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ab7048932e5d1d564c03cf7c0db7704f9">Start</a> ()</td></tr>
-<tr class="separator:ab7048932e5d1d564c03cf7c0db7704f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9310eb13eaa21b6f6061b8dc5d01182c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a9310eb13eaa21b6f6061b8dc5d01182c">EventHandler</a> (<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event)</td></tr>
-<tr class="separator:a9310eb13eaa21b6f6061b8dc5d01182c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21565e19bed83f190e90b47cba412d5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a21565e19bed83f190e90b47cba412d5a">Move</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> local_direction)</td></tr>
-<tr class="separator:a21565e19bed83f190e90b47cba412d5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53c4bc00eaf45e20aee901be5c8b4cf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a53c4bc00eaf45e20aee901be5c8b4cf8">Run</a> ()</td></tr>
-<tr class="separator:a53c4bc00eaf45e20aee901be5c8b4cf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbf04bfe5d6b61926b3a22169440de9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#adbf04bfe5d6b61926b3a22169440de9e">Crouch</a> ()</td></tr>
-<tr class="separator:adbf04bfe5d6b61926b3a22169440de9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ca0c6154369d80bb23737810ba720de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a0ca0c6154369d80bb23737810ba720de">Jump</a> ()</td></tr>
-<tr class="separator:a0ca0c6154369d80bb23737810ba720de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0482e3a8318e6662bef652a4681ac48e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a0482e3a8318e6662bef652a4681ac48e">TurnLeft</a> ()</td></tr>
-<tr class="separator:a0482e3a8318e6662bef652a4681ac48e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e82bd75c5d731c443c470a38195b189"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a0e82bd75c5d731c443c470a38195b189">TurnRight</a> ()</td></tr>
-<tr class="separator:a0e82bd75c5d731c443c470a38195b189"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8879cf7a3b4b225031d36739dde0d685"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a8879cf7a3b4b225031d36739dde0d685">Push</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> direction)</td></tr>
-<tr class="separator:a8879cf7a3b4b225031d36739dde0d685"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72c9c834cd28d9c7cdbd16e48d6146f6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a72c9c834cd28d9c7cdbd16e48d6146f6">Move</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> local_direction)=0</td></tr>
+<tr class="separator:a72c9c834cd28d9c7cdbd16e48d6146f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09830a27a27ef8b419a9cf9e60446121"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a09830a27a27ef8b419a9cf9e60446121">Run</a> ()=0</td></tr>
+<tr class="separator:a09830a27a27ef8b419a9cf9e60446121"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeca250fb793765f6d36d00ef05e9f931"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#aeca250fb793765f6d36d00ef05e9f931">Crouch</a> ()=0</td></tr>
+<tr class="separator:aeca250fb793765f6d36d00ef05e9f931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae13d3ca8940732bb64b80f0d0a789bfe"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ae13d3ca8940732bb64b80f0d0a789bfe">Fly</a> ()=0</td></tr>
+<tr class="separator:ae13d3ca8940732bb64b80f0d0a789bfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5ac49ff2ac8a5c96dbd8c341d445f76"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ad5ac49ff2ac8a5c96dbd8c341d445f76">Jump</a> ()=0</td></tr>
+<tr class="separator:ad5ac49ff2ac8a5c96dbd8c341d445f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad173b5388f4168d4de4acd13e4819089"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ad173b5388f4168d4de4acd13e4819089">TurnLeft</a> ()=0</td></tr>
+<tr class="separator:ad173b5388f4168d4de4acd13e4819089"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ebc25137ba38f067f7986e3a5f1d5db"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a1ebc25137ba38f067f7986e3a5f1d5db">TurnRight</a> ()=0</td></tr>
+<tr class="separator:a1ebc25137ba38f067f7986e3a5f1d5db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85d0688b2477652353b92a7662fdc36a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a85d0688b2477652353b92a7662fdc36a">Push</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> direction)=0</td></tr>
+<tr class="separator:a85d0688b2477652353b92a7662fdc36a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a005c65e23bba7635c05821a5bebbdf47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a005c65e23bba7635c05821a5bebbdf47">SetCollisions</a> (bool <a class="el" href="classtram_1_1_controller_component.html#a93abb6fa1349a41b93f53450817f9839">collide</a>)</td></tr>
+<tr class="separator:a005c65e23bba7635c05821a5bebbdf47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92c6a99db84d365877eb1e6f45b406ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a92c6a99db84d365877eb1e6f45b406ce">SetLookDirection</a> (<a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> direction)</td></tr>
 <tr class="separator:a92c6a99db84d365877eb1e6f45b406ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94439cce310fb5bc23485b3e23f19cfb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a94439cce310fb5bc23485b3e23f19cfb">GetLookDirection</a> () const</td></tr>
 <tr class="separator:a94439cce310fb5bc23485b3e23f19cfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4381523ae0a40cc2ec5ebfbde94a52f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a4381523ae0a40cc2ec5ebfbde94a52f0">SetCollisionSize</a> (float width, float height, float crouch_height)</td></tr>
-<tr class="separator:a4381523ae0a40cc2ec5ebfbde94a52f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79e6c9d8073de5bcfdd564cac60d6224"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a79e6c9d8073de5bcfdd564cac60d6224">SetStepHeight</a> (float height, float crouch_height)</td></tr>
-<tr class="separator:a79e6c9d8073de5bcfdd564cac60d6224"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92e8703ee46fe159b952c891971022bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a92e8703ee46fe159b952c891971022bd">SetWallCollisionCallback</a> (void(*callback)(<a class="el" href="classtram_1_1_controller_component.html">ControllerComponent</a> *, <a class="el" href="structtram_1_1_physics_1_1_collision.html">Physics::Collision</a>))</td></tr>
-<tr class="separator:a92e8703ee46fe159b952c891971022bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d3227440138a1b4e06ec372af7e25fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a0d3227440138a1b4e06ec372af7e25fe">SetWalkSpeed</a> (float <a class="el" href="classtram_1_1_controller_component.html#a70ebdddf558f04f0bcdcc4ec8426301a">walk_speed</a>)</td></tr>
-<tr class="separator:a0d3227440138a1b4e06ec372af7e25fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dd7b0ba263db3522c5adad3dc65234d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a2dd7b0ba263db3522c5adad3dc65234d">SetRunSpeed</a> (float <a class="el" href="classtram_1_1_controller_component.html#a690e726d1a077c955649a2fe657c4d26">run_speed</a>)</td></tr>
-<tr class="separator:a2dd7b0ba263db3522c5adad3dc65234d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad72d81900a2c30986cca1746cf87db22"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ad72d81900a2c30986cca1746cf87db22">SetCrouchSpeed</a> (float <a class="el" href="classtram_1_1_controller_component.html#af0db74c425f6765d2b73d23dcadc2a4d">crouch_speed</a>)</td></tr>
-<tr class="separator:ad72d81900a2c30986cca1746cf87db22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ff2630f8e86feea72d5fa04e3d117b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a1ff2630f8e86feea72d5fa04e3d117b7">SetFriction</a> (float <a class="el" href="classtram_1_1_controller_component.html#a418bc778f075dfd327527464ace0d2a4">friction</a>)</td></tr>
-<tr class="separator:a1ff2630f8e86feea72d5fa04e3d117b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeaa6afeb63d7742022299b4a2f8143a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#aeaa6afeb63d7742022299b4a2f8143a2">SetCollisionGroup</a> (uint32_t group)</td></tr>
-<tr class="separator:aeaa6afeb63d7742022299b4a2f8143a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
-<tr class="memitem:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4b6c8ec03356f2471bb7a3dd40fb36e6">EntityComponent</a> ()</td></tr>
-<tr class="separator:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab0daa42f3e539d6160e28fa43e37274e">~EntityComponent</a> ()</td></tr>
-<tr class="separator:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#af7444b7aaf205a8d3f120de11241a1a4">Init</a> ()</td></tr>
-<tr class="separator:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a843b4cdf5844c3fbd85c92f1c30cc108">IsReady</a> ()</td></tr>
-<tr class="separator:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a8ca5d5e94fee475a88428d4f072e77c7">IsInit</a> ()</td></tr>
-<tr class="separator:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a407901dc86e2eeb0b594d3730081f3e8">EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4c959cc80467ad2e753972bdc4eb7c33">~EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">Init</a> ()</td></tr>
+<tr class="memdesc:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an entity component.  <a href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">More...</a><br /></td></tr>
+<tr class="separator:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a596335e001ab39c1f575ece6defaf04b inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a596335e001ab39c1f575ece6defaf04b">EventHandler</a> (<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event)=0</td></tr>
+<tr class="separator:a596335e001ab39c1f575ece6defaf04b inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">IsReady</a> ()</td></tr>
+<tr class="memdesc:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's readiness.  <a href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">More...</a><br /></td></tr>
+<tr class="separator:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">IsInit</a> ()</td></tr>
+<tr class="memdesc:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's init status.  <a href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">More...</a><br /></td></tr>
+<tr class="separator:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a678a0fce6a2deac1fa04baaed4db3009">GetParent</a> ()</td></tr>
 <tr class="separator:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1683ad236bce69ab4b2c2dac75ef526a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1683ad236bce69ab4b2c2dac75ef526a">SetParent</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *<a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a>)</td></tr>
@@ -145,72 +138,20 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a827a701de4481f78563b75fce6ea55a2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a827a701de4481f78563b75fce6ea55a2">IsDebugInfoDraw</a> ()</td></tr>
+<tr class="separator:a827a701de4481f78563b75fce6ea55a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7b5cdc611a17b8a7261e14df61c56dd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#af7b5cdc611a17b8a7261e14df61c56dd">SetDebugInfoDraw</a> (bool)</td></tr>
+<tr class="separator:af7b5cdc611a17b8a7261e14df61c56dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc0d17de6313da06268b3c14b18e8dcf"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#adc0d17de6313da06268b3c14b18e8dcf">Update</a> ()</td></tr>
 <tr class="memdesc:adc0d17de6313da06268b3c14b18e8dcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the ControllerComponents.  <a href="classtram_1_1_controller_component.html#adc0d17de6313da06268b3c14b18e8dcf">More...</a><br /></td></tr>
 <tr class="separator:adc0d17de6313da06268b3c14b18e8dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:ae21ef5e17e56d15b7d03a47ddc7ebb9f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ae21ef5e17e56d15b7d03a47ddc7ebb9f">ControllerComponent</a> ()=default</td></tr>
-<tr class="separator:ae21ef5e17e56d15b7d03a47ddc7ebb9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3f0f0684e2d2c2532755363a54bb06e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#aa3f0f0684e2d2c2532755363a54bb06e">~ControllerComponent</a> ()=default</td></tr>
-<tr class="separator:aa3f0f0684e2d2c2532755363a54bb06e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a466c560331b04adc75364dbd03ec63f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a466c560331b04adc75364dbd03ec63f9">ApplyDynamics</a> ()</td></tr>
-<tr class="separator:a466c560331b04adc75364dbd03ec63f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af566224b8acf741cea4175a3d9d93390"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#af566224b8acf741cea4175a3d9d93390">RecoverFromCollisions</a> ()</td></tr>
-<tr class="separator:af566224b8acf741cea4175a3d9d93390"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb56e302f175dc413763c85e0f8fb1a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#abb56e302f175dc413763c85e0f8fb1a2">ResetMove</a> ()</td></tr>
-<tr class="separator:abb56e302f175dc413763c85e0f8fb1a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
-<tr class="memitem:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">ResourceReady</a> ()</td></tr>
-<tr class="separator:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a31ca62e14c8af056ded85021893552ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_component.html">Component</a>&lt; <a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a31ca62e14c8af056ded85021893552ef">walk_collision</a></td></tr>
-<tr class="separator:a31ca62e14c8af056ded85021893552ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45aa83aeae73b51c8b406ff509ce0990"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_component.html">Component</a>&lt; <a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a45aa83aeae73b51c8b406ff509ce0990">crouch_collision</a></td></tr>
-<tr class="separator:a45aa83aeae73b51c8b406ff509ce0990"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d8ac5dbf6c6dbc8eed68553ed2c958"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_component.html">Component</a>&lt; <a class="el" href="classtram_1_1_physics_component.html">PhysicsComponent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ae4d8ac5dbf6c6dbc8eed68553ed2c958">physics_body</a></td></tr>
-<tr class="separator:ae4d8ac5dbf6c6dbc8eed68553ed2c958"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03a0ed85d50ccc58fe3d2aa4ed039ef0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a03a0ed85d50ccc58fe3d2aa4ed039ef0">velocity</a> = {0.0f, 0.0f, 0.0f}</td></tr>
-<tr class="separator:a03a0ed85d50ccc58fe3d2aa4ed039ef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a579d4bb14f3e8ad704e6abe3f37bf1f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a579d4bb14f3e8ad704e6abe3f37bf1f4">move_direction</a> = {0.0f, 0.0f, 0.0f}</td></tr>
-<tr class="separator:a579d4bb14f3e8ad704e6abe3f37bf1f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad160a058e6730f0040aa6a9338e15750"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#ad160a058e6730f0040aa6a9338e15750">look_direction</a> = {1.0f, 0.0f, 0.0f, 0.0f}</td></tr>
 <tr class="separator:ad160a058e6730f0040aa6a9338e15750"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa00c15c29dc5d2304cb5a111784f62c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#aa00c15c29dc5d2304cb5a111784f62c8">is_in_air</a> = false</td></tr>
-<tr class="separator:aa00c15c29dc5d2304cb5a111784f62c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36258f2a92819abd893ee1bb8a5bdfb8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a36258f2a92819abd893ee1bb8a5bdfb8">collision_width</a> = 0.35f</td></tr>
-<tr class="separator:a36258f2a92819abd893ee1bb8a5bdfb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a407a86c976052d9788f9b8e7eca2886f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a407a86c976052d9788f9b8e7eca2886f">collision_height</a> = 1.85f</td></tr>
-<tr class="separator:a407a86c976052d9788f9b8e7eca2886f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acce6f84a5a704bfd4a9f7ef04b7dd8d9"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#acce6f84a5a704bfd4a9f7ef04b7dd8d9">collision_height_crouch</a> = 0.5f</td></tr>
-<tr class="separator:acce6f84a5a704bfd4a9f7ef04b7dd8d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abadfc2ce5447f3e63e0141043171dc37"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#abadfc2ce5447f3e63e0141043171dc37">step_height</a> = 0.35f</td></tr>
-<tr class="separator:abadfc2ce5447f3e63e0141043171dc37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a898906d3253be07a521db9e081ea355d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a898906d3253be07a521db9e081ea355d">step_height_crouch</a> = 0.15f</td></tr>
-<tr class="separator:a898906d3253be07a521db9e081ea355d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a70ebdddf558f04f0bcdcc4ec8426301a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a70ebdddf558f04f0bcdcc4ec8426301a">walk_speed</a> = 0.1f</td></tr>
-<tr class="separator:a70ebdddf558f04f0bcdcc4ec8426301a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a690e726d1a077c955649a2fe657c4d26"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a690e726d1a077c955649a2fe657c4d26">run_speed</a> = 0.2f</td></tr>
-<tr class="separator:a690e726d1a077c955649a2fe657c4d26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0db74c425f6765d2b73d23dcadc2a4d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#af0db74c425f6765d2b73d23dcadc2a4d">crouch_speed</a> = 0.05f</td></tr>
-<tr class="separator:af0db74c425f6765d2b73d23dcadc2a4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a418bc778f075dfd327527464ace0d2a4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a418bc778f075dfd327527464ace0d2a4">friction</a> = 0.89f</td></tr>
-<tr class="separator:a418bc778f075dfd327527464ace0d2a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7aad227af01dc8ba5c39f1eaef4433d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a7aad227af01dc8ba5c39f1eaef4433d6">crouching</a> = false</td></tr>
-<tr class="separator:a7aad227af01dc8ba5c39f1eaef4433d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09aeee831413002b06790787f3da8cab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a09aeee831413002b06790787f3da8cab">running</a> = false</td></tr>
-<tr class="separator:a09aeee831413002b06790787f3da8cab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37753913403d13f78e159c6c8b59f851"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a37753913403d13f78e159c6c8b59f851">standing_on</a> = 0</td></tr>
-<tr class="separator:a37753913403d13f78e159c6c8b59f851"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c0e7e62e0381cf7e7e6902984016439"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a5c0e7e62e0381cf7e7e6902984016439">standing_on_prev</a> = 0</td></tr>
-<tr class="separator:a5c0e7e62e0381cf7e7e6902984016439"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4bdac68de17355b20f7d0152191d6b16"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a4bdac68de17355b20f7d0152191d6b16">standing_pos</a></td></tr>
-<tr class="separator:a4bdac68de17355b20f7d0152191d6b16"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e104a19a87ee5c190814440a8d96a88"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a7e104a19a87ee5c190814440a8d96a88">collision_group</a> = <a class="el" href="namespacetram_1_1_physics.html#a5b8f6a7bd1ffb55b55a5f534008406f8a841ef1760b61cef0e7da530c47cafb65">Physics::COLL_PLAYER</a></td></tr>
-<tr class="separator:a7e104a19a87ee5c190814440a8d96a88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93abb6fa1349a41b93f53450817f9839"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_controller_component.html#a93abb6fa1349a41b93f53450817f9839">collide</a> = true</td></tr>
+<tr class="separator:a93abb6fa1349a41b93f53450817f9839"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
 <tr class="memitem:a67f362753d2e2c2e5859ceab8b9461ce inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a67f362753d2e2c2e5859ceab8b9461ce">resources_waiting</a> = 0</td></tr>
 <tr class="separator:a67f362753d2e2c2e5859ceab8b9461ce inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -220,10 +161,22 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a0e65307b795d61b931c6b3600fc737ac inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a> = nullptr</td></tr>
 <tr class="separator:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
+<tr class="memitem:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">ResourceReady</a> ()</td></tr>
+<tr class="memdesc:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies the component of a streamed-in resource.  <a href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">More...</a><br /></td></tr>
+<tr class="separator:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64cc26454bf92a709eef5e19931695d6 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a64cc26454bf92a709eef5e19931695d6">Start</a> ()=0</td></tr>
+<tr class="separator:a64cc26454bf92a709eef5e19931695d6 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae21ef5e17e56d15b7d03a47ddc7ebb9f" name="ae21ef5e17e56d15b7d03a47ddc7ebb9f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae21ef5e17e56d15b7d03a47ddc7ebb9f">&#9670;&nbsp;</a></span>ControllerComponent()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Provides an API for character controllers. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/components/controller.html">https://racenis.github.io/tram-sdk/documentation/components/controller.html</a> </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aeca250fb793765f6d36d00ef05e9f931" name="aeca250fb793765f6d36d00ef05e9f931"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeca250fb793765f6d36d00ef05e9f931">&#9670;&nbsp;</a></span>Crouch()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -232,7 +185,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tram::ControllerComponent::ControllerComponent </td>
+          <td class="memname">virtual void tram::ControllerComponent::Crouch </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -240,15 +193,17 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#a44ff24373b7604e870849d286e3fe86e">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a6cde78db12e923186e1d548a2ceb9d8d">tram::RaycastControllerComponent</a>.</p>
+
 </div>
 </div>
-<a id="aa3f0f0684e2d2c2532755363a54bb06e" name="aa3f0f0684e2d2c2532755363a54bb06e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3f0f0684e2d2c2532755363a54bb06e">&#9670;&nbsp;</a></span>~ControllerComponent()</h2>
+<a id="ae13d3ca8940732bb64b80f0d0a789bfe" name="ae13d3ca8940732bb64b80f0d0a789bfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae13d3ca8940732bb64b80f0d0a789bfe">&#9670;&nbsp;</a></span>Fly()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +212,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tram::ControllerComponent::~ControllerComponent </td>
+          <td class="memname">virtual void tram::ControllerComponent::Fly </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -265,81 +220,12 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a466c560331b04adc75364dbd03ec63f9" name="a466c560331b04adc75364dbd03ec63f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a466c560331b04adc75364dbd03ec63f9">&#9670;&nbsp;</a></span>ApplyDynamics()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::ApplyDynamics </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adbf04bfe5d6b61926b3a22169440de9e" name="adbf04bfe5d6b61926b3a22169440de9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbf04bfe5d6b61926b3a22169440de9e">&#9670;&nbsp;</a></span>Crouch()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::Crouch </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9310eb13eaa21b6f6061b8dc5d01182c" name="a9310eb13eaa21b6f6061b8dc5d01182c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9310eb13eaa21b6f6061b8dc5d01182c">&#9670;&nbsp;</a></span>EventHandler()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::EventHandler </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structtram_1_1_event.html">Event</a> &amp;&#160;</td>
-          <td class="paramname"><em>event</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="classtram_1_1_entity_component.html#a596335e001ab39c1f575ece6defaf04b">tram::EntityComponent</a>.</p>
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#ac3921936820398b0ed5d343732f5fbbb">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a7905d17bead35cf596c7fe19132e548b">tram::RaycastControllerComponent</a>.</p>
 
 </div>
 </div>
@@ -368,61 +254,116 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0ca0c6154369d80bb23737810ba720de" name="a0ca0c6154369d80bb23737810ba720de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ca0c6154369d80bb23737810ba720de">&#9670;&nbsp;</a></span>Jump()</h2>
+<a id="a827a701de4481f78563b75fce6ea55a2" name="a827a701de4481f78563b75fce6ea55a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a827a701de4481f78563b75fce6ea55a2">&#9670;&nbsp;</a></span>IsDebugInfoDraw()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::Jump </td>
+          <td class="memname">bool tram::ControllerComponent::IsDebugInfoDraw </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a21565e19bed83f190e90b47cba412d5a" name="a21565e19bed83f190e90b47cba412d5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21565e19bed83f190e90b47cba412d5a">&#9670;&nbsp;</a></span>Move()</h2>
+<a id="ad5ac49ff2ac8a5c96dbd8c341d445f76" name="ad5ac49ff2ac8a5c96dbd8c341d445f76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5ac49ff2ac8a5c96dbd8c341d445f76">&#9670;&nbsp;</a></span>Jump()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::Move </td>
+          <td class="memname">virtual void tram::ControllerComponent::Jump </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#a05586398229c44cfafe8b9c6fdb3f2d8">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a865d92b888b684f1a8ddfc550509dfc8">tram::RaycastControllerComponent</a>.</p>
+
+</div>
+</div>
+<a id="a72c9c834cd28d9c7cdbd16e48d6146f6" name="a72c9c834cd28d9c7cdbd16e48d6146f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72c9c834cd28d9c7cdbd16e48d6146f6">&#9670;&nbsp;</a></span>Move()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tram::ControllerComponent::Move </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
           <td class="paramname"><em>local_direction</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#ac47fe6964c8f7590a92f8fa5be91c825">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a535ed363eec2dcf7f8232aeb1f594fb0">tram::RaycastControllerComponent</a>.</p>
 
 </div>
 </div>
-<a id="a8879cf7a3b4b225031d36739dde0d685" name="a8879cf7a3b4b225031d36739dde0d685"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8879cf7a3b4b225031d36739dde0d685">&#9670;&nbsp;</a></span>Push()</h2>
+<a id="a85d0688b2477652353b92a7662fdc36a" name="a85d0688b2477652353b92a7662fdc36a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85d0688b2477652353b92a7662fdc36a">&#9670;&nbsp;</a></span>Push()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::Push </td>
+          <td class="memname">virtual void tram::ControllerComponent::Push </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
           <td class="paramname"><em>direction</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#a178afe3b43f00f0a289a19d2fe323d9c">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a8780bc5e7bb5938ba85b7a2ae950dff4">tram::RaycastControllerComponent</a>.</p>
 
 </div>
 </div>
-<a id="af566224b8acf741cea4175a3d9d93390" name="af566224b8acf741cea4175a3d9d93390"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af566224b8acf741cea4175a3d9d93390">&#9670;&nbsp;</a></span>RecoverFromCollisions()</h2>
+<a id="a09830a27a27ef8b419a9cf9e60446121" name="a09830a27a27ef8b419a9cf9e60446121"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09830a27a27ef8b419a9cf9e60446121">&#9670;&nbsp;</a></span>Run()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -431,7 +372,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::RecoverFromCollisions </td>
+          <td class="memname">virtual void tram::ControllerComponent::Run </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -439,15 +380,17 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#a8cdc505ef5241f71136c2ff356e55615">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a5d4e68ef39d6a803e86f9b6fed954995">tram::RaycastControllerComponent</a>.</p>
+
 </div>
 </div>
-<a id="abb56e302f175dc413763c85e0f8fb1a2" name="abb56e302f175dc413763c85e0f8fb1a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb56e302f175dc413763c85e0f8fb1a2">&#9670;&nbsp;</a></span>ResetMove()</h2>
+<a id="a005c65e23bba7635c05821a5bebbdf47" name="a005c65e23bba7635c05821a5bebbdf47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a005c65e23bba7635c05821a5bebbdf47">&#9670;&nbsp;</a></span>SetCollisions()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -456,52 +399,10 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::ResetMove </td>
+          <td class="memname">void tram::ControllerComponent::SetCollisions </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a53c4bc00eaf45e20aee901be5c8b4cf8" name="a53c4bc00eaf45e20aee901be5c8b4cf8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53c4bc00eaf45e20aee901be5c8b4cf8">&#9670;&nbsp;</a></span>Run()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::Run </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aeaa6afeb63d7742022299b4a2f8143a2" name="aeaa6afeb63d7742022299b4a2f8143a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeaa6afeb63d7742022299b4a2f8143a2">&#9670;&nbsp;</a></span>SetCollisionGroup()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::SetCollisionGroup </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>group</em></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>collide</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -514,8 +415,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4381523ae0a40cc2ec5ebfbde94a52f0" name="a4381523ae0a40cc2ec5ebfbde94a52f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4381523ae0a40cc2ec5ebfbde94a52f0">&#9670;&nbsp;</a></span>SetCollisionSize()</h2>
+<a id="af7b5cdc611a17b8a7261e14df61c56dd" name="af7b5cdc611a17b8a7261e14df61c56dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7b5cdc611a17b8a7261e14df61c56dd">&#9670;&nbsp;</a></span>SetDebugInfoDraw()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -524,84 +425,16 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::SetCollisionSize </td>
+          <td class="memname">void tram::ControllerComponent::SetDebugInfoDraw </td>
           <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>crouch_height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad72d81900a2c30986cca1746cf87db22" name="ad72d81900a2c30986cca1746cf87db22"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad72d81900a2c30986cca1746cf87db22">&#9670;&nbsp;</a></span>SetCrouchSpeed()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::SetCrouchSpeed </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>crouch_speed</em></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>draw</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1ff2630f8e86feea72d5fa04e3d117b7" name="a1ff2630f8e86feea72d5fa04e3d117b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ff2630f8e86feea72d5fa04e3d117b7">&#9670;&nbsp;</a></span>SetFriction()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::SetFriction </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>friction</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -634,8 +467,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2dd7b0ba263db3522c5adad3dc65234d" name="a2dd7b0ba263db3522c5adad3dc65234d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dd7b0ba263db3522c5adad3dc65234d">&#9670;&nbsp;</a></span>SetRunSpeed()</h2>
+<a id="ad173b5388f4168d4de4acd13e4819089" name="ad173b5388f4168d4de4acd13e4819089"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad173b5388f4168d4de4acd13e4819089">&#9670;&nbsp;</a></span>TurnLeft()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -644,121 +477,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::SetRunSpeed </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>run_speed</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a79e6c9d8073de5bcfdd564cac60d6224" name="a79e6c9d8073de5bcfdd564cac60d6224"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a79e6c9d8073de5bcfdd564cac60d6224">&#9670;&nbsp;</a></span>SetStepHeight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::SetStepHeight </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>crouch_height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0d3227440138a1b4e06ec372af7e25fe" name="a0d3227440138a1b4e06ec372af7e25fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d3227440138a1b4e06ec372af7e25fe">&#9670;&nbsp;</a></span>SetWalkSpeed()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::SetWalkSpeed </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>walk_speed</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a92e8703ee46fe159b952c891971022bd" name="a92e8703ee46fe159b952c891971022bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92e8703ee46fe159b952c891971022bd">&#9670;&nbsp;</a></span>SetWallCollisionCallback()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::SetWallCollisionCallback </td>
-          <td>(</td>
-          <td class="paramtype">void(*)(<a class="el" href="classtram_1_1_controller_component.html">ControllerComponent</a> *, <a class="el" href="structtram_1_1_physics_1_1_collision.html">Physics::Collision</a>)&#160;</td>
-          <td class="paramname"><em>callback</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab7048932e5d1d564c03cf7c0db7704f9" name="ab7048932e5d1d564c03cf7c0db7704f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7048932e5d1d564c03cf7c0db7704f9">&#9670;&nbsp;</a></span>Start()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::Start </td>
+          <td class="memname">virtual void tram::ControllerComponent::TurnLeft </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -766,46 +485,39 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="classtram_1_1_entity_component.html#a64cc26454bf92a709eef5e19931695d6">tram::EntityComponent</a>.</p>
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#a23e43852ea4528a1b50f28628f5a9f20">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a84b8137c59028604b98c6087ddf03bec">tram::RaycastControllerComponent</a>.</p>
 
 </div>
 </div>
-<a id="a0482e3a8318e6662bef652a4681ac48e" name="a0482e3a8318e6662bef652a4681ac48e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0482e3a8318e6662bef652a4681ac48e">&#9670;&nbsp;</a></span>TurnLeft()</h2>
+<a id="a1ebc25137ba38f067f7986e3a5f1d5db" name="a1ebc25137ba38f067f7986e3a5f1d5db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ebc25137ba38f067f7986e3a5f1d5db">&#9670;&nbsp;</a></span>TurnRight()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::ControllerComponent::TurnLeft </td>
+          <td class="memname">virtual void tram::ControllerComponent::TurnRight </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a0e82bd75c5d731c443c470a38195b189" name="a0e82bd75c5d731c443c470a38195b189"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e82bd75c5d731c443c470a38195b189">&#9670;&nbsp;</a></span>TurnRight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::ControllerComponent::TurnRight </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>Implemented in <a class="el" href="classtram_1_1_f_p_s_controller_component.html#aa68f65e5a902e77db578edf8d1b4af34">tram::FPSControllerComponent</a>, and <a class="el" href="classtram_1_1_raycast_controller_component.html#a7f441e43b9e92927dbb4103cf7fa3052">tram::RaycastControllerComponent</a>.</p>
 
 </div>
 </div>
@@ -833,13 +545,13 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Updates the ControllerComponents. </p>
-<p >Updates all of the ControllerComponents. Should be called once per update cycle. </p>
+<p >Updates all of the ControllerComponents. Should be called once per update cycle. Best place to do so would be before updating any cameras, otherwise they will lag behind the controller for the rest of the frame. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a7e104a19a87ee5c190814440a8d96a88" name="a7e104a19a87ee5c190814440a8d96a88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e104a19a87ee5c190814440a8d96a88">&#9670;&nbsp;</a></span>collision_group</h2>
+<a id="a93abb6fa1349a41b93f53450817f9839" name="a93abb6fa1349a41b93f53450817f9839"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93abb6fa1349a41b93f53450817f9839">&#9670;&nbsp;</a></span>collide</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -848,183 +560,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t tram::ControllerComponent::collision_group = <a class="el" href="namespacetram_1_1_physics.html#a5b8f6a7bd1ffb55b55a5f534008406f8a841ef1760b61cef0e7da530c47cafb65">Physics::COLL_PLAYER</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a407a86c976052d9788f9b8e7eca2886f" name="a407a86c976052d9788f9b8e7eca2886f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a407a86c976052d9788f9b8e7eca2886f">&#9670;&nbsp;</a></span>collision_height</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::collision_height = 1.85f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acce6f84a5a704bfd4a9f7ef04b7dd8d9" name="acce6f84a5a704bfd4a9f7ef04b7dd8d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acce6f84a5a704bfd4a9f7ef04b7dd8d9">&#9670;&nbsp;</a></span>collision_height_crouch</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::collision_height_crouch = 0.5f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a36258f2a92819abd893ee1bb8a5bdfb8" name="a36258f2a92819abd893ee1bb8a5bdfb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36258f2a92819abd893ee1bb8a5bdfb8">&#9670;&nbsp;</a></span>collision_width</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::collision_width = 0.35f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a45aa83aeae73b51c8b406ff509ce0990" name="a45aa83aeae73b51c8b406ff509ce0990"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45aa83aeae73b51c8b406ff509ce0990">&#9670;&nbsp;</a></span>crouch_collision</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_component.html">Component</a>&lt;<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a>&gt; tram::ControllerComponent::crouch_collision</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af0db74c425f6765d2b73d23dcadc2a4d" name="af0db74c425f6765d2b73d23dcadc2a4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0db74c425f6765d2b73d23dcadc2a4d">&#9670;&nbsp;</a></span>crouch_speed</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::crouch_speed = 0.05f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7aad227af01dc8ba5c39f1eaef4433d6" name="a7aad227af01dc8ba5c39f1eaef4433d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7aad227af01dc8ba5c39f1eaef4433d6">&#9670;&nbsp;</a></span>crouching</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tram::ControllerComponent::crouching = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a418bc778f075dfd327527464ace0d2a4" name="a418bc778f075dfd327527464ace0d2a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a418bc778f075dfd327527464ace0d2a4">&#9670;&nbsp;</a></span>friction</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::friction = 0.89f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa00c15c29dc5d2304cb5a111784f62c8" name="aa00c15c29dc5d2304cb5a111784f62c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa00c15c29dc5d2304cb5a111784f62c8">&#9670;&nbsp;</a></span>is_in_air</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tram::ControllerComponent::is_in_air = false</td>
+          <td class="memname">bool tram::ControllerComponent::collide = true</td>
         </tr>
       </table>
   </td>
@@ -1047,270 +583,6 @@ Protected Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespacetram.html#a6ba8befa39d714232ba6f05ade798893">quat</a> tram::ControllerComponent::look_direction = {1.0f, 0.0f, 0.0f, 0.0f}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a579d4bb14f3e8ad704e6abe3f37bf1f4" name="a579d4bb14f3e8ad704e6abe3f37bf1f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a579d4bb14f3e8ad704e6abe3f37bf1f4">&#9670;&nbsp;</a></span>move_direction</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::ControllerComponent::move_direction = {0.0f, 0.0f, 0.0f}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae4d8ac5dbf6c6dbc8eed68553ed2c958" name="ae4d8ac5dbf6c6dbc8eed68553ed2c958"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4d8ac5dbf6c6dbc8eed68553ed2c958">&#9670;&nbsp;</a></span>physics_body</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_component.html">Component</a>&lt;<a class="el" href="classtram_1_1_physics_component.html">PhysicsComponent</a>&gt; tram::ControllerComponent::physics_body</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a690e726d1a077c955649a2fe657c4d26" name="a690e726d1a077c955649a2fe657c4d26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a690e726d1a077c955649a2fe657c4d26">&#9670;&nbsp;</a></span>run_speed</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::run_speed = 0.2f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a09aeee831413002b06790787f3da8cab" name="a09aeee831413002b06790787f3da8cab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09aeee831413002b06790787f3da8cab">&#9670;&nbsp;</a></span>running</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tram::ControllerComponent::running = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a37753913403d13f78e159c6c8b59f851" name="a37753913403d13f78e159c6c8b59f851"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37753913403d13f78e159c6c8b59f851">&#9670;&nbsp;</a></span>standing_on</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a> tram::ControllerComponent::standing_on = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5c0e7e62e0381cf7e7e6902984016439" name="a5c0e7e62e0381cf7e7e6902984016439"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c0e7e62e0381cf7e7e6902984016439">&#9670;&nbsp;</a></span>standing_on_prev</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a> tram::ControllerComponent::standing_on_prev = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4bdac68de17355b20f7d0152191d6b16" name="a4bdac68de17355b20f7d0152191d6b16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4bdac68de17355b20f7d0152191d6b16">&#9670;&nbsp;</a></span>standing_pos</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::ControllerComponent::standing_pos</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abadfc2ce5447f3e63e0141043171dc37" name="abadfc2ce5447f3e63e0141043171dc37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abadfc2ce5447f3e63e0141043171dc37">&#9670;&nbsp;</a></span>step_height</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::step_height = 0.35f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a898906d3253be07a521db9e081ea355d" name="a898906d3253be07a521db9e081ea355d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a898906d3253be07a521db9e081ea355d">&#9670;&nbsp;</a></span>step_height_crouch</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::step_height_crouch = 0.15f</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a03a0ed85d50ccc58fe3d2aa4ed039ef0" name="a03a0ed85d50ccc58fe3d2aa4ed039ef0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03a0ed85d50ccc58fe3d2aa4ed039ef0">&#9670;&nbsp;</a></span>velocity</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::ControllerComponent::velocity = {0.0f, 0.0f, 0.0f}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a31ca62e14c8af056ded85021893552ef" name="a31ca62e14c8af056ded85021893552ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31ca62e14c8af056ded85021893552ef">&#9670;&nbsp;</a></span>walk_collision</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_component.html">Component</a>&lt;<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a>&gt; tram::ControllerComponent::walk_collision</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a70ebdddf558f04f0bcdcc4ec8426301a" name="a70ebdddf558f04f0bcdcc4ec8426301a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70ebdddf558f04f0bcdcc4ec8426301a">&#9670;&nbsp;</a></span>walk_speed</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::ControllerComponent::walk_speed = 0.1f</td>
         </tr>
       </table>
   </td>

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['octant_0',['Octant',['../classtram_1_1_octree.html#a7d20e8b44f034b8f8c6748d004c72321',1,'tram::Octree']]],
-  ['orientation_1',['orientation',['../namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deef',1,'tram::GUI']]]
+  ['listenertype_0',['ListenerType',['../structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0f',1,'tram::ListenerInfo']]]
 ];

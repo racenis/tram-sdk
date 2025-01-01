@@ -73,8 +73,12 @@ $(function() {
   <div class="headertitle"><div class="title">logging.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Logging and console printing services.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="framework_2system_8h_source.html">framework/system.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="other_8h_source.html">platform/other.h</a>&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;charconv&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -83,6 +87,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1implementation"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html">tram::implementation</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -90,15 +95,20 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ad33d1b97d4055d1dc0ed20da61825d07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ad33d1b97d4055d1dc0ed20da61825d07">tram::SetSystemLoggingSeverity</a> (System::system_t system, Severity min_severity)</td></tr>
+<tr class="memdesc:ad33d1b97d4055d1dc0ed20da61825d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the logging severity filter.  <a href="namespacetram.html#ad33d1b97d4055d1dc0ed20da61825d07">More...</a><br /></td></tr>
 <tr class="separator:ad33d1b97d4055d1dc0ed20da61825d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab6abc7d95de329299582f80e42f4923"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#aab6abc7d95de329299582f80e42f4923">tram::SetLogCallback</a> (void(*callback)(int, const char *))</td></tr>
-<tr class="separator:aab6abc7d95de329299582f80e42f4923"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb62c461f07f0472724808f099abd05d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#aeb62c461f07f0472724808f099abd05d">tram::SetDisplayLogCallback</a> (void(*callback)(int, const char *))</td></tr>
+<tr class="memdesc:aeb62c461f07f0472724808f099abd05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the display log callback.  <a href="namespacetram.html#aeb62c461f07f0472724808f099abd05d">More...</a><br /></td></tr>
+<tr class="separator:aeb62c461f07f0472724808f099abd05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6e944197c5e9252268255850e7d15fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ad6e944197c5e9252268255850e7d15fb">tram::SetConsoleLogCallback</a> (void(*callback)(int, const char *))</td></tr>
+<tr class="memdesc:ad6e944197c5e9252268255850e7d15fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the console log callback.  <a href="namespacetram.html#ad6e944197c5e9252268255850e7d15fb">More...</a><br /></td></tr>
+<tr class="separator:ad6e944197c5e9252268255850e7d15fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03b4b9c9589ff25e1b1df4e5491b829f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a03b4b9c9589ff25e1b1df4e5491b829f">tram::implementation::concat_fmt</a> (std::string_view &amp;str)</td></tr>
 <tr class="separator:a03b4b9c9589ff25e1b1df4e5491b829f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01bce446084317a464fad0bda4fcfbf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a01bce446084317a464fad0bda4fcfbf6">tram::implementation::flush_console</a> (int severity, int system)</td></tr>
-<tr class="separator:a01bce446084317a464fad0bda4fcfbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a809355b4015e2f371c6825fe798e6099"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a809355b4015e2f371c6825fe798e6099">tram::implementation::flush_callback</a> (int severity, int system)</td></tr>
-<tr class="separator:a809355b4015e2f371c6825fe798e6099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f7ee627cbe8593eb958c9ac61ccd2eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a4f7ee627cbe8593eb958c9ac61ccd2eb">tram::implementation::flush_console</a> (Severity severity, System::system_t system)</td></tr>
+<tr class="separator:a4f7ee627cbe8593eb958c9ac61ccd2eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac91c6a3049a88f77305379c3185e9a48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#ac91c6a3049a88f77305379c3185e9a48">tram::implementation::flush_display</a> (int time, int system)</td></tr>
+<tr class="separator:ac91c6a3049a88f77305379c3185e9a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6faec7dc4da15e2576e1a201d4eb164a"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a6faec7dc4da15e2576e1a201d4eb164a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a6faec7dc4da15e2576e1a201d4eb164a">tram::implementation::concat</a> (const std::string_view &amp;value)</td></tr>
 <tr class="separator:a6faec7dc4da15e2576e1a201d4eb164a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,6 +118,8 @@ Functions</h2></td></tr>
 <tr class="memitem:acebb47b38e9273b2c259256c7a8fee5f"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:acebb47b38e9273b2c259256c7a8fee5f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#acebb47b38e9273b2c259256c7a8fee5f">tram::implementation::concat</a> (const char *const &amp;value)</td></tr>
 <tr class="separator:acebb47b38e9273b2c259256c7a8fee5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cec4f0b2a5a9e7fb164820607f105d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a4cec4f0b2a5a9e7fb164820607f105d4">tram::implementation::concat</a> (const char *value)</td></tr>
+<tr class="separator:a4cec4f0b2a5a9e7fb164820607f105d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a2a311b556467311387960228c67ab8"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
 <tr class="memitem:a7a2a311b556467311387960228c67ab8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a7a2a311b556467311387960228c67ab8">tram::implementation::concat</a> (const UID &amp;value)</td></tr>
 <tr class="separator:a7a2a311b556467311387960228c67ab8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,7 +141,10 @@ Variables</h2></td></tr>
 <tr class="memitem:a8098d615040fde5cc1fc55269394ccb7"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1implementation.html#a8098d615040fde5cc1fc55269394ccb7">tram::implementation::buffer</a> [500] = {'\0'}</td></tr>
 <tr class="separator:a8098d615040fde5cc1fc55269394ccb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Logging and console printing services. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/logging.html">https://racenis.github.io/tram-sdk/documentation/framework/logging.html</a> </dd></dl>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2

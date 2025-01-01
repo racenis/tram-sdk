@@ -72,17 +72,23 @@ $(function() {
   <div class="headertitle"><div class="title">core.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Core functionality of the framework.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="core_8h_source.html">framework/core.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="event_8h_source.html">framework/event.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="framework_2system_8h_source.html">framework/system.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="uid_8h_source.html">framework/uid.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="platform_2api_8h_source.html">platform/api.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="config_8h_source.html">config.h</a>&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -93,15 +99,28 @@ Functions</h2></td></tr>
 <tr class="memitem:a45d3de117b68f4c584f4b9012b230557"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#a45d3de117b68f4c584f4b9012b230557">tram::GetTick</a> ()</td></tr>
 <tr class="memdesc:a45d3de117b68f4c584f4b9012b230557"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current tick.  <a href="namespacetram.html#a45d3de117b68f4c584f4b9012b230557">More...</a><br /></td></tr>
 <tr class="separator:a45d3de117b68f4c584f4b9012b230557"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3909d6bfd02679f663541f787f9c7b4"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#aa3909d6bfd02679f663541f787f9c7b4">tram::GetFrame</a> ()</td></tr>
+<tr class="memdesc:aa3909d6bfd02679f663541f787f9c7b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current frame.  <a href="namespacetram.html#aa3909d6bfd02679f663541f787f9c7b4">More...</a><br /></td></tr>
+<tr class="separator:aa3909d6bfd02679f663541f787f9c7b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5510fd86603682d0cac4954bff11620"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ac5510fd86603682d0cac4954bff11620">tram::GetDeltaTick</a> ()</td></tr>
+<tr class="memdesc:ac5510fd86603682d0cac4954bff11620"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the tick delta.  <a href="namespacetram.html#ac5510fd86603682d0cac4954bff11620">More...</a><br /></td></tr>
+<tr class="separator:ac5510fd86603682d0cac4954bff11620"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a370b9480a4f179e6e4c41d9d6a70fcb7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">tram::GetTickTime</a> ()</td></tr>
-<tr class="memdesc:a370b9480a4f179e6e4c41d9d6a70fcb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the time at the start of the current tick.  <a href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">More...</a><br /></td></tr>
+<tr class="memdesc:a370b9480a4f179e6e4c41d9d6a70fcb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as <a class="el" href="namespacetram.html#aed55d85a1ab5cc85a558d180313eb64e" title="Returns the time at the start of the current frame.">GetFrameTime()</a>  <a href="namespacetram.html#a370b9480a4f179e6e4c41d9d6a70fcb7">More...</a><br /></td></tr>
 <tr class="separator:a370b9480a4f179e6e4c41d9d6a70fcb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed55d85a1ab5cc85a558d180313eb64e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#aed55d85a1ab5cc85a558d180313eb64e">tram::GetFrameTime</a> ()</td></tr>
+<tr class="memdesc:aed55d85a1ab5cc85a558d180313eb64e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the time at the start of the current frame.  <a href="namespacetram.html#aed55d85a1ab5cc85a558d180313eb64e">More...</a><br /></td></tr>
+<tr class="separator:aed55d85a1ab5cc85a558d180313eb64e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8af5a4731abe7a1b4cc34780bd1eb06"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#af8af5a4731abe7a1b4cc34780bd1eb06">tram::GetDeltaTime</a> ()</td></tr>
+<tr class="memdesc:af8af5a4731abe7a1b4cc34780bd1eb06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the time passed between frames.  <a href="namespacetram.html#af8af5a4731abe7a1b4cc34780bd1eb06">More...</a><br /></td></tr>
 <tr class="separator:af8af5a4731abe7a1b4cc34780bd1eb06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b5616291800641604306bbf678b3873"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#a3b5616291800641604306bbf678b3873">tram::GetVersion</a> ()</td></tr>
+<tr class="memdesc:a3b5616291800641604306bbf678b3873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the version identifier of the runtime.  <a href="namespacetram.html#a3b5616291800641604306bbf678b3873">More...</a><br /></td></tr>
 <tr class="separator:a3b5616291800641604306bbf678b3873"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Core functionality of the framework. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2

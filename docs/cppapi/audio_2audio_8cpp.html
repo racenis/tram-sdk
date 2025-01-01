@@ -72,28 +72,34 @@ $(function() {
   <div class="headertitle"><div class="title">audio.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Main Audio system interface implementation.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="audio_2audio_8h_source.html">audio/audio.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="audio_2sound_8h_source.html">audio/sound.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="framework_2system_8h_source.html">framework/system.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="settings_8h_source.html">framework/settings.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="components_2audio_8h_source.html">components/audio.h</a>&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;<a class="el" href="audio_2api_8h_source.html">audio/api.h</a>&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_audio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_audio.html">tram::Audio</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_audio"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespacetram_1_1_system.html" title="System tracking.">System</a> for doing audio related stuff. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aabd3c9eadd115d4d66e324ffed163470"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_audio.html#aabd3c9eadd115d4d66e324ffed163470">tram::Audio::Init</a> ()</td></tr>
-<tr class="memdesc:aabd3c9eadd115d4d66e324ffed163470"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the <a class="el" href="namespacetram_1_1_audio.html">Audio</a> system.  <a href="namespacetram_1_1_audio.html#aabd3c9eadd115d4d66e324ffed163470">More...</a><br /></td></tr>
+<tr class="memdesc:aabd3c9eadd115d4d66e324ffed163470"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the <a class="el" href="namespacetram_1_1_audio.html" title="System for doing audio related stuff.">Audio</a> system.  <a href="namespacetram_1_1_audio.html#aabd3c9eadd115d4d66e324ffed163470">More...</a><br /></td></tr>
 <tr class="separator:aabd3c9eadd115d4d66e324ffed163470"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb768aeb78a526fe6c4378db6041b06b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_audio.html#acb768aeb78a526fe6c4378db6041b06b">tram::Audio::Update</a> ()</td></tr>
-<tr class="memdesc:acb768aeb78a526fe6c4378db6041b06b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the <a class="el" href="namespacetram_1_1_audio.html">Audio</a> system.  <a href="namespacetram_1_1_audio.html#acb768aeb78a526fe6c4378db6041b06b">More...</a><br /></td></tr>
+<tr class="memdesc:acb768aeb78a526fe6c4378db6041b06b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the <a class="el" href="namespacetram_1_1_audio.html" title="System for doing audio related stuff.">Audio</a> system.  <a href="namespacetram_1_1_audio.html#acb768aeb78a526fe6c4378db6041b06b">More...</a><br /></td></tr>
 <tr class="separator:acb768aeb78a526fe6c4378db6041b06b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a999017ca4b466fef799869fd591d134e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_audio.html#a999017ca4b466fef799869fd591d134e">tram::Audio::Uninit</a> ()</td></tr>
 <tr class="separator:a999017ca4b466fef799869fd591d134e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,7 +114,9 @@ Functions</h2></td></tr>
 <tr class="memdesc:acd913701b5ffec0d613acaca89266eab"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="namespacetram_1_1_audio_1_1_a_p_i.html#a0ec692e07524255ef5c814ccbff53b1b" title="Sets the listener orientation.">Audio::API::SetListenerOrientation()</a>.  <a href="namespacetram_1_1_audio.html#acd913701b5ffec0d613acaca89266eab">More...</a><br /></td></tr>
 <tr class="separator:acd913701b5ffec0d613acaca89266eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Main Audio system interface implementation. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2

@@ -69,10 +69,14 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">async.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Implementation of the Async system.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="queue_8h_source.html">templates/queue.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="pool_8h_source.html">templates/pool.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="core_8h_source.html">framework/core.h</a>&gt;</code><br />
@@ -80,6 +84,9 @@ $(function() {
 <code>#include &lt;<a class="el" href="framework_2system_8h_source.html">framework/system.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="resource_8h_source.html">framework/resource.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="entitycomponent_8h_source.html">framework/entitycomponent.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="platform_2api_8h_source.html">platform/api.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="config_8h_source.html">config.h</a>&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 </div><table class="memberdecls">
@@ -90,22 +97,35 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_async"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html">tram::Async</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_async"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multi-threading and <a class="el" href="classtram_1_1_resource.html">Resource</a> streaming. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a3852629b110e5e57e85140bb5fe518e5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5">tram::Async::RequestNotification</a> { <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a81db66b6ed079088749c66cca26aa725">tram::Async::NONE</a>
+, <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a3c24b0dd40835b178028420b095d347e">tram::Async::COMPONENT</a>
+, <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a1e2e20d91f42657d02e821985a4bd96c">tram::Async::CALLBACK</a>
+ }</td></tr>
+<tr class="separator:a3852629b110e5e57e85140bb5fe518e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a9db009e1493d70c2ce388b2910e32fa2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a9db009e1493d70c2ce388b2910e32fa2">tram::Async::RequestResource</a> (EntityComponent *requester, Resource *resource)</td></tr>
 <tr class="memdesc:a9db009e1493d70c2ce388b2910e32fa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resource to the loading queue.  <a href="namespacetram_1_1_async.html#a9db009e1493d70c2ce388b2910e32fa2">More...</a><br /></td></tr>
 <tr class="separator:a9db009e1493d70c2ce388b2910e32fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#aa2234c4cb0590d5672aa3bf4bb78703f">tram::Async::RequestResource</a> (void(*callback)(void *data), void *data, Resource *resource)</td></tr>
+<tr class="memdesc:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resource to the loading queue.  <a href="namespacetram_1_1_async.html#aa2234c4cb0590d5672aa3bf4bb78703f">More...</a><br /></td></tr>
+<tr class="separator:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00df174c441553df6c3728c4355a4b7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a00df174c441553df6c3728c4355a4b7e">tram::Async::CancelRequest</a> (EntityComponent *requester, Resource *resource)</td></tr>
 <tr class="memdesc:a00df174c441553df6c3728c4355a4b7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels a resource load request.  <a href="namespacetram_1_1_async.html#a00df174c441553df6c3728c4355a4b7e">More...</a><br /></td></tr>
 <tr class="separator:a00df174c441553df6c3728c4355a4b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2195d4da0c29e9cf6595ee523f483a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#ac2195d4da0c29e9cf6595ee523f483a2">tram::Async::LoadDependency</a> (Resource *res)</td></tr>
-<tr class="memdesc:ac2195d4da0c29e9cf6595ee523f483a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a resource from disk, skipping the queue.  <a href="namespacetram_1_1_async.html#ac2195d4da0c29e9cf6595ee523f483a2">More...</a><br /></td></tr>
-<tr class="separator:ac2195d4da0c29e9cf6595ee523f483a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e1b28345fded87fa20aee192ddcce0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a9e1b28345fded87fa20aee192ddcce0f">tram::Async::LoadDependency</a> (Resource *resource)</td></tr>
+<tr class="memdesc:a9e1b28345fded87fa20aee192ddcce0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a resource from disk, skipping the queue.  <a href="namespacetram_1_1_async.html#a9e1b28345fded87fa20aee192ddcce0f">More...</a><br /></td></tr>
+<tr class="separator:a9e1b28345fded87fa20aee192ddcce0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15485706aae380a728a9e771feabb503"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a15485706aae380a728a9e771feabb503">tram::Async::LoadResourcesFromDisk</a> ()</td></tr>
 <tr class="memdesc:a15485706aae380a728a9e771feabb503"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the first resource queue.  <a href="namespacetram_1_1_async.html#a15485706aae380a728a9e771feabb503">More...</a><br /></td></tr>
 <tr class="separator:a15485706aae380a728a9e771feabb503"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +145,9 @@ Functions</h2></td></tr>
 <tr class="memdesc:af447ff406255f241322da550d5d027a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns number of resources in queues.  <a href="namespacetram_1_1_async.html#af447ff406255f241322da550d5d027a3">More...</a><br /></td></tr>
 <tr class="separator:af447ff406255f241322da550d5d027a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Implementation of the Async system. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2

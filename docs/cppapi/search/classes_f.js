@@ -12,12 +12,13 @@ var searchData=
   ['pathtracingresult_9',['PathTracingResult',['../structtram_1_1_audio_1_1_spatial_1_1_path_tracing_result.html',1,'tram::Audio::Spatial']]],
   ['physicscomponent_10',['PhysicsComponent',['../classtram_1_1_physics_component.html',1,'tram']]],
   ['physicsdebugdraw_11',['PhysicsDebugDraw',['../classtram_1_1_physics_1_1_a_p_i_1_1_physics_debug_draw.html',1,'tram::Physics::API']]],
-  ['pickup_12',['Pickup',['../classtram_1_1_ext_1_1_design_1_1_pickup.html',1,'tram::Ext::Design']]],
+  ['pickup_12',['Pickup',['../classtram_1_1_ext_1_1_kitchensink_1_1_pickup.html',1,'tram::Ext::Kitchensink']]],
   ['player_13',['Player',['../classtram_1_1_player.html',1,'tram']]],
   ['playercomponent_14',['PlayerComponent',['../classtram_1_1_player_component.html',1,'tram']]],
   ['point2d_15',['Point2D',['../structtram_1_1_render_1_1_a_p_i_1_1_point2_d.html',1,'tram::Render::API']]],
   ['pool_16',['Pool',['../classtram_1_1_pool.html',1,'tram']]],
   ['poolproxy_17',['PoolProxy',['../classtram_1_1_pool_proxy.html',1,'tram']]],
   ['poolptr_18',['PoolPtr',['../classtram_1_1_pool_ptr.html',1,'tram']]],
-  ['pose_19',['Pose',['../structtram_1_1_render_1_1_pose.html',1,'tram::Render']]]
+  ['pose_19',['Pose',['../structtram_1_1_render_1_1_pose.html',1,'tram::Render']]],
+  ['property_20',['Property',['../structtram_1_1_settings_1_1_property.html',1,'tram::Settings']]]
 ];

@@ -74,11 +74,15 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="platform_2file_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_file_source.html">tram::FileSource</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html">tram::FileReader</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer.html">tram::FileWriter</a></td></tr>
@@ -87,14 +91,21 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a77556f44e3343383e7a9c563d31ba382"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382">tram::FileSource</a> { <a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382ac8e9e734724f8387be4e58904aa2dc9e">tram::SOURCE_ANY</a>
-, <a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382a2589758396daafae17c5467d403f448b">tram::SOURCE_DISK</a>
+<tr class="memitem:a972c59287ba467dbfe003f137609550d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550d">tram::FileStatus</a> { <a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550da198489bd72edc2407c15917c5323cd93">tram::IO_ERROR</a>
+, <a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550da2baa69eafc7204f3bd8648eba580c489">tram::READY</a>
  }</td></tr>
-<tr class="separator:a77556f44e3343383e7a9c563d31ba382"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a972c59287ba467dbfe003f137609550d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a529c8d3e049a7dcc4425fbe040e4c531"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#a529c8d3e049a7dcc4425fbe040e4c531">tram::FileMedium</a> { <a class="el" href="namespacetram.html#a529c8d3e049a7dcc4425fbe040e4c531a290d4b81f4e2b47d86fd1b0170e9aab7">tram::DISK</a>
+, <a class="el" href="namespacetram.html#a529c8d3e049a7dcc4425fbe040e4c531a2e40ad879e955201df4dedbf8d479a12">tram::USER</a>
+, <a class="el" href="namespacetram.html#a529c8d3e049a7dcc4425fbe040e4c531a71f01f32e90440fd6039511dde69e995">tram::ARCHIVE</a>
+, <a class="el" href="namespacetram.html#a529c8d3e049a7dcc4425fbe040e4c531a293c9ea246ff9985dc6f62a650f78986">tram::HTTP</a>
+ }</td></tr>
+<tr class="separator:a529c8d3e049a7dcc4425fbe040e4c531"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

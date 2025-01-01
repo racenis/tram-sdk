@@ -76,63 +76,68 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a7fd2e59fedc29cc6574e818a784223c3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3">ListenerType</a> : int64_t { <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3a3f989e91e3bfe4271d96a41254195a99">LISTENER_COMPONENT</a>
-, <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3adca681ed634170780b5eb66663ebeb5b">LISTENER_ENTITY</a>
-, <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3a5c5d57b139c0be8c8136418756f7150c">LISTENER_DATA_FUNCTION</a>
-, <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3a094d897ff3fc5cf407e8d5d13c71f0a5">LISTENER_FUNCTION</a>
+<tr class="memitem:a92c413c2c02e7a4f40f59d27dd94de0f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0f">ListenerType</a> : uint32_t { <br />
+&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fa3f989e91e3bfe4271d96a41254195a99">LISTENER_COMPONENT</a>
+, <a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fadca681ed634170780b5eb66663ebeb5b">LISTENER_ENTITY</a>
+, <a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fa5c5d57b139c0be8c8136418756f7150c">LISTENER_DATA_FUNCTION</a>
+, <a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fa094d897ff3fc5cf407e8d5d13c71f0a5">LISTENER_FUNCTION</a>
+, <br />
+&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fa209a858d23af3b0b1b8737235412e5d0">LISTENER_DELETED</a>
+<br />
  }</td></tr>
-<tr class="separator:a7fd2e59fedc29cc6574e818a784223c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a92c413c2c02e7a4f40f59d27dd94de0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a77454d6e1a7f9a4844a2ffb53331f4e8"><td class="memItemLeft" >union {</td></tr>
-<tr class="memitem:a11027863a59d05d7d8c28817dedfc221"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> *&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#aee7f801b96773125388c51639472d1bf">component</a> = nullptr</td></tr>
-<tr class="separator:a11027863a59d05d7d8c28817dedfc221"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a691f68caf7b61bfd3673add3db7dbdac"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#a91672b06dda91ac838e8f21fa43afb32">entity</a></td></tr>
-<tr class="separator:a691f68caf7b61bfd3673add3db7dbdac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a021e12dee6fd03875ffdbe07adcbd3e7"><td class="memItemLeft" >&#160;&#160;&#160;void(*&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#a2e4f01f36470ce06dd3565b51838a722">data_function</a> )(<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event, void *<a class="el" href="structtram_1_1_listener_info.html#aa652abf363801df8691b1700d5531af0">data</a>)</td></tr>
-<tr class="separator:a021e12dee6fd03875ffdbe07adcbd3e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a821e3629721622899615d941cb5be5b4"><td class="memItemLeft" >&#160;&#160;&#160;void(*&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#aa34513becad7ae12187bd4654f930df2">function</a> )(<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event)</td></tr>
-<tr class="separator:a821e3629721622899615d941cb5be5b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77454d6e1a7f9a4844a2ffb53331f4e8"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a77454d6e1a7f9a4844a2ffb53331f4e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee0adb84180405e4c1b734e2e9e93c66"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:ab69531d2ff52d0bd7939b9aa67bb4114"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> *&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#aee7f801b96773125388c51639472d1bf">component</a> = nullptr</td></tr>
+<tr class="separator:ab69531d2ff52d0bd7939b9aa67bb4114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e76398522c48750933935a5a8e2fe31"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#a91672b06dda91ac838e8f21fa43afb32">entity</a></td></tr>
+<tr class="separator:a8e76398522c48750933935a5a8e2fe31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a253c99bfba054584f48dfbc62856bbd7"><td class="memItemLeft" >&#160;&#160;&#160;void(*&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#a2e4f01f36470ce06dd3565b51838a722">data_function</a> )(<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event, void *<a class="el" href="structtram_1_1_listener_info.html#aa652abf363801df8691b1700d5531af0">data</a>)</td></tr>
+<tr class="separator:a253c99bfba054584f48dfbc62856bbd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2e9f5cd200efd355d190f80be7aee54"><td class="memItemLeft" >&#160;&#160;&#160;void(*&#160;&#160;&#160;<a class="el" href="structtram_1_1_listener_info.html#aa34513becad7ae12187bd4654f930df2">function</a> )(<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event)</td></tr>
+<tr class="separator:ab2e9f5cd200efd355d190f80be7aee54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee0adb84180405e4c1b734e2e9e93c66"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:aee0adb84180405e4c1b734e2e9e93c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa652abf363801df8691b1700d5531af0"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_listener_info.html#aa652abf363801df8691b1700d5531af0">data</a></td></tr>
 <tr class="separator:aa652abf363801df8691b1700d5531af0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee785f4d7173a7fc8a9ea904251990c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#abc1aacd663943b92d06f10950a9f10d0">listener_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_listener_info.html#aee785f4d7173a7fc8a9ea904251990c2">handle</a> = -1</td></tr>
 <tr class="separator:aee785f4d7173a7fc8a9ea904251990c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07e1a856ac9f66c9b9f71644d23ada02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3">ListenerType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_listener_info.html#a07e1a856ac9f66c9b9f71644d23ada02">type</a> = <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3a3f989e91e3bfe4271d96a41254195a99">LISTENER_COMPONENT</a></td></tr>
+<tr class="memitem:a07e1a856ac9f66c9b9f71644d23ada02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0f">ListenerType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_listener_info.html#a07e1a856ac9f66c9b9f71644d23ada02">type</a> = <a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fa3f989e91e3bfe4271d96a41254195a99">LISTENER_COMPONENT</a></td></tr>
 <tr class="separator:a07e1a856ac9f66c9b9f71644d23ada02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="a7fd2e59fedc29cc6574e818a784223c3" name="a7fd2e59fedc29cc6574e818a784223c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fd2e59fedc29cc6574e818a784223c3">&#9670;&nbsp;</a></span>ListenerType</h2>
+<a id="a92c413c2c02e7a4f40f59d27dd94de0f" name="a92c413c2c02e7a4f40f59d27dd94de0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92c413c2c02e7a4f40f59d27dd94de0f">&#9670;&nbsp;</a></span>ListenerType</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3">tram::ListenerInfo::ListenerType</a> : int64_t</td>
+          <td class="memname">enum <a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0f">tram::ListenerInfo::ListenerType</a> : uint32_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7fd2e59fedc29cc6574e818a784223c3a3f989e91e3bfe4271d96a41254195a99" name="a7fd2e59fedc29cc6574e818a784223c3a3f989e91e3bfe4271d96a41254195a99"></a>LISTENER_COMPONENT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7fd2e59fedc29cc6574e818a784223c3adca681ed634170780b5eb66663ebeb5b" name="a7fd2e59fedc29cc6574e818a784223c3adca681ed634170780b5eb66663ebeb5b"></a>LISTENER_ENTITY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7fd2e59fedc29cc6574e818a784223c3a5c5d57b139c0be8c8136418756f7150c" name="a7fd2e59fedc29cc6574e818a784223c3a5c5d57b139c0be8c8136418756f7150c"></a>LISTENER_DATA_FUNCTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7fd2e59fedc29cc6574e818a784223c3a094d897ff3fc5cf407e8d5d13c71f0a5" name="a7fd2e59fedc29cc6574e818a784223c3a094d897ff3fc5cf407e8d5d13c71f0a5"></a>LISTENER_FUNCTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a92c413c2c02e7a4f40f59d27dd94de0fa3f989e91e3bfe4271d96a41254195a99" name="a92c413c2c02e7a4f40f59d27dd94de0fa3f989e91e3bfe4271d96a41254195a99"></a>LISTENER_COMPONENT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a92c413c2c02e7a4f40f59d27dd94de0fadca681ed634170780b5eb66663ebeb5b" name="a92c413c2c02e7a4f40f59d27dd94de0fadca681ed634170780b5eb66663ebeb5b"></a>LISTENER_ENTITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a92c413c2c02e7a4f40f59d27dd94de0fa5c5d57b139c0be8c8136418756f7150c" name="a92c413c2c02e7a4f40f59d27dd94de0fa5c5d57b139c0be8c8136418756f7150c"></a>LISTENER_DATA_FUNCTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a92c413c2c02e7a4f40f59d27dd94de0fa094d897ff3fc5cf407e8d5d13c71f0a5" name="a92c413c2c02e7a4f40f59d27dd94de0fa094d897ff3fc5cf407e8d5d13c71f0a5"></a>LISTENER_FUNCTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a92c413c2c02e7a4f40f59d27dd94de0fa209a858d23af3b0b1b8737235412e5d0" name="a92c413c2c02e7a4f40f59d27dd94de0fa209a858d23af3b0b1b8737235412e5d0"></a>LISTENER_DELETED&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a77454d6e1a7f9a4844a2ffb53331f4e8" name="a77454d6e1a7f9a4844a2ffb53331f4e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77454d6e1a7f9a4844a2ffb53331f4e8">&#9670;&nbsp;</a></span></h2>
+<a id="aee0adb84180405e4c1b734e2e9e93c66" name="aee0adb84180405e4c1b734e2e9e93c66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee0adb84180405e4c1b734e2e9e93c66">&#9670;&nbsp;</a></span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">union  { ... }  tram::ListenerInfo::@24</td>
+          <td class="memname">union  { ... }  tram::ListenerInfo::@36</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -230,7 +235,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3">ListenerType</a> tram::ListenerInfo::type = <a class="el" href="structtram_1_1_listener_info.html#a7fd2e59fedc29cc6574e818a784223c3a3f989e91e3bfe4271d96a41254195a99">LISTENER_COMPONENT</a></td>
+          <td class="memname"><a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0f">ListenerType</a> tram::ListenerInfo::type = <a class="el" href="structtram_1_1_listener_info.html#a92c413c2c02e7a4f40f59d27dd94de0fa3f989e91e3bfe4271d96a41254195a99">LISTENER_COMPONENT</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

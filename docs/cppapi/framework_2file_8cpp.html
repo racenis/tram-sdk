@@ -67,41 +67,33 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle"><div class="title">file.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="platform_2file_8h_source.html">platform/file.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="framework_2file_8h_source.html">framework/file.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
 <code>#include &lt;charconv&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader_parser.html">tram::FileReaderParser</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_text_reader_parser.html">tram::TextReaderParser</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_writer_parser.html">tram::FileWriterParser</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_text_writer_parser.html">tram::TextWriterParser</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:aabe214e80a7f995d7b27b42f9cd4d95f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:aabe214e80a7f995d7b27b42f9cd4d95f"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetram.html#aabe214e80a7f995d7b27b42f9cd4d95f">tram::read_text_from_chars</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:aabe214e80a7f995d7b27b42f9cd4d95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad92bfc9bd9dea625048def1f6494595a"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ad92bfc9bd9dea625048def1f6494595a">tram::read_text_int32</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:ad92bfc9bd9dea625048def1f6494595a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad08f4e97277615d20433e0bdb792a4a7"><td class="memItemLeft" align="right" valign="top">int64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ad08f4e97277615d20433e0bdb792a4a7">tram::read_text_int64</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:ad08f4e97277615d20433e0bdb792a4a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2a2b54fd87473e84cb2230d63822b92"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ae2a2b54fd87473e84cb2230d63822b92">tram::read_text_float32</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:ae2a2b54fd87473e84cb2230d63822b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea69e75dec7aca74c62c5e3cb06f1dd6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#aea69e75dec7aca74c62c5e3cb06f1dd6">tram::read_text_float64</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:aea69e75dec7aca74c62c5e3cb06f1dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae89e8872bbb9adcdd0995fc78b45ed95"><td class="memItemLeft" align="right" valign="top">UID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#ae89e8872bbb9adcdd0995fc78b45ed95">tram::read_text_name</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:ae89e8872bbb9adcdd0995fc78b45ed95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5d6ddf5de52ecbb59bd0aba438d5961"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html#af5d6ddf5de52ecbb59bd0aba438d5961">tram::read_text_line</a> (const char *&amp;cursor, const char *cursor_end)</td></tr>
-<tr class="separator:af5d6ddf5de52ecbb59bd0aba438d5961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05f052de2fe89bf3f36446d87f563283"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a05f052de2fe89bf3f36446d87f563283"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetram.html#a05f052de2fe89bf3f36446d87f563283">tram::write_text_to_chars</a> (T value, char *&amp;cursor, char *cursor_end)</td></tr>
-<tr class="separator:a05f052de2fe89bf3f36446d87f563283"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

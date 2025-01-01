@@ -68,137 +68,253 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classtram_1_1_file_reader-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">tram::FileReader Class Reference</div></div>
+  <div class="headertitle"><div class="title">tram::FileReader Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="platform_2file_8h_source.html">file.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for tram::FileReader:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="classtram_1_1_file_reader.png" usemap="#tram::FileReader_map" alt=""/>
+  <map id="tram::FileReader_map" name="tram::FileReader_map">
+<area href="classtram_1_1_disk_reader.html" alt="tram::DiskReader" shape="rect" coords="0,56,107,80"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:addffa1f0d7fef357ac478db4f7dda44a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#addffa1f0d7fef357ac478db4f7dda44a">FileReader</a> (const char *path, <a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382">FileSource</a> source=<a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382ac8e9e734724f8387be4e58904aa2dc9e">SOURCE_ANY</a>)</td></tr>
-<tr class="memdesc:addffa1f0d7fef357ac478db4f7dda44a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a file into memory.  <a href="classtram_1_1_file_reader.html#addffa1f0d7fef357ac478db4f7dda44a">More...</a><br /></td></tr>
-<tr class="separator:addffa1f0d7fef357ac478db4f7dda44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad33fc0d6936b5b692c185cfafcfb1256"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#ad33fc0d6936b5b692c185cfafcfb1256">~FileReader</a> ()</td></tr>
-<tr class="memdesc:ad33fc0d6936b5b692c185cfafcfb1256"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the loaded file from memory.  <a href="classtram_1_1_file_reader.html#ad33fc0d6936b5b692c185cfafcfb1256">More...</a><br /></td></tr>
-<tr class="separator:ad33fc0d6936b5b692c185cfafcfb1256"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b45d3ef2ff94979e1c2a3decb680c45"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#a9b45d3ef2ff94979e1c2a3decb680c45">is_open</a> ()</td></tr>
-<tr class="memdesc:a9b45d3ef2ff94979e1c2a3decb680c45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if file was loaded into memory.  <a href="classtram_1_1_file_reader.html#a9b45d3ef2ff94979e1c2a3decb680c45">More...</a><br /></td></tr>
-<tr class="separator:a9b45d3ef2ff94979e1c2a3decb680c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1c9f2016c1c475ed82418fb2a2dca8f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#ac1c9f2016c1c475ed82418fb2a2dca8f">~FileReader</a> ()=default</td></tr>
+<tr class="separator:ac1c9f2016c1c475ed82418fb2a2dca8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a359b60e4d588f6721a56bf619e85dded"><td class="memItemLeft" align="right" valign="top">virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#a359b60e4d588f6721a56bf619e85dded">GetContents</a> ()=0</td></tr>
+<tr class="separator:a359b60e4d588f6721a56bf619e85dded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28bb4f3c47fb4aa8a2241b2944986bdc"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#a28bb4f3c47fb4aa8a2241b2944986bdc">GetSize</a> ()=0</td></tr>
+<tr class="separator:a28bb4f3c47fb4aa8a2241b2944986bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe64d8768d91a14f788e7d518591a572"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550d">FileStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#afe64d8768d91a14f788e7d518591a572">GetStatus</a> ()=0</td></tr>
+<tr class="separator:afe64d8768d91a14f788e7d518591a572"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadf272a73650e58beb40679038b8fafd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#aadf272a73650e58beb40679038b8fafd">Yeet</a> ()=0</td></tr>
+<tr class="separator:aadf272a73650e58beb40679038b8fafd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:ae41f806af6d0087935392010498745e6"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#ae41f806af6d0087935392010498745e6">contents</a> = nullptr</td></tr>
-<tr class="separator:ae41f806af6d0087935392010498745e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34e5e9aa43acb675f86224394f5c7271"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#a34e5e9aa43acb675f86224394f5c7271">length</a> = 0</td></tr>
-<tr class="separator:a34e5e9aa43acb675f86224394f5c7271"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:adeafb2e1ec0d9d2c9e2ea25b0d705f14"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_file_reader.html">FileReader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#adeafb2e1ec0d9d2c9e2ea25b0d705f14">GetReader</a> (const char *path)</td></tr>
+<tr class="separator:adeafb2e1ec0d9d2c9e2ea25b0d705f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a7d782b12279f564439c0438365c91a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#a8a7d782b12279f564439c0438365c91a">SetSearchList</a> ()</td></tr>
+<tr class="separator:a8a7d782b12279f564439c0438365c91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13fadbba64b0b75fc9c52bf64fbfe116"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structtram_1_1_file_source.html">FileSource</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader.html#a13fadbba64b0b75fc9c52bf64fbfe116">GetSearchList</a> ()</td></tr>
+<tr class="separator:a13fadbba64b0b75fc9c52bf64fbfe116"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="addffa1f0d7fef357ac478db4f7dda44a" name="addffa1f0d7fef357ac478db4f7dda44a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addffa1f0d7fef357ac478db4f7dda44a">&#9670;&nbsp;</a></span>FileReader()</h2>
+<a id="ac1c9f2016c1c475ed82418fb2a2dca8f" name="ac1c9f2016c1c475ed82418fb2a2dca8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1c9f2016c1c475ed82418fb2a2dca8f">&#9670;&nbsp;</a></span>~FileReader()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tram::FileReader::FileReader </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382">FileSource</a>&#160;</td>
-          <td class="paramname"><em>source</em> = <code><a class="el" href="namespacetram.html#a77556f44e3343383e7a9c563d31ba382ac8e9e734724f8387be4e58904aa2dc9e">SOURCE_ANY</a></code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads a file into memory. </p>
-<p >Use <a class="el" href="classtram_1_1_file_reader.html#a9b45d3ef2ff94979e1c2a3decb680c45" title="Checks if file was loaded into memory.">FileReader::is_open()</a> to check if the file was successfully loaded. If it was, then you can access the contents through the <a class="el" href="classtram_1_1_file_reader.html#ae41f806af6d0087935392010498745e6">FileReader::contents</a> pointer and get the length of the file from <a class="el" href="classtram_1_1_file_reader.html#a34e5e9aa43acb675f86224394f5c7271">FileReader::length</a>. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td><a class="el" href="classtram_1_1_path.html">Path</a> to the file. </td></tr>
-    <tr><td class="paramname">source</td><td>Source from which the file will be loaded. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ad33fc0d6936b5b692c185cfafcfb1256" name="ad33fc0d6936b5b692c185cfafcfb1256"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad33fc0d6936b5b692c185cfafcfb1256">&#9670;&nbsp;</a></span>~FileReader()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">tram::FileReader::~FileReader </td>
+          <td class="memname">virtual tram::FileReader::~FileReader </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-
-<p>Deletes the loaded file from memory. </p>
-<p >This will free the memory pointed to by <a class="el" href="classtram_1_1_file_reader.html#ae41f806af6d0087935392010498745e6">FileReader::contents</a>, so if you need anything from there, you'll need to copy it out before you close the file. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9b45d3ef2ff94979e1c2a3decb680c45" name="a9b45d3ef2ff94979e1c2a3decb680c45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b45d3ef2ff94979e1c2a3decb680c45">&#9670;&nbsp;</a></span>is_open()</h2>
+<a id="a359b60e4d588f6721a56bf619e85dded" name="a359b60e4d588f6721a56bf619e85dded"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a359b60e4d588f6721a56bf619e85dded">&#9670;&nbsp;</a></span>GetContents()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool tram::FileReader::is_open </td>
+          <td class="memname">virtual const char * tram::FileReader::GetContents </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Checks if file was loaded into memory. </p>
+<p>Implemented in <a class="el" href="classtram_1_1_disk_reader.html#a57f73b425546a6fde55c2d863d8f095c">tram::DiskReader</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="ae41f806af6d0087935392010498745e6" name="ae41f806af6d0087935392010498745e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae41f806af6d0087935392010498745e6">&#9670;&nbsp;</a></span>contents</h2>
+<a id="adeafb2e1ec0d9d2c9e2ea25b0d705f14" name="adeafb2e1ec0d9d2c9e2ea25b0d705f14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adeafb2e1ec0d9d2c9e2ea25b0d705f14">&#9670;&nbsp;</a></span>GetReader()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const char* tram::FileReader::contents = nullptr</td>
+          <td class="memname"><a class="el" href="classtram_1_1_file_reader.html">FileReader</a> * tram::FileReader::GetReader </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a34e5e9aa43acb675f86224394f5c7271" name="a34e5e9aa43acb675f86224394f5c7271"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34e5e9aa43acb675f86224394f5c7271">&#9670;&nbsp;</a></span>length</h2>
+<a id="a13fadbba64b0b75fc9c52bf64fbfe116" name="a13fadbba64b0b75fc9c52bf64fbfe116"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13fadbba64b0b75fc9c52bf64fbfe116">&#9670;&nbsp;</a></span>GetSearchList()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t tram::FileReader::length = 0</td>
+          <td class="memname">std::vector&lt; <a class="el" href="structtram_1_1_file_source.html">FileSource</a> &gt; tram::FileReader::GetSearchList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a28bb4f3c47fb4aa8a2241b2944986bdc" name="a28bb4f3c47fb4aa8a2241b2944986bdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28bb4f3c47fb4aa8a2241b2944986bdc">&#9670;&nbsp;</a></span>GetSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual size_t tram::FileReader::GetSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_disk_reader.html#ad2b0b2e4625d5d1a6e4d914b561fc4e7">tram::DiskReader</a>.</p>
+
+</div>
+</div>
+<a id="afe64d8768d91a14f788e7d518591a572" name="afe64d8768d91a14f788e7d518591a572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe64d8768d91a14f788e7d518591a572">&#9670;&nbsp;</a></span>GetStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacetram.html#a972c59287ba467dbfe003f137609550d">FileStatus</a> tram::FileReader::GetStatus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_disk_reader.html#afc56907851741e91da516352020ca264">tram::DiskReader</a>.</p>
+
+</div>
+</div>
+<a id="a8a7d782b12279f564439c0438365c91a" name="a8a7d782b12279f564439c0438365c91a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a7d782b12279f564439c0438365c91a">&#9670;&nbsp;</a></span>SetSearchList()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::FileReader::SetSearchList </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aadf272a73650e58beb40679038b8fafd" name="aadf272a73650e58beb40679038b8fafd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadf272a73650e58beb40679038b8fafd">&#9670;&nbsp;</a></span>Yeet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void tram::FileReader::Yeet </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_disk_reader.html#a81a139b80db9fbced34f8bb2f4a753cf">tram::DiskReader</a>.</p>
 
 </div>
 </div>

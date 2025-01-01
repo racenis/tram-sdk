@@ -67,23 +67,74 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">attributes.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;<a class="el" href="attributes_8h_source.html">extensions/kitchensink/attributes.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="core_8h_source.html">framework/core.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="framework_2file_8h_source.html">framework/file.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="entity_8h_source.html">framework/entity.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="hashmap_8h_source.html">templates/hashmap.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="pool_8h_source.html">templates/pool.h</a>&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacetram"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram.html">tram</a></td></tr>
+<tr class="memdesc:namespacetram"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialization, i.e. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_ext"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext.html">tram::Ext</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacetram_1_1_ext_1_1_kitchensink"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html">tram::Ext::Kitchensink</a></td></tr>
+<tr class="memdesc:namespacetram_1_1_ext_1_1_kitchensink"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extension containing random stuff that doesn't fit in anywhere else. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:aaea789ed77d5f63e8cfe9f4ca2a4ac42"><td class="memItemLeft" align="right" valign="top">Hashmap&lt; AttributeContainer * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#aaea789ed77d5f63e8cfe9f4ca2a4ac42">tram::Ext::Kitchensink::containers</a> (&quot;Ext::Kitchensink::AttributeContainer Hashmap&quot;, ATTRIBUTE_CONTAINER_COUNT)</td></tr>
+<tr class="separator:aaea789ed77d5f63e8cfe9f4ca2a4ac42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af26c7178edaf07fc00c3ffb0048472c5"><td class="memItemLeft" align="right" valign="top">Hashmap&lt; AttributeInfo * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_kitchensink.html#af26c7178edaf07fc00c3ffb0048472c5">tram::Ext::Kitchensink::infos</a> (&quot;Ext::Kitchensink::AttributeInfo Hashmap&quot;, ATTRIBUTE_INFO_COUNT)</td></tr>
+<tr class="separator:af26c7178edaf07fc00c3ffb0048472c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a84627f70639f661d824e70f33c21021d"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="attributes_8cpp.html#a84627f70639f661d824e70f33c21021d">ATTRIBUTE_CONTAINER_COUNT</a> = 50</td></tr>
+<tr class="separator:a84627f70639f661d824e70f33c21021d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b8616fa5aa349f32551242738af8269"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="attributes_8cpp.html#a9b8616fa5aa349f32551242738af8269">ATTRIBUTE_INFO_COUNT</a> = 50</td></tr>
+<tr class="separator:a9b8616fa5aa349f32551242738af8269"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a84627f70639f661d824e70f33c21021d" name="a84627f70639f661d824e70f33c21021d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84627f70639f661d824e70f33c21021d">&#9670;&nbsp;</a></span>ATTRIBUTE_CONTAINER_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t ATTRIBUTE_CONTAINER_COUNT = 50</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9b8616fa5aa349f32551242738af8269" name="a9b8616fa5aa349f32551242738af8269"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b8616fa5aa349f32551242738af8269">&#9670;&nbsp;</a></span>ATTRIBUTE_INFO_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t ATTRIBUTE_INFO_COUNT = 50</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -74,6 +74,9 @@ $(function() {
   <div class="headertitle"><div class="title">tram::Audio::Spatial Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Experimental path tracing audio system.  
+<a href="namespacetram_1_1_audio_1_1_spatial.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -166,7 +169,17 @@ Variables</h2></td></tr>
 <tr class="memitem:a4353683a488762dd6403d5c7d5f6e1fb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_audio_1_1_spatial.html#a4353683a488762dd6403d5c7d5f6e1fb">listener_reverb_normalized</a> [5]</td></tr>
 <tr class="separator:a4353683a488762dd6403d5c7d5f6e1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Experimental path tracing audio system. </p>
+<p >It uses bi-directional path tracing together with Primary Sample Space Metropolis <a class="el" href="classtram_1_1_light.html" title="LightComponent wrapper.">Light</a> Transport algorithm to find paths between the listener and audio sources.</p>
+<p >It then attentuates sounds based on surface reflection absorption and distance, does panning based on the angle between the listener and the last reflection and then convolves the resulting impulse response with the sound being played back by the audio source.</p>
+<p >Sounds pretty bad (needs tweaking), very slow as well (no optimizations).</p>
+<p >I haven't tried recently, but it probably doesn't even compile.</p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd><p class="startdd">Make sure that it compiles and do some improvements </p>
+<p class="interdd">Investigate the possibilities of using hardware accelerated ray-tracing </p>
+<p class="enddd">I am very poor and can't afford a graphics card, NVIDIA pls sponsor me </p>
+</dd></dl>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ade3f518b6f4fc8663aa6cc3143481f92" name="ade3f518b6f4fc8663aa6cc3143481f92"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ade3f518b6f4fc8663aa6cc3143481f92">&#9670;&nbsp;</a></span>AudioSampleRate</h2>
 

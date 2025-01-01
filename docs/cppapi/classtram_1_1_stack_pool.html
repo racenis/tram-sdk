@@ -74,18 +74,25 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Allocator.  
+ <a href="classtram_1_1_stack_pool.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="stackpool_8h_source.html">stackpool.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a027541e5189d127ce96eb369fdac4b54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a027541e5189d127ce96eb369fdac4b54">StackPool</a> (std::string name, size_t initialSize)</td></tr>
-<tr class="separator:a027541e5189d127ce96eb369fdac4b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6863930d23ea623860508416812dd6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#ae6863930d23ea623860508416812dd6b">StackPool</a> (std::string name, size_t max_size, std::initializer_list&lt; T &gt; list)</td></tr>
-<tr class="separator:ae6863930d23ea623860508416812dd6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a8c27879b8842b40704d420abdd0d04"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a1a8c27879b8842b40704d420abdd0d04">StackPool</a> (std::string <a class="el" href="classtram_1_1_stack_pool.html#a8c6122dde12481b629f2f7b1ce2afc28">name</a>, size_t <a class="el" href="classtram_1_1_stack_pool.html#aa1b01a988e50384b053dab3204b2872f">size</a>)</td></tr>
+<tr class="separator:a1a8c27879b8842b40704d420abdd0d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fac73a1c853a27ce5ce1ed185dd97e1"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a9fac73a1c853a27ce5ce1ed185dd97e1">StackPool</a> (std::string <a class="el" href="classtram_1_1_stack_pool.html#a8c6122dde12481b629f2f7b1ce2afc28">name</a>, size_t max_size, std::initializer_list&lt; T &gt; list)</td></tr>
+<tr class="separator:a9fac73a1c853a27ce5ce1ed185dd97e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f26be1e8228843b1d4928fbd584997e"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a4f26be1e8228843b1d4928fbd584997e">AddNew</a> (size_t units)</td></tr>
 <tr class="separator:a4f26be1e8228843b1d4928fbd584997e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ce93b4a50a7e007acd3bbfdf8482d84"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a6ce93b4a50a7e007acd3bbfdf8482d84">allocate</a> (size_t units)</td></tr>
+<tr class="separator:a6ce93b4a50a7e007acd3bbfdf8482d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45ca522e92ec2faada60b18dad845832"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a45ca522e92ec2faada60b18dad845832">Reset</a> ()</td></tr>
 <tr class="separator:a45ca522e92ec2faada60b18dad845832"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed5f3ae73582e286a4f9964fc65e73a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#aed5f3ae73582e286a4f9964fc65e73a0">reset</a> ()</td></tr>
+<tr class="separator:aed5f3ae73582e286a4f9964fc65e73a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1b01a988e50384b053dab3204b2872f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#aa1b01a988e50384b053dab3204b2872f">size</a> ()</td></tr>
 <tr class="separator:aa1b01a988e50384b053dab3204b2872f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4124c926206e0e06403f8cff5a999b43"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a4124c926206e0e06403f8cff5a999b43">begin</a> ()</td></tr>
@@ -95,20 +102,24 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:af7c8cbaabc8dfd84b94984879855c4fb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#af7c8cbaabc8dfd84b94984879855c4fb">poolName</a></td></tr>
-<tr class="separator:af7c8cbaabc8dfd84b94984879855c4fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5864615577dac0dad2a6281a9af58b92"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a5864615577dac0dad2a6281a9af58b92">poolSize</a></td></tr>
-<tr class="separator:a5864615577dac0dad2a6281a9af58b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c7ba2ad96650a1714253b0ae66ba167"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a1c7ba2ad96650a1714253b0ae66ba167">maxSize</a></td></tr>
-<tr class="separator:a1c7ba2ad96650a1714253b0ae66ba167"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c6122dde12481b629f2f7b1ce2afc28"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a8c6122dde12481b629f2f7b1ce2afc28">name</a></td></tr>
+<tr class="separator:a8c6122dde12481b629f2f7b1ce2afc28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeba247ccf78620d37bfb23ac812f123"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#aaeba247ccf78620d37bfb23ac812f123">allocated_size</a></td></tr>
+<tr class="separator:aaeba247ccf78620d37bfb23ac812f123"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72cd4ac04fad51347b627f2d894b75d8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a72cd4ac04fad51347b627f2d894b75d8">available_size</a></td></tr>
+<tr class="separator:a72cd4ac04fad51347b627f2d894b75d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf7603622a4b6515c9d00f26c758e34c"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#aaf7603622a4b6515c9d00f26c758e34c">first</a></td></tr>
 <tr class="separator:aaf7603622a4b6515c9d00f26c758e34c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c46cfa4c88b248b51a096436d4a4147"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_stack_pool.html#a0c46cfa4c88b248b51a096436d4a4147">last</a></td></tr>
 <tr class="separator:a0c46cfa4c88b248b51a096436d4a4147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a027541e5189d127ce96eb369fdac4b54" name="a027541e5189d127ce96eb369fdac4b54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a027541e5189d127ce96eb369fdac4b54">&#9670;&nbsp;</a></span>StackPool() <span class="overload">[1/2]</span></h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+class tram::StackPool&lt; T &gt;</div><p >Allocator. </p>
+<p >Very simple allocator for data types that don't need their destructors called. Just call <a class="el" href="classtram_1_1_stack_pool.html#a6ce93b4a50a7e007acd3bbfdf8482d84">allocate()</a> and specify the size of the array that you want to allocated. Use the pointer to write and store data. After you are done, you can reset all of the allocated memory with <a class="el" href="classtram_1_1_stack_pool.html#aed5f3ae73582e286a4f9964fc65e73a0">reset()</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a1a8c27879b8842b40704d420abdd0d04" name="a1a8c27879b8842b40704d420abdd0d04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a8c27879b8842b40704d420abdd0d04">&#9670;&nbsp;</a></span>StackPool() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -119,7 +130,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::<a class="el" href="classtram_1_1_stack_pool.html">StackPool</a> </td>
+          <td class="memname">constexpr <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::<a class="el" href="classtram_1_1_stack_pool.html">StackPool</a> </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>name</em>, </td>
@@ -128,7 +139,7 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>initialSize</em>&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -138,15 +149,15 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ae6863930d23ea623860508416812dd6b" name="ae6863930d23ea623860508416812dd6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6863930d23ea623860508416812dd6b">&#9670;&nbsp;</a></span>StackPool() <span class="overload">[2/2]</span></h2>
+<a id="a9fac73a1c853a27ce5ce1ed185dd97e1" name="a9fac73a1c853a27ce5ce1ed185dd97e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fac73a1c853a27ce5ce1ed185dd97e1">&#9670;&nbsp;</a></span>StackPool() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,7 +168,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::<a class="el" href="classtram_1_1_stack_pool.html">StackPool</a> </td>
+          <td class="memname">constexpr <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::<a class="el" href="classtram_1_1_stack_pool.html">StackPool</a> </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>name</em>, </td>
@@ -182,7 +193,7 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -203,6 +214,34 @@ template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">T * <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::AddNew </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>units</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ce93b4a50a7e007acd3bbfdf8482d84" name="a6ce93b4a50a7e007acd3bbfdf8482d84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce93b4a50a7e007acd3bbfdf8482d84">&#9670;&nbsp;</a></span>allocate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T * <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::allocate </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>units</em></td><td>)</td>
@@ -299,6 +338,33 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="aed5f3ae73582e286a4f9964fc65e73a0" name="aed5f3ae73582e286a4f9964fc65e73a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed5f3ae73582e286a4f9964fc65e73a0">&#9670;&nbsp;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::reset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa1b01a988e50384b053dab3204b2872f" name="aa1b01a988e50384b053dab3204b2872f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa1b01a988e50384b053dab3204b2872f">&#9670;&nbsp;</a></span>size()</h2>
 
@@ -327,6 +393,54 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="aaeba247ccf78620d37bfb23ac812f123" name="aaeba247ccf78620d37bfb23ac812f123"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeba247ccf78620d37bfb23ac812f123">&#9670;&nbsp;</a></span>allocated_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::allocated_size</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a72cd4ac04fad51347b627f2d894b75d8" name="a72cd4ac04fad51347b627f2d894b75d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72cd4ac04fad51347b627f2d894b75d8">&#9670;&nbsp;</a></span>available_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::available_size</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aaf7603622a4b6515c9d00f26c758e34c" name="aaf7603622a4b6515c9d00f26c758e34c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaf7603622a4b6515c9d00f26c758e34c">&#9670;&nbsp;</a></span>first</h2>
 
@@ -375,8 +489,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a1c7ba2ad96650a1714253b0ae66ba167" name="a1c7ba2ad96650a1714253b0ae66ba167"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c7ba2ad96650a1714253b0ae66ba167">&#9670;&nbsp;</a></span>maxSize</h2>
+<a id="a8c6122dde12481b629f2f7b1ce2afc28" name="a8c6122dde12481b629f2f7b1ce2afc28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c6122dde12481b629f2f7b1ce2afc28">&#9670;&nbsp;</a></span>name</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,55 +501,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::maxSize</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af7c8cbaabc8dfd84b94984879855c4fb" name="af7c8cbaabc8dfd84b94984879855c4fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7c8cbaabc8dfd84b94984879855c4fb">&#9670;&nbsp;</a></span>poolName</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::poolName</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5864615577dac0dad2a6281a9af58b92" name="a5864615577dac0dad2a6281a9af58b92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5864615577dac0dad2a6281a9af58b92">&#9670;&nbsp;</a></span>poolSize</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::poolSize</td>
+          <td class="memname">std::string <a class="el" href="classtram_1_1_stack_pool.html">tram::StackPool</a>&lt; T &gt;::name</td>
         </tr>
       </table>
   </td>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.2"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Tramway SDK: tram::WorldCell Class Reference</title>
+<title>Tramway SDK: tram::WorldCell Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,19 +69,25 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="#friends">Friends</a> &#124;
 <a href="classtram_1_1_world_cell-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">tram::WorldCell Class Reference</div></div>
+  <div class="headertitle"><div class="title">tram::WorldCell Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="worldcell_8h_source.html">worldcell.h</a>&gt;</code></p>
+<p>World streaming unit.  
+ <a href="classtram_1_1_world_cell.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="worldcell_8h_source.html">framework/worldcell.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abb50e84305e87fea83abf124d311d4f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#abb50e84305e87fea83abf124d311d4f8">WorldCell</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_world_cell.html#aa592b038ed73c8e2accc3ab41deb3d05">name</a>)</td></tr>
 <tr class="separator:abb50e84305e87fea83abf124d311d4f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac65638978ab32fe02e3bcebf5feaf6b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ac65638978ab32fe02e3bcebf5feaf6b9">GetName</a> ()</td></tr>
+<tr class="separator:ac65638978ab32fe02e3bcebf5feaf6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af970d01a2b78d45162c94c3acab1e4a6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#af970d01a2b78d45162c94c3acab1e4a6">IsLoaded</a> ()</td></tr>
 <tr class="separator:af970d01a2b78d45162c94c3acab1e4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a539e63e21eadaeda761161d2e162ecf8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a539e63e21eadaeda761161d2e162ecf8">IsInterior</a> ()</td></tr>
@@ -90,70 +96,131 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af0b8ff336e94162438f66b7670312345"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a906f8e64babfe45db448955b205226e1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a906f8e64babfe45db448955b205226e1">IsDebugDraw</a> ()</td></tr>
 <tr class="separator:a906f8e64babfe45db448955b205226e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac65638978ab32fe02e3bcebf5feaf6b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ac65638978ab32fe02e3bcebf5feaf6b9">GetName</a> ()</td></tr>
-<tr class="separator:ac65638978ab32fe02e3bcebf5feaf6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab22c907450a66cb556913c949e356118"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ab22c907450a66cb556913c949e356118">SetInterior</a> (bool <a class="el" href="classtram_1_1_world_cell.html#a0b1c2734c9976f296c01c59a11f621a5">interior</a>)</td></tr>
-<tr class="separator:ab22c907450a66cb556913c949e356118"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3170093d75ec162c626d76a8478e451b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a3170093d75ec162c626d76a8478e451b">SetInteriorLights</a> (bool interior_lights)</td></tr>
-<tr class="separator:a3170093d75ec162c626d76a8478e451b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c92ad8cfd059f9799d9ffb935487330"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a5c92ad8cfd059f9799d9ffb935487330">SetDebugDraw</a> (bool <a class="el" href="classtram_1_1_world_cell.html#aca549ef9ebdd52717a540d77b7be0cd6">debug_draw</a>)</td></tr>
-<tr class="separator:a5c92ad8cfd059f9799d9ffb935487330"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9005d19a5708c2fc52d97c632ff638f6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a9005d19a5708c2fc52d97c632ff638f6">HasAutomaticLoading</a> ()</td></tr>
+<tr class="separator:a9005d19a5708c2fc52d97c632ff638f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38a76916bccb66a452c50c083aa315bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a38a76916bccb66a452c50c083aa315bf">SetInterior</a> (bool is)</td></tr>
+<tr class="separator:a38a76916bccb66a452c50c083aa315bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e14746ba0ad7786857dcc73987cc7b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a8e14746ba0ad7786857dcc73987cc7b9">SetInteriorLights</a> (bool is)</td></tr>
+<tr class="separator:a8e14746ba0ad7786857dcc73987cc7b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add3fba0e03d6c7e4b9ba05f83cf811f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#add3fba0e03d6c7e4b9ba05f83cf811f8">SetDebugDraw</a> (bool is)</td></tr>
+<tr class="separator:add3fba0e03d6c7e4b9ba05f83cf811f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb21e78a8b34ebcb39f149f50436b859"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#afb21e78a8b34ebcb39f149f50436b859">SetAutomaticLoading</a> (bool is)</td></tr>
+<tr class="separator:afb21e78a8b34ebcb39f149f50436b859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a587fab236965840dbf0b5254f562b2f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a587fab236965840dbf0b5254f562b2f6">Load</a> ()</td></tr>
+<tr class="memdesc:a587fab236965840dbf0b5254f562b2f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the cell.  <a href="classtram_1_1_world_cell.html#a587fab236965840dbf0b5254f562b2f6">More...</a><br /></td></tr>
 <tr class="separator:a587fab236965840dbf0b5254f562b2f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad023bb63d9cb471fb1b4ab17d59c9b63"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ad023bb63d9cb471fb1b4ab17d59c9b63">Unload</a> ()</td></tr>
+<tr class="memdesc:ad023bb63d9cb471fb1b4ab17d59c9b63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unloads the cell.  <a href="classtram_1_1_world_cell.html#ad023bb63d9cb471fb1b4ab17d59c9b63">More...</a><br /></td></tr>
 <tr class="separator:ad023bb63d9cb471fb1b4ab17d59c9b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71c4e65daebc0e0dd1244843f8148c33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a71c4e65daebc0e0dd1244843f8148c33">LoadFromDisk</a> ()</td></tr>
+<tr class="memdesc:a71c4e65daebc0e0dd1244843f8148c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads worldcell data from disk.  <a href="classtram_1_1_world_cell.html#a71c4e65daebc0e0dd1244843f8148c33">More...</a><br /></td></tr>
 <tr class="separator:a71c4e65daebc0e0dd1244843f8148c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09f73a8968a2572008527b6339026b6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a09f73a8968a2572008527b6339026b6e">AddEntity</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *entity)</td></tr>
-<tr class="separator:a09f73a8968a2572008527b6339026b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a240dc8e41244d7169c3b1195a10a7f8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a240dc8e41244d7169c3b1195a10a7f8c">RemoveEntity</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *entity)</td></tr>
-<tr class="separator:a240dc8e41244d7169c3b1195a10a7f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13cf0ae3a6ecb0f8d9c4800f24c914ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a13cf0ae3a6ecb0f8d9c4800f24c914ef">Add</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *entity)</td></tr>
+<tr class="memdesc:a13cf0ae3a6ecb0f8d9c4800f24c914ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an entity to the worldcell.  <a href="classtram_1_1_world_cell.html#a13cf0ae3a6ecb0f8d9c4800f24c914ef">More...</a><br /></td></tr>
+<tr class="separator:a13cf0ae3a6ecb0f8d9c4800f24c914ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9fc8c0a06f6867f636663a55721f338"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ab9fc8c0a06f6867f636663a55721f338">Remove</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *entity)</td></tr>
+<tr class="memdesc:ab9fc8c0a06f6867f636663a55721f338"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an entity from the worldcell.  <a href="classtram_1_1_world_cell.html#ab9fc8c0a06f6867f636663a55721f338">More...</a><br /></td></tr>
+<tr class="separator:ab9fc8c0a06f6867f636663a55721f338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d1863ca31c03feec24439e296d3f5fe"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a8d1863ca31c03feec24439e296d3f5fe">GetEntityCount</a> ()</td></tr>
 <tr class="separator:a8d1863ca31c03feec24439e296d3f5fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d5d7ed209c7f0abea62b2a43fea7e67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a2d5d7ed209c7f0abea62b2a43fea7e67">AddTransitionInto</a> (<a class="el" href="classtram_1_1_transition.html">Transition</a> *transition)</td></tr>
-<tr class="separator:a2d5d7ed209c7f0abea62b2a43fea7e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9809c5d363f6f63cd56d44f5e504e524"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a9809c5d363f6f63cd56d44f5e504e524">AddTransitionFrom</a> (<a class="el" href="classtram_1_1_transition.html">Transition</a> *transition)</td></tr>
-<tr class="separator:a9809c5d363f6f63cd56d44f5e504e524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d8c426c88e1a950304ce2b499a2a065"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a6d8c426c88e1a950304ce2b499a2a065">Add</a> (<a class="el" href="classtram_1_1_transition.html">Transition</a> *transition)</td></tr>
+<tr class="memdesc:a6d8c426c88e1a950304ce2b499a2a065"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transition.  <a href="classtram_1_1_world_cell.html#a6d8c426c88e1a950304ce2b499a2a065">More...</a><br /></td></tr>
+<tr class="separator:a6d8c426c88e1a950304ce2b499a2a065"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfada914f06d4f84530531b1117b5280"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#acfada914f06d4f84530531b1117b5280">Link</a> (<a class="el" href="classtram_1_1_world_cell.html">WorldCell</a> *other)</td></tr>
+<tr class="memdesc:acfada914f06d4f84530531b1117b5280"><td class="mdescLeft">&#160;</td><td class="mdescRight">Links a worldcell.  <a href="classtram_1_1_world_cell.html#acfada914f06d4f84530531b1117b5280">More...</a><br /></td></tr>
+<tr class="separator:acfada914f06d4f84530531b1117b5280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad17560365ad3f35f832fe14cb2ad7be6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_world_cell.html">WorldCell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ad17560365ad3f35f832fe14cb2ad7be6">FindTransition</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> point)</td></tr>
+<tr class="memdesc:ad17560365ad3f35f832fe14cb2ad7be6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a transition from a position.  <a href="classtram_1_1_world_cell.html#ad17560365ad3f35f832fe14cb2ad7be6">More...</a><br /></td></tr>
 <tr class="separator:ad17560365ad3f35f832fe14cb2ad7be6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9521430ae60c9fa514b98fa2e5a5c01f"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classtram_1_1_entity.html">Entity</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a9521430ae60c9fa514b98fa2e5a5c01f">GetEntities</a> ()</td></tr>
 <tr class="separator:a9521430ae60c9fa514b98fa2e5a5c01f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fa5f2ba361a94f37a1f981771cdafaa"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a2fa5f2ba361a94f37a1f981771cdafaa">GetTransitions</a> ()</td></tr>
+<tr class="separator:a2fa5f2ba361a94f37a1f981771cdafaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d383de9e1314938cf44ba8dc976150a"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a5d383de9e1314938cf44ba8dc976150a">GetVolume</a> ()</td></tr>
+<tr class="separator:a5d383de9e1314938cf44ba8dc976150a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68de53ebe113f1cddbd433dd048acf70"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a68de53ebe113f1cddbd433dd048acf70">IsInside</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> point)</td></tr>
+<tr class="memdesc:a68de53ebe113f1cddbd433dd048acf70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if point is inside the worldcell.  <a href="classtram_1_1_world_cell.html#a68de53ebe113f1cddbd433dd048acf70">More...</a><br /></td></tr>
 <tr class="separator:a68de53ebe113f1cddbd433dd048acf70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:abe83e953cd5a7905807a1f4ab8157d01"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_world_cell.html">WorldCell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#abe83e953cd5a7905807a1f4ab8157d01">Find</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> point)</td></tr>
+<tr class="memdesc:abe83e953cd5a7905807a1f4ab8157d01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> which contains a given point.  <a href="classtram_1_1_world_cell.html#abe83e953cd5a7905807a1f4ab8157d01">More...</a><br /></td></tr>
 <tr class="separator:abe83e953cd5a7905807a1f4ab8157d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7757aa7efe44bb6bb948b559948e12b3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_world_cell.html">WorldCell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a7757aa7efe44bb6bb948b559948e12b3">Find</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_world_cell.html#aa592b038ed73c8e2accc3ab41deb3d05">name</a>)</td></tr>
+<tr class="memdesc:a7757aa7efe44bb6bb948b559948e12b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> by its name.  <a href="classtram_1_1_world_cell.html#a7757aa7efe44bb6bb948b559948e12b3">More...</a><br /></td></tr>
 <tr class="separator:a7757aa7efe44bb6bb948b559948e12b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac34c6821383503d786d5de19caba1041"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtram_1_1_world_cell.html">WorldCell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ac34c6821383503d786d5de19caba1041">Make</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> <a class="el" href="classtram_1_1_world_cell.html#aa592b038ed73c8e2accc3ab41deb3d05">name</a>)</td></tr>
+<tr class="memdesc:ac34c6821383503d786d5de19caba1041"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> by name.  <a href="classtram_1_1_world_cell.html#ac34c6821383503d786d5de19caba1041">More...</a><br /></td></tr>
 <tr class="separator:ac34c6821383503d786d5de19caba1041"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a90b9ed6e3265fb6b3e569669117fd514"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a87adfa2880447ba4a45de045b1e55ea1">LOADED</a> = 1
+, <a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a6ddd0d1668e3847063a1ef166854a507">INTERIOR</a> = 2
+, <a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514abc50d99cd3e56932a7a61ba6471f5101">INTERIOR_LIGHTING</a> = 4
+, <a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a53db64208d71f275b14f759d1371d326">DEBUG_DRAW</a> = 8
+, <br />
+&#160;&#160;<a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a5bcce5b3c7f26f25c0a5e06cb8658c7f">AUTOMATIC_LOADING</a> = 16
+, <a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a6b5701f7e4536f58cd7bb5ec2496e33d">LOADED_FROM_DISK</a> = 32
+<br />
+ }</td></tr>
+<tr class="separator:a90b9ed6e3265fb6b3e569669117fd514"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a7ee87e1140b9f20b04463f0342135050"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a7ee87e1140b9f20b04463f0342135050">SetFlag</a> (uint32_t flag, bool value)</td></tr>
+<tr class="separator:a7ee87e1140b9f20b04463f0342135050"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:aa592b038ed73c8e2accc3ab41deb3d05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#aa592b038ed73c8e2accc3ab41deb3d05">name</a></td></tr>
 <tr class="separator:aa592b038ed73c8e2accc3ab41deb3d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b1c2734c9976f296c01c59a11f621a5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a0b1c2734c9976f296c01c59a11f621a5">interior</a> = false</td></tr>
-<tr class="separator:a0b1c2734c9976f296c01c59a11f621a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76abc8334eeecf79c859400edc3b705d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a76abc8334eeecf79c859400edc3b705d">interior_lighting</a> = false</td></tr>
-<tr class="separator:a76abc8334eeecf79c859400edc3b705d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bc4b2b5b6398959d0d95ff540536b39"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a8bc4b2b5b6398959d0d95ff540536b39">loaded</a> = false</td></tr>
-<tr class="separator:a8bc4b2b5b6398959d0d95ff540536b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca549ef9ebdd52717a540d77b7be0cd6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#aca549ef9ebdd52717a540d77b7be0cd6">debug_draw</a> = false</td></tr>
-<tr class="separator:aca549ef9ebdd52717a540d77b7be0cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47609a24f5f428ede775c09d633096f2"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a47609a24f5f428ede775c09d633096f2">flags</a> = <a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a5bcce5b3c7f26f25c0a5e06cb8658c7f">AUTOMATIC_LOADING</a></td></tr>
+<tr class="separator:a47609a24f5f428ede775c09d633096f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c0e438bdf14ec661b99ce78df3a6e22"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classtram_1_1_entity.html">Entity</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a2c0e438bdf14ec661b99ce78df3a6e22">entities</a></td></tr>
 <tr class="separator:a2c0e438bdf14ec661b99ce78df3a6e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad681492b7a2d41743e4bcb47d6e52d79"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ad681492b7a2d41743e4bcb47d6e52d79">transitions_into</a></td></tr>
-<tr class="separator:ad681492b7a2d41743e4bcb47d6e52d79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a826509df7f1e1d40b9c26df527229e64"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a826509df7f1e1d40b9c26df527229e64">transitions_from</a></td></tr>
-<tr class="separator:a826509df7f1e1d40b9c26df527229e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
-Friends</h2></td></tr>
-<tr class="memitem:ac8e5438321e35520c4088ff6ca4116ee"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#ac8e5438321e35520c4088ff6ca4116ee">Loader</a></td></tr>
-<tr class="separator:ac8e5438321e35520c4088ff6ca4116ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d8144c3a7c27244fb6c8fb87c9783a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a4d8144c3a7c27244fb6c8fb87c9783a5">transitions</a></td></tr>
+<tr class="separator:a4d8144c3a7c27244fb6c8fb87c9783a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cc37dbda76f539084cba7950b355b22"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_world_cell.html#a8cc37dbda76f539084cba7950b355b22">volume</a></td></tr>
+<tr class="separator:a8cc37dbda76f539084cba7950b355b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >World streaming unit. </p>
+<p >Contains entities, can be used to load and unload them.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/worldcell.html">https://racenis.github.io/tram-sdk/documentation/framework/worldcell.html</a> </dd></dl>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a90b9ed6e3265fb6b3e569669117fd514" name="a90b9ed6e3265fb6b3e569669117fd514"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90b9ed6e3265fb6b3e569669117fd514">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a90b9ed6e3265fb6b3e569669117fd514a87adfa2880447ba4a45de045b1e55ea1" name="a90b9ed6e3265fb6b3e569669117fd514a87adfa2880447ba4a45de045b1e55ea1"></a>LOADED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a90b9ed6e3265fb6b3e569669117fd514a6ddd0d1668e3847063a1ef166854a507" name="a90b9ed6e3265fb6b3e569669117fd514a6ddd0d1668e3847063a1ef166854a507"></a>INTERIOR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a90b9ed6e3265fb6b3e569669117fd514abc50d99cd3e56932a7a61ba6471f5101" name="a90b9ed6e3265fb6b3e569669117fd514abc50d99cd3e56932a7a61ba6471f5101"></a>INTERIOR_LIGHTING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a90b9ed6e3265fb6b3e569669117fd514a53db64208d71f275b14f759d1371d326" name="a90b9ed6e3265fb6b3e569669117fd514a53db64208d71f275b14f759d1371d326"></a>DEBUG_DRAW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a90b9ed6e3265fb6b3e569669117fd514a5bcce5b3c7f26f25c0a5e06cb8658c7f" name="a90b9ed6e3265fb6b3e569669117fd514a5bcce5b3c7f26f25c0a5e06cb8658c7f"></a>AUTOMATIC_LOADING&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a90b9ed6e3265fb6b3e569669117fd514a6b5701f7e4536f58cd7bb5ec2496e33d" name="a90b9ed6e3265fb6b3e569669117fd514a6b5701f7e4536f58cd7bb5ec2496e33d"></a>LOADED_FROM_DISK&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abb50e84305e87fea83abf124d311d4f8" name="abb50e84305e87fea83abf124d311d4f8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abb50e84305e87fea83abf124d311d4f8">&#9670;&nbsp;</a></span>WorldCell()</h2>
@@ -182,14 +249,14 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a09f73a8968a2572008527b6339026b6e" name="a09f73a8968a2572008527b6339026b6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09f73a8968a2572008527b6339026b6e">&#9670;&nbsp;</a></span>AddEntity()</h2>
+<a id="a13cf0ae3a6ecb0f8d9c4800f24c914ef" name="a13cf0ae3a6ecb0f8d9c4800f24c914ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13cf0ae3a6ecb0f8d9c4800f24c914ef">&#9670;&nbsp;</a></span>Add() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::WorldCell::AddEntity </td>
+          <td class="memname">void tram::WorldCell::Add </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td>
           <td class="paramname"><em>entity</em></td><td>)</td>
@@ -198,57 +265,28 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Adds an entity to the worldcell. </p>
+
 </div>
 </div>
-<a id="a9809c5d363f6f63cd56d44f5e504e524" name="a9809c5d363f6f63cd56d44f5e504e524"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9809c5d363f6f63cd56d44f5e504e524">&#9670;&nbsp;</a></span>AddTransitionFrom()</h2>
+<a id="a6d8c426c88e1a950304ce2b499a2a065" name="a6d8c426c88e1a950304ce2b499a2a065"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d8c426c88e1a950304ce2b499a2a065">&#9670;&nbsp;</a></span>Add() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::WorldCell::AddTransitionFrom </td>
+          <td class="memname">void tram::WorldCell::Add </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classtram_1_1_transition.html">Transition</a> *&#160;</td>
           <td class="paramname"><em>transition</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a2d5d7ed209c7f0abea62b2a43fea7e67" name="a2d5d7ed209c7f0abea62b2a43fea7e67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d5d7ed209c7f0abea62b2a43fea7e67">&#9670;&nbsp;</a></span>AddTransitionInto()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tram::WorldCell::AddTransitionInto </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classtram_1_1_transition.html">Transition</a> *&#160;</td>
-          <td class="paramname"><em>transition</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Adds a transition. </p>
+<p >Adds an outgoing transition to the worldcell. </p>
 
 </div>
 </div>
@@ -276,6 +314,9 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Finds a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> by its name. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the cell if found, nullptr otherwise. </dd></dl>
+
 </div>
 </div>
 <a id="abe83e953cd5a7905807a1f4ab8157d01" name="abe83e953cd5a7905807a1f4ab8157d01"></a>
@@ -302,6 +343,9 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Finds the <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> which contains a given point. </p>
+<p >This method will iterate through WorldCells and will try to find a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> with a volume that contains the given point. It will first try finding a volume for an interior cell, otherwise it will try finding a volume for an exterior cell. If it can't find a cell, it will return a nullptr. </p><dl class="section return"><dt>Returns</dt><dd>Pointer to a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> or a nullptr. </dd></dl>
+
 </div>
 </div>
 <a id="ad17560365ad3f35f832fe14cb2ad7be6" name="ad17560365ad3f35f832fe14cb2ad7be6"></a>
@@ -319,6 +363,9 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Finds a transition from a position. </p>
+<p >This is meant to be used by entities that are seeking a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> into which they can transition into. </p>
 
 </div>
 </div>
@@ -383,6 +430,81 @@ Friends</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> tram::WorldCell::GetName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2fa5f2ba361a94f37a1f981771cdafaa" name="a2fa5f2ba361a94f37a1f981771cdafaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fa5f2ba361a94f37a1f981771cdafaa">&#9670;&nbsp;</a></span>GetTransitions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt; &amp; tram::WorldCell::GetTransitions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d383de9e1314938cf44ba8dc976150a" name="a5d383de9e1314938cf44ba8dc976150a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d383de9e1314938cf44ba8dc976150a">&#9670;&nbsp;</a></span>GetVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; <a class="el" href="classtram_1_1_transition.html">Transition</a> * &gt; &amp; tram::WorldCell::GetVolume </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9005d19a5708c2fc52d97c632ff638f6" name="a9005d19a5708c2fc52d97c632ff638f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9005d19a5708c2fc52d97c632ff638f6">&#9670;&nbsp;</a></span>HasAutomaticLoading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::WorldCell::HasAutomaticLoading </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -463,6 +585,8 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Checks if point is inside the worldcell. </p>
+
 </div>
 </div>
 <a id="a539e63e21eadaeda761161d2e162ecf8" name="a539e63e21eadaeda761161d2e162ecf8"></a>
@@ -515,6 +639,27 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="acfada914f06d4f84530531b1117b5280" name="acfada914f06d4f84530531b1117b5280"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfada914f06d4f84530531b1117b5280">&#9670;&nbsp;</a></span>Link()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::WorldCell::Link </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtram_1_1_world_cell.html">WorldCell</a> *&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Links a worldcell. </p>
+<p >This method will take the volume transitions assigned to the worldcell in other pointer parameter and assign them as transitions to the given cell. </p>
+
+</div>
+</div>
 <a id="a587fab236965840dbf0b5254f562b2f6" name="a587fab236965840dbf0b5254f562b2f6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a587fab236965840dbf0b5254f562b2f6">&#9670;&nbsp;</a></span>Load()</h2>
 
@@ -529,6 +674,9 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Loads the cell. </p>
+<p >This will flag the cell as loaded and will load all of the entities that have been flagged as being automatically loaded. </p>
 
 </div>
 </div>
@@ -546,6 +694,8 @@ Friends</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Loads worldcell data from disk. </p>
 
 </div>
 </div>
@@ -573,16 +723,19 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Creates a <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a> by name. </p>
+<p >If a cell with the given name already exists, this method will return that same cell, otherwise a new cell will be created. </p><dl class="section return"><dt>Returns</dt><dd>Always returns the pointer to the created <a class="el" href="classtram_1_1_world_cell.html" title="World streaming unit.">WorldCell</a>. </dd></dl>
+
 </div>
 </div>
-<a id="a240dc8e41244d7169c3b1195a10a7f8c" name="a240dc8e41244d7169c3b1195a10a7f8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a240dc8e41244d7169c3b1195a10a7f8c">&#9670;&nbsp;</a></span>RemoveEntity()</h2>
+<a id="ab9fc8c0a06f6867f636663a55721f338" name="ab9fc8c0a06f6867f636663a55721f338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9fc8c0a06f6867f636663a55721f338">&#9670;&nbsp;</a></span>Remove()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void tram::WorldCell::RemoveEntity </td>
+          <td class="memname">void tram::WorldCell::Remove </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td>
           <td class="paramname"><em>entity</em></td><td>)</td>
@@ -591,10 +744,38 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Removes an entity from the worldcell. </p>
+
 </div>
 </div>
-<a id="a5c92ad8cfd059f9799d9ffb935487330" name="a5c92ad8cfd059f9799d9ffb935487330"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c92ad8cfd059f9799d9ffb935487330">&#9670;&nbsp;</a></span>SetDebugDraw()</h2>
+<a id="afb21e78a8b34ebcb39f149f50436b859" name="afb21e78a8b34ebcb39f149f50436b859"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb21e78a8b34ebcb39f149f50436b859">&#9670;&nbsp;</a></span>SetAutomaticLoading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::WorldCell::SetAutomaticLoading </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="add3fba0e03d6c7e4b9ba05f83cf811f8" name="add3fba0e03d6c7e4b9ba05f83cf811f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add3fba0e03d6c7e4b9ba05f83cf811f8">&#9670;&nbsp;</a></span>SetDebugDraw()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -606,7 +787,7 @@ Friends</h2></td></tr>
           <td class="memname">void tram::WorldCell::SetDebugDraw </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>debug_draw</em></td><td>)</td>
+          <td class="paramname"><em>is</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -619,8 +800,44 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ab22c907450a66cb556913c949e356118" name="ab22c907450a66cb556913c949e356118"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab22c907450a66cb556913c949e356118">&#9670;&nbsp;</a></span>SetInterior()</h2>
+<a id="a7ee87e1140b9f20b04463f0342135050" name="a7ee87e1140b9f20b04463f0342135050"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ee87e1140b9f20b04463f0342135050">&#9670;&nbsp;</a></span>SetFlag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::WorldCell::SetFlag </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>flag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a38a76916bccb66a452c50c083aa315bf" name="a38a76916bccb66a452c50c083aa315bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38a76916bccb66a452c50c083aa315bf">&#9670;&nbsp;</a></span>SetInterior()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -632,7 +849,7 @@ Friends</h2></td></tr>
           <td class="memname">void tram::WorldCell::SetInterior </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>interior</em></td><td>)</td>
+          <td class="paramname"><em>is</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -645,8 +862,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a3170093d75ec162c626d76a8478e451b" name="a3170093d75ec162c626d76a8478e451b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3170093d75ec162c626d76a8478e451b">&#9670;&nbsp;</a></span>SetInteriorLights()</h2>
+<a id="a8e14746ba0ad7786857dcc73987cc7b9" name="a8e14746ba0ad7786857dcc73987cc7b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e14746ba0ad7786857dcc73987cc7b9">&#9670;&nbsp;</a></span>SetInteriorLights()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -658,7 +875,7 @@ Friends</h2></td></tr>
           <td class="memname">void tram::WorldCell::SetInteriorLights </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>interior_lights</em></td><td>)</td>
+          <td class="paramname"><em>is</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -686,54 +903,12 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<h2 class="groupheader">Friends And Related Function Documentation</h2>
-<a id="ac8e5438321e35520c4088ff6ca4116ee" name="ac8e5438321e35520c4088ff6ca4116ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8e5438321e35520c4088ff6ca4116ee">&#9670;&nbsp;</a></span>Loader</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">friend class <a class="el" href="classtram_1_1_loader.html">Loader</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
+<p>Unloads the cell. </p>
+<p >This will flag the cell as unloaded and will unload all of the entities that have been flagged as being automatically loaded. It will also delete entities that have been flagged as being non-persistent. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aca549ef9ebdd52717a540d77b7be0cd6" name="aca549ef9ebdd52717a540d77b7be0cd6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca549ef9ebdd52717a540d77b7be0cd6">&#9670;&nbsp;</a></span>debug_draw</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tram::WorldCell::debug_draw = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a2c0e438bdf14ec661b99ce78df3a6e22" name="a2c0e438bdf14ec661b99ce78df3a6e22"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2c0e438bdf14ec661b99ce78df3a6e22">&#9670;&nbsp;</a></span>entities</h2>
 
@@ -756,8 +931,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a0b1c2734c9976f296c01c59a11f621a5" name="a0b1c2734c9976f296c01c59a11f621a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b1c2734c9976f296c01c59a11f621a5">&#9670;&nbsp;</a></span>interior</h2>
+<a id="a47609a24f5f428ede775c09d633096f2" name="a47609a24f5f428ede775c09d633096f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47609a24f5f428ede775c09d633096f2">&#9670;&nbsp;</a></span>flags</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -766,51 +941,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool tram::WorldCell::interior = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a76abc8334eeecf79c859400edc3b705d" name="a76abc8334eeecf79c859400edc3b705d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76abc8334eeecf79c859400edc3b705d">&#9670;&nbsp;</a></span>interior_lighting</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tram::WorldCell::interior_lighting = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8bc4b2b5b6398959d0d95ff540536b39" name="a8bc4b2b5b6398959d0d95ff540536b39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8bc4b2b5b6398959d0d95ff540536b39">&#9670;&nbsp;</a></span>loaded</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tram::WorldCell::loaded = false</td>
+          <td class="memname">uint32_t tram::WorldCell::flags = <a class="el" href="classtram_1_1_world_cell.html#a90b9ed6e3265fb6b3e569669117fd514a5bcce5b3c7f26f25c0a5e06cb8658c7f">AUTOMATIC_LOADING</a></td>
         </tr>
       </table>
   </td>
@@ -844,8 +975,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a826509df7f1e1d40b9c26df527229e64" name="a826509df7f1e1d40b9c26df527229e64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a826509df7f1e1d40b9c26df527229e64">&#9670;&nbsp;</a></span>transitions_from</h2>
+<a id="a4d8144c3a7c27244fb6c8fb87c9783a5" name="a4d8144c3a7c27244fb6c8fb87c9783a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d8144c3a7c27244fb6c8fb87c9783a5">&#9670;&nbsp;</a></span>transitions</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -854,7 +985,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classtram_1_1_transition.html">Transition</a>*&gt; tram::WorldCell::transitions_from</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classtram_1_1_transition.html">Transition</a>*&gt; tram::WorldCell::transitions</td>
         </tr>
       </table>
   </td>
@@ -866,8 +997,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ad681492b7a2d41743e4bcb47d6e52d79" name="ad681492b7a2d41743e4bcb47d6e52d79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad681492b7a2d41743e4bcb47d6e52d79">&#9670;&nbsp;</a></span>transitions_into</h2>
+<a id="a8cc37dbda76f539084cba7950b355b22" name="a8cc37dbda76f539084cba7950b355b22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cc37dbda76f539084cba7950b355b22">&#9670;&nbsp;</a></span>volume</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -876,7 +1007,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classtram_1_1_transition.html">Transition</a>*&gt; tram::WorldCell::transitions_into</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classtram_1_1_transition.html">Transition</a>*&gt; tram::WorldCell::volume</td>
         </tr>
       </table>
   </td>
@@ -888,7 +1019,7 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/<a class="el" href="worldcell_8h_source.html">worldcell.h</a></li>
 <li>C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/<a class="el" href="worldcell_8cpp.html">worldcell.cpp</a></li>
 </ul>

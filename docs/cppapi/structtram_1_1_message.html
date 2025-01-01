@@ -75,7 +75,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="message_8h_source.html">message.h</a>&gt;</code></p>
+<p><a class="el" href="structtram_1_1_message.html" title="Message data.">Message</a> data.  
+ <a href="structtram_1_1_message.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="message_8h_source.html">framework/message.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -101,6 +104,8 @@ Public Types</h2></td></tr>
 , <a class="el" href="structtram_1_1_message.html#ad7f83643df194a92e3376d78596b9afda80330a58630331f2b6204ffadc99b68b">SET_PROGRESS</a>
 , <br />
 &#160;&#160;<a class="el" href="structtram_1_1_message.html#ad7f83643df194a92e3376d78596b9afda7060aac17306329964fe7abda5b538c8">SET_ANIMATION</a>
+, <a class="el" href="structtram_1_1_message.html#ad7f83643df194a92e3376d78596b9afda6339dff2f96fb0b14555a2df9c70195d">SET_FLAG_ON</a>
+, <a class="el" href="structtram_1_1_message.html#ad7f83643df194a92e3376d78596b9afda8fe9a252ea757ae7d93edf0da09172d8">SET_FLAG_OFF</a>
 , <a class="el" href="structtram_1_1_message.html#ad7f83643df194a92e3376d78596b9afda96a5ae11c632629632b9aff371451303">LAST_MESSAGE</a>
 <br />
  }</td></tr>
@@ -114,10 +119,11 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad27f76114ca903dded8f84890c302119"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#ad27f76114ca903dded8f84890c302119">GetType</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> name)</td></tr>
 <tr class="memdesc:ad27f76114ca903dded8f84890c302119"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds a message type from a name.  <a href="structtram_1_1_message.html#ad27f76114ca903dded8f84890c302119">More...</a><br /></td></tr>
 <tr class="separator:ad27f76114ca903dded8f84890c302119"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adad7616c7def22014e7c8f276e65fe77"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#adad7616c7def22014e7c8f276e65fe77">GetName</a> (<a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a> <a class="el" href="structtram_1_1_message.html#a7325d12fb978fcd0a59d5f929601dd14">type</a>)</td></tr>
+<tr class="memitem:adad7616c7def22014e7c8f276e65fe77"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#adad7616c7def22014e7c8f276e65fe77">GetName</a> (<a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a> <a class="el" href="structtram_1_1_message.html#a0f822eec485aa46e9c93e9445526c8c1">type</a>)</td></tr>
 <tr class="memdesc:adad7616c7def22014e7c8f276e65fe77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a nessage type name.  <a href="structtram_1_1_message.html#adad7616c7def22014e7c8f276e65fe77">More...</a><br /></td></tr>
 <tr class="separator:adad7616c7def22014e7c8f276e65fe77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19be3fd1d26c56de4fcd721376b39c90"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a19be3fd1d26c56de4fcd721376b39c90">GetLast</a> ()</td></tr>
+<tr class="memdesc:a19be3fd1d26c56de4fcd721376b39c90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the last message_t plus one.  <a href="structtram_1_1_message.html#a19be3fd1d26c56de4fcd721376b39c90">More...</a><br /></td></tr>
 <tr class="separator:a19be3fd1d26c56de4fcd721376b39c90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c7116e2921062b636dbf57a152046a8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a4c7116e2921062b636dbf57a152046a8">Send</a> (const <a class="el" href="structtram_1_1_message.html">Message</a> &amp;message)</td></tr>
 <tr class="memdesc:a4c7116e2921062b636dbf57a152046a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a message.  <a href="structtram_1_1_message.html#a4c7116e2921062b636dbf57a152046a8">More...</a><br /></td></tr>
@@ -135,30 +141,36 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a944e18391daa913fad2807ba33463a8e"><td class="memTemplItemLeft" align="right" valign="top">static T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a944e18391daa913fad2807ba33463a8e">AllocateData</a> ()</td></tr>
 <tr class="separator:a944e18391daa913fad2807ba33463a8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc663230fe9deda62a6b1da94d65b90b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:abc663230fe9deda62a6b1da94d65b90b"><td class="memTemplItemLeft" align="right" valign="top">static T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#abc663230fe9deda62a6b1da94d65b90b">AllocateData</a> (const T &amp;<a class="el" href="structtram_1_1_message.html#a8bf4b91856b88705af6a015f2156c58a">data</a>)</td></tr>
+<tr class="memitem:abc663230fe9deda62a6b1da94d65b90b"><td class="memTemplItemLeft" align="right" valign="top">static T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#abc663230fe9deda62a6b1da94d65b90b">AllocateData</a> (const T &amp;<a class="el" href="structtram_1_1_message.html#af2dcffd8b7a243a909af718abcac4925">data</a>)</td></tr>
 <tr class="separator:abc663230fe9deda62a6b1da94d65b90b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae415c262a095fd620ef84c7c8654a02f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#ae415c262a095fd620ef84c7c8654a02f">SetInterceptCallback</a> (void(const <a class="el" href="structtram_1_1_message.html">Message</a> &amp;))</td></tr>
 <tr class="separator:ae415c262a095fd620ef84c7c8654a02f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a7325d12fb978fcd0a59d5f929601dd14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a7325d12fb978fcd0a59d5f929601dd14">type</a></td></tr>
-<tr class="separator:a7325d12fb978fcd0a59d5f929601dd14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa82629e4b5d030b32dec58fed131ad41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#aa82629e4b5d030b32dec58fed131ad41">sender</a></td></tr>
-<tr class="separator:aa82629e4b5d030b32dec58fed131ad41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2d74b0527309c0d0f9981ad2fcf15f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#ab2d74b0527309c0d0f9981ad2fcf15f2">receiver</a></td></tr>
-<tr class="separator:ab2d74b0527309c0d0f9981ad2fcf15f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeca59b039e02f0d1bc056c7172facb3f"><td class="memItemLeft" >union {</td></tr>
-<tr class="memitem:a3f0d543c8d854a13ea5ae0a3e76727c4"><td class="memItemLeft" >&#160;&#160;&#160;void *&#160;&#160;&#160;<a class="el" href="structtram_1_1_message.html#a8bf4b91856b88705af6a015f2156c58a">data</a> = nullptr</td></tr>
-<tr class="separator:a3f0d543c8d854a13ea5ae0a3e76727c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbab0a8d9ab6890ca2e97d878674bd28"><td class="memItemLeft" >&#160;&#160;&#160;int64_t&#160;&#160;&#160;<a class="el" href="structtram_1_1_message.html#a47211141ecaedc92d887fecfa9085bd2">data_int</a></td></tr>
-<tr class="separator:afbab0a8d9ab6890ca2e97d878674bd28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a776cf8d2370fa8947783aa5ac8e5ca"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classtram_1_1_value.html">Value</a> *&#160;&#160;&#160;<a class="el" href="structtram_1_1_message.html#a753857a15cc75f9d67f881b25be9f27e">data_value</a></td></tr>
-<tr class="separator:a9a776cf8d2370fa8947783aa5ac8e5ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeca59b039e02f0d1bc056c7172facb3f"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:aeca59b039e02f0d1bc056c7172facb3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f822eec485aa46e9c93e9445526c8c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a0f822eec485aa46e9c93e9445526c8c1">type</a></td></tr>
+<tr class="memdesc:a0f822eec485aa46e9c93e9445526c8c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the message.  <a href="structtram_1_1_message.html#a0f822eec485aa46e9c93e9445526c8c1">More...</a><br /></td></tr>
+<tr class="separator:a0f822eec485aa46e9c93e9445526c8c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28e9498ff0a7bb62e84f2a6c2589fa94"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a28e9498ff0a7bb62e84f2a6c2589fa94">sender</a></td></tr>
+<tr class="memdesc:a28e9498ff0a7bb62e84f2a6c2589fa94"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a> that sent the message.  <a href="structtram_1_1_message.html#a28e9498ff0a7bb62e84f2a6c2589fa94">More...</a><br /></td></tr>
+<tr class="separator:a28e9498ff0a7bb62e84f2a6c2589fa94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d8a1a38aac71f1a0725b52ce898b7b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_message.html#a1d8a1a38aac71f1a0725b52ce898b7b1">receiver</a></td></tr>
+<tr class="memdesc:a1d8a1a38aac71f1a0725b52ce898b7b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a> that will receive the message.  <a href="structtram_1_1_message.html#a1d8a1a38aac71f1a0725b52ce898b7b1">More...</a><br /></td></tr>
+<tr class="separator:a1d8a1a38aac71f1a0725b52ce898b7b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19d0c06734e250b277052df94631f561"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:ad47e11c695d9948a4fa8484930848651"><td class="memItemLeft" >&#160;&#160;&#160;void *&#160;&#160;&#160;<a class="el" href="structtram_1_1_message.html#af2dcffd8b7a243a909af718abcac4925">data</a> = nullptr</td></tr>
+<tr class="separator:ad47e11c695d9948a4fa8484930848651"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5b3748097a36adf79adf5381947983c"><td class="memItemLeft" >&#160;&#160;&#160;int32_t&#160;&#160;&#160;<a class="el" href="structtram_1_1_message.html#aa694cba3fcc077563b3d47e36a818494">data_int</a></td></tr>
+<tr class="separator:ae5b3748097a36adf79adf5381947983c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd2538694a4769b67c70af2d682a4362"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="namespacetram.html#a7d506d80abf93dd017a92dbcb169f9c4">value_t</a> *&#160;&#160;&#160;<a class="el" href="structtram_1_1_message.html#af0bef4c3d63c5908c15440636071d25d">data_value</a></td></tr>
+<tr class="separator:acd2538694a4769b67c70af2d682a4362"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19d0c06734e250b277052df94631f561"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a19d0c06734e250b277052df94631f561"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p ><a class="el" href="structtram_1_1_message.html" title="Message data.">Message</a> data. </p>
+<p >Fill in the struct fields and then use <a class="el" href="structtram_1_1_message.html#a4c7116e2921062b636dbf57a152046a8" title="Sends a message.">Message::Send()</a> to send it out to listeners. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ad7f83643df194a92e3376d78596b9afd" name="ad7f83643df194a92e3376d78596b9afd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad7f83643df194a92e3376d78596b9afd">&#9670;&nbsp;</a></span>Type</h2>
 
@@ -188,6 +200,8 @@ Public Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="ad7f83643df194a92e3376d78596b9afda25c37f57fe797d8c8f13fc639eac22aa" name="ad7f83643df194a92e3376d78596b9afda25c37f57fe797d8c8f13fc639eac22aa"></a>SELECT&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ad7f83643df194a92e3376d78596b9afda80330a58630331f2b6204ffadc99b68b" name="ad7f83643df194a92e3376d78596b9afda80330a58630331f2b6204ffadc99b68b"></a>SET_PROGRESS&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ad7f83643df194a92e3376d78596b9afda7060aac17306329964fe7abda5b538c8" name="ad7f83643df194a92e3376d78596b9afda7060aac17306329964fe7abda5b538c8"></a>SET_ANIMATION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad7f83643df194a92e3376d78596b9afda6339dff2f96fb0b14555a2df9c70195d" name="ad7f83643df194a92e3376d78596b9afda6339dff2f96fb0b14555a2df9c70195d"></a>SET_FLAG_ON&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad7f83643df194a92e3376d78596b9afda8fe9a252ea757ae7d93edf0da09172d8" name="ad7f83643df194a92e3376d78596b9afda8fe9a252ea757ae7d93edf0da09172d8"></a>SET_FLAG_OFF&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ad7f83643df194a92e3376d78596b9afda96a5ae11c632629632b9aff371451303" name="ad7f83643df194a92e3376d78596b9afda96a5ae11c632629632b9aff371451303"></a>LAST_MESSAGE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
@@ -274,7 +288,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Allocates space for message data. </p>
-<p >This allocation is useful for storing the additional data (<a class="el" href="structtram_1_1_message.html#a8bf4b91856b88705af6a015f2156c58a">Message::data</a> pointer), for messages, since all allocated space will be cleared once all messages have been dispatched. This only applies to messages that are sent without a time delay, if you're sending messages with a delay, then you'll need to allocate memory for their data yourself. </p><dl class="section note"><dt>Note</dt><dd>Remember to only use POD data types. </dd></dl>
+<p >This allocation is useful for storing the additional data (<a class="el" href="structtram_1_1_message.html#af2dcffd8b7a243a909af718abcac4925" title="Pointer to arbitrary data.">Message::data</a> pointer), for messages, since all allocated space will be cleared once all messages have been dispatched. This only applies to messages that are sent without a time delay, if you're sending messages with a delay, then you'll need to allocate memory for their data yourself. </p><dl class="section note"><dt>Note</dt><dd>Remember to only use POD data types. </dd></dl>
 
 </div>
 </div>
@@ -328,6 +342,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Returns the last message_t plus one. </p>
+<p >Useful for iterating over all registered messages, i.e. in a <code>while (++message &lt; <a class="el" href="structtram_1_1_message.html#a19be3fd1d26c56de4fcd721376b39c90" title="Returns the last message_t plus one.">Message::GetLast()</a>);</code> or a similar loop. </p>
 
 </div>
 </div>
@@ -441,7 +458,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Sends a message. </p>
-<p ><a class="el" href="structtram_1_1_message.html">Message</a> will be delivered to the <a class="el" href="classtram_1_1_entity.html">Entity</a> with the ID number specified in the <a class="el" href="structtram_1_1_message.html#ab2d74b0527309c0d0f9981ad2fcf15f2">Message::receiver</a> field, by calling its <a class="el" href="classtram_1_1_entity.html#a97fda9e5722f272b938abe3ffc1d0836">Entity::MessageHandler()</a> method. </p>
+<p ><a class="el" href="structtram_1_1_message.html" title="Message data.">Message</a> will be delivered to the <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a> with the ID number specified in the <a class="el" href="structtram_1_1_message.html#a1d8a1a38aac71f1a0725b52ce898b7b1" title="ID of the Entity that will receive the message.">Message::receiver</a> field, by calling its <a class="el" href="classtram_1_1_entity.html#ad81126191ef55c6ff2b3b112ce6c9cdb" title="Allows entities to receive messages.">Entity::MessageHandler()</a> method. </p>
 
 </div>
 </div>
@@ -482,7 +499,7 @@ template&lt;typename T &gt; </div>
 <p>Semds a message into the future. </p>
 <p >Same as <a class="el" href="structtram_1_1_message.html#a4c7116e2921062b636dbf57a152046a8" title="Sends a message.">Message::Send()</a>, but the actual sending will be delayed until specified ammount of ticks have passed. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">message</td><td><a class="el" href="structtram_1_1_message.html">Message</a> to be sent. </td></tr>
+    <tr><td class="paramname">message</td><td><a class="el" href="structtram_1_1_message.html" title="Message data.">Message</a> to be sent. </td></tr>
     <tr><td class="paramname">when</td><td>How many ticks need to pass until the message will be sent out, i.e. if you want to send a message out in 1 secons, set this parameter to 60. </td></tr>
   </table>
   </dd>
@@ -517,101 +534,117 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aeca59b039e02f0d1bc056c7172facb3f" name="aeca59b039e02f0d1bc056c7172facb3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeca59b039e02f0d1bc056c7172facb3f">&#9670;&nbsp;</a></span></h2>
+<a id="a19d0c06734e250b277052df94631f561" name="a19d0c06734e250b277052df94631f561"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19d0c06734e250b277052df94631f561">&#9670;&nbsp;</a></span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">union  { ... }  tram::Message::@28</td>
+          <td class="memname">union  { ... }  tram::Message::@40</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a8bf4b91856b88705af6a015f2156c58a" name="a8bf4b91856b88705af6a015f2156c58a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8bf4b91856b88705af6a015f2156c58a">&#9670;&nbsp;</a></span>data</h2>
+<a id="af2dcffd8b7a243a909af718abcac4925" name="af2dcffd8b7a243a909af718abcac4925"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2dcffd8b7a243a909af718abcac4925">&#9670;&nbsp;</a></span>data</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* tram::Message::data = nullptr</td>
+          <td class="memname">tram::Message::data = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pointer to arbitrary data. </p>
+<p >Can be set to a nullptr. Some message types have specific data, e.g. structs or other types that they need their data pointers to be pointing to. For your own message types, you can use this pointer for whatever purpose you want. If uncertain, set this to a nullptr. </p>
+
 </div>
 </div>
-<a id="a47211141ecaedc92d887fecfa9085bd2" name="a47211141ecaedc92d887fecfa9085bd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47211141ecaedc92d887fecfa9085bd2">&#9670;&nbsp;</a></span>data_int</h2>
+<a id="aa694cba3fcc077563b3d47e36a818494" name="aa694cba3fcc077563b3d47e36a818494"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa694cba3fcc077563b3d47e36a818494">&#9670;&nbsp;</a></span>data_int</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int64_t tram::Message::data_int</td>
+          <td class="memname">tram::Message::data_int</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Arbitrary data integer. </p>
+
 </div>
 </div>
-<a id="a753857a15cc75f9d67f881b25be9f27e" name="a753857a15cc75f9d67f881b25be9f27e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a753857a15cc75f9d67f881b25be9f27e">&#9670;&nbsp;</a></span>data_value</h2>
+<a id="af0bef4c3d63c5908c15440636071d25d" name="af0bef4c3d63c5908c15440636071d25d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0bef4c3d63c5908c15440636071d25d">&#9670;&nbsp;</a></span>data_value</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_value.html">Value</a>* tram::Message::data_value</td>
+          <td class="memname">tram::Message::data_value</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pointer to a value_t. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/message.html">https://racenis.github.io/tram-sdk/documentation/framework/message.html</a> </dd></dl>
+
 </div>
 </div>
-<a id="ab2d74b0527309c0d0f9981ad2fcf15f2" name="ab2d74b0527309c0d0f9981ad2fcf15f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2d74b0527309c0d0f9981ad2fcf15f2">&#9670;&nbsp;</a></span>receiver</h2>
+<a id="a1d8a1a38aac71f1a0725b52ce898b7b1" name="a1d8a1a38aac71f1a0725b52ce898b7b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d8a1a38aac71f1a0725b52ce898b7b1">&#9670;&nbsp;</a></span>receiver</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a> tram::Message::receiver</td>
+          <td class="memname">tram::Message::receiver</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>ID of the <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a> that will receive the message. </p>
+<p >Set to the ID of an <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a>. </p>
+
 </div>
 </div>
-<a id="aa82629e4b5d030b32dec58fed131ad41" name="aa82629e4b5d030b32dec58fed131ad41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa82629e4b5d030b32dec58fed131ad41">&#9670;&nbsp;</a></span>sender</h2>
+<a id="a28e9498ff0a7bb62e84f2a6c2589fa94" name="a28e9498ff0a7bb62e84f2a6c2589fa94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28e9498ff0a7bb62e84f2a6c2589fa94">&#9670;&nbsp;</a></span>sender</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a> tram::Message::sender</td>
+          <td class="memname">tram::Message::sender</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>ID of the <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a> that sent the message. </p>
+<p >Either set to the ID of an <a class="el" href="classtram_1_1_entity.html" title="Entity base class.">Entity</a>, or can be set to zero. </p>
+
 </div>
 </div>
-<a id="a7325d12fb978fcd0a59d5f929601dd14" name="a7325d12fb978fcd0a59d5f929601dd14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7325d12fb978fcd0a59d5f929601dd14">&#9670;&nbsp;</a></span>type</h2>
+<a id="a0f822eec485aa46e9c93e9445526c8c1" name="a0f822eec485aa46e9c93e9445526c8c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f822eec485aa46e9c93e9445526c8c1">&#9670;&nbsp;</a></span>type</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacetram.html#a2d629e975ff280fbd5d11c40edb519f0">message_t</a> tram::Message::type</td>
+          <td class="memname">tram::Message::type</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Type of the message. </p>
 
 </div>
 </div>

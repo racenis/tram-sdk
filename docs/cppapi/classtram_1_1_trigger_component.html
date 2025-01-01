@@ -73,14 +73,17 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="components_2trigger_8h_source.html">trigger.h</a>&gt;</code></p>
+<p><a class="el" href="classtram_1_1_trigger.html" title="TriggerComponent wrapper.">Trigger</a> wrapper.  
+ <a href="classtram_1_1_trigger_component.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="components_2trigger_8h_source.html">components/trigger.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::TriggerComponent:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classtram_1_1_trigger_component.png" usemap="#tram::TriggerComponent_map" alt=""/>
   <map id="tram::TriggerComponent_map" name="tram::TriggerComponent_map">
-<area href="classtram_1_1_entity_component.html" alt="tram::EntityComponent" shape="rect" coords="0,0,146,24"/>
+<area href="classtram_1_1_entity_component.html" title="Component base class." alt="tram::EntityComponent" shape="rect" coords="0,0,146,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -103,12 +106,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af69d3a60b12eebbbdec84c83b049941e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#af69d3a60b12eebbbdec84c83b049941e">SetShape</a> (<a class="el" href="structtram_1_1_physics_1_1_collision_shape.html">Physics::CollisionShape</a> shape)</td></tr>
 <tr class="memdesc:af69d3a60b12eebbbdec84c83b049941e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a collision shape for the trigger.  <a href="classtram_1_1_trigger_component.html#af69d3a60b12eebbbdec84c83b049941e">More...</a><br /></td></tr>
 <tr class="separator:af69d3a60b12eebbbdec84c83b049941e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f9d3a5ff24b0db6b72407b1d18d12a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#a2f9d3a5ff24b0db6b72407b1d18d12a5">SetActivationCallback</a> (void(*activation_callback)(<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> *, <a class="el" href="structtram_1_1_physics_1_1_collision.html">Physics::Collision</a>))</td></tr>
-<tr class="separator:a2f9d3a5ff24b0db6b72407b1d18d12a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2faed9215cdab26cbd208a434be60642"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#a2faed9215cdab26cbd208a434be60642">SetDectivationCallback</a> (void(*deactivation_callback)(<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> *, <a class="el" href="structtram_1_1_physics_1_1_collision.html">Physics::Collision</a>))</td></tr>
-<tr class="separator:a2faed9215cdab26cbd208a434be60642"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ff721ff7ce9b3b647ef969392bb652b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#a2ff721ff7ce9b3b647ef969392bb652b">SetFilterCallback</a> (bool(*filter_callback)(<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> *, <a class="el" href="classtram_1_1_physics_component.html">PhysicsComponent</a> *))</td></tr>
-<tr class="separator:a2ff721ff7ce9b3b647ef969392bb652b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad30c23103020b9c9144d21835793f892"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#ad30c23103020b9c9144d21835793f892">SetActivationCallback</a> (<a class="el" href="namespacetram.html#a0ec6f1beb2db1148bf277a12019a7ac0">collision_callback</a> activation)</td></tr>
+<tr class="separator:ad30c23103020b9c9144d21835793f892"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5810d82217bbf1ba29a40beca70ce30d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#a5810d82217bbf1ba29a40beca70ce30d">SetDectivationCallback</a> (<a class="el" href="namespacetram.html#a0ec6f1beb2db1148bf277a12019a7ac0">collision_callback</a> deactivation)</td></tr>
+<tr class="separator:a5810d82217bbf1ba29a40beca70ce30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4d9c4e43a0e75b00ec6de674c9b7bc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#ac4d9c4e43a0e75b00ec6de674c9b7bc5">SetFilterCallback</a> (<a class="el" href="namespacetram.html#a2ffbf64ab17d509c8a5dc283f437a5b7">filter_callback</a> filter)</td></tr>
+<tr class="separator:ac4d9c4e43a0e75b00ec6de674c9b7bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa9f40c6c3afaddd4657b6a2e5ea35e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_trigger_component.html#aaa9f40c6c3afaddd4657b6a2e5ea35e4">SetCollisionMask</a> (uint32_t flags)</td></tr>
 <tr class="memdesc:aaa9f40c6c3afaddd4657b6a2e5ea35e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a collision mask for the trigger.  <a href="classtram_1_1_trigger_component.html#aaa9f40c6c3afaddd4657b6a2e5ea35e4">More...</a><br /></td></tr>
 <tr class="separator:aaa9f40c6c3afaddd4657b6a2e5ea35e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,16 +142,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae6374eae5d6d91477a7abadc14a19b20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for collisions with the trigger.  <a href="classtram_1_1_trigger_component.html#ae6374eae5d6d91477a7abadc14a19b20">More...</a><br /></td></tr>
 <tr class="separator:ae6374eae5d6d91477a7abadc14a19b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
-<tr class="memitem:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4b6c8ec03356f2471bb7a3dd40fb36e6">EntityComponent</a> ()</td></tr>
-<tr class="separator:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab0daa42f3e539d6160e28fa43e37274e">~EntityComponent</a> ()</td></tr>
-<tr class="separator:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#af7444b7aaf205a8d3f120de11241a1a4">Init</a> ()</td></tr>
-<tr class="separator:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a843b4cdf5844c3fbd85c92f1c30cc108">IsReady</a> ()</td></tr>
-<tr class="separator:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a8ca5d5e94fee475a88428d4f072e77c7">IsInit</a> ()</td></tr>
-<tr class="separator:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a407901dc86e2eeb0b594d3730081f3e8">EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4c959cc80467ad2e753972bdc4eb7c33">~EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">Init</a> ()</td></tr>
+<tr class="memdesc:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an entity component.  <a href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">More...</a><br /></td></tr>
+<tr class="separator:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">IsReady</a> ()</td></tr>
+<tr class="memdesc:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's readiness.  <a href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">More...</a><br /></td></tr>
+<tr class="separator:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">IsInit</a> ()</td></tr>
+<tr class="memdesc:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's init status.  <a href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">More...</a><br /></td></tr>
+<tr class="separator:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a678a0fce6a2deac1fa04baaed4db3009">GetParent</a> ()</td></tr>
 <tr class="separator:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1683ad236bce69ab4b2c2dac75ef526a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1683ad236bce69ab4b2c2dac75ef526a">SetParent</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *<a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a>)</td></tr>
@@ -158,6 +164,7 @@ Public Member Functions</h2></td></tr>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
 <tr class="memitem:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">ResourceReady</a> ()</td></tr>
+<tr class="memdesc:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies the component of a streamed-in resource.  <a href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">More...</a><br /></td></tr>
 <tr class="separator:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
 <tr class="memitem:a67f362753d2e2c2e5859ceab8b9461ce inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a67f362753d2e2c2e5859ceab8b9461ce">resources_waiting</a> = 0</td></tr>
@@ -169,7 +176,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a> = nullptr</td></tr>
 <tr class="separator:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p ><a class="el" href="classtram_1_1_trigger.html" title="TriggerComponent wrapper.">Trigger</a> wrapper. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/components/trigger.html">https://racenis.github.io/tram-sdk/documentation/components/trigger.html</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acb29106d21d1cf02169a58c1c82c86a3" name="acb29106d21d1cf02169a58c1c82c86a3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb29106d21d1cf02169a58c1c82c86a3">&#9670;&nbsp;</a></span>TriggerComponent()</h2>
 
@@ -401,8 +411,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a2f9d3a5ff24b0db6b72407b1d18d12a5" name="a2f9d3a5ff24b0db6b72407b1d18d12a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f9d3a5ff24b0db6b72407b1d18d12a5">&#9670;&nbsp;</a></span>SetActivationCallback()</h2>
+<a id="ad30c23103020b9c9144d21835793f892" name="ad30c23103020b9c9144d21835793f892"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad30c23103020b9c9144d21835793f892">&#9670;&nbsp;</a></span>SetActivationCallback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -413,8 +423,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void tram::TriggerComponent::SetActivationCallback </td>
           <td>(</td>
-          <td class="paramtype">void(*)(<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> *, <a class="el" href="structtram_1_1_physics_1_1_collision.html">Physics::Collision</a>)&#160;</td>
-          <td class="paramname"><em>activation_callback</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a0ec6f1beb2db1148bf277a12019a7ac0">collision_callback</a>&#160;</td>
+          <td class="paramname"><em>activation</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -444,7 +454,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets a collision group for the trigger. </p>
-<p >This method works the same as in <a class="el" href="classtram_1_1_physics_component.html">PhysicsComponent</a>, see <a class="el" href="classtram_1_1_physics_component.html#a62ca80aadcd392cc94243f1a42d1b06e" title="Sets the collision group of the physics object.">PhysicsComponent::SetCollisionGroup()</a> for more information. </p>
+<p >This method works the same as in <a class="el" href="classtram_1_1_physics_component.html" title="Rigidbody wrapper.">PhysicsComponent</a>, see <a class="el" href="classtram_1_1_physics_component.html#a62ca80aadcd392cc94243f1a42d1b06e" title="Sets the collision group of the physics object.">PhysicsComponent::SetCollisionGroup()</a> for more information. </p>
 
 </div>
 </div>
@@ -465,12 +475,12 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets a collision mask for the trigger. </p>
-<p >This method works the same as in <a class="el" href="classtram_1_1_physics_component.html">PhysicsComponent</a>, see PhysicsComponent::SetCollsionMask() for more information. </p>
+<p >This method works the same as in <a class="el" href="classtram_1_1_physics_component.html" title="Rigidbody wrapper.">PhysicsComponent</a>, see PhysicsComponent::SetCollsionMask() for more information. </p>
 
 </div>
 </div>
-<a id="a2faed9215cdab26cbd208a434be60642" name="a2faed9215cdab26cbd208a434be60642"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2faed9215cdab26cbd208a434be60642">&#9670;&nbsp;</a></span>SetDectivationCallback()</h2>
+<a id="a5810d82217bbf1ba29a40beca70ce30d" name="a5810d82217bbf1ba29a40beca70ce30d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5810d82217bbf1ba29a40beca70ce30d">&#9670;&nbsp;</a></span>SetDectivationCallback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -481,8 +491,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void tram::TriggerComponent::SetDectivationCallback </td>
           <td>(</td>
-          <td class="paramtype">void(*)(<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> *, <a class="el" href="structtram_1_1_physics_1_1_collision.html">Physics::Collision</a>)&#160;</td>
-          <td class="paramname"><em>deactivation_callback</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a0ec6f1beb2db1148bf277a12019a7ac0">collision_callback</a>&#160;</td>
+          <td class="paramname"><em>deactivation</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -495,8 +505,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a2ff721ff7ce9b3b647ef969392bb652b" name="a2ff721ff7ce9b3b647ef969392bb652b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ff721ff7ce9b3b647ef969392bb652b">&#9670;&nbsp;</a></span>SetFilterCallback()</h2>
+<a id="ac4d9c4e43a0e75b00ec6de674c9b7bc5" name="ac4d9c4e43a0e75b00ec6de674c9b7bc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4d9c4e43a0e75b00ec6de674c9b7bc5">&#9670;&nbsp;</a></span>SetFilterCallback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -507,8 +517,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void tram::TriggerComponent::SetFilterCallback </td>
           <td>(</td>
-          <td class="paramtype">bool(*)(<a class="el" href="classtram_1_1_trigger_component.html">TriggerComponent</a> *, <a class="el" href="classtram_1_1_physics_component.html">PhysicsComponent</a> *)&#160;</td>
-          <td class="paramname"><em>filter_callback</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a2ffbf64ab17d509c8a5dc283f437a5b7">filter_callback</a>&#160;</td>
+          <td class="paramname"><em>filter</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

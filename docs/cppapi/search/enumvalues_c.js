@@ -1,23 +1,6 @@
 var searchData=
 [
-  ['query_5fbounding_5fbox_5fmax_0',['QUERY_BOUNDING_BOX_MAX',['../namespacetram.html#af26d713039b679cdcdfc7831c26be2aaa5b4d716e3656307134648286a5e8c80a',1,'tram']]],
-  ['query_5fbounding_5fbox_5fmin_1',['QUERY_BOUNDING_BOX_MIN',['../namespacetram.html#af26d713039b679cdcdfc7831c26be2aaa8f4426aea5d930138f0c56f5ff8bc24c',1,'tram']]],
-  ['query_5flook_5fdirection_2',['QUERY_LOOK_DIRECTION',['../namespacetram.html#af26d713039b679cdcdfc7831c26be2aaabf85fcff1dc2a541f1f51d88a4cfbdf9',1,'tram']]],
-  ['query_5fpickupable_3',['QUERY_PICKUPABLE',['../namespacetram.html#af26d713039b679cdcdfc7831c26be2aaa2fad07e1bd953f6da14c2c21d9cb589f',1,'tram']]],
-  ['quest_5ftgr_5fset_5fobjective_4',['QUEST_TGR_SET_OBJECTIVE',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba5be55952382cfcbdeff33c9848c751a6',1,'tram::Ext::Kitchensink']]],
-  ['quest_5ftgr_5fset_5fvariable_5',['QUEST_TGR_SET_VARIABLE',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1bab3184e4606cdb4af3d7c99634d68643c',1,'tram::Ext::Kitchensink']]],
-  ['quest_5ftgr_5fshow_5fmessage_6',['QUEST_TGR_SHOW_MESSAGE',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1baed1f0c08592a54fabf9d38da32861069',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fcondition_5fand_7',['QUEST_VAR_CONDITION_AND',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba186f563d6876469d9a15d27843a5b53e',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fcondition_5fnot_8',['QUEST_VAR_CONDITION_NOT',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba5222f372b4fc5839970f0e83836d8963',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fcondition_5for_9',['QUEST_VAR_CONDITION_OR',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba08d52f2b0b110ace1985eebf58c530b7',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fcondition_5fscript_10',['QUEST_VAR_CONDITION_SCRIPT',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba6c8b793de899085ef9a4e667f0494aa7',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fhas_5fitem_11',['QUEST_VAR_HAS_ITEM',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1bad5d247429f7d95601ab91edb80413e58',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fobjective_12',['QUEST_VAR_OBJECTIVE',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba9f6abb709c8d8e059f95ba9effdeaea6',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_13',['QUEST_VAR_VALUE',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba96ef0600cecd28d4995fa0d7752cbdcc',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_5fgreater_14',['QUEST_VAR_VALUE_GREATER',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1bad093ff9e327a290e2386fdb6f9e640dd',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_5fgreater_5for_5fequal_15',['QUEST_VAR_VALUE_GREATER_OR_EQUAL',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba0d54b933eb12ed94fc946b685e46d7a2',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_5fis_16',['QUEST_VAR_VALUE_IS',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1ba7f25c526cc3e1223bc2d6697cfb7cf71',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_5fis_5fnot_17',['QUEST_VAR_VALUE_IS_NOT',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1bad3dea61a0fac22587a0c9e7dbb202e0b',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_5fless_18',['QUEST_VAR_VALUE_LESS',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1bae7561b1caf29ca996a233daa45274a97',1,'tram::Ext::Kitchensink']]],
-  ['quest_5fvar_5fvalue_5fless_5for_5fequal_19',['QUEST_VAR_VALUE_LESS_OR_EQUAL',['../namespacetram_1_1_ext_1_1_kitchensink.html#ab3814d859340fe53dd54ca8fa8f84f1bace549e0bce35a03eacba99bc23a86816',1,'tram::Ext::Kitchensink']]]
+  ['non_5fpersistent_0',['NON_PERSISTENT',['../classtram_1_1_entity.html#aaed86a9cc626eeab1796509f702ff378a2b07df103621567e55bd08cf7eaf6295',1,'tram::Entity']]],
+  ['non_5fserializable_1',['NON_SERIALIZABLE',['../classtram_1_1_entity.html#aaed86a9cc626eeab1796509f702ff378a801be8e427a55a5afd0ab13515c3b4c3',1,'tram::Entity']]],
+  ['none_2',['NONE',['../structtram_1_1_event.html#a569d6673fa83d2a5ec86b3d0c36c8765aded002c9efb73820628351359fd03c77',1,'tram::Event::NONE()'],['../structtram_1_1_message.html#ad7f83643df194a92e3376d78596b9afda7ae53af63c049ac73b14c74e217b9748',1,'tram::Message::NONE()'],['../structtram_1_1_signal.html#ac4962f60874f650d905fb2a935922af6a0cc507ea9a180827724f623883db14b4',1,'tram::Signal::NONE()'],['../namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a81db66b6ed079088749c66cca26aa725',1,'tram::Async::NONE()'],['../namespacetram_1_1_settings.html#a0861538a476a71457a80e698e710eef1abc55e02cfcd95615d38f62a14ebbc530',1,'tram::Settings::NONE()']]]
 ];

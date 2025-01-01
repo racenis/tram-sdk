@@ -68,20 +68,25 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classtram_1_1_audio_component-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">tram::AudioComponent Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="components_2audio_8h_source.html">audio.h</a>&gt;</code></p>
+<p>Plays back Sounds.  
+ <a href="classtram_1_1_audio_component.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="components_2audio_8h_source.html">components/audio.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for tram::AudioComponent:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classtram_1_1_audio_component.png" usemap="#tram::AudioComponent_map" alt=""/>
   <map id="tram::AudioComponent_map" name="tram::AudioComponent_map">
-<area href="classtram_1_1_entity_component.html" alt="tram::EntityComponent" shape="rect" coords="0,0,138,24"/>
+<area href="classtram_1_1_entity_component.html" title="Component base class." alt="tram::EntityComponent" shape="rect" coords="0,0,138,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -117,26 +122,53 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac455283db7b930059f29e82905172ce8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#ac455283db7b930059f29e82905172ce8">EventHandler</a> (<a class="el" href="structtram_1_1_event.html">Event</a> &amp;event)</td></tr>
 <tr class="separator:ac455283db7b930059f29e82905172ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
-<tr class="memitem:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4b6c8ec03356f2471bb7a3dd40fb36e6">EntityComponent</a> ()</td></tr>
-<tr class="separator:a4b6c8ec03356f2471bb7a3dd40fb36e6 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab0daa42f3e539d6160e28fa43e37274e">~EntityComponent</a> ()</td></tr>
-<tr class="separator:ab0daa42f3e539d6160e28fa43e37274e inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#af7444b7aaf205a8d3f120de11241a1a4">Init</a> ()</td></tr>
-<tr class="separator:af7444b7aaf205a8d3f120de11241a1a4 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a843b4cdf5844c3fbd85c92f1c30cc108">IsReady</a> ()</td></tr>
-<tr class="separator:a843b4cdf5844c3fbd85c92f1c30cc108 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a8ca5d5e94fee475a88428d4f072e77c7">IsInit</a> ()</td></tr>
-<tr class="separator:a8ca5d5e94fee475a88428d4f072e77c7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a407901dc86e2eeb0b594d3730081f3e8">EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a407901dc86e2eeb0b594d3730081f3e8 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a4c959cc80467ad2e753972bdc4eb7c33">~EntityComponent</a> ()=default</td></tr>
+<tr class="separator:a4c959cc80467ad2e753972bdc4eb7c33 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">Init</a> ()</td></tr>
+<tr class="memdesc:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an entity component.  <a href="classtram_1_1_entity_component.html#ab5d797d6fd60beef019062e228679eb7">More...</a><br /></td></tr>
+<tr class="separator:ab5d797d6fd60beef019062e228679eb7 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">IsReady</a> ()</td></tr>
+<tr class="memdesc:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's readiness.  <a href="classtram_1_1_entity_component.html#a1ae29198858d24d3aba6914bdee6a46f">More...</a><br /></td></tr>
+<tr class="separator:a1ae29198858d24d3aba6914bdee6a46f inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">IsInit</a> ()</td></tr>
+<tr class="memdesc:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the component's init status.  <a href="classtram_1_1_entity_component.html#aad321b7c26fd5f710cf1e0e48f605a8a">More...</a><br /></td></tr>
+<tr class="separator:aad321b7c26fd5f710cf1e0e48f605a8a inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a678a0fce6a2deac1fa04baaed4db3009">GetParent</a> ()</td></tr>
 <tr class="separator:a678a0fce6a2deac1fa04baaed4db3009 inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1683ad236bce69ab4b2c2dac75ef526a inherit pub_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a1683ad236bce69ab4b2c2dac75ef526a">SetParent</a> (<a class="el" href="classtram_1_1_entity.html">Entity</a> *<a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a>)</td></tr>
 <tr class="separator:a1683ad236bce69ab4b2c2dac75ef526a inherit pub_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a9d8448140c994b866c61118e80887c58"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#a9d8448140c994b866c61118e80887c58">IsSourceDraw</a> ()</td></tr>
+<tr class="memdesc:a9d8448140c994b866c61118e80887c58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the audio source is drawn.  <a href="classtram_1_1_audio_component.html#a9d8448140c994b866c61118e80887c58">More...</a><br /></td></tr>
+<tr class="separator:a9d8448140c994b866c61118e80887c58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f7d175b19b8e5b40994132c416a404e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#a8f7d175b19b8e5b40994132c416a404e">IsDebugInfoDraw</a> ()</td></tr>
+<tr class="memdesc:a8f7d175b19b8e5b40994132c416a404e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the debug text is drawn.  <a href="classtram_1_1_audio_component.html#a8f7d175b19b8e5b40994132c416a404e">More...</a><br /></td></tr>
+<tr class="separator:a8f7d175b19b8e5b40994132c416a404e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07c6b771da60423e0357a1c872db6ed3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#a07c6b771da60423e0357a1c872db6ed3">SetSourceDraw</a> (bool)</td></tr>
+<tr class="memdesc:a07c6b771da60423e0357a1c872db6ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the drawing of audio sources.  <a href="classtram_1_1_audio_component.html#a07c6b771da60423e0357a1c872db6ed3">More...</a><br /></td></tr>
+<tr class="separator:a07c6b771da60423e0357a1c872db6ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08da2d9226240fb8e37b91b77145f0cf"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#a08da2d9226240fb8e37b91b77145f0cf">SetDebugInfoDraw</a> (bool)</td></tr>
+<tr class="memdesc:a08da2d9226240fb8e37b91b77145f0cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the drawing of debug info.  <a href="classtram_1_1_audio_component.html#a08da2d9226240fb8e37b91b77145f0cf">More...</a><br /></td></tr>
+<tr class="separator:a08da2d9226240fb8e37b91b77145f0cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:aacd7fc7a708e8bae044c8fa34bca2031"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#aacd7fc7a708e8bae044c8fa34bca2031">SetupModel</a> ()</td></tr>
+<tr class="separator:aacd7fc7a708e8bae044c8fa34bca2031"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
+<tr class="memitem:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">ResourceReady</a> ()</td></tr>
+<tr class="memdesc:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies the component of a streamed-in resource.  <a href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">More...</a><br /></td></tr>
+<tr class="separator:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:aaa933d4c47c8636b20a47ae313a79230"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_resource_proxy.html">ResourceProxy</a>&lt; <a class="el" href="classtram_1_1_audio_1_1_sound.html">Audio::Sound</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#aaa933d4c47c8636b20a47ae313a79230">sound</a></td></tr>
 <tr class="separator:aaa933d4c47c8636b20a47ae313a79230"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfa284e522ae3aa9cb61337b23327171"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_audio_1_1audiosource__t.html">Audio::audiosource_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#acfa284e522ae3aa9cb61337b23327171">source</a> = {.generic = nullptr}</td></tr>
+<tr class="memitem:acfa284e522ae3aa9cb61337b23327171"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_audio_1_1audiosource__t.html">Audio::audiosource_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#acfa284e522ae3aa9cb61337b23327171">source</a> = {}</td></tr>
 <tr class="separator:acfa284e522ae3aa9cb61337b23327171"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ff1eab65a76f78216b57665a6c8b464"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#a1ff1eab65a76f78216b57665a6c8b464">location</a> = {0.0f, 0.0f, 0.0f}</td></tr>
 <tr class="separator:a1ff1eab65a76f78216b57665a6c8b464"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,6 +176,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ab1cbca3ac78210b1c284dc6309a6b303"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa9685950e016f31ca90c71839cd7852"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#afa9685950e016f31ca90c71839cd7852">play_on_start</a> = false</td></tr>
 <tr class="separator:afa9685950e016f31ca90c71839cd7852"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbf584247d4a88f0fa923f9e5b426f84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_component.html">Component</a>&lt; <a class="el" href="classtram_1_1_render_component.html">RenderComponent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_audio_component.html#acbf584247d4a88f0fa923f9e5b426f84">model</a></td></tr>
+<tr class="separator:acbf584247d4a88f0fa923f9e5b426f84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
 <tr class="memitem:a67f362753d2e2c2e5859ceab8b9461ce inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a67f362753d2e2c2e5859ceab8b9461ce">resources_waiting</a> = 0</td></tr>
 <tr class="separator:a67f362753d2e2c2e5859ceab8b9461ce inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,14 +187,11 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a0e65307b795d61b931c6b3600fc737ac inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_entity.html">Entity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#aea0aa7626e36e31f1621ba81925cb56b">parent</a> = nullptr</td></tr>
 <tr class="separator:aea0aa7626e36e31f1621ba81925cb56b inherit pro_attribs_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_methods_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
-<tr class="memitem:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a7f860b05911af126e8bd152492466b40">ResourceReady</a> ()</td></tr>
-<tr class="separator:a7f860b05911af126e8bd152492466b40 inherit pro_methods_classtram_1_1_entity_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Plays back Sounds. </p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/components/audio.html">https://racenis.github.io/tram-sdk/documentation/components/audio.html</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aff631c814eda2b4e8b615ebe9a4217f5" name="aff631c814eda2b4e8b615ebe9a4217f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aff631c814eda2b4e8b615ebe9a4217f5">&#9670;&nbsp;</a></span>AudioComponent()</h2>
 
@@ -232,6 +263,34 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a8f7d175b19b8e5b40994132c416a404e" name="a8f7d175b19b8e5b40994132c416a404e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f7d175b19b8e5b40994132c416a404e">&#9670;&nbsp;</a></span>IsDebugInfoDraw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::AudioComponent::IsDebugInfoDraw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks whether the debug text is drawn. </p>
+<p >Check <a class="el" href="classtram_1_1_audio_component.html#a08da2d9226240fb8e37b91b77145f0cf" title="Sets the drawing of debug info.">SetDebugInfoDraw()</a> for more info. </p>
+
+</div>
+</div>
 <a id="a0cb407f67786c11bda3f8a4352796a58" name="a0cb407f67786c11bda3f8a4352796a58"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0cb407f67786c11bda3f8a4352796a58">&#9670;&nbsp;</a></span>IsPlaying()</h2>
 
@@ -249,6 +308,34 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Checks if component is playing a sound. </p>
 <dl class="section return"><dt>Returns</dt><dd>True, if a sound is playing, false if it hasn't started or has stopped. </dd></dl>
+
+</div>
+</div>
+<a id="a9d8448140c994b866c61118e80887c58" name="a9d8448140c994b866c61118e80887c58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d8448140c994b866c61118e80887c58">&#9670;&nbsp;</a></span>IsSourceDraw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::AudioComponent::IsSourceDraw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Checks whether the audio source is drawn. </p>
+<p >Check <a class="el" href="classtram_1_1_audio_component.html#a07c6b771da60423e0357a1c872db6ed3" title="Sets the drawing of audio sources.">SetSourceDraw()</a> for more info. </p>
 
 </div>
 </div>
@@ -289,6 +376,35 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Plays the sound. </p>
 <p >Plays the sound that the component has been set to play. </p>
+
+</div>
+</div>
+<a id="a08da2d9226240fb8e37b91b77145f0cf" name="a08da2d9226240fb8e37b91b77145f0cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08da2d9226240fb8e37b91b77145f0cf">&#9670;&nbsp;</a></span>SetDebugInfoDraw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::AudioComponent::SetDebugInfoDraw </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>draw</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the drawing of debug info. </p>
+<p >If set to true, each frame some debug text will be drawn for each audio source. This is useful for debugging. </p>
 
 </div>
 </div>
@@ -352,6 +468,60 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a07c6b771da60423e0357a1c872db6ed3" name="a07c6b771da60423e0357a1c872db6ed3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07c6b771da60423e0357a1c872db6ed3">&#9670;&nbsp;</a></span>SetSourceDraw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::AudioComponent::SetSourceDraw </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>draw</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the drawing of audio sources. </p>
+<p >If set to true, each audio component will initialize a 3D model, which will allow you to see the posiiton of the audio sources. Useful for debugging. </p>
+
+</div>
+</div>
+<a id="aacd7fc7a708e8bae044c8fa34bca2031" name="aacd7fc7a708e8bae044c8fa34bca2031"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacd7fc7a708e8bae044c8fa34bca2031">&#9670;&nbsp;</a></span>SetupModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::AudioComponent::SetupModel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0a1ef247f18c73318db0355a6b0a44f3" name="a0a1ef247f18c73318db0355a6b0a44f3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0a1ef247f18c73318db0355a6b0a44f3">&#9670;&nbsp;</a></span>Start()</h2>
 
@@ -411,6 +581,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::AudioComponent::location = {0.0f, 0.0f, 0.0f}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acbf584247d4a88f0fa923f9e5b426f84" name="acbf584247d4a88f0fa923f9e5b426f84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbf584247d4a88f0fa923f9e5b426f84">&#9670;&nbsp;</a></span>model</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_component.html">Component</a>&lt;<a class="el" href="classtram_1_1_render_component.html">RenderComponent</a>&gt; tram::AudioComponent::model</td>
         </tr>
       </table>
   </td>
@@ -498,7 +690,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structtram_1_1_audio_1_1audiosource__t.html">Audio::audiosource_t</a> tram::AudioComponent::source = {.generic = nullptr}</td>
+          <td class="memname"><a class="el" href="structtram_1_1_audio_1_1audiosource__t.html">Audio::audiosource_t</a> tram::AudioComponent::source = {}</td>
         </tr>
       </table>
   </td>

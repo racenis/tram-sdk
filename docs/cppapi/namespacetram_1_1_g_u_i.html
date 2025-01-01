@@ -75,6 +75,9 @@ $(function() {
   <div class="headertitle"><div class="title">tram::GUI Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Immediate mode <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> system.  
+<a href="namespacetram_1_1_g_u_i.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -110,9 +113,16 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deefa9a17d7ae2dca7f74667d4ca2d132ee73">FRAME_TOP_INV</a>
 , <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deefacfb3ce3ac246f9bc9609bfb340ae7dfd">FRAME_BOTTOM_INV</a>
 , <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deefa98142b3610036479f66047dcf5277a71">FRAME_INSET</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deefa2ea467ec8de3c873daca99f6e28bd484">FRAME_CENTER_VERTICAL</a>
+, <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deefa95bd1777b43114754f8c3dba6b2918e6">FRAME_CENTER_HORIZONTAL</a>
 <br />
  }</td></tr>
 <tr class="separator:a25b2f7af6fe6845d047fd58c6232deef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed177dc7d46e43f3cf52662fecbaf0a6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a> { <a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6abfe639cbd14f55a92f4ebe8375a1ac2d">TEXT</a>
+, <a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6a48da4725286ba176bffc3ddc5ab2aa24">WIDGET</a>
+ }</td></tr>
+<tr class="separator:aed177dc7d46e43f3cf52662fecbaf0a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6000fd29fa38db33926bfe7980344fe1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a6000fd29fa38db33926bfe7980344fe1">widget</a> : glyph_t { <br />
 &#160;&#160;<a class="el" href="namespacetram_1_1_g_u_i.html#a6000fd29fa38db33926bfe7980344fe1a1b25994b6b491488d2bb3d21f93be505">WIDGET_TOP_LEFT</a> = 0
 , <a class="el" href="namespacetram_1_1_g_u_i.html#a6000fd29fa38db33926bfe7980344fe1ac59c390211a381ff98cd66ff93106e2c">WIDGET_TOP_MIDDLE</a> = 1
@@ -181,14 +191,35 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac9b5a17857b93d22c642943d8a2f3266"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#ac9b5a17857b93d22c642943d8a2f3266">SetColor</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> color)</td></tr>
-<tr class="separator:ac9b5a17857b93d22c642943d8a2f3266"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cea0738110390ba9a29efd3abde74ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a2cea0738110390ba9a29efd3abde74ed">SetSelectedText</a> (char *text)</td></tr>
+<tr class="memdesc:a2cea0738110390ba9a29efd3abde74ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the text which is selected in a textbox.  <a href="namespacetram_1_1_g_u_i.html#a2cea0738110390ba9a29efd3abde74ed">More...</a><br /></td></tr>
+<tr class="separator:a2cea0738110390ba9a29efd3abde74ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7210e80143cdcc0ce28a57c0b283fca6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a7210e80143cdcc0ce28a57c0b283fca6">SetColor</a> (<a class="el" href="namespacetram_1_1_render.html#a32fb4b5bd9e12e48f08e6ff4ce8817b8">Render::color_t</a> color, <a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a> type)</td></tr>
+<tr class="memdesc:a7210e80143cdcc0ce28a57c0b283fca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the color.  <a href="namespacetram_1_1_g_u_i.html#a7210e80143cdcc0ce28a57c0b283fca6">More...</a><br /></td></tr>
+<tr class="separator:a7210e80143cdcc0ce28a57c0b283fca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a3c432ea9156a810b47d5e9836d861a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a2a3c432ea9156a810b47d5e9836d861a">SetFont</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a> type)</td></tr>
+<tr class="memdesc:a2a3c432ea9156a810b47d5e9836d861a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the font.  <a href="namespacetram_1_1_g_u_i.html#a2a3c432ea9156a810b47d5e9836d861a">More...</a><br /></td></tr>
+<tr class="separator:a2a3c432ea9156a810b47d5e9836d861a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13a111a88e62cb6d8dd4434c22881dc5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a13a111a88e62cb6d8dd4434c22881dc5">RestoreColor</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a> type)</td></tr>
+<tr class="memdesc:a13a111a88e62cb6d8dd4434c22881dc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores previous glyph color.  <a href="namespacetram_1_1_g_u_i.html#a13a111a88e62cb6d8dd4434c22881dc5">More...</a><br /></td></tr>
+<tr class="separator:a13a111a88e62cb6d8dd4434c22881dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2750747aff85f20a25ae9bb33dd72bec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a2750747aff85f20a25ae9bb33dd72bec">RestoreFont</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a> type)</td></tr>
+<tr class="memdesc:a2750747aff85f20a25ae9bb33dd72bec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores previous glyph font.  <a href="namespacetram_1_1_g_u_i.html#a2750747aff85f20a25ae9bb33dd72bec">More...</a><br /></td></tr>
+<tr class="separator:a2750747aff85f20a25ae9bb33dd72bec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b13f224cb4fc10e56e14f176d93b95d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a8b13f224cb4fc10e56e14f176d93b95d">SetGlyphDefaults</a> (<a class="el" href="namespacetram_1_1_render.html#a32fb4b5bd9e12e48f08e6ff4ce8817b8">Render::color_t</a> color, <a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a> type)</td></tr>
+<tr class="memdesc:a8b13f224cb4fc10e56e14f176d93b95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides glyph default colors and fonts.  <a href="namespacetram_1_1_g_u_i.html#a8b13f224cb4fc10e56e14f176d93b95d">More...</a><br /></td></tr>
+<tr class="separator:a8b13f224cb4fc10e56e14f176d93b95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc96e6226a9e9abe317c04fe4661ee35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#abc96e6226a9e9abe317c04fe4661ee35">SetScaling</a> (uint32_t scale)</td></tr>
+<tr class="memdesc:abc96e6226a9e9abe317c04fe4661ee35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the scaling factor.  <a href="namespacetram_1_1_g_u_i.html#abc96e6226a9e9abe317c04fe4661ee35">More...</a><br /></td></tr>
 <tr class="separator:abc96e6226a9e9abe317c04fe4661ee35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6592f1eadaa540d5d79a87d24363d69e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a6592f1eadaa540d5d79a87d24363d69e">GetScaling</a> ()</td></tr>
+<tr class="memdesc:a6592f1eadaa540d5d79a87d24363d69e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the scaling factor.  <a href="namespacetram_1_1_g_u_i.html#a6592f1eadaa540d5d79a87d24363d69e">More...</a><br /></td></tr>
 <tr class="separator:a6592f1eadaa540d5d79a87d24363d69e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a722e52d1cec8ee81a55e26dc1a4c63c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a722e52d1cec8ee81a55e26dc1a4c63c8">SetCursorDelayed</a> (<a class="el" href="namespacetram_1_1_u_i.html#a6ae9e156e84d2049fc1e691a10e0348f">UI::CursorType</a> cursor)</td></tr>
+<tr class="memdesc:a722e52d1cec8ee81a55e26dc1a4c63c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the cursor.  <a href="namespacetram_1_1_g_u_i.html#a722e52d1cec8ee81a55e26dc1a4c63c8">More...</a><br /></td></tr>
+<tr class="separator:a722e52d1cec8ee81a55e26dc1a4c63c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d278da9263fa009f2eaa8ea8d67eaa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a2d278da9263fa009f2eaa8ea8d67eaa0">Init</a> ()</td></tr>
-<tr class="memdesc:a2d278da9263fa009f2eaa8ea8d67eaa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs initialization of the <a class="el" href="namespacetram_1_1_g_u_i.html">GUI</a> system.  <a href="namespacetram_1_1_g_u_i.html#a2d278da9263fa009f2eaa8ea8d67eaa0">More...</a><br /></td></tr>
+<tr class="memdesc:a2d278da9263fa009f2eaa8ea8d67eaa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs initialization of the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> system.  <a href="namespacetram_1_1_g_u_i.html#a2d278da9263fa009f2eaa8ea8d67eaa0">More...</a><br /></td></tr>
 <tr class="separator:a2d278da9263fa009f2eaa8ea8d67eaa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa150493c2b4c1d204d394ec3a8145ef1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#aa150493c2b4c1d204d394ec3a8145ef1">UpdateDrawListFonts</a> ()</td></tr>
 <tr class="memdesc:aa150493c2b4c1d204d394ec3a8145ef1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Submits registered fonts to the renderer.  <a href="namespacetram_1_1_g_u_i.html#aa150493c2b4c1d204d394ec3a8145ef1">More...</a><br /></td></tr>
@@ -208,70 +239,99 @@ Functions</h2></td></tr>
 <tr class="separator:a5998935f32f2b821313449f0254dccf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34d71791d5b4905b42111ea613a087e6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a34d71791d5b4905b42111ea613a087e6">GlyphBorderV</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph)</td></tr>
 <tr class="separator:a34d71791d5b4905b42111ea613a087e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58a9d69a28b17fb4f05511dcce33220f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a58a9d69a28b17fb4f05511dcce33220f">DrawGlyph</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph, uint32_t x, uint32_t y, uint32_t w=0, uint32_t h=0)</td></tr>
-<tr class="separator:a58a9d69a28b17fb4f05511dcce33220f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15d7e1006b2983a29f7f63f7dc2a6e73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a15d7e1006b2983a29f7f63f7dc2a6e73">DrawGlyph</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph, const <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> &amp;color, uint32_t x, uint32_t y, uint32_t w=0, uint32_t h=0)</td></tr>
+<tr class="separator:a15d7e1006b2983a29f7f63f7dc2a6e73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9ba68cbd0b4343af392b64083f10f13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#ac9ba68cbd0b4343af392b64083f10f13">Glyph</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph)</td></tr>
+<tr class="memdesc:ac9ba68cbd0b4343af392b64083f10f13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a glyph from a font.  <a href="namespacetram_1_1_g_u_i.html#ac9ba68cbd0b4343af392b64083f10f13">More...</a><br /></td></tr>
 <tr class="separator:ac9ba68cbd0b4343af392b64083f10f13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8712e4716acb1c5eab60d40112c81d88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a8712e4716acb1c5eab60d40112c81d88">DrawBox</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph, uint32_t x, uint32_t y, uint32_t w, uint32_t h)</td></tr>
 <tr class="memdesc:a8712e4716acb1c5eab60d40112c81d88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a glyph box.  <a href="namespacetram_1_1_g_u_i.html#a8712e4716acb1c5eab60d40112c81d88">More...</a><br /></td></tr>
 <tr class="separator:a8712e4716acb1c5eab60d40112c81d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af581d06594c177e5c1e7ea98db61382f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#af581d06594c177e5c1e7ea98db61382f">TextWidth</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, const char *text)</td></tr>
 <tr class="separator:af581d06594c177e5c1e7ea98db61382f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a95417dd938670dd4abe5d4dc59d1fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a0a95417dd938670dd4abe5d4dc59d1fa">Text</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, const char *text, uint32_t <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deef">orientation</a>)</td></tr>
-<tr class="separator:a0a95417dd938670dd4abe5d4dc59d1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eeac17180cfd99f45e0d997766543c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a1eeac17180cfd99f45e0d997766543c9">Text</a> (const char *text, uint32_t <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deef">orientation</a>)</td></tr>
+<tr class="memdesc:a1eeac17180cfd99f45e0d997766543c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws text on the screen.  <a href="namespacetram_1_1_g_u_i.html#a1eeac17180cfd99f45e0d997766543c9">More...</a><br /></td></tr>
+<tr class="separator:a1eeac17180cfd99f45e0d997766543c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf5392e3e82d599804ba655dc2bba32c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#aaf5392e3e82d599804ba655dc2bba32c">DrawBoxHorizontal</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph, uint32_t x, uint32_t y, uint32_t w)</td></tr>
+<tr class="memdesc:aaf5392e3e82d599804ba655dc2bba32c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a horizontal bar.  <a href="namespacetram_1_1_g_u_i.html#aaf5392e3e82d599804ba655dc2bba32c">More...</a><br /></td></tr>
 <tr class="separator:aaf5392e3e82d599804ba655dc2bba32c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbe4fc88597f2b5171c105e74bcf8301"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#abbe4fc88597f2b5171c105e74bcf8301">PushFrame</a> (uint32_t x, uint32_t y, uint32_t w, uint32_t h)</td></tr>
+<tr class="memdesc:abbe4fc88597f2b5171c105e74bcf8301"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a frame.  <a href="namespacetram_1_1_g_u_i.html#abbe4fc88597f2b5171c105e74bcf8301">More...</a><br /></td></tr>
 <tr class="separator:abbe4fc88597f2b5171c105e74bcf8301"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d59dd004d2a1ae7aed485247d674dc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a4d59dd004d2a1ae7aed485247d674dc6">PushFrameRelative</a> (uint32_t <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deef">orientation</a>, uint32_t offset)</td></tr>
+<tr class="memdesc:a4d59dd004d2a1ae7aed485247d674dc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a frame releative to the previous.  <a href="namespacetram_1_1_g_u_i.html#a4d59dd004d2a1ae7aed485247d674dc6">More...</a><br /></td></tr>
 <tr class="separator:a4d59dd004d2a1ae7aed485247d674dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76a6d727998bc4ad99cd754ca2cf54a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a76a6d727998bc4ad99cd754ca2cf54a0">PopFrame</a> ()</td></tr>
+<tr class="memdesc:a76a6d727998bc4ad99cd754ca2cf54a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes a frame from the frame stack.  <a href="namespacetram_1_1_g_u_i.html#a76a6d727998bc4ad99cd754ca2cf54a0">More...</a><br /></td></tr>
 <tr class="separator:a76a6d727998bc4ad99cd754ca2cf54a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cde426a98964d4f4780ff78b9663b18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a1cde426a98964d4f4780ff78b9663b18">PushFrameRelativeKeepCursor</a> (uint32_t <a class="el" href="namespacetram_1_1_g_u_i.html#a25b2f7af6fe6845d047fd58c6232deef">orientation</a>, uint32_t offset, bool keep_x, bool keep_y)</td></tr>
+<tr class="memdesc:a1cde426a98964d4f4780ff78b9663b18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a frame, but keeps the cursor in place.  <a href="namespacetram_1_1_g_u_i.html#a1cde426a98964d4f4780ff78b9663b18">More...</a><br /></td></tr>
+<tr class="separator:a1cde426a98964d4f4780ff78b9663b18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53e9477d97918587d29a2b44a378dcbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a53e9477d97918587d29a2b44a378dcbf">PopFrameKeepCursor</a> (bool keep_x, bool keep_y)</td></tr>
+<tr class="separator:a53e9477d97918587d29a2b44a378dcbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e023aaf6835da7993924f1796035f0c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a4e023aaf6835da7993924f1796035f0c">CursorOver</a> (uint32_t x, uint32_t y, uint32_t w, uint32_t h)</td></tr>
 <tr class="separator:a4e023aaf6835da7993924f1796035f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6121817714545cc76730037226ca285f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a6121817714545cc76730037226ca285f">ClickHandled</a> ()</td></tr>
 <tr class="separator:a6121817714545cc76730037226ca285f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6bfb846ae3573d59924997f6ce098b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#aa6bfb846ae3573d59924997f6ce098b8">ClickHandledLate</a> ()</td></tr>
+<tr class="separator:aa6bfb846ae3573d59924997f6ce098b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d4089794c4aca324d8c19d02ef80a07"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a0d4089794c4aca324d8c19d02ef80a07">Clicked</a> ()</td></tr>
 <tr class="separator:a0d4089794c4aca324d8c19d02ef80a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36df4e7f162a96882c85976374864e7a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a36df4e7f162a96882c85976374864e7a">Button</a> (const char *text, bool enabled, uint32_t width)</td></tr>
+<tr class="memdesc:a36df4e7f162a96882c85976374864e7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a button.  <a href="namespacetram_1_1_g_u_i.html#a36df4e7f162a96882c85976374864e7a">More...</a><br /></td></tr>
 <tr class="separator:a36df4e7f162a96882c85976374864e7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1488c8699f98eaaefd9dab7d1e220604"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a1488c8699f98eaaefd9dab7d1e220604">RadioButton</a> (uint32_t index, uint32_t &amp;selected, const char *text, bool enabled)</td></tr>
+<tr class="memdesc:a1488c8699f98eaaefd9dab7d1e220604"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a radio button.  <a href="namespacetram_1_1_g_u_i.html#a1488c8699f98eaaefd9dab7d1e220604">More...</a><br /></td></tr>
 <tr class="separator:a1488c8699f98eaaefd9dab7d1e220604"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd53a76b58ffc880c50cd76f1b6019bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#abd53a76b58ffc880c50cd76f1b6019bf">CheckBox</a> (bool &amp;selected, const char *text, bool enabled)</td></tr>
+<tr class="memdesc:abd53a76b58ffc880c50cd76f1b6019bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a checkbox.  <a href="namespacetram_1_1_g_u_i.html#abd53a76b58ffc880c50cd76f1b6019bf">More...</a><br /></td></tr>
 <tr class="separator:abd53a76b58ffc880c50cd76f1b6019bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a081da10ffbacc71992b191a911acf1b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a081da10ffbacc71992b191a911acf1b8">Slider</a> (float &amp;value, bool enabled, uint32_t width)</td></tr>
+<tr class="memdesc:a081da10ffbacc71992b191a911acf1b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a horizontal slider.  <a href="namespacetram_1_1_g_u_i.html#a081da10ffbacc71992b191a911acf1b8">More...</a><br /></td></tr>
 <tr class="separator:a081da10ffbacc71992b191a911acf1b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76d6631e615a2c8e9fb923d034b92507"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a76d6631e615a2c8e9fb923d034b92507">NewLine</a> (uint32_t line)</td></tr>
+<tr class="memdesc:a76d6631e615a2c8e9fb923d034b92507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a new line.  <a href="namespacetram_1_1_g_u_i.html#a76d6631e615a2c8e9fb923d034b92507">More...</a><br /></td></tr>
 <tr class="separator:a76d6631e615a2c8e9fb923d034b92507"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0568bf9d9061984bf013f44b50ff5e56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a0568bf9d9061984bf013f44b50ff5e56">HorizontalDivider</a> ()</td></tr>
+<tr class="memdesc:a0568bf9d9061984bf013f44b50ff5e56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a horizontal divider.  <a href="namespacetram_1_1_g_u_i.html#a0568bf9d9061984bf013f44b50ff5e56">More...</a><br /></td></tr>
 <tr class="separator:a0568bf9d9061984bf013f44b50ff5e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab07e42307fb184c746704936fd22a7e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#ab07e42307fb184c746704936fd22a7e6">FillFrame</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a> font, <a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph)</td></tr>
-<tr class="separator:ab07e42307fb184c746704936fd22a7e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9e738ecaea859c6a6839587a10c4ac6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#aa9e738ecaea859c6a6839587a10c4ac6">FillFrame</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph)</td></tr>
+<tr class="memdesc:aa9e738ecaea859c6a6839587a10c4ac6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fills the frame with a glyph.  <a href="namespacetram_1_1_g_u_i.html#aa9e738ecaea859c6a6839587a10c4ac6">More...</a><br /></td></tr>
+<tr class="separator:aa9e738ecaea859c6a6839587a10c4ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a356c2eeb0e6b3a8c19ed6ee19a448619"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a356c2eeb0e6b3a8c19ed6ee19a448619">TextBox</a> (char *text, uint32_t length, bool enabled, uint32_t w, uint32_t h)</td></tr>
+<tr class="memdesc:a356c2eeb0e6b3a8c19ed6ee19a448619"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a textbox.  <a href="namespacetram_1_1_g_u_i.html#a356c2eeb0e6b3a8c19ed6ee19a448619">More...</a><br /></td></tr>
 <tr class="separator:a356c2eeb0e6b3a8c19ed6ee19a448619"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a197eda70726287d8c846535df181e486"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a197eda70726287d8c846535df181e486">TextBox</a> (const char *text, uint32_t w, uint32_t h)</td></tr>
+<tr class="memdesc:a197eda70726287d8c846535df181e486"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a textbox.  <a href="namespacetram_1_1_g_u_i.html#a197eda70726287d8c846535df181e486">More...</a><br /></td></tr>
 <tr class="separator:a197eda70726287d8c846535df181e486"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4ecd3d74bffd0e8e5fd26061418ef4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f">Begin</a> ()</td></tr>
+<tr class="memdesc:af4ecd3d74bffd0e8e5fd26061418ef4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begins the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> commands for the frame.  <a href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f">More...</a><br /></td></tr>
 <tr class="separator:af4ecd3d74bffd0e8e5fd26061418ef4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eb89f38a5f8e51434e7fdc3c21245e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a7eb89f38a5f8e51434e7fdc3c21245e1">End</a> ()</td></tr>
+<tr class="memdesc:a7eb89f38a5f8e51434e7fdc3c21245e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ends the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> commands for the frame.  <a href="namespacetram_1_1_g_u_i.html#a7eb89f38a5f8e51434e7fdc3c21245e1">More...</a><br /></td></tr>
 <tr class="separator:a7eb89f38a5f8e51434e7fdc3c21245e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9cbc24cc6766595f1a063de7c32e568"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#ab9cbc24cc6766595f1a063de7c32e568">Glyph</a> (<a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a> glyph)</td></tr>
+<tr class="separator:ab9cbc24cc6766595f1a063de7c32e568"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a7071389dc2f64e46eac05ab612c2e93f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_stack.html">Stack</a>&lt; <a class="el" href="structtram_1_1_g_u_i_1_1_frame_object.html">FrameObject</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a7071389dc2f64e46eac05ab612c2e93f">frame_stack</a> (&quot;GUI Frame stack&quot;, 100)</td></tr>
-<tr class="separator:a7071389dc2f64e46eac05ab612c2e93f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a114a9bc551de9b57a9f732c7e60319a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_render_1_1_sprite.html">Render::Sprite</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a114a9bc551de9b57a9f732c7e60319a3">fonts</a> [16] = {nullptr}</td></tr>
-<tr class="separator:a114a9bc551de9b57a9f732c7e60319a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7eba8ec9e7dcb6f7f9691c73dea6bcd0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">Render::vertexarray_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a7eba8ec9e7dcb6f7f9691c73dea6bcd0">glyphvertices_vertex_array</a> = {.generic = 0}</td></tr>
-<tr class="separator:a7eba8ec9e7dcb6f7f9691c73dea6bcd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43e25612c34c740fde2e73356dcd6f1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">Render::drawlistentry_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a43e25612c34c740fde2e73356dcd6f1c">glyphvertices_entry</a></td></tr>
-<tr class="separator:a43e25612c34c740fde2e73356dcd6f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f0794003ebfd02b2c8d90e2c5854f90"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structtram_1_1_render_1_1_sprite_vertex.html">Render::SpriteVertex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a5f0794003ebfd02b2c8d90e2c5854f90">glyphvertices</a></td></tr>
-<tr class="separator:a5f0794003ebfd02b2c8d90e2c5854f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b89bb5200e494e6cd5a0191bf527df0"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a6b89bb5200e494e6cd5a0191bf527df0">last_update_frame</a> = 0</td></tr>
+<tr class="separator:a6b89bb5200e494e6cd5a0191bf527df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fd25b3a9a83f7a905fd70aeda3cf2d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a2fd25b3a9a83f7a905fd70aeda3cf2d8">beginned</a> = false</td></tr>
+<tr class="separator:a2fd25b3a9a83f7a905fd70aeda3cf2d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cd56d99b85b29b8659648e28bb1f5ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a8cd56d99b85b29b8659648e28bb1f5ca">mouse_click_not_handled</a> = true</td></tr>
 <tr class="separator:a8cd56d99b85b29b8659648e28bb1f5ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64d510448e860481081147bb9e1ef0d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_g_u_i.html#a64d510448e860481081147bb9e1ef0d6">mouse_click_not_handled_late</a> = true</td></tr>
+<tr class="separator:a64d510448e860481081147bb9e1ef0d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Typedef Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Immediate mode <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> system. </p>
+<p >If you don't like it, you can always integrate imgui, but I personally very much prefer this way of building GUIs.</p>
+<p >First you need to register fonts, which are just Sprites. The glyphs are just sprite frame indices. There are some default fonts in the <a class="el" href="namespacetram_1_1_ext_1_1_menu.html" title="Menu framework.">Ext::Menu</a> system, if you don't want to make your own fonts.</p>
+<p >To draw widgets, just call their respective functions once per frame.</p>
+<p >To position the widgets, use the frame pushing and popping functions.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/gui.html">https://racenis.github.io/tram-sdk/documentation/framework/gui.html</a> </dd></dl>
+</div><h2 class="groupheader">Typedef Documentation</h2>
 <a id="ad72e4051d38000777cac376d29fc18a1" name="ad72e4051d38000777cac376d29fc18a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad72e4051d38000777cac376d29fc18a1">&#9670;&nbsp;</a></span>font_t</h2>
 
@@ -301,6 +361,24 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="aed177dc7d46e43f3cf52662fecbaf0a6" name="aed177dc7d46e43f3cf52662fecbaf0a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed177dc7d46e43f3cf52662fecbaf0a6">&#9670;&nbsp;</a></span>GlyphType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">tram::GUI::GlyphType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aed177dc7d46e43f3cf52662fecbaf0a6abfe639cbd14f55a92f4ebe8375a1ac2d" name="aed177dc7d46e43f3cf52662fecbaf0a6abfe639cbd14f55a92f4ebe8375a1ac2d"></a>TEXT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aed177dc7d46e43f3cf52662fecbaf0a6a48da4725286ba176bffc3ddc5ab2aa24" name="aed177dc7d46e43f3cf52662fecbaf0a6a48da4725286ba176bffc3ddc5ab2aa24"></a>WIDGET&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="a25b2f7af6fe6845d047fd58c6232deef" name="a25b2f7af6fe6845d047fd58c6232deef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a25b2f7af6fe6845d047fd58c6232deef">&#9670;&nbsp;</a></span>orientation</h2>
 
@@ -329,6 +407,8 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a25b2f7af6fe6845d047fd58c6232deefa9a17d7ae2dca7f74667d4ca2d132ee73" name="a25b2f7af6fe6845d047fd58c6232deefa9a17d7ae2dca7f74667d4ca2d132ee73"></a>FRAME_TOP_INV&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a25b2f7af6fe6845d047fd58c6232deefacfb3ce3ac246f9bc9609bfb340ae7dfd" name="a25b2f7af6fe6845d047fd58c6232deefacfb3ce3ac246f9bc9609bfb340ae7dfd"></a>FRAME_BOTTOM_INV&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a25b2f7af6fe6845d047fd58c6232deefa98142b3610036479f66047dcf5277a71" name="a25b2f7af6fe6845d047fd58c6232deefa98142b3610036479f66047dcf5277a71"></a>FRAME_INSET&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a25b2f7af6fe6845d047fd58c6232deefa2ea467ec8de3c873daca99f6e28bd484" name="a25b2f7af6fe6845d047fd58c6232deefa2ea467ec8de3c873daca99f6e28bd484"></a>FRAME_CENTER_VERTICAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a25b2f7af6fe6845d047fd58c6232deefa95bd1777b43114754f8c3dba6b2918e6" name="a25b2f7af6fe6845d047fd58c6232deefa95bd1777b43114754f8c3dba6b2918e6"></a>FRAME_CENTER_HORIZONTAL&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -414,6 +494,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Begins the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> commands for the frame. </p>
+<p >Pushes the first frame to the frame stack. This function has to be called first, before the <a class="el" href="namespacetram_1_1_g_u_i.html#a7eb89f38a5f8e51434e7fdc3c21245e1" title="Ends the GUI commands for the frame.">End()</a> and the <a class="el" href="namespacetram_1_1_g_u_i.html#a19bd1015c21055a46d61eb4193a888cc" title="Submits all of the glyphs for rendering.">Update()</a> functions. You can call <a class="el" href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f" title="Begins the GUI commands for the frame.">Begin()</a> as much as you want, you just have to call an <a class="el" href="namespacetram_1_1_g_u_i.html#a7eb89f38a5f8e51434e7fdc3c21245e1" title="Ends the GUI commands for the frame.">End()</a> before you can call <a class="el" href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f" title="Begins the GUI commands for the frame.">Begin()</a> again. This should help dealing a bit with the global state that the system has. </p>
+
 </div>
 </div>
 <a id="a36df4e7f162a96882c85976374864e7a" name="a36df4e7f162a96882c85976374864e7a"></a>
@@ -447,6 +530,17 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Draws a button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text of the button. </td></tr>
+    <tr><td class="paramname">enabled</td><td>If set to false, the button won't be clickable. </td></tr>
+    <tr><td class="paramname">width</td><td>Width of the button, in pixels. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the button was clicked on. </dd></dl>
 
 </div>
 </div>
@@ -482,6 +576,17 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a checkbox. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">selected</td><td>If set to true, the button will be drawn checked. </td></tr>
+    <tr><td class="paramname">text</td><td>Text of the button. </td></tr>
+    <tr><td class="paramname">enabled</td><td>If set to false, the button won't be clickable. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if clicked on. The modified state of the button will be written out to the selected parameter. </dd></dl>
+
 </div>
 </div>
 <a id="a0d4089794c4aca324d8c19d02ef80a07" name="a0d4089794c4aca324d8c19d02ef80a07"></a>
@@ -509,6 +614,23 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool tram::GUI::ClickHandled </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa6bfb846ae3573d59924997f6ce098b8" name="aa6bfb846ae3573d59924997f6ce098b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6bfb846ae3573d59924997f6ce098b8">&#9670;&nbsp;</a></span>ClickHandledLate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::GUI::ClickHandledLate </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -609,6 +731,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Draws a glyph box. </p>
+<p >Glyph boxes are set up so that the first glyph, i.e. the one that you pass in the glyph parameter is the top-left corner. Then the numerically next glyph is take as the top-middle glpyh, then the top-right. This continues going left-to-right, top-to-bottom until all 9 squares are covered. If you are using a default widget layout font, you can use the enum values WIDGET_WINDOW, WIDGET_REVERSE_WINDOW, WIDGET_BUTTON, WIDGET_SELECT_BOX or WIDGET_BORDER for the glyph index. </p>
 
 </div>
 </div>
@@ -656,10 +779,13 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a horizontal bar. </p>
+<p >Similar to how <a class="el" href="namespacetram_1_1_g_u_i.html#a8712e4716acb1c5eab60d40112c81d88" title="Draws a glyph box.">DrawBox()</a> is used, except we only have 3 squares, the left, middle and right. </p>
+
 </div>
 </div>
-<a id="a58a9d69a28b17fb4f05511dcce33220f" name="a58a9d69a28b17fb4f05511dcce33220f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58a9d69a28b17fb4f05511dcce33220f">&#9670;&nbsp;</a></span>DrawGlyph()</h2>
+<a id="a15d7e1006b2983a29f7f63f7dc2a6e73" name="a15d7e1006b2983a29f7f63f7dc2a6e73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15d7e1006b2983a29f7f63f7dc2a6e73">&#9670;&nbsp;</a></span>DrawGlyph()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -675,6 +801,12 @@ Variables</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a>&#160;</td>
           <td class="paramname"><em>glyph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> &amp;&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -725,10 +857,13 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Ends the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> commands for the frame. </p>
+<p >This has to be called sometime after <a class="el" href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f" title="Begins the GUI commands for the frame.">Begin()</a>, but before <a class="el" href="namespacetram_1_1_g_u_i.html#a19bd1015c21055a46d61eb4193a888cc" title="Submits all of the glyphs for rendering.">Update()</a>. </p>
+
 </div>
 </div>
-<a id="ab07e42307fb184c746704936fd22a7e6" name="ab07e42307fb184c746704936fd22a7e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab07e42307fb184c746704936fd22a7e6">&#9670;&nbsp;</a></span>FillFrame()</h2>
+<a id="aa9e738ecaea859c6a6839587a10c4ac6" name="aa9e738ecaea859c6a6839587a10c4ac6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9e738ecaea859c6a6839587a10c4ac6">&#9670;&nbsp;</a></span>FillFrame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -736,22 +871,15 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void tram::GUI::FillFrame </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a>&#160;</td>
-          <td class="paramname"><em>font</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a>&#160;</td>
-          <td class="paramname"><em>glyph</em>&#160;</td>
-        </tr>
-        <tr>
+          <td class="paramname"><em>glyph</em></td><td>)</td>
           <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Fills the frame with a glyph. </p>
+<p >Uses the <a class="el" href="namespacetram_1_1_g_u_i.html#a8712e4716acb1c5eab60d40112c81d88" title="Draws a glyph box.">DrawBox()</a> function internally, so it works just like it, except that it uses the topmost frame to determine the position and sixze of the box. </p>
 
 </div>
 </div>
@@ -770,10 +898,13 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Returns the scaling factor. </p>
+<p >See <a class="el" href="namespacetram_1_1_g_u_i.html#abc96e6226a9e9abe317c04fe4661ee35" title="Sets the scaling factor.">SetScaling()</a>. </p>
+
 </div>
 </div>
 <a id="ac9ba68cbd0b4343af392b64083f10f13" name="ac9ba68cbd0b4343af392b64083f10f13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9ba68cbd0b4343af392b64083f10f13">&#9670;&nbsp;</a></span>Glyph()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9ba68cbd0b4343af392b64083f10f13">&#9670;&nbsp;</a></span>Glyph() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -794,6 +925,26 @@ Variables</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws a glyph from a font. </p>
+
+</div>
+</div>
+<a id="ab9cbc24cc6766595f1a063de7c32e568" name="ab9cbc24cc6766595f1a063de7c32e568"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9cbc24cc6766595f1a063de7c32e568">&#9670;&nbsp;</a></span>Glyph() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::Glyph </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#afecdfd821a1e89c4d62d0f8b420ca33a">glyph_t</a>&#160;</td>
+          <td class="paramname"><em>glyph</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -899,6 +1050,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a horizontal divider. </p>
+
 </div>
 </div>
 <a id="a2d278da9263fa009f2eaa8ea8d67eaa0" name="a2d278da9263fa009f2eaa8ea8d67eaa0"></a>
@@ -916,8 +1069,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Performs initialization of the <a class="el" href="namespacetram_1_1_g_u_i.html">GUI</a> system. </p>
-<p ><a class="el" href="namespacetram_1_1_render.html">Render</a> system must be initialized first. </p>
+<p>Performs initialization of the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> system. </p>
+<p ><a class="el" href="namespacetram_1_1_render.html" title="High-level Render system API.">Render</a> system must be initialized first. </p>
 
 </div>
 </div>
@@ -937,6 +1090,14 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a new line. </p>
+<p >Essentially just moves the cursor down a little bit and resets it to the left side of the frame. Sort of like a line break. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">line</td><td>Line type. Either LINE_LOW, LINE_NORMAL or LINE_HIGH. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a76a6d727998bc4ad99cd754ca2cf54a0" name="a76a6d727998bc4ad99cd754ca2cf54a0"></a>
@@ -950,6 +1111,36 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes a frame from the frame stack. </p>
+
+</div>
+</div>
+<a id="a53e9477d97918587d29a2b44a378dcbf" name="a53e9477d97918587d29a2b44a378dcbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53e9477d97918587d29a2b44a378dcbf">&#9670;&nbsp;</a></span>PopFrameKeepCursor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::PopFrameKeepCursor </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>keep_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>keep_y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -994,6 +1185,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Pushes a frame. </p>
+<p >The coordinates are in absolute screen cooordinates. This function could be useful for something, I just can't think of anything. </p>
+
 </div>
 </div>
 <a id="a4d59dd004d2a1ae7aed485247d674dc6" name="a4d59dd004d2a1ae7aed485247d674dc6"></a>
@@ -1021,6 +1215,52 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Pushes a frame releative to the previous. </p>
+<p >Check the regulat HTML docs on the website for a graphical description with, i.e. with images, to see how this works. But essentially what this function does, is it takes the previous frame and measures out the offset from the specified orientation and then pushes a new frame with the are from the offset. Initially the first frame is pushed, and it takes up the whole screen. If you wanted to use make the topmost 200px part of the screen a frame, you would set the orientation to FRAME_TOP and offset to 200. </p>
+
+</div>
+</div>
+<a id="a1cde426a98964d4f4780ff78b9663b18" name="a1cde426a98964d4f4780ff78b9663b18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cde426a98964d4f4780ff78b9663b18">&#9670;&nbsp;</a></span>PushFrameRelativeKeepCursor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::PushFrameRelativeKeepCursor </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>orientation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>keep_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>keep_y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pushes a frame, but keeps the cursor in place. </p>
+<p >Identical to <a class="el" href="namespacetram_1_1_g_u_i.html#a4d59dd004d2a1ae7aed485247d674dc6" title="Pushes a frame releative to the previous.">PushFrameRelative()</a>, except this function will not reset the cursor to the top-left corner of the frame. </p>
 
 </div>
 </div>
@@ -1062,6 +1302,18 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a radio button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>Index of this button. </td></tr>
+    <tr><td class="paramname">selected</td><td>Index of the selected button. </td></tr>
+    <tr><td class="paramname">text</td><td>Text next to the button. </td></tr>
+    <tr><td class="paramname">enable</td><td>If set to true, the button won't be clickable </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the button was clicked on. The new selected button index will be written to the selected parameter. </dd></dl>
+
 </div>
 </div>
 <a id="a7b243fa8e17bd3e09a70b94f9f0a8054" name="a7b243fa8e17bd3e09a70b94f9f0a8054"></a>
@@ -1081,12 +1333,54 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Registers a font. </p>
-<dl class="section return"><dt>Returns</dt><dd>Font handle that can be used with all of the <a class="el" href="namespacetram_1_1_g_u_i.html">GUI</a> widget functions. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Font handle that can be used with all of the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> widget functions. </dd></dl>
 
 </div>
 </div>
-<a id="ac9b5a17857b93d22c642943d8a2f3266" name="ac9b5a17857b93d22c642943d8a2f3266"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9b5a17857b93d22c642943d8a2f3266">&#9670;&nbsp;</a></span>SetColor()</h2>
+<a id="a13a111a88e62cb6d8dd4434c22881dc5" name="a13a111a88e62cb6d8dd4434c22881dc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13a111a88e62cb6d8dd4434c22881dc5">&#9670;&nbsp;</a></span>RestoreColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::RestoreColor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a>&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restores previous glyph color. </p>
+<p >See <a class="el" href="namespacetram_1_1_g_u_i.html#a7210e80143cdcc0ce28a57c0b283fca6" title="Sets the color.">SetColor()</a>. </p>
+
+</div>
+</div>
+<a id="a2750747aff85f20a25ae9bb33dd72bec" name="a2750747aff85f20a25ae9bb33dd72bec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2750747aff85f20a25ae9bb33dd72bec">&#9670;&nbsp;</a></span>RestoreFont()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::RestoreFont </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a>&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restores previous glyph font. </p>
+<p >See <a class="el" href="namespacetram_1_1_g_u_i.html#a2a3c432ea9156a810b47d5e9836d861a" title="Sets the font.">SetFont()</a>. </p>
+
+</div>
+</div>
+<a id="a7210e80143cdcc0ce28a57c0b283fca6" name="a7210e80143cdcc0ce28a57c0b283fca6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7210e80143cdcc0ce28a57c0b283fca6">&#9670;&nbsp;</a></span>SetColor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1094,12 +1388,83 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void tram::GUI::SetColor </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
-          <td class="paramname"><em>color</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_render.html#a32fb4b5bd9e12e48f08e6ff4ce8817b8">Render::color_t</a>&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a>&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the color. </p>
+<p >Pushes color to color stack. Each glyph type gets its own color stack. The previously set color can be restored using <a class="el" href="namespacetram_1_1_g_u_i.html#a13a111a88e62cb6d8dd4434c22881dc5" title="Restores previous glyph color.">RestoreColor()</a>. GlyphType::TEXT will set the text rendering color of the <a class="el" href="namespacetram_1_1_g_u_i.html#a1eeac17180cfd99f45e0d997766543c9" title="Draws text on the screen.">Text()</a> function, as well as the text that is drawn by the <a class="el" href="namespacetram_1_1_g_u_i.html#a1488c8699f98eaaefd9dab7d1e220604" title="Draws a radio button.">RadioButton()</a> and <a class="el" href="namespacetram_1_1_g_u_i.html#abd53a76b58ffc880c50cd76f1b6019bf" title="Draws a checkbox.">CheckBox()</a> functions, on top of all <a class="el" href="namespacetram_1_1_g_u_i.html#a36df4e7f162a96882c85976374864e7a" title="Draws a button.">Button()</a> buttons and in <a class="el" href="namespacetram_1_1_g_u_i.html#a356c2eeb0e6b3a8c19ed6ee19a448619" title="Draws a textbox.">TextBox()</a> textboxes. GlyphType::WIDGET will set the color that will be used when drawing non-text widget glyphs. By default it is <a class="el" href="namespacetram_1_1_render.html#ac3b0b62b8ab1781496fd3a2ac86eaa7a">Render::COLOR_WHITE</a>. This stack is reset every time the <a class="el" href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f" title="Begins the GUI commands for the frame.">GUI::Begin()</a> function is called. The default values can be overriden with <a class="el" href="namespacetram_1_1_g_u_i.html#a8b13f224cb4fc10e56e14f176d93b95d" title="Overrides glyph default colors and fonts.">SetGlyphDefaults()</a>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">color</td><td>RGB color that will be set. Take a look at the <a class="el" href="namespacetram_1_1_render.html" title="High-level Render system API.">Render</a> system's header or docs to see what kinds of predefined colors are available. </td></tr>
+    <tr><td class="paramname">type</td><td>The type of the glyph that this color will be applied to. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a722e52d1cec8ee81a55e26dc1a4c63c8" name="a722e52d1cec8ee81a55e26dc1a4c63c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a722e52d1cec8ee81a55e26dc1a4c63c8">&#9670;&nbsp;</a></span>SetCursorDelayed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::SetCursorDelayed </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_u_i.html#a6ae9e156e84d2049fc1e691a10e0348f">UI::CursorType</a>&#160;</td>
+          <td class="paramname"><em>cursor</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Sets the cursor. </p>
+<p >The difference between using this function and the cursor setting function in the <a class="el" href="namespacetram_1_1_u_i.html" title="User interface system.">UI</a> system, is that this function will only switch the cursor if it has been changed, i.e. it will issue the <a class="el" href="namespacetram_1_1_u_i.html#a6ca596524ffb0c21621d8cfdcf9c5fbf">UI::SetCursor()</a> command only if this function receives a new parameter. This means that <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> widgets can change the cursor, but the it is also possible to change it using the <a class="el" href="namespacetram_1_1_u_i.html" title="User interface system.">UI</a> function and this function will not override it, except if the cursor is placed over a widget. </p>
+
+</div>
+</div>
+<a id="a2a3c432ea9156a810b47d5e9836d861a" name="a2a3c432ea9156a810b47d5e9836d861a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a3c432ea9156a810b47d5e9836d861a">&#9670;&nbsp;</a></span>SetFont()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::SetFont </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a>&#160;</td>
+          <td class="paramname"><em>font</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a>&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the font. </p>
+<p >Works the same as <a class="el" href="namespacetram_1_1_g_u_i.html#a7210e80143cdcc0ce28a57c0b283fca6" title="Sets the color.">SetColor()</a>, except for fonts. A font needs to be registered with <a class="el" href="namespacetram_1_1_g_u_i.html#a7b243fa8e17bd3e09a70b94f9f0a8054" title="Registers a font.">RegisterFont()</a> first. Widget fonts need to use the widget font layout to be displayed properly. </p>
 
 </div>
 </div>
@@ -1188,6 +1553,43 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a8b13f224cb4fc10e56e14f176d93b95d" name="a8b13f224cb4fc10e56e14f176d93b95d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b13f224cb4fc10e56e14f176d93b95d">&#9670;&nbsp;</a></span>SetGlyphDefaults()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::SetGlyphDefaults </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_render.html#a32fb4b5bd9e12e48f08e6ff4ce8817b8">Render::color_t</a>&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a>&#160;</td>
+          <td class="paramname"><em>font</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#aed177dc7d46e43f3cf52662fecbaf0a6">GlyphType</a>&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Overrides glyph default colors and fonts. </p>
+<p >Whenever <a class="el" href="namespacetram_1_1_g_u_i.html#af4ecd3d74bffd0e8e5fd26061418ef4f" title="Begins the GUI commands for the frame.">GUI::Begin()</a> is called, the color and font passed to this function will be set as the color and font used for the glyph drawing functions. If you are using the <a class="el" href="namespacetram_1_1_ext_1_1_menu.html" title="Menu framework.">Ext::Menu</a> extension and its default fonts, you don't need to call this function. </p>
+
+</div>
+</div>
 <a id="abc96e6226a9e9abe317c04fe4661ee35" name="abc96e6226a9e9abe317c04fe4661ee35"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abc96e6226a9e9abe317c04fe4661ee35">&#9670;&nbsp;</a></span>SetScaling()</h2>
 
@@ -1203,6 +1605,30 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Sets the scaling factor. </p>
+<p >If set to <code>1</code>, the <a class="el" href="namespacetram_1_1_g_u_i.html" title="Immediate mode GUI system.">GUI</a> will be drawn normally. If set to <code>2</code>, then everything will be drawn twice as large. If set to <code>3</code>, then everything will be drawn three times as large. I don't recommend going above that. </p>
+
+</div>
+</div>
+<a id="a2cea0738110390ba9a29efd3abde74ed" name="a2cea0738110390ba9a29efd3abde74ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cea0738110390ba9a29efd3abde74ed">&#9670;&nbsp;</a></span>SetSelectedText()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::GUI::SetSelectedText </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the text which is selected in a textbox. </p>
+<p >The way the framework remembers which TextBox you have clicked on and are editing is that once a TextBox is clicked on, the framework remembers the pointer of the text that is being edited. The actual TextBox string is updated only when the <a class="el" href="namespacetram_1_1_g_u_i.html#a356c2eeb0e6b3a8c19ed6ee19a448619" title="Draws a textbox.">TextBox()</a> function is called. If you want to deselect any TextBox, call this function with a <code>nullptr</code>. </p>
 
 </div>
 </div>
@@ -1238,10 +1664,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a horizontal slider. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td><a class="el" href="classtram_1_1_value.html" title="Generic, type-safe union.">Value</a> of the slider, between 0.0f and 1.0f. </td></tr>
+    <tr><td class="paramname">enabled</td><td>If set to false, the slider won't be draggable. </td></tr>
+    <tr><td class="paramname">width</td><td>Width of the slider, in pixels. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the slider was clicked on. The slider's new value will be written out to the value variable. </dd></dl>
+
 </div>
 </div>
-<a id="a0a95417dd938670dd4abe5d4dc59d1fa" name="a0a95417dd938670dd4abe5d4dc59d1fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a95417dd938670dd4abe5d4dc59d1fa">&#9670;&nbsp;</a></span>Text()</h2>
+<a id="a1eeac17180cfd99f45e0d997766543c9" name="a1eeac17180cfd99f45e0d997766543c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eeac17180cfd99f45e0d997766543c9">&#9670;&nbsp;</a></span>Text()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1249,12 +1686,6 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void tram::GUI::Text </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacetram_1_1_g_u_i.html#ad72e4051d38000777cac376d29fc18a1">font_t</a>&#160;</td>
-          <td class="paramname"><em>font</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>text</em>, </td>
         </tr>
@@ -1271,6 +1702,15 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Draws text on the screen. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">orientation</td><td>Either TEXT_LEFT, TEXT_CENTER, TEXT_RIGHT or TEXT_JUSTIFIED. The default is TEXT_LEFT. </td></tr>
+    <tr><td class="paramname">text</td><td>The text that will drawn to screen. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1318,6 +1758,17 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Draws a textbox. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text in the textbox. This will be editable. </td></tr>
+    <tr><td class="paramname">length</td><td>Length of the text buffer. </td></tr>
+    <tr><td class="paramname">enabled</td><td>If false, the textbox won't be editable. </td></tr>
+    <tr><td class="paramname">w,h</td><td>Dimensions of the textbox, in pixels. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a197eda70726287d8c846535df181e486" name="a197eda70726287d8c846535df181e486"></a>
@@ -1351,6 +1802,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Draws a textbox. </p>
+<p >Essentially identical to the other <a class="el" href="namespacetram_1_1_g_u_i.html#a356c2eeb0e6b3a8c19ed6ee19a448619" title="Draws a textbox.">TextBox()</a> function, except this one accepts a <code>const char*</code> text. This also means that the text in the textbox won't be editable and it will be drawn as disabled. </p>
 
 </div>
 </div>
@@ -1398,6 +1852,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Submits all of the glyphs for rendering. </p>
+<p >Also updates cursor, if needed by <a class="el" href="namespacetram_1_1_g_u_i.html#a722e52d1cec8ee81a55e26dc1a4c63c8" title="Sets the cursor.">SetCursorDelayed()</a>. </p>
 
 </div>
 </div>
@@ -1421,84 +1876,28 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a114a9bc551de9b57a9f732c7e60319a3" name="a114a9bc551de9b57a9f732c7e60319a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a114a9bc551de9b57a9f732c7e60319a3">&#9670;&nbsp;</a></span>fonts</h2>
+<a id="a2fd25b3a9a83f7a905fd70aeda3cf2d8" name="a2fd25b3a9a83f7a905fd70aeda3cf2d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fd25b3a9a83f7a905fd70aeda3cf2d8">&#9670;&nbsp;</a></span>beginned</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_render_1_1_sprite.html">Render::Sprite</a>* tram::GUI::fonts[16] = {nullptr}</td>
+          <td class="memname">bool tram::GUI::beginned = false</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a7071389dc2f64e46eac05ab612c2e93f" name="a7071389dc2f64e46eac05ab612c2e93f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7071389dc2f64e46eac05ab612c2e93f">&#9670;&nbsp;</a></span>frame_stack</h2>
+<a id="a6b89bb5200e494e6cd5a0191bf527df0" name="a6b89bb5200e494e6cd5a0191bf527df0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b89bb5200e494e6cd5a0191bf527df0">&#9670;&nbsp;</a></span>last_update_frame</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_stack.html">Stack</a>&lt; <a class="el" href="structtram_1_1_g_u_i_1_1_frame_object.html">FrameObject</a> &gt; tram::GUI::frame_stack(&quot;GUI Frame stack&quot;, 100) </td>
-          <td>(</td>
-          <td class="paramtype">&quot;GUI Frame stack&quot;&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">100&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5f0794003ebfd02b2c8d90e2c5854f90" name="a5f0794003ebfd02b2c8d90e2c5854f90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f0794003ebfd02b2c8d90e2c5854f90">&#9670;&nbsp;</a></span>glyphvertices</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="structtram_1_1_render_1_1_sprite_vertex.html">Render::SpriteVertex</a>&gt; tram::GUI::glyphvertices</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a43e25612c34c740fde2e73356dcd6f1c" name="a43e25612c34c740fde2e73356dcd6f1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43e25612c34c740fde2e73356dcd6f1c">&#9670;&nbsp;</a></span>glyphvertices_entry</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">Render::drawlistentry_t</a> tram::GUI::glyphvertices_entry</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7eba8ec9e7dcb6f7f9691c73dea6bcd0" name="a7eba8ec9e7dcb6f7f9691c73dea6bcd0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7eba8ec9e7dcb6f7f9691c73dea6bcd0">&#9670;&nbsp;</a></span>glyphvertices_vertex_array</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">Render::vertexarray_t</a> tram::GUI::glyphvertices_vertex_array = {.generic = 0}</td>
+          <td class="memname">uint32_t tram::GUI::last_update_frame = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1513,6 +1912,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool tram::GUI::mouse_click_not_handled = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a64d510448e860481081147bb9e1ef0d6" name="a64d510448e860481081147bb9e1ef0d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64d510448e860481081147bb9e1ef0d6">&#9670;&nbsp;</a></span>mouse_click_not_handled_late</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tram::GUI::mouse_click_not_handled_late = true</td>
         </tr>
       </table>
 </div><div class="memdoc">

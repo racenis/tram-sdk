@@ -68,27 +68,42 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">tram::Async Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Multi-threading and <a class="el" href="classtram_1_1_resource.html">Resource</a> streaming.  
+<a href="namespacetram_1_1_async.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_async_1_1_resource_request.html">ResourceRequest</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a3852629b110e5e57e85140bb5fe518e5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5">RequestNotification</a> { <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a81db66b6ed079088749c66cca26aa725">NONE</a>
+, <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a3c24b0dd40835b178028420b095d347e">COMPONENT</a>
+, <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5a1e2e20d91f42657d02e821985a4bd96c">CALLBACK</a>
+ }</td></tr>
+<tr class="separator:a3852629b110e5e57e85140bb5fe518e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a9db009e1493d70c2ce388b2910e32fa2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a9db009e1493d70c2ce388b2910e32fa2">RequestResource</a> (<a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> *requester, <a class="el" href="classtram_1_1_resource.html">Resource</a> *resource)</td></tr>
 <tr class="memdesc:a9db009e1493d70c2ce388b2910e32fa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resource to the loading queue.  <a href="namespacetram_1_1_async.html#a9db009e1493d70c2ce388b2910e32fa2">More...</a><br /></td></tr>
 <tr class="separator:a9db009e1493d70c2ce388b2910e32fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#aa2234c4cb0590d5672aa3bf4bb78703f">RequestResource</a> (void(*callback)(void *data), void *data, <a class="el" href="classtram_1_1_resource.html">Resource</a> *resource)</td></tr>
+<tr class="memdesc:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a resource to the loading queue.  <a href="namespacetram_1_1_async.html#aa2234c4cb0590d5672aa3bf4bb78703f">More...</a><br /></td></tr>
+<tr class="separator:aa2234c4cb0590d5672aa3bf4bb78703f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00df174c441553df6c3728c4355a4b7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a00df174c441553df6c3728c4355a4b7e">CancelRequest</a> (<a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> *requester, <a class="el" href="classtram_1_1_resource.html">Resource</a> *resource)</td></tr>
 <tr class="memdesc:a00df174c441553df6c3728c4355a4b7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels a resource load request.  <a href="namespacetram_1_1_async.html#a00df174c441553df6c3728c4355a4b7e">More...</a><br /></td></tr>
 <tr class="separator:a00df174c441553df6c3728c4355a4b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2195d4da0c29e9cf6595ee523f483a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#ac2195d4da0c29e9cf6595ee523f483a2">LoadDependency</a> (<a class="el" href="classtram_1_1_resource.html">Resource</a> *res)</td></tr>
-<tr class="memdesc:ac2195d4da0c29e9cf6595ee523f483a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a resource from disk, skipping the queue.  <a href="namespacetram_1_1_async.html#ac2195d4da0c29e9cf6595ee523f483a2">More...</a><br /></td></tr>
-<tr class="separator:ac2195d4da0c29e9cf6595ee523f483a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e1b28345fded87fa20aee192ddcce0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a9e1b28345fded87fa20aee192ddcce0f">LoadDependency</a> (<a class="el" href="classtram_1_1_resource.html">Resource</a> *resource)</td></tr>
+<tr class="memdesc:a9e1b28345fded87fa20aee192ddcce0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a resource from disk, skipping the queue.  <a href="namespacetram_1_1_async.html#a9e1b28345fded87fa20aee192ddcce0f">More...</a><br /></td></tr>
+<tr class="separator:a9e1b28345fded87fa20aee192ddcce0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15485706aae380a728a9e771feabb503"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_async.html#a15485706aae380a728a9e771feabb503">LoadResourcesFromDisk</a> ()</td></tr>
 <tr class="memdesc:a15485706aae380a728a9e771feabb503"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the first resource queue.  <a href="namespacetram_1_1_async.html#a15485706aae380a728a9e771feabb503">More...</a><br /></td></tr>
 <tr class="separator:a15485706aae380a728a9e771feabb503"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,6 +123,30 @@ Functions</h2></td></tr>
 <tr class="memdesc:af447ff406255f241322da550d5d027a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns number of resources in queues.  <a href="namespacetram_1_1_async.html#af447ff406255f241322da550d5d027a3">More...</a><br /></td></tr>
 <tr class="separator:af447ff406255f241322da550d5d027a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Multi-threading and <a class="el" href="classtram_1_1_resource.html">Resource</a> streaming. </p>
+<p >Currently <a class="el" href="namespacetram_1_1_async.html" title="Multi-threading and Resource streaming.">Async</a> only does <a class="el" href="classtram_1_1_resource.html">Resource</a> streaming, but we could do other kinds of <a class="el" href="namespacetram_1_1_async.html" title="Multi-threading and Resource streaming.">Async</a> processing in the future too.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://racenis.github.io/tram-sdk/documentation/framework/async.html">https://racenis.github.io/tram-sdk/documentation/framework/async.html</a> </dd></dl>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a3852629b110e5e57e85140bb5fe518e5" name="a3852629b110e5e57e85140bb5fe518e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3852629b110e5e57e85140bb5fe518e5">&#9670;&nbsp;</a></span>RequestNotification</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacetram_1_1_async.html#a3852629b110e5e57e85140bb5fe518e5">tram::Async::RequestNotification</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3852629b110e5e57e85140bb5fe518e5a81db66b6ed079088749c66cca26aa725" name="a3852629b110e5e57e85140bb5fe518e5a81db66b6ed079088749c66cca26aa725"></a>NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3852629b110e5e57e85140bb5fe518e5a3c24b0dd40835b178028420b095d347e" name="a3852629b110e5e57e85140bb5fe518e5a3c24b0dd40835b178028420b095d347e"></a>COMPONENT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a3852629b110e5e57e85140bb5fe518e5a1e2e20d91f42657d02e821985a4bd96c" name="a3852629b110e5e57e85140bb5fe518e5a1e2e20d91f42657d02e821985a4bd96c"></a>CALLBACK&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a00df174c441553df6c3728c4355a4b7e" name="a00df174c441553df6c3728c4355a4b7e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00df174c441553df6c3728c4355a4b7e">&#9670;&nbsp;</a></span>CancelRequest()</h2>
@@ -136,7 +175,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Cancels a resource load request. </p>
-<p >Should be called if the <a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> that requested a <a class="el" href="classtram_1_1_resource.html">Resource</a> to be loaded will be destructed before the <a class="el" href="classtram_1_1_resource.html">Resource</a> has finished loading. </p><dl class="section note"><dt>Note</dt><dd>The resource will be fully loaded anyway, but the requester will not be notified. </dd></dl>
+<p >Should be called if the <a class="el" href="classtram_1_1_entity_component.html" title="Component base class.">EntityComponent</a> that requested a <a class="el" href="classtram_1_1_resource.html">Resource</a> to be loaded will be destructed before the <a class="el" href="classtram_1_1_resource.html">Resource</a> has finished loading. </p><dl class="section note"><dt>Note</dt><dd>The resource will be fully loaded anyway, but the requester will not be notified. </dd></dl>
 
 </div>
 </div>
@@ -204,8 +243,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac2195d4da0c29e9cf6595ee523f483a2" name="ac2195d4da0c29e9cf6595ee523f483a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac2195d4da0c29e9cf6595ee523f483a2">&#9670;&nbsp;</a></span>LoadDependency()</h2>
+<a id="a9e1b28345fded87fa20aee192ddcce0f" name="a9e1b28345fded87fa20aee192ddcce0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e1b28345fded87fa20aee192ddcce0f">&#9670;&nbsp;</a></span>LoadDependency()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -214,7 +253,7 @@ Functions</h2></td></tr>
           <td class="memname">void tram::Async::LoadDependency </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classtram_1_1_resource.html">Resource</a> *&#160;</td>
-          <td class="paramname"><em>res</em></td><td>)</td>
+          <td class="paramname"><em>resource</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -242,7 +281,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Processes the first resource queue. </p>
-<p >If you started the <a class="el" href="namespacetram_1_1_async.html">Async</a> system with at least one thread, you don't need to call this function. </p>
+<p >If there are any resource loader threads active, this function will not do anything, instead allowing the loader threads to load the resources. </p>
 
 </div>
 </div>
@@ -267,7 +306,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a9db009e1493d70c2ce388b2910e32fa2" name="a9db009e1493d70c2ce388b2910e32fa2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9db009e1493d70c2ce388b2910e32fa2">&#9670;&nbsp;</a></span>RequestResource()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9db009e1493d70c2ce388b2910e32fa2">&#9670;&nbsp;</a></span>RequestResource() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -295,7 +334,51 @@ Functions</h2></td></tr>
 <p>Adds a resource to the loading queue. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">requester</td><td><a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> that will be notified when the resource is loaded. Can be set to nullptr, in which case nothing will be notified. </td></tr>
+    <tr><td class="paramname">requester</td><td><a class="el" href="classtram_1_1_entity_component.html" title="Component base class.">EntityComponent</a> that will be notified when the resource is loaded. Can be set to nullptr, in which case nothing will be notified. </td></tr>
+    <tr><td class="paramname">requested_resource</td><td>The resource that will be loaded. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa2234c4cb0590d5672aa3bf4bb78703f" name="aa2234c4cb0590d5672aa3bf4bb78703f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2234c4cb0590d5672aa3bf4bb78703f">&#9670;&nbsp;</a></span>RequestResource() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Async::RequestResource </td>
+          <td>(</td>
+          <td class="paramtype">void(*)(void *data)&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtram_1_1_resource.html">Resource</a> *&#160;</td>
+          <td class="paramname"><em>resource</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds a resource to the loading queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Callback function which will be called when the resource has been loaded and is ready for use. </td></tr>
+    <tr><td class="paramname">data</td><td>Data pointer, which will be passed to as a parameter to the callback function. </td></tr>
     <tr><td class="paramname">requested_resource</td><td>The resource that will be loaded. </td></tr>
   </table>
   </dd>

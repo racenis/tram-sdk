@@ -73,10 +73,14 @@ $(function() {
   <div class="headertitle"><div class="title">tram::Ext::Camera Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Several different camera implementations.  
+<a href="namespacetram_1_1_ext_1_1_camera.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_ext_1_1_camera_1_1_camera.html">Camera</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interface API for cameras.  <a href="classtram_1_1_ext_1_1_camera_1_1_camera.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_ext_1_1_camera_1_1_first_person_camera.html">FirstPersonCamera</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -90,11 +94,11 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a78d78706893f9458163c03fa65c5ce9e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#a78d78706893f9458163c03fa65c5ce9e">CAMERA_SYSTEM</a> = -1u</td></tr>
-<tr class="separator:a78d78706893f9458163c03fa65c5ce9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ef902fd854a7068580fccde152ed56d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_system.html#a3480b59cb32a6f70ad1fce1626b64e40">System::system_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#a9ef902fd854a7068580fccde152ed56d">CAMERA_SYSTEM</a> = -1u</td></tr>
+<tr class="separator:a9ef902fd854a7068580fccde152ed56d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf02ee4711f59697606b71a4712e98bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_ext_1_1_camera_1_1_camera.html">Camera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#acf02ee4711f59697606b71a4712e98bc">selected_camera</a> = nullptr</td></tr>
 <tr class="separator:acf02ee4711f59697606b71a4712e98bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a810e7f445faeca85ab997f2c0d9c4bed"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#a810e7f445faeca85ab997f2c0d9c4bed">shake_multiplier</a> = 1.0f</td></tr>
+<tr class="memitem:a810e7f445faeca85ab997f2c0d9c4bed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_settings_1_1_property.html">Settings::Property</a>&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#a810e7f445faeca85ab997f2c0d9c4bed">shake_multiplier</a> = {1.0f, &quot;camerashake&quot;, Settings::NONE}</td></tr>
 <tr class="separator:a810e7f445faeca85ab997f2c0d9c4bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07e626d2d01f42be6f6f209cc12cbc18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a25ae39989bce3dab64401c3956be9c03">id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#a07e626d2d01f42be6f6f209cc12cbc18">look_at_entity</a> = 0</td></tr>
 <tr class="separator:a07e626d2d01f42be6f6f209cc12cbc18"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,7 +109,9 @@ Variables</h2></td></tr>
 <tr class="memitem:a9ebbcf579061fce613ced15545380bee"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_ext_1_1_camera.html#a9ebbcf579061fce613ced15545380bee">BOB_CHANGE_SPEED</a> = 0.05f</td></tr>
 <tr class="separator:a9ebbcf579061fce613ced15545380bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Several different camera implementations. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="ad252c0b524249e43b5b04f649a6697c2" name="ad252c0b524249e43b5b04f649a6697c2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad252c0b524249e43b5b04f649a6697c2">&#9670;&nbsp;</a></span>Init()</h2>
 
@@ -155,14 +161,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a78d78706893f9458163c03fa65c5ce9e" name="a78d78706893f9458163c03fa65c5ce9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78d78706893f9458163c03fa65c5ce9e">&#9670;&nbsp;</a></span>CAMERA_SYSTEM</h2>
+<a id="a9ef902fd854a7068580fccde152ed56d" name="a9ef902fd854a7068580fccde152ed56d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ef902fd854a7068580fccde152ed56d">&#9670;&nbsp;</a></span>CAMERA_SYSTEM</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t tram::Ext::Camera::CAMERA_SYSTEM = -1u</td>
+          <td class="memname"><a class="el" href="namespacetram_1_1_system.html#a3480b59cb32a6f70ad1fce1626b64e40">System::system_t</a> tram::Ext::Camera::CAMERA_SYSTEM = -1u</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -218,7 +224,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float tram::Ext::Camera::shake_multiplier = 1.0f</td>
+          <td class="memname">float tram::Ext::Camera::shake_multiplier = {1.0f, &quot;camerashake&quot;, Settings::NONE}</td>
         </tr>
       </table>
 </div><div class="memdoc">

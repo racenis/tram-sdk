@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pool_0',['Pool',['../classtram_1_1_audio_1_1_sound.html#a6138aa72cd0b6a55be22d74ab84c65d6',1,'tram::Audio::Sound']]]
+  ['sprite_0',['Sprite',['../classtram_1_1_render_1_1_material.html#a3292175d54d93d126ba2829249316344',1,'tram::Render::Material']]]
 ];

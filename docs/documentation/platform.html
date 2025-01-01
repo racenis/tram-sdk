@@ -3,120 +3,119 @@
 	<head>
 		<link rel="eeee" href="../favicon.gif">
 		<title>Platform | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
-		<style>
-		
-			body {
-				font-size: 10pt;
-				font-family: Arial,Helvetica,sans-serif;
-				/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+		<link rel="stylesheet" href="../default.css"/>
+		<script>
+			function AddCSS(file) {
+				const disable_sheet = document.createElement('link');
+				
+				disable_sheet.rel = 'stylesheet';
+				disable_sheet.href = file;
+				
+				document.head.appendChild(disable_sheet);
 			}
-		
-		
-			.menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
-						.menubar a:active {
-				color: white;
-			}
+			
+			function YeetCSS(file) {
+				const links = document.querySelectorAll('head link[rel="stylesheet"]');
 
-			.menubar a:hover {
-				color: white;
-				text-decoration: none;
+				links.forEach(link => {
+				  if (link.getAttribute('href') === file) {
+					link.remove();
+				  }
+				});
 			}
 			
-			.menubar {
-				font-family: Verdana,Arial,Helvetica,sans-serif;
+			function RecheckCSS() {
+				const disable_gif = localStorage.getItem("disable_gif");
+				const enterprise_mode = localStorage.getItem("enterprise");
+				
+				/*if (disable_gif == null || enterprise_mode == null) {
+					localStorage.setItem("disable_gif", "no");
+					localStorage.setItem("enterprise", "no");
+					
+					RecheckCSS();
+					
+					return;
+				}*/
+				
+				//console.log("From RecheckCSS:");
+				//console.log(disable_gif);
+				
+				
+				if (disable_gif == "yes") {
+					console.log("disable Gifs");
+					document.querySelector("#no-gifs").innerHTML = "[Enable GIFs]";
+					AddCSS("../no_gifs.css");
+				} else {
+					console.log("enable Gifs");
+					document.querySelector("#no-gifs").innerHTML = "[Disable GIFs]";
+					YeetCSS("../no_gifs.css");
+				}
+				
+				if (enterprise_mode == "yes") {
+					console.log("enterprise mode");
+					document.querySelector("#enterprise").innerHTML = "[Default Mode]";
+					YeetCSS("../default.css");
+					AddCSS("../enterprise.css");
+				} else {
+					console.log("default mode");
+					document.querySelector("#enterprise").innerHTML = "[Enterprise Mode]";
+					YeetCSS("../enterprise.css");
+					AddCSS("../default.css");
+				}
 			}
+			
+			function ToggleGIFs() {
+				const enabled = localStorage.getItem("disable_gif");
+				
+				if (enabled == "yes") {
+					localStorage.setItem("disable_gif", "no");
+				} else {
+					localStorage.setItem("disable_gif", "yes");
+				}
+			
+				RecheckCSS();
+			}
+			
+			function ToggleEnterprise() {
+				const enabled = localStorage.getItem("enterprise");
+				
+				if (enabled == "yes") {
+					localStorage.setItem("enterprise", "no");
+				} else {
+					localStorage.setItem("enterprise", "yes");
+				}
+			
+				RecheckCSS();
+			}
+			
+			window.onload = function() {
+				RecheckCSS();
+			}
+			
+			
+			/*function ToggleEnterprise() {
+				links = document.querySelectorAll('head link[rel="stylesheet"]');
 
-			.navbar {
-				width: 100%;
-			}
+				links.forEach(link => {
+				  if (link.href.includes('default.css')) {
+					link.href = link.href.replace('default.css', 'enterprise.css');
+				  }
+				});
+			}*/
 			
-			.navbar .left {
-				width: 50px;
-			}
-			
-			.navbar .middle {
-				text-align: center;
-			}
-			
-			.navbar .right {
-				width: 50px;
-				text-align: right;
-			}
-			
-			h1, h2, h3, h4, h5 {
-				margin-top: 0;
-				margin-bottom: 0;
-			}
-			
-			p {
-				margin-top: 4px;
-				margin-bottom: 4px;
-			}
-			
-			h1 {
-				font-size: 16pt;
-			}
-			
-			h2 {
-				font-size: 12pt;
-			}
-			
-			h3 {
-				font-size: 11pt;
-			}
-			
-			h4 {
-				font-size: 10pt;
-			}
-			
-			ul {
-				margin-top: 0;
-				padding-left: 20px;
-			}
-			
-			.codefunc {
-				color: blue;
-			}
-			
-			.codeclass {
-				color: blue;
-			}
-			
-			.codekeyw {
-				color: red;
-			}
-			
-			.codecomm {
-				color: green;
-			}
-			
-			.codelit {
-				color: orange;
-			}
-			
-			.codespac {
-				color: blue;
-			}
-			
-			.codeexample {
-				white-space: pre;
-			}
-			
-			.infobox {
-				/* margin: 0px 10px 0px 10px;*/
-				margin: 10px 0px 10px 0px;
-				padding: 10px 15px 10px 15px;
-				border: 2px groove gray;
-			}
-			
-		</style>
+		</script>
 	</head>
 	<body background="../images/sky2.jpg">
-		<table width="600" align="center" cellspacing="0" bgcolor="white">
+		<table class="container" width="600" align="center" cellspacing="0" bgcolor="white">
 			<tr>
-				<td colspan="3" class="header">
-					<img src="../images/logo3.gif"/>
-					<img style="float:right;" src="../images/poland.gif"/>
+				<td class="titlebar" colspan="3" class="header">
+					<img style="float:left;" src="../images/logo3.gif"/>
+					<img style="float:right;" class="animated" src="../images/poland.gif"/>
+					
+					<div class="links">
+						<a id="no-gifs" onclick="ToggleGIFs()" href="#">[Disable GIFs]</a>
+						<a id="enterprise" onclick="ToggleEnterprise()" href="#">[Enterprise Mode]</a>
+					</div>
 				</td>
 			</tr>
 			<tr>
@@ -136,7 +135,7 @@
 			<tr>
 				<td width="140" valign="top" class="left-pane">
 					<b>Latest version:</b><br/>
-					Tramway SDK 0.0.9<br/>
+					Tramway SDK 0.1.0<br/>
 					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
 					<b>Quick links</b><br/>
 					<a href="../index.html" class="menu-link">Home</a><br/>
@@ -178,7 +177,7 @@
 				<td width="90" valign="top" class="right-pane">
 					<img src="../images/800x600.gif"/><br/>
 					<img src="../images/firefoxnow.gif"/><br/>
-					<img src="../images/hicolor.gif"/><br/>
+					<img class="animated" src="../images/hicolor.gif"/><br class="animated"/>
 					
 					<img src="../images/blender.gif"/><br/>
 					<img src="../images/wxwidgets.gif"/><br/>
@@ -187,7 +186,7 @@
 					<img src="../images/linux.gif"/><br/>
 					<img src="../images/hatemac.jpg"/><br/>
 					
-					<img src="../images/discord-no-way.gif"/><br/>
+					<img class="animated" src="../images/discord-no-way.gif"/><br class="animated"/>
 					
 					<img src="../images/winrar.gif"/><br/>
 					<img src="../images/sdblast.gif"/><br/>
@@ -202,7 +201,7 @@
 				<td colspan="3" class="footer">
 					<center>
 						<font size="1">
-							<i>Tramway SDK &copy; racenis 2021&ndash;2024</i>
+							<i>Tramway SDK &copy; racenis 2021&ndash;2025</i>
 						</font>
 					</center>
 				</td>
