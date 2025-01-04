@@ -459,7 +459,7 @@ void DrawBox(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w, uin
 // identical to the widht of the text if it was, in fact, drawn
 uint32_t TextWidth(font_t font, const char* text) {
     uint32_t width = 0;
-    for (const char* c = text; *c != '\0'; c++) {
+    for (const unsigned char* c = (const unsigned char*)text; *c != '\0'; c++) {
         width += GlyphWidth(font, *c);
     }
     return width;

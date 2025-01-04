@@ -1,0 +1,429 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="eeee" href="favicon.gif">
+		<title>Why Tramway SDK | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit</title>
+		<link rel="stylesheet" href="default.css"/>
+		<script>
+			function AddCSS(file) {
+				const disable_sheet = document.createElement('link');
+				
+				disable_sheet.rel = 'stylesheet';
+				disable_sheet.href = file;
+				
+				document.head.appendChild(disable_sheet);
+			}
+			
+			function YeetCSS(file) {
+				const links = document.querySelectorAll('head link[rel="stylesheet"]');
+
+				links.forEach(link => {
+				  if (link.getAttribute('href') === file) {
+					link.remove();
+				  }
+				});
+			}
+			
+			function RecheckCSS() {
+				const disable_gif = localStorage.getItem("disable_gif");
+				const enterprise_mode = localStorage.getItem("enterprise");
+				
+				if (disable_gif == "yes") {
+					document.querySelector("#no-gifs").innerHTML = "[Enable GIFs]";
+					AddCSS("no_gifs.css");
+				} else {
+					document.querySelector("#no-gifs").innerHTML = "[Disable GIFs]";
+					YeetCSS("no_gifs.css");
+				}
+				
+				if (enterprise_mode == "yes") {
+					document.querySelector("#enterprise").innerHTML = "[Default Mode]";
+					YeetCSS("default.css");
+					AddCSS("enterprise.css");
+				} else {
+					document.querySelector("#enterprise").innerHTML = "[Enterprise Mode]";
+					YeetCSS("enterprise.css");
+					AddCSS("default.css");
+				}
+			}
+			
+			function ToggleGIFs() {
+				const enabled = localStorage.getItem("disable_gif");
+				
+				if (enabled == "yes") {
+					localStorage.setItem("disable_gif", "no");
+				} else {
+					localStorage.setItem("disable_gif", "yes");
+				}
+			
+				RecheckCSS();
+			}
+			
+			function ToggleEnterprise() {
+				const enabled = localStorage.getItem("enterprise");
+				
+				if (enabled == "yes") {
+					localStorage.setItem("enterprise", "no");
+				} else {
+					localStorage.setItem("enterprise", "yes");
+				}
+			
+				RecheckCSS();
+			}
+			
+			window.onload = function() {
+				RecheckCSS();
+			}
+						
+		</script>
+	</head>
+	<body background="images/sky2.jpg">
+		<table class="container" width="600" align="center" cellspacing="0" bgcolor="white">
+			<tr>
+				<td class="titlebar" colspan="3" class="header">
+					<img style="float:left;" src="images/logo3.gif"/>
+					<img style="float:right;" class="animated" src="images/poland.gif"/>
+					
+					<div class="links">
+						<a id="no-gifs" onclick="ToggleGIFs()" href="#">[Disable GIFs]</a>
+						<a id="enterprise" onclick="ToggleEnterprise()" href="#">[Enterprise Mode]</a>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="menubar" bgcolor="#4444ff">
+					<font size="2" color="white">
+						<b>
+							&nbsp;
+							<a href="index.html">Home</a> | 
+							<a href="features.html">Features</a> | 
+							<a href="roadmap.html">Roadmap</a> | 
+							<a href="learn.html">Learn</a> | 
+							<a href="documentation.html">Documentation</a>
+						</b>
+					</font>
+				</td>
+			</tr>
+			<tr>
+				<td width="140" valign="top" class="left-pane">
+					<b>Latest version:</b><br/>
+					Tramway SDK 0.1.0<br/>
+					<a href="https://github.com/racenis/tram-sdk">Github</a><br/>
+					<b>Quick links</b><br/>
+					<a href="index.html" class="menu-link">Home</a><br/>
+					<a href="learn/getstarted.html" class="menu-link">Get Started</a><br/>
+				</td>
+				<td valign="top" class="middle-pane">
+					<!-- PAGE_TITLE: Why Tramway SDK | Tramway Drifting and Dungeon Exploration Simulator Software Development Kit -->
+
+<h1>
+	Why Tramway SDK
+</h1>
+
+<hr/>
+
+<p>
+	<b>Tramway SDK</b> (heavy metal spelling &ndash;
+	T&#776;ra&#806;m&#778;w&#776;a&#806;y&#776; SD&#776;K) is a graphics
+	package/framework/game engine that I have been working on for the past
+	3 years.
+</p>
+
+<p>
+	In this article I attempt to turn you against mainstream engines and I will
+	explain, in detail, why Tramway SDK is not as awful as them.
+</p>
+
+<h2>
+	Unreasonable system requirements due to Turbobloat
+</h2>
+
+<hr/>
+
+<p>
+	Unity needs very powerful hardware and consumes enough power to burn down a
+	rainforest. Godot is slightly better, but you still need relatively capable
+	hardware.
+</p>
+
+<p>
+	But what if all that you really want to make is just a lowpoly horror
+	roguelite deckbuilder simulator? 15 year old hardware is more than capable
+	of running a game like that, but not if you use a mainstream engine, due to
+	Turbobloat.
+</p>
+
+<p>
+	Tramway SDK can run on virtually any hardware from the last 15 years, since
+	it is not Turbobloated. It doesn't even need a graphics card, since it can
+	be switched to use software rasterization, making it perfect for displaying
+	graphics on	toasters and fridges.
+</p>
+
+<p>
+	Some might say "just get a better computer". This is why getting a better
+	computer is bad:
+</p>
+
+<ol>
+	<li>
+		<h4>
+			Affordance
+		</h4>
+		
+		<p>
+			A lot of people, especially from 3rd world countries are very poor
+			and can't afford to buy hardware to run Turbobloat.
+		</p>
+	</li>
+	
+	<li>
+		<h4>
+			e-Waste
+		</h4>
+		
+		<p>
+			Producing computer chips is very bad on the environment. If modern
+			software wasn't Turbobloated you would buy new hardware only when
+			the previous hardware broke and wasn't repairable.
+		</p>
+	</li>
+	
+	<li>
+		<h4>
+			Not putting up with Turbobloat
+		</h4>
+		
+		<p>
+			Why spend money on another computer if you already have one that
+			works perfectly fine? Just because of someone else's turbobloat? 
+			You could buy 1000 cans of Dr. Pepper instead.
+		</p>
+	</li>
+</ol>
+
+<h2>
+	Nodes are bad
+</h2>
+
+<hr/>
+
+<p>
+	A thing should be a thing. It should not be a bunch of things pretending to
+	be a single thing. With nodes you have to pretend that a collection of
+	things is a single thing.
+</p>
+
+<p>
+	Also when creating things with nodes, you have to go back and forth between
+	node GUI and code. 
+</p>
+
+<p>
+	In Tramway SDK you just subclass the Entity class and write the code. After
+	that you make a level using the level editor. No going back and forth. No 
+	nodes, just entities.
+</p>
+
+<h2>
+	Monolithism
+</h2>
+
+<hr/>
+
+<p>
+	All of the mainstream engines have a monolithic game editor. It doesn't
+	matter how many features you use from it, you still have to wait 10 minutes
+	for all of them to load in.
+</p>
+
+<p>
+	Tramway SDK has editors, but all of them are optional. If you just want to
+	use it as a framework, you can use only the C++ runtime. If you want to
+	build levels, you can use only the level editor and no other GUI tool.
+</p>
+
+<p>
+	Data files are stored as whitespace-seperated-values, so you could even edit
+	all of the data files by hand, without using a single editor.
+</p>
+
+<h2>
+	Bad graphics
+</h2>
+
+<hr/>
+
+<p>
+	Most Unity games look like very bad, even with fancy shaders, normal mapping
+	and other techniques.
+</p>
+
+<p>
+	Look at what Tramway SDK can do with just lightmapping and Gouraud shading:
+</p>
+
+<center>
+	<a target="_blank" href="images/article/why/photorealism.png">
+		<img class="resizable" src="images/article/why/photorealism.png"/>
+	</a><br/>
+	<i>
+		This could be rendered on a Direct3D 7 level graphics card with a
+		fixed-function pipeline.
+	</i>
+</center>
+
+<h2>
+	Quake level editors
+</h2>
+
+<hr/>
+
+<p>
+	Brush based level geometry is very good and you can prototype levels with it
+	very quickly. Tramway SDK has a <code>.map</code> file converter, which
+	converts brushes into triangle meshes.
+</p>
+
+<center>
+	<a target="_blank" href="images/article/why/trenchbroom.png">
+		<img class="resizable" src="images/article/why/trenchbroom.png"/>
+	</a><br/>
+	<i>Level being created in the Trenchbroom map editor.</i>
+</center>
+
+<br/>
+
+<center>
+	<a target="_blank" href="images/article/why/leveleditor.png">
+		<img class="resizable" src="images/article/why/leveleditor.png"/>
+	</a><br/>
+	<i>Level being set up in the Tramway SDK level editor.</i>
+</center>
+
+<br/>
+
+<center>
+	<a target="_blank" href="images/article/why/inengine.png">
+		<img class="resizable" src="images/article/why/inengine.png"/>
+	</a><br/>
+	<i>Level with lightmaps being rendered in-engine.</i>
+</center>
+
+<p>
+	Wow! Look at this very fancy level. Not only can we create brush-based
+	levels, we even have an input/output system like in Source to set up 
+	interactions between entities in levels.
+</p>
+
+<center>
+	<a target="_blank" href="images/article/why/signals.png">
+		<img class="resizable" src="images/article/why/signals.png"/>
+	</a><br/>
+	<i>Very fancy interaction editor.</i>
+</center>
+
+<p>
+	In the future I will be implementing all of the Source logic entities, so
+	that you can do visual scripting right in the level editor.
+</p>
+
+<h2>
+	Framework for RPGs
+</h2>
+
+<hr/>
+
+<p>
+	I think that it is very interesting to see the different kinds of games that
+	can be created in a tool like RPG Maker. There's also tons of mods, even
+	total conversions based on Morrowind. You can do a lot of stuff by changing
+	the data, even in the RPG mechanics have already preprogrammed.
+</p>
+
+<center>
+	<a target="_blank" href="images/article/why/kitchensink.png">
+		<img class="resizable" src="images/article/why/kitchensink.png"/>
+	</a><br/>
+	<i>Editor for the RPG framework.</i>
+</center>
+
+<p>
+	Since the engine was designed to support level streaming from the very
+	beginning, it should make the creation of open-world RPG-ish games very
+	quick and very easy.
+</p>
+
+<center>
+	<a target="_blank" href="images/article/why/rpg.png">
+		<img class="resizable" src="images/article/why/rpg.png"/>
+	</a><br/>
+	<i>
+		Everyone always says that you "shouldn't create an open-world RPG", but
+		that's just because they have never tried using the Trawmay SDK.
+	</i>
+</center>
+
+<h2>
+	TL; DR
+</h2>
+
+<hr/>
+
+<p>
+	Tramway SDK is a game engine based on Quake/Source style entities, supports
+	open-world streaming, comes with optional extensions, like the RPG framework
+	that is sort like RPG Maker, but for 3D.
+</p>
+
+<p>
+	This project is still in very early development. APIs are unstable, stuff
+	breaks or just doesn't work, a lot of things still haven't been implemented,
+	but it's getting better very quickly.
+</p>
+
+<center>
+	<a href="https://github.com/racenis/tram-sdk">
+		Click here for the Github repo!
+	</a>
+</center>
+
+
+
+
+				</td>
+				<td width="90" valign="top" class="right-pane">
+					<img src="images/800x600.gif"/><br/>
+					<img src="images/firefoxnow.gif"/><br/>
+					<img class="animated" src="images/hicolor.gif"/><br class="animated"/>
+					
+					<img src="images/blender.gif"/><br/>
+					<img src="images/wxwidgets.gif"/><br/>
+					
+					<img src="images/winxp.gif"/><br/>
+					<img src="images/linux.gif"/><br/>
+					<img src="images/hatemac.jpg"/><br/>
+					
+					<img class="animated" src="images/discord-no-way.gif"/><br class="animated"/>
+					
+					<img src="images/winrar.gif"/><br/>
+					<img src="images/sdblast.gif"/><br/>
+					<img src="images/esheep.gif"/><br/>
+					
+					<img src="images/valid-bad.gif"/><br/>
+					<img src="images/notepadpp.gif"/><br/>
+					<img src="images/drpepper.gif"/><br/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="footer">
+					<center>
+						<font size="1">
+							<i>Tramway SDK &copy; racenis 2021&ndash;2025</i>
+						</font>
+					</center>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

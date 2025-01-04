@@ -94,7 +94,7 @@ void RequestResource(EntityComponent* requester, Resource* resource) {
     }
     
     disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
-        .notification_type = RequestNotification::COMPONENT,
+        .notification_type = requester ? RequestNotification::COMPONENT : RequestNotification::NONE,
         .resource = resource,
         .requester = requester
     }));

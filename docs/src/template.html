@@ -28,36 +28,19 @@
 				const disable_gif = localStorage.getItem("disable_gif");
 				const enterprise_mode = localStorage.getItem("enterprise");
 				
-				/*if (disable_gif == null || enterprise_mode == null) {
-					localStorage.setItem("disable_gif", "no");
-					localStorage.setItem("enterprise", "no");
-					
-					RecheckCSS();
-					
-					return;
-				}*/
-				
-				//console.log("From RecheckCSS:");
-				//console.log(disable_gif);
-				
-				
 				if (disable_gif == "yes") {
-					console.log("disable Gifs");
 					document.querySelector("#no-gifs").innerHTML = "[Enable GIFs]";
 					AddCSS("<!-- PAGE_LEVEL -->no_gifs.css");
 				} else {
-					console.log("enable Gifs");
 					document.querySelector("#no-gifs").innerHTML = "[Disable GIFs]";
 					YeetCSS("<!-- PAGE_LEVEL -->no_gifs.css");
 				}
 				
 				if (enterprise_mode == "yes") {
-					console.log("enterprise mode");
 					document.querySelector("#enterprise").innerHTML = "[Default Mode]";
 					YeetCSS("<!-- PAGE_LEVEL -->default.css");
 					AddCSS("<!-- PAGE_LEVEL -->enterprise.css");
 				} else {
-					console.log("default mode");
 					document.querySelector("#enterprise").innerHTML = "[Enterprise Mode]";
 					YeetCSS("<!-- PAGE_LEVEL -->enterprise.css");
 					AddCSS("<!-- PAGE_LEVEL -->default.css");
@@ -91,18 +74,7 @@
 			window.onload = function() {
 				RecheckCSS();
 			}
-			
-			
-			/*function ToggleEnterprise() {
-				links = document.querySelectorAll('head link[rel="stylesheet"]');
-
-				links.forEach(link => {
-				  if (link.href.includes('default.css')) {
-					link.href = link.href.replace('default.css', 'enterprise.css');
-				  }
-				});
-			}*/
-			
+						
 		</script>
 	</head>
 	<body background="<!-- PAGE_LEVEL -->images/sky2.jpg">

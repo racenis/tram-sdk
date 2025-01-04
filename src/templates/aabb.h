@@ -167,7 +167,10 @@ public:
 //private:
     
     void UpdateParentAABB (Node* node) {
-        assert(!node->IsLeaf());
+        
+        //assert(!node->IsLeaf());
+        
+        if (node->IsLeaf()) return;
         
         Node* left_child = node->left;
         Node* right_child = node->right;

@@ -6,6 +6,7 @@ pages = ["index",
 		 "learn",
 		 
 		 "patterns",
+		 "why",
 		 
 		 "learn/whatis",
 		 "learn/getstarted",

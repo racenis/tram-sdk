@@ -140,8 +140,34 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 
+#### Very useful and very needed
+- C++ code generator
+	- CLI utility, probably a Python script
+	- Regex a source code file, partially parsing it
+	- Generate init code from macros
+	- Generate .entdef files
+	- Can also generate initial header file for an entity type
+	
+- Make .entdef files better
+	- Can have many .entdef files, maybe even one per entity type
+	- Level editor automatically scans in all the files
+	- Records in .entdef files have version numbers
+	- Also .cell files mark which entity version they use
+	- Level editor parses in using appropriate entity definition
 
-#### Should do sooner
+- Modify .stmdl format
+	- Add origin, relative to worldspawn, where applicable
+	- Add lightmap width and height
+	- Add near/far drawing distances
+	
+- Modify .map converter
+	- Center every exported model, except for worldspawn
+	- Add in the origin
+
+- Modify the level editor
+	- Allow snapping models to worldspawn via the origin
+
+#### Random small things and bugs
 
 - Add logging to file
 	- Add different severities according to where the logs are sent to
@@ -160,6 +186,19 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Add cursor movement
 	- Add selection
 	- Add copy-pasting
+- Allow lookup of all entities of a type
+	- We already have all entities registered in the ID hashmap
+	- All that we would need to do is modify hashmap to allow iteration
+	- Won't be used a lot, can be slow
+- Add option to draw rendercomponent as lines
+- Add option to draw staticwobjs as lines
+- Move activate_once into PlayerComponent
+- Add material to RenderAPI
+- Instead of setting each property (specularieties, etc.) into render API have SetMaterials
+- Why rename opengl3 shaders directory to opengl4
+- Add on_locked_use to button
+- Add entity that shows messages
+
  
 #### Should do later
 

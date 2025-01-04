@@ -48,7 +48,7 @@ struct Property {
         Register(value, name, flags);
     }
     
-    Property(const bool& value) {
+    Property(const T& value) {
         this->value = value;
     }
     

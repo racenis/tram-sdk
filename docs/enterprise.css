@@ -7,15 +7,20 @@ body {
 	width: 1000px;
 	border-radius: 15px;
 	box-shadow: 5px 5px 0px rgba(25, 25, 25, 0.8);
+	padding:10px;
 }
 
 .left-pane {
 	width: 200px;
-	padding: 10px;
+	/*padding: 10px;*/
+	padding-left: 5px;
+	padding-top: 10px;
 }
 
 .middle-pane {
-	padding: 10px;
+	/*padding: 10px;*/
+	padding-right: 5px;
+	padding-top: 10px;
 }
 
 .right-pane {
@@ -30,14 +35,15 @@ body {
 
 .titlebar {
 	position: relative;
+	padding-bottom: 10px;
 }
 
 .titlebar .links {
 	position: absolute;
-	bottom: 0;
+	bottom: 10px;
 	right: 0;
 	padding-right: 5px;
-	padding-bottom: 2px;
+	padding-bottom: 2px
 }
 
 .menubar a, .menubar a:link, .menubar a:visited, .menubar a:focus,
@@ -54,6 +60,9 @@ body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	height: 25px;
 	padding-bottom: 5px;
+	border-radius: 15px;
+	padding-left: 10px;
+	box-shadow: 0px 3px 0px #2222aa;
 }
 
 .navbar {
@@ -71,6 +80,10 @@ body {
 .navbar .right {
 	width: 50px;
 	text-align: right;
+}
+
+.resizable {
+	width: 640px;
 }
 
 h1, h2, h3, h4, h5 {

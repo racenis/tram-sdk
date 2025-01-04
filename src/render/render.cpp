@@ -32,7 +32,7 @@ struct {
     quat view_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     float view_fov = 60.0f;
     float near_plane = 0.01f;
-    float far_plane = 250.0f;
+    float far_plane = 750.0f;
     float ortho_ratio = 1.0f;
     
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};

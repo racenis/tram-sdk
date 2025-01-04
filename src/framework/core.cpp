@@ -68,6 +68,11 @@ void Core::Update() {
     
     time_since_tick += delta_time;
     
+    // avoid overflowing event buffer on severe (1000ms+) lag
+    if (time_since_tick > 1.0f) {
+        time_since_tick = 0.0f;
+    }
+    
     delta_tick = 0;
     while (time_since_tick > TICK_RATE) {
         time_since_tick -= TICK_RATE;

@@ -219,7 +219,7 @@ void SettingsMenu::Display() {
             } break;
             case 2: {
                 float fov = Render::GetViewFov() / 180.0f;
-                float clp = Render::GetViewDistance() / 500.0f;
+                float clp = Render::GetViewDistance() / 2000.0f;
                 
                 GUI::Text("Field of view"); GUI::NewLine();
                 GUI::Text("Render distance"); GUI::NewLine();
@@ -268,7 +268,7 @@ void SettingsMenu::Display() {
                     
                     GUI::NewLine();
                     bool clpch = GUI::Slider(clp, true, 150);
-                    clp *= 500.0f;
+                    clp *= 2000.0f;
                     if (clpch) Render::SetViewDistance(clp);
                     GUI::TextBox((string_float(clp) + "m").c_str(), 50);
                 GUI::PopFrame();
