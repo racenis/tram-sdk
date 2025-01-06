@@ -190,7 +190,7 @@ void EndFrame() {
 }
 
 void SetWebMainLoop(void(*loop_function)(void)) {
-#ifdef TRAM_SDK_PLATFORM_WEB
+#ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(loop_function, 0 , 0);
 #else
     Log(Severity::CRITICAL_ERROR, System::UI, "SetWebMainLoop() only works with web platform, aborting...");

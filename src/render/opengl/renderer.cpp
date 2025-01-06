@@ -164,13 +164,15 @@ void RenderFrame() {
         const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
         const float dist = glm::distance(pos, LAYER[robj.layer].view_position);
         
+        // distance culling
         if (dist > robj.fade_far || dist < robj.fade_near) {
             continue;
         }
 
+        // frustum culling
         if (robj.flags & FLAG_USE_AABB) {
             auto matrix = LAYER[robj.layer].projection_matrix * LAYER[robj.layer].view_matrix;
-            
+
             vec4 plane_l = {matrix[0][3] - matrix[0][0], 
                             matrix[1][3] - matrix[1][0],
                             matrix[2][3] - matrix[2][0],
@@ -211,12 +213,18 @@ void RenderFrame() {
             
             float len = len1 > len2 ? len1 : len2;
             
-            if (glm::dot(plane_l, vec4(mid, 1.0f)) < -len) continue;
-            if (glm::dot(plane_r, vec4(mid, 1.0f)) < -len) continue;
-            if (glm::dot(plane_t, vec4(mid, 1.0f)) < -len) continue;
-            if (glm::dot(plane_b, vec4(mid, 1.0f)) < -len) continue;
-            if (glm::dot(plane_f, vec4(mid, 1.0f)) < -len) continue;
-            if (glm::dot(plane_n, vec4(mid, 1.0f)) < -len) continue;
+            // stupid hack
+            // TODO: fix
+            vec3 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            
+            if (glm::distance(origin, mid) > len) {
+                if (glm::dot(plane_l, vec4(mid, 1.0f)) < -len) continue;
+                if (glm::dot(plane_r, vec4(mid, 1.0f)) < -len) continue;
+                if (glm::dot(plane_t, vec4(mid, 1.0f)) < -len) continue;
+                if (glm::dot(plane_b, vec4(mid, 1.0f)) < -len) continue;
+                if (glm::dot(plane_f, vec4(mid, 1.0f)) < -len) continue;
+                if (glm::dot(plane_n, vec4(mid, 1.0f)) < -len) continue;
+            }
         }
 
         rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj.CalcSortKey(LAYER[robj.layer].view_position), &robj));

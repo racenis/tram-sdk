@@ -21,7 +21,7 @@ namespace tram {
 template <typename T>
 class Hashmap {
 public:
-    constexpr Hashmap(std::string name, size_t max_size) {
+    constexpr Hashmap(const char* name, size_t max_size) {
         this->name = name;
         this->max_size = max_size;
         this->hash_parameter = max_size * 2;
@@ -36,7 +36,7 @@ public:
         memset(memory, 0, memory_size);
     }
     
-    constexpr Hashmap(std::string name, size_t max_size, std::initializer_list<std::pair<uint32_t, T>> list) : Hashmap(name, max_size) {
+    constexpr Hashmap(const char* name, size_t max_size, std::initializer_list<std::pair<uint32_t, T>> list) : Hashmap(name, max_size) {
         for (const auto& entry : list) {
             Insert(entry.first, entry.second);
         }

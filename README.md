@@ -70,6 +70,16 @@ More information can be found on the [github.io page](https://racenis.github.io/
 
 - Adventure ([source code](https://github.com/racenis/jam-game-iii) / [itch.io / web demo](https://racenis.itch.io/froggy-garden))
 
+#### Other tools
+
+- [Applets](https://github.com/racenis/tram-applets), i.e. GUI data editors
+
+- [Level editor](https://github.com/racenis/tram-world-editor) for editing worldcells
+
+#### Templates
+
+- [Teapot explorer](https://github.com/racenis/tram-template), main template project
+
 #### Examples
 
 - Pongpot ([source code](https://github.com/racenis/tram-example/tree/main/example-ping-pong))

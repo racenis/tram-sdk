@@ -391,7 +391,7 @@ void mainloop() {
     
     Loader::Update();
     
-    ControllerComponent::Update();
+    if (!Async::GetWaitingResources()) ControllerComponent::Update();
     AnimationComponent::Update();
     //RenderComponent::DrawAllAABB();
 

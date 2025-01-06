@@ -393,7 +393,7 @@ void Entity::Update() {
         if (type_info.destructor) {
             type_info.destructor(ent);
         } else {
-            Log(Severity::WARNING, System::CORE, "No destructor for {} typed {} {} found, using default", ent->GetType(), ent->GetName(), ent->GetID());
+            Log(Severity::WARNING, System::CORE, "No destructor for name {} id {} typed {} found, using default", ent->GetName(), ent->GetID(), ent->GetType());
             delete ent;
         }
     }

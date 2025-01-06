@@ -402,7 +402,7 @@ void Init() {
             [](const SharedEntityData& data, const ValueArray& array) -> Entity* {
                 CallFunction("__impl_entity_shared_data_callback", {data.id, data.name, data.flags, data.position, data.rotation});
                 for (size_t i = 0; i < array.size(); i++) {
-                    CallFunction("__impl_entity_property_callback", {i, array[i]});
+                    CallFunction("__impl_entity_property_callback", {(uint32_t)i, array[i]});
                 }
                 uint32_t entity_id = (int32_t)CallFunction("__impl_entity_constructor_callback", {data.type});
                 return Entity::Find(entity_id);
@@ -506,7 +506,7 @@ void Init() {
         WorldCell* cell = WorldCell::Find((name_t)array[0]);
         
         if (cell) {
-            return PoolProxy<WorldCell>::GetPool().index(cell);
+            return (uint32_t)PoolProxy<WorldCell>::GetPool().index(cell);
         } else {
             return -1;
         }
@@ -516,7 +516,7 @@ void Init() {
         WorldCell* cell = WorldCell::Make((name_t)array[0]);
         
         if (cell) {
-            return PoolProxy<WorldCell>::GetPool().index(cell);
+            return (uint32_t)PoolProxy<WorldCell>::GetPool().index(cell);
         } else {
             return -1;
         }
@@ -667,7 +667,7 @@ void Init() {
         Model* model = Model::Find(array[0]);
         
         if (model) {
-            return PoolProxy<Model>::GetPool().index(model);
+            return (uint32_t)PoolProxy<Model>::GetPool().index(model);
         } else {
             return -1;
         }
@@ -749,7 +749,7 @@ void Init() {
         Animation* animation = Animation::Find(array[0]);
         
         if (animation) {
-            return PoolProxy<Animation>::GetPool().index(animation);
+            return (uint32_t)PoolProxy<Animation>::GetPool().index(animation);
         } else {
             return -1;
         }
@@ -772,7 +772,7 @@ void Init() {
         Material* material = Material::Find(array[0]);
         
         if (material) {
-            return PoolProxy<Material>::GetPool().index(material);
+            return (uint32_t)PoolProxy<Material>::GetPool().index(material);
         } else {
             return -1;
         }
@@ -789,7 +789,7 @@ void Init() {
         Model* model = Model::Find(array[0]);
         
         if (model) {
-            return PoolProxy<Model>::GetPool().index(model);
+            return (uint32_t)PoolProxy<Model>::GetPool().index(model);
         } else {
             return -1;
         }
@@ -847,7 +847,7 @@ void Init() {
         Sprite* sprite = Sprite::Find(array[0]);
         
         if (sprite) {
-            return PoolProxy<Sprite>::GetPool().index(sprite);
+            return (uint32_t)PoolProxy<Sprite>::GetPool().index(sprite);
         } else {
             return -1;
         }
@@ -871,7 +871,7 @@ void Init() {
         RenderComponent* component = PoolProxy<RenderComponent>::New();
         
         if (component) {
-            return PoolProxy<RenderComponent>::GetPool().index(component);
+            return (uint32_t)PoolProxy<RenderComponent>::GetPool().index(component);
         } else {
             return -1;
         }
@@ -879,7 +879,7 @@ void Init() {
 
     SetFunction("__impl_components_render_get_model", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Model* model = PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].GetModel();
-        return PoolProxy<Model>::GetPool().index(model);
+        return (uint32_t)PoolProxy<Model>::GetPool().index(model);
     });
 
     SetFunction("__impl_components_render_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
@@ -957,7 +957,7 @@ void Init() {
         LightComponent* component = PoolProxy<LightComponent>::New();
         
         if (component) {
-            return PoolProxy<LightComponent>::GetPool().index(component);
+            return (uint32_t)PoolProxy<LightComponent>::GetPool().index(component);
         } else {
             return -1;
         }
@@ -1008,7 +1008,7 @@ void Init() {
         AnimationComponent* component = PoolProxy<AnimationComponent>::New();
         
         if (component) {
-            return PoolProxy<AnimationComponent>::GetPool().index(component);
+            return (uint32_t)PoolProxy<AnimationComponent>::GetPool().index(component);
         } else {
             return -1;
         }
@@ -1027,7 +1027,7 @@ void Init() {
 
     SetFunction("__impl_components_animation_get_model", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Model* model = PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]].GetModel();
-        return PoolProxy<Model>::GetPool().index(model);
+        return (uint32_t)PoolProxy<Model>::GetPool().index(model);
     });
 
     SetFunction("__impl_components_animation_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {

@@ -351,13 +351,34 @@ void FPSControllerComponent::RecoverFromCollisions() {
     // make controller follow whatever entity it is standing on
     if (standing_on == standing_on_prev && standing_on) {
         vec3 standing_new_pos = Entity::Find(standing_on)->GetLocation();
+        quat standing_new_rot = Entity::Find(standing_on)->GetRotation();
+        
+        vec3 old_delta = standing_pos - parent->GetLocation();
+        
+        vec3 new_delta = glm::inverse(standing_rot) * old_delta;
+        new_delta = standing_new_rot * new_delta;
+        
+        new_delta = standing_new_pos - new_delta;
+        
+        
+        
+        //new_delta += standing_pos - standing_new_pos;
+        
+        new_pos += new_delta - parent->GetLocation();
+        //new_pos += new_delta;
+        
+        standing_pos = standing_new_pos;
+        standing_rot = standing_new_rot;
+        
+        /*vec3 standing_new_pos = Entity::Find(standing_on)->GetLocation();
         if (standing_pos != standing_new_pos) {
             vec3 delta = standing_new_pos - standing_pos; 
             new_pos += delta;
         }
-        standing_pos = standing_new_pos;
+        standing_pos = standing_new_pos;*/
     } else if (standing_on) {
         standing_pos = Entity::Find(standing_on)->GetLocation();
+        standing_rot = Entity::Find(standing_on)->GetRotation();
     }
     standing_on_prev = standing_on;
     

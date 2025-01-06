@@ -30,7 +30,7 @@ protected:
     Component<PhysicsComponent> physics_body;
 public:
     // wait why is this public
-    Component<RaycastControllerComponent> controllercomponent;
+    Component<FPSControllerComponent> controllercomponent;
 };
 
 }

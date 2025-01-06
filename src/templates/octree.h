@@ -13,7 +13,7 @@ namespace tram {
 template <typename T>
 class Octree {
 public:
-    Octree(std::string name, size_t size) : nodes(name, size) {
+    Octree(const char* name, size_t size) : nodes(name, size) {
         root = nodes.AddNew();
         root->mid_point = {0.0f, 0.0f, 0.0f};
         root->half_extent = 100.0f;

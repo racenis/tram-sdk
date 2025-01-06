@@ -114,6 +114,7 @@ protected:
     id_t standing_on = 0;
     id_t standing_on_prev = 0;
     vec3 standing_pos;
+    quat standing_rot;
     
     uint32_t collision_group = Physics::COLL_PLAYER;
     
