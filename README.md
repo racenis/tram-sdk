@@ -14,7 +14,7 @@ Free func_door included with every install!
 
 ## What's it
 
-Software library and tools for making the Tramway Drifting and Dungeon Exploration Simulator 2022 and similar applications.
+Software library and tools for making the [Tramway Drifting and Dungeon Exploration Simulator 2022](https://racenis.itch.io/tramway-drifting-and-dungeon-exploration-simulator-2022) and similar applications.
 
 It's meant to work sort of like Quake, GoldSrc or Source engines, but it uses
 polygonal soup instead of BSPs and supports level streaming.
