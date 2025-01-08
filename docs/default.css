@@ -116,3 +116,10 @@ ul {
 	padding: 10px 15px 10px 15px;
 	border: 2px groove gray;
 }
+
+/* disables animated GIFs if reduced motion is requested */
+@media (prefers-reduced-motion) {
+	.animated {
+		display: none;
+	}
+}
