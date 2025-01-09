@@ -1,6 +1,9 @@
 import os.path
 import sys
 import re
+import time
+
+# This script is pretty jank, but it should be somewhat usable.
 
 def prepare_path(path):
 	# check if this is being run from the /src/ directory or project root
@@ -17,6 +20,11 @@ def prepare_path(path):
 	
 	return path
 
+def find_project_root(path):
+	path = path.replace("\\", "/")
+	path = path.split("/src")
+	return path[0]
+	
 def make_file(name):
 	path = prepare_path(os.getcwd()) + name.replace("-", "")
 	
@@ -176,6 +184,46 @@ def typeify(str):
 	print("Unrecognized type:", str)
 	sys.exit()
 	
+def enttipefy(str):
+	if str == "name_t":
+		return "name"
+		
+	if str == "bool":
+		return "bool"
+	if str == "int":
+		return "int"
+		
+	if str == "float":
+		return "float"
+	if str == "double":
+		return "float"
+		
+	if str == "int8_t":
+		return "int"
+	if str == "int16_t":
+		return "int"
+	if str == "int32_t":
+		return "int"
+		
+	if str == "uint8_t":
+		return "uint"
+	if str == "uint16_t":
+		return "uint"
+	if str == "uint32_t":
+		return "uint"
+
+	if str == "vec2":
+		return "vec2"
+	if str == "vec3":
+		return "vec3"
+	if str == "vec4":
+		return "vec4"
+	if str == "quat":
+		return "quat"
+
+	print("Unrecognized type:", str)
+	sys.exit()
+	
 def refresh_file(name):
 	path = prepare_path(os.getcwd()) + name.replace("-", "")
 	
@@ -203,9 +251,10 @@ def refresh_file(name):
 		print("Couldn't find class name!")
 		sys.exit()
 	
-	properties = re.findall("TRAM_SDK_PROPERTY\((.*),(.*)\)\s+(\S+)\s+(\S+)\s*(?:=.*?)?;", file)
+	key_values = re.findall("TRAM_SDK_KEY_VALUE\((.*),(.*)\)", file)
 	
 	# parse properties
+	properties = re.findall("TRAM_SDK_PROPERTY\((.*),(.*)\)\s+(\S+)\s+(\S+)\s*(?:=.*?)?;", file)
 	for property in properties:
 		property_list.append({
 			"name": property[0],
@@ -215,7 +264,6 @@ def refresh_file(name):
 		})
 	
 	properties = re.findall("TRAM_SDK_VIRTUAL_PROPERTY\((.*),(.*),(.*)\)", file)
-	
 	for property in properties:
 		property_list.append({
 			"name": property[1],
@@ -278,7 +326,35 @@ Entity::RegisterType( \\
 	"""
 	
 	
+	key_value_str = ""
+	field_str = ""
+	
+	for key_value in key_values:
+		key_value_str += "\t" + key_value[0].replace("\"", "") + " " + key_value[1].replace("\"", "")
+	
+	for property in property_list:
+		field_str += "\tfield " + enttipefy(property["type"]) + " " + property["name"].replace("\"", "") + "\n"
+	
+	entity_name = name_list[0].replace("\"", "").strip()
+	version_num = str(int(time.time()) - 1577836800)
+	
+	entity_definition = f"""
+begin
+	name {entity_name}
+	
+{key_value_str}
+	
+{field_str}
+	
+	version {version_num}
+end
+	
+	"""
+	
 	open(path + ".inl", "w").write(generated)
+	open(find_project_root(path) + f"/data/{entity_name}.{version_num}.entdef", "w").write(entity_definition)
+	
+	#
 	
 	print("Done!")
 	

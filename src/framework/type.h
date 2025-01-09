@@ -17,9 +17,9 @@ enum Type : uint32_t {
     TYPE_INT8,      //< Signed 8 bit long integer.
     TYPE_INT16,     //< Signed 16 bit long integer.
     TYPE_INT32,     //< Signed 32 bit long integer.
-    TYPE_UINT8,     //< Unigned 8 bit long integer.
-    TYPE_UINT16,    //< Unigned 16 bit long integer.
-    TYPE_UINT32,    //< Unigned 32 bit long integer.
+    TYPE_UINT8,     //< Unsigned 8 bit long integer.
+    TYPE_UINT16,    //< Unsigned 16 bit long integer.
+    TYPE_UINT32,    //< Unsigned 32 bit long integer.
     TYPE_FLOAT32,   //< Normal precision floating-point.
     TYPE_VEC2,      //< Normal precision floating-point 2 element vector.
     TYPE_VEC3,      //< Normal precision floating-point 3 element vector.

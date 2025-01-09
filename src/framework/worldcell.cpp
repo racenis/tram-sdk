@@ -361,7 +361,7 @@ void WorldCell::LoadFromDisk() {
         }
         
         
-        if (entry_type == "path" || entry_type == "navmesh" || entry_type == "group") {
+        if (entry_type == "path" || entry_type == "navmesh" || entry_type == "group" || entry_type == "version") {
             file.skip_linebreak();
             continue;
         }
