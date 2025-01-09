@@ -65,7 +65,7 @@ modules = {
 		"audio", 
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": win32_bin, "WIN64": win64_bin, "LINUX": ""},
-		{"WEB": "", "WIN32": "-lOpenAL32", "WIN64": "-lOpenAL32", "LINUX": ""}),
+		{"WEB": "", "WIN32": "-lOpenAL32", "WIN64": "-lOpenAL32", "LINUX": "-lopenal"}),
 	"audio/spatial": Module("audio/spatial",
 		"audio", 
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
