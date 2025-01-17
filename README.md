@@ -151,25 +151,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 ## To-do list
 
 #### Very useful and very needed
-- C++ code generator
-	- CLI utility, probably a Python script
-	- Regex a source code file, partially parsing it
-	- Generate init code from macros
-	- Generate .entdef files
-	- Can also generate initial header file for an entity type
-	
-- Make .entdef files better
-	- Can have many .entdef files, maybe even one per entity type
-	- Level editor automatically scans in all the files
-	- Records in .entdef files have version numbers
-	- Also .cell files mark which entity version they use
-	- Level editor parses in using appropriate entity definition
 
-- Modify .stmdl format
-	- Add origin, relative to worldspawn, where applicable
-	- Add lightmap width and height
-	- Add near/far drawing distances
-	
 - Modify .map converter
 	- Center every exported model, except for worldspawn
 	- Add in the origin

@@ -48,6 +48,8 @@ public:
     vec3 GetAABBMin() const { return aabb_min; }
     vec3 GetAABBMax() const { return aabb_max; }
     
+    vec3 GetOrigin() const { return origin; }
+    
     float GetNearDistance() const { return fade_near; }
     float GetFarDistance() const { return fade_far; }
     void SetNearDistance(float dist) { fade_near = dist; }
@@ -68,6 +70,8 @@ protected:
 
     float fade_near = 0.0f;
     float fade_far = INFINITY;
+
+    vec3 origin = {0.0f, 0.0f, 0.0f};
     
     std::vector<Material*> materials;
 

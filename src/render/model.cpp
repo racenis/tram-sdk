@@ -18,6 +18,8 @@
 #include <templates/hashmap.h>
 #include <templates/aabb.h>
 
+#include <charconv>
+
 /* it would be a good idea to yeet ModelData struct.
  * 
  * at first it seemed like we might need to upload some additional data to the
@@ -297,12 +299,46 @@ void Model::LoadFromDisk() {
 
         std::cout << "Loading: " << path << std::endl;
 
-        assert(data);
 
-        uint32_t vcount = file.read_uint32();   // number of vertices
+        // doing some extra work, so that we can load the old .stmdl that didn't
+        // have a header
+        auto header = file.read_string();
+
+        bool has_header = header == "STMDLv1";
+
+        uint32_t vcount;   // number of vertices
+        
+        if (!has_header) {
+            std::from_chars<uint32_t>(header.begin(), header.end(), vcount);
+        } else {
+            vcount = file.read_uint32();
+        }
+        
         uint32_t tcount = file.read_uint32();   // number of triangles
         uint32_t mcount = file.read_uint32();   // number of materials
 
+        if (has_header) {
+            uint32_t metadata_fields = file.read_uint32();
+            
+            for (uint32_t i = 0; i < metadata_fields; i++) {
+                name_t field = file.read_name();
+                
+                if (field == "lightmap") {
+                    file.read_int32();
+                    file.read_int32();
+                } else if (field == "near") {
+                    fade_near = file.read_float32();
+                } else if (field == "far") {
+                    fade_far = file.read_float32();
+                } else if (field == "origin") {
+                    origin = {file.read_float32(), file.read_float32(), file.read_float32()};
+                } else {
+                    Log(Severity::WARNING, System::RENDER, "File {} has unrecognized metadata {}, skipping entry", path, field);
+                    file.skip_linebreak();
+                }
+            }
+        }
+        
         bucket_mappings.resize(mcount);
         assert(bucket_mappings.size() == mcount);
 
