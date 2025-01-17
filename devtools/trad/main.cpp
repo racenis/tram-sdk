@@ -10,6 +10,26 @@
 // - add indirect lighting
 // - add emissive materials
 
+/*
+ * Idea for new lightmapping process
+ *
+ * 1. Load in entity definitions and worldcell 
+ * 2. Load in models for every entity
+ * 3. Allocate a lightmap for every entity
+ * 4. Instantiate every triangle in scene
+ * 	  - Add triangle to a triangle array
+ * 	  - Add a reference to lightmap in it
+ * 	  - Add the triangle to the scene AABB tree
+ * 5. Compute visibility and filters
+ *    - Check which triangles are not too far away from each other
+ *    - Check which triangles are intersecting
+ * 6. Compute lighting for every triangle
+ * 
+ * For radiosity we could append low-res surface texels during step 4.
+ * Then compute radiosities after that.
+ * 
+ */
+
 #include <iostream>
 #include <vector>
 
@@ -134,6 +154,9 @@ struct Lightmap {
 };
 
 struct Model {
+	int lightmap_width;
+	int lightmap_height;
+	
 	std::vector<name_t> materials;
 	std::vector<Vertex> vertices;
 	std::vector<Triangle> triangles;
@@ -160,17 +183,48 @@ Model LoadModel(const char* model_name) {
 	model_path += (const char*)model_name;
 	model_path += ".stmdl";
 	
-	File file(model_path.c_str(), MODE_READ);
+	File file(model_path.c_str(), File::READ);
 	
 	if (!file.is_open()) {
 		std::cout << "Error opening model file " << model_path << std::endl;
 		abort();
 	}
 	
+	name_t header = file.read_name();
+	
+	if (header != "STMDLv1") {
+		std::cout << "Unrecognized header " << header << " in " << model_path << std::endl;
+		abort();
+	}
+	
 	int vrt_c = file.read_int32();
 	int tri_c = file.read_int32();
 	int mat_c = file.read_int32();
-		
+	int metadata_count = file.read_int32();
+	
+	int lightmap_width = 0;
+	int lightmap_height = 0;
+	
+	for (int i = 0; i < metadata_count; i++) {
+		name_t field = file.read_name();
+
+		if (field == "lightmap") {
+			lightmap_width = file.read_int32();
+			lightmap_height = file.read_int32();
+		} else if (field == "near") {
+			file.read_float32();
+		} else if (field == "far") {
+			file.read_float32();
+		} else if (field == "origin") {
+			file.read_float32();
+			file.read_float32();
+			file.read_float32();
+		} else {
+			std::cout << "File" << model_path << "has unrecognized metadata" << field << "skipping entry" << std::endl;
+			file.skip_linebreak();
+		}
+	}
+	
 	std::vector<name_t> materials;
 	for (int i = 0; i < mat_c; i++) {
 		materials.push_back(file.read_name());
@@ -202,7 +256,7 @@ Model LoadModel(const char* model_name) {
 	
 	std::cout << "Loaded model " << model_name << ", it has " << vrt_c << " verts, " << tri_c << " tris, " << mat_c << " materials." << std::endl;
 	
-	return {materials, vertices, triangles};
+	return {lightmap_width, lightmap_height, materials, vertices, triangles};
 }
 
 vec3 GetBarycentric(Triangle tri, float x, float y) {
@@ -413,8 +467,7 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 
 int main(int argc, const char** argv) {
 	stbi_flip_vertically_on_write(true);
-	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
-	
+
 	std::cout << "Tramway SDK -- Radiosity lightmapper" << std::endl;
 	
 	if (argc < 5) {
@@ -503,7 +556,7 @@ int main(int argc, const char** argv) {
 	worldcell_path += worldcell;
 	worldcell_path += ".cell";
 	
-	File cell(worldcell_path.c_str(), MODE_READ | MODE_PAUSE_LINE);
+	File cell(worldcell_path.c_str(), File::READ | File::PAUSE_LINE);
 	
 	if (!cell.is_open()) {
 		std::cout << "\nError opening file: " << worldcell_path << "!" <<std::endl;
@@ -605,7 +658,7 @@ int main(int argc, const char** argv) {
 	std::vector<Triangle> all_tris;
 	
 	// first we will load the model for which we bake the lightmap
-	auto [materials, vertices, triangles] = LoadModel(model_name);
+	auto [width, height, materials, vertices, triangles] = LoadModel(model_name);
 	
 	// and we put all of its triangles into the tree
 	for (const auto& tri : triangles) {
@@ -624,7 +677,7 @@ int main(int argc, const char** argv) {
 		
 		if (!found) continue;
 		
-		auto [_yeet1, _yeet2, triangles] = LoadModel(entity.model);
+		auto [_yeet1, _yeet2, _yeet3, _yeet4, triangles] = LoadModel(entity.model);
 		
 		auto local_to_global_to_local = [&](Vertex& v){
 			v.pos = entity.rot * v.pos;
