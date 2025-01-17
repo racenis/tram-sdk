@@ -7,6 +7,8 @@
 
 // - mesh simplification(?) sometimes generates edges with NaN vertices
 //		- this is not good and should be fixed.
+//
+// - atof() is very slow, replace with std::from_chars
 
 #include <iostream>
 #include <vector>
@@ -17,6 +19,8 @@
 #include <framework/logging.h>
 #include <framework/file.h>
 #include <framework/math.h>
+
+#include <platform/file.h>
 
 #include <stb_image.h>
 
@@ -68,6 +72,8 @@ struct Brush {
 struct Entity {
 	std::vector<Brush> brushes;
 	std::string name;
+	
+	vec3 origin = {0.0f, 0.0f, 0.0f};
 	
 	std::vector<Material> materials;
 	std::vector<Vertex> vertices;
@@ -165,8 +171,6 @@ std::pair<Polygon, Edge> Clip(Polygon poly, vec4 eq) {
 }
 
 int main(int argc, const char** argv) {
-	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
-
 	std::cout << "Tramway SDK -- Map converter" << std::endl;
 	
 	
@@ -228,64 +232,69 @@ int main(int argc, const char** argv) {
 		strcat(map_path, ".map");
 	}
 	
-	File file(map_path, MODE_READ | MODE_PAUSE_LINE);
+	auto file = FileReader::GetReader(map_path);
+	//File file(map_path, MODE_READ | MODE_PAUSE_LINE);
 	
-	if (!file.is_open()) {
+	//if (!file.is_open()) {
+	if (file->GetStatus() != FileStatus::READY) {
 		std::cout << "Error opening map file " << map_path << std::endl;
 		return 1;
 	}
 	
 	std::cout << "Reading map file " << map_path << "... " << std::flush;
 	
-	while (file.cursor < file.cursor_end) {
+	const char* cursor = file->GetContents();
+	const char* cursor_end = cursor + file->GetSize();
+	
+	while (cursor < cursor_end) {
 		
 		// comment. skip until end of line
-		if (*file.cursor == '/') {
-			while (*file.cursor != '\n'/* || *file.cursor != '\0'*/) {
-				file.cursor++;
+		if (*cursor == '/') {
+			while (*cursor != '\n'/* || *cursor != '\0'*/) {
+				cursor++;
 			}
-			file.cursor++;
+			cursor++;
 			
 			continue;
 		}
 		
 		// start of an entity
-		if (*file.cursor == '{') {
+		if (*cursor == '{') {
 			Entity entity;
 			
-			*file.cursor++; // skip opening bracket
+			*cursor++; // skip opening bracket
 			
 			// read in parameters of the entity
 			for (;;) {
 				
 				// find parameter name opening bracket
-				while (*file.cursor != '"' && *file.cursor != '{') file.cursor++;
+				while (*cursor != '"' && *cursor != '{') cursor++;
 				
 				// we reached the part where the brush planes are defined
-				if (*file.cursor == '{') break;
+				if (*cursor == '{') break;
 				
-				file.cursor++; // skip opening quote
+				cursor++; // skip opening quote
 				
 				char parameter[256];
 				char value[256];
 				
 				// copy in parameter
-				for (char* p = parameter; *file.cursor != '"'; p++ && file.cursor++) {
-					p[0] = *file.cursor;
+				for (char* p = parameter; *cursor != '"'; p++ && cursor++) {
+					p[0] = *cursor;
 					p[1] = '\0';
 				}
 				
-				file.cursor++; 								// skip closing quote
-				while (*file.cursor != '"') file.cursor++; 	// find next quote
-				file.cursor++;								// skip opening quote
+				cursor++; 								// skip closing quote
+				while (*cursor != '"') cursor++; 		// find next quote
+				cursor++;								// skip opening quote
 				
 				// copy in value
-				for (char* v = value; *file.cursor != '"'; v++ && file.cursor++) {
-					v[0] = *file.cursor;
+				for (char* v = value; *cursor != '"'; v++ && cursor++) {
+					v[0] = *cursor;
 					v[1] = '\0';
 				}
 				
-				file.cursor++;  // skip closing quote
+				cursor++;  // skip closing quote
 				
 				if (std::string(parameter) == "classname" && std::string(value) == "worldspawn") {
 					entity.name = worldspawn_name;
@@ -298,9 +307,9 @@ int main(int argc, const char** argv) {
 			
 			// reading in brushes
 			for (;;) {
-				while(*file.cursor != '{' && *file.cursor != '}') file.cursor++;
+				while(*cursor != '{' && *cursor != '}') cursor++;
 				
-				if (*file.cursor == '}') break;
+				if (*cursor == '}') break;
 				
 				Brush brush;
 				
@@ -310,16 +319,16 @@ int main(int argc, const char** argv) {
 					
 					// read in planes
 					for (int i = 0; i < 3; i++) {
-						while (*file.cursor != '(') file.cursor++;
-						file.cursor++;
+						while (*cursor != '(') cursor++;
+						cursor++;
 						
-						points[i].x = atof(file.cursor);
-						while (isspace(*file.cursor)) file.cursor++;
-						while (!isspace(*file.cursor)) file.cursor++;
-						points[i].y = atof(file.cursor);
-						while (isspace(*file.cursor)) file.cursor++;
-						while (!isspace(*file.cursor)) file.cursor++;
-						points[i].z = atof(file.cursor);
+						points[i].x = atof(cursor);
+						while (isspace(*cursor)) cursor++;
+						while (!isspace(*cursor)) cursor++;
+						points[i].y = atof(cursor);
+						while (isspace(*cursor)) cursor++;
+						while (!isspace(*cursor)) cursor++;
+						points[i].z = atof(cursor);
 					}
 					
 					Plane plane;
@@ -330,40 +339,40 @@ int main(int argc, const char** argv) {
 					
 					char material[256];
 					
-					while (*file.cursor != ')') file.cursor++;
-					file.cursor++;
-					while (isspace(*file.cursor)) file.cursor++;
+					while (*cursor != ')') cursor++;
+					cursor++;
+					while (isspace(*cursor)) cursor++;
 					
 					// copy in material name
-					for (char* m = material; !isspace(*file.cursor); m++ && file.cursor++) {
-						m[0] = *file.cursor;
+					for (char* m = material; !isspace(*cursor); m++ && cursor++) {
+						m[0] = *cursor;
 						m[1] = '\0';
 					}
 					
 					plane.material = material;
 					
-					plane.x_offset = atof(file.cursor);
-					while (isspace(*file.cursor)) file.cursor++;
-					while (!isspace(*file.cursor)) file.cursor++;
-					plane.y_offset = atof(file.cursor);
-					while (isspace(*file.cursor)) file.cursor++;
-					while (!isspace(*file.cursor)) file.cursor++;
-					plane.angle = atof(file.cursor);
-					while (isspace(*file.cursor)) file.cursor++;
-					while (!isspace(*file.cursor)) file.cursor++;
-					plane.x_scale = atof(file.cursor);
-					while (isspace(*file.cursor)) file.cursor++;
-					while (!isspace(*file.cursor)) file.cursor++;
-					plane.y_scale = atof(file.cursor);
-					while (isspace(*file.cursor)) file.cursor++;
-					while (!isspace(*file.cursor)) file.cursor++;
+					plane.x_offset = atof(cursor);
+					while (isspace(*cursor)) cursor++;
+					while (!isspace(*cursor)) cursor++;
+					plane.y_offset = atof(cursor);
+					while (isspace(*cursor)) cursor++;
+					while (!isspace(*cursor)) cursor++;
+					plane.angle = atof(cursor);
+					while (isspace(*cursor)) cursor++;
+					while (!isspace(*cursor)) cursor++;
+					plane.x_scale = atof(cursor);
+					while (isspace(*cursor)) cursor++;
+					while (!isspace(*cursor)) cursor++;
+					plane.y_scale = atof(cursor);
+					while (isspace(*cursor)) cursor++;
+					while (!isspace(*cursor)) cursor++;
 					
 					brush.planes.push_back(plane);
 					
-					while (isspace(*file.cursor)) file.cursor++;
+					while (isspace(*cursor)) cursor++;
 					
-					if (*file.cursor == '}') {
-						*file.cursor++;
+					if (*cursor == '}') {
+						*cursor++;
 						break;
 					}
 				}
@@ -376,7 +385,7 @@ int main(int argc, const char** argv) {
 			}	
 		}
 		
-		file.cursor++;
+		cursor++;
 	}
 	
 	std::cout << " done!" << std::endl;
@@ -769,7 +778,43 @@ int main(int argc, const char** argv) {
 		
 		std::cout << "done!" << std::endl;
 	}
+	
+	// + --------------------------------------------------------------------- +
+	// |                                                                       |
+	// |                           MIDPOINT CENTERING                          |
+	// |                                                                       |
+	// + --------------------------------------------------------------------- +
+	
+	std::cout << "Midpoint recentering... " << std::flush;
+	
+	for (auto& entity : entities) {
+		if (entity.name == worldspawn_name) continue;
 		
+		vec3 aabb_min = entity.brushes[0].hull[0];
+		vec3 aabb_max = aabb_min;
+		
+		for (auto& brush : entity.brushes) {
+			for (auto& point : brush.hull) {
+				aabb_min = MergeAABBMin(aabb_min, point);
+				aabb_max = MergeAABBMax(aabb_max, point);
+			}
+		}
+		
+		entity.origin = glm::mix(aabb_min, aabb_max, 0.5f);
+		
+		for (auto& brush : entity.brushes) {
+			for (auto& point : brush.hull) {
+				point -= entity.origin;
+			}
+		}
+		
+		for (auto& vertex : entity.vertices) {
+			vertex.pos -= entity.origin;
+		}
+	}
+	
+	std::cout << "done!" << std::endl;
+	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                             MODEL WRITER                              +
@@ -782,7 +827,7 @@ int main(int argc, const char** argv) {
 		path += entity.name;
 		path += ".stmdl";
 		
-		File output(path.c_str(), MODE_WRITE);
+		File output(path.c_str(), File::WRITE);
 		
 		if (!output.is_open()) {
 			std::cout << "Error writing to model file " << path << std::endl;
@@ -791,11 +836,26 @@ int main(int argc, const char** argv) {
 
 		std::cout << "[" << (i + 1) << "/" << entities.size() << "] Writing " << entity.name << " 3D model to disk..." << std::flush;
 		
+		const bool needs_origin = entity.origin != vec3(0.0f, 0.0f, 0.0f);
+		
+		output.write_name("STMDLv1");
+		
 		output.write_uint32(entity.vertices.size());
 		output.write_uint32(entity.indices.size());
 		output.write_uint32(entity.materials.size());
+		output.write_uint32(needs_origin ? 1 : 0);
 		
 		output.write_newline();
+		
+		if (needs_origin) {
+			output.write_name("origin");
+			
+			output.write_float32(entity.origin.x);
+			output.write_float32(entity.origin.y);
+			output.write_float32(entity.origin.z);
+			
+			output.write_newline();
+		}
 		
 		for (auto& mat : entity.materials) {
 			output.write_name(mat.name);
@@ -839,7 +899,7 @@ int main(int argc, const char** argv) {
 		path += entity.name;
 		path += ".collmdl";
 		
-		File file(path.c_str(), MODE_WRITE);
+		File file(path.c_str(), File::WRITE);
 		
 		if (!file.is_open()) {
 			std::cout << "Error writing to model file " << path << std::endl;

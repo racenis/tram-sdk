@@ -55,6 +55,7 @@ public:
     
     name_t read_name();
     std::string_view read_string();
+    std::string_view read_token();
     std::string_view read_line();
     
     void skip_linebreak();

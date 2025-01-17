@@ -3,8 +3,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="src/bucket.h"/>
-    <File Name="src/bucket.cpp"/>
     <File Name="src/config.h"/>
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">

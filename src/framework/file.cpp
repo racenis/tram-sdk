@@ -51,6 +51,7 @@ public:
     
     virtual name_t read_name() = 0;
     virtual std::string_view read_string() = 0;
+    virtual std::string_view read_token() = 0;
     virtual std::string_view read_line() = 0;
     
     virtual void skip_newline() = 0;
@@ -140,7 +141,17 @@ public:
         return UID(buffer);
     }
     
-    // TODO: add support for double quotes
+    std::string_view read_token() {
+        const char* begin = cur;
+        size_t length = 0;
+        
+        for (; !isspace(*cur) && cur < end; cur++) {
+            length++;
+        }
+        
+        return {begin, length};
+    }
+    
     std::string_view read_string() {
         char delimiter = *cur;
         cur++;
@@ -464,6 +475,7 @@ float File::read_float32() { reader_parser->skip_whitespace(); return reader_par
 double File::read_float64() { reader_parser->skip_whitespace(); return reader_parser->read_float64(); }
 
 name_t File::read_name() { reader_parser->skip_whitespace(); return reader_parser->read_name(); }
+std::string_view File::read_token() { reader_parser->skip_whitespace(); return reader_parser->read_token(); }
 std::string_view File::read_string() { reader_parser->skip_whitespace(); return reader_parser->read_string(); }
 
 /// Parses off the remaining line.

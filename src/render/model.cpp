@@ -297,12 +297,11 @@ void Model::LoadFromDisk() {
         model_data = data;
         model_aabb = new ModelAABB;
 
-        std::cout << "Loading: " << path << std::endl;
-
+        std::cout << "Loading!!!: " << path << std::endl;
 
         // doing some extra work, so that we can load the old .stmdl that didn't
         // have a header
-        auto header = file.read_string();
+        auto header = file.read_token();
 
         bool has_header = header == "STMDLv1";
 
