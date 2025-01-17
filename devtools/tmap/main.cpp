@@ -48,8 +48,6 @@ int XAtlasPrint(const char* format, ...) {
 }
 
 int main(int argc, const char** argv) {
-	SetSystemLoggingSeverity(System::SYSTEM_PLATFORM, SEVERITY_WARNING);
-
 	std::cout << "Tramway SDK -- Lightmap packer" << std::endl;
 	
 	if (argc < 3) {
@@ -85,17 +83,49 @@ int main(int argc, const char** argv) {
 	model_path += (const char*)model_name;
 	model_path += ".stmdl";
 	
-	File file(model_path.c_str(), MODE_READ);
+	File file(model_path.c_str(), File::READ);
 	
 	if (!file.is_open()) {
 		std::cout << "Error opening model file " << model_path << std::endl;
-		return 0;
+		return 1;
+	}
+	
+	name_t header = file.read_name();
+	
+	if (header != "STMDLv1") {
+		std::cout << "Unrecognized header " << header << " in file " << model_path << std::endl;
+		return 1;
 	}
 	
 	int vrt_c = file.read_int32();
 	int tri_c = file.read_int32();
 	int mat_c = file.read_int32();
-		
+	
+	int metadata_count = file.read_int32();
+	
+	vec3 origin = {0.0f, 0.0f, 0.0f};
+	float near = 0.0f;
+	float far = INFINITY;
+	
+	for (int i = 0; i < metadata_count; i++) {
+		name_t field = file.read_name();
+
+		if (field == "lightmap") {
+			// I think that we just ignore this for now
+			file.read_int32();
+			file.read_int32();
+		} else if (field == "near") {
+			near = file.read_float32();
+		} else if (field == "far") {
+			far = file.read_float32();
+		} else if (field == "origin") {
+			origin = {file.read_float32(), file.read_float32(), file.read_float32()};
+		} else {
+			std::cout << "File" << model_path << "has unrecognized metadata" << field << "skipping entry" << std::endl;
+			file.skip_linebreak();
+		}
+	}
+	
 	std::vector<name_t> materials;
 	for (int i = 0; i < mat_c; i++) {
 		materials.push_back(file.read_name());
@@ -234,7 +264,7 @@ int main(int argc, const char** argv) {
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
 	
-	File output(model_path.c_str(), MODE_WRITE);
+	File output(model_path.c_str(), File::WRITE);
 	
 	if (!output.is_open()) {
 		std::cout << "Error writing to model file " << model_path << std::endl;
@@ -245,11 +275,46 @@ int main(int argc, const char** argv) {
 	
 	const xatlas::Mesh& new_mesh = atlas->meshes[0];
 	
+	int metadatas = 1; // at least lightmap size
+	
+	if (near != 0.0f) metadatas++;
+	if (far != INFINITY) metadatas++;
+	if (origin != vec3(0.0f, 0.0f, 0.0f)) metadatas++;
+	
+	output.write_name("STMDLv1");
+	
 	output.write_uint32(new_mesh.vertexCount);
 	output.write_uint32(new_mesh.indexCount / 3);
 	output.write_uint32(mat_c);
+	output.write_int32(metadatas);
 	
 	output.write_newline();
+	
+	output.write_name("lightmap");
+	output.write_int32(lightmap_size);
+	output.write_int32(lightmap_size);
+	
+	output.write_newline();
+	
+	if (near != 0.0f) {
+		output.write_name("near");
+		output.write_float32(near);
+		output.write_newline();
+	}
+	
+	if (far != INFINITY) {
+		output.write_name("far");
+		output.write_float32(far);
+		output.write_newline();
+	}
+	
+	if (origin != vec3(0.0f, 0.0f, 0.0f)) {
+		output.write_name("origin");
+		output.write_float32(origin.x);
+		output.write_float32(origin.y);
+		output.write_float32(origin.z);
+		output.write_newline();
+	}
 	
 	for (auto& mat : materials) {
 		output.write_name(mat);

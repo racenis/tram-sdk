@@ -6,3 +6,5 @@
 #include <framework/math.cpp>
 
 #include <xatlas.cpp>
+
+#include <platform/other.cpp>
