@@ -138,6 +138,18 @@ void LoadDependency(Resource* resource) {
     if (resource->GetStatus() == Resource::UNLOADED) {
         resource->LoadFromDisk();
     }
+    
+    // LoadFromMemory() needs to be called from render context thread. if this
+    // function is called from the render context thread, then we can just go
+    // ahead and call LoadFromMemory() immediately. otherwise we will put the
+    // resource in the queue to be called from that thread later
+    if (Platform::Window::IsRenderContextThread()) {
+        if (resource->GetStatus() == Resource::LOADED) {
+            resource->LoadFromMemory();
+        }
+        
+        return;
+    }
 
     ResourceRequest* request = request_pool.AddNew(ResourceRequest {
         .notification_type = RequestNotification::NONE,
