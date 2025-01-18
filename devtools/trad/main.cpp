@@ -42,6 +42,8 @@
 
 using namespace tram;
 
+struct Entity;
+
 struct Vertex {
 	vec3 pos;
 	vec3 nrm;
@@ -62,7 +64,24 @@ struct Texel {
 	vec3 color;
 };
 
+struct SceneTriangle {
+	Triangle triangle;
+	Entity* entity;
+	
+	// * visibility matrix *
+	// * skip matrix *
+	
+	// what else?
+};
+
 struct Lightmap {
+	Lightmap() {
+		t = nullptr;
+		b = nullptr;
+		w = 0;
+		h = 0;
+	}
+	
 	Lightmap(int width, int height) {
 		t = new Texel[width*height];
 		b = new bool[width*height];
@@ -174,8 +193,12 @@ struct Entity {
 	uint32_t flags;
 	name_t id;
 	name_t name;
-	name_t model;
-	name_t lightmap;
+	
+	name_t model_name;
+	name_t lightmap_name;
+	
+	Model model;
+	Lightmap lightmap;
 };
 
 Model LoadModel(const char* model_name) {
@@ -286,14 +309,14 @@ static vec3 TriangleAABBMax (Triangle t) {
     };
 }
 
-vec3 FindNearestIntersection(AABBTree& tree, std::vector<Triangle>& tris, vec3 pos, vec3 dir) {
+vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, vec3 pos, vec3 dir) {
 	std::vector<uint32_t> results;
 	tree.FindIntersection(pos, dir, tree.root, results);
 
 	vec3 closest = {INFINITY, INFINITY, INFINITY};
 	
 	for (auto res : results) {
-		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].v1.pos, tris[res].v2.pos, tris[res].v3.pos);
+		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].triangle.v1.pos, tris[res].triangle.v2.pos, tris[res].triangle.v3.pos);
 		if (intr.x == INFINITY) continue;			
 		//if(glm::dot(tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
 		if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
@@ -302,7 +325,7 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<Triangle>& tris, vec3 p
 	return closest;
 };
 
-vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<Triangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal, vec3 mid) {
+vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal, vec3 mid) {
 	vec3 color = {0.0f, 0.0f, 0.0f};
 	
 	// we might get a collision with the triangle, on which the texel is located
@@ -470,38 +493,25 @@ int main(int argc, const char** argv) {
 
 	std::cout << "Tramway SDK -- Radiosity lightmapper" << std::endl;
 	
-	if (argc < 5) {
-		std::cout << "Usage: trad worldcell entity width height";
-		std::cout << "\n\tworldcell is the name of the worldcell, that contains the entity and";
-		std::cout << "\n\t\tthe light with which it will be illuminated with";
-		std::cout << "\n\tentity is the name or the id of an entity, for which the lightmap will";
-		std::cout << "\n\t\tbe baked";
-		std::cout << "\n\twidth is the width of the lightmap, in texels";
-		std::cout << "\n\theight is the height of the lightmap, in texels" << std::endl;
+	if (argc < 2) {
+		std::cout << "Usage: trad worldcell";
+		std::cout << "\n\tworldcell is the name of the worldcell, that contains the entities";
+		std::cout << "\n\t\tthat will be lightmapped";
 		return 0;
 	}
 	
-	const char* entity = argv[2];
 	const char* worldcell = argv[1];
-	
-	int lightmap_width = atoi(argv[3]);
-	int lightmap_height = atoi(argv[4]); 
 	
 	bool paint_coords = false;
 	bool paint_verts = false;
 	
 	bool force_fullbright = false;
 	
-	// stretch the raster a little bit, to help with color bleeding
-	//int stretch_low_x = -1;
-	//int stretch_low_y = -1;
-	//int stretch_high_x = 2;
-	//int stretch_high_y = 2;
 	int padding = 1;
 	
 	std::vector<std::string> worldspawns;
 	
-	if (lightmap_width < 1 || lightmap_height < 1) {
+	/*if (lightmap_width < 1 || lightmap_height < 1) {
 		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
 		return 0;
 	}
@@ -509,9 +519,14 @@ int main(int argc, const char** argv) {
 	if ((lightmap_width & (lightmap_width - 1)) != 0 || (lightmap_height & (lightmap_height - 1)) != 0) {
 		std::cout << "Lightmap size has to be a power of two." << std::endl;
 		return 0;
-	}
+	}*/
 	
-	for (int i = 5; i < argc; i++) {
+	// what we could do is we could add additional parameters, e.g.
+	// - only entity to lightmap
+	// - skip entity to lightmap
+	// - override entity lightmap size
+	
+	for (int i = 2; i < argc; i++) {
 		if (strcmp(argv[i], "-coords") == 0) {
 			paint_coords = true;
 		}
@@ -522,10 +537,6 @@ int main(int argc, const char** argv) {
 		
 		if (strcmp(argv[i], "-pad") == 0) {
 			padding = atoi(argv[++i]);
-			//stretch_low_x = ammount;
-			//stretch_low_y = ammount;
-			//stretch_high_x = ammount + 1;
-			//stretch_high_y = ammount + 1;
 		}
 		
 		if (strcmp(argv[i], "-fullbright") == 0) {
@@ -584,8 +595,8 @@ int main(int argc, const char** argv) {
 			entity.flags = cell.read_uint64();
 			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
-			entity.model = cell.read_name();
-			entity.lightmap = cell.read_name();
+			entity.model_name = cell.read_name();
+			entity.lightmap_name = cell.read_name();
 			
 			entities.push_back(entity);
 		}
@@ -600,8 +611,8 @@ int main(int argc, const char** argv) {
 			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			
 			cell.read_int32();
-			entity.model = cell.read_name();
-			entity.lightmap = cell.read_name();
+			entity.model_name = cell.read_name();
+			entity.lightmap_name = cell.read_name();
 			
 			entities.push_back(entity);
 		}
@@ -625,82 +636,87 @@ int main(int argc, const char** argv) {
 
 	std::cout << "done!" << std::endl;
 	
-	int entity_index = -1;
-	for (int i = 0; i < entities.size(); i++) {
-		if (entities[i].name == entity || entities[i].id == entity) entity_index = i;
-	}
-	
-	if (entity_index == -1) {
-		std::cout << "Could not find entity " << entity << " in worldcell!"  << std::endl;
-		return 0;
-	}
-	
-	name_t model_name = entities[entity_index].model;
-	name_t lightmap_name = entities[entity_index].lightmap;
-	vec3 inv_pos = -entities[entity_index].pos;
-	quat inv_rot = glm::inverse(entities[entity_index].rot);
-	
-	for (auto& light : lights) {
-		light.pos = inv_pos + light.pos;
-		light.pos = inv_rot * light.pos;
-	}
-	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
 	// +                             MODEL LOADER                              +
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
+	
+	// the scene tree is an acceleration structure for raycast queries.
+	// the scene triangles vector will contain all triangles that will be
+	// lightmapped.
+	AABBTree scene_tree;
+	std::vector<SceneTriangle> scene_triangles;
+	
+	// load up all entity models
+	for (auto& entity: entities) {
 		
-	// this tree here will contain all of the triangles in the scene, at the
-	// time of the radiosity computation.
-	// we will use it to determine if there is a clear path between two points
-	AABBTree all_tree;
-	std::vector<Triangle> all_tris;
-	
-	// first we will load the model for which we bake the lightmap
-	auto [width, height, materials, vertices, triangles] = LoadModel(model_name);
-	
-	// and we put all of its triangles into the tree
-	for (const auto& tri : triangles) {
-		all_tree.InsertLeaf(all_tris.size(), TriangleAABBMin(tri), TriangleAABBMax(tri));
-		all_tris.push_back(tri);
+		// load up the model
+		entity.model = LoadModel(entity.model_name);
+		
+		// check if it contains lightmap dimensions
+		if (entity.model.lightmap_width == 0 || entity.model.lightmap_height == 0) {
+			std::cout << "Model " << entity.model_name << " has invalid lightmap dimensions." << std::endl;
+			std::cout << "Width " << entity.model.lightmap_width;
+			std::cout << " and height " << entity.model.lightmap_height << std::endl;
+			std::cout << "Run tmap to set the lightmap size in the model!" << std::endl;
+			return 1;
+		}
+		
+		std::cout << "Loaded " << entity.model_name << " for bake with";
+		std::cout << " a size of " << entity.model.lightmap_width;
+		std::cout << " by " << entity.model.lightmap_height << " texels." << std::endl;
+		
 	}
 	
-	// finally we load in all of the other entities 
-	
-	// ----- //
-	for (const auto& entity: entities) {
-		bool found = false;
-		for (auto worldspawn: worldspawns) {
-			if (worldspawn == entity.name) found = true;
-		}
+	// allocate lightmaps and insert them into the scene tree
+	for (auto& entity: entities) {
 		
-		if (!found) continue;
+		// allocate lightmap
+		entity.lightmap = Lightmap(entity.model.lightmap_width, entity.model.lightmap_height);
 		
-		auto [_yeet1, _yeet2, _yeet3, _yeet4, triangles] = LoadModel(entity.model);
+		// compute local space -> world space matrix
+		mat4 matrix = PositionRotationToMatrix(entity.pos, entity.rot);
 		
-		auto local_to_global_to_local = [&](Vertex& v){
-			v.pos = entity.rot * v.pos;
-			v.pos = entity.pos + v.pos;
+		// insert triangles into scene tree
+		for (const auto& tri : entity.model.triangles) {
+			SceneTriangle new_tri;
 			
-			v.pos = inv_pos + v.pos;
-			v.pos = inv_rot * v.pos;
+			new_tri.triangle.v1.pos = matrix * vec4(tri.v1.pos, 1.0f);
+			new_tri.triangle.v2.pos = matrix * vec4(tri.v2.pos, 1.0f);
+			new_tri.triangle.v3.pos = matrix * vec4(tri.v3.pos, 1.0f);
 			
-			// TODO: do the same for normals I guess?
-		};
-		
-		for (auto& triangle : triangles) {
-			local_to_global_to_local(triangle.v1);
-			local_to_global_to_local(triangle.v2);
-			local_to_global_to_local(triangle.v3);
-		}
-		
-		for (const auto& tri : triangles) {
-			all_tree.InsertLeaf(all_tris.size(), TriangleAABBMin(tri), TriangleAABBMax(tri));
-			all_tris.push_back(tri);
+			new_tri.triangle.v1.nrm = matrix * vec4(tri.v1.nrm, 0.0f);
+			new_tri.triangle.v2.nrm = matrix * vec4(tri.v2.nrm, 0.0f);
+			new_tri.triangle.v3.nrm = matrix * vec4(tri.v3.nrm, 0.0f);
+			
+			new_tri.triangle.v1.tex = tri.v1.tex;
+			new_tri.triangle.v2.tex = tri.v2.tex;
+			new_tri.triangle.v3.tex = tri.v3.tex;
+			
+			new_tri.triangle.v1.map = tri.v1.map;
+			new_tri.triangle.v2.map = tri.v2.map;
+			new_tri.triangle.v3.map = tri.v3.map;
+			
+			new_tri.triangle.mat = tri.mat;
+			
+			new_tri.entity = &entity;
+			
+			scene_tree.InsertLeaf(scene_triangles.size(),
+								  TriangleAABBMin(new_tri.triangle),
+								  TriangleAABBMax(new_tri.triangle));
+			scene_triangles.push_back(new_tri);
 		}
 	}
-	// ----- //
+	
+	
+	// +-----------------------------------------------------------------------+
+	// +                                                                       +
+	// +                        VISIBILITY CALCULATIONS                        +
+	// +                                                                       +
+	// +-----------------------------------------------------------------------+
+	
+	// TODO: implement
 	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -708,33 +724,28 @@ int main(int argc, const char** argv) {
 	// +                                                                       +
 	// +-----------------------------------------------------------------------+
 	
-	std::cout << "Baking a lightmap with " << lights.size() <<" lights, " << lightmap_width << " by " << lightmap_height << " texels in size." << std::endl;
-	
 	if (lights.size() == 0) {
 		std::cout << "Scene contains no lights!" << std::endl;
 		force_fullbright = true;
 	}
 	
-	Lightmap l(lightmap_width, lightmap_height);
-		
-	RasterParams image_params = {
-		l.w,
-		l.h,
-		//stretch_low_x,
-		//stretch_low_y,
-		//stretch_high_x,
-		//stretch_high_y
-		0, 0, 0, 0
-	};
+	
+	// okay, so I think that we'll keep the first pass as-is.
+	// as in, the following iteration through all of the scene_triangles is the
+	// first radiosity pass.
+	// after that we'll insert some additional, optional passes
+	
+	
+	
 	
 	int last_dots = -1;
 	
 	// iterate through each triangle in the lightmap and rasterize it
-	for (size_t i = 0; i < triangles.size(); i++) {
-		const auto& tri = triangles[i];
+	for (size_t i = 0; i < scene_triangles.size(); i++) {
+		const auto& tri = scene_triangles[i];
 		
 		// draw a progress bar in the command line
-		float progress = (float)i / (float)triangles.size();
+		float progress = (float)i / (float)scene_triangles.size();
 		int dots = ceil(progress * 62.0f);
 		if (last_dots != dots) {
 			std::cout << "\rComputing [";
@@ -743,26 +754,33 @@ int main(int argc, const char** argv) {
 			last_dots = dots;
 		}
 		
+		auto& l = tri.entity->lightmap;
+		
+		RasterParams image_params = {
+			l.w,
+			l.h,
+			0, 0, 0, 0
+		};
 		
 		if (paint_coords) {
 			
 			// rasterize triangle and set color to position
-			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
+			RasterizeTriangle(image_params, tri.triangle, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
 				l.Blit(col, row, {pos});
 			});
 			
 		} else if (force_fullbright) {
 			
 			// rasterize triangle to fullbright
-			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
+			RasterizeTriangle(image_params, tri.triangle, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
 				l.Blit(col, row, {{1.0f, 1.0f, 1.0f}});
 			});
 			
 		} else {
 			
 			// rasterize triangle and set color to light value
-			RasterizeTriangle(image_params, tri, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
-				vec3 color = FindTexelColorFromLights(all_tree, all_tris, lights, pos, nrm, mid);
+			RasterizeTriangle(image_params, tri.triangle, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
+				vec3 color = FindTexelColorFromLights(scene_tree, scene_triangles, lights, pos, nrm, mid);
 				l.Blit(col, row, {color});
 			});
 			
@@ -770,9 +788,9 @@ int main(int argc, const char** argv) {
 		
 		// paint in green dots in the triangle vertex positions
 		if (paint_verts) {
-			l.Blit(tri.v1.map.x * (float)l.w, tri.v1.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
-			l.Blit(tri.v2.map.x * (float)l.w, tri.v2.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
-			l.Blit(tri.v3.map.x * (float)l.w, tri.v3.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+			l.Blit(tri.triangle.v1.map.x * (float)l.w, tri.triangle.v1.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+			l.Blit(tri.triangle.v2.map.x * (float)l.w, tri.triangle.v2.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
+			l.Blit(tri.triangle.v3.map.x * (float)l.w, tri.triangle.v3.map.y * (float)l.h, {{0.0f, 1.0f, 0.0f}});
 		}
 		
 	}
@@ -780,39 +798,46 @@ int main(int argc, const char** argv) {
 	std::cout << "\rComputing... done!\t\t\t\t\t\t\t      " << std::endl;
 	
 	std::cout << "Filling gaps... " << std::flush;
-	l.Fill(padding);
+	for (auto& entity: entities) entity.lightmap.Fill(padding);
 	std::cout << "done!" << std::endl;
 	
 	std::cout << "Saving to disk... " << std::flush;
 	
-	// convert finished lightmap from floating-point to byte
-	unsigned char* img = new unsigned char[l.w*l.h*3];
-	for (int i = 0; i < l.w*l.h; i++) {
-		float r = l.t[i].color.x;
-		float g = l.t[i].color.y;
-		float b = l.t[i].color.z;
+	for (auto& entity: entities) {
 		
-		if (r > 1.0f) r = 1.0f;
-		if (g > 1.0f) g = 1.0f;
-		if (b > 1.0f) b = 1.0f;
+		if (!entity.lightmap_name || entity.lightmap_name == "fullbright") continue;
 		
-		if (r < 0.0f) r = 0.0f;
-		if (g < 0.0f) g = 0.0f;
-		if (b < 0.0f) b = 0.0f;
+		auto& l = entity.lightmap;
 		
-		img[i*3+0] = r * 255.0f;
-		img[i*3+1] = g * 255.0f;
-		img[i*3+2] = b * 255.0f;
-	}
-	
-	// then write it to a png
-	std::string output_path = "data/textures/";
-	output_path += (const char*)lightmap_name;
-	output_path += ".png";
-	
-	if (!stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0)) {
-		std::cout << "failed! Couldn't write file to disk." << std::endl;
-		return 0;
+		// convert finished lightmap from floating-point to byte
+		unsigned char* img = new unsigned char[l.w*l.h*3];
+		for (int i = 0; i < l.w*l.h; i++) {
+			float r = l.t[i].color.x;
+			float g = l.t[i].color.y;
+			float b = l.t[i].color.z;
+			
+			if (r > 1.0f) r = 1.0f;
+			if (g > 1.0f) g = 1.0f;
+			if (b > 1.0f) b = 1.0f;
+			
+			if (r < 0.0f) r = 0.0f;
+			if (g < 0.0f) g = 0.0f;
+			if (b < 0.0f) b = 0.0f;
+			
+			img[i*3+0] = r * 255.0f;
+			img[i*3+1] = g * 255.0f;
+			img[i*3+2] = b * 255.0f;
+		}
+		
+		// then write it to a png
+		std::string output_path = "data/textures/";
+		output_path += (const char*)entity.lightmap_name;
+		output_path += ".png";
+		
+		if (!stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0)) {
+			std::cout << "failed! Couldn't write file to disk." << std::endl;
+			return 0;
+		}
 	}
 	
 	std::cout << "done!" << std::endl;
