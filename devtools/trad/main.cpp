@@ -5,28 +5,22 @@
 
 // TODO:
 // - add option to use multiple worldcells in the same bake
-// - allow loading multiple models in the same bake
 // - make program go vroom vroom
 // - add indirect lighting
 // - add emissive materials
 
 /*
- * Idea for new lightmapping process
- *
- * 1. Load in entity definitions and worldcell 
- * 2. Load in models for every entity
- * 3. Allocate a lightmap for every entity
- * 4. Instantiate every triangle in scene
- * 	  - Add triangle to a triangle array
- * 	  - Add a reference to lightmap in it
- * 	  - Add the triangle to the scene AABB tree
- * 5. Compute visibility and filters
- *    - Check which triangles are not too far away from each other
- *    - Check which triangles are intersecting
- * 6. Compute lighting for every triangle
+ * Priority list:
  * 
- * For radiosity we could append low-res surface texels during step 4.
- * Then compute radiosities after that.
+ * 1. Enfasten ray-trace
+ *    - Add template method to AABBTree
+ *    - It would take in callback function
+ *    - This callback function would take in triangle collision info
+ *    - It would return a bool
+ *    - Bool determines whether the search should stop
+ * 2. Fix self-intersection via skip matrix
+ * 3. Implement visibility matrix
+ * 4. Implement full radiosity
  * 
  */
 
@@ -197,6 +191,8 @@ struct Entity {
 	name_t model_name;
 	name_t lightmap_name;
 	
+	bool cast_shadows;
+	
 	Model model;
 	Lightmap lightmap;
 };
@@ -346,7 +342,8 @@ vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, 
 	}
 	
 	for (const auto& light : lights) {
-		if (light.radius < glm::distance(pos, light.pos)) continue;
+		//if (light.radius < glm::distance(pos, light.pos)) continue;
+		if (20.0f < glm::distance(pos, light.pos)) continue;
 		
 		vec3 light_dir = glm::normalize(light.pos - pos);
 		
@@ -598,6 +595,8 @@ int main(int argc, const char** argv) {
 			entity.model_name = cell.read_name();
 			entity.lightmap_name = cell.read_name();
 			
+			entity.cast_shadows = true;
+			
 			entities.push_back(entity);
 		}
 		
@@ -614,6 +613,8 @@ int main(int argc, const char** argv) {
 			entity.model_name = cell.read_name();
 			entity.lightmap_name = cell.read_name();
 			
+			entity.cast_shadows = false;
+			
 			entities.push_back(entity);
 		}
 		
@@ -627,7 +628,7 @@ int main(int argc, const char** argv) {
 			cell.read_float32(); cell.read_float32(); cell.read_float32();
 			light.color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			light.radius = cell.read_float32();
-			
+
 			lights.push_back(light);	
 		}
 		
@@ -702,6 +703,7 @@ int main(int argc, const char** argv) {
 			
 			new_tri.entity = &entity;
 			
+			if (entity.cast_shadows)
 			scene_tree.InsertLeaf(scene_triangles.size(),
 								  TriangleAABBMin(new_tri.triangle),
 								  TriangleAABBMax(new_tri.triangle));

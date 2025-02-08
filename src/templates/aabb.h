@@ -151,7 +151,7 @@ public:
         }
     }
     
-    void FindIntersection (vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) {
+    void FindIntersection(vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) {
         bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, node->min, node->max);
         
         if (is_node_intersect) {
@@ -162,6 +162,62 @@ public:
                 if (node->right) FindIntersection (ray_pos, ray_dir, node->right, result);
             }
         }
+    }
+    
+    uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, auto filter) {
+        bool root_intersects = AABBIntersect(ray_pos, ray_dir, root->min, root->max);
+
+        if (!root_intersects) {
+            return -1;
+        }
+        
+        float nearest_dist = INFINITY;
+        uint32_t nearest_index = -1;
+        
+        return FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, root, filter);
+    }
+    
+    // this should be marked private
+    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, Node* node, auto filter) {
+        if (node->IsLeaf() && node != root) {
+            float leaf_distance = filter(ray_pos, ray_dir, node->value);
+            
+            if (leaf_distance < nearest_dist) {
+                nearest_dist = leaf_distance;
+                nearest_index = node->value;
+            }
+            
+            return;
+        }
+
+        float left_distance = INFINITY;
+        float right_distance = INFINITY;
+        
+        if (node->left) left_distance = AABBDistance(ray_pos, ray_dir, node->left->min, node->left->max);
+        if (node->right) right_distance = AABBDistance(ray_pos, ray_dir, node->right->min, node->right->max);
+        
+        if (left_distance < right_distance) {
+            
+            if (left_distance < nearest_dist) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->left, filter);
+            }
+            
+            if (right_distance < nearest_dist) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->right, filter);
+            }
+            
+        } else {
+            
+            if (right_distance < nearest_dist) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->right, filter);
+            }
+            
+            if (left_distance < nearest_dist) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->left, filter);
+            }
+            
+        }
+        
     }
     
 //private:
@@ -305,6 +361,19 @@ public:
         float tfar = glm::min(glm::min(t2max.x, t2max.y), t2max.z);
         
         return tfar >= tnear;
+    }
+    
+    static float AABBDistance(vec3 ray_pos, vec3 ray_dir, vec3 min, vec3 max) {
+        vec3 t1 = (min - ray_pos) / ray_dir; // what happens if ray_dir == 0.0f?
+        vec3 t2 = (max - ray_pos) / ray_dir; // TODO: check
+        
+        vec3 t1min = glm::min(t1, t2);
+        vec3 t2max = glm::max(t1, t2);
+        
+        float tnear = glm::max(glm::max(t1min.x, t1min.y), t1min.z);
+        float tfar = glm::min(glm::min(t2max.x, t2max.y), t2max.z);
+        
+        return tfar >= tnear ? tnear : INFINITY;
     }
     
     struct Node {
