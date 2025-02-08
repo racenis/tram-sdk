@@ -72,7 +72,7 @@ void Window::Init() {
     
     window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, window_flags);
     if (window == nullptr) {
-        Log(Severity::WARNING, System::ERROR, "SDL2 window didn't open! {}", SDL_GetError());
+        Log(Severity::WARNING, System::PLATFORM, "SDL2 window didn't open! {}", SDL_GetError());
         abort();
     }
     
