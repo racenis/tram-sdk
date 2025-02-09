@@ -40,9 +40,9 @@ option(EXTENSION_KITCHENSINK "Use the Kitchensink extension" ON)
 # |                                                                            |
 # +----------------------------------------------------------------------------+
 
-file(GLOB_RECURSE SOURCES 	${CMAKE_SOURCE_DIR}/src/components/*.cpp
-							${CMAKE_SOURCE_DIR}/src/framework/*.cpp
-							${CMAKE_SOURCE_DIR}/src/entities/*.cpp)
+file(GLOB_RECURSE SOURCES 	${PROJECT_SOURCE_DIR}/src/components/*.cpp
+							${PROJECT_SOURCE_DIR}/src/framework/*.cpp
+							${PROJECT_SOURCE_DIR}/src/entities/*.cpp)
 
 # +----------------------------------------------------------------------------+
 # |                                                                            |
@@ -50,7 +50,7 @@ file(GLOB_RECURSE SOURCES 	${CMAKE_SOURCE_DIR}/src/components/*.cpp
 # |                                                                            |
 # +----------------------------------------------------------------------------+
 
-file(GLOB AUDIO_SOURCES ${CMAKE_SOURCE_DIR}/src/audio/*.cpp)
+file(GLOB AUDIO_SOURCES ${PROJECT_SOURCE_DIR}/src/audio/*.cpp)
 list(APPEND SOURCES ${AUDIO_SOURCES})
 
 if(AUDIO_OPENAL)
@@ -60,7 +60,7 @@ if(AUDIO_OPENAL)
 		message(FATAL_ERROR "Multiple audio backends selected!")
 	endif()
 	
-	file(GLOB_RECURSE OPENAL_SOURCES ${CMAKE_SOURCE_DIR}/src/audio/openal/*.cpp)
+	file(GLOB_RECURSE OPENAL_SOURCES ${PROJECT_SOURCE_DIR}/src/audio/openal/*.cpp)
 	list(APPEND SOURCES ${OPENAL_SOURCES})
 endif()
 
@@ -71,7 +71,7 @@ if(AUDIO_SPATIAL)
 		message(FATAL_ERROR "Multiple audio backends selected!")
 	endif()
 	
-	file(GLOB_RECURSE SPATIAL_SOURCES ${CMAKE_SOURCE_DIR}/src/audio/spatial/*.cpp)
+	file(GLOB_RECURSE SPATIAL_SOURCES ${PROJECT_SOURCE_DIR}/src/audio/spatial/*.cpp)
 	list(APPEND SOURCES ${SPATIAL_SOURCES})
 endif()
 
@@ -82,7 +82,7 @@ if(AUDIO_TEMPLATE)
 		message(FATAL_ERROR "Multiple audio backends selected!")
 	endif()
 	
-	file(GLOB_RECURSE AUDIO_TEMPLATE_SOURCES ${CMAKE_SOURCE_DIR}/src/audio/template/*.cpp)
+	file(GLOB_RECURSE AUDIO_TEMPLATE_SOURCES ${PROJECT_SOURCE_DIR}/src/audio/template/*.cpp)
 	list(APPEND SOURCES ${AUDIO_TEMPLATE_SOURCES})
 endif()
 
@@ -92,15 +92,15 @@ endif()
 # |                                                                            |
 # +----------------------------------------------------------------------------+
 
-file(GLOB PHYSICS_SOURCES ${CMAKE_SOURCE_DIR}/src/physics/*.cpp)
+file(GLOB PHYSICS_SOURCES ${PROJECT_SOURCE_DIR}/src/physics/*.cpp)
 list(APPEND SOURCES ${PHYSICS_SOURCES})
 
 if(PHYSICS_BULLET)
 	message(STATUS "Using Bullet physics backend")
 	
-	include_directories(${CMAKE_SOURCE_DIR}/libraries/bullet)
+	include_directories(${PROJECT_SOURCE_DIR}/libraries/bullet)
 	
-	file(GLOB_RECURSE BULLET_SOURCES ${CMAKE_SOURCE_DIR}/src/physics/bullet/*.cpp)
+	file(GLOB_RECURSE BULLET_SOURCES ${PROJECT_SOURCE_DIR}/src/physics/bullet/*.cpp)
 	list(APPEND SOURCES ${BULLET_SOURCES})
 endif()
 
@@ -110,7 +110,7 @@ endif()
 # |                                                                            |
 # +----------------------------------------------------------------------------+
 
-file(GLOB RENDER_SOURCES ${CMAKE_SOURCE_DIR}/src/render/*.cpp)
+file(GLOB RENDER_SOURCES ${PROJECT_SOURCE_DIR}/src/render/*.cpp)
 list(APPEND SOURCES ${RENDER_SOURCES})
 
 if(RENDER_OPENGL)
@@ -120,7 +120,7 @@ if(RENDER_OPENGL)
 		message(FATAL_ERROR "Can't use Direct3D or Software, OpenGL already selected!")
 	endif()
 	
-	file(GLOB_RECURSE OPENGL_SOURCES ${CMAKE_SOURCE_DIR}/src/render/opengl/*.cpp)
+	file(GLOB_RECURSE OPENGL_SOURCES ${PROJECT_SOURCE_DIR}/src/render/opengl/*.cpp)
 	list(APPEND SOURCES ${OPENGL_SOURCES})
 endif()
 
@@ -137,7 +137,7 @@ if(RENDER_DIRECT3D)
 		message(FATAL_ERROR "Direct3D render backend only works with SDL!")
 	endif()
 	
-	file(GLOB_RECURSE DIRECT3D_SOURCES ${CMAKE_SOURCE_DIR}/src/render/direct3d/*.cpp)
+	file(GLOB_RECURSE DIRECT3D_SOURCES ${PROJECT_SOURCE_DIR}/src/render/direct3d/*.cpp)
 	list(APPEND SOURCES ${DIRECT3D_SOURCES})
 endif()
 
@@ -152,7 +152,7 @@ if(RENDER_SOFTWARE)
 		message(FATAL_ERROR "Software render backend only works with SDL!")
 	endif()
 	
-	file(GLOB_RECURSE SOFTWARE_SOURCES ${CMAKE_SOURCE_DIR}/src/render/software/*.cpp)
+	file(GLOB_RECURSE SOFTWARE_SOURCES ${PROJECT_SOURCE_DIR}/src/render/software/*.cpp)
 	list(APPEND SOURCES ${SOFTWARE_SOURCES})
 endif()
 
@@ -163,7 +163,7 @@ endif()
 # |                                                                            |
 # +----------------------------------------------------------------------------+
 
-file(GLOB PLATFORM_SOURCES ${CMAKE_SOURCE_DIR}/src/platform/*.cpp)
+file(GLOB PLATFORM_SOURCES ${PROJECT_SOURCE_DIR}/src/platform/*.cpp)
 list(APPEND SOURCES ${PLATFORM_SOURCES})
 
 if(PLATFORM_GLFW)
@@ -173,9 +173,9 @@ if(PLATFORM_GLFW)
 		message(FATAL_ERROR "Can't use SDL, GLFW already selected!")
 	endif()
 	
-	include_directories(${CMAKE_SOURCE_DIR}/libraries/glfw)
+	include_directories(${PROJECT_SOURCE_DIR}/libraries/glfw)
 	
-	file(GLOB_RECURSE GLFW_SOURCES ${CMAKE_SOURCE_DIR}/src/platform/glfw/*.cpp)
+	file(GLOB_RECURSE GLFW_SOURCES ${PROJECT_SOURCE_DIR}/src/platform/glfw/*.cpp)
 	list(APPEND SOURCES ${GLFW_SOURCES})
 endif()
 
@@ -186,9 +186,9 @@ if(PLATFORM_SDL)
 		message(FATAL_ERROR "Can't use GLFW, SDL already selected!")
 	endif()
 	
-	include_directories(${CMAKE_SOURCE_DIR}/libraries/sdl2)
+	include_directories(${PROJECT_SOURCE_DIR}/libraries/sdl2)
 	
-	file(GLOB_RECURSE SDL_SOURCES ${CMAKE_SOURCE_DIR}/src/platform/sdl/*.cpp)
+	file(GLOB_RECURSE SDL_SOURCES ${PROJECT_SOURCE_DIR}/src/platform/sdl/*.cpp)
 	list(APPEND SOURCES ${SDL_SOURCES})
 endif()
 
@@ -200,28 +200,28 @@ endif()
 
 if(EXTENSION_CAMERA)
 	message(STATUS "Using Camera extension")
-	file(GLOB_RECURSE CAMERA_SOURCES ${CMAKE_SOURCE_DIR}/src/extensions/camera/*.cpp)
+	file(GLOB_RECURSE CAMERA_SOURCES ${PROJECT_SOURCE_DIR}/src/extensions/camera/*.cpp)
 	list(APPEND SOURCES ${CAMERA_SOURCES})
 endif()
 
 if(EXTENSION_MENU)
 	message(STATUS "Using Menu extension")
-	file(GLOB_RECURSE MENU_SOURCES ${CMAKE_SOURCE_DIR}/src/extensions/menu/*.cpp)
+	file(GLOB_RECURSE MENU_SOURCES ${PROJECT_SOURCE_DIR}/src/extensions/menu/*.cpp)
 	list(APPEND SOURCES ${MENU_SOURCES})
 endif()
 
 if(EXTENSION_LUA)
 	message(STATUS "Using Lua extension")
 	
-	include_directories(${CMAKE_SOURCE_DIR}/libraries/lua)
+	include_directories(${PROJECT_SOURCE_DIR}/libraries/lua)
 	
-	file(GLOB_RECURSE LUA_SOURCES ${CMAKE_SOURCE_DIR}/src/extensions/scripting/*.cpp)
+	file(GLOB_RECURSE LUA_SOURCES ${PROJECT_SOURCE_DIR}/src/extensions/scripting/*.cpp)
 	list(APPEND SOURCES ${LUA_SOURCES})
 endif()
 
 if(EXTENSION_KITCHENSINK)
 	message(STATUS "Using Kitchensink extension")
-	file(GLOB_RECURSE KITCHENSINK_SOURCES ${CMAKE_SOURCE_DIR}/src/extensions/kitchensink/*.cpp)
+	file(GLOB_RECURSE KITCHENSINK_SOURCES ${PROJECT_SOURCE_DIR}/src/extensions/kitchensink/*.cpp)
 	list(APPEND SOURCES ${KITCHENSINK_SOURCES})
 endif()
 
@@ -231,11 +231,11 @@ endif()
 # |                                                                            |
 # +----------------------------------------------------------------------------+
 
-include_directories(${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/libraries)
+include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/libraries)
 
 # I think that glad is only needed on Windows?
 # TODO: check
-include_directories(${CMAKE_SOURCE_DIR}/libraries/glad)
+include_directories(${PROJECT_SOURCE_DIR}/libraries/glad)
 
 add_library(tramsdk STATIC ${SOURCES})
