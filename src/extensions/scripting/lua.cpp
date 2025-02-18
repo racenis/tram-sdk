@@ -194,9 +194,12 @@ static void set_global(name_t name, value_t value) {
     lua_setglobal(L, name);
 }
     
-/*static value_t get_global(name_t name) {
-    idk if I will even ever use this one
-}*/
+static value_t get_global(name_t name) {
+    lua_getglobal(L, name);
+    value_t result = get_value_from_stack(lua_gettop(L), best_value(lua_gettop(L)));
+    lua_pop(L, 1);
+    return result;
+}
 
 static void set_function(name_t name, std::vector<Type> parameters, value_t (*function)(valuearray_t)) {
     assert(registered_function_count < MAX_LUA_FUNCTIONS);
@@ -255,7 +258,7 @@ class Lua : public Script::Interface {
     }
     
     value_t GetGlobal(name_t name) {
-        return value_t();
+        return get_global(name);
     }
     
     void SetGlobal(name_t name, value_t value) {

@@ -99,8 +99,17 @@ void StaticWorldObject::Serialize() {
     lightmap = rendercomponent->GetLightmap();
 };
 
-void StaticWorldObject::MessageHandler(Message& msg){
-    return;
+void StaticWorldObject::MessageHandler(Message& msg) {
+    switch (msg.type) {
+        case Message::PING:
+            Log("Entity {} : {} was pinged by {} : {}!", id, name, msg.sender, msg.sender ? Entity::Find(msg.sender)->GetName() : "none");
+            break;
+        case Message::KILL:
+            Yeet();
+            break;
+        default:
+            Log("StaticWorldObject doesn't know how to handle {} message!", Message::GetName(msg.type));
+    }
 };
 
 }

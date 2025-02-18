@@ -96,21 +96,35 @@ void Player::MessageHandler(Message& msg) {
         Log ("Player was pinged with {}!", (long long) msg.data);
     }
     
-    if (msg.type == Message::SET_FLAG_ON) {
-        if (msg.data_value && (name_t)*msg.data_value == "noclip") {
+    if (msg.type == Message::SET_FLAG_ON && msg.data_value) {
+        const name_t flag = *msg.data_value;
+        
+        if (flag == "noclip") {
             Log("Noclip turned on.");
             plomp->SetNoclip(true);
+            
+        } else if (flag == "mouselook") {
+            Log("Mouselook turned on.");
+            plomp->SetKeyboardLook(false);
+            
         } else {
-            Log ("Player does not have flag {}!", (name_t)*msg.data_value);
+            Log ("Player does not have flag {}!", flag);
         }
     }
     
-    if (msg.type == Message::SET_FLAG_OFF) {
-        if (msg.data_value && (name_t)*msg.data_value == "noclip") {
+    if (msg.type == Message::SET_FLAG_OFF && msg.data_value) {
+        const name_t flag = *msg.data_value;
+        
+        if (flag == "noclip") {
             Log("Noclip turned off.");
             plomp->SetNoclip(false);
+            
+        } else if (flag == "mouselook") {
+            Log("Mouselook turned of.");
+            plomp->SetKeyboardLook(true);
+            
         } else {
-            Log ("Player does not have flag {}!", (name_t)*msg.data_value);
+            Log ("Player does not have flag {}!", flag);
         }
     }
 }

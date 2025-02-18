@@ -41,13 +41,37 @@ void PlayerComponent::SetNoclip(bool value) {
     controller->SetCollisions(!noclipping);
 }
 
+void PlayerComponent::SetKeyboardLook(bool value) {
+    keyboard_look = value; 
+}
+
+void PlayerComponent::UpdateLook() {
+    pitch = pitch > 89.0f ? 89.0f : pitch < -89.0f ? -89.0f : pitch;
+    
+    this->look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
+    quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
+    
+    this->direction_facing = look_rotation * DIRECTION_FORWARD;
+    
+    Event::Post({
+        .type = Event::LOOK_AT,
+        .poster = parent->GetID(),
+        .data = Event::AllocateData<Value>(look_rotation)
+    });
+    
+    controller->SetLookDirection(look_rotation);
+    parent->UpdateTransform(parent->GetLocation(), parent_rotation);
+}
+
+
+
 void PlayerComponent::EventHandler(Event &event) {
     using namespace tram::UI;
     
     // Map cursor position into camera and entity orientation.
-    if (event.type == Event::CURSORPOS) {
-        yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_MULTIPLIER; //* UI::CAMERA_SENSITIVITY; //* GetDeltaTime();
-        pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_MULTIPLIER; //* UI::CAMERA_SENSITIVITY; //* GetDeltaTime();
+    if (event.type == Event::CURSORPOS && !keyboard_look) {
+        yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_MULTIPLIER;
+        pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_MULTIPLIER;
         pitch = pitch > 89.0f ? 89.0f : pitch < -89.0f ? -89.0f : pitch;
         this->look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
         quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
@@ -62,6 +86,22 @@ void PlayerComponent::EventHandler(Event &event) {
         
         controller->SetLookDirection(look_rotation);
         parent->UpdateTransform(parent->GetLocation(), parent_rotation);
+    }
+
+    if (event.type == Event::KEYPRESS && keyboard_look) {
+        switch (event.subtype) {
+            case UI::KEY_ACTION_LEFT:
+                yaw -= 100.0f * GetDeltaTime(); break;
+            case UI::KEY_ACTION_RIGHT:
+                yaw += 100.0f * GetDeltaTime(); break;
+            case UI::KEY_ACTION_UP:
+                pitch -= 100.0f * GetDeltaTime(); break;
+            case UI::KEY_ACTION_DOWN:
+                pitch += 100.0f * GetDeltaTime(); break;
+                
+        }
+        
+        UpdateLook();
     }
 
     if (event.type == Event::KEYDOWN && event.subtype == KEY_ACTION_JUMP) {

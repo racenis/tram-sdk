@@ -28,6 +28,7 @@ public:
     void SetControllerComponent (ControllerComponent* comp) { controller = comp; }
     void Start() {}
     void SetNoclip(bool value);
+    void SetKeyboardLook(bool value);
     
     inline quat GetLookRotation() { return look_rotation; }
     inline vec3 GetDirectionFacing() { return direction_facing; }
@@ -40,6 +41,9 @@ private:
     vec3 direction_facing = {0.0f, 0.0f, -1.0f};
     
     bool noclipping = false;
+    bool keyboard_look = false;
+    
+    void UpdateLook();
     
     ControllerComponent* controller = nullptr;
 };
