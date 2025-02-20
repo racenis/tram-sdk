@@ -196,6 +196,8 @@
       <File Name="src/physics/collisionmodel.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="render">
+      <File Name="src/render/light.cpp"/>
+      <File Name="src/render/light.h"/>
       <File Name="src/render/scene.h"/>
       <File Name="src/render/scene.cpp"/>
       <VirtualDirectory Name="software">

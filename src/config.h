@@ -51,6 +51,8 @@ const uint32_t RESOURCE_LIMIT_PATH = 100;
 const uint32_t RESOURCE_LIMIT_COLLISION_MODEL = 500;
 const uint32_t RESOURCE_LIMIT_MATERIAL = 500;
 const uint32_t RESOURCE_LIMIT_SPRITE = 500;
+const uint32_t RESOURCE_LIMIT_LIGHT_GRAPH = 250;    // same as worldcell limit
+const uint32_t RESOURCE_LIMIT_SOUND_GRAPH = 250;    // ditto
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |
