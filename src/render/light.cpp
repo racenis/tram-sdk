@@ -10,7 +10,7 @@
 #include <config.h>
 
 /**
- * @class tram::Render::LightGraph render/lightgraph.h <render/lightgraph.h>
+ * @class tram::Render::LightGraph render/light.h <render/light.h>
  * 
  * LightGraph resource.
  */
@@ -18,9 +18,9 @@
 using namespace tram;
 using namespace tram::Render;
 
-static Hashmap<LightGraph*> lightgraph_list("LightGraph name list", RESOURCE_LIMIT_SPRITE);
+static Hashmap<LightGraph*> lightgraph_list("LightGraph name list", RESOURCE_LIMIT_LIGHT_GRAPH);
 
-template <> Pool<Render::LightGraph> PoolProxy<Render::LightGraph>::pool("LightGraph pool", RESOURCE_LIMIT_SPRITE);
+template <> Pool<Render::LightGraph> PoolProxy<Render::LightGraph>::pool("LightGraph pool", RESOURCE_LIMIT_LIGHT_GRAPH);
 
 // TODO: add an octree here with all of the nodes!!
 
@@ -125,7 +125,7 @@ void LightGraph::LoadFromDisk() {
                 c.l22.z = file.read_float32();
             }
         } else {
-            std::cout << "unknown path record: " << record_type << std::endl;
+            std::cout << "unknown light graph record: " << record_type << std::endl;
     }
     }
     

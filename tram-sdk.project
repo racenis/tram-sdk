@@ -54,6 +54,8 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="audio">
+      <File Name="src/audio/graph.h"/>
+      <File Name="src/audio/graph.cpp"/>
       <VirtualDirectory Name="template">
         <File Name="src/audio/template/template.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>

@@ -104,6 +104,8 @@ void StaticWorldObject::MessageHandler(Message& msg) {
         case Message::PING:
             Log("Entity {} : {} was pinged by {} : {}!", id, name, msg.sender, msg.sender ? Entity::Find(msg.sender)->GetName() : "none");
             break;
+        case Message::SELECT:
+            break;
         case Message::KILL:
             Yeet();
             break;
