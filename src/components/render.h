@@ -57,7 +57,7 @@ protected:
 
     void* aabb_tree_leaf = 0;
 
-    uint32_t render_flags;
+    uint32_t render_flags = 0;
 };
 
 }

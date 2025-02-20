@@ -19,7 +19,7 @@ namespace tram {
 using namespace tram::Render;
 using namespace tram::Render::API;
 
-template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool("ParticleComponent pool", COMPONENT_LIMIT_PARTICLE, false);
+template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool("ParticleComponent pool", COMPONENT_LIMIT_PARTICLE);
 template <> void Component<ParticleComponent>::init() { ptr = PoolProxy<ParticleComponent>::New(); }
 template <> void Component<ParticleComponent>::yeet() { PoolProxy<ParticleComponent>::Delete(ptr); }
 

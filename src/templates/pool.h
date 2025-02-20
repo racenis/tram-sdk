@@ -43,23 +43,31 @@ public:
         T* ptr;
     };
 
-    constexpr Pool(const char* name, uint64_t initialSize, bool skipFirst = false) {
+    constexpr Pool(const char* name, uint64_t initialSize/*, bool skipFirst = false*/) {
         poolName = name;
         maxSize = initialSize;
-        poolSize = skipFirst ? 1 : 0;
+        //poolSize = skipFirst ? 1 : 0;
+        poolSize = 0;
 
         first = static_cast<T*>(::operator new((initialSize * sizeof(T)) + sizeof(uint64_t) * 2));
         last = first;
         lastfree = first;
 
-        if (skipFirst) {
+        /*if (skipFirst) {
             last++;
             lastfree++;
-        }
+        }*/
         
         *((uint64_t*)last) = 0;
         *(((uint64_t*)last) + 1) = 0;
     };
+    
+    constexpr Pool(const char* name, uint64_t initialSize, std::initializer_list<T> list) : Pool(name, initialSize) {
+        for (const auto& entry : list) {
+            //*AddNew(1) = entry; // not good, but works
+            AddNew(entry);
+        }
+    }
     
     template <typename... Args>
     T* AddNew(Args&&... args){

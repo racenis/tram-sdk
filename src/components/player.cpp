@@ -13,7 +13,7 @@
 
 namespace tram {
 
-template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("PlayerComponent pool", COMPONENT_LIMIT_PLAYER, false);
+template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("PlayerComponent pool", COMPONENT_LIMIT_PLAYER);
 template <> void Component<PlayerComponent>::init() { ptr = PoolProxy<PlayerComponent>::New(); }
 template <> void Component<PlayerComponent>::yeet() { PoolProxy<PlayerComponent>::Delete(ptr); }
 

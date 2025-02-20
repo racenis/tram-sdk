@@ -20,7 +20,7 @@
 
 namespace tram {
 
-template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("LightComponent pool", COMPONENT_LIMIT_LIGHT, false);   
+template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("LightComponent pool", COMPONENT_LIMIT_LIGHT);   
 template <> void Component<LightComponent>::init() { ptr = PoolProxy<LightComponent>::New(); }
 template <> void Component<LightComponent>::yeet() { PoolProxy<LightComponent>::Delete(ptr); }
 

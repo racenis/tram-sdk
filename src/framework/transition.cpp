@@ -21,7 +21,7 @@
 
 namespace tram {
 
-template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", WORLDCELL_TRANSITION_LIMIT, false);
+template <> Pool<Transition> PoolProxy<Transition>::pool("worldcelltransition pool", WORLDCELL_TRANSITION_LIMIT);
 static Hashmap<Transition*> transition_list("transition list", WORLDCELL_TRANSITION_LIMIT);
 
 /// Finds a transition with the given name.

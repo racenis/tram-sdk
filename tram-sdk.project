@@ -220,6 +220,19 @@
       <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
+        <File Name="src/render/opengl/buffer.h"/>
+        <File Name="src/render/opengl/buffer.cpp"/>
+        <File Name="src/render/opengl/sprite.h"/>
+        <File Name="src/render/opengl/sprite.cpp"/>
+        <File Name="src/render/opengl/texture.h"/>
+        <File Name="src/render/opengl/texture.cpp"/>
+        <File Name="src/render/opengl/shader.h"/>
+        <File Name="src/render/opengl/drawlist.h"/>
+        <File Name="src/render/opengl/drawlist.cpp"/>
+        <File Name="src/render/opengl/material.h"/>
+        <File Name="src/render/opengl/material.cpp"/>
+        <File Name="src/render/opengl/light.cpp"/>
+        <File Name="src/render/opengl/light.h"/>
         <File Name="src/render/opengl/renderer.h" ExcludeProjConfig=""/>
         <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig=""/>
         <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig=""/>

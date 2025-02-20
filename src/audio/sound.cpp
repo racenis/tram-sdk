@@ -27,7 +27,7 @@
  * Currently we only support `.ogg` files, via the `stb_vorbis` library.
  */
 
-template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("Sound Resource pool", RESOURCE_LIMIT_SOUND, false);
+template <> tram::Pool<tram::Audio::Sound> tram::PoolProxy<tram::Audio::Sound>::pool("Sound Resource pool", RESOURCE_LIMIT_SOUND);
 
 namespace tram::Audio {
 

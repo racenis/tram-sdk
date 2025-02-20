@@ -18,7 +18,7 @@
 namespace tram {
 using namespace tram::Render;
 
-template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("SpriteComponent pool", COMPONENT_LIMIT_SPRITE, false);
+template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("SpriteComponent pool", COMPONENT_LIMIT_SPRITE);
 template <> void Component<SpriteComponent>::init() { ptr = PoolProxy<SpriteComponent>::New(); }
 template <> void Component<SpriteComponent>::yeet() { PoolProxy<SpriteComponent>::Delete(ptr); }
 

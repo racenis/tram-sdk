@@ -18,7 +18,7 @@ using namespace tram::Physics;
 
 namespace tram {
 
-template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("PhysicsComponent pool", COMPONENT_LIMIT_PHYSICS, false);
+template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("PhysicsComponent pool", COMPONENT_LIMIT_PHYSICS);
 template <> void Component<PhysicsComponent>::init() { ptr = PoolProxy<PhysicsComponent>::New(); }
 template <> void Component<PhysicsComponent>::yeet() { PoolProxy<PhysicsComponent>::Delete(ptr); }
 

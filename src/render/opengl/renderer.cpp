@@ -1,6 +1,11 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <render/opengl/renderer.h>
+
+#include <render/opengl/light.h>
+#include <render/opengl/shader.h>
+#include <render/opengl/drawlist.h>
+
 #include <render/vertices.h>
 #include <render/api.h>
 
@@ -20,10 +25,7 @@
 
 namespace tram::Render::API {
 
-Pool<GLDrawListEntry> draw_list ("render list", 1000, false);
-Pool<GLLight> light_list ("light list", 200, false);
-Octree<uint32_t> light_tree("light tree", 200);
-std::vector<uint32_t> light_tree_ids (200);
+//Pool<GLDrawListEntry> draw_list ("render list", 1000);
 
 struct ShaderUniformMatrices {
     mat4 projection;       /// Projection matrix.
@@ -152,15 +154,19 @@ void RenderFrame() {
     matrices.view = LAYER[0].view_matrix;
     matrices.view_pos = LAYER[0].view_position;
 
+
+    GLLight* first_light = PoolProxy<GLLight>::GetPool().begin().ptr;
+    GLLight* last_light = PoolProxy<GLLight>::GetPool().end().ptr;
+
     UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
-    UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight)*50, light_list.begin().ptr);
+    UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight) * (last_light - first_light), first_light);
 
     static uint32_t layer; layer = 0;
 
     static std::vector<std::pair<uint64_t, GLDrawListEntry*>> rvec;
     rvec.clear();
 
-    for (auto& robj : draw_list) {
+    for (auto& robj : PoolProxy<GLDrawListEntry>::GetPool()) {
         const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
         const float dist = glm::distance(pos, LAYER[robj.layer].view_position);
         
@@ -337,11 +343,11 @@ void RenderFrame() {
     }
     
     if (render_debug) {
-        for (auto& light : light_list) {
+        for (auto& light : PoolProxy<GLLight>::GetPool()) {
             char debug_text[250];
             
             sprintf(debug_text, "Index: %i\nDistance: %.2f\nColor: %.2f %.2f %.2f\nDirection: %.2f %.2f %.2f\nExponent: %.2f",
-                (int)light_list.index(&light),
+                (int)PoolProxy<GLLight>::GetPool().index(&light),
                 light.distance,
                 light.color.r, light.color.g, light.color.b,
                 light.direction.x, light.direction.y, light.direction.z,
@@ -352,338 +358,13 @@ void RenderFrame() {
     }
 }
 
-drawlistentry_t InsertDrawListEntry() {
-    return {.generic = draw_list.AddNew()};
-}
-
-void RemoveDrawListEntry(drawlistentry_t entry) {
-    draw_list.Remove(entry.gl);
-}
-
-uint32_t GetFlags(drawlistentry_t entry) {
-    return entry.gl->flags;
-}
-
-void SetFlags(drawlistentry_t entry, uint32_t flags) {
-    entry.gl->flags = flags;
-}
-
-void SetLayer(drawlistentry_t entry, uint32_t layer) {
-    entry.gl->layer = layer;
-}
-
-void SetPose(drawlistentry_t entry, Pose* pose) {
-    entry.gl->pose = pose;
-}
-
-void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
-    entry.gl->lightmap = lightmap.gl_texture_handle;
-}
-
-void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max) {
-    entry.gl->aabb_min = min;
-    entry.gl->aabb_max = max;
-}
-
-void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
-    for (size_t i = 0; i < count; i++) {
-        entry.gl->colors[i] = colors[i];
-    }
-}
-
-void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies) {
-    for (size_t i = 0; i < count; i++) {
-        entry.gl->specular_weights[i] = weights[i];
-        entry.gl->specular_exponents[i] = exponents[i];
-        entry.gl->specular_transparencies[i] = transparencies[i];
-    }
-}
-
-void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset) {
-    for (size_t i = 0; i < count; i++) {
-        entry.gl->texture_transforms[i] = offset[i];
-    }
-}
-
-void SetLights(drawlistentry_t entry, light_t* lights) {
-    /*for (size_t i = 0; i < 4; i++) {
-        entry.gl->lights[i] = light_list.index(lights[i].gl);
-    }*/
-}
-
-void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
-    vec4 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    
-    entry.gl->matrix = matrix;
-    
-    // wait do we need this even?
-    light_tree.FindNearest(entry.gl->lights, origin.x, origin.y, origin.z);
-}
-
-void SetFadeDistance(drawlistentry_t entry, float near, float far) {
-    entry.gl->fade_near = near;
-    entry.gl->fade_far = far;
-}
-
-void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
-    entry.gl->vao = vertex_array_handle.gl_vertex_array;
-}
-
-void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle) {
-    // the index array is already bound to the vao
-}
-
-void SetDrawListSpriteArray(drawlistentry_t entry, spritearray_t sprite_array_handle) {
-    SetDrawListVertexArray(entry, sprite_array_handle.vertex_array);
-}
-
-void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length) {
-    entry.gl->eboOff = index_offset;
-    entry.gl->eboLen = index_length;
-}
-
-void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
-    entry.gl->shader = FindShader(vertex_format, material_type);
-}
-
-void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* textures) {
-    for (size_t i = 0; i < texture_count; i++) {
-        entry.gl->textures[i] = textures[i].gl_texture_handle;
-    }
-    entry.gl->texCount = texture_count;
-}
-
-light_t MakeLight() {
-    GLLight* light = light_list.AddNew();
-    uint32_t light_id = light - light_list.GetFirst();
-    uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
-    
-    light_tree_ids [light_id] = leaf_id;
-        
-    return { .gl = light };
-}
-
-void DeleteLight(light_t light) {
-    GLLight* light_ptr = light.gl;
-    uint32_t light_id = light_ptr - light_list.GetFirst();
-    uint32_t leaf_id = light_tree_ids [light_id];
-    
-    light_list.Remove(light_ptr);
-    light_tree.RemoveLeaf(leaf_id);
-}
-
-void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
-    GLLight* light_ptr = light.gl;
-    uint32_t light_id = light_ptr - light_list.GetFirst();
-    uint32_t leaf_id = light_tree_ids [light_id];
-    
-    light_ptr->location = location;
-    light_ptr->color = color;
-    light_ptr->distance = distance;
-    light_ptr->direction = direction;
-    light_ptr->exponent = exponent;
-    
-    light_tree.RemoveLeaf(leaf_id);
-    leaf_id = light_tree.AddLeaf(light_id, light_ptr->location.x, light_ptr->location.y, light_ptr->location.z);
-    light_tree_ids [light_id] = leaf_id;
-}
 
 
-texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
-    uint32_t texture;
-    uint32_t opengl_tex_format;
-    
-    switch (color_mode) {
-        case COLORMODE_R:
-            opengl_tex_format = GL_RED;
-            break;
-        case COLORMODE_RG:
-            opengl_tex_format = GL_RG;
-            break;
-        case COLORMODE_RGB:
-            opengl_tex_format = GL_RGB;
-            break;
-        case COLORMODE_RGBA:
-            opengl_tex_format = GL_RGBA;
-    }
-    
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    switch (texture_filter) {
-        case TEXTUREFILTER_NEAREST:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            break;
-        case TEXTUREFILTER_LINEAR:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            break;
-        case TEXTUREFILTER_LINEAR_MIPMAPPED:
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            break;
-    }
-
-    assert(data);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, opengl_tex_format, width, height, 0, opengl_tex_format, GL_UNSIGNED_BYTE, data);
-        
-    glGenerateMipmap(GL_TEXTURE_2D);
-    
-    return {.gl_texture_handle = texture};
-}
-
-void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
-    glGenBuffers(1, &vertex_array.gl_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, GL_STATIC_DRAW);
-
-    glGenBuffers(1, &index_array.gl_index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_size, index_data, GL_STATIC_DRAW);
-
-    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
-
-    glBindVertexArray(vertex_array.gl_vertex_array);
-
-    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
-        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
-        
-        if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        } else {
-            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        }
-        
-        glEnableVertexAttribArray(i);
-    }
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_array.gl_index_buffer);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
-    glGenBuffers(1, &vertex_array.gl_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
-
-    glGenVertexArrays(1, &vertex_array.gl_vertex_array);
-
-    glBindVertexArray(vertex_array.gl_vertex_array);
-
-    for (size_t i = 0; i < vertex_format.attribute_count; i++) {
-        uint32_t opengl_type = vertex_format.attributes[i].type == VertexAttribute::FLOAT32 ? GL_FLOAT : GL_UNSIGNED_INT;
-        
-        if (opengl_type == GL_FLOAT) {
-            glVertexAttribPointer(i, vertex_format.attributes[i].size, opengl_type, GL_FALSE, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        } else {
-            glVertexAttribIPointer(i, vertex_format.attributes[i].size, opengl_type, vertex_format.attributes[i].stride, (void*)vertex_format.attributes[i].offset);
-        }
-        
-        glEnableVertexAttribArray(i);
-    }
-
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data) {
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_array.gl_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-spritearray_t CreateSpriteArray() {
-    vertexarray_t vertex_array;
-    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
-    
-    return {vertex_array};
-}
 
 
-/*
-struct SpritePoint {
-    vec3 position;
-    vec3 center;
-    vec3 color;
-    float rotation;
-    vec2 dimensions;
-    vec2 texture_offset;
-    vec2 texture_size;
-    uint32_t texture;
-};
- 
-struct SpriteVertex {
-    vec3 co;            //< Sprite position in object space.
-    vec2 voffset;       //< Vertex offset in projection space.
-    vec2 texco;         //< Vertex texture coordinates.
-    vec3 color;         //< Vertex color.
-    float verticality;  //< I don't remember.
-    uint32_t texture;   //< Vertex texture material index.
-};
 
- */
 
-void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
-    SpritePoint* sprites = (SpritePoint*) data;
-    
-    std::vector<Render::SpriteVertex> vertices;
-    
-    for (size_t i = 0; i < data_size; i++) {
-        const SpritePoint& sprite = sprites[i];
-        
-        // TODO: make rotation do something
-        // TODO: make origin do something
-        
-        Render::SpriteVertex top_left {
-            .co =           sprite.position,
-            .voffset =      {sprite.dimensions.x * -0.5f, sprite.dimensions.y * 0.5f},
-            .texco =        {sprite.texture_offset.x, sprite.texture_offset.y + sprite.texture_size.y},
-            .verticality =  1.0f,
-            .texture =      sprite.texture  
-        };
-        
-        Render::SpriteVertex top_right {
-            .co =           sprite.position,
-            .voffset =      {sprite.dimensions.x * 0.5f, sprite.dimensions.y * 0.5f},
-            .texco =        {sprite.texture_offset.x + sprite.texture_size.x, sprite.texture_offset.y + sprite.texture_size.y},
-            .verticality =  1.0f,
-            .texture =      sprite.texture
-        };
-        
-        Render::SpriteVertex bottom_left {
-            .co =           sprite.position,
-            .voffset =      {sprite.dimensions.x * -0.5f, sprite.dimensions.y * -0.5f},
-            .texco =        {sprite.texture_offset.x, sprite.texture_offset.y},
-            .verticality =  1.0f,
-            .texture =      sprite.texture
-        };
-        
-        Render::SpriteVertex bottom_right {
-            .co =           sprite.position,
-            .voffset =      {sprite.dimensions.x * 0.5f, sprite.dimensions.y * -0.5f},
-            .texco =        {sprite.texture_offset.x + sprite.texture_size.x, sprite.texture_offset.y},
-            .verticality =  1.0f,
-            .texture =      sprite.texture
-        };
 
-        vertices.push_back(top_left);
-        vertices.push_back(bottom_left);
-        vertices.push_back(top_right);
-        vertices.push_back(top_right);
-        vertices.push_back(bottom_left);
-        vertices.push_back(bottom_right);
-    }
-    
-    UpdateVertexArray(array.vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
-}
 
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
@@ -771,7 +452,7 @@ void Init() {
     
     // initialize the default light
     //new (light_list.begin().ptr) LightListEntry;
-    light_list.AddNew();
+    //light_list.AddNew();
 }
 
 ContextType GetContext() {

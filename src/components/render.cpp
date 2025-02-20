@@ -22,7 +22,7 @@ namespace tram {
 using namespace tram::Render;
 using namespace tram::Render::API;
 
-template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("RenderComponent pool", COMPONENT_LIMIT_RENDER, false);
+template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("RenderComponent pool", COMPONENT_LIMIT_RENDER);
 template <> void Component<RenderComponent>::init() { ptr = PoolProxy<RenderComponent>::New(); }
 template <> void Component<RenderComponent>::yeet() { PoolProxy<RenderComponent>::Delete(ptr); }
 

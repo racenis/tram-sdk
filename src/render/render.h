@@ -172,6 +172,19 @@ struct light_t {
     };
 };
 
+namespace API { struct GLMaterial; }
+namespace API { struct D3DMaterial; }
+namespace API { struct SWMaterial; }
+
+struct material_t {
+    union {
+        API::GLMaterial* gl;
+        API::D3DMaterial* d3d;
+        API::SWMaterial* sw;
+        void* generic;
+    };
+};
+
 }
 
 #endif // TRAM_SDK_RENDER_H

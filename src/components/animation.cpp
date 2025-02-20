@@ -29,7 +29,7 @@
 
 namespace tram {
 
-template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION, false);
+template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION);
 template <> void Component<AnimationComponent>::init() { ptr = PoolProxy<AnimationComponent>::New(); }
 template <> void Component<AnimationComponent>::yeet() { PoolProxy<AnimationComponent>::Delete(ptr); }
 

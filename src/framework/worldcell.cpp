@@ -32,7 +32,7 @@
 
 namespace tram {
 
-template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("Worldcell pool", WORLDCELL_LIMIT, false);
+template <> Pool<WorldCell> PoolProxy<WorldCell>::pool("Worldcell pool", WORLDCELL_LIMIT);
 
 static Hashmap<WorldCell*> worldcell_list("Worldcell list hashmap", WORLDCELL_LIMIT);
 

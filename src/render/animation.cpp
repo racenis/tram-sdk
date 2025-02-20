@@ -77,8 +77,8 @@
 
 using namespace tram;
 
-template <> Pool<Render::Animation> PoolProxy<Render::Animation>::pool ("animation pool", 50, false);
-template <> Pool<Render::Pose> PoolProxy<Render::Pose>::pool ("pose pool", 100, false);
+template <> Pool<Render::Animation> PoolProxy<Render::Animation>::pool ("animation pool", 50);
+template <> Pool<Render::Pose> PoolProxy<Render::Pose>::pool ("pose pool", 100);
 
 namespace tram::Render {
     

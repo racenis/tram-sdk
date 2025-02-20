@@ -16,7 +16,7 @@ using namespace tram::Physics;
 
 namespace tram {
 
-template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("TriggerComponent pool", COMPONENT_LIMIT_TRIGGER, false);
+template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("TriggerComponent pool", COMPONENT_LIMIT_TRIGGER);
 template <> void Component<TriggerComponent>::init() { ptr = PoolProxy<TriggerComponent>::New(); }
 template <> void Component<TriggerComponent>::yeet() { PoolProxy<TriggerComponent>::Delete(ptr); }
 

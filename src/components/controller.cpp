@@ -45,8 +45,8 @@
 
 namespace tram {
 
-template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool("FPSControllerComponent pool", COMPONENT_LIMIT_CONTROLLER, false);
-template <> Pool<RaycastControllerComponent> PoolProxy<RaycastControllerComponent>::pool("RaycastControllerComponent pool", COMPONENT_LIMIT_CONTROLLER, false);
+template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool("FPSControllerComponent pool", COMPONENT_LIMIT_CONTROLLER);
+template <> Pool<RaycastControllerComponent> PoolProxy<RaycastControllerComponent>::pool("RaycastControllerComponent pool", COMPONENT_LIMIT_CONTROLLER);
 template <> void Component<FPSControllerComponent>::init() { ptr = PoolProxy<FPSControllerComponent>::New(); }
 template <> void Component<FPSControllerComponent>::yeet() { PoolProxy<FPSControllerComponent>::Delete(ptr); }
 template <> void Component<RaycastControllerComponent>::init() { ptr = PoolProxy<RaycastControllerComponent>::New(); }
