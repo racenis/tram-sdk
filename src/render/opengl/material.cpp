@@ -26,16 +26,16 @@ void SetMaterialColor(material_t material, vec4 color) {
     material.gl->color = color;
 }
 
-void SetMaterialSpecularityWeight(material_t material, float weight) {
-    material.gl->specularity_weight = weight;
+void SetMaterialSpecularWeight(material_t material, float weight) {
+    material.gl->specular_weight = weight;
 }
 
-void SetMaterialSpecularityExponent(material_t material, float exponent) {
-    material.gl->specularity_exponent = exponent;
+void SetMaterialSpecularExponent(material_t material, float exponent) {
+    material.gl->specular_exponent = exponent;
 }
 
-void SetMaterialSpecularityTransparency(material_t material, float transparency) {
-    material.gl->specularity_transparency = transparency;
+void SetMaterialSpecularTransparency(material_t material, float transparency) {
+    material.gl->specular_transparency = transparency;
 }
 
 

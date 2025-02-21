@@ -321,7 +321,12 @@ void RenderFrame() {
 
         for (unsigned int j = 0; j < robj->texCount; j++){
             glActiveTexture(GL_TEXTURE0 + j);
-            glBindTexture(GL_TEXTURE_2D, robj->textures[j]);
+            
+            if (robj->materials[j]) {
+                glBindTexture(GL_TEXTURE_2D, robj->materials[j]->gl_texture);
+            } else {
+            
+            glBindTexture(GL_TEXTURE_2D, robj->textures[j]); }
         }
 
         if(robj->lightmap != 0){

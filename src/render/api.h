@@ -86,9 +86,9 @@ material_t MakeMaterial();
 void DeleteMaterial(material_t material);
 void SetMaterialTexture(material_t material, texturehandle_t texture);
 void SetMaterialColor(material_t material, vec4 color);
-void SetMaterialSpecularityWeight(material_t material, float weight);
-void SetMaterialSpecularityExponent(material_t material, float exponent);
-void SetMaterialSpecularityTransparency(material_t material, float transparency);
+void SetMaterialSpecularWeight(material_t material, float weight);
+void SetMaterialSpecularExponent(material_t material, float exponent);
+void SetMaterialSpecularTransparency(material_t material, float transparency);
 
 enum ContextType {
     CONTEXT_OPENGL,

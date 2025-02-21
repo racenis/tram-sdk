@@ -103,6 +103,13 @@ void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, mate
     entry.gl->shader = FindShader(vertex_format, material_type);
 }
 
+void SetDrawListMaterials(drawlistentry_t entry, size_t material_count, material_t* materials) {
+    for (size_t i = 0; i < material_count; i++) {
+        entry.gl->materials[i] = materials[i].gl;
+    }
+    entry.gl->texCount = material_count;
+}
+
 void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* textures) {
     for (size_t i = 0; i < texture_count; i++) {
         entry.gl->textures[i] = textures[i].gl_texture_handle;

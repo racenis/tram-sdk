@@ -308,7 +308,7 @@ void Material::LoadFromMemory() {
     } else {
         texture = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     }
-
+    
     float approx_memory = width * height * channels;  // image size
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
     
@@ -318,7 +318,14 @@ void Material::LoadFromMemory() {
 
     delete[] texture_data;
     texture_data = nullptr;
-
+    
+    material = API::MakeMaterial();
+    API::SetMaterialTexture(material, texture);
+    API::SetMaterialColor(material, vec4(color, 1.0f));
+    API::SetMaterialSpecularWeight(material, specular_weight);
+    API::SetMaterialSpecularExponent(material, specular_exponent);
+    API::SetMaterialSpecularTransparency(material, specular_transparency);
+    
     status = READY;
     return;
 }

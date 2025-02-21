@@ -10,9 +10,9 @@ namespace tram::Render::API {
 
 struct GLMaterial {
     uint32_t gl_texture = 0;
-    float specularity_weight = 0.0f;
-    float specularity_exponent = 1.0f;
-    float specularity_transparency = 0.0f;
+    float specular_weight = 0.0f;
+    float specular_exponent = 1.0f;
+    float specular_transparency = 0.0f;
     vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
 };
 

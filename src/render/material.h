@@ -34,6 +34,7 @@ public:
     Material(name_t name, materialtype_t type);
     
     inline texturehandle_t GetTexture() const { return texture; }
+    inline material_t GetMaterial() const { return material; }
     inline uint32_t GetWidth() const { return width; }
     inline uint32_t GetHeight() const { return height; }
     inline materialtype_t GetType() const { return type; }
@@ -69,6 +70,8 @@ protected:
     MaterialFilter filter = FILTER_NEAREST;
     MaterialProperty property = PROPERTY_METAL;
     TextureType texture_type = TEXTURE_SAME;
+    
+    material_t material = {.generic = nullptr};
     
     Material* source = nullptr;
     
