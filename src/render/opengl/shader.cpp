@@ -19,6 +19,7 @@
 
 #include <platform/file.h>
 
+#include <render/opengl/shader.h>
 #include <render/opengl/renderer.h>
 
 namespace tram::Render::API {
@@ -246,7 +247,7 @@ void RegisterShader(vertexformat_t format, materialtype_t type, const char* vert
     last_linked_shader++;
 }
 
-uint32_t FindShader(vertexformat_t format, materialtype_t type) {
+uint32_t FindShader(vertexformat_t format, materialtype_t type, shaderflags_t mask) {
     uint32_t shader_index = linked_shader_lookup_table[format][type];
     LinkedShader& shader = linked_shaders[shader_index];
     

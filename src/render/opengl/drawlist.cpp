@@ -52,14 +52,6 @@ void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
     }
 }
 
-void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weights, float* exponents, float* transparencies) {
-    for (size_t i = 0; i < count; i++) {
-        entry.gl->specular_weights[i] = weights[i];
-        entry.gl->specular_exponents[i] = exponents[i];
-        entry.gl->specular_transparencies[i] = transparencies[i];
-    }
-}
-
 void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset) {
     for (size_t i = 0; i < count; i++) {
         entry.gl->texture_transforms[i] = offset[i];
@@ -100,7 +92,7 @@ void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_
 }
 
 void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
-    entry.gl->shader = FindShader(vertex_format, material_type);
+    entry.gl->shader = FindShader(vertex_format, material_type, SHADER_NONE);
 }
 
 void SetDrawListMaterials(drawlistentry_t entry, size_t material_count, material_t* materials) {
@@ -108,13 +100,6 @@ void SetDrawListMaterials(drawlistentry_t entry, size_t material_count, material
         entry.gl->materials[i] = materials[i].gl;
     }
     entry.gl->texCount = material_count;
-}
-
-void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* textures) {
-    for (size_t i = 0; i < texture_count; i++) {
-        entry.gl->textures[i] = textures[i].gl_texture_handle;
-    }
-    entry.gl->texCount = texture_count;
 }
 
 }

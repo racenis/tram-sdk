@@ -26,11 +26,7 @@ struct GLDrawListEntry {
     uint32_t eboOff = 0; // in primitive count 
     uint32_t shader = 0;
     uint32_t texCount = 0;
-    uint32_t textures[15] = {0};
     vec4 colors[15];
-    float specular_weights[15];
-    float specular_exponents[15];
-    float specular_transparencies[15];
     vec4 texture_transforms[15];
     GLMaterial* materials[15];
     
@@ -42,11 +38,8 @@ struct GLDrawListEntry {
 
     GLDrawListEntry() {
         for (int i = 0; i < 15; i++) {
-            textures[i] = 0;
+            materials[i] = nullptr;
             colors[i] = {1.0f, 1.0f, 1.0f, 1.0f};
-            specular_weights[i] = 0.0f;
-            specular_exponents[i] = 1.0f;
-            specular_transparencies[i] = 0.0f;
             texture_transforms[i]  = {0.0f, 0.0f, 0.0f, 0.0f};
         }
     }

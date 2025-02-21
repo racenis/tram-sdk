@@ -142,8 +142,8 @@ void Init () {
     SetFlags(debugtext_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
     SetLayer(debugtext_entry, 2);
     
-    texturehandle_t debugtext_texture = font_debug->GetMaterial()->GetTexture();
-    SetDrawListTextures(debugtext_entry, 1, &debugtext_texture);
+    material_t debugtext_texture = font_debug->GetMaterial()->GetMaterial();
+    SetDrawListMaterials(debugtext_entry, 1, &debugtext_texture);
     
     System::SetInitialized(System::RENDER, true);
 }

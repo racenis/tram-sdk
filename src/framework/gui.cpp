@@ -227,7 +227,7 @@ void Init() {
 
 /// Submits registered fonts to the renderer.
 void UpdateDrawListFonts() {
-    Render::texturehandle_t glyphvertices_textures[16];
+    Render::material_t glyphvertices_textures[16];
     font_t font_count = 0;
     
     for (font_t i = 0; i < 16; i++) {
@@ -236,7 +236,7 @@ void UpdateDrawListFonts() {
             break;
         }
         
-        glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetTexture();
+        glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetMaterial();
         
         if (fonts[i]->GetStatus() != Resource::READY) {
             Log(Severity::ERROR, System::GUI, "Font {} is not loaded!", i);
@@ -245,7 +245,7 @@ void UpdateDrawListFonts() {
     
     using namespace tram::Render;
     
-    SetDrawListTextures(glyphvertices_entry, font_count, glyphvertices_textures);
+    SetDrawListMaterials(glyphvertices_entry, font_count, glyphvertices_textures);
 }
 
 /// Submits all of the glyphs for rendering.

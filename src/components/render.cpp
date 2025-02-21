@@ -270,7 +270,6 @@ void RenderComponent::InsertDrawListEntries() {
         //float specular_transparencies[15];
         for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
             materials[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetMaterial();
-            
             textures[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
             colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor() * color, 1.0f);
             //specular_weights[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularWeight();

@@ -23,6 +23,19 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+/* what's up and what's down?
+ * 
+ * the original model for rendering, i.e. creating a big list and then sorting
+ * it and then going through the list and rendering stuff is not working that
+ * well anymore.
+ * 
+ * which means that we should probaly change it to something better.
+ * TODO: investigate
+ * 
+ * Layer is a class, when you SetLayer you add a pointer to Layer??
+ * each Layer would have a bucket for .. ? opaques and transparents!!
+ */
+
 namespace tram::Render::API {
 
 //Pool<GLDrawListEntry> draw_list ("render list", 1000);
@@ -248,7 +261,10 @@ void RenderFrame() {
             
             uint32_t tex_hash = 0;
             for (uint32_t tex = 0; tex < robj->texCount; tex++) {
-                tex_hash ^= robj->textures[tex];
+                // TODO: figure out why we get nullptrs here
+                // maybe because of lines???
+                if (!robj->materials[tex]) continue;
+                tex_hash ^= robj->materials[tex]->gl_texture;
             }
             
             sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
@@ -287,10 +303,17 @@ void RenderFrame() {
 
         for (int i = 0; i < 15; i++) {
             modelMatrices.colors[i] = robj->colors[i];
-            modelMatrices.specular[i].x = robj->specular_weights[i];
+            /*modelMatrices.specular[i].x = robj->specular_weights[i];
             modelMatrices.specular[i].y = robj->specular_exponents[i];
-            modelMatrices.specular[i].z = robj->specular_transparencies[i];
+            modelMatrices.specular[i].z = robj->specular_transparencies[i];*/
             modelMatrices.texture_transforms[i] = robj->texture_transforms[i];
+            
+            if (!robj->materials[i]) continue;
+            
+            modelMatrices.specular[i].x = robj->materials[i]->specular_weight;
+            modelMatrices.specular[i].y = robj->materials[i]->specular_exponent;
+            modelMatrices.specular[i].z = robj->materials[i]->specular_transparency;
+            
             /*modelMatrices.texture_transforms[i].x = robj->texture_transforms[i][0][0];
             modelMatrices.texture_transforms[i].y = robj->texture_transforms[i][0][1];
             modelMatrices.texture_transforms[i].z = robj->texture_transforms[i][1][0];
@@ -320,13 +343,9 @@ void RenderFrame() {
 
 
         for (unsigned int j = 0; j < robj->texCount; j++){
+            if (!robj->materials[j]) continue;
             glActiveTexture(GL_TEXTURE0 + j);
-            
-            if (robj->materials[j]) {
-                glBindTexture(GL_TEXTURE_2D, robj->materials[j]->gl_texture);
-            } else {
-            
-            glBindTexture(GL_TEXTURE_2D, robj->textures[j]); }
+            glBindTexture(GL_TEXTURE_2D, robj->materials[j]->gl_texture);
         }
 
         if(robj->lightmap != 0){
