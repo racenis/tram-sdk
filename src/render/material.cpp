@@ -214,7 +214,7 @@ void Material::MakePattern(vec3 color1, vec3 color2) {
     height = 64;
     channels = 3;
 
-    texture_data = MakeNewErrorTexture (color1, color2);
+    texture_data = MakeNewErrorTexture(color1, color2);
 
     status = LOADED;
 }
@@ -296,8 +296,15 @@ void Material::LoadFromDisk() {
 void Material::LoadFromMemory() {
     assert(status == LOADED);
 
+    material = API::MakeMaterial();
+    API::SetMaterialColor(material, vec4(color, 1.0f));
+    API::SetMaterialSpecularWeight(material, specular_weight);
+    API::SetMaterialSpecularExponent(material, specular_exponent);
+    API::SetMaterialSpecularTransparency(material, specular_transparency);
+
     if (texture_type == TEXTURE_SOURCE) {
         texture = source->texture;
+        API::SetMaterialTexture(material, texture);
         status = READY;
         return;
     }
@@ -309,6 +316,8 @@ void Material::LoadFromMemory() {
         texture = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     }
     
+    API::SetMaterialTexture(material, texture);
+    
     float approx_memory = width * height * channels;  // image size
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
     
@@ -318,13 +327,6 @@ void Material::LoadFromMemory() {
 
     delete[] texture_data;
     texture_data = nullptr;
-    
-    material = API::MakeMaterial();
-    API::SetMaterialTexture(material, texture);
-    API::SetMaterialColor(material, vec4(color, 1.0f));
-    API::SetMaterialSpecularWeight(material, specular_weight);
-    API::SetMaterialSpecularExponent(material, specular_exponent);
-    API::SetMaterialSpecularTransparency(material, specular_transparency);
     
     status = READY;
     return;

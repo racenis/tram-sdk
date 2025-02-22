@@ -150,15 +150,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 ## To-do list
 
-#### Very useful and very needed
-
-- Modify .map converter
-	- Center every exported model, except for worldspawn
-	- Add in the origin
-
-- Modify the level editor
-	- Allow snapping models to worldspawn via the origin
-
 #### Random small things and bugs
 
 - Add logging to file
@@ -169,8 +160,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Sound table does not play if only one sound
 - Add logging during render initialization end especially shader loading
 - If can't find shader for a material, then print material name	
-- If you don't RegisterShader() before Render::Init(), then the Uniform blocks won't be bound and you will get pancake models
-	- Add some kind of a code to bind 
 - Put triangle definition into math.h
 - And also switch triangle intersection thingy
 - Add directional lights to lightmapper
@@ -185,11 +174,9 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add option to draw rendercomponent as lines
 - Add option to draw staticwobjs as lines
 - Move activate_once into PlayerComponent
-- Add material to RenderAPI
-- Instead of setting each property (specularieties, etc.) into render API have SetMaterials
 - Why rename opengl3 shaders directory to opengl4
 - Add on_locked_use to button
-- Add entity that shows messages
+- Add entity that shows messages in 3D space
 
  
 #### Should do later

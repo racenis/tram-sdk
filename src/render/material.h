@@ -44,6 +44,7 @@ public:
     inline float GetSpecularExponent() const { return specular_exponent; }
     inline float GetSpecularTransparency() const { return specular_transparency; }
 
+    // TODO: update the material in the API when these are called
     void SetMaterialType(materialtype_t type) { this->type = type; }
     void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; }
     void SetMaterialProperty(MaterialProperty property) { this->property = property; }

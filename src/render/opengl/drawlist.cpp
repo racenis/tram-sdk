@@ -91,8 +91,14 @@ void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_
     entry.gl->eboLen = index_length;
 }
 
-void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
+bool SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
     entry.gl->shader = FindShader(vertex_format, material_type, SHADER_NONE);
+    if (entry.gl->shader) {
+        return true;
+    } else {
+        entry.gl->shader = GetAnyShader(SHADER_NONE);
+        return false;
+    }
 }
 
 void SetDrawListMaterials(drawlistentry_t entry, size_t material_count, material_t* materials) {

@@ -48,7 +48,7 @@ void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handl
 void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_t index_length);
 void SetDrawListSpriteArray(drawlistentry_t entry, spritearray_t sprite_array_handle);
 
-void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type);
+bool SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type);
 
 void SetDrawListMaterials(drawlistentry_t entry, size_t material_count, material_t* materials);
 
