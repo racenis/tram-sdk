@@ -158,8 +158,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Write some unit tests
 	- Check what happens when point is put directly on plane or origin
 - Sound table does not play if only one sound
-- Add logging during render initialization end especially shader loading
-- If can't find shader for a material, then print material name	
 - Put triangle definition into math.h
 - And also switch triangle intersection thingy
 - Add directional lights to lightmapper
@@ -173,8 +171,6 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Won't be used a lot, can be slow
 - Add option to draw rendercomponent as lines
 - Add option to draw staticwobjs as lines
-- Move activate_once into PlayerComponent
-- Why rename opengl3 shaders directory to opengl4
 - Add on_locked_use to button
 - Add entity that shows messages in 3D space
 

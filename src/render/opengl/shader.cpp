@@ -27,7 +27,7 @@ namespace tram::Render::API {
 #ifndef _WIN32
     const char* shader_path = "shaders/gles3/";
 #else
-    const char* shader_path = "shaders/opengl3/";
+    const char* shader_path = "shaders/opengl4/";
 #endif
 
 class VertexShader {
