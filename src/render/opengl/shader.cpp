@@ -55,6 +55,8 @@ public:
             Log(Severity::ERROR, System::RENDER, "Can't find vertex shader source file {}!", UID(path));
         }
 
+        Log(Severity::INFO, System::RENDER, "Compiling vertex shader {} with {} flags", name, flags);
+
         uint32_t compiled_program = glCreateShader(GL_VERTEX_SHADER);
         const char* contents = file->GetContents();
         glShaderSource(compiled_program, 1, &contents, NULL);
@@ -67,9 +69,7 @@ public:
             char compile_error[420];
             glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
             
-            Log(Severity::ERROR, System::RENDER, "Vertex shader {} compile error:\n{}", UID(name), UID(compile_error));
-            
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::RENDER, "Vertex shader {} compile error:\n{}", UID(name), UID(compile_error));
         }
 
         file->Yeet();
@@ -122,7 +122,10 @@ public:
         
         if (file->GetStatus() != FileStatus::READY) {
             Log(Severity::ERROR, System::RENDER, "Can't find fragment shader source file {}!", UID(path));
+            return 0;
         }
+        
+        Log(Severity::INFO, System::RENDER, "Compiling fragment shader {} with {} flags", name, flags);
 
         uint32_t compiled_program = glCreateShader(GL_FRAGMENT_SHADER);
         const char* contents = file->GetContents();
@@ -136,9 +139,7 @@ public:
             char compile_error[420];
             glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
             
-            Log(Severity::ERROR, System::RENDER, "Fragment shader {} compile error:\n{}", UID(name), UID(compile_error));
-            
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::RENDER, "Fragment shader {} compile error:\n{}", UID(name), UID(compile_error));
         }
 
         file->Yeet();
@@ -194,6 +195,11 @@ public:
             if (shader_flags == flags) return shader;
         }
         
+        Log(Severity::INFO, System::RENDER, "Linking {} and {} shader with {} flags",
+                                             GetVertexFormatName(format),
+                                             GetMaterialTypeName(type),
+                                             flags);
+        
         // otherwise link the shader again
         uint32_t linked_shader = glCreateProgram();
         glAttachShader(linked_shader, vertex_shader->GetShader(flags));
@@ -209,7 +215,7 @@ public:
             
             Log(Severity::ERROR, System::RENDER, "Shader link error:\n{}", UID(link_error));
             
-            abort();
+            return 0;
         }
         
         glUseProgram(linked_shader);

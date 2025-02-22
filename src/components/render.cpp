@@ -287,7 +287,7 @@ void RenderComponent::InsertDrawListEntries() {
         //Render::API::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
         Render::API::SetDrawListColors(entry, index_ranges[i].material_count, colors);
         //Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_exponents, specular_transparencies);
-        Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
+        const bool found_shader = Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
         Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
@@ -307,6 +307,13 @@ void RenderComponent::InsertDrawListEntries() {
         }
         
         Render::API::SetFadeDistance(entry, model->GetNearDistance(), model->GetFarDistance());
+        
+        if (!found_shader) {
+            Log(Severity::WARNING, System::RENDER, "Can't find shader for the following {} materials:", index_ranges.size());
+            for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
+                 Log(Severity::WARNING, System::RENDER, "Material {}: {}", j, model->GetMaterials()[index_ranges[i].materials[j]]->GetName());
+            }
+        }
         
         draw_list_entries.push_back(entry);
     }
