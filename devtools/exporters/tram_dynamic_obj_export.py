@@ -3,15 +3,15 @@ import os
 
 bl_info = {
     "name": "Export Tram Dynamic Model",
-    "description": "uwu nyaa ;33",
-    "author": "JDambergs",
+    "description": "Exports .dymdl files for Tramway SDK",
+    "author": "racenis",
     "blender": (2, 83, 0),
     "support": "COMMUNITY",
     "category": "Import-Export",
 }
 
-def write_tram_dynamic_model(context, filepath, use_some_setting):
-    ob = bpy.context.active_object
+def write_tram_dynamic_model(context, ob, filepath):
+    
     exp = {'uv':[],'vert':[],'vnorm':[],'polys':[],'vweight':[],'bones':[]}
 
     #get uv coords
@@ -90,10 +90,6 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
 
             exp['bones'].append(boning)
 
-
-
-
-
     
     #ok now to compile everything together
     f = open(filepath, 'w', encoding='utf-8')
@@ -158,8 +154,6 @@ def write_tram_dynamic_model(context, filepath, use_some_setting):
    
     f.close()
 
-    return {'FINISHED'}
-
 
 # ExportHelper is a helper class, defines filename and
 # invoke() function which calls the file selector.
@@ -201,13 +195,23 @@ class ExportTramDynamicObj(Operator, ExportHelper):
     )
 
     def invoke(self, context, _event):
+        object = bpy.context.object
+    
+        if object is None:
+            self.report({'ERROR'}, "No object selected!")
+            return {'CANCELLED'}
+        
+        if object.type != 'MESH':
+            self.report({'ERROR'}, "Selected object is not a mesh!")
+            return {'CANCELLED'}
+        
         if not self.filepath or True:
             blend_filepath = context.blend_data.filepath
             if not blend_filepath:
-                blend_filepath = bpy.context.object.name
+                blend_filepath = object.name
             else:
                 path_dir = os.path.dirname(blend_filepath)
-                blend_filepath = os.path.join(path_dir, bpy.context.object.name)
+                blend_filepath = os.path.join(path_dir, object.name)
 
             self.filepath = blend_filepath + self.filename_ext
 
@@ -215,7 +219,9 @@ class ExportTramDynamicObj(Operator, ExportHelper):
         return {'RUNNING_MODAL'}
 
     def execute(self, context):
-        return write_tram_dynamic_model(context, self.filepath, self.use_setting)
+        write_tram_dynamic_model(context, bpy.context.object, self.filepath)
+        
+        return {'FINISHED'}
 
 
 # Only needed if you want to add into a dynamic menu
@@ -235,6 +241,3 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-
-    # test call
-    #bpy.ops.export_tram_static_obj.export_static_tram('INVOKE_DEFAULT')

@@ -2,14 +2,14 @@ import bpy
 
 bl_info = {
     "name": "Export Tram Animation",
-    "description": "uwu nyaa ;33",
-    "author": "JDambergs",
+    "description": "Exports .anim files for Tramway SDK",
+    "author": "racenis",
     "blender": (2, 83, 0),
     "support": "COMMUNITY",
     "category": "Import-Export",
 }
 
-def write_tram_animation(context, filepath, use_some_setting):
+def write_tram_animation(context, filepath):
     for action in bpy.data.actions:
         
         full_path = filepath + action.name + ".anim"
@@ -46,8 +46,6 @@ def write_tram_animation(context, filepath, use_some_setting):
                 i += 1
         f.close()
 
-    return {'FINISHED'}
-
 
 
 from bpy_extras.io_utils import ExportHelper
@@ -70,7 +68,7 @@ class ExportTramAnimation(bpy.types.Operator):
         )
 
     def execute(self, context):
-        write_tram_animation(context, self.directory, False)
+        write_tram_animation(context, self.directory)
         return {'FINISHED'}
 
     def invoke(self, context, event):

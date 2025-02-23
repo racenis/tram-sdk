@@ -3,15 +3,24 @@ import os
 
 bl_info = {
     "name": "Export Tram Static Model",
-	"description": "uwu nyaa",
-	"author": "JDambergs",
+    "description": "Exports .stmdl files for Tramway SDK",
+    "author": "racenis",
     "blender": (2, 83, 0),
-	"support": "COMMUNITY",
+    "support": "COMMUNITY",
     "category": "Import-Export",
 }
 
-def write_tram_static_model(context, filepath, use_some_setting):
-    ob = bpy.context.active_object
+# TODO: optimize the export
+# - currently the script will make copy of the model in memory
+# - Python objects kinda sus
+# - uses way too much memory
+
+# TODO: improve readability
+# - it would be better if instead of uv[0] we would uv.x, etc.
+    
+# writes an object as a model
+def write_tram_static_model(context, object, filepath):
+    ob = object
     exp = {'uv':[],'lmap':[],'vert':[],'vnorm':[],'polys':[],'mat':[]}
 
     #get uv coords
@@ -36,10 +45,6 @@ def write_tram_static_model(context, filepath, use_some_setting):
         for i in range(0, len(poly.loop_indices) - 2):
             exp['polys'].append([poly.loop_indices[0], poly.loop_indices[i+1], poly.loop_indices[i+2], poly.material_index])
 
-    #remove duplicate material entries
-    #exp['mat'] = list(dict.fromkeys(exp['mat']))
-
-
     #ok now to compile everything together and write to disk
     f = open(filepath, 'w', encoding='utf-8')
 
@@ -52,7 +57,7 @@ def write_tram_static_model(context, filepath, use_some_setting):
 
     for mat in ob.material_slots:
         f.write(mat.name  + "\n")
-		
+        
     vid = 0
     while vid < len(exp['vert']):
         line = ""
@@ -80,8 +85,6 @@ def write_tram_static_model(context, filepath, use_some_setting):
    
    
     f.close()
-
-    return {'FINISHED'}
 
 
 # ExportHelper is a helper class, defines filename and
@@ -124,13 +127,23 @@ class ExportTramStaticObj(Operator, ExportHelper):
     )
 
     def invoke(self, context, _event):
+        object = bpy.context.object
+    
+        if object is None:
+            self.report({'ERROR'}, "No object selected!")
+            return {'CANCELLED'}
+        
+        if object.type != 'MESH':
+            self.report({'ERROR'}, "Selected object is not a mesh!")
+            return {'CANCELLED'}
+        
         if not self.filepath or True:
             blend_filepath = context.blend_data.filepath
             if not blend_filepath:
-                blend_filepath = bpy.context.object.name
+                blend_filepath = object.name
             else:
                 path_dir = os.path.dirname(blend_filepath)
-                blend_filepath = os.path.join(path_dir, bpy.context.object.name)
+                blend_filepath = os.path.join(path_dir, object.name)
 
             self.filepath = blend_filepath + self.filename_ext
 
@@ -138,7 +151,9 @@ class ExportTramStaticObj(Operator, ExportHelper):
         return {'RUNNING_MODAL'}
 
     def execute(self, context):
-        return write_tram_static_model(context, self.filepath, self.use_setting)
+        write_tram_static_model(context, bpy.context.object, self.filepath)
+        
+        return {'FINISHED'}
 
 
 # Only needed if you want to add into a dynamic menu
@@ -158,6 +173,3 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-
-    # test call
-    #bpy.ops.export_tram_static_obj.export_static_tram('INVOKE_DEFAULT')

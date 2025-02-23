@@ -3,12 +3,18 @@ import os
 
 bl_info = {
     "name": "Export Tram Collision Model",
-    "description": "uwu nyaa ;33",
-    "author": "JDambergs",
+    "description": "Exports .collmdl files for Tramway SDK",
+    "author": "racenis",
     "blender": (2, 83, 0),
     "support": "COMMUNITY",
     "category": "Import-Export",
 }
+
+# TODO: improve performance
+# - instead of accumulating a string, just directly write out to file
+
+# TODO: improve readability
+# - instead of vert.co[0] use vert.x, etc.
 
 def object_to_collision_mesh(c):
     out = ""
@@ -34,9 +40,7 @@ def object_to_collision_mesh(c):
     return out
 
 
-def write_tram_collision_model(context, filepath, use_some_setting):
-    ob = bpy.context.active_object
-
+def write_tram_collision_model(context, ob, filepath):
     out = ""
 
     for c in ob.children:
@@ -71,16 +75,12 @@ def write_tram_collision_model(context, filepath, use_some_setting):
     if len(ob.children) == 0:
         out = object_to_collision_mesh(ob)
             
-   
-
 
     f = open(filepath, 'w', encoding='utf-8')
 
     f.write(out)
    
     f.close()
-
-    return {'FINISHED'}
 
 
 # ExportHelper is a helper class, defines filename and
@@ -91,7 +91,6 @@ from bpy.types import Operator
 
 
 class ExportTramCollisionObj(Operator, ExportHelper):
-    """This appears in the tooltip of the operator and in the generated docs"""
     bl_idname = "export_tram_collision_obj.export_dynamic_tram"  # important since its how bpy.ops.import_test.some_data is constructed
     bl_label = "Export Tram Collision Model"
 
@@ -123,13 +122,23 @@ class ExportTramCollisionObj(Operator, ExportHelper):
     )
 
     def invoke(self, context, _event):
+        object = bpy.context.object
+    
+        if object is None:
+            self.report({'ERROR'}, "No object selected!")
+            return {'CANCELLED'}
+        
+        if object.type != 'MESH':
+            self.report({'ERROR'}, "Selected object is not a mesh!")
+            return {'CANCELLED'}
+        
         if not self.filepath or True:
             blend_filepath = context.blend_data.filepath
             if not blend_filepath:
-                blend_filepath = bpy.context.object.name
+                blend_filepath = object.name
             else:
                 path_dir = os.path.dirname(blend_filepath)
-                blend_filepath = os.path.join(path_dir, bpy.context.object.name)
+                blend_filepath = os.path.join(path_dir, object.name)
 
             self.filepath = blend_filepath + self.filename_ext
 
@@ -137,7 +146,8 @@ class ExportTramCollisionObj(Operator, ExportHelper):
         return {'RUNNING_MODAL'}
 
     def execute(self, context):
-        return write_tram_collision_model(context, self.filepath, self.use_setting)
+        write_tram_collision_model(context, bpy.context.active_object, self.filepath)
+        return {'FINISHED'}
 
 
 # Only needed if you want to add into a dynamic menu
@@ -157,6 +167,3 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-
-    # test call
-    #bpy.ops.export_tram_static_obj.export_static_tram('INVOKE_DEFAULT')
