@@ -5,7 +5,6 @@ from tram_dynamic_obj_export import write_tram_dynamic_model
 from tram_collision_export import write_tram_collision_model
 from tram_anim_export import write_tram_animation
 
-#path_prefix = "C:\\Users\\Poga\\Documents\\"
 path_prefix = "./"
 
 print("Autoexport script begin")
@@ -46,12 +45,12 @@ for object in root_objects:
         
         # export the mesh
         if export_type == 'STMDL':
-            file_path = path_prefix + export_name + '.stmdl'
+            file_path = path_prefix + "data/models/" + export_name + '.stmdl'
             print("Exporting", object.name, "as", file_path)
             
             write_tram_static_model(bpy.context, object, file_path)
         else:
-            file_path = path_prefix + export_name + '.dymdl'
+            file_path = path_prefix + "data/models/" + export_name + '.dymdl'
             print("Exporting", object.name, "as", file_path)
             
             write_tram_dynamic_model(bpy.context, object, file_path)
@@ -59,7 +58,7 @@ for object in root_objects:
             
         # check if could be treated as collmdl
         if len(object.children) > 0:
-            file_path = path_prefix + export_name + '.collmdl'
+            file_path = path_prefix + "data/models/" + export_name + '.collmdl'
             print("Exporting", object.name, "as", file_path)
             
             write_tram_collision_model(bpy.context, object, file_path)
@@ -73,7 +72,7 @@ for object in root_objects:
                 continue
             
             # export as dymdl since has an armature
-            file_path = path_prefix + subobj.name + '.dymdl'
+            file_path = path_prefix + "data/models/" + subobj.name + '.dymdl'
             print("Exporting", subobj.name, "as", file_path)
             
             write_tram_dynamic_model(bpy.context, subobj, file_path)
@@ -87,6 +86,6 @@ for object in root_objects:
             
             
 # finally we export animations
-write_tram_animation(bpy.context, path_prefix)
+write_tram_animation(bpy.context, path_prefix + "data/animations")
 
 print("Autoexport script finished")
