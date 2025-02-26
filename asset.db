@@ -1,180 +1,299 @@
 # Tramway SDK Asset Manager Applet Database
-# Generated on: 2024.12.11. 16:35:58
+# Generated on: 2025.02.25. 22:09:41
 
-DYMDL     bingus               1451038290
+DYMDL     bingus                               1451038290
 AUTHOR    racenis
 SOURCE    racenis
-DYMDL     bingus_old           1412124513
+DYMDL     bingus_old                           1412124513
 AUTHOR    racenis
 SOURCE    racenis
-DYMDL     chamberpot           1497571598
-DYMDL     chamberpot2          1497572169
-DYMDL     crate_ligma          1451038306
-DYMDL     crate_plain          1451038309
-MDMDL     devukaste            1500974000
-DYMDL     errordynamic         1402226922
-STMDL     errorstatic          1502315629
-PROPERTY  LIGHTMAP_WIDTH       128
-PROPERTY  LIGHTMAP_HEIGHT      256
-DYMDL     floppa               1412064796
-STMDL     ftft                 1456034736
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-DYMDL     kadbusest            1427923056
-STMDL     kadbusest2           1427922710
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-DYMDL     kadbusest3           1427922755
-DYMDL     metalakaste          1451734536
-DYMDL     mongus               1491408027
-DYMDL     mongus_OLD           1402373124
-STMDL     movs                 1484359347
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     movs2                1481116810
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     paliktnis            1481386306
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-DYMDL     plane                1493467703
-STMDL     platforma            1481976518
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     square10x10          1411451034
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     tepik                1451735270
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     trigger              1483432077
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-DYMDL     turtle               1426818883
-DYMDL     untitled             1497043553
-DYMDL     viewmodel_aamuris    1430084120
-DYMDL     viewmodel_rifle      1430040979
-DYMDL     viewmodel_stapler    1430084161
-STMDL     worldspawn           1481976482
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     dev/button           1469911994
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-STMDL     dev/light            1481188761
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-DYMDL     dev/plane            1489087280
-STMDL     dev/sound            1483091120
-PROPERTY  LIGHTMAP_WIDTH       0
-PROPERTY  LIGHTMAP_HEIGHT      0
-ANIM      mongus-jump          1452057175
+DYMDL     chamberpot                           1497571598
+DYMDL     chamberpot2                          1497572169
+DYMDL     crate_ligma                          1451038306
+DYMDL     crate_plain                          1451038309
+MDMDL     devukaste                            1500974000
+DYMDL     errordynamic                         1402226922
+STMDL     errorstatic                          1502315629
+PROPERTY  LIGHTMAP_WIDTH                       128
+PROPERTY  LIGHTMAP_HEIGHT                      256
+DYMDL     floppa                               1412064796
+STMDL     ftft                                 1456034736
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+DYMDL     kadbusest                            1427923056
+STMDL     kadbusest2                           1427922710
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+DYMDL     kadbusest3                           1427922755
+DYMDL     metalakaste                          1451734536
+DYMDL     mongus                               1491408027
+DYMDL     mongus_OLD                           1402373124
+STMDL     movs                                 1513227157
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+STMDL     movs2                                1481116810
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+STMDL     paliktnis                            1481386306
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+DYMDL     plane                                1493467703
+STMDL     platforma                            1481976518
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+STMDL     square10x10                          1411451034
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+STMDL     tepik                                1451735270
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+STMDL     trigger                              1513226627
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+DYMDL     turtle                               1426818883
+DYMDL     untitled                             1497043553
+DYMDL     viewmodel_aamuris                    1430084120
+DYMDL     viewmodel_rifle                      1430040979
+DYMDL     viewmodel_stapler                    1430084161
+STMDL     dev/button                           1513260060
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+STMDL     dev/light                            1481188761
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+DYMDL     dev/plane                            1489087280
+STMDL     dev/sound                            1483091120
+PROPERTY  LIGHTMAP_WIDTH                       0
+PROPERTY  LIGHTMAP_HEIGHT                      0
+MATERIAL  bingus                               1412064656
 AUTHOR    racenis
-ANIM      mongus-run           1452057158
+MATERIAL  brick002                             1389007603
 AUTHOR    racenis
-ANIM      mongus-sway          1452057172
+MATERIAL  brick052                             1401075937
 AUTHOR    racenis
-ANIM      mongus-turn-around   1452057179
+MATERIAL  concrete018                          1401076020
 AUTHOR    racenis
-ANIM      mongus-wag-tail      1452057178
+MATERIAL  concrete067                          1412000480
 AUTHOR    racenis
-ANIM      mongus-walk          1452057177
+MATERIAL  concrete090                          1411997442
 AUTHOR    racenis
-AUDIO     apelsin              1447332082
+MATERIAL  concrete103                          1417633527
 AUTHOR    racenis
-AUDIO     dekpunkta            1453531964
+MATERIAL  defaulttexturee                      1402225529
 AUTHOR    racenis
-AUDIO     derp                 1428246202
+MATERIAL  errortexturee                        1402225581
 AUTHOR    racenis
-AUDIO     impulse              1453532770
+MATERIAL  floppa                               1412064716
 AUTHOR    racenis
-AUDIO     miku                 1452962010
+MATERIAL  kjeems                               1429685834
 AUTHOR    racenis
-AUDIO     step                 1483082540
+MATERIAL  metal003                             1401076184
 AUTHOR    racenis
-PATH      test                 1500348235
+MATERIAL  metalakaste                          1451733452
 AUTHOR    racenis
-SPRITE    font_debug           1499101941
+MATERIAL  metalareste                          1451733457
 AUTHOR    racenis
-SPRITE    font_headers         1495046524
+MATERIAL  mongus                               1402298963
 AUTHOR    racenis
-SPRITE    font_pixelart        1495046517
+MATERIAL  poland                               1428589476
 AUTHOR    racenis
-SPRITE    font_symbols         1495046541
+MATERIAL  sample                               1428591802
 AUTHOR    racenis
-SPRITE    font_text            1495077510
+MATERIAL  stolentoilet                         1429119601
 AUTHOR    racenis
-SPRITE    font_text_bold       1495077546
+MATERIAL  texcom_obamabinladen                 1402229353
 AUTHOR    racenis
-SPRITE    font_widgets         1495074253
+MATERIAL  texcom_obamabinladen2                1402230583
 AUTHOR    racenis
-SPRITE    poland               1495046528
+MATERIAL  dev/button16x16                      1469911575
 AUTHOR    racenis
-SPRITE    bold/Font            1495077527
+MATERIAL  dev/floor128x128                     1456372314
 AUTHOR    racenis
-WORLDCELL demo_mov             1500454620
+MATERIAL  dev/floor32x32                       1456314977
 AUTHOR    racenis
-DIALOG    dialogs              1500354740
+MATERIAL  dev/light                            1499137699
 AUTHOR    racenis
-ENTDEF    entities             1493665593
+MATERIAL  dev/noclip                           1486171331
 AUTHOR    racenis
-LANG      lv                   1451203123
+MATERIAL  dev/nodraw                           1481187733
 AUTHOR    racenis
-QUEST     quests               1500295969
+MATERIAL  dev/scaffold32x32                    1456314799
 AUTHOR    racenis
-SHADER    1normal_static       1450679399
+MATERIAL  dev/scale128x128                     1456318259
 AUTHOR    racenis
-SHADER    bright_static        1486732154
+MATERIAL  dev/sound                            1483090493
 AUTHOR    racenis
-SHADER    glyph                1497048146
+MATERIAL  dev/trigger                          1483431616
 AUTHOR    racenis
-SHADER    line                 1493007953
+MATERIAL  dev/vent16x16                        1456389288
 AUTHOR    racenis
-SHADER    normal_dynamic       1497048870
+MATERIAL  dev/wall128x128                      1456314759
 AUTHOR    racenis
-SHADER    normal_dynamic_alpha 1489117909
+MATERIAL  dev/wall16x16                        1456314129
 AUTHOR    racenis
-SHADER    normal_sprite        1497048156
+MATERIAL  dev/wall32x32                        1456314747
 AUTHOR    racenis
-SHADER    normal_static        1499138240
+MATERIAL  dev/wall64x64                        1456314755
 AUTHOR    racenis
-SHADER    normal_static_alpha  1463384392
+MATERIAL  dev/wall8x8                          1456314171
 AUTHOR    racenis
-SHADER    normal_water         1497048152
+MATERIAL  dev/wallstair32x32                   1456314920
 AUTHOR    racenis
-SHADER    poopwater_static     1493007880
+MATERIAL  dev/white                            1489087169
 AUTHOR    racenis
-SHADER    text                 1463381603
+MATERIAL  dev/window128x128                    1456373152
 AUTHOR    racenis
-SCRIPT    api                  1499729761
+MATERIAL  lightmap/movs                        1513390106
 AUTHOR    racenis
-SCRIPT    bepis                1498419986
+MATERIAL  ui/font_debug                        1499101980
 AUTHOR    racenis
-SCRIPT    init                 1499406978
+MATERIAL  ui/font_headers                      1426737476
 AUTHOR    racenis
-COLLMDL   crate                1402232296
+MATERIAL  ui/font_pixelart                     1482468212
 AUTHOR    racenis
-COLLMDL   ftft                 1456034714
+MATERIAL  ui/font_symbols                      1426734203
 AUTHOR    racenis
-COLLMDL   movs                 1484359346
+MATERIAL  ui/font_text                         1495077059
 AUTHOR    racenis
-COLLMDL   platforma            1481976518
+MATERIAL  ui/font_text_bold                    1495077613
 AUTHOR    racenis
-COLLMDL   square10x10          1411451059
+MATERIAL  ui/font_widgets                      1495054178
 AUTHOR    racenis
-COLLMDL   trigger              1483432077
+MATERIAL  ui/glyph_symbols_o                   1426540631
 AUTHOR    racenis
-COLLMDL   worldspawn           1481976482
+MATERIAL  ui/glyph_text_bold_old               1426737693
 AUTHOR    racenis
-COLLMDL   dev/button           1469911748
+MATERIAL  ui/glyph_text_old                    1426600010
 AUTHOR    racenis
-AUTHOR    racenis              IDENTIFIER racenis
-AUTHOR    racenis              NAME       "Rācenis"
-AUTHOR    racenis              ADDRESS    "hatsunemiku42069@outlook.com"
-AUTHOR    racenis              ROLE       "CTO @ Trawmay SDK, SIA"
-AUTHOR    racenis              NOTES      "I like frogs."
-SOURCE    racenis              IDENTIFIER racenis
-SOURCE    racenis              CREDITS    "racenis @ Tramway SDK"
-SOURCE    racenis              ADDRESS    "github.com/racenis"
-SOURCE    racenis              LICENSE    "Allowed in North Korea"
-SOURCE    racenis              NOTES      "If you accidentally ship any of my assets in your project, it's fine, but try not to."
+MATERIAL  ui/inter                             1401881265
+AUTHOR    racenis
+MATERIAL  ui/jost                              1401859547
+AUTHOR    racenis
+MATERIAL  ui/symbols                           1401952723
+AUTHOR    racenis
+ANIM      mongus-jump                          1452057175
+AUTHOR    racenis
+ANIM      mongus-run                           1452057158
+AUTHOR    racenis
+ANIM      mongus-sway                          1452057172
+AUTHOR    racenis
+ANIM      mongus-turn-around                   1452057179
+AUTHOR    racenis
+ANIM      mongus-wag-tail                      1452057178
+AUTHOR    racenis
+ANIM      mongus-walk                          1452057177
+AUTHOR    racenis
+AUDIO     apelsin                              1447332082
+AUTHOR    racenis
+AUDIO     dekpunkta                            1453531964
+AUTHOR    racenis
+AUDIO     derp                                 1428246202
+AUTHOR    racenis
+AUDIO     impulse                              1453532770
+AUTHOR    racenis
+AUDIO     miku                                 1452962010
+AUTHOR    racenis
+AUDIO     step                                 1483082540
+AUTHOR    racenis
+PATH      test                                 1512646269
+AUTHOR    racenis
+SPRITE    font_debug                           1499101941
+AUTHOR    racenis
+SPRITE    font_headers                         1495046524
+AUTHOR    racenis
+SPRITE    font_pixelart                        1495046517
+AUTHOR    racenis
+SPRITE    font_symbols                         1495046541
+AUTHOR    racenis
+SPRITE    font_text                            1495077510
+AUTHOR    racenis
+SPRITE    font_text_bold                       1495077546
+AUTHOR    racenis
+SPRITE    font_widgets                         1495074253
+AUTHOR    racenis
+SPRITE    poland                               1495046528
+AUTHOR    racenis
+SPRITE    bold/Font                            1495077527
+AUTHOR    racenis
+WORLDCELL demo_mov                             1512646279
+AUTHOR    racenis
+DIALOG    dialogs                              1503083972
+AUTHOR    racenis
+ENTDEF    entities                             1493665593
+AUTHOR    racenis
+LANG      lv                                   1451203123
+AUTHOR    racenis
+QUEST     quests                               1503083972
+AUTHOR    racenis
+SHADER    1normal_static                       1450679399
+AUTHOR    racenis
+SHADER    bright_static                        1486732154
+AUTHOR    racenis
+SHADER    glyph                                1493007945
+AUTHOR    racenis
+SHADER    line                                 1486732451
+AUTHOR    racenis
+SHADER    normal_dynamic                       1493007938
+AUTHOR    racenis
+SHADER    normal_dynamic_alpha                 1486732185
+AUTHOR    racenis
+SHADER    normal_sprite                        1493007932
+AUTHOR    racenis
+SHADER    normal_static                        1493007930
+AUTHOR    racenis
+SHADER    normal_static_alpha                  1486732171
+AUTHOR    racenis
+SHADER    normal_water                         1486732174
+AUTHOR    racenis
+SHADER    poopwater_static                     1493007880
+AUTHOR    racenis
+SHADER    text                                 1486732157
+AUTHOR    racenis
+SHADER    shaders/opengl4/glyph                1497048146
+AUTHOR    racenis
+SHADER    shaders/opengl4/line                 1493007953
+AUTHOR    racenis
+SHADER    shaders/opengl4/normal_dynamic       1497048870
+AUTHOR    racenis
+SHADER    shaders/opengl4/normal_dynamic_alpha 1489117909
+AUTHOR    racenis
+SHADER    shaders/opengl4/normal_sprite        1497048156
+AUTHOR    racenis
+SHADER    shaders/opengl4/normal_static        1499138240
+AUTHOR    racenis
+SHADER    shaders/opengl4/normal_static_alpha  1463384392
+AUTHOR    racenis
+SHADER    shaders/opengl4/normal_water         1497048152
+AUTHOR    racenis
+SHADER    shaders/opengl4/text                 1463381603
+AUTHOR    racenis
+SCRIPT    api                                  1512141477
+AUTHOR    racenis
+SCRIPT    bepis                                1503628838
+AUTHOR    racenis
+SCRIPT    init                                 1503628836
+AUTHOR    racenis
+COLLMDL   crate                                1402232296
+AUTHOR    racenis
+COLLMDL   ftft                                 1456034714
+AUTHOR    racenis
+COLLMDL   movs                                 1513226627
+AUTHOR    racenis
+COLLMDL   platforma                            1481976518
+AUTHOR    racenis
+COLLMDL   square10x10                          1411451059
+AUTHOR    racenis
+COLLMDL   trigger                              1513226627
+AUTHOR    racenis
+COLLMDL   dev/button                           1469911748
+AUTHOR    racenis
+AUTHOR    racenis                              IDENTIFIER racenis
+AUTHOR    racenis                              NAME       "Rācenis"
+AUTHOR    racenis                              ADDRESS    "hatsunemiku42069@outlook.com"
+AUTHOR    racenis                              ROLE       "CTO @ Trawmay SDK, SIA"
+AUTHOR    racenis                              NOTES      "I like frogs."
+SOURCE    racenis                              IDENTIFIER racenis
+SOURCE    racenis                              CREDITS    "racenis @ Tramway SDK"
+SOURCE    racenis                              ADDRESS    "github.com/racenis"
+SOURCE    racenis                              LICENSE    "Allowed in North Korea"
+SOURCE    racenis                              NOTES      "If you accidentally ship any of my assets in your project, it's fine, but try not to."
