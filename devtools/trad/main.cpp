@@ -290,19 +290,19 @@ vec3 GetBarycentric(Triangle tri, float x, float y) {
 }
 
 static vec3 TriangleAABBMin (Triangle t) {
-    return {
-        t.v1.pos.x < t.v2.pos.x ? (t.v1.pos.x < t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x < t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
-        t.v1.pos.y < t.v2.pos.y ? (t.v1.pos.y < t.v3.pos.y ? t.v1.pos.y : t.v3.pos.y) : (t.v2.pos.y < t.v3.pos.y ? t.v2.pos.y : t.v3.pos.y),
-        t.v1.pos.z < t.v2.pos.z ? (t.v1.pos.z < t.v3.pos.z ? t.v1.pos.z : t.v3.pos.z) : (t.v2.pos.z < t.v3.pos.z ? t.v2.pos.z : t.v3.pos.z)
-    };
+	return {
+		t.v1.pos.x < t.v2.pos.x ? (t.v1.pos.x < t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x < t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
+		t.v1.pos.y < t.v2.pos.y ? (t.v1.pos.y < t.v3.pos.y ? t.v1.pos.y : t.v3.pos.y) : (t.v2.pos.y < t.v3.pos.y ? t.v2.pos.y : t.v3.pos.y),
+		t.v1.pos.z < t.v2.pos.z ? (t.v1.pos.z < t.v3.pos.z ? t.v1.pos.z : t.v3.pos.z) : (t.v2.pos.z < t.v3.pos.z ? t.v2.pos.z : t.v3.pos.z)
+	};
 }
 
 static vec3 TriangleAABBMax (Triangle t) {
-    return {
-        t.v1.pos.x > t.v2.pos.x ? (t.v1.pos.x > t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x > t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
-        t.v1.pos.y > t.v2.pos.y ? (t.v1.pos.y > t.v3.pos.y ? t.v1.pos.y : t.v3.pos.y) : (t.v2.pos.y > t.v3.pos.y ? t.v2.pos.y : t.v3.pos.y),
-        t.v1.pos.z > t.v2.pos.z ? (t.v1.pos.z > t.v3.pos.z ? t.v1.pos.z : t.v3.pos.z) : (t.v2.pos.z > t.v3.pos.z ? t.v2.pos.z : t.v3.pos.z)
-    };
+	return {
+		t.v1.pos.x > t.v2.pos.x ? (t.v1.pos.x > t.v3.pos.x ? t.v1.pos.x : t.v3.pos.x) : (t.v2.pos.x > t.v3.pos.x ? t.v2.pos.x : t.v3.pos.x),
+		t.v1.pos.y > t.v2.pos.y ? (t.v1.pos.y > t.v3.pos.y ? t.v1.pos.y : t.v3.pos.y) : (t.v2.pos.y > t.v3.pos.y ? t.v2.pos.y : t.v3.pos.y),
+		t.v1.pos.z > t.v2.pos.z ? (t.v1.pos.z > t.v3.pos.z ? t.v1.pos.z : t.v3.pos.z) : (t.v2.pos.z > t.v3.pos.z ? t.v2.pos.z : t.v3.pos.z)
+	};
 }
 
 vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, vec3 pos, vec3 dir) {
@@ -313,7 +313,7 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, v
 	
 	for (auto res : results) {
 		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].triangle.v1.pos, tris[res].triangle.v2.pos, tris[res].triangle.v3.pos);
-		if (intr.x == INFINITY) continue;			
+		if (intr.x == INFINITY) continue;           
 		//if(glm::dot(tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
 		if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
 	}
@@ -488,12 +488,27 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 int main(int argc, const char** argv) {
 	stbi_flip_vertically_on_write(true);
 
-	std::cout << "Tramway SDK -- Radiosity lightmapper" << std::endl;
+	std::cout << "Tramway SDK -- Radiosity lightmapper v0.1.1" << std::endl;
 	
-	if (argc < 2) {
-		std::cout << "Usage: trad worldcell";
-		std::cout << "\n\tworldcell is the name of the worldcell, that contains the entities";
-		std::cout << "\n\t\tthat will be lightmapped";
+	if (argc < 2 || argc == 2 && strcmp(argv[1], "--help") == 0) {
+		std::cout << "\nUsage: trad <worldcell> [options]";
+		
+		std::cout << "\n\nArguments:\n";
+		std::cout << "  <worldcell>\t\tName of the worldcell which will be lightmapped";
+		
+		std::cout << "\n\nOptions:\n";
+		std::cout << "  -coords\t\tSets the color values of the lightmap to texel\n\t\t\tposition in 3D space instead of light value\n";
+		
+		std::cout << "  -verts\t\tDraws in a single pixel for each triangle vertex into\n\t\t\tthe lightmap\n";
+		
+		std::cout << "  -pad <pixels>\t\tAdds a border around each triangle\n";
+		std::cout << "  -fullbright\t\tSets each triangle's color to white\n";
+		std::cout << "  -worldspawn <name>\tTreats the named entity as a worldspawn and allows it\n\t\t\tto cast shadows\n";
+		
+		std::cout << "\nThis program should be run from project root, e.g. the ";
+		std::cout << "worldcell file should be\naccessible through data/worldcells.cell relative path.";
+		
+		
 		return 0;
 	}
 	
@@ -507,16 +522,6 @@ int main(int argc, const char** argv) {
 	int padding = 1;
 	
 	std::vector<std::string> worldspawns;
-	
-	/*if (lightmap_width < 1 || lightmap_height < 1) {
-		std::cout << "Lightmap size has to be at least something!!! NOT NEGATIVE!!!" << std::endl;
-		return 0;
-	}
-	
-	if ((lightmap_width & (lightmap_width - 1)) != 0 || (lightmap_height & (lightmap_height - 1)) != 0) {
-		std::cout << "Lightmap size has to be a power of two." << std::endl;
-		return 0;
-	}*/
 	
 	// what we could do is we could add additional parameters, e.g.
 	// - only entity to lightmap
@@ -629,7 +634,7 @@ int main(int argc, const char** argv) {
 			light.color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			light.radius = cell.read_float32();
 
-			lights.push_back(light);	
+			lights.push_back(light);    
 		}
 		
 		cell.skip_linebreak();
