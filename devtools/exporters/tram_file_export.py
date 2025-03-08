@@ -35,7 +35,7 @@ for object in root_objects:
             
             if object.name.startswith(prefix):
                 export_type = type
-                export_name = export_name.strip(prefix)
+                export_name = export_name[len(prefix):]
         
         determine_type('stmdl?', 'STMDL')
         determine_type('s?', 'STMDL')
@@ -78,14 +78,14 @@ for object in root_objects:
             write_tram_dynamic_model(bpy.context, subobj, file_path)
             
             # check if could be treated as collmdl
-            if len(object.children) > 0:
-                file_path = path_prefix + subobj.name + '.collmdl'
+            if len(subobj.children) > 0:
+                file_path = path_prefix + "data/models/" + subobj.name + '.collmdl'
                 print("Exporting", subobj.name, "as", file_path)
                 
                 write_tram_collision_model(bpy.context, subobj, file_path)
             
             
 # finally we export animations
-write_tram_animation(bpy.context, path_prefix + "data/animations")
+write_tram_animation(bpy.context, path_prefix + "data/animations/")
 
 print("Autoexport script finished")

@@ -17,6 +17,9 @@ bl_info = {
 
 # TODO: improve readability
 # - it would be better if instead of uv[0] we would uv.x, etc.
+
+# TODO: fix bug
+# - if mesh doesn't have UVMap then it crashes
     
 # writes an object as a model
 def write_tram_static_model(context, object, filepath):

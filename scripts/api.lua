@@ -709,6 +709,85 @@ tram.message.SET_ANIMATION = tram.message.GetType("set-animation")
 
 -- ============================= FRAMEWORK/UI.H ============================= --
 
+function tram.ui.GetScreenWidth()
+	return __impl_ui_get_screen_width()
+end
+
+function tram.ui.GetScreenHeight()
+	return __impl_ui_get_screen_height()
+end
+
+function tram.ui.SetWindowTitle(title)
+	__impl_ui_set_window_title(title)
+end
+
+function tram.ui.SetWindowSize(w, h)
+	__impl_ui_set_window_size(w, h)
+end
+
+function tram.ui.SetCursor(cursor)
+	__impl_ui_set_cursor(cursor)
+end
+
+tram.ui._keyboard_function = {}
+
+function tram.ui.BindKeyboardKey(key, action)
+	if type(action) == "function" then
+		__impl_ui_bind_keyboard_callback(key)
+		tram.ui._keyboard_function[key] = action
+	else 
+		__impl_ui_bind_keyboard_action(key, action)
+	end
+end
+
+function __impl_ui_keyboard_callback(key)
+	callback = tram.ui._keyboard_function[key]
+	callback()
+end
+
+function tram.ui.PollKeyboardKey(key)
+	return __impl_ui_poll_keyboard_key(key)
+end
+
+function tram.ui.PollKeyboardAxis(axis)
+	return __impl_ui_poll_keyboard_axis(axis)
+end
+
+function tram.ui.PollKeyboardAxisDelta(axis)
+	return __impl_ui_poll_keyboard_axis_delta(axis)
+end
+
+function tram.ui.SetInputState(state)
+	__impl_ui_set_input_state(state)
+end
+
+function tram.ui.GetInputState()
+	return __impl_ui_get_input_state()
+end
+
+
+function tram.ui.GetAxisSensitivity(axis)
+	return __impl_ui_get_axis_sensitivity(axis)
+end
+
+function tram.ui.SetAxisSensitivity(axis, value)
+	return __impl_ui_set_axis_sensitivity(axis, value)
+end
+
+function tram.ui.RegisterKeyboardAction(name)
+	return __impl_ui_register_keyboard_action(name)
+end
+
+function tram.ui.GetKeyboardAction(name)
+	return __impl_ui_get_keyboard_action(name)
+end
+
+function tram.ui.GetKeyboardActionName(name)
+	return __impl_ui_get_keyboard_action_name(name)
+end
+
+-- -------------------------------  CONSTANTS ------------------------------- --
+
 tram.ui.KEY_SPACE = 0
 tram.ui.KEY_APOSTROPHE = 1
 tram.ui.KEY_COMMA = 2
@@ -858,100 +937,26 @@ tram.ui.STATE_FLYING = 2
 tram.ui.STATE_MENU_OPEN = 3
 tram.ui.STATE_CURSOR = 4
 
-tram.ui.KEY_ACTION_NONE = 0
-tram.ui.KEY_ACTION_FORWARD = 1
-tram.ui.KEY_ACTION_BACKWARD = 2
-tram.ui.KEY_ACTION_STRAFE_LEFT = 3
-tram.ui.KEY_ACTION_STRAFE_RIGHT = 4
-tram.ui.KEY_ACTION_JUMP = 5
-tram.ui.KEY_ACTION_CROUCH = 6
-tram.ui.KEY_ACTION_SPRINT = 7
-tram.ui.KEY_ACTION_ACTIVATE = 8
-tram.ui.KEY_ACTION_UP = 9
-tram.ui.KEY_ACTION_DOWN = 10
-tram.ui.KEY_ACTION_LEFT = 11
-tram.ui.KEY_ACTION_RIGHT = 12
+tram.ui.KEY_ACTION_NONE = tram.ui.GetKeyboardAction("none")
+tram.ui.KEY_ACTION_FORWARD = tram.ui.GetKeyboardAction("forward")
+tram.ui.KEY_ACTION_BACKWARD = tram.ui.GetKeyboardAction("backward")
+tram.ui.KEY_ACTION_STRAFE_LEFT = tram.ui.GetKeyboardAction("strafe-left")
+tram.ui.KEY_ACTION_STRAFE_RIGHT = tram.ui.GetKeyboardAction("strafe-right")
+tram.ui.KEY_ACTION_UP = tram.ui.GetKeyboardAction("up")
+tram.ui.KEY_ACTION_DOWN = tram.ui.GetKeyboardAction("down")
+tram.ui.KEY_ACTION_LEFT = tram.ui.GetKeyboardAction("left")
+tram.ui.KEY_ACTION_RIGHT = tram.ui.GetKeyboardAction("right")
+tram.ui.KEY_ACTION_JUMP = tram.ui.GetKeyboardAction("jump")
+tram.ui.KEY_ACTION_CROUCH = tram.ui.GetKeyboardAction("crouch")
+tram.ui.KEY_ACTION_SPRINT = tram.ui.GetKeyboardAction("sprint")
+tram.ui.KEY_ACTION_FLY = tram.ui.GetKeyboardAction("fly")
+tram.ui.KEY_ACTION_ACTIVATE = tram.ui.GetKeyboardAction("activate")
+tram.ui.KEY_ACTION_PRIMARY = tram.ui.GetKeyboardAction("primary")
+tram.ui.KEY_ACTION_SECONDARY = tram.ui.GetKeyboardAction("secondary")
 
 tram.ui.CURSOR_DEFAULT = 12
 tram.ui.CURSOR_TEXT = 12
 tram.ui.CURSOR_CLICK = 12
-
-function tram.ui.GetScreenWidth()
-	return __impl_ui_get_screen_width()
-end
-
-function tram.ui.GetScreenHeight()
-	return __impl_ui_get_screen_height()
-end
-
-function tram.ui.SetWindowTitle(title)
-	__impl_ui_set_window_title(title)
-end
-
-function tram.ui.SetWindowSize(w, h)
-	__impl_ui_set_window_size(w, h)
-end
-
-function tram.ui.SetCursor(cursor)
-	__impl_ui_set_cursor(cursor)
-end
-
-tram.ui._keyboard_function = {}
-
-function tram.ui.BindKeyboardKey(key, action)
-	if type(action) == "function" then
-		__impl_ui_bind_keyboard_callback(key)
-		tram.ui._keyboard_function[key] = action
-	else 
-		__impl_ui_bind_keyboard_action(key, action)
-	end
-end
-
-function __impl_ui_keyboard_callback(key)
-	callback = tram.ui._keyboard_function[key]
-	callback()
-end
-
-function tram.ui.PollKeyboardKey(key)
-	return __impl_ui_poll_keyboard_key(key)
-end
-
-function tram.ui.PollKeyboardAxis(axis)
-	return __impl_ui_poll_keyboard_axis(axis)
-end
-
-function tram.ui.PollKeyboardAxisDelta(axis)
-	return __impl_ui_poll_keyboard_axis_delta(axis)
-end
-
-function tram.ui.SetInputState(state)
-	__impl_ui_set_input_state(state)
-end
-
-function tram.ui.GetInputState()
-	return __impl_ui_get_input_state()
-end
-
-
-function tram.ui.GetAxisSensitivity(axis)
-	return __impl_ui_get_axis_sensitivity(axis)
-end
-
-function tram.ui.SetAxisSensitivity(axis, value)
-	return __impl_ui_set_axis_sensitivity(axis, value)
-end
-
-function tram.ui.RegisterKeyboardAction(name)
-	return __impl_ui_register_keyboard_action(name)
-end
-
-function tram.ui.GetKeyboardAction(name)
-	return __impl_ui_get_keyboard_action(name)
-end
-
-function tram.ui.GetKeyboardActionName(name)
-	return __impl_ui_get_keyboard_action_name(name)
-end
 
 -- ============================ FRAMEWORK/TYPE.H ============================ --
 
@@ -1509,7 +1514,7 @@ tram.render._metatable_rendercomponent = {
 		
 		Delete = function(self)
 			__impl_components_render_delete(self.index)
-			table.remove(self, "index")
+			self.index = nil
 		end
 	}
 }
@@ -1560,7 +1565,7 @@ tram.render._metatable_lightcomponent = {
 		
 		Delete = function(self)
 			__impl_components_light_delete(self.index)
-			table.remove(self, "index")
+			self.index = nil
 		end
 	}
 }
@@ -1696,7 +1701,7 @@ tram.render._metatable_animationcomponent = {
 		
 		Delete = function(self)
 			__impl_components_animation_delete(self.index)
-			table.remove(self, "index")
+			self.index = nil
 		end
 	}
 }

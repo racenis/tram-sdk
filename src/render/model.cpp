@@ -316,6 +316,11 @@ void Model::LoadFromDisk() {
         uint32_t tcount = file.read_uint32();   // number of triangles
         uint32_t mcount = file.read_uint32();   // number of materials
 
+        if (mcount == 0) {
+            Log(Severity::ERROR, System::RENDER, "Model {} has zero materials!", path);
+            goto load_failure;
+        }
+
         if (has_header) {
             uint32_t metadata_fields = file.read_uint32();
             
@@ -526,6 +531,11 @@ void Model::LoadFromDisk() {
         uint32_t mcount = file.read_uint32();   // number of materials
         uint32_t bcount = file.read_uint32();   // number of bones
         uint32_t gcount = file.read_uint32();   // number of vertex groups
+
+        if (mcount == 0) {
+            Log(Severity::ERROR, System::RENDER, "Model {} has zero materials!", path);
+            goto load_failure;
+        }
 
         bucket_mappings.resize(mcount);
 
@@ -767,6 +777,7 @@ void Model::LoadFromDisk() {
 
     std::cout << "Model file for " << name << " couldn't be accessed!" << std::endl;
 
+load_failure:
     
     vertex_format = VERTEX_STATIC;
 

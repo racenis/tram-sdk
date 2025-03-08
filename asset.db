@@ -1,299 +1,252 @@
 # Tramway SDK Asset Manager Applet Database
-# Generated on: 2025.02.25. 22:09:41
+# Generated on: 2025.03.08. 15:49:40
 
-DYMDL     bingus                               1451038290
+DYMDL     bingus                       1451038290
 AUTHOR    racenis
 SOURCE    racenis
-DYMDL     bingus_old                           1412124513
-AUTHOR    racenis
-SOURCE    racenis
-DYMDL     chamberpot                           1497571598
-DYMDL     chamberpot2                          1497572169
-DYMDL     crate_ligma                          1451038306
-DYMDL     crate_plain                          1451038309
-MDMDL     devukaste                            1500974000
-DYMDL     errordynamic                         1402226922
-STMDL     errorstatic                          1502315629
-PROPERTY  LIGHTMAP_WIDTH                       128
-PROPERTY  LIGHTMAP_HEIGHT                      256
-DYMDL     floppa                               1412064796
-STMDL     ftft                                 1456034736
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-DYMDL     kadbusest                            1427923056
-STMDL     kadbusest2                           1427922710
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-DYMDL     kadbusest3                           1427922755
-DYMDL     metalakaste                          1451734536
-DYMDL     mongus                               1491408027
-DYMDL     mongus_OLD                           1402373124
-STMDL     movs                                 1513227157
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-STMDL     movs2                                1481116810
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-STMDL     paliktnis                            1481386306
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-DYMDL     plane                                1493467703
-STMDL     platforma                            1481976518
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-STMDL     square10x10                          1411451034
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-STMDL     tepik                                1451735270
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-STMDL     trigger                              1513226627
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-DYMDL     turtle                               1426818883
-DYMDL     untitled                             1497043553
-DYMDL     viewmodel_aamuris                    1430084120
-DYMDL     viewmodel_rifle                      1430040979
-DYMDL     viewmodel_stapler                    1430084161
-STMDL     dev/button                           1513260060
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-STMDL     dev/light                            1481188761
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-DYMDL     dev/plane                            1489087280
-STMDL     dev/sound                            1483091120
-PROPERTY  LIGHTMAP_WIDTH                       0
-PROPERTY  LIGHTMAP_HEIGHT                      0
-MATERIAL  bingus                               1412064656
+DYMDL     chamberpot                   1497571598
+DYMDL     chamberpot2                  1497572169
+DYMDL     crate_ligma                  1451038306
+DYMDL     crate_plain                  1451038309
+MDMDL     devukaste                    1500974000
+DYMDL     floppa                       1412064796
+STMDL     ftft                         1456034736
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+DYMDL     kadbusest                    1427923056
+DYMDL     metalakaste                  1451734536
+DYMDL     mongus                       1491408027
+STMDL     movs                         1513227157
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+DYMDL     plane                        1493467703
+STMDL     square10x10                  1411451034
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+STMDL     trigger                      1515827922
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+STMDL     dev/button                   1513260060
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+STMDL     dev/light                    1481188761
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+DYMDL     dev/plane                    1489087280
+STMDL     dev/sound                    1483091120
+PROPERTY  LIGHTMAP_WIDTH               0
+PROPERTY  LIGHTMAP_HEIGHT              0
+MATERIAL  bingus                       1412064656
 AUTHOR    racenis
-MATERIAL  brick002                             1389007603
+MATERIAL  brick002                     1389007603
 AUTHOR    racenis
-MATERIAL  brick052                             1401075937
+MATERIAL  brick052                     1401075937
 AUTHOR    racenis
-MATERIAL  concrete018                          1401076020
+MATERIAL  concrete018                  1401076020
 AUTHOR    racenis
-MATERIAL  concrete067                          1412000480
+MATERIAL  concrete067                  1412000480
 AUTHOR    racenis
-MATERIAL  concrete090                          1411997442
+MATERIAL  concrete090                  1411997442
 AUTHOR    racenis
-MATERIAL  concrete103                          1417633527
+MATERIAL  concrete103                  1417633527
 AUTHOR    racenis
-MATERIAL  defaulttexturee                      1402225529
+MATERIAL  defaulttexturee              1402225529
 AUTHOR    racenis
-MATERIAL  errortexturee                        1402225581
+MATERIAL  errortexturee                1402225581
 AUTHOR    racenis
-MATERIAL  floppa                               1412064716
+MATERIAL  floppa                       1412064716
 AUTHOR    racenis
-MATERIAL  kjeems                               1429685834
+MATERIAL  kjeems                       1429685834
 AUTHOR    racenis
-MATERIAL  metal003                             1401076184
+MATERIAL  metal003                     1401076184
 AUTHOR    racenis
-MATERIAL  metalakaste                          1451733452
+MATERIAL  metalakaste                  1451733452
 AUTHOR    racenis
-MATERIAL  metalareste                          1451733457
+MATERIAL  metalareste                  1451733457
 AUTHOR    racenis
-MATERIAL  mongus                               1402298963
+MATERIAL  mongus                       1402298963
 AUTHOR    racenis
-MATERIAL  poland                               1428589476
+MATERIAL  poland                       1428589476
 AUTHOR    racenis
-MATERIAL  sample                               1428591802
+MATERIAL  sample                       1428591802
 AUTHOR    racenis
-MATERIAL  stolentoilet                         1429119601
+MATERIAL  stolentoilet                 1429119601
 AUTHOR    racenis
-MATERIAL  texcom_obamabinladen                 1402229353
+MATERIAL  texcom_obamabinladen         1402229353
 AUTHOR    racenis
-MATERIAL  texcom_obamabinladen2                1402230583
+MATERIAL  texcom_obamabinladen2        1402230583
 AUTHOR    racenis
-MATERIAL  dev/button16x16                      1469911575
+MATERIAL  dev/button16x16              1469911575
 AUTHOR    racenis
-MATERIAL  dev/floor128x128                     1456372314
+MATERIAL  dev/floor128x128             1456372314
 AUTHOR    racenis
-MATERIAL  dev/floor32x32                       1456314977
+MATERIAL  dev/floor32x32               1456314977
 AUTHOR    racenis
-MATERIAL  dev/light                            1499137699
+MATERIAL  dev/light                    1499137699
 AUTHOR    racenis
-MATERIAL  dev/noclip                           1486171331
+MATERIAL  dev/noclip                   1486171331
 AUTHOR    racenis
-MATERIAL  dev/nodraw                           1481187733
+MATERIAL  dev/nodraw                   1481187733
 AUTHOR    racenis
-MATERIAL  dev/scaffold32x32                    1456314799
+MATERIAL  dev/scaffold32x32            1456314799
 AUTHOR    racenis
-MATERIAL  dev/scale128x128                     1456318259
+MATERIAL  dev/scale128x128             1456318259
 AUTHOR    racenis
-MATERIAL  dev/sound                            1483090493
+MATERIAL  dev/sound                    1483090493
 AUTHOR    racenis
-MATERIAL  dev/trigger                          1483431616
+MATERIAL  dev/trigger                  1483431616
 AUTHOR    racenis
-MATERIAL  dev/vent16x16                        1456389288
+MATERIAL  dev/vent16x16                1456389288
 AUTHOR    racenis
-MATERIAL  dev/wall128x128                      1456314759
+MATERIAL  dev/wall128x128              1456314759
 AUTHOR    racenis
-MATERIAL  dev/wall16x16                        1456314129
+MATERIAL  dev/wall16x16                1456314129
 AUTHOR    racenis
-MATERIAL  dev/wall32x32                        1456314747
+MATERIAL  dev/wall32x32                1456314747
 AUTHOR    racenis
-MATERIAL  dev/wall64x64                        1456314755
+MATERIAL  dev/wall64x64                1456314755
 AUTHOR    racenis
-MATERIAL  dev/wall8x8                          1456314171
+MATERIAL  dev/wall8x8                  1456314171
 AUTHOR    racenis
-MATERIAL  dev/wallstair32x32                   1456314920
+MATERIAL  dev/wallstair32x32           1456314920
 AUTHOR    racenis
-MATERIAL  dev/white                            1489087169
+MATERIAL  dev/white                    1489087169
 AUTHOR    racenis
-MATERIAL  dev/window128x128                    1456373152
+MATERIAL  dev/window128x128            1456373152
 AUTHOR    racenis
-MATERIAL  lightmap/movs                        1513390106
+MATERIAL  lightmap/movs                1515828353
 AUTHOR    racenis
-MATERIAL  ui/font_debug                        1499101980
+MATERIAL  ui/font_debug                1499101980
 AUTHOR    racenis
-MATERIAL  ui/font_headers                      1426737476
+MATERIAL  ui/font_headers              1426737476
 AUTHOR    racenis
-MATERIAL  ui/font_pixelart                     1482468212
+MATERIAL  ui/font_pixelart             1482468212
 AUTHOR    racenis
-MATERIAL  ui/font_symbols                      1426734203
+MATERIAL  ui/font_text                 1495077059
 AUTHOR    racenis
-MATERIAL  ui/font_text                         1495077059
+MATERIAL  ui/font_text_bold            1495077613
 AUTHOR    racenis
-MATERIAL  ui/font_text_bold                    1495077613
+MATERIAL  ui/font_widgets              1495054178
 AUTHOR    racenis
-MATERIAL  ui/font_widgets                      1495054178
+ANIM      mongus-jump                  1452057175
 AUTHOR    racenis
-MATERIAL  ui/glyph_symbols_o                   1426540631
+ANIM      mongus-run                   1452057158
 AUTHOR    racenis
-MATERIAL  ui/glyph_text_bold_old               1426737693
+ANIM      mongus-sway                  1452057172
 AUTHOR    racenis
-MATERIAL  ui/glyph_text_old                    1426600010
+ANIM      mongus-turn-around           1452057179
 AUTHOR    racenis
-MATERIAL  ui/inter                             1401881265
+ANIM      mongus-wag-tail              1452057178
 AUTHOR    racenis
-MATERIAL  ui/jost                              1401859547
+ANIM      mongus-walk                  1452057177
 AUTHOR    racenis
-MATERIAL  ui/symbols                           1401952723
+AUDIO     apelsin                      1447332082
 AUTHOR    racenis
-ANIM      mongus-jump                          1452057175
+AUDIO     dekpunkta                    1453531964
 AUTHOR    racenis
-ANIM      mongus-run                           1452057158
+AUDIO     derp                         1428246202
 AUTHOR    racenis
-ANIM      mongus-sway                          1452057172
+AUDIO     impulse                      1453532770
 AUTHOR    racenis
-ANIM      mongus-turn-around                   1452057179
+AUDIO     miku                         1452962010
 AUTHOR    racenis
-ANIM      mongus-wag-tail                      1452057178
+AUDIO     step                         1483082540
 AUTHOR    racenis
-ANIM      mongus-walk                          1452057177
+PATH      test                         1512646269
 AUTHOR    racenis
-AUDIO     apelsin                              1447332082
+SPRITE    font_debug                   1499101941
 AUTHOR    racenis
-AUDIO     dekpunkta                            1453531964
+SPRITE    font_headers                 1495046524
 AUTHOR    racenis
-AUDIO     derp                                 1428246202
+SPRITE    font_pixelart                1495046517
 AUTHOR    racenis
-AUDIO     impulse                              1453532770
+SPRITE    font_symbols                 1495046541
 AUTHOR    racenis
-AUDIO     miku                                 1452962010
+SPRITE    font_text                    1495077510
 AUTHOR    racenis
-AUDIO     step                                 1483082540
+SPRITE    font_text_bold               1495077546
 AUTHOR    racenis
-PATH      test                                 1512646269
+SPRITE    font_widgets                 1495074253
 AUTHOR    racenis
-SPRITE    font_debug                           1499101941
+SPRITE    poland                       1495046528
 AUTHOR    racenis
-SPRITE    font_headers                         1495046524
+WORLDCELL demo_mov                     1512646279
 AUTHOR    racenis
-SPRITE    font_pixelart                        1495046517
+DIALOG    dialogs                      1503083972
 AUTHOR    racenis
-SPRITE    font_symbols                         1495046541
+ENTDEF    entities                     1493665593
 AUTHOR    racenis
-SPRITE    font_text                            1495077510
+LANG      lv                           1451203123
 AUTHOR    racenis
-SPRITE    font_text_bold                       1495077546
+QUEST     quests                       1503083972
 AUTHOR    racenis
-SPRITE    font_widgets                         1495074253
+SHADER    gles3/1normal_static         1450679399
 AUTHOR    racenis
-SPRITE    poland                               1495046528
+SHADER    gles3/bright_static          1486732154
 AUTHOR    racenis
-SPRITE    bold/Font                            1495077527
+SHADER    gles3/glyph                  1493007945
 AUTHOR    racenis
-WORLDCELL demo_mov                             1512646279
+SHADER    gles3/line                   1486732451
 AUTHOR    racenis
-DIALOG    dialogs                              1503083972
+SHADER    gles3/normal_dynamic         1493007938
 AUTHOR    racenis
-ENTDEF    entities                             1493665593
+SHADER    gles3/normal_dynamic_alpha   1486732185
 AUTHOR    racenis
-LANG      lv                                   1451203123
+SHADER    gles3/normal_sprite          1493007932
 AUTHOR    racenis
-QUEST     quests                               1503083972
+SHADER    gles3/normal_static          1493007930
 AUTHOR    racenis
-SHADER    1normal_static                       1450679399
+SHADER    gles3/normal_static_alpha    1486732171
 AUTHOR    racenis
-SHADER    bright_static                        1486732154
+SHADER    gles3/normal_water           1486732174
 AUTHOR    racenis
-SHADER    glyph                                1493007945
+SHADER    gles3/poopwater_static       1493007880
 AUTHOR    racenis
-SHADER    line                                 1486732451
+SHADER    gles3/text                   1486732157
 AUTHOR    racenis
-SHADER    normal_dynamic                       1493007938
+SHADER    opengl4/glyph                1497048146
 AUTHOR    racenis
-SHADER    normal_dynamic_alpha                 1486732185
+SHADER    opengl4/line                 1493007953
 AUTHOR    racenis
-SHADER    normal_sprite                        1493007932
+SHADER    opengl4/normal_dynamic       1497048870
 AUTHOR    racenis
-SHADER    normal_static                        1493007930
+SHADER    opengl4/normal_dynamic_alpha 1489117909
 AUTHOR    racenis
-SHADER    normal_static_alpha                  1486732171
+SHADER    opengl4/normal_sprite        1497048156
 AUTHOR    racenis
-SHADER    normal_water                         1486732174
+SHADER    opengl4/normal_static        1499138240
 AUTHOR    racenis
-SHADER    poopwater_static                     1493007880
+SHADER    opengl4/normal_static_alpha  1463384392
 AUTHOR    racenis
-SHADER    text                                 1486732157
+SHADER    opengl4/normal_water         1497048152
 AUTHOR    racenis
-SHADER    shaders/opengl4/glyph                1497048146
+SHADER    opengl4/text                 1463381603
 AUTHOR    racenis
-SHADER    shaders/opengl4/line                 1493007953
+SCRIPT    api                          1516317399
 AUTHOR    racenis
-SHADER    shaders/opengl4/normal_dynamic       1497048870
+SCRIPT    bepis                        1503628838
 AUTHOR    racenis
-SHADER    shaders/opengl4/normal_dynamic_alpha 1489117909
+SCRIPT    init                         1515890470
 AUTHOR    racenis
-SHADER    shaders/opengl4/normal_sprite        1497048156
+COLLMDL   crate                        1402232296
 AUTHOR    racenis
-SHADER    shaders/opengl4/normal_static        1499138240
+COLLMDL   ftft                         1456034714
 AUTHOR    racenis
-SHADER    shaders/opengl4/normal_static_alpha  1463384392
+COLLMDL   movs                         1513226627
 AUTHOR    racenis
-SHADER    shaders/opengl4/normal_water         1497048152
+COLLMDL   square10x10                  1411451059
 AUTHOR    racenis
-SHADER    shaders/opengl4/text                 1463381603
+COLLMDL   trigger                      1515827922
 AUTHOR    racenis
-SCRIPT    api                                  1512141477
+COLLMDL   dev/button                   1469911748
 AUTHOR    racenis
-SCRIPT    bepis                                1503628838
-AUTHOR    racenis
-SCRIPT    init                                 1503628836
-AUTHOR    racenis
-COLLMDL   crate                                1402232296
-AUTHOR    racenis
-COLLMDL   ftft                                 1456034714
-AUTHOR    racenis
-COLLMDL   movs                                 1513226627
-AUTHOR    racenis
-COLLMDL   platforma                            1481976518
-AUTHOR    racenis
-COLLMDL   square10x10                          1411451059
-AUTHOR    racenis
-COLLMDL   trigger                              1513226627
-AUTHOR    racenis
-COLLMDL   dev/button                           1469911748
-AUTHOR    racenis
-AUTHOR    racenis                              IDENTIFIER racenis
-AUTHOR    racenis                              NAME       "Rācenis"
-AUTHOR    racenis                              ADDRESS    "hatsunemiku42069@outlook.com"
-AUTHOR    racenis                              ROLE       "CTO @ Trawmay SDK, SIA"
-AUTHOR    racenis                              NOTES      "I like frogs."
-SOURCE    racenis                              IDENTIFIER racenis
-SOURCE    racenis                              CREDITS    "racenis @ Tramway SDK"
-SOURCE    racenis                              ADDRESS    "github.com/racenis"
-SOURCE    racenis                              LICENSE    "Allowed in North Korea"
-SOURCE    racenis                              NOTES      "If you accidentally ship any of my assets in your project, it's fine, but try not to."
+AUTHOR    racenis                      IDENTIFIER racenis
+AUTHOR    racenis                      NAME       "Rācenis"
+AUTHOR    racenis                      ADDRESS    "hatsunemiku42069@outlook.com"
+AUTHOR    racenis                      ROLE       "CTO @ Trawmay SDK, SIA"
+AUTHOR    racenis                      NOTES      "I like frogs."
+SOURCE    racenis                      IDENTIFIER racenis
+SOURCE    racenis                      CREDITS    "racenis @ Tramway SDK"
+SOURCE    racenis                      ADDRESS    "github.com/racenis"
+SOURCE    racenis                      LICENSE    "Allowed in North Korea"
+SOURCE    racenis                      NOTES      "If you accidentally ship any of my assets in your project, it's fine, but try not to."

@@ -173,20 +173,13 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 - Add option to draw staticwobjs as lines
 - Add on_locked_use to button
 - Add entity that shows messages in 3D space
-
+- Write a sprite editor applet
  
 #### Should do later
 
 - Python scripting
 	- Should allow accessing basic library functionality through Python.
 	- Probably should have OOP abstractions and stuff.
-- Object Pascal data library
-	- A base that could be used for various GUI utilities in the future.
-	- Should allow parsing of various library text file formats.
-	- Also editing and saving.
-- Project manager tool
-	- Should allow editing of all the various library text file formats.
-	- Should allow generation of new projects.
 - Model conversion tools
 	- Leverage the free Assimp library to parse various 3D model formats.
 	- Convert said model formats to tram-sdk .stmdl and .dymdl formats.
@@ -200,21 +193,20 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Make them not be distorted horizontally in the shader
 
 #### For very later versions
-- Occlusion/frustrum culling
+- Occlusion culling
 - Add rotations to sprites
-- Switch out all of the std::cout's to Log's
 - Add some more asserts to the GUI system.
 - Rewrite path following for the PhysicsComponent
 - Implement navigation
 - Add more rendering stuff
 	- Single drawlistthingy can be in multiple layers
-	- Layers have different cameras
 	- Add shear test
 - Make the engine work without any files
 	- That means that it will run just fine without any files on the disk
 - Fix animation scaling translation
 	- There's something weird going on if you both scale and translate in an animation
 - Make Raycast that returns multiple points
+- Make the engine embeddable into Pascal programs
 	
 ### New features that would be nice to have, but are not very important
 - Input recording and playback

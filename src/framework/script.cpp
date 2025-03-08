@@ -722,7 +722,7 @@ void Init() {
         return true;
     });
     
-    SetFunction("__impl_render_set_view_rotation", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+    SetFunction("__impl_render_set_view_rotation", {TYPE_QUAT, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
         layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
         Render::SetViewRotation(array[0], layer);
         return true;
