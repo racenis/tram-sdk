@@ -9,21 +9,6 @@
 // - add indirect lighting
 // - add emissive materials
 
-/*
- * Priority list:
- * 
- * 1. Enfasten ray-trace
- *    - Add template method to AABBTree
- *    - It would take in callback function
- *    - This callback function would take in triangle collision info
- *    - It would return a bool
- *    - Bool determines whether the search should stop
- * 2. Fix self-intersection via skip matrix
- * 3. Implement visibility matrix
- * 4. Implement full radiosity
- * 
- */
-
 #include <iostream>
 #include <vector>
 
@@ -81,7 +66,6 @@ struct Lightmap {
 		t = new Texel[width*height];
 		b = new bool[width*height];
 		for (int i = 0; i < width*height; i++) {
-			//t[i] = Texel {.color = {0.0f, 0.0f, 0.0f}};
 			t[i] = Texel {.color = {1.0f, 0.5f, 0.5f}};
 			b[i] = false;
 		}
@@ -142,22 +126,6 @@ struct Lightmap {
 				if (nearest == INFINITY) continue;
 				
 				t[y*w+x].color = color;
-				
-				/*
-				vec3 color = {0.0f, 0.0f, 0.0f};
-				int count = 0;
-				
-				for (int s_x = x-1; s_x < x+3; s_x++) {
-					for (int s_y = y-1; s_y < y+3; s_y++) {
-						if (!Blitted(s_x, s_y)) continue;
-						color += Sample(s_x, s_y).color;
-						count++;
-					}
-				}
-
-				if (!count) continue;
-				
-				t[y*w+x].color = color / (float)count;*/
 			}
 		}
 	}
@@ -292,19 +260,6 @@ vec3 GetBarycentric(Triangle tri, float x, float y) {
 	const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
 	const float d1 = 1.0f - d2 - d3;
 	return {d1, d2, d3};
-	
-	/*const auto& a = tri.v1.map;
-	const auto& b = tri.v2.map;
-	const auto& c = tri.v3.map;
-	vec2 p = {x, y};
-	
-	const float area = GetTriangleArea(a, b, c);
-	
-	const float u = GetTriangleArea(p, b, c) / area;
-	const float v = GetTriangleArea(p, c, a) / area;
-	const float w = GetTriangleArea(p, a, b) / area;
-	
-	return {u, v, w};*/
 }
 
 static vec3 TriangleAABBMin (Triangle t) {
@@ -323,7 +278,12 @@ static vec3 TriangleAABBMax (Triangle t) {
 	};
 }
 
-vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, vec3 pos, vec3 dir, float distance_limit) {
+vec3 FindNearestIntersection(const AABBTree& tree,
+							 const std::vector<SceneTriangle>& tris,
+							 const vec3& pos,
+							 const vec3& dir,
+							 float distance_limit)
+{
 	uint32_t nearest = tree.FindIntersection(pos, dir, distance_limit, [&](vec3 pos, vec3 dir, uint32_t index) {
 		vec3 intersection = RayTriangleIntersection(pos,
 													dir,
@@ -333,11 +293,8 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, v
 													
 		if (intersection.x == INFINITY) return INFINITY;
 		
-		// if distance > max_distance -> bail + marks bailed
-		
 		return glm::distance(intersection, pos);
 	});
-	
 	
 	if (nearest == (uint32_t)-1) {
 		return {INFINITY, INFINITY, INFINITY};
@@ -348,34 +305,21 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, v
 								   tris[nearest].triangle.v1.pos,
 								   tris[nearest].triangle.v2.pos,
 								   tris[nearest].triangle.v3.pos);
-	
-	/*std::vector<uint32_t> results;
-	tree.FindIntersection(pos, dir, tree.root, results);
-
-	vec3 closest = {INFINITY, INFINITY, INFINITY};
-	
-	for (auto res : results) {
-		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].triangle.v1.pos, tris[res].triangle.v2.pos, tris[res].triangle.v3.pos);
-		if (intr.x == INFINITY) continue;           
-
-		if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
-	}
-	
-	return closest;*/
 };
 
-vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal, vec3 mid) {
-	vec3 color = {0.0f, 0.0f, 0.0f};
-	
-	// we might get a collision with the triangle, on which the texel is located
-	// on, so we move it off of the surface a little bit
-	pos += 0.01f * normal;
-	mid += 0.01f * normal;
-	
+void MovePositionTowardTriangleCenter(const AABBTree& tree,
+									  const std::vector<SceneTriangle>& tris,
+									  vec3& pos,
+									  const vec3& normal,
+									  vec3 mid)
+{
 	// check if clear path to center
-	
 	vec3 mid_dir = glm::normalize(mid - pos);
 	float mid_dist = glm::distance(mid, pos);
+	
+	// I have no idea what this does but okay
+	pos += 0.05f * mid_dir;
+	
 	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir, mid_dist);
 	if (glm::distance(nearest, pos) < mid_dist) {
 		//return {1.0f, 0.0f, 0.0f};
@@ -384,25 +328,26 @@ vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, 
 		//pos += mid_dir * (glm::distance(nearest, pos) + 0.02f);
 		pos = nearest + (mid_dir * 0.1f);
 	}
-	
-	for (const auto& light : lights) {
-		//if (light.radius < glm::distance(pos, light.pos)) continue;
-		
-		float light_dist = glm::distance(light.pos, pos);
-		
-		if (20.0f < light_dist) continue;
-		
-		vec3 light_dir = glm::normalize(light.pos - pos);
-		
-		vec3 nearest = FindNearestIntersection(tree, tris, pos, light_dir, light_dist);
+}
 
-		if (glm::distance(nearest, pos) > light_dist) {
-			color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * light_dist + 0.032f * (light_dist * light_dist)));
-		} 
-	}
+bool IsTexelInShadow(const AABBTree& tree,
+					 const std::vector<SceneTriangle>& tris,
+					 const vec3& texel_pos,
+					 const vec3& light_pos)
+{
+	float light_dist = glm::distance(light_pos, texel_pos);
 	
-	return color;
-};
+	vec3 light_dir = glm::normalize(light_pos - texel_pos);
+	
+	vec3 nearest = FindNearestIntersection(tree, tris, texel_pos, light_dir, light_dist);
+
+	return light_dist > glm::distance(nearest, texel_pos);
+}
+
+vec3 FindTexelColorFromLight(const Light& light, const vec3& pos, const vec3& normal) {
+	const float light_dist = glm::distance(light.pos, pos);
+	return light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * light_dist + 0.032f * (light_dist * light_dist)));
+}
 
 struct RasterParams {
 	int l_w;
@@ -483,7 +428,7 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 		if (from > to) std::swap(from, to);
 		
 		for (int col = from; col < to; col++) {
-			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
+			vec3 d = GetBarycentric(tri, ((float)col + 0.5f) / (float)p.l_w, ((float)row + 0.5f) / (float)p.l_h);
 			
 			const float thr = 1.0f/3.0f;
 			
@@ -505,7 +450,7 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 		if (from > to) std::swap(from, to);
 
 		for (int col = from; col < to; col++) {
-			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
+			vec3 d = GetBarycentric(tri, ((float)col + 0.5f) / (float)p.l_w, ((float)row + 0.5f) / (float)p.l_h);
 			
 			const float thr = 1.0f/3.0f;
 			
@@ -536,6 +481,8 @@ int main(int argc, const char** argv) {
 		
 		std::cout << "  -pad <pixels>\t\tAdds a border around each triangle\n";
 		std::cout << "  -exp <pixels>\t\tExpands each triangle\n";
+		std::cout << "  -scale <integer>\tScales down lightmap\n";
+		std::cout << "  -fast\t\t\tDisables extra raycasts\n";
 		std::cout << "  -fullbright\t\tSets each triangle's color to white\n";
 		std::cout << "  -worldspawn <name>\tTreats the named entity as a worldspawn and allows it\n\t\t\tto cast shadows\n";
 		
@@ -553,8 +500,11 @@ int main(int argc, const char** argv) {
 	
 	bool force_fullbright = false;
 	
+	bool fast = false;
+	
 	int padding = 1;
 	int expansion = 1;
+	int scale = 1;
 	
 	std::vector<std::string> worldspawns;
 	
@@ -578,6 +528,14 @@ int main(int argc, const char** argv) {
 		
 		if (strcmp(argv[i], "-exp") == 0) {
 			expansion = atoi(argv[++i]);
+		}
+		
+		if (strcmp(argv[i], "-scale") == 0) {
+			scale = atoi(argv[++i]);
+		}
+		
+		if (strcmp(argv[i], "-fast") == 0) {
+			fast = true;
 		}
 		
 		if (strcmp(argv[i], "-fullbright") == 0) {
@@ -805,8 +763,8 @@ int main(int argc, const char** argv) {
 		auto& l = tri.entity->lightmap;
 		
 		RasterParams image_params = {
-			l.w,
-			l.h,
+			l.w / scale,
+			l.h / scale,
 			(float)expansion
 		};
 		
@@ -828,9 +786,34 @@ int main(int argc, const char** argv) {
 			
 			// rasterize triangle and set color to light value
 			RasterizeTriangle(image_params, tri.triangle, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
+				
 				if (l.Blitted(col, row)) return;
-				vec3 color = FindTexelColorFromLights(scene_tree, scene_triangles, lights, pos, nrm, mid);
-				l.Blit(col, row, {color});
+				
+				vec3 texel_color = {0.0f, 0.0f, 0.0f};
+				
+				// we might get a collision with the triangle, on which the texel is located
+				// on, so we move it off of the surface a little bit
+				pos += 0.01f * nrm;
+				mid += 0.01f * nrm;
+				
+				if (!fast) MovePositionTowardTriangleCenter(scene_tree, scene_triangles, pos, nrm, mid);
+				
+				for (const auto& light : lights) {
+					const vec3 light_color = FindTexelColorFromLight(light, pos, nrm);
+
+					const float epsilon = 1.0f / 256.0f;
+					if (light_color.x < epsilon && light_color.y < epsilon && light_color.z < epsilon) {
+						continue;
+					}
+
+					if (IsTexelInShadow(scene_tree, scene_triangles, pos, light.pos)) {
+						continue;
+					}
+					
+					texel_color += light_color;
+				}
+				
+				l.Blit(col, row, {texel_color});
 			});
 			
 		}

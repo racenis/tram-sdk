@@ -151,7 +151,7 @@ public:
         }
     }
     
-    void FindIntersection(vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) {
+    void FindIntersection(vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) const {
         bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, node->min, node->max);
         
         if (is_node_intersect) {
@@ -164,7 +164,7 @@ public:
         }
     }
     
-    uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) {
+    uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) const {
         bool root_intersects = AABBIntersect(ray_pos, ray_dir, root->min, root->max);
 
         if (!root_intersects) {
@@ -180,7 +180,7 @@ public:
     }
     
     // this should be marked private
-    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, Node* node, auto filter) {
+    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, Node* node, auto filter) const {
         if (node->IsLeaf() && node != root) {
             float leaf_distance = filter(ray_pos, ray_dir, node->value);
             
