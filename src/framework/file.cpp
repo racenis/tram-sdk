@@ -385,9 +385,9 @@ File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
     if (mode & READ) {
         reader = FileReader::GetReader(path);
         
-        if (reader->GetStatus() == FileStatus::READY) {
-            reader_parser = new TextReaderParser(reader);
-        }
+        if (reader->GetStatus() != FileStatus::READY) return;
+        
+        reader_parser = new TextReaderParser(reader);
         
         if (mode & PAUSE_LINE) {
             reader_parser->set_skip_newline(false);
