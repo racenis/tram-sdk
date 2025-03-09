@@ -164,7 +164,7 @@ public:
         }
     }
     
-    uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, auto filter) {
+    uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) {
         bool root_intersects = AABBIntersect(ray_pos, ray_dir, root->min, root->max);
 
         if (!root_intersects) {
@@ -174,11 +174,13 @@ public:
         float nearest_dist = INFINITY;
         uint32_t nearest_index = -1;
         
-        return FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, root, filter);
+        FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, root, filter);
+        
+        return nearest_index;
     }
     
     // this should be marked private
-    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, Node* node, auto filter) {
+    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, Node* node, auto filter) {
         if (node->IsLeaf() && node != root) {
             float leaf_distance = filter(ray_pos, ray_dir, node->value);
             
@@ -198,22 +200,22 @@ public:
         
         if (left_distance < right_distance) {
             
-            if (left_distance < nearest_dist) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->left, filter);
+            if (left_distance < nearest_dist && left_distance < distance_limit) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->left, filter);
             }
             
-            if (right_distance < nearest_dist) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->right, filter);
+            if (right_distance < nearest_dist && right_distance < distance_limit) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->right, filter);
             }
             
         } else {
             
-            if (right_distance < nearest_dist) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->right, filter);
+            if (right_distance < nearest_dist && right_distance < distance_limit) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->right, filter);
             }
             
-            if (left_distance < nearest_dist) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, node->left, filter);
+            if (left_distance < nearest_dist && left_distance < distance_limit) {
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->left, filter);
             }
             
         }

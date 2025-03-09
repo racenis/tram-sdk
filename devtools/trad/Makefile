@@ -1,7 +1,7 @@
 default: engine_libs.o trad
 
 trad: main.cpp
-	g++ -std=c++20 main.cpp engine_libs.o -o trad.exe -I../../src/ -I../../libraries/
+	g++ -std=c++20 main.cpp engine_libs.o -g -o trad.exe -I../../src/ -I../../libraries/
 
 trad_release: main.cpp
 	g++ -std=c++20 main.cpp engine_libs.o -o trad.exe -static -static-libstdc++ -I../../src/ -I../../libraries/

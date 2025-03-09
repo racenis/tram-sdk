@@ -43,6 +43,7 @@ struct Vertex {
 	vec3 nrm;
 	vec2 tex;
 	vec2 map;
+	vec2 exp;
 	
 	bool operator==(const Vertex& other) {
 		return pos == other.pos && nrm == other.nrm && tex == other.tex && map == other.map;
@@ -278,6 +279,10 @@ Model LoadModel(const char* model_name) {
 	return {lightmap_width, lightmap_height, materials, vertices, triangles};
 }
 
+float GetTriangleArea(const vec2& p1, const vec2& p2, const vec2& p3) {
+	return 0.5 * (p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y));
+}
+
 vec3 GetBarycentric(Triangle tri, float x, float y) {
 	const vec2 v1 = tri.v2.map - tri.v1.map;
 	const vec2 v2 = tri.v3.map - tri.v1.map;
@@ -287,6 +292,19 @@ vec3 GetBarycentric(Triangle tri, float x, float y) {
 	const float d3 = (v1.x * v3.y - v3.x * v1.y) / dominator;
 	const float d1 = 1.0f - d2 - d3;
 	return {d1, d2, d3};
+	
+	/*const auto& a = tri.v1.map;
+	const auto& b = tri.v2.map;
+	const auto& c = tri.v3.map;
+	vec2 p = {x, y};
+	
+	const float area = GetTriangleArea(a, b, c);
+	
+	const float u = GetTriangleArea(p, b, c) / area;
+	const float v = GetTriangleArea(p, c, a) / area;
+	const float w = GetTriangleArea(p, a, b) / area;
+	
+	return {u, v, w};*/
 }
 
 static vec3 TriangleAABBMin (Triangle t) {
@@ -305,8 +323,33 @@ static vec3 TriangleAABBMax (Triangle t) {
 	};
 }
 
-vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, vec3 pos, vec3 dir) {
-	std::vector<uint32_t> results;
+vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, vec3 pos, vec3 dir, float distance_limit) {
+	uint32_t nearest = tree.FindIntersection(pos, dir, distance_limit, [&](vec3 pos, vec3 dir, uint32_t index) {
+		vec3 intersection = RayTriangleIntersection(pos,
+													dir,
+													tris[index].triangle.v1.pos,
+													tris[index].triangle.v2.pos,
+													tris[index].triangle.v3.pos);
+													
+		if (intersection.x == INFINITY) return INFINITY;
+		
+		// if distance > max_distance -> bail + marks bailed
+		
+		return glm::distance(intersection, pos);
+	});
+	
+	
+	if (nearest == (uint32_t)-1) {
+		return {INFINITY, INFINITY, INFINITY};
+	}
+	
+	return RayTriangleIntersection(pos,
+								   dir,
+								   tris[nearest].triangle.v1.pos,
+								   tris[nearest].triangle.v2.pos,
+								   tris[nearest].triangle.v3.pos);
+	
+	/*std::vector<uint32_t> results;
 	tree.FindIntersection(pos, dir, tree.root, results);
 
 	vec3 closest = {INFINITY, INFINITY, INFINITY};
@@ -314,11 +357,11 @@ vec3 FindNearestIntersection(AABBTree& tree, std::vector<SceneTriangle>& tris, v
 	for (auto res : results) {
 		vec3 intr = RayTriangleIntersection(pos, dir, tris[res].triangle.v1.pos, tris[res].triangle.v2.pos, tris[res].triangle.v3.pos);
 		if (intr.x == INFINITY) continue;           
-		//if(glm::dot(tris[res].v1.nrm, dir) > -0.01f /*&& glm::distance(pos, intr) < 0.1f*/) continue;
+
 		if (glm::distance(pos, intr) < glm::distance(pos, closest)) closest = intr;
 	}
 	
-	return closest;
+	return closest;*/
 };
 
 vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, std::vector<Light>& lights, vec3 pos, vec3 normal, vec3 mid) {
@@ -332,8 +375,9 @@ vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, 
 	// check if clear path to center
 	
 	vec3 mid_dir = glm::normalize(mid - pos);
-	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir);
-	if (glm::distance(nearest, pos) < glm::distance(mid, pos)) {
+	float mid_dist = glm::distance(mid, pos);
+	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir, mid_dist);
+	if (glm::distance(nearest, pos) < mid_dist) {
 		//return {1.0f, 0.0f, 0.0f};
 		//pos += mid_dir * 0.3f;
 		//pos = nearest + 0.01f * normal;
@@ -343,15 +387,17 @@ vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, 
 	
 	for (const auto& light : lights) {
 		//if (light.radius < glm::distance(pos, light.pos)) continue;
-		if (20.0f < glm::distance(pos, light.pos)) continue;
+		
+		float light_dist = glm::distance(light.pos, pos);
+		
+		if (20.0f < light_dist) continue;
 		
 		vec3 light_dir = glm::normalize(light.pos - pos);
 		
-		vec3 nearest = FindNearestIntersection(tree, tris, pos, light_dir);
+		vec3 nearest = FindNearestIntersection(tree, tris, pos, light_dir, light_dist);
 
-		if (glm::distance(nearest, pos) > glm::distance(light.pos, pos)) {
-			float distance1 = glm::length(light.pos - pos);
-			color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * distance1 + 0.032f * (distance1 * distance1)));
+		if (glm::distance(nearest, pos) > light_dist) {
+			color += light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * light_dist + 0.032f * (light_dist * light_dist)));
 		} 
 	}
 	
@@ -361,13 +407,24 @@ vec3 FindTexelColorFromLights(AABBTree& tree, std::vector<SceneTriangle>& tris, 
 struct RasterParams {
 	int l_w;
 	int l_h;
-	int stretch_low_x;
-	int stretch_low_y;
-	int stretch_high_x;
-	int stretch_high_y;
+	float expand;
 };
 
 void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
+	
+	// expand the triangle a little bit
+	float dist = p.expand * ( 1.0f / (float)p.l_h );
+	
+	vec2 mid = (tri.v1.map + tri.v2.map + tri.v3.map) / 3.0f;
+	
+	tri.v1.exp = tri.v1.map + dist * glm::sign(tri.v1.map - mid);
+	tri.v2.exp = tri.v2.map + dist * glm::sign(tri.v2.map - mid);
+	tri.v3.exp = tri.v3.map + dist * glm::sign(tri.v3.map - mid);
+	
+	tri.v1.exp = glm::clamp(tri.v1.exp, 0.0f, 1.0f);
+	tri.v2.exp = glm::clamp(tri.v2.exp, 0.0f, 1.0f);
+	tri.v3.exp = glm::clamp(tri.v3.exp, 0.0f, 1.0f);
+	
 	// find the lowest, highest and middle vertices
 	Vertex lowest = tri.v1;
 	if (tri.v1.map.y < lowest.map.y) lowest = tri.v1;
@@ -389,24 +446,13 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 	if ((tri.v1 == lowest || tri.v2 == lowest) && (tri.v1 == highest || tri.v2 == highest)) middle = tri.v3;
 	
 	// position of vertices on the raster image
-	int lowest_y = floor(lowest.map.y * (float)p.l_h);
-	int middle_y = floor(middle.map.y * (float)p.l_h);
-	int highest_y = floor(highest.map.y * (float)p.l_h);
+	int lowest_y = floor(lowest.exp.y * (float)p.l_h);
+	int middle_y = floor(middle.exp.y * (float)p.l_h);
+	int highest_y = floor(highest.exp.y * (float)p.l_h);
 	
-	int lowest_x = floor(lowest.map.x * (float)p.l_w);
-	int middle_x = floor(middle.map.x * (float)p.l_w);
-	int highest_x = floor(highest.map.x * (float)p.l_w);
-	
-	// push
-	if (middle_y == highest_y) {
-		//middle_y++;
-		//highest_y++;
-	} else {
-		//highest_y++;
-	}
-	
-	
-	
+	int lowest_x = floor(lowest.exp.x * (float)p.l_w);
+	int middle_x = floor(middle.exp.x * (float)p.l_w);
+	int highest_x = floor(highest.exp.x * (float)p.l_w);
 	
 	// compute raster line counts
 	int low_high_lines = highest_y - lowest_y;
@@ -423,22 +469,9 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 	
 	// stupid bug fix
 	if (!low_mid_lines) {
-		
 		left_pos = lowest_x;
 		right_pos = middle_x;
-		
-		/*if (lowest_x > middle_x) {
-			left_pos = lowest_x;
-			right_pos = middle_x;
-		} else {
-			left_pos = middle_x;
-			right_pos = lowest_x;
-			
-			std::swap(low_high_dir, mid_high_dir);
-		}*/
 	}
-	
-	
 	
 	for (int row = lowest_y; row < middle_y; row++) {
 		left_pos += low_high_dir;
@@ -449,7 +482,7 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 		
 		if (from > to) std::swap(from, to);
 		
-		for (int col = from; col < /*<=*/ /* push */ to; col++) {
+		for (int col = from; col < to; col++) {
 			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
 			
 			const float thr = 1.0f/3.0f;
@@ -471,7 +504,7 @@ void RasterizeTriangle(RasterParams p, Triangle tri, auto raster_f) {
 		
 		if (from > to) std::swap(from, to);
 
-		for (int col = from; col < /*<=*/ /* push */ to; col++) {
+		for (int col = from; col < to; col++) {
 			vec3 d = GetBarycentric(tri, (float)col / (float)p.l_w, (float)row / (float)p.l_h);
 			
 			const float thr = 1.0f/3.0f;
@@ -502,6 +535,7 @@ int main(int argc, const char** argv) {
 		std::cout << "  -verts\t\tDraws in a single pixel for each triangle vertex into\n\t\t\tthe lightmap\n";
 		
 		std::cout << "  -pad <pixels>\t\tAdds a border around each triangle\n";
+		std::cout << "  -exp <pixels>\t\tExpands each triangle\n";
 		std::cout << "  -fullbright\t\tSets each triangle's color to white\n";
 		std::cout << "  -worldspawn <name>\tTreats the named entity as a worldspawn and allows it\n\t\t\tto cast shadows\n";
 		
@@ -520,6 +554,7 @@ int main(int argc, const char** argv) {
 	bool force_fullbright = false;
 	
 	int padding = 1;
+	int expansion = 1;
 	
 	std::vector<std::string> worldspawns;
 	
@@ -539,6 +574,10 @@ int main(int argc, const char** argv) {
 		
 		if (strcmp(argv[i], "-pad") == 0) {
 			padding = atoi(argv[++i]);
+		}
+		
+		if (strcmp(argv[i], "-exp") == 0) {
+			expansion = atoi(argv[++i]);
 		}
 		
 		if (strcmp(argv[i], "-fullbright") == 0) {
@@ -569,6 +608,8 @@ int main(int argc, const char** argv) {
 	worldcell_path += worldcell;
 	worldcell_path += ".cell";
 	
+	// this crashes if worldcell file doesn't exist
+	// TODO: fix
 	File cell(worldcell_path.c_str(), File::READ | File::PAUSE_LINE);
 	
 	if (!cell.is_open()) {
@@ -766,7 +807,7 @@ int main(int argc, const char** argv) {
 		RasterParams image_params = {
 			l.w,
 			l.h,
-			0, 0, 0, 0
+			(float)expansion
 		};
 		
 		if (paint_coords) {
@@ -787,6 +828,7 @@ int main(int argc, const char** argv) {
 			
 			// rasterize triangle and set color to light value
 			RasterizeTriangle(image_params, tri.triangle, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
+				if (l.Blitted(col, row)) return;
 				vec3 color = FindTexelColorFromLights(scene_tree, scene_triangles, lights, pos, nrm, mid);
 				l.Blit(col, row, {color});
 			});
