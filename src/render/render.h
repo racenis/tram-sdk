@@ -88,6 +88,12 @@ enum MaterialFilter {
     FILTER_LINEAR
 };
 
+struct SphericalHarmonic {
+    vec3 l00, l1m1, l10, l11, l2m2, l2m1, l20, l21, l22;
+};
+
+typedef SphericalHarmonic sphericalharmonic_t;
+
 vertexformat_t RegisterVertexFormat(const char* name);
 materialtype_t RegisterMaterialType(const char* name);
 

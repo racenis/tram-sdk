@@ -3,16 +3,12 @@
 #ifndef TRAM_SDK_RENDER_LIGHT_H
 #define TRAM_SDK_RENDER_LIGHT_H
 
-#include <framework/math.h>
+#include <render/render.h>
 #include <framework/resource.h>
 
 #include <vector>
 
 namespace tram::Render {
-
-struct SphericalHarmonic {
-    vec3 l00, l1m1, l10, l11, l2m2, l2m1, l20, l21, l22;
-};
     
 class LightGraph : public Resource {
 public:
@@ -23,6 +19,7 @@ public:
     
     void Unload() {}
     
+    static bool ContainsEntity(id_t entity);
     static SphericalHarmonic LookupHarmonic(vec3 position, uint32_t layers);
     static LightGraph* Find(name_t name);
 protected:
@@ -33,6 +30,7 @@ protected:
         std::vector<SphericalHarmonic> constants;
     };
     
+    std::vector<id_t> entities;
     std::vector<Node> nodes;
     std::vector<std::pair<uint32_t, uint32_t>> edges;
 };

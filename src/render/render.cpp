@@ -352,7 +352,7 @@ void AddText(vec3 pos, const char* text, color_t color) {
         }
     }
     
-    AddText(pos.x - w / 2.0f, pos.y - h / 2.0f, text);
+    AddText(pos.x - w / 2.0f, pos.y - h / 2.0f, text, color);
 }
 
 /// Draws text, on the screen, for a single frame.
@@ -405,13 +405,13 @@ void AddText(float x, float y, const char* text, color_t color) {
         bright.texco.x = tex_x + tex_w;
         bright.texco.y = tex_y + tex_h;
         
-        tleft.color = COLOR_WHITE;
+        tleft.color = color;
         tleft.texture = 0;
-        tright.color = COLOR_WHITE;
+        tright.color = color;
         tright.texture = 0;
-        bleft.color = COLOR_WHITE;
+        bleft.color = color;
         bleft.texture = 0;
-        bright.color = COLOR_WHITE;
+        bright.color = color;
         bright.texture = 0;
 
         textvertices.push_back(bleft);

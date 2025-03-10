@@ -135,6 +135,20 @@ struct Lightmap {
 	int w, h;
 };
 
+struct Node {
+	vec3 position;
+	
+	bool has_light;
+	bool has_reflection;
+	
+	vec3 l00, l1m1, l10, l11, l2m2, l2m1, l20, l21, l22;
+};
+
+struct Edge {
+	uint32_t from;
+	uint32_t to;
+};
+
 struct Model {
 	int lightmap_width;
 	int lightmap_height;
@@ -148,13 +162,15 @@ struct Light {
 	vec3 pos;
 	vec3 color;
 	float radius;
+	
+	uint32_t entity;
 };
 
 struct Entity {
 	vec3 pos;
 	quat rot;
 	uint32_t flags;
-	name_t id;
+	uint32_t id;
 	name_t name;
 	
 	name_t model_name;
@@ -552,7 +568,8 @@ int main(int argc, const char** argv) {
 	std::vector<Entity> entities;
 	std::vector<Light> lights;
 	
-	
+	std::vector<Node> nodes;
+	std::vector<Edge> edges;
 	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -591,7 +608,7 @@ int main(int argc, const char** argv) {
 		if (entity_type == "staticwobj") {
 			Entity entity;
 			
-			entity.id = cell.read_name();
+			entity.id = cell.read_uint32();
 			entity.name = cell.read_name();
 			entity.flags = cell.read_uint64();
 			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
@@ -607,9 +624,9 @@ int main(int argc, const char** argv) {
 		if (entity_type == "button") {
 			Entity entity;
 			
-			entity.id = cell.read_name();
+			entity.id = cell.read_uint32();
 			entity.name = cell.read_name();
-			entity.flags = cell.read_uint64();
+			entity.flags = cell.read_uint32();
 			entity.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			entity.rot = vec3 {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			
@@ -625,9 +642,9 @@ int main(int argc, const char** argv) {
 		if (entity_type == "light") {
 			Light light;
 			
+			light.entity = cell.read_uint32();
 			cell.read_name();
-			cell.read_name();
-			cell.read_uint64();
+			cell.read_uint32();
 			light.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
 			cell.read_float32(); cell.read_float32(); cell.read_float32();
 			light.color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
@@ -640,6 +657,69 @@ int main(int argc, const char** argv) {
 	}
 
 	std::cout << "done!" << std::endl;
+	
+	
+	std::string light_path = std::string("data/worldcells/") + worldcell + ".light";
+    
+    File file(light_path.c_str(), File::READ);
+    
+    if (!file.is_open()) {
+        Log("Light graph not found: {}", light_path);
+    } else if (name_t header = file.read_name(); header != "LIGHTGRAPHv1") {
+        Log("Light unrecognized header '{}' in file: {}", header, light_path);
+    } else while (file.is_continue()) {
+        name_t record_type = file.read_name();
+        
+        if (record_type == "node") {
+            Node new_node;
+            
+            new_node.position = {file.read_float32(),
+                                 file.read_float32(),
+                                 file.read_float32()};
+            
+            new_node.has_light = file.read_uint32();
+            new_node.has_reflection = file.read_uint32();
+            
+			new_node.l00 = {0.0f, 0.0f, 0.0f};
+			
+			new_node.l1m1 = {0.0f, 0.0f, 0.0f};
+			new_node.l10 = {0.0f, 0.0f, 0.0f};
+			new_node.l11 = {0.0f, 0.0f, 0.0f};
+			
+			new_node.l2m2 = {0.0f, 0.0f, 0.0f};
+			new_node.l2m1 = {0.0f, 0.0f, 0.0f};
+			new_node.l20 = {0.0f, 0.0f, 0.0f};
+			new_node.l21 = {0.0f, 0.0f, 0.0f};
+			new_node.l22 = {0.0f, 0.0f, 0.0f};
+			
+            nodes.push_back(new_node);
+            
+        } else if (record_type == "edge") {
+            const uint32_t from_node_index = file.read_uint32();
+            const uint32_t to_node_index = file.read_uint32();
+            
+            edges.push_back({from_node_index, to_node_index});
+            
+        } else if (record_type == "light") {
+			file.read_uint32();
+			file.read_uint32();
+			file.read_name();
+			
+			file.read_float32();
+			
+			file.read_float32();
+			file.read_float32();
+			file.read_float32();
+			
+			file.read_float32();
+			file.read_float32();
+			file.read_float32();
+			file.read_float32();
+			file.read_float32();
+        } else {
+            std::cout << "unknown light graph record: " << record_type << std::endl;
+		}
+    }
 	
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -827,6 +907,14 @@ int main(int argc, const char** argv) {
 		
 	}
 	
+	for (auto& light : lights) {
+		for (auto& node : nodes) {
+			if (IsTexelInShadow(scene_tree, scene_triangles, node.position, light.pos)) continue;
+			
+			node.l00 += FindTexelColorFromLight(light, node.position, glm::normalize(light.pos - node.position));
+		}
+	}
+	
 	std::cout << "\rComputing... done!\t\t\t\t\t\t\t      " << std::endl;
 	
 	std::cout << "Filling gaps... " << std::flush;
@@ -869,6 +957,128 @@ int main(int argc, const char** argv) {
 		if (!stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0)) {
 			std::cout << "failed! Couldn't write file to disk." << std::endl;
 			return 0;
+		}
+	}
+	
+	if (nodes.size()) {
+		std::string path = "data/worldcells/";
+		path += worldcell;
+		path += ".light";
+		
+		File file (path.c_str(), File::WRITE);
+		
+		if (!file.is_open()) {
+			std::cout << "Can't open light file for writing: " << path << std::endl;
+		}
+		
+		file.write_name("LIGHTGRAPHv1");
+		
+		file.write_newline();
+		file.write_newline();
+		
+		
+		for (auto& node : nodes) {
+			file.write_name("node");
+			
+			file.write_float32(node.position.x);
+			file.write_float32(node.position.y);
+			file.write_float32(node.position.z);
+			
+			file.write_uint32(node.has_light);
+			file.write_uint32(node.has_reflection);
+			
+			file.write_newline();
+		}
+		
+		file.write_newline();
+		file.write_newline();
+		
+		for (auto& edge : edges) {
+			file.write_name("edge");
+			
+			file.write_uint32(edge.from);
+			file.write_uint32(edge.to);
+			
+			file.write_newline();
+		}
+	
+		file.write_newline();
+		file.write_newline();
+	
+		for (size_t i = 0; i < nodes.size(); i++) {
+			auto& node = nodes[i];
+			
+			file.write_name("light");
+			
+			file.write_uint32(i);
+			file.write_uint32(0);
+			
+			file.write_name("r");
+			
+			file.write_float32(node.l00.x);
+
+			file.write_float32(node.l1m1.x);
+			file.write_float32(node.l10.x);
+			file.write_float32(node.l11.x);
+
+			file.write_float32(node.l2m2.x);
+			file.write_float32(node.l2m1.x);
+			file.write_float32(node.l20.x);
+			file.write_float32(node.l21.x);
+			file.write_float32(node.l22.x);
+			
+			file.write_newline();
+			
+			
+			file.write_name("light");
+			
+			file.write_uint32(i);
+			file.write_uint32(0);
+			
+			file.write_name("g");
+			
+			file.write_float32(node.l00.y);
+
+			file.write_float32(node.l1m1.y);
+			file.write_float32(node.l10.y);
+			file.write_float32(node.l11.y);
+
+			file.write_float32(node.l2m2.y);
+			file.write_float32(node.l2m1.y);
+			file.write_float32(node.l20.y);
+			file.write_float32(node.l21.y);
+			file.write_float32(node.l22.y);
+			
+			file.write_newline();
+			
+			file.write_name("light");
+			
+			file.write_uint32(i);
+			file.write_uint32(0);
+			
+			file.write_name("b");
+			
+			file.write_float32(node.l00.z);
+
+			file.write_float32(node.l1m1.z);
+			file.write_float32(node.l10.z);
+			file.write_float32(node.l11.z);
+
+			file.write_float32(node.l2m2.z);
+			file.write_float32(node.l2m1.z);
+			file.write_float32(node.l20.z);
+			file.write_float32(node.l21.z);
+			file.write_float32(node.l22.z);
+			
+			file.write_newline();
+			file.write_newline();
+		}
+		
+		for (auto& light : lights) {
+			file.write_name("entity");
+			file.write_uint32(light.entity);
+			
+			file.write_newline();
 		}
 	}
 	

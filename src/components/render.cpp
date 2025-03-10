@@ -7,6 +7,7 @@
 #include <framework/entity.h>
 
 #include <render/scene.h>
+#include <render/light.h>
 
 #include <config.h>
 
@@ -29,7 +30,7 @@ template <> void Component<RenderComponent>::yeet() { PoolProxy<RenderComponent>
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue
 /// and the component will start when it the loading is complete.
-void RenderComponent::SetModel (name_t name) {
+void RenderComponent::SetModel(name_t name) {
     model = Render::Model::Find(name);
     
     if (is_ready) {
@@ -49,7 +50,7 @@ void RenderComponent::SetModel (name_t name) {
 /// Sets the lightmap for the model.
 /// Lightmaps are rendered only for static models, so setting a lightmap for
 /// a dynamic model will do nothing.
-void RenderComponent::SetLightmap (name_t name) {
+void RenderComponent::SetLightmap(name_t name) {
     lightmap = Render::Material::Make(name, MATERIAL_LIGHTMAP);
     
     if (is_ready) {
@@ -147,6 +148,9 @@ void RenderComponent::SetLocation(vec3 nlocation){
                 light_t lights[4];
                 Render::LightTree::FindLights(location, lights);
                 Render::API::SetLights(entry, lights);
+                if (!lightmap) {
+                    Render::API::SetSphericalHarmonic(entry, LightGraph::LookupHarmonic(location, -1));
+                }
             }
         }
         

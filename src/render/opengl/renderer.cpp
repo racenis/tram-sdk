@@ -60,6 +60,9 @@ struct ShaderUniformModelMatrices {
     vec4 colors[15];
     vec4 specular[15];
     vec4 texture_transforms[15];
+    vec3 l00;
+    vec3 l1m1; vec3 l10; vec3 l11;
+    vec3 l2m2; vec3 l2m1; vec3 l20; vec3 l21; vec3 l22;
 };
 
 struct LayerParameters {
@@ -303,7 +306,7 @@ void RenderFrame() {
 
         for (int i = 0; i < 15; i++) {
             modelMatrices.colors[i] = robj->colors[i];
-            /*modelMatrices.specular[i].x = robj->specular_weights[i];
+            /*modelMatrices.specular[i].x = robj->specular_weights[i];clTabCtrl
             modelMatrices.specular[i].y = robj->specular_exponents[i];
             modelMatrices.specular[i].z = robj->specular_transparencies[i];*/
             modelMatrices.texture_transforms[i] = robj->texture_transforms[i];
@@ -324,6 +327,16 @@ void RenderFrame() {
         //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[1]].location, light_list.GetFirst()[robj->lights[1]].color);
         //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[2]].location, light_list.GetFirst()[robj->lights[2]].color);
         //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[3]].location, light_list.GetFirst()[robj->lights[3]].color);
+        
+        modelMatrices.l00 = robj->harmonic.l00;
+        modelMatrices.l1m1 = robj->harmonic.l1m1;
+        modelMatrices.l10 = robj->harmonic.l10;
+        modelMatrices.l11 = robj->harmonic.l11;
+        modelMatrices.l2m2 = robj->harmonic.l2m2;
+        modelMatrices.l2m1 = robj->harmonic.l2m1;
+        modelMatrices.l20 = robj->harmonic.l20;
+        modelMatrices.l21 = robj->harmonic.l21;
+        modelMatrices.l22 = robj->harmonic.l22;
 
         modelMatrices.modelLights.x = robj->lights[0];
         modelMatrices.modelLights.y = robj->lights[1];

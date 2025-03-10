@@ -61,6 +61,7 @@
 
 #include <render/api.h>
 #include <render/scene.h>
+#include <render/light.h>
 
 #include <platform/platform.h>
 #include <platform/image.h>
@@ -137,11 +138,13 @@ int main(int argc, const char** argv) {
     Render::API::SetScreenClear({0.0f, 0.0f, 0.0f}, true);
 
     // loading the demo level
+    LightGraph::Find("demo_mov")->Load();
     WorldCell::Make(UID("demo_mov"))->LoadFromDisk();
+    
 
     // create the player entity
     player = new Player;
-    player->SetLocation(vec3(0.0f, (1.85f/2.0f) + 0.05f, 0.0f));
+    player->SetLocation(vec3(0.0f, (1.85f/2.0f) + 0.15f, 0.0f));
     player->Load();
     
     // have world streaming control track player
@@ -304,6 +307,10 @@ void mainloop() {
     // this renders debug text at the origin
     Render::AddText({0, 0, 0}, "HELLOOO");
     
+    vec3 ff = LightGraph::LookupHarmonic(Render::GetViewPosition(), -1).l00;
+    Render::AddText(20, 20, std::to_string(ff.x).c_str(), ff);
+    Render::AddText(20, 40, std::to_string(ff.y).c_str(), ff);
+    Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
     
     // have mongus run around on a path
     follower->Advance(0.025f);

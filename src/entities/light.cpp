@@ -3,6 +3,7 @@
 #include <framework/core.h>
 #include <entities/light.h>
 #include <components/light.h>
+#include <render/light.h>
 
 #include <framework/serialization.h>
 
@@ -48,7 +49,7 @@ Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array)
 }
 
 void Light::UpdateParameters () {
-    if (!IsLoaded()) return;
+    if (!light) return;
     light->SetLocation(location);
 }
 
@@ -57,13 +58,16 @@ void Light::SetParameters () {
 }
 
 void Light::Load () {
-    light.make();
-    light->SetColor(color);
-    light->SetDistance(distance);
-    light->SetDirection(direction);
-    light->SetExponent(exponent);
+    if (!Render::LightGraph::ContainsEntity(id)) {
+        light.make();
+        light->SetColor(color);
+        light->SetDistance(distance);
+        light->SetDirection(direction);
+        light->SetExponent(exponent);
 
-    light->Init();
+        light->Init();
+    }
+    
     flags |= LOADED;
 
     UpdateParameters();

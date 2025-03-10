@@ -41,6 +41,10 @@ void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
     entry.gl->lightmap = lightmap.gl_texture_handle;
 }
 
+void SetSphericalHarmonic(drawlistentry_t entry, sphericalharmonic_t harmonic) {
+    entry.gl->harmonic = harmonic;
+}
+
 void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max) {
     entry.gl->aabb_min = min;
     entry.gl->aabb_max = max;

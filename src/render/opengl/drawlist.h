@@ -36,12 +36,16 @@ struct GLDrawListEntry {
     float fade_near = 0.0f;
     float fade_far = INFINITY;
 
+    sphericalharmonic_t harmonic;
+
     GLDrawListEntry() {
         for (int i = 0; i < 15; i++) {
             materials[i] = nullptr;
             colors[i] = {1.0f, 1.0f, 1.0f, 1.0f};
             texture_transforms[i]  = {0.0f, 0.0f, 0.0f, 0.0f};
         }
+        
+        harmonic = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
     }
 
     /// Assembles a key for sorting

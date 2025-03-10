@@ -9,6 +9,13 @@
 
 #include <config.h>
 
+
+
+
+
+
+#include <render/render.h>
+
 /**
  * @class tram::Render::LightGraph render/light.h <render/light.h>
  * 
@@ -24,9 +31,88 @@ template <> Pool<Render::LightGraph> PoolProxy<Render::LightGraph>::pool("LightG
 
 // TODO: add an octree here with all of the nodes!!
 
-// TODO: implement
+bool LightGraph::ContainsEntity(id_t entity) {
+    for (auto& graph : PoolProxy<Render::LightGraph>::GetPool()) {
+        for (auto graph_entity : graph.entities) {
+            if (graph_entity == entity) return true;
+        }
+    }
+    return false;
+}
+
 SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
-    return SphericalHarmonic{};
+    uint32_t nearest = 0;
+    LightGraph* nearest_parent = nullptr;
+    float nearest_dist = INFINITY;
+    
+    for (auto& graph : PoolProxy<Render::LightGraph>::GetPool()) {
+        for (uint32_t node =0; node < graph.nodes.size(); node++) {
+            if (!graph.nodes[node].constants.size()) continue;
+            
+            const float dist = glm::distance(position, graph.nodes[node].position);
+            if (dist < nearest_dist) {
+                nearest_dist = dist;
+                nearest = node;
+                nearest_parent = &graph;
+            }
+            
+            vec3 cco = graph.nodes[node].constants[0].l00;
+            //vec3 cco = COLOR_WHITE;
+            Render::AddText(graph.nodes[node].position, (std::to_string(graph.nodes[node].constants[0].l00.x) + "\n" + std::to_string(graph.nodes[node].constants[0].l00.y) + "\n" + std::to_string(graph.nodes[node].constants[0].l00.z)).c_str(), cco);
+        }
+    }
+    
+    SphericalHarmonic harmonic = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    std::vector<std::pair<Node*, float>> connected;
+    
+    if (!nearest_parent) return harmonic;
+    
+    connected.push_back({&nearest_parent->nodes[nearest], 0.0f});
+    Render::AddLineMarker(nearest_parent->nodes[nearest].position, Render::COLOR_CYAN);
+    
+    for (auto& edge : nearest_parent->edges) {
+        if (edge.first == nearest) {
+            connected.push_back({&nearest_parent->nodes[edge.second], 0.0f});
+        } else if (edge.second == nearest) {
+            connected.push_back({&nearest_parent->nodes[edge.first], 0.0f});
+        }
+    }
+    
+    float total_distance = 0.0f;
+    
+    for (auto& pair : connected) {
+        const float dist = 1.0f / glm::distance(pair.first->position, position);
+        pair.second = dist;
+        total_distance += dist;
+        
+        Render::AddLine(nearest_parent->nodes[nearest].position, pair.first->position, Render::COLOR_GREEN);
+    }
+    
+    for (auto& pair : connected) {
+        // TODO: implement layer interpolation!!
+        
+        
+        
+        SphericalHarmonic& this_harmonic = pair.first->constants[0];
+        
+        const float weight = pair.second / total_distance;
+        
+        Render::AddText(pair.first->position + vec3(0, 1, 0), (std::to_string(weight).c_str()));
+        
+        harmonic.l00 += weight * this_harmonic.l00;
+        
+        harmonic.l1m1 += weight * this_harmonic.l1m1;
+        harmonic.l10 += weight * this_harmonic.l10;
+        harmonic.l11 += weight * this_harmonic.l11;
+        
+        harmonic.l2m2 += weight * this_harmonic.l2m2;
+        harmonic.l2m1 += weight * this_harmonic.l2m1;
+        harmonic.l20 += weight * this_harmonic.l20;
+        harmonic.l21 += weight * this_harmonic.l21;
+        harmonic.l22 += weight * this_harmonic.l22;
+    }
+    
+    return harmonic;
 }
 
 LightGraph* LightGraph::Find(name_t name) {
@@ -53,7 +139,7 @@ void LightGraph::LoadFromDisk() {
     name_t header = file.read_name();
     
     if (header != "LIGHTGRAPHv1") {
-        Log("Sprite not found: {}", filename);
+        Log("Light unrecognized header '{}' in file: {}", header, filename);
         return;
     }
     
@@ -83,7 +169,7 @@ void LightGraph::LoadFromDisk() {
             uint32_t layer = file.read_uint32();
             name_t channel = file.read_name();
             
-            nodes[index].constants.resize(layer);
+            nodes[index].constants.resize(layer + 1);
             
             auto& c = nodes[index].constants[layer];
             
@@ -124,9 +210,11 @@ void LightGraph::LoadFromDisk() {
                 c.l21.z = file.read_float32();
                 c.l22.z = file.read_float32();
             }
+        } else if (record_type == "entity") {
+            entities.push_back(file.read_uint32());
         } else {
             std::cout << "unknown light graph record: " << record_type << std::endl;
-    }
+        }
     }
     
     status = READY;

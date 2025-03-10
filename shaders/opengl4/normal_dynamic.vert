@@ -37,6 +37,9 @@ layout (std140) uniform ModelMatrices {
 	vec4 colors[15];
 	vec4 specular[15];
 	vec4 texture_transforms[15];
+	vec3 l00;
+    vec3 l1m1; vec3 l10; vec3 l11;
+    vec3 l2m2; vec3 l2m1; vec3 l20; vec3 l21; vec3 l22;
 };
 
 layout (std140) uniform Lights {
@@ -106,7 +109,10 @@ void main() {
 	vert_color = vec3(ambient_color);
 	vert_color += sun_color * max(dot(n, normalize(sun_direction)), 0.0);
 	vert_color *= sun_weight;
-		
+	
+	// add in light probe lights
+	vert_color += l00;
+	
 	// add in light colors
 	vert_color += vec3(scene_lights[model_lights.x].bb) * attenuation1 * directionality1;
 	vert_color += vec3(scene_lights[model_lights.y].bb) * attenuation2 * directionality2;
