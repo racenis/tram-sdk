@@ -58,7 +58,9 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
             
             vec3 cco = graph.nodes[node].constants[0].l00;
             //vec3 cco = COLOR_WHITE;
-            Render::AddText(graph.nodes[node].position, (std::to_string(graph.nodes[node].constants[0].l00.x) + "\n" + std::to_string(graph.nodes[node].constants[0].l00.y) + "\n" + std::to_string(graph.nodes[node].constants[0].l00.z)).c_str(), cco);
+            Render::AddText(graph.nodes[node].position, (std::to_string(graph.nodes[node].constants[0].l00.x) + "\n"
+                                                       + std::to_string(graph.nodes[node].constants[0].l00.y) + "\n"
+                                                       + std::to_string(graph.nodes[node].constants[0].l00.z)).c_str(), cco);
         }
     }
     
@@ -69,6 +71,8 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
     
     connected.push_back({&nearest_parent->nodes[nearest], 0.0f});
     Render::AddLineMarker(nearest_parent->nodes[nearest].position, Render::COLOR_CYAN);
+    
+    //return nearest_parent->nodes[nearest].constants[0];
     
     for (auto& edge : nearest_parent->edges) {
         if (edge.first == nearest) {

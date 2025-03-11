@@ -55,6 +55,14 @@ out vec3 vert_color_add;
 out vec2 vert_uv;
 flat out uint vert_tex_index;
 
+// spherical harmonic consts
+// http://graphics.stanford.edu/papers/envmap/envmap.pdf
+const float c1 = 0.429043;
+const float c2 = 0.511664;
+const float c3 = 0.743125;
+const float c4 = 0.886227;
+const float c5 = 0.247708;
+
 void main() {
 	// transform vertex with each pose matrix
 	vec4 posed1 = BoneWeight.x * bone[BoneIndex.x] * vec4(Position, 1.0);
@@ -111,7 +119,9 @@ void main() {
 	vert_color *= sun_weight;
 	
 	// add in light probe lights
-	vert_color += l00;
+	vert_color += c1 * l22 * (n.x * n.x - n.y * n.y) + c3 * l20 * n.z * n.z + c4 * l00 - c5 * l20
+					+ 2.0 * c1 * (l2m2 * n.x * n.y + l21 * n.x * n.z + l2m1 * n.y * n.z)
+					+ 2.0 * c2 * (l11 * n.x + l1m1 * n.y + l10 * n.z);
 	
 	// add in light colors
 	vert_color += vec3(scene_lights[model_lights.x].bb) * attenuation1 * directionality1;

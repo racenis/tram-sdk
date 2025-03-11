@@ -182,6 +182,36 @@ struct Entity {
 	Lightmap lightmap;
 };
 
+void EvaluateSphericalHarmonic(Node& probe, vec3 direction, vec3 color) {
+	const float x = direction.x;
+	const float y = direction.y;
+	const float z = direction.z;
+	
+	const float y00 = sqrtf(1.0f / 3.14f) / 2.0f;
+
+	const float y1m1 = sqrtf(3.0f / (4.0f * 3.14f)) * y;
+	const float y10 = sqrtf(3.0f / (4.0f * 3.14f)) * z;
+	const float y11 = sqrtf(3.0f / (4.0f * 3.14f)) * x;
+
+	const float y2m2 = (sqrtf(15.0f/3.14f) / 2.0f) * x * y;
+	const float y2m1 = (sqrtf(15.0f/3.14f) / 2.0f) * y * z;
+	const float y20 = (sqrtf(5.0f / 3.14f) / 4.0f) * (2.0f * z * z - x * x - y * y);
+	const float y21 = (sqrtf(15.0f/3.14f) / 2.0f) * x * z;
+	const float y22 = (sqrtf(15.0f/3.14f) / 4.0f) * (x * x - y * y);
+	
+	probe.l00 += y00 * color;
+	
+	probe.l1m1 += y1m1 * color;
+	probe.l10 += y10 * color;
+	probe.l11 += y11 * color;
+	
+	probe.l2m2 += y2m2 * color;
+	probe.l2m1 += y2m1 * color;
+	probe.l20 += y20 * color;
+	probe.l21 += y21 * color;
+	probe.l22 += y22 * color;
+}
+
 Model LoadModel(const char* model_name) {
 	std::string model_path = "data/models/";
 	model_path += (const char*)model_name;
@@ -907,12 +937,55 @@ int main(int argc, const char** argv) {
 		
 	}
 	
-	for (auto& light : lights) {
-		for (auto& node : nodes) {
+	for (auto& node : nodes) {
+		int lights_added = 0;
+		
+		for (auto& light : lights) {
 			if (IsTexelInShadow(scene_tree, scene_triangles, node.position, light.pos)) continue;
 			
-			node.l00 += FindTexelColorFromLight(light, node.position, glm::normalize(light.pos - node.position));
+			vec3 direction = glm::normalize(light.pos - node.position);
+			vec3 color = FindTexelColorFromLight(light, node.position, direction);
+			
+			EvaluateSphericalHarmonic(node, direction, color);
+			
+			lights_added++;
+			
+			// we could use an analytical approach here, but I am too eepy
+	
+			// when we'll implement radiosity, we'll have to use the numerical 
+			// approach anyways, since radiosity is a finite element method
+			
+			for (float x = 0.0f; x < 2.0f * 3.14f; x += 3.14f / 16.0f) {
+				for (float y = 0.0f; y < 2.0f * 3.14f; y += 3.14f / 16.0f) {
+					//vec3 direction = glm::normalize(light.pos - node.position);
+					vec3 direction = glm::normalize(vec3{sinf(x), sinf(y), cosf(x)});
+					vec3 color = FindTexelColorFromLight(light, node.position, direction);
+					
+					//color = {0.1f, 0.1f, 0.1f};
+					
+					EvaluateSphericalHarmonic(node, direction, color);
+					
+					lights_added++;
+				}
+			}
+			
 		}
+		
+		if (lights_added) {
+			node.l00 *= (4.0f * 3.14f) / lights_added;
+		
+			node.l1m1 *= (4.0f * 3.14f) / lights_added;
+			node.l10 *= (4.0f * 3.14f) / lights_added;
+			node.l11 *= (4.0f * 3.14f) / lights_added;
+			
+			node.l2m2 *= (4.0f * 3.14f) / lights_added;
+			node.l2m1 *= (4.0f * 3.14f) / lights_added;
+			node.l20 *= (4.0f * 3.14f) / lights_added;
+			node.l21 *= (4.0f * 3.14f) / lights_added;
+			node.l22 *= (4.0f * 3.14f) / lights_added;
+		}
+		
+		
 	}
 	
 	std::cout << "\rComputing... done!\t\t\t\t\t\t\t      " << std::endl;

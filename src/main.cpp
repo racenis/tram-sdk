@@ -81,6 +81,7 @@ Audio::Sound* eerp = nullptr;
 AudioComponent* derp_player = nullptr;
 RenderComponent* binguser = nullptr;
 RenderComponent* monguser = nullptr;
+RenderComponent* dingbat = nullptr;
 AnimationComponent* monguser_armature = nullptr;
 
 bool record = false;
@@ -206,6 +207,12 @@ int main(int argc, const char** argv) {
     
     //derp_player->Play();
     
+    dingbat = PoolProxy<RenderComponent>::New();
+    dingbat->SetModel("sphere");
+    dingbat->SetScale({0.2f, 0.2f, 0.2f});
+    dingbat->SetDirectionaLight(false);
+    dingbat->Init();
+    
     chamberpot.make();
     chamberpot->SetModel("chamberpot2");
     chamberpot->SetScale({0.2, 0.2, 0.2});
@@ -311,6 +318,8 @@ void mainloop() {
     Render::AddText(20, 20, std::to_string(ff.x).c_str(), ff);
     Render::AddText(20, 40, std::to_string(ff.y).c_str(), ff);
     Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
+    
+    dingbat->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
     
     // have mongus run around on a path
     follower->Advance(0.025f);
