@@ -7,6 +7,8 @@
     <File Name="src/main.cpp"/>
     <VirtualDirectory Name="extensions">
       <VirtualDirectory Name="kitchensink">
+        <File Name="src/extensions/kitchensink/probe.h"/>
+        <File Name="src/extensions/kitchensink/probe.cpp"/>
         <File Name="src/extensions/kitchensink/kitchensink.h"/>
         <File Name="src/extensions/kitchensink/kitchensink.cpp"/>
         <File Name="src/extensions/kitchensink/menu.h"/>

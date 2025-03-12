@@ -53,6 +53,7 @@
 #include <extensions/kitchensink/entities.h>
 #include <extensions/kitchensink/inventory.h>
 #include <extensions/kitchensink/soundtable.h>
+#include <extensions/kitchensink/probe.h>
 #include <extensions/scripting/lua.h>
 
 #include <extensions/kitchensink/dialog.h>
@@ -135,6 +136,8 @@ int main(int argc, const char** argv) {
     Ext::Kitchensink::DialogTopic::LoadFromDisk("dialogs");
     Ext::Kitchensink::Quest::LoadFromDisk("quests");
     Ext::Kitchensink::Inventory::LoadFromDisk("items");
+    
+    Ext::Kitchensink::RegisterRenderEnvironmentMapShortcut();
 
     Render::API::SetScreenClear({0.0f, 0.0f, 0.0f}, true);
 
