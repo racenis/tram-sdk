@@ -48,6 +48,8 @@ public:
     ResourceProxy(EntityComponent* parent) : parent(parent) {}
     ~ResourceProxy() { set(nullptr); }
     void set(Resource* new_res){
+        if (new_res == resource) return;
+        
         if (resource) {
             resource->RemoveReference();
             Async::CancelRequest(parent, resource);

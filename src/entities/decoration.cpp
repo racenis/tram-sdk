@@ -4,6 +4,8 @@
 
 #include <entities/decoration.h>
 
+#include <render/light.h>
+
 #include <components/render.h>
 #include <components/physics.h>
 #include <components/animation.h>
@@ -60,6 +62,8 @@ void Decoration::UpdateParameters() {
     rendercomponent->SetLocation(location);
     rendercomponent->SetRotation(rotation);
     rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
+    
+    rendercomponent->SetEnvironmentMap(Render::LightGraph::LookupEnvironmentMap(location));
 }
 
 void Decoration::SetParameters() {

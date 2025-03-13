@@ -19,6 +19,7 @@ public:
 
     void SetModel(name_t name);
     void SetLightmap(name_t name);
+    void SetEnvironmentMap(Render::Material* material);
     void SetArmature(AnimationComponent* armature);
 
     void Start();
@@ -44,6 +45,7 @@ protected:
 
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Material> lightmap;
+    ResourceProxy<Render::Material> environmentmap;
 
     std::vector<Render::drawlistentry_t> draw_list_entries;
 

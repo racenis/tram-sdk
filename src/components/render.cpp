@@ -33,7 +33,7 @@ template <> void Component<RenderComponent>::yeet() { PoolProxy<RenderComponent>
 void RenderComponent::SetModel(name_t name) {
     model = Render::Model::Find(name);
     
-    if (is_ready) {
+    /*if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry.generic) {
                 RemoveDrawListEntry(entry);
@@ -44,7 +44,7 @@ void RenderComponent::SetModel(name_t name) {
         
         InsertDrawListEntries();
         RefreshAABB();
-    }
+    }*/
 };
 
 /// Sets the lightmap for the model.
@@ -53,14 +53,32 @@ void RenderComponent::SetModel(name_t name) {
 void RenderComponent::SetLightmap(name_t name) {
     lightmap = Render::Material::Make(name, MATERIAL_LIGHTMAP);
     
-    if (is_ready) {
+    /*if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry.generic) {
                 Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
             }
         }
-    }
+    }*/
 };
+
+/// Sets the environment map for the model.
+void RenderComponent::SetEnvironmentMap(Render::Material* material) {
+    environmentmap = material;
+    //std::cout << "setting:" << material << std::endl;
+    //if (material != environmentmap.get()) std::cout << "newnenwnenwenwnew\n\n\n\n\n\n\n\n" << std::endl;
+    
+    if (is_ready && material && material->GetStatus() == Resource::READY) {
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturehandle_t {});
+            }
+        }
+    }
+    
+    
+    
+}
 
 /// Links an AnimationComponent.
 /// This needs to be set, so that the model can be rendered with the animations
@@ -83,7 +101,7 @@ void RenderComponent::SetArmature(AnimationComponent* armature) {
     }
 };
 
-RenderComponent::RenderComponent() : model(this), lightmap(this) {
+RenderComponent::RenderComponent() : model(this), lightmap(this), environmentmap(this) {
     render_flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
 }
 
@@ -239,9 +257,17 @@ void RenderComponent::SetColor(vec3 color) {
     }
 }
 
-void RenderComponent::Start(){
-    assert(!is_ready);
-
+void RenderComponent::Start() {
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::RemoveDrawListEntry(entry);
+            }
+        }
+        
+        draw_list_entries.clear();
+    }
+    
     InsertDrawListEntries();
     RefreshAABB();
     
@@ -295,6 +321,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
         Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
+        Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturehandle_t {});
         Render::API::SetFlags(entry, render_flags);
         Render::API::SetLayer(entry, layer);
 

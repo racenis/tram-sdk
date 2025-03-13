@@ -162,7 +162,7 @@ void Material::LoadMaterialInfo(const char* filename) {
 }
 
 Material::Material(name_t name, materialtype_t type) : Resource(name), type(type) {
-    if (type == MATERIAL_LIGHTMAP) {
+    if (type == MATERIAL_LIGHTMAP || type == MATERIAL_ENVIRONMENTMAP) {
         filter = FILTER_LINEAR;
     }
 }

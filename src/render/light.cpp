@@ -2,6 +2,8 @@
 
 #include <render/light.h>
 
+#include <render/material.h>
+
 #include <framework/file.h>
 #include <framework/logging.h>
 
@@ -40,6 +42,31 @@ bool LightGraph::ContainsEntity(id_t entity) {
     return false;
 }
 
+std::vector<std::pair<uint32_t, vec3>> LightGraph::GetEnvironmentProbes() {
+    std::vector<std::pair<uint32_t, vec3>> probes;
+    for (uint32_t i = 0; i < nodes.size(); i++) if (nodes[i].has_reflection) probes.push_back({i, nodes[i].position});
+    return probes;
+}
+
+Material* LightGraph::LookupEnvironmentMap(vec3 position) {
+    Material* nearest = nullptr;
+    float nearest_dist = INFINITY;
+    for (auto& graph : PoolProxy<Render::LightGraph>::GetPool()) {
+        for (auto& node : graph.nodes) {
+            
+            if (!node.environment_map) continue;
+            
+            if (float this_dist = glm::distance(position, node.position); this_dist < nearest_dist) {
+                nearest = node.environment_map;
+                nearest_dist = this_dist;
+            } 
+            
+        }
+    }
+    
+    return nearest;
+}
+
 SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
     uint32_t nearest = 0;
     LightGraph* nearest_parent = nullptr;
@@ -47,7 +74,7 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
     
     for (auto& graph : PoolProxy<Render::LightGraph>::GetPool()) {
         for (uint32_t node =0; node < graph.nodes.size(); node++) {
-            if (!graph.nodes[node].constants.size()) continue;
+            if (!graph.nodes[node].has_light || !graph.nodes[node].constants.size()) continue;
             
             const float dist = glm::distance(position, graph.nodes[node].position);
             if (dist < nearest_dist) {
@@ -56,11 +83,11 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
                 nearest_parent = &graph;
             }
             
-            vec3 cco = graph.nodes[node].constants[0].l00;
+            //vec3 cco = graph.nodes[node].constants[0].l00;
             //vec3 cco = COLOR_WHITE;
-            Render::AddText(graph.nodes[node].position, (std::to_string(graph.nodes[node].constants[0].l00.x) + "\n"
+            /*Render::AddText(graph.nodes[node].position, (std::to_string(graph.nodes[node].constants[0].l00.x) + "\n"
                                                        + std::to_string(graph.nodes[node].constants[0].l00.y) + "\n"
-                                                       + std::to_string(graph.nodes[node].constants[0].l00.z)).c_str(), cco);
+                                                       + std::to_string(graph.nodes[node].constants[0].l00.z)).c_str(), cco);*/
         }
     }
     
@@ -70,7 +97,7 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
     if (!nearest_parent) return harmonic;
     
     connected.push_back({&nearest_parent->nodes[nearest], 0.0f});
-    Render::AddLineMarker(nearest_parent->nodes[nearest].position, Render::COLOR_CYAN);
+    //Render::AddLineMarker(nearest_parent->nodes[nearest].position, Render::COLOR_CYAN);
     
     //return nearest_parent->nodes[nearest].constants[0];
     
@@ -89,7 +116,7 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
         pair.second = dist;
         total_distance += dist;
         
-        Render::AddLine(nearest_parent->nodes[nearest].position, pair.first->position, Render::COLOR_GREEN);
+        //Render::AddLine(nearest_parent->nodes[nearest].position, pair.first->position, Render::COLOR_GREEN);
     }
     
     for (auto& pair : connected) {
@@ -101,7 +128,7 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
         
         const float weight = pair.second / total_distance;
         
-        Render::AddText(pair.first->position + vec3(0, 1, 0), (std::to_string(weight).c_str()));
+        //Render::AddText(pair.first->position + vec3(0, 1, 0), (std::to_string(weight).c_str()));
         
         harmonic.l00 += weight * this_harmonic.l00;
         
@@ -219,6 +246,15 @@ void LightGraph::LoadFromDisk() {
         } else {
             std::cout << "unknown light graph record: " << record_type << std::endl;
         }
+    }
+    
+    for (uint32_t i = 0; i < nodes.size(); i++) {
+        if (!nodes[i].has_reflection) continue;
+        
+        auto material_name = std::string("environment/") + (const char*)GetName() + "." + std::to_string(i);
+        nodes[i].environment_map = Render::Material::Make(material_name, MATERIAL_ENVIRONMENTMAP);
+        nodes[i].environment_map->AddReference();
+        nodes[i].environment_map->Load();
     }
     
     status = READY;

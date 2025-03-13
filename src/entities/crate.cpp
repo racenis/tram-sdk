@@ -5,6 +5,8 @@
 #include <entities/crate.h>
 #include <entities/script.h>
 
+#include <render/light.h>
+
 #include <components/render.h>
 #include <components/physics.h>
 
@@ -72,6 +74,7 @@ void Crate::UpdateParameters() {
     } else {
         rendercomponent->SetDirectionaLight(true);
     }
+    rendercomponent->SetEnvironmentMap(Render::LightGraph::LookupEnvironmentMap(location));
 }
 
 void Crate::SetParameters() {

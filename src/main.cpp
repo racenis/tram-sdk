@@ -214,7 +214,7 @@ int main(int argc, const char** argv) {
     dingbat->SetModel("sphere");
     dingbat->SetScale({0.2f, 0.2f, 0.2f});
     dingbat->SetDirectionaLight(false);
-    dingbat->Init();
+    //dingbat->Init();
     
     chamberpot.make();
     chamberpot->SetModel("chamberpot2");
@@ -225,6 +225,7 @@ int main(int argc, const char** argv) {
         chamberpot->SetLocation({0, 1, 0});
         //chamberpot->SetLocation({-10, 3, 0});
         chamberpot->SetRotation(quat(vec3{sinf(GetTickTime() / 3.0) / 3.0, GetTickTime(), cosf(GetTickTime() / 2.0) / 5.0}));
+        chamberpot->SetEnvironmentMap(Render::LightGraph::LookupEnvironmentMap({0, 1, 0}));
     });
     
     
@@ -250,7 +251,7 @@ int main(int argc, const char** argv) {
         
         auto result = Physics::Raycast(start, start + 2.0f * direction, -1 ^ Physics::COLL_TRIGGER);
         
-        AddLineMarker(result.point, COLOR_CYAN);
+        //AddLineMarker(result.point, COLOR_CYAN);
         
         if (result.collider) {
             Message::Send({Message::ACTIVATE_ONCE, 0, result.collider->GetParent()->GetID(), 0});
@@ -269,7 +270,7 @@ int main(int argc, const char** argv) {
     });
     
     Event::AddListener(Event::SELECTED, [](Event& event) {
-        AddLineMarker(Entity::Find(event.poster)->GetLocation(), COLOR_PINK);
+        //AddLineMarker(Entity::Find(event.poster)->GetLocation(), COLOR_PINK);
     });
 
     Event::AddListener(Event::LOOK_AT, [](Event& event) {

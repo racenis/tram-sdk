@@ -270,8 +270,8 @@ void RenderFrame() {
                 tex_hash ^= robj->materials[tex]->gl_texture;
             }
             
-            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
-                robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap,
+            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nEnvironment: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
+                robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap, robj->environmentmap,
                 robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max),
                 robj->fade_near, robj->fade_far);
             
@@ -361,9 +361,14 @@ void RenderFrame() {
             glBindTexture(GL_TEXTURE_2D, robj->materials[j]->gl_texture);
         }
 
-        if(robj->lightmap != 0){
+        if (robj->lightmap) {
             glActiveTexture(GL_TEXTURE15);
             glBindTexture(GL_TEXTURE_2D, robj->lightmap);
+        }
+        
+        if (robj->environmentmap) {
+            glActiveTexture(GL_TEXTURE15);
+            glBindTexture(GL_TEXTURE_2D, robj->environmentmap);
         }
 
         if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);

@@ -92,7 +92,7 @@ countdown = 3
 
 chamberpot = tram.components.Render()
 chamberpot:SetModel("chamberpot2")
-chamberpot:Init()
+--chamberpot:Init()
 
 --lamp = tram.components.Light()
 --lamp:SetColor(tram.math.vec3(10, 10, 10))
@@ -130,7 +130,7 @@ function tick_function()
 	end
 	
 	
-	tram.render.AddLineMarker(mark_pos, tram.render.COLOR_WHITE)
+	--tram.render.AddLineMarker(mark_pos, tram.render.COLOR_WHITE)
 	
 	
 	local pudding = chamberpot:GetLocation()

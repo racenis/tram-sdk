@@ -53,6 +53,7 @@ layout (std140) uniform Bones {
 out vec3 vert_color;
 out vec3 vert_color_add;
 out vec2 vert_uv;
+out vec3 vert_reflection;
 flat out uint vert_tex_index;
 
 // spherical harmonic consts
@@ -150,6 +151,9 @@ void main() {
 	vert_color_add = mix(vec3(0.0, 0.0, 0.0), specular_color, specular[TexIndex].z);
 	vert_color += mix(specular_color, vec3(0.0, 0.0, 0.0), specular[TexIndex].z);
 	
+	
+	vec3 reflection = reflect(view_dir, n);
+	vert_reflection = vec3(reflection.x /4.0 + 0.25, reflection.y /2.0 + 0.5, reflection.z);
     vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;
 }

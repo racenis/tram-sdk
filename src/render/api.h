@@ -39,6 +39,7 @@ void SetFlags(drawlistentry_t entry, uint32_t flags);
 void SetLayer(drawlistentry_t entry, layer_t layer);
 void SetPose(drawlistentry_t entry, Pose* pose);
 void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap);
+void SetEnvironmentMap(drawlistentry_t entry, texturehandle_t environmentmap);
 void SetSphericalHarmonic(drawlistentry_t entry, sphericalharmonic_t harmonic);
 void SetLights(drawlistentry_t entry, light_t* lights);
 void SetMatrix(drawlistentry_t entry, const mat4& matrix);

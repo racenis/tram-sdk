@@ -124,6 +124,11 @@ void Init () {
     fullbright->MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
     fullbright->LoadFromMemory();
     
+    // generating fulldark environmentmap
+    Material* fulldark = Material::Make("fulldark", MATERIAL_LIGHTMAP);
+    fulldark->MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
+    fulldark->LoadFromMemory();
+    
     // generating default texture
     Material* defaulttexture = Material::Make("defaulttexture", MATERIAL_TEXTURE);
     defaulttexture->MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
@@ -462,6 +467,7 @@ static const char* material_type_names[MAX_MATERIAL_TYPES] = {
     "MATERIAL_TEXTURE",
     "MATERIAL_TEXTURE_ALPHA",
     "MATERIAL_LIGHTMAP",
+    "MATERIAL_ENVIRONMENTMAP",
     "MATERIAL_MSDF",
     "MATERIAL_GLYPH",
     "MATERIAL_WATER",

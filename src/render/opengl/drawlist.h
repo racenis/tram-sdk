@@ -21,6 +21,7 @@ struct GLDrawListEntry {
     
     uint32_t layer = 0;
     uint32_t lightmap = 0;
+    uint32_t environmentmap = 0;
     uint32_t vao = 0;
     uint32_t eboLen = 0; // in primitive count
     uint32_t eboOff = 0; // in primitive count 
