@@ -151,6 +151,12 @@ void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>
     }
 }
 
+void Model::FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result) {
+    //result = model_aabb->triangles;
+    model_aabb->tree.FindAABBIntersection(min, max, [&](uint32_t key) {
+        result.push_back(model_aabb->triangles[key]);
+    });
+}
 
 
 

@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Poga
-Date                   :=13/03/2025
+Date                   :=14/03/2025
 CodeLitePath           :="C:/Program Files/CodeLite"
 MakeDirCommand         :=mkdir
 LinkerName             :=C:/mingw64/bin/g++.exe
@@ -70,16 +70,16 @@ Objects0=$(IntermediateDirectory)/src_render_opengl_light.cpp$(ObjectSuffix) $(I
 	$(IntermediateDirectory)/src_extensions_menu_system.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_scripting_lua.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_camera_firstperson.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_camera_thirdperson.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_attributes.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_character.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_camera_following.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_dialog.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_entities.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_quest.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/src_extensions_kitchensink_soundtable.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_camera_camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_ai.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_menu.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_kitchensink.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_probe.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_crate.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_player.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_light.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_decoration.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/src_audio_spatial_output.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_trigger.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_script.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_ui.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_transition.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_loader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_staticworldobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_vertices.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_renderer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_language.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_framework_graph.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_animation.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_audio_graph.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_trigger.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) 
+	$(IntermediateDirectory)/src_framework_graph.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_entity.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_animation.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_decal.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix) 
 
-Objects1=$(IntermediateDirectory)/src_audio_audio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_render.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_file.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_components_light.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_entitycomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_physics.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_renderer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_inventory.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_audio_sound.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_navmesh.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_marker.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_gui.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_core.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_sound.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_framework_async.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_worldcell.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_animationtable.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_uid.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_stats.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_message.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_event.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_material.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_path.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_type.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_framework_math.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_audio_spatial_pathtracer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_particle.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_other.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_image.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_file.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_physics_physics.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_light.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_sprite.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/src_render_animation.cpp$(ObjectSuffix) 
+Objects1=$(IntermediateDirectory)/src_audio_graph.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_trigger.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_audio_audio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_render.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_file.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_light.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_framework_entitycomponent.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_physics.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_renderer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_inventory.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_audio_sound.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_navmesh.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_settings.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_entities_marker.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_gui.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_core.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_entities_sound.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_async.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_worldcell.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_extensions_kitchensink_animationtable.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_uid.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_stats.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_message.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_framework_event.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_material.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_path.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_type.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_math.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_audio_spatial_pathtracer.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_components_particle.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_other.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_image.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_platform_file.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_physics_physics.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_light.cpp$(ObjectSuffix) 
 
-Objects2=$(IntermediateDirectory)/src_physics_collisionmodel.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_error.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_logging.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_sprite.cpp$(ObjectSuffix) 
+Objects2=$(IntermediateDirectory)/src_render_opengl_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_animation.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_physics_collisionmodel.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_error.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_framework_logging.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_render_sprite.cpp$(ObjectSuffix) 
 
 
 
@@ -440,13 +440,21 @@ $(IntermediateDirectory)/src_framework_graph.cpp$(DependSuffix): src/framework/g
 $(IntermediateDirectory)/src_framework_graph.cpp$(PreprocessSuffix): src/framework/graph.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_graph.cpp$(PreprocessSuffix) src/framework/graph.cpp
 
-$(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix): src/framework/system.cpp $(IntermediateDirectory)/src_framework_system.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/system.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_framework_system.cpp$(DependSuffix): src/framework/system.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_system.cpp$(DependSuffix) -MM src/framework/system.cpp
+$(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix): src/render/model.cpp $(IntermediateDirectory)/src_render_model.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/model.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_render_model.cpp$(DependSuffix): src/render/model.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_model.cpp$(DependSuffix) -MM src/render/model.cpp
 
-$(IntermediateDirectory)/src_framework_system.cpp$(PreprocessSuffix): src/framework/system.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_system.cpp$(PreprocessSuffix) src/framework/system.cpp
+$(IntermediateDirectory)/src_render_model.cpp$(PreprocessSuffix): src/render/model.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_model.cpp$(PreprocessSuffix) src/render/model.cpp
+
+$(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix): src/framework/signal.cpp $(IntermediateDirectory)/src_framework_signal.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/signal.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_framework_signal.cpp$(DependSuffix): src/framework/signal.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_signal.cpp$(DependSuffix) -MM src/framework/signal.cpp
+
+$(IntermediateDirectory)/src_framework_signal.cpp$(PreprocessSuffix): src/framework/signal.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_signal.cpp$(PreprocessSuffix) src/framework/signal.cpp
 
 $(IntermediateDirectory)/src_framework_entity.cpp$(ObjectSuffix): src/framework/entity.cpp $(IntermediateDirectory)/src_framework_entity.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/entity.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_entity.cpp$(ObjectSuffix) $(IncludePath)
@@ -464,6 +472,54 @@ $(IntermediateDirectory)/src_components_animation.cpp$(DependSuffix): src/compon
 $(IntermediateDirectory)/src_components_animation.cpp$(PreprocessSuffix): src/components/animation.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_animation.cpp$(PreprocessSuffix) src/components/animation.cpp
 
+$(IntermediateDirectory)/src_components_decal.cpp$(ObjectSuffix): src/components/decal.cpp $(IntermediateDirectory)/src_components_decal.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/decal.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_decal.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_components_decal.cpp$(DependSuffix): src/components/decal.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_decal.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_decal.cpp$(DependSuffix) -MM src/components/decal.cpp
+
+$(IntermediateDirectory)/src_components_decal.cpp$(PreprocessSuffix): src/components/decal.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_decal.cpp$(PreprocessSuffix) src/components/decal.cpp
+
+$(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix): src/framework/script.cpp $(IntermediateDirectory)/src_framework_script.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/script.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_framework_script.cpp$(DependSuffix): src/framework/script.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_script.cpp$(DependSuffix) -MM src/framework/script.cpp
+
+$(IntermediateDirectory)/src_framework_script.cpp$(PreprocessSuffix): src/framework/script.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_script.cpp$(PreprocessSuffix) src/framework/script.cpp
+
+$(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix): src/components/audio.cpp $(IntermediateDirectory)/src_components_audio.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/audio.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_components_audio.cpp$(DependSuffix): src/components/audio.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_audio.cpp$(DependSuffix) -MM src/components/audio.cpp
+
+$(IntermediateDirectory)/src_components_audio.cpp$(PreprocessSuffix): src/components/audio.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_audio.cpp$(PreprocessSuffix) src/components/audio.cpp
+
+$(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix): src/components/render.cpp $(IntermediateDirectory)/src_components_render.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/render.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_components_render.cpp$(DependSuffix): src/components/render.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_render.cpp$(DependSuffix) -MM src/components/render.cpp
+
+$(IntermediateDirectory)/src_components_render.cpp$(PreprocessSuffix): src/components/render.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_render.cpp$(PreprocessSuffix) src/components/render.cpp
+
+$(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix): src/render/opengl/texture.cpp $(IntermediateDirectory)/src_render_opengl_texture.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/opengl/texture.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_render_opengl_texture.cpp$(DependSuffix): src/render/opengl/texture.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_opengl_texture.cpp$(DependSuffix) -MM src/render/opengl/texture.cpp
+
+$(IntermediateDirectory)/src_render_opengl_texture.cpp$(PreprocessSuffix): src/render/opengl/texture.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_opengl_texture.cpp$(PreprocessSuffix) src/render/opengl/texture.cpp
+
+$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix): src/components/controller.cpp $(IntermediateDirectory)/src_components_controller.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/controller.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_components_controller.cpp$(DependSuffix): src/components/controller.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_controller.cpp$(DependSuffix) -MM src/components/controller.cpp
+
+$(IntermediateDirectory)/src_components_controller.cpp$(PreprocessSuffix): src/components/controller.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_controller.cpp$(PreprocessSuffix) src/components/controller.cpp
+
 $(IntermediateDirectory)/src_audio_graph.cpp$(ObjectSuffix): src/audio/graph.cpp $(IntermediateDirectory)/src_audio_graph.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/audio/graph.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_audio_graph.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/src_audio_graph.cpp$(DependSuffix): src/audio/graph.cpp
@@ -480,13 +536,13 @@ $(IntermediateDirectory)/src_components_trigger.cpp$(DependSuffix): src/componen
 $(IntermediateDirectory)/src_components_trigger.cpp$(PreprocessSuffix): src/components/trigger.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_trigger.cpp$(PreprocessSuffix) src/components/trigger.cpp
 
-$(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix): src/render/opengl/shader.cpp $(IntermediateDirectory)/src_render_opengl_shader.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/opengl/shader.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_render_opengl_shader.cpp$(DependSuffix): src/render/opengl/shader.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_opengl_shader.cpp$(DependSuffix) -MM src/render/opengl/shader.cpp
+$(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix): src/framework/system.cpp $(IntermediateDirectory)/src_framework_system.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/system.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_framework_system.cpp$(DependSuffix): src/framework/system.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_system.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_system.cpp$(DependSuffix) -MM src/framework/system.cpp
 
-$(IntermediateDirectory)/src_render_opengl_shader.cpp$(PreprocessSuffix): src/render/opengl/shader.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_opengl_shader.cpp$(PreprocessSuffix) src/render/opengl/shader.cpp
+$(IntermediateDirectory)/src_framework_system.cpp$(PreprocessSuffix): src/framework/system.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_system.cpp$(PreprocessSuffix) src/framework/system.cpp
 
 $(IntermediateDirectory)/src_audio_audio.cpp$(ObjectSuffix): src/audio/audio.cpp $(IntermediateDirectory)/src_audio_audio.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/audio/audio.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_audio_audio.cpp$(ObjectSuffix) $(IncludePath)
@@ -503,6 +559,22 @@ $(IntermediateDirectory)/src_render_render.cpp$(DependSuffix): src/render/render
 
 $(IntermediateDirectory)/src_render_render.cpp$(PreprocessSuffix): src/render/render.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_render.cpp$(PreprocessSuffix) src/render/render.cpp
+
+$(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix): src/components/player.cpp $(IntermediateDirectory)/src_components_player.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/player.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_components_player.cpp$(DependSuffix): src/components/player.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_player.cpp$(DependSuffix) -MM src/components/player.cpp
+
+$(IntermediateDirectory)/src_components_player.cpp$(PreprocessSuffix): src/components/player.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_player.cpp$(PreprocessSuffix) src/components/player.cpp
+
+$(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix): src/render/scene.cpp $(IntermediateDirectory)/src_render_scene.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/scene.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_render_scene.cpp$(DependSuffix): src/render/scene.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_scene.cpp$(DependSuffix) -MM src/render/scene.cpp
+
+$(IntermediateDirectory)/src_render_scene.cpp$(PreprocessSuffix): src/render/scene.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_scene.cpp$(PreprocessSuffix) src/render/scene.cpp
 
 $(IntermediateDirectory)/src_framework_file.cpp$(ObjectSuffix): src/framework/file.cpp $(IntermediateDirectory)/src_framework_file.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/file.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_file.cpp$(ObjectSuffix) $(IncludePath)
@@ -528,6 +600,14 @@ $(IntermediateDirectory)/src_framework_entitycomponent.cpp$(DependSuffix): src/f
 $(IntermediateDirectory)/src_framework_entitycomponent.cpp$(PreprocessSuffix): src/framework/entitycomponent.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_entitycomponent.cpp$(PreprocessSuffix) src/framework/entitycomponent.cpp
 
+$(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix): src/render/opengl/shader.cpp $(IntermediateDirectory)/src_render_opengl_shader.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/opengl/shader.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_render_opengl_shader.cpp$(DependSuffix): src/render/opengl/shader.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_opengl_shader.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_opengl_shader.cpp$(DependSuffix) -MM src/render/opengl/shader.cpp
+
+$(IntermediateDirectory)/src_render_opengl_shader.cpp$(PreprocessSuffix): src/render/opengl/shader.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_opengl_shader.cpp$(PreprocessSuffix) src/render/opengl/shader.cpp
+
 $(IntermediateDirectory)/src_components_physics.cpp$(ObjectSuffix): src/components/physics.cpp $(IntermediateDirectory)/src_components_physics.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/physics.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_physics.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/src_components_physics.cpp$(DependSuffix): src/components/physics.cpp
@@ -543,38 +623,6 @@ $(IntermediateDirectory)/src_components_sprite.cpp$(DependSuffix): src/component
 
 $(IntermediateDirectory)/src_components_sprite.cpp$(PreprocessSuffix): src/components/sprite.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_sprite.cpp$(PreprocessSuffix) src/components/sprite.cpp
-
-$(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix): src/components/render.cpp $(IntermediateDirectory)/src_components_render.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/render.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_components_render.cpp$(DependSuffix): src/components/render.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_render.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_render.cpp$(DependSuffix) -MM src/components/render.cpp
-
-$(IntermediateDirectory)/src_components_render.cpp$(PreprocessSuffix): src/components/render.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_render.cpp$(PreprocessSuffix) src/components/render.cpp
-
-$(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix): src/components/audio.cpp $(IntermediateDirectory)/src_components_audio.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/audio.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_components_audio.cpp$(DependSuffix): src/components/audio.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_audio.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_audio.cpp$(DependSuffix) -MM src/components/audio.cpp
-
-$(IntermediateDirectory)/src_components_audio.cpp$(PreprocessSuffix): src/components/audio.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_audio.cpp$(PreprocessSuffix) src/components/audio.cpp
-
-$(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix): src/components/player.cpp $(IntermediateDirectory)/src_components_player.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/player.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_components_player.cpp$(DependSuffix): src/components/player.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_player.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_player.cpp$(DependSuffix) -MM src/components/player.cpp
-
-$(IntermediateDirectory)/src_components_player.cpp$(PreprocessSuffix): src/components/player.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_player.cpp$(PreprocessSuffix) src/components/player.cpp
-
-$(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix): src/render/scene.cpp $(IntermediateDirectory)/src_render_scene.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/scene.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_render_scene.cpp$(DependSuffix): src/render/scene.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_scene.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_scene.cpp$(DependSuffix) -MM src/render/scene.cpp
-
-$(IntermediateDirectory)/src_render_scene.cpp$(PreprocessSuffix): src/render/scene.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_scene.cpp$(PreprocessSuffix) src/render/scene.cpp
 
 $(IntermediateDirectory)/src_render_renderer.cpp$(ObjectSuffix): src/render/renderer.cpp $(IntermediateDirectory)/src_render_renderer.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/renderer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_renderer.cpp$(ObjectSuffix) $(IncludePath)
@@ -623,22 +671,6 @@ $(IntermediateDirectory)/src_framework_settings.cpp$(DependSuffix): src/framewor
 
 $(IntermediateDirectory)/src_framework_settings.cpp$(PreprocessSuffix): src/framework/settings.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_settings.cpp$(PreprocessSuffix) src/framework/settings.cpp
-
-$(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix): src/render/opengl/texture.cpp $(IntermediateDirectory)/src_render_opengl_texture.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/opengl/texture.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_render_opengl_texture.cpp$(DependSuffix): src/render/opengl/texture.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_opengl_texture.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_opengl_texture.cpp$(DependSuffix) -MM src/render/opengl/texture.cpp
-
-$(IntermediateDirectory)/src_render_opengl_texture.cpp$(PreprocessSuffix): src/render/opengl/texture.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_opengl_texture.cpp$(PreprocessSuffix) src/render/opengl/texture.cpp
-
-$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix): src/components/controller.cpp $(IntermediateDirectory)/src_components_controller.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/components/controller.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_components_controller.cpp$(DependSuffix): src/components/controller.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_components_controller.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_components_controller.cpp$(DependSuffix) -MM src/components/controller.cpp
-
-$(IntermediateDirectory)/src_components_controller.cpp$(PreprocessSuffix): src/components/controller.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_components_controller.cpp$(PreprocessSuffix) src/components/controller.cpp
 
 $(IntermediateDirectory)/src_entities_marker.cpp$(ObjectSuffix): src/entities/marker.cpp $(IntermediateDirectory)/src_entities_marker.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/entities/marker.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_entities_marker.cpp$(ObjectSuffix) $(IncludePath)
@@ -784,14 +816,6 @@ $(IntermediateDirectory)/src_platform_other.cpp$(DependSuffix): src/platform/oth
 $(IntermediateDirectory)/src_platform_other.cpp$(PreprocessSuffix): src/platform/other.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_platform_other.cpp$(PreprocessSuffix) src/platform/other.cpp
 
-$(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix): src/framework/script.cpp $(IntermediateDirectory)/src_framework_script.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/script.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_framework_script.cpp$(DependSuffix): src/framework/script.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_script.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_script.cpp$(DependSuffix) -MM src/framework/script.cpp
-
-$(IntermediateDirectory)/src_framework_script.cpp$(PreprocessSuffix): src/framework/script.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_script.cpp$(PreprocessSuffix) src/framework/script.cpp
-
 $(IntermediateDirectory)/src_platform_image.cpp$(ObjectSuffix): src/platform/image.cpp $(IntermediateDirectory)/src_platform_image.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/platform/image.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_platform_image.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/src_platform_image.cpp$(DependSuffix): src/platform/image.cpp
@@ -855,22 +879,6 @@ $(IntermediateDirectory)/src_render_error.cpp$(DependSuffix): src/render/error.c
 
 $(IntermediateDirectory)/src_render_error.cpp$(PreprocessSuffix): src/render/error.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_error.cpp$(PreprocessSuffix) src/render/error.cpp
-
-$(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix): src/framework/signal.cpp $(IntermediateDirectory)/src_framework_signal.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/signal.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_framework_signal.cpp$(DependSuffix): src/framework/signal.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_framework_signal.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_framework_signal.cpp$(DependSuffix) -MM src/framework/signal.cpp
-
-$(IntermediateDirectory)/src_framework_signal.cpp$(PreprocessSuffix): src/framework/signal.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_framework_signal.cpp$(PreprocessSuffix) src/framework/signal.cpp
-
-$(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix): src/render/model.cpp $(IntermediateDirectory)/src_render_model.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/render/model.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/src_render_model.cpp$(DependSuffix): src/render/model.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_render_model.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_render_model.cpp$(DependSuffix) -MM src/render/model.cpp
-
-$(IntermediateDirectory)/src_render_model.cpp$(PreprocessSuffix): src/render/model.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_render_model.cpp$(PreprocessSuffix) src/render/model.cpp
 
 $(IntermediateDirectory)/src_framework_logging.cpp$(ObjectSuffix): src/framework/logging.cpp $(IntermediateDirectory)/src_framework_logging.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Poga/Desktop/painis/tram-sdk/src/framework/logging.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_framework_logging.cpp$(ObjectSuffix) $(IncludePath)

@@ -81,6 +81,8 @@
       <File Name="src/audio/audio.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="components">
+      <File Name="src/components/decal.h"/>
+      <File Name="src/components/decal.cpp"/>
       <File Name="src/components/trigger.h"/>
       <File Name="src/components/trigger.cpp"/>
       <File Name="src/components/template.h"/>

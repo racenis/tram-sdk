@@ -164,6 +164,15 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
     return nearest_result;
 }
 
+void FindAllIntersectionsFromAABB(vec3 min, vec3 max, std::function<void(ReferenceType, EntityComponent*)> callback) {
+    scene_tree.FindAABBIntersection(min, max, [&](uint32_t key) {
+        auto reference_type = scene_tree_leaves[key].ref_type;
+        auto reference = scene_tree_leaves[key].rendercomponent;
+        
+        callback(reference_type, reference);
+    });
+}
+
 
 static void DrawAABBNodeChildren(AABBTree::Node* node) {
     if (node->IsLeaf()) {

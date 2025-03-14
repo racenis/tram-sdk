@@ -152,7 +152,7 @@ void main() {
 	vert_color += mix(specular_color, vec3(0.0, 0.0, 0.0), specular[TexIndex].z);
 	
 	
-	vec3 reflection = reflect(view_dir, n);
+	vec3 reflection = reflect(-view_dir, n);
 	vert_reflection = vec3(reflection.x /4.0 + 0.25, reflection.y /2.0 + 0.5, reflection.z);
     vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;

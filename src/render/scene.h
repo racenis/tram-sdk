@@ -6,6 +6,8 @@
 #include <framework/math.h>
 #include <render/model.h>
 
+#include <functional>
+
 namespace tram {
     class RenderComponent;
 }
@@ -32,6 +34,8 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
 void RemoveLeaf(aabbleaf_t leaf);
 
 QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask);
+
+void FindAllIntersectionsFromAABB(vec3 min, vec3 max, std::function<void(ReferenceType, EntityComponent*)> callback);
 
 void DebugDrawTree();
 

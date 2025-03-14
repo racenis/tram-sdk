@@ -44,6 +44,7 @@ public:
     
     void DrawAABB(vec3 position, quat rotation);
     void FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result);
+    void FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result);
     
     vec3 GetAABBMin() const { return aabb_min; }
     vec3 GetAABBMax() const { return aabb_max; }

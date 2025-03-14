@@ -38,6 +38,7 @@
 
 #include <components/sprite.h>
 #include <components/particle.h>
+#include <components/decal.h>
 #include <components/audio.h>
 
 #include <components/controller.h>
@@ -77,6 +78,7 @@ LightComponent* lit = nullptr;
 Sprite* tolet_sprite = nullptr;
 SpriteComponent* tolet_spinner = nullptr;
 ParticleComponent* tolet_emitter = nullptr;
+DecalComponent* tolet_sprayer = nullptr;
 Audio::Sound* derp = nullptr;
 Audio::Sound* eerp = nullptr;
 AudioComponent* derp_player = nullptr;
@@ -196,6 +198,10 @@ int main(int argc, const char** argv) {
     tolet_emitter->SetSprite(tolet_sprite);
     tolet_emitter->UpdateLocation(vec3(0.0f, 1.2f, -7.0f));
     tolet_emitter->Init();
+    
+    tolet_sprayer = PoolProxy<DecalComponent>::New();
+    tolet_sprayer->SetSprite(tolet_sprite);
+    tolet_sprayer->Init();
     
     derp = Audio::Sound::Find(UID("apelsin"));
     //eerp = Audio::Sound::Find(UID("dekpunkta"));
@@ -324,6 +330,11 @@ void mainloop() {
     Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
     
     dingbat->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
+    tolet_sprayer->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
+    tolet_sprayer->SetRotation(Render::GetViewRotation());
+    tolet_sprayer->SetFrame((GetTick() >> 2) % 24);
+    //tolet_sprayer->SetFrame(GetTick() % 24);
+    //tolet_sprayer->SetFrame(0);
     
     // have mongus run around on a path
     follower->Advance(0.025f);

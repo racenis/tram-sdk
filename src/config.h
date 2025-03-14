@@ -71,6 +71,7 @@ const uint32_t COMPONENT_LIMIT_PHYSICS = 500;
 const uint32_t COMPONENT_LIMIT_PLAYER = 5;
 const uint32_t COMPONENT_LIMIT_RENDER = 1000;
 const uint32_t COMPONENT_LIMIT_SPRITE = 100;
+const uint32_t COMPONENT_LIMIT_DECAL = 100;
 const uint32_t COMPONENT_LIMIT_TRIGGER = 50;
 
 // +---------------------------------------------------------------------------+

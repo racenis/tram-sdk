@@ -222,6 +222,30 @@ public:
         
     }
     
+    void FindAABBIntersection(vec3 min, vec3 max, auto callback) {
+        FindAABBIntersection(root, min, max, callback);
+    }
+    
+    // should be private
+    void FindAABBIntersection(Node* node, vec3 min, vec3 max, auto callback) {
+        if (node->IsLeaf() && node != root) {
+            if (AABBOverlap(min, max, node->min, node->max)) {
+                callback(node->value);
+            }
+            
+            return;
+        }
+        
+        if (node->left && AABBOverlap(min, max, node->left->min, node->left->max)) {
+            FindAABBIntersection(node->left, min, max, callback);
+        }
+        
+        if (node->right && AABBOverlap(min, max, node->right->min, node->right->max)) {
+            FindAABBIntersection(node->right, min, max, callback);
+        }
+        
+    }
+    
 //private:
     
     void UpdateParentAABB (Node* node) {
@@ -334,6 +358,12 @@ public:
             a.y > b.y ? a.y : b.y,
             a.z > b.z ? a.z : b.z
         };// + vec3 {0.1f, 0.1f, 0.1f};
+    }
+    
+    static bool AABBOverlap(vec3 min, vec3 max, vec3 other_min, vec3 other_max) {
+        return min.x <= other_max.x && max.x >= other_min.x &&
+               min.y <= other_max.y && max.y >= other_min.y &&
+               min.z <= other_max.z && max.z >= other_min.z;
     }
     
     static float AABBVolume (vec3 min, vec3 max) {
