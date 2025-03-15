@@ -1,187 +1,187 @@
-MATv6
-brick001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick002 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick010 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick011 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick015 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick020 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick021 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick025 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick050 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick051 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick052 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-bush007 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete027 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete027b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail004b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail015 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail016 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail020 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail020b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail048 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail049 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-door001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal009 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal003 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plank005 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plank049 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster013 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster014 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster014b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster016 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster017 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster021 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster021b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster021c flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster025 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plaster049 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-rail011 alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-roof004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-roof006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-roof018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-roof046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-roof047 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain003 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain005 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain007 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain008 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain009 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain010 alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain011 alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-terrain012 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-vent001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window003 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window012 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window012b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window014 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window015 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window016 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window017 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window017b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window020 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window022 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window023 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window024 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window026 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window047 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window054 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-pinkdick flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-pinko flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-monkemap lightmap linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dingaling lightmap linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dingadong lightmap linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-eye flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-tiger flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-debug flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-errortexture flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_obamabinladen flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_obamabinladen2 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_obamabinladen3 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-mongus flat linear metal 1.0 1.0 1.0 1.0 16.0 1.0 same
-tatra flat linear metal 1.0 1.0 1.0 1.0 1.0 0.0 same
-raf flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_rail flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_grass flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_road flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-water water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-floppa flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-bingus flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-pienapaka flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-pienaveikals flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete067 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete090 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-rail006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_veneer flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_cloth flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-jurmala alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-street flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-grass flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-path flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-minima flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal107 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail106 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete105 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal104 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete103 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window102 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal101 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-brick100 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-detail099 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window098 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window097 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-door096 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-door094 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-door093 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plank092 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal091 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-plank080 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window090 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal088b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal089 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal088a flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window087c flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window087b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window087a flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window086 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window085 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal084 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metal083 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-window081 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-voltaza alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-hes alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-door095 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-texcom_chain alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-ciemsziime flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-concrete110 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/akmeni flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/klajs flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/markeris water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/metals flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/palmalapa alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/palmamize flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/palmarieksts flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/skrejcels flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/smiltis flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/trapits water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kugge/udenis water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-stolentoilet flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-poland alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-kjeems flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-skavotaajs flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-metalakaste flat linear metal 1.0 1.0 1.0 1.0 32.0 0.0 same
-metalareste alpha linear metal 1.0 1.0 1.0 1.0 32.0 0.0 same
-dev/nodraw flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/light flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/sound flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/trigger flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/button16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/floor32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/floor128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/scaffold32x32 alpha nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/scale128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/vent16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/wall8x8 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/wall16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/wall32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/wall64x64 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/wall128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/wallstair32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/window128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
-dev/white flat nearest metal 1.0 1.0 1.0 1.0 32.0 0.0 same
-#lightmap/movs lightmap nearest metal 1.0 1.0 1.0 0.0 1.0 same
-kastetase flat nearest metal 1.0 0.0 1.0 1.0 32.0 0.0 metalareste
-Material flat nearest metal 1.0 0.0 1.0 1.0 16.0 1.0 Material.01
+MATv7
+brick001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick002 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick010 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick011 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick015 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick020 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick021 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick025 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick050 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick051 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick052 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+bush007 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete027 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete027b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail004b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail015 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail016 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail020 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail020b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail048 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail049 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+door001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal009 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal003 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plank005 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plank049 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster013 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster014 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster014b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster016 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster017 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster021 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster021b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster021c flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster025 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plaster049 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+rail011 alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+roof004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+roof006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+roof018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+roof046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+roof047 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain003 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain005 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain007 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain008 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain009 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain010 alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain011 alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+terrain012 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+vent001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window003 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window004 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window012 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window012b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window014 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window015 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window016 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window017 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window017b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window020 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window022 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window023 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window024 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window026 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window047 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window054 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+pinkdick flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+pinko flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+monkemap lightmap linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dingaling lightmap linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dingadong lightmap linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+eye flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+tiger flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+debug flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+errortexture flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_obamabinladen flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_obamabinladen2 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_obamabinladen3 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+mongus flat linear metal 1.0 1.0 1.0 1.0 16.0 1.0 0.0 same
+tatra flat linear metal 1.0 1.0 1.0 1.0 1.0 0.0 0.0 same
+raf flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_rail flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_grass flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_road flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+water water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+floppa flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+bingus flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+pienapaka flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+pienaveikals flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete067 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete090 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+rail006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_veneer flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_cloth flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+jurmala alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+street flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+grass flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+path flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+minima flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal107 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail106 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete105 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal104 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete103 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window102 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal101 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick100 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+detail099 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window098 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window097 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+door096 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+door094 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+door093 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plank092 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal091 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+plank080 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window090 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal088b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal089 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal088a flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window087c flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window087b flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window087a flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window086 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window085 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal084 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metal083 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+window081 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+voltaza alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+hes alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+door095 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+texcom_chain alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+ciemsziime flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete110 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/akmeni flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/klajs flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/markeris water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/metals flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/palmalapa alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/palmamize flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/palmarieksts flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/skrejcels flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/smiltis flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/trapits water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kugge/udenis water linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+stolentoilet flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 2.0 same
+poland alpha linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+kjeems flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+skavotaajs flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+metalakaste flat linear metal 1.0 1.0 1.0 1.0 32.0 0.0 0.0 same
+metalareste alpha linear metal 1.0 1.0 1.0 1.0 32.0 0.0 0.0 same
+dev/nodraw flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/light flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/sound flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/trigger flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/button16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/floor32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/floor128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/scaffold32x32 alpha nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/scale128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/vent16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/wall8x8 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/wall16x16 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/wall32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/wall64x64 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/wall128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/wallstair32x32 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/window128x128 flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+dev/white flat nearest metal 1.0 1.0 1.0 1.0 32.0 0.0 0.0 same
+#lightmap/movs lightmap nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 same
+kastetase flat nearest metal 1.0 0.0 1.0 1.0 32.0 0.0 0.0 metalareste
+Material flat nearest metal 1.0 0.0 1.0 1.0 16.0 1.0 1.0 Material.01

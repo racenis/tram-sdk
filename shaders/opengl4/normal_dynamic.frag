@@ -8,6 +8,7 @@ in vec2 vert_uv;
 in vec3 vert_color;
 in vec3 vert_color_add;
 in vec3 vert_reflection;
+in float vert_reflectivity;
 flat in uint vert_tex_index;
 
 uniform sampler2D sampler[16];
@@ -20,5 +21,5 @@ void main() {
 	vec2 reflection_coords = vec2(vert_reflection);
 	if (vert_reflection.z > 0.0) reflection_coords.x += 0.5;
 	
-	fragment += texture(sampler[15], reflection_coords);
+	fragment += vert_reflectivity * texture(sampler[15], reflection_coords);
 }

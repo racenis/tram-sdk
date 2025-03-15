@@ -89,6 +89,7 @@ void SetMaterialColor(material_t material, vec4 color);
 void SetMaterialSpecularWeight(material_t material, float weight);
 void SetMaterialSpecularExponent(material_t material, float exponent);
 void SetMaterialSpecularTransparency(material_t material, float transparency);
+void SetMaterialReflectivity(material_t material, float reflectivity);
 
 enum ContextType {
     CONTEXT_OPENGL,

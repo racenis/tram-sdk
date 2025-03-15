@@ -316,6 +316,7 @@ void RenderFrame() {
             modelMatrices.specular[i].x = robj->materials[i]->specular_weight;
             modelMatrices.specular[i].y = robj->materials[i]->specular_exponent;
             modelMatrices.specular[i].z = robj->materials[i]->specular_transparency;
+            modelMatrices.specular[i].w = robj->materials[i]->reflectivity;
             
             /*modelMatrices.texture_transforms[i].x = robj->texture_transforms[i][0][0];
             modelMatrices.texture_transforms[i].y = robj->texture_transforms[i][0][1];

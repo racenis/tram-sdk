@@ -58,7 +58,7 @@ void Material::LoadMaterialInfo(const char* filename) {
     
     name_t file_type = file.read_name();
     
-    if (file_type != "MATv6") {
+    if (file_type != "MATv7") {
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
@@ -77,6 +77,7 @@ void Material::LoadMaterialInfo(const char* filename) {
         float mat_spec_weight = file.read_float32();
         float mat_spec_exponent = file.read_float32();
         float mat_spec_transparency = file.read_float32();
+        float mat_reflectivity = file.read_float32();
         name_t mat_tex_type_name = file.read_name();
         Material* mat_source = nullptr;
 
@@ -156,6 +157,7 @@ void Material::LoadMaterialInfo(const char* filename) {
         material->SetMaterialProperty(mat_property);
         material->SetColor(mat_color);
         material->SetSpecular(mat_spec_weight, mat_spec_exponent, mat_spec_transparency);
+        material->SetReflectivity(mat_reflectivity);
         material->SetTextureType(mat_tex_type);
         material->SetSource(mat_source);
     }
@@ -301,6 +303,7 @@ void Material::LoadFromMemory() {
     API::SetMaterialSpecularWeight(material, specular_weight);
     API::SetMaterialSpecularExponent(material, specular_exponent);
     API::SetMaterialSpecularTransparency(material, specular_transparency);
+    API::SetMaterialReflectivity(material, reflectivity);
 
     if (texture_type == TEXTURE_SOURCE) {
         texture = source->texture;

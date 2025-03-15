@@ -50,6 +50,7 @@ public:
     void SetMaterialProperty(MaterialProperty property) { this->property = property; }
     void SetColor(color_t color) { this->color = color; }
     void SetSpecular(float weight, float exponent,  float transparency) { specular_weight = weight; specular_exponent = exponent; specular_transparency = transparency; }
+    void SetReflectivity(float reflectivity) { this->reflectivity = reflectivity; }
     void SetTextureType(TextureType texture_type) { this->texture_type = texture_type; }
     void SetSource(Material* source) { this->source = source; }
     
@@ -80,6 +81,7 @@ protected:
     float specular_weight = 0.0f;
     float specular_exponent = 1.0f;
     float specular_transparency = 0.0f;
+    float reflectivity = 0.0f;
     
     uint32_t width = 0;
     uint32_t height = 0;

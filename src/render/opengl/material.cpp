@@ -38,5 +38,8 @@ void SetMaterialSpecularTransparency(material_t material, float transparency) {
     material.gl->specular_transparency = transparency;
 }
 
+void SetMaterialReflectivity(material_t material, float reflectivity) {
+    material.gl->reflectivity = reflectivity;
+}
 
 }

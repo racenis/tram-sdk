@@ -13,6 +13,7 @@ struct GLMaterial {
     float specular_weight = 0.0f;
     float specular_exponent = 1.0f;
     float specular_transparency = 0.0f;
+    float reflectivity = 0.0f;
     vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
 };
 
