@@ -131,13 +131,16 @@
 	What is goings on?
 </h2>
 
+<hr/>
+
 <p>
-	Draft version of runtime <a href="documentation.html">documentation</a>
-	finished.
+	We're getting very close to the release of v0.1.1! This time we'll have a
+	graphical installer and two whole new GUI applets.
 </p>
 
 <p>
-	Lua API maybe 3/4th of the way to being finished.
+	This means that you'll be able to develop an app without having to mess
+	around with directories, instead an applet will set up everything for you.
 </p>
 
 <p>
@@ -145,15 +148,9 @@
 </p>
 
 <ul>
-	<li>Quickly throw together a larger app.</li>
-	<ul>
-		<li>The library can handle smaller apps very well.</li>
-		<li>Unclear how well it scales.</li>
-		<li>This would also make a nice example.</li>
-	</ul>
-	<li>Continue improving the library.</li>
-	<li>Get some more users and some more feedback.</li>
-	<li>Make some more devtools.</li>
+	<li>Improve documentation.</li>
+	<li>Write some more tests.</li>
+	<li>Fix bugs.</li>
 </ul>
 
 <hr/>
@@ -173,10 +170,188 @@
 <hr/>
 
 <h2>
+	Why we use use sphere maps instead of cubemaps
+</h2>
+
+<hr/>
+
+<p>
+	<i>Big Engine</i> wants you to think that cubemaps are superior to sphere
+	maps and that sphere mapping is obsolete. Nothing could be further from the
+	truth.
+</p>
+
+<p>
+	<i>They</i> keep insisting that sphere maps supposedly suffer from
+	<a href="https://en.wikipedia.org/wiki/Cube_mapping">&laquo;image
+	distortion&raquo;, &laquo;viewpoint	dependency&raquo; and
+	&laquo;computational inefficiency&raquo;</a>. This is demonstrably false.
+</p>
+
+<br/>
+
+<center>
+	<a target="_blank" href="images/posts/shiny.png">
+		<img border="0" src="images/posts/shiny.gif"/>
+	</a>
+	<br/>
+	<i>
+		Where's the image distortion? It's a perfect reflection!
+	</i>
+</center>
+
+<br/>
+
+<p>
+	Sphere maps might have been viewport dependent in the 1980s, but since at
+	least 1998(!) there	have existed
+	<a href="https://dl.acm.org/doi/10.1145/285305.285310">techniques</a> that
+	can overcome this limitation by using a single <code>if()</code> statement.
+</p>
+
+<p>
+	Consider the standard approach to sampling a cubemap:
+</p>
+
+<code class="codeexample">
+auto sample_cubemap = [=](vec3 nrm) {
+	char* image = nullptr;
+	float axis; vec2 uv;
+
+	vec3 abs = glm::abs(nrm);
+
+	bool x_positive = nrm.x > 0;
+	bool y_positive = nrm.y > 0;
+	bool z_positive = nrm.z > 0;
+
+	if (z_positive
+			&&abs.z >=abs.x && abs.z >= abs.y) {
+		image = front;
+		uv.x = nrm.x;
+		uv.y = nrm.y;
+		axis = abs.z;
+	} else if (!x_positive
+			&& abs.x >= abs.y && abs.x >= abs.z) {
+		image = left;
+		uv.x = nrm.z;
+		uv.y = nrm.y;
+		axis = abs.x;
+	} else if (x_positiv
+			&& abs.x >= abs.y && abs.x >= abs.z) {
+		image = right;
+		uv.x = -nrm.z;
+		uv.y = nrm.y;
+		axis = abs.x;
+	} else if (!z_positive
+			&& abs.z >= abs.x && abs.z >= abs.y) {
+		image = back;
+		uv.x = -nrm.x;
+		uv.y = nrm.y;
+		axis = abs.z;
+	} else if (y_positive
+			&& abs.y >= abs.x && abs.y >= abs.z) {
+		image = top;
+		uv.x = nrm.x;
+		uv.y = -nrm.z;
+		axis = abs.y;
+	}  else if (!y_positive
+			&& abs.y >= abs.x && abs.y >= abs.z) {
+		image = bottom;
+		uv.x = nrm.x;
+		uv.y = nrm.z;
+		axis = abs.y;
+	}
+
+	uv = 0.5f * (uv / axis + 1.0f);
+
+	if (!image) {
+		return std::tuple&lt;char,
+							char,
+							char&gt;{uv.y * 255.0f,
+									0,
+									uv.x * 255.0f};
+	}
+
+	return get_pixel(image, uv);
+};
+</code>
+
+<p>
+	Not only is it whole 47(!) lines of code, it contains 6 <code>if/else</code>
+	statements. Remember that shaders can't execute those and only those
+	<code>if/else</code> statements which evaluate to a <code>true</code> value.
+	Instead they will always execute every single branch and will throw
+	away the results of the <code>false</code> branches.
+</p>
+
+<p>
+	Now consider our implementation of sphere map sampling code:
+</p>
+
+<code class="codeexample">
+vec2 sphere_map_coords = vec2(normal.x * 0.25 + 0.25,
+							normal.y * 0.5 + 0.5);
+if (normal.z > 0.0) sphere_map_coords.x += 0.5;
+</code>
+
+<p>
+	Only 2(!) lines of code with a single <code>if/else</code> that the compiler
+	can optimize away to a single conditional move operation, resulting in
+	essentially no branching.
+</p>
+
+<p>
+	Now consider the fact that cubemaps consist of the 6 square sides of a cube.
+	A lot of GPUs support only textures with sizes that are a power of two. If
+	you put these 6 sides of a cube into a single texture, you will waste 25% of
+	the space in the texture.
+</p>
+
+<p>
+	Sphere maps leave only 21% of space empty. If you use a slightly different
+	projection (paraboloid), you can reduce this number to 0%.
+</p>
+
+<br/>
+
+<center>
+	<a target="_blank" href="images/posts/wastedspace.png">
+		<img border="0" src="images/posts/wastedspace.gif"/>
+	</a>
+	<br/>
+	<i>
+		Cubemaps waste space.
+	</i>
+</center>
+
+<br/>
+
+<center>
+	<a target="_blank" href="images/posts/potentiallyusable.png">
+		<img border="0" src="images/posts/potentiallyusable.gif"/>
+	</a>
+	<br/>
+	<i>
+		Sphere maps fit perfectly.
+	</i>
+</center>
+
+<p>
+	Without a doubt, the push from <i>Big Engine</i> to use cubemaps is
+	intentionally intended use up more RAM and GPU processing time to force
+	users to purchase more expensive GPUs.
+</p>
+	
+<p>
+	We strongly encourage that you do not believe the lies and misinformation
+	spread by <i>Big Engine</i> and instead do your own research.
+</p>
+
+<h2>
 	Very large open world project
 </h2>
 
-<br/>
+<hr/>
 
 <center>
 	<a target="_blank" href="images/posts/verylarge.png">

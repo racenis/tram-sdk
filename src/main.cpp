@@ -322,17 +322,17 @@ void mainloop() {
     UI::Update();
     
     // this renders debug text at the origin
-    Render::AddText({0, 0, 0}, "HELLOOO");
+    //Render::AddText({0, 0, 0}, "HELLOOO");
     
-    vec3 ff = LightGraph::LookupHarmonic(Render::GetViewPosition(), -1).l00;
-    Render::AddText(20, 20, std::to_string(ff.x).c_str(), ff);
-    Render::AddText(20, 40, std::to_string(ff.y).c_str(), ff);
-    Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
+    //vec3 ff = LightGraph::LookupHarmonic(Render::GetViewPosition(), -1).l00;
+    //Render::AddText(20, 20, std::to_string(ff.x).c_str(), ff);
+    //Render::AddText(20, 40, std::to_string(ff.y).c_str(), ff);
+    //Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
     
     dingbat->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
-    tolet_sprayer->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
-    tolet_sprayer->SetRotation(Render::GetViewRotation());
-    tolet_sprayer->SetFrame((GetTick() >> 2) % 24);
+    //tolet_sprayer->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
+    //tolet_sprayer->SetRotation(Render::GetViewRotation());
+    //tolet_sprayer->SetFrame((GetTick() >> 2) % 24);
     //tolet_sprayer->SetFrame(GetTick() % 24);
     //tolet_sprayer->SetFrame(0);
     
@@ -391,8 +391,8 @@ void mainloop() {
         GUI::SetFont(Ext::Menu::FONT_PIXELART);
         GUI::SetColor(COLOR_WHITE);
         
-            GUI::Text(tickstr.c_str(), GUI::TEXT_CENTER); GUI::NewLine();
-            GUI::Text(tickstr2.c_str(), GUI::TEXT_CENTER); GUI::NewLine();
+            //GUI::Text(tickstr.c_str(), GUI::TEXT_CENTER); GUI::NewLine();
+            //GUI::Text(tickstr2.c_str(), GUI::TEXT_CENTER); GUI::NewLine();
             
         GUI::RestoreColor();
         GUI::RestoreFont();
