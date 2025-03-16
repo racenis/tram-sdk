@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -74,7 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="opengl_2renderer_8h_source.html">renderer.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="drawlist_8h_source.html">drawlist.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -98,6 +98,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:aac3c45c286b4c4e9fea14811c685a7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67f380744f271dbece03c8f081c86bf1"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a67f380744f271dbece03c8f081c86bf1">lightmap</a> = 0</td></tr>
 <tr class="separator:a67f380744f271dbece03c8f081c86bf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf126029f650661e7a83c6a054f57308"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#aaf126029f650661e7a83c6a054f57308">environmentmap</a> = 0</td></tr>
+<tr class="separator:aaf126029f650661e7a83c6a054f57308"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac984d3f4c21946c93809b5e07408fc1d"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#ac984d3f4c21946c93809b5e07408fc1d">vao</a> = 0</td></tr>
 <tr class="separator:ac984d3f4c21946c93809b5e07408fc1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28960b58e1684771943364ceddfe4917"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a28960b58e1684771943364ceddfe4917">eboLen</a> = 0</td></tr>
@@ -108,18 +110,12 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae0e14420c779fa4bc2fbd4f8246ce78b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00d701e6b4117b3ea568a1733d5f4455"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a00d701e6b4117b3ea568a1733d5f4455">texCount</a> = 0</td></tr>
 <tr class="separator:a00d701e6b4117b3ea568a1733d5f4455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b1336d0670a8ee519c58a960ba4300"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#ab2b1336d0670a8ee519c58a960ba4300">textures</a> [15] = {0}</td></tr>
-<tr class="separator:ab2b1336d0670a8ee519c58a960ba4300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac329ee9b6d3154d5f81d1cb322bdb464"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#ac329ee9b6d3154d5f81d1cb322bdb464">colors</a> [15]</td></tr>
 <tr class="separator:ac329ee9b6d3154d5f81d1cb322bdb464"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af620e605430604ed744ff0c5cfb4f41c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#af620e605430604ed744ff0c5cfb4f41c">specular_weights</a> [15]</td></tr>
-<tr class="separator:af620e605430604ed744ff0c5cfb4f41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75aff6bf0a56fdc5bb4c17dae67bb572"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a75aff6bf0a56fdc5bb4c17dae67bb572">specular_exponents</a> [15]</td></tr>
-<tr class="separator:a75aff6bf0a56fdc5bb4c17dae67bb572"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad57ec73b8e9491a106b760e63d1a3db7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#ad57ec73b8e9491a106b760e63d1a3db7">specular_transparencies</a> [15]</td></tr>
-<tr class="separator:ad57ec73b8e9491a106b760e63d1a3db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70b0e18a2a7c521c25994b24941984ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a1d95095efd075f601cb4afe9ff24c93b">vec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a70b0e18a2a7c521c25994b24941984ec">texture_transforms</a> [15]</td></tr>
 <tr class="separator:a70b0e18a2a7c521c25994b24941984ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafdb1c878c1a40c28478169a730e3c18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_material.html">GLMaterial</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#aafdb1c878c1a40c28478169a730e3c18">materials</a> [15]</td></tr>
+<tr class="separator:aafdb1c878c1a40c28478169a730e3c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d85b48d0b7d54b45de4f436571e40b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a0d85b48d0b7d54b45de4f436571e40b0">aabb_min</a> = {0.0f, 0.0f, 0.0f}</td></tr>
 <tr class="separator:a0d85b48d0b7d54b45de4f436571e40b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cd6d561d1c22dcbf7e81a7fc1b4e9ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a4cd6d561d1c22dcbf7e81a7fc1b4e9ed">aabb_max</a> = {0.0f, 0.0f, 0.0f}</td></tr>
@@ -128,6 +124,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a832edf238874e59d291c76e04b22ccec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae282428d355cd814ebf720a5885adab2"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#ae282428d355cd814ebf720a5885adab2">fade_far</a> = INFINITY</td></tr>
 <tr class="separator:ae282428d355cd814ebf720a5885adab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74b3a8569c8bc84e8df38aa62da38f20"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram_1_1_render.html#adc772ee58f3700260f2f155f334fd6d5">sphericalharmonic_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_draw_list_entry.html#a74b3a8569c8bc84e8df38aa62da38f20">harmonic</a></td></tr>
+<tr class="separator:a74b3a8569c8bc84e8df38aa62da38f20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af7bb6164cd2f0ca88d08e2dd524f2c28" name="af7bb6164cd2f0ca88d08e2dd524f2c28"></a>
@@ -255,6 +253,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aaf126029f650661e7a83c6a054f57308" name="aaf126029f650661e7a83c6a054f57308"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf126029f650661e7a83c6a054f57308">&#9670;&nbsp;</a></span>environmentmap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t tram::Render::API::GLDrawListEntry::environmentmap = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae282428d355cd814ebf720a5885adab2" name="ae282428d355cd814ebf720a5885adab2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae282428d355cd814ebf720a5885adab2">&#9670;&nbsp;</a></span>fade_far</h2>
 
@@ -291,6 +303,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">uint32_t tram::Render::API::GLDrawListEntry::flags = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a74b3a8569c8bc84e8df38aa62da38f20" name="a74b3a8569c8bc84e8df38aa62da38f20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74b3a8569c8bc84e8df38aa62da38f20">&#9670;&nbsp;</a></span>harmonic</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram_1_1_render.html#adc772ee58f3700260f2f155f334fd6d5">sphericalharmonic_t</a> tram::Render::API::GLDrawListEntry::harmonic</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -339,6 +365,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aafdb1c878c1a40c28478169a730e3c18" name="aafdb1c878c1a40c28478169a730e3c18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafdb1c878c1a40c28478169a730e3c18">&#9670;&nbsp;</a></span>materials</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_g_l_material.html">GLMaterial</a>* tram::Render::API::GLDrawListEntry::materials[15]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4d34b1b8c60ff21a937113dc78b7d4a4" name="a4d34b1b8c60ff21a937113dc78b7d4a4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d34b1b8c60ff21a937113dc78b7d4a4">&#9670;&nbsp;</a></span>matrix</h2>
 
@@ -381,48 +421,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a75aff6bf0a56fdc5bb4c17dae67bb572" name="a75aff6bf0a56fdc5bb4c17dae67bb572"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75aff6bf0a56fdc5bb4c17dae67bb572">&#9670;&nbsp;</a></span>specular_exponents</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::Render::API::GLDrawListEntry::specular_exponents[15]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad57ec73b8e9491a106b760e63d1a3db7" name="ad57ec73b8e9491a106b760e63d1a3db7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad57ec73b8e9491a106b760e63d1a3db7">&#9670;&nbsp;</a></span>specular_transparencies</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::Render::API::GLDrawListEntry::specular_transparencies[15]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af620e605430604ed744ff0c5cfb4f41c" name="af620e605430604ed744ff0c5cfb4f41c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af620e605430604ed744ff0c5cfb4f41c">&#9670;&nbsp;</a></span>specular_weights</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float tram::Render::API::GLDrawListEntry::specular_weights[15]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a00d701e6b4117b3ea568a1733d5f4455" name="a00d701e6b4117b3ea568a1733d5f4455"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00d701e6b4117b3ea568a1733d5f4455">&#9670;&nbsp;</a></span>texCount</h2>
 
@@ -451,20 +449,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab2b1336d0670a8ee519c58a960ba4300" name="ab2b1336d0670a8ee519c58a960ba4300"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2b1336d0670a8ee519c58a960ba4300">&#9670;&nbsp;</a></span>textures</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t tram::Render::API::GLDrawListEntry::textures[15] = {0}</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ac984d3f4c21946c93809b5e07408fc1d" name="ac984d3f4c21946c93809b5e07408fc1d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac984d3f4c21946c93809b5e07408fc1d">&#9670;&nbsp;</a></span>vao</h2>
 
@@ -480,7 +464,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>C:/Users/Poga/Desktop/painis/tram-sdk/src/render/opengl/<a class="el" href="opengl_2renderer_8h_source.html">renderer.h</a></li>
+<li>C:/Users/Poga/Desktop/painis/tram-sdk/src/render/opengl/<a class="el" href="drawlist_8h_source.html">drawlist.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

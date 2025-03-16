@@ -132,7 +132,7 @@ float GetDeltaTime() {
 
 /// Returns the version identifier of the runtime.
 const char* GetVersion() {
-    return "Tramway SDK v0.1.0";
+    return "Tramway SDK v0.1.1";
 }
 
 }

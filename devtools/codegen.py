@@ -360,7 +360,7 @@ end
 	
 	
 def print_header():
-	print("Tramway SDK Code generator v0.1.0")
+	print("Tramway SDK Code generator v0.1.1")
 
 def print_help():
 	print("This tool can generate C++ code for the Tramway SDK.")

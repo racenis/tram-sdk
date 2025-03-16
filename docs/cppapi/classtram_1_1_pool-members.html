@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -84,12 +84,13 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a09e44e2d85b1f84461756d203450e014">lastfree</a></td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#aba0758ee3091dd01f8f880000973d805">maxSize</a></td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#ad3e5247f51702e2e59fd5b62436f326c">operator[]</a>(size_t index)</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#acbf0b669540a583ff5a4c5aa5227ef4c">Pool</a>(std::string name, uint64_t initialSize, bool skipFirst=false)</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a7c93c6c74e11a18855e33e69a87d481f">poolName</a></td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a4208869bc738c75f8c11b7b65b526564">poolSize</a></td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a60d25b55dc178234fd501c6329c1b7aa">Remove</a>(T *removeptr)</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#aeac3545f8646c676dcc84748db30dfcc">size</a>() const</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a10facadf048aa836508ffd73c22fbc69">validate</a>(const T *ptr) const</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a57e13a9a51ca187af45f052b3d70b17f">Pool</a>(const char *name, uint64_t initialSize)</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a0650ba8f22b8180249c5a9050256f979">Pool</a>(const char *name, uint64_t initialSize, std::initializer_list&lt; T &gt; list)</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a7c93c6c74e11a18855e33e69a87d481f">poolName</a></td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a4208869bc738c75f8c11b7b65b526564">poolSize</a></td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a60d25b55dc178234fd501c6329c1b7aa">Remove</a>(T *removeptr)</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classtram_1_1_pool.html#aeac3545f8646c676dcc84748db30dfcc">size</a>() const</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classtram_1_1_pool.html#a10facadf048aa836508ffd73c22fbc69">validate</a>(const T *ptr) const</td><td class="entry"><a class="el" href="classtram_1_1_pool.html">tram::Pool&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -84,8 +84,10 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acbf0b669540a583ff5a4c5aa5227ef4c"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_pool.html#acbf0b669540a583ff5a4c5aa5227ef4c">Pool</a> (std::string name, uint64_t initialSize, bool skipFirst=false)</td></tr>
-<tr class="separator:acbf0b669540a583ff5a4c5aa5227ef4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57e13a9a51ca187af45f052b3d70b17f"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_pool.html#a57e13a9a51ca187af45f052b3d70b17f">Pool</a> (const char *name, uint64_t initialSize)</td></tr>
+<tr class="separator:a57e13a9a51ca187af45f052b3d70b17f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0650ba8f22b8180249c5a9050256f979"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_pool.html#a0650ba8f22b8180249c5a9050256f979">Pool</a> (const char *name, uint64_t initialSize, std::initializer_list&lt; T &gt; list)</td></tr>
+<tr class="separator:a0650ba8f22b8180249c5a9050256f979"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b0b341946b782acc6ca1959b7452488"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:a2b0b341946b782acc6ca1959b7452488"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classtram_1_1_pool.html#a2b0b341946b782acc6ca1959b7452488">AddNew</a> (Args &amp;&amp;... args)</td></tr>
 <tr class="separator:a2b0b341946b782acc6ca1959b7452488"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,8 +129,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a09e44e2d85b1f84461756d203450e014"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="acbf0b669540a583ff5a4c5aa5227ef4c" name="acbf0b669540a583ff5a4c5aa5227ef4c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbf0b669540a583ff5a4c5aa5227ef4c">&#9670;&nbsp;</a></span>Pool()</h2>
+<a id="a57e13a9a51ca187af45f052b3d70b17f" name="a57e13a9a51ca187af45f052b3d70b17f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57e13a9a51ca187af45f052b3d70b17f">&#9670;&nbsp;</a></span>Pool() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,7 +143,45 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">constexpr <a class="el" href="classtram_1_1_pool.html">tram::Pool</a>&lt; T &gt;::<a class="el" href="classtram_1_1_pool.html">Pool</a> </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>initialSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0650ba8f22b8180249c5a9050256f979" name="a0650ba8f22b8180249c5a9050256f979"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0650ba8f22b8180249c5a9050256f979">&#9670;&nbsp;</a></span>Pool() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classtram_1_1_pool.html">tram::Pool</a>&lt; T &gt;::<a class="el" href="classtram_1_1_pool.html">Pool</a> </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>name</em>, </td>
         </tr>
         <tr>
@@ -153,8 +193,8 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>skipFirst</em> = <code>false</code>&#160;</td>
+          <td class="paramtype">std::initializer_list&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>list</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

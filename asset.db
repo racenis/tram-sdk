@@ -1,5 +1,5 @@
 # Tramway SDK Asset Manager Applet Database
-# Generated on: 2025.03.08. 15:49:40
+# Generated on: 2025.03.16. 0:21:05
 
 DYMDL     bingus                       1451038290
 AUTHOR    racenis
@@ -15,8 +15,8 @@ PROPERTY  LIGHTMAP_WIDTH               0
 PROPERTY  LIGHTMAP_HEIGHT              0
 DYMDL     kadbusest                    1427923056
 DYMDL     metalakaste                  1451734536
-DYMDL     mongus                       1491408027
-STMDL     movs                         1513227157
+DYMDL     mongus                       1516798499
+STMDL     movs                         1516833778
 PROPERTY  LIGHTMAP_WIDTH               0
 PROPERTY  LIGHTMAP_HEIGHT              0
 DYMDL     plane                        1493467703
@@ -36,6 +36,8 @@ DYMDL     dev/plane                    1489087280
 STMDL     dev/sound                    1483091120
 PROPERTY  LIGHTMAP_WIDTH               0
 PROPERTY  LIGHTMAP_HEIGHT              0
+DYMDL     sphere                       1516962613
+AUTHOR    racenis
 MATERIAL  bingus                       1412064656
 AUTHOR    racenis
 MATERIAL  brick002                     1389007603
@@ -114,7 +116,7 @@ MATERIAL  dev/white                    1489087169
 AUTHOR    racenis
 MATERIAL  dev/window128x128            1456373152
 AUTHOR    racenis
-MATERIAL  lightmap/movs                1515828353
+MATERIAL  lightmap/movs                1516966448
 AUTHOR    racenis
 MATERIAL  ui/font_debug                1499101980
 AUTHOR    racenis
@@ -152,7 +154,7 @@ AUDIO     miku                         1452962010
 AUTHOR    racenis
 AUDIO     step                         1483082540
 AUTHOR    racenis
-PATH      test                         1512646269
+PATH      test                         1516938101
 AUTHOR    racenis
 SPRITE    font_debug                   1499101941
 AUTHOR    racenis
@@ -168,9 +170,9 @@ SPRITE    font_text_bold               1495077546
 AUTHOR    racenis
 SPRITE    font_widgets                 1495074253
 AUTHOR    racenis
-SPRITE    poland                       1495046528
+SPRITE    poland                       1517166832
 AUTHOR    racenis
-WORLDCELL demo_mov                     1512646279
+WORLDCELL demo_mov                     1517162874
 AUTHOR    racenis
 DIALOG    dialogs                      1503083972
 AUTHOR    racenis
@@ -208,13 +210,13 @@ SHADER    opengl4/glyph                1497048146
 AUTHOR    racenis
 SHADER    opengl4/line                 1493007953
 AUTHOR    racenis
-SHADER    opengl4/normal_dynamic       1497048870
+SHADER    opengl4/normal_dynamic       1517266957
 AUTHOR    racenis
 SHADER    opengl4/normal_dynamic_alpha 1489117909
 AUTHOR    racenis
 SHADER    opengl4/normal_sprite        1497048156
 AUTHOR    racenis
-SHADER    opengl4/normal_static        1499138240
+SHADER    opengl4/normal_static        1517133071
 AUTHOR    racenis
 SHADER    opengl4/normal_static_alpha  1463384392
 AUTHOR    racenis
@@ -222,11 +224,11 @@ SHADER    opengl4/normal_water         1497048152
 AUTHOR    racenis
 SHADER    opengl4/text                 1463381603
 AUTHOR    racenis
-SCRIPT    api                          1516317399
+SCRIPT    api                          1516798156
 AUTHOR    racenis
 SCRIPT    bepis                        1503628838
 AUTHOR    racenis
-SCRIPT    init                         1515890470
+SCRIPT    init                         1517075652
 AUTHOR    racenis
 COLLMDL   crate                        1402232296
 AUTHOR    racenis

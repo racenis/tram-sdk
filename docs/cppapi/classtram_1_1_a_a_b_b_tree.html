@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -99,8 +99,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9efb144bb94afd82a7c58a0ecd16a1a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa064aa5b6071d82fe3dc84bb08c07474"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#aa064aa5b6071d82fe3dc84bb08c07474">RemoveHierarchy</a> (<a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node)</td></tr>
 <tr class="separator:aa064aa5b6071d82fe3dc84bb08c07474"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5af63bba9c28b11a17d345510768627"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#ad5af63bba9c28b11a17d345510768627">FindIntersection</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, <a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node, std::vector&lt; uint32_t &gt; &amp;result)</td></tr>
-<tr class="separator:ad5af63bba9c28b11a17d345510768627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f62c3784491fc7b1b924e9801d5685d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a1f62c3784491fc7b1b924e9801d5685d">FindIntersection</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, <a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node, std::vector&lt; uint32_t &gt; &amp;result) const</td></tr>
+<tr class="separator:a1f62c3784491fc7b1b924e9801d5685d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab91f605c9d68f45e8d5d5c0ae05e12ba"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#ab91f605c9d68f45e8d5d5c0ae05e12ba">FindIntersection</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, float distance_limit, auto filter) const</td></tr>
+<tr class="separator:ab91f605c9d68f45e8d5d5c0ae05e12ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ce2d61d0eb768a2c41b5832177d71b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a6ce2d61d0eb768a2c41b5832177d71b1">FindIntersectionRecursive</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, float &amp;nearest_dist, uint32_t &amp;nearest_index, float distance_limit, <a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node, auto filter) const</td></tr>
+<tr class="separator:a6ce2d61d0eb768a2c41b5832177d71b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72800aa33c03780b35f5510d8c80526b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a72800aa33c03780b35f5510d8c80526b">FindAABBIntersection</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max, auto callback)</td></tr>
+<tr class="separator:a72800aa33c03780b35f5510d8c80526b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51ebff27bd53240096c90c198b970dab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a51ebff27bd53240096c90c198b970dab">FindAABBIntersection</a> (<a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max, auto callback)</td></tr>
+<tr class="separator:a51ebff27bd53240096c90c198b970dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32675d95c889b42d34ec88309ccc1adc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a32675d95c889b42d34ec88309ccc1adc">UpdateParentAABB</a> (<a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node)</td></tr>
 <tr class="separator:a32675d95c889b42d34ec88309ccc1adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2029865cbcf492b0c6dd70899a6fdf1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#ab2029865cbcf492b0c6dd70899a6fdf1">FindSibling</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max, <a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *node)</td></tr>
@@ -116,12 +124,16 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aa25621c85212298d11a04b79b8638609"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7381f1d5ef18522f092b20432af0c291"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a7381f1d5ef18522f092b20432af0c291">MergeAABBMax</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> a, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> b)</td></tr>
 <tr class="separator:a7381f1d5ef18522f092b20432af0c291"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe35ffcff47d45bf7b4dad9b2d510d80"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#afe35ffcff47d45bf7b4dad9b2d510d80">AABBOverlap</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> other_min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> other_max)</td></tr>
+<tr class="separator:afe35ffcff47d45bf7b4dad9b2d510d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a715f0769ae31e4adfcea697bf841dd77"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a715f0769ae31e4adfcea697bf841dd77">AABBVolume</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max)</td></tr>
 <tr class="separator:a715f0769ae31e4adfcea697bf841dd77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad990b44be408032340081fb22dbc1ca2"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#ad990b44be408032340081fb22dbc1ca2">AABBSurface</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max)</td></tr>
 <tr class="separator:ad990b44be408032340081fb22dbc1ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fdc8691cc5674bcd2b18e1b287301e1"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a0fdc8691cc5674bcd2b18e1b287301e1">AABBIntersect</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max)</td></tr>
 <tr class="separator:a0fdc8691cc5674bcd2b18e1b287301e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a854ba4aa154dfc14b544cc142418b63b"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_a_a_b_b_tree.html#a854ba4aa154dfc14b544cc142418b63b">AABBDistance</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max)</td></tr>
+<tr class="separator:a854ba4aa154dfc14b544cc142418b63b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -180,6 +192,54 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a854ba4aa154dfc14b544cc142418b63b" name="a854ba4aa154dfc14b544cc142418b63b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a854ba4aa154dfc14b544cc142418b63b">&#9670;&nbsp;</a></span>AABBDistance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static float tram::AABBTree::AABBDistance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>ray_pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>ray_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0fdc8691cc5674bcd2b18e1b287301e1" name="a0fdc8691cc5674bcd2b18e1b287301e1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0fdc8691cc5674bcd2b18e1b287301e1">&#9670;&nbsp;</a></span>AABBIntersect()</h2>
 
@@ -212,6 +272,54 @@ Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
           <td class="paramname"><em>max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afe35ffcff47d45bf7b4dad9b2d510d80" name="afe35ffcff47d45bf7b4dad9b2d510d80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe35ffcff47d45bf7b4dad9b2d510d80">&#9670;&nbsp;</a></span>AABBOverlap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool tram::AABBTree::AABBOverlap </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>other_min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>other_max</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -300,8 +408,146 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad5af63bba9c28b11a17d345510768627" name="ad5af63bba9c28b11a17d345510768627"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5af63bba9c28b11a17d345510768627">&#9670;&nbsp;</a></span>FindIntersection()</h2>
+<a id="a51ebff27bd53240096c90c198b970dab" name="a51ebff27bd53240096c90c198b970dab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51ebff27bd53240096c90c198b970dab">&#9670;&nbsp;</a></span>FindAABBIntersection() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::AABBTree::FindAABBIntersection </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">auto&#160;</td>
+          <td class="paramname"><em>callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a72800aa33c03780b35f5510d8c80526b" name="a72800aa33c03780b35f5510d8c80526b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72800aa33c03780b35f5510d8c80526b">&#9670;&nbsp;</a></span>FindAABBIntersection() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::AABBTree::FindAABBIntersection </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">auto&#160;</td>
+          <td class="paramname"><em>callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab91f605c9d68f45e8d5d5c0ae05e12ba" name="ab91f605c9d68f45e8d5d5c0ae05e12ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab91f605c9d68f45e8d5d5c0ae05e12ba">&#9670;&nbsp;</a></span>FindIntersection() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t tram::AABBTree::FindIntersection </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>ray_pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>ray_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>distance_limit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">auto&#160;</td>
+          <td class="paramname"><em>filter</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1f62c3784491fc7b1b924e9801d5685d" name="a1f62c3784491fc7b1b924e9801d5685d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f62c3784491fc7b1b924e9801d5685d">&#9670;&nbsp;</a></span>FindIntersection() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -336,7 +582,73 @@ Public Attributes</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ce2d61d0eb768a2c41b5832177d71b1" name="a6ce2d61d0eb768a2c41b5832177d71b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce2d61d0eb768a2c41b5832177d71b1">&#9670;&nbsp;</a></span>FindIntersectionRecursive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::AABBTree::FindIntersectionRecursive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>ray_pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>ray_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float &amp;&#160;</td>
+          <td class="paramname"><em>nearest_dist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t &amp;&#160;</td>
+          <td class="paramname"><em>nearest_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>distance_limit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structtram_1_1_a_a_b_b_tree_1_1_node.html">Node</a> *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">auto&#160;</td>
+          <td class="paramname"><em>filter</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>

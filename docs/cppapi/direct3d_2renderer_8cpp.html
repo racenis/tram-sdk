@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -146,7 +146,7 @@ Functions</h2></td></tr>
 <tr class="separator:a411524f6804a132bdfdf7e95d318fe6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac78a374d698ab9d252afd86163c19440"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ac78a374d698ab9d252afd86163c19440">tram::Render::API::SetDrawListIndexRange</a> (drawlistentry_t entry, uint32_t index_offset, uint32_t index_length)</td></tr>
 <tr class="separator:ac78a374d698ab9d252afd86163c19440"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3724426196e2fad6e190726003249aed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a3724426196e2fad6e190726003249aed">tram::Render::API::SetDrawListShader</a> (drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type)</td></tr>
+<tr class="memitem:a3724426196e2fad6e190726003249aed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a3724426196e2fad6e190726003249aed">tram::Render::API::SetDrawListShader</a> (drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type)</td></tr>
 <tr class="separator:a3724426196e2fad6e190726003249aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac05dea68d3b978e4303cf1c2164f44c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#aac05dea68d3b978e4303cf1c2164f44c">tram::Render::API::SetDrawListTextures</a> (drawlistentry_t entry, size_t texture_count, texturehandle_t *textures)</td></tr>
 <tr class="separator:aac05dea68d3b978e4303cf1c2164f44c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -189,8 +189,8 @@ Variables</h2></td></tr>
 <tr class="separator:a9ee5db9b2d1a8b354779f2a611792671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22c9b2ef54e756a89652662cc7ad099e"><td class="memItemLeft" align="right" valign="top">Pool&lt; D3DLight &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a22c9b2ef54e756a89652662cc7ad099e">tram::Render::API::light_list</a> (&quot;light list&quot;, 200, false)</td></tr>
 <tr class="separator:a22c9b2ef54e756a89652662cc7ad099e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d64c90d15a73bd7f3410ecac5747173"><td class="memItemLeft" align="right" valign="top">Octree&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a7d64c90d15a73bd7f3410ecac5747173">tram::Render::API::light_tree</a></td></tr>
-<tr class="separator:a7d64c90d15a73bd7f3410ecac5747173"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4855c01cc36bad195643cf956389b5de"><td class="memItemLeft" align="right" valign="top">Octree&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a4855c01cc36bad195643cf956389b5de">tram::Render::API::light_tree</a></td></tr>
+<tr class="separator:a4855c01cc36bad195643cf956389b5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7897c51fe39d6a65173b8f12bb3b6185"><td class="memItemLeft" align="right" valign="top">Pool&lt; VertexBufferMetadata &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a7897c51fe39d6a65173b8f12bb3b6185">tram::Render::API::vertex_buffer_metadata</a> (&quot;vertex buffer metadata&quot;, 500, false)</td></tr>
 <tr class="separator:a7897c51fe39d6a65173b8f12bb3b6185"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8259e25142ce465c1c745dd91f4618e"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ab8259e25142ce465c1c745dd91f4618e">tram::Render::API::screen_clear_color</a> = {0.2f, 0.3f, 0.3f}</td></tr>

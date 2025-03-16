@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -84,15 +84,16 @@ $(function() {
 <code>#include &lt;GLES3/gl3.h&gt;</code><br />
 <code>#include &lt;<a class="el" href="logging_8h_source.html">framework/logging.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="platform_2file_8h_source.html">platform/file.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="shader_8h_source.html">render/opengl/shader.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="opengl_2renderer_8h_source.html">render/opengl/renderer.h</a>&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_vertex_shader.html">tram::Render::API::VertexShader</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_a_p_i_1_1_vertex_shader.html">tram::Render::API::VertexShader</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_fragment_shader.html">tram::Render::API::FragmentShader</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_a_p_i_1_1_fragment_shader.html">tram::Render::API::FragmentShader</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_a_p_i_1_1_linked_shader.html">tram::Render::API::LinkedShader</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_a_p_i_1_1_linked_shader.html">tram::Render::API::LinkedShader</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -109,20 +110,14 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4c8dd4a58e3282724fe7757b88264478"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a4c8dd4a58e3282724fe7757b88264478">tram::Render::API::LoadVertexShader</a> (name_t name)</td></tr>
-<tr class="separator:a4c8dd4a58e3282724fe7757b88264478"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98ed408779742972378075e7cfa71c7e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a98ed408779742972378075e7cfa71c7e">tram::Render::API::LoadFragmentShader</a> (name_t name)</td></tr>
-<tr class="separator:a98ed408779742972378075e7cfa71c7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ed0c316511f7425524efdb5495a8cbf"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a1ed0c316511f7425524efdb5495a8cbf">tram::Render::API::LinkShader</a> (uint32_t vertex_shader, uint32_t fragment_shader)</td></tr>
-<tr class="separator:a1ed0c316511f7425524efdb5495a8cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a18f1da8fec3469ad9d695f694c661a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a8a18f1da8fec3469ad9d695f694c661a">tram::Render::API::BindTextures</a> (uint32_t shader)</td></tr>
-<tr class="separator:a8a18f1da8fec3469ad9d695f694c661a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a507d7fd9947ed6152f9593c6611a91d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a507d7fd9947ed6152f9593c6611a91d4">tram::Render::API::BindUniformBlock</a> (const char *name, uint32_t binding)</td></tr>
 <tr class="separator:a507d7fd9947ed6152f9593c6611a91d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63b87913acfc6af2fd7e39754dc1522d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a63b87913acfc6af2fd7e39754dc1522d">tram::Render::API::RegisterShader</a> (vertexformat_t format, materialtype_t type, const char *vertex_shader, const char *fragment_shader)</td></tr>
 <tr class="separator:a63b87913acfc6af2fd7e39754dc1522d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd4400614ea4c292cf8097ea831eb766"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#abd4400614ea4c292cf8097ea831eb766">tram::Render::API::FindShader</a> (vertexformat_t format, materialtype_t type)</td></tr>
-<tr class="separator:abd4400614ea4c292cf8097ea831eb766"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0c7d3299f33f45e1b65ea4b795eedee"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#ac0c7d3299f33f45e1b65ea4b795eedee">tram::Render::API::FindShader</a> (vertexformat_t format, materialtype_t type, shaderflags_t mask)</td></tr>
+<tr class="separator:ac0c7d3299f33f45e1b65ea4b795eedee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50e0305574ac545c1e62fd272d9c0c04"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a50e0305574ac545c1e62fd272d9c0c04">tram::Render::API::GetAnyShader</a> (shaderflags_t mask)</td></tr>
+<tr class="separator:a50e0305574ac545c1e62fd272d9c0c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39a089d719f123c75f967ca2a7065d4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_p_i.html#a39a089d719f123c75f967ca2a7065d4d">tram::Render::API::CompileShaders</a> ()</td></tr>
 <tr class="separator:a39a089d719f123c75f967ca2a7065d4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">

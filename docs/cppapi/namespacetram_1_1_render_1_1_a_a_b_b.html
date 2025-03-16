@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -98,6 +98,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a631b3af49e3238165b6005edf3608394"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_a_a_b_b_1_1_query_response.html">QueryResponse</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_a_b_b.html#a631b3af49e3238165b6005edf3608394">FindNearestFromRay</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, uint32_t mask)</td></tr>
 <tr class="memdesc:a631b3af49e3238165b6005edf3608394"><td class="mdescLeft">&#160;</td><td class="mdescRight">Peforms a raycast and retrieves the nearest object.  <a href="namespacetram_1_1_render_1_1_a_a_b_b.html#a631b3af49e3238165b6005edf3608394">More...</a><br /></td></tr>
 <tr class="separator:a631b3af49e3238165b6005edf3608394"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5030c8f345b2d6543274015951361d4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_a_b_b.html#a5030c8f345b2d6543274015951361d4d">FindAllIntersectionsFromAABB</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max, std::function&lt; void(<a class="el" href="namespacetram_1_1_render_1_1_a_a_b_b.html#a5bb0d1f9511914c037cd30f91aa9264c">ReferenceType</a>, <a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> *)&gt; callback)</td></tr>
+<tr class="separator:a5030c8f345b2d6543274015951361d4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad017e45f12e6ac18dfa2417e462525ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render_1_1_a_a_b_b.html#ad017e45f12e6ac18dfa2417e462525ef">DebugDrawTree</a> ()</td></tr>
 <tr class="memdesc:ad017e45f12e6ac18dfa2417e462525ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the scene tree for a single frame.  <a href="namespacetram_1_1_render_1_1_a_a_b_b.html#ad017e45f12e6ac18dfa2417e462525ef">More...</a><br /></td></tr>
 <tr class="separator:ad017e45f12e6ac18dfa2417e462525ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,6 +139,40 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Draws the scene tree for a single frame. </p>
+
+</div>
+</div>
+<a id="a5030c8f345b2d6543274015951361d4d" name="a5030c8f345b2d6543274015951361d4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5030c8f345b2d6543274015951361d4d">&#9670;&nbsp;</a></span>FindAllIntersectionsFromAABB()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::AABB::FindAllIntersectionsFromAABB </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(<a class="el" href="namespacetram_1_1_render_1_1_a_a_b_b.html#a5bb0d1f9511914c037cd30f91aa9264c">ReferenceType</a>, <a class="el" href="classtram_1_1_entity_component.html">EntityComponent</a> *)&gt;&#160;</td>
+          <td class="paramname"><em>callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -7,5 +7,5 @@ var searchData=
   ['vertexattribute_4',['VertexAttribute',['../structtram_1_1_render_1_1_vertex_attribute.html',1,'tram::Render']]],
   ['vertexbuffermetadata_5',['VertexBufferMetadata',['../structtram_1_1_render_1_1_a_p_i_1_1_vertex_buffer_metadata.html',1,'tram::Render::API']]],
   ['vertexdefinition_6',['VertexDefinition',['../structtram_1_1_render_1_1_vertex_definition.html',1,'tram::Render']]],
-  ['vertexshader_7',['VertexShader',['../structtram_1_1_render_1_1_a_p_i_1_1_vertex_shader.html',1,'tram::Render::API']]]
+  ['vertexshader_7',['VertexShader',['../classtram_1_1_render_1_1_a_p_i_1_1_vertex_shader.html',1,'tram::Render::API']]]
 ];

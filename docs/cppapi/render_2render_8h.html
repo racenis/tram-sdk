@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -82,6 +82,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1_spherical_harmonic.html">tram::Render::SphericalHarmonic</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1vertexarray__t.html">tram::Render::vertexarray_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1indexarray__t.html">tram::Render::indexarray_t</a></td></tr>
@@ -93,6 +95,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1texturehandle__t.html">tram::Render::texturehandle_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1light__t.html">tram::Render::light_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtram_1_1_render_1_1material__t.html">tram::Render::material_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -117,6 +121,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a4e5691f40b84e848c0d9b19b285bf0e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9be8283c1665f7d42c97367d857d43cc"><td class="memItemLeft" align="right" valign="top">typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render.html#a9be8283c1665f7d42c97367d857d43cc">tram::Render::materialtype_t</a></td></tr>
 <tr class="separator:a9be8283c1665f7d42c97367d857d43cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc772ee58f3700260f2f155f334fd6d5"><td class="memItemLeft" align="right" valign="top">typedef SphericalHarmonic&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetram_1_1_render.html#adc772ee58f3700260f2f155f334fd6d5">tram::Render::sphericalharmonic_t</a></td></tr>
+<tr class="separator:adc772ee58f3700260f2f155f334fd6d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -134,12 +140,14 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ead42b4d3349a29728811b787cc7bc7632">tram::Render::MATERIAL_TEXTURE</a>
 , <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ea3812bb1fe713fff55c3ed971c25324ac">tram::Render::MATERIAL_TEXTURE_ALPHA</a>
 , <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ea18dd7f6f787feb198b3e7edb65298605">tram::Render::MATERIAL_LIGHTMAP</a>
-, <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ead0ee78b3fd22ca7f74c90e0599f8ef0f">tram::Render::MATERIAL_MSDF</a>
+, <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003eab3c06e1d79de6f9c4b972d1cb999da4d">tram::Render::MATERIAL_ENVIRONMENTMAP</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ea682ec4dc9c0e2f2bc0c9240a2a2ea004">tram::Render::MATERIAL_GLYPH</a>
+&#160;&#160;<a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ead0ee78b3fd22ca7f74c90e0599f8ef0f">tram::Render::MATERIAL_MSDF</a>
+, <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ea682ec4dc9c0e2f2bc0c9240a2a2ea004">tram::Render::MATERIAL_GLYPH</a>
 , <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003eab4828c9e426ef1f1cc97c9d20fb9d6dc">tram::Render::MATERIAL_WATER</a>
 , <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003eaa6dd8472dc4c68ec742267e42f35b943">tram::Render::MATERIAL_FLAT_COLOR</a>
-, <a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ea5b08ab6f4c7f3deb1d5d137e5beb629f">tram::Render::MATERIAL_LAST</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetram_1_1_render.html#a315a4bade1773ce2a425e5e7702c003ea5b08ab6f4c7f3deb1d5d137e5beb629f">tram::Render::MATERIAL_LAST</a>
 <br />
  }</td></tr>
 <tr class="separator:a315a4bade1773ce2a425e5e7702c003e"><td class="memSeparator" colspan="2">&#160;</td></tr>

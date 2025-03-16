@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -67,7 +67,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">main.cpp File Reference</div></div>
@@ -104,6 +103,7 @@ $(function() {
 <code>#include &lt;<a class="el" href="components_2light_8h_source.html">components/light.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="components_2sprite_8h_source.html">components/sprite.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="particle_8h_source.html">components/particle.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="decal_8h_source.html">components/decal.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="components_2audio_8h_source.html">components/audio.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="controller_8h_source.html">components/controller.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="components_2trigger_8h_source.html">components/trigger.h</a>&gt;</code><br />
@@ -115,25 +115,19 @@ $(function() {
 <code>#include &lt;<a class="el" href="entities_8h_source.html">extensions/kitchensink/entities.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="inventory_8h_source.html">extensions/kitchensink/inventory.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="soundtable_8h_source.html">extensions/kitchensink/soundtable.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="probe_8h_source.html">extensions/kitchensink/probe.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="lua_8h_source.html">extensions/scripting/lua.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="dialog_8h_source.html">extensions/kitchensink/dialog.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="quest_8h_source.html">extensions/kitchensink/quest.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="kitchensink_2menu_8h_source.html">extensions/kitchensink/menu.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="render_2api_8h_source.html">render/api.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="scene_8h_source.html">render/scene.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="render_2light_8h_source.html">render/light.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="platform_8h_source.html">platform/platform.h</a>&gt;</code><br />
 <code>#include &lt;<a class="el" href="image_8h_source.html">platform/image.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="octree_8h_source.html">templates/octree.h</a>&gt;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a2a278a2b1ef56409c31ba6ae4a367807"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a2a278a2b1ef56409c31ba6ae4a367807">NEKADEEE</a></td></tr>
-<tr class="separator:a2a278a2b1ef56409c31ba6ae4a367807"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aa773b6641a3d6167e84facf5189e7602"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#aa773b6641a3d6167e84facf5189e7602">UIDFunc</a> (<a class="el" href="structtram_1_1_u_i_d.html">UID</a> thing)</td></tr>
-<tr class="separator:aa773b6641a3d6167e84facf5189e7602"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a896df4ffe3f986ad843e4d191cd712b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a896df4ffe3f986ad843e4d191cd712b3">mainloop</a> ()</td></tr>
 <tr class="separator:a896df4ffe3f986ad843e4d191cd712b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a217dbf8b442f20279ea00b898af96f52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a217dbf8b442f20279ea00b898af96f52">main</a> (int argc, const char **argv)</td></tr>
@@ -141,8 +135,6 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ab34dfa78449992bf0c7c4b456d5bde8d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_octree.html">Octree</a>&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#ab34dfa78449992bf0c7c4b456d5bde8d">octree</a> (&quot;tree of nodes&quot;, 100)</td></tr>
-<tr class="separator:ab34dfa78449992bf0c7c4b456d5bde8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b1d1ad26dca3cdfbe7bcabb98c50bcd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_ext_1_1_camera_1_1_first_person_camera.html">Ext::Camera::FirstPersonCamera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a9b1d1ad26dca3cdfbe7bcabb98c50bcd">camera</a> = nullptr</td></tr>
 <tr class="separator:a9b1d1ad26dca3cdfbe7bcabb98c50bcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96781128d3743da3d17e0fdd91afba7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_player.html">Player</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a96781128d3743da3d17e0fdd91afba7b">player</a> = nullptr</td></tr>
@@ -155,6 +147,8 @@ Variables</h2></td></tr>
 <tr class="separator:aef1afcddb99ee1a555eb26a6904d7362"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6314261586f8d6bdb38d84211ab9068"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_particle_component.html">ParticleComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#aa6314261586f8d6bdb38d84211ab9068">tolet_emitter</a> = nullptr</td></tr>
 <tr class="separator:aa6314261586f8d6bdb38d84211ab9068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6df28e8f20bf2b2154a6676327ac225"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_decal_component.html">DecalComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#aa6df28e8f20bf2b2154a6676327ac225">tolet_sprayer</a> = nullptr</td></tr>
+<tr class="separator:aa6df28e8f20bf2b2154a6676327ac225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bb2bbfa377225bdc2575d60f73eb24d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_audio_1_1_sound.html">Audio::Sound</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a8bb2bbfa377225bdc2575d60f73eb24d">derp</a> = nullptr</td></tr>
 <tr class="separator:a8bb2bbfa377225bdc2575d60f73eb24d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4a7109a74a328b58d1568997f025a46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_audio_1_1_sound.html">Audio::Sound</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#ad4a7109a74a328b58d1568997f025a46">eerp</a> = nullptr</td></tr>
@@ -165,6 +159,8 @@ Variables</h2></td></tr>
 <tr class="separator:a7b2977ab1d0adc9fca3191665cdbd8a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9968db2fbe46c1d2ce9a76ccdff7929c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_render_component.html">RenderComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a9968db2fbe46c1d2ce9a76ccdff7929c">monguser</a> = nullptr</td></tr>
 <tr class="separator:a9968db2fbe46c1d2ce9a76ccdff7929c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39e40a8e7cee2dd7c112dcd36fe20cb6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_render_component.html">RenderComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a39e40a8e7cee2dd7c112dcd36fe20cb6">dingbat</a> = nullptr</td></tr>
+<tr class="separator:a39e40a8e7cee2dd7c112dcd36fe20cb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2200d84471744e6d70ce13d0835a5c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_animation_component.html">AnimationComponent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#ac2200d84471744e6d70ce13d0835a5c9">monguser_armature</a> = nullptr</td></tr>
 <tr class="separator:ac2200d84471744e6d70ce13d0835a5c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24abc1cdb33ae6cc929ae21787c1cec9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a24abc1cdb33ae6cc929ae21787c1cec9">record</a> = false</td></tr>
@@ -176,21 +172,6 @@ Variables</h2></td></tr>
 <tr class="memitem:acc812653ff7db6ef5da9d01fbfd28f17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_component.html">Component</a>&lt; <a class="el" href="classtram_1_1_render_component.html">RenderComponent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#acc812653ff7db6ef5da9d01fbfd28f17">chamberpot</a></td></tr>
 <tr class="separator:acc812653ff7db6ef5da9d01fbfd28f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a2a278a2b1ef56409c31ba6ae4a367807" name="a2a278a2b1ef56409c31ba6ae4a367807"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a278a2b1ef56409c31ba6ae4a367807">&#9670;&nbsp;</a></span>NEKADEEE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define NEKADEEE</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a217dbf8b442f20279ea00b898af96f52" name="a217dbf8b442f20279ea00b898af96f52"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a217dbf8b442f20279ea00b898af96f52">&#9670;&nbsp;</a></span>main()</h2>
@@ -230,24 +211,6 @@ Variables</h2></td></tr>
           <td class="memname">void mainloop </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa773b6641a3d6167e84facf5189e7602" name="aa773b6641a3d6167e84facf5189e7602"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa773b6641a3d6167e84facf5189e7602">&#9670;&nbsp;</a></span>UIDFunc()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void UIDFunc </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structtram_1_1_u_i_d.html">UID</a>&#160;</td>
-          <td class="paramname"><em>thing</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -320,6 +283,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtram_1_1_audio_component.html">AudioComponent</a>* derp_player = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a39e40a8e7cee2dd7c112dcd36fe20cb6" name="a39e40a8e7cee2dd7c112dcd36fe20cb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39e40a8e7cee2dd7c112dcd36fe20cb6">&#9670;&nbsp;</a></span>dingbat</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_render_component.html">RenderComponent</a>* dingbat = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -410,34 +387,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab34dfa78449992bf0c7c4b456d5bde8d" name="ab34dfa78449992bf0c7c4b456d5bde8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab34dfa78449992bf0c7c4b456d5bde8d">&#9670;&nbsp;</a></span>octree</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtram_1_1_octree.html">Octree</a>&lt; <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> &gt; octree(&quot;tree of nodes&quot;, 100) </td>
-          <td>(</td>
-          <td class="paramtype">&quot;tree of nodes&quot;&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">100&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a96781128d3743da3d17e0fdd91afba7b" name="a96781128d3743da3d17e0fdd91afba7b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a96781128d3743da3d17e0fdd91afba7b">&#9670;&nbsp;</a></span>player</h2>
 
@@ -488,6 +437,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classtram_1_1_sprite_component.html">SpriteComponent</a>* tolet_spinner = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa6df28e8f20bf2b2154a6676327ac225" name="aa6df28e8f20bf2b2154a6676327ac225"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6df28e8f20bf2b2154a6676327ac225">&#9670;&nbsp;</a></span>tolet_sprayer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_decal_component.html">DecalComponent</a>* tolet_sprayer = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">

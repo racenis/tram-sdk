@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -114,10 +114,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3c38cde838ea3f56d2e77c23c8a1d77f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#a3c38cde838ea3f56d2e77c23c8a1d77f">FindAllFromRay</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_pos, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> ray_dir, std::vector&lt; <a class="el" href="structtram_1_1_render_1_1_a_a_b_b_triangle.html">AABBTriangle</a> &gt; &amp;result)</td></tr>
 <tr class="memdesc:a3c38cde838ea3f56d2e77c23c8a1d77f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds triangles that intersect ray.  <a href="classtram_1_1_render_1_1_model.html#a3c38cde838ea3f56d2e77c23c8a1d77f">More...</a><br /></td></tr>
 <tr class="separator:a3c38cde838ea3f56d2e77c23c8a1d77f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c1e5a51904349dbac4e6055b54f087a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#a6c1e5a51904349dbac4e6055b54f087a">FindAllFromAABB</a> (<a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> min, <a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> max, std::vector&lt; <a class="el" href="structtram_1_1_render_1_1_a_a_b_b_triangle.html">AABBTriangle</a> &gt; &amp;result)</td></tr>
+<tr class="separator:a6c1e5a51904349dbac4e6055b54f087a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a181f0a0d0b56d4f7235181ddd1cbeec0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#a181f0a0d0b56d4f7235181ddd1cbeec0">GetAABBMin</a> () const</td></tr>
 <tr class="separator:a181f0a0d0b56d4f7235181ddd1cbeec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6e9404f95096afaea9226fe975e697b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#ab6e9404f95096afaea9226fe975e697b">GetAABBMax</a> () const</td></tr>
 <tr class="separator:ab6e9404f95096afaea9226fe975e697b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d3484e3d729819081e525321fa0cc22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#a3d3484e3d729819081e525321fa0cc22">GetOrigin</a> () const</td></tr>
+<tr class="separator:a3d3484e3d729819081e525321fa0cc22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf703730644d7fab65d1a9a21534b1d7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#aaf703730644d7fab65d1a9a21534b1d7">GetNearDistance</a> () const</td></tr>
 <tr class="separator:aaf703730644d7fab65d1a9a21534b1d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6552762c2c420643726ac9e6dac495af"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#a6552762c2c420643726ac9e6dac495af">GetFarDistance</a> () const</td></tr>
@@ -167,6 +171,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:aa81edd4e91330f0613abeecc945e323d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab23a8639f37acbb57c7b2bd59f72f0e0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#ab23a8639f37acbb57c7b2bd59f72f0e0">fade_far</a> = INFINITY</td></tr>
 <tr class="separator:ab23a8639f37acbb57c7b2bd59f72f0e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff4ea02ba501bed88104e795ca72f100"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#aff4ea02ba501bed88104e795ca72f100">origin</a> = {0.0f, 0.0f, 0.0f}</td></tr>
+<tr class="separator:aff4ea02ba501bed88104e795ca72f100"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add4100bd27f40383014ada9f1038e1d1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classtram_1_1_render_1_1_material.html">Material</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#add4100bd27f40383014ada9f1038e1d1">materials</a></td></tr>
 <tr class="separator:add4100bd27f40383014ada9f1038e1d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac23726058a2d599fbcf09c6d774f6c91"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_render_1_1_model.html">Model</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_1_1_model.html#ac23726058a2d599fbcf09c6d774f6c91">source</a> = nullptr</td></tr>
@@ -285,6 +291,40 @@ Additional Inherited Members</h2></td></tr>
 <span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c1e5a51904349dbac4e6055b54f087a" name="a6c1e5a51904349dbac4e6055b54f087a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c1e5a51904349dbac4e6055b54f087a">&#9670;&nbsp;</a></span>FindAllFromAABB()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::Render::Model::FindAllFromAABB </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a>&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="structtram_1_1_render_1_1_a_a_b_b_triangle.html">AABBTriangle</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>result</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -512,6 +552,31 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float tram::Render::Model::GetNearDistance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3d3484e3d729819081e525321fa0cc22" name="a3d3484e3d729819081e525321fa0cc22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d3484e3d729819081e525321fa0cc22">&#9670;&nbsp;</a></span>GetOrigin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::Render::Model::GetOrigin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -941,6 +1006,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structtram_1_1_render_1_1_model_data.html">ModelData</a>* tram::Render::Model::model_data = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aff4ea02ba501bed88104e795ca72f100" name="aff4ea02ba501bed88104e795ca72f100"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff4ea02ba501bed88104e795ca72f100">&#9670;&nbsp;</a></span>origin</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetram.html#a632d9fcf54e995edd8c66e25cb7c1891">vec3</a> tram::Render::Model::origin = {0.0f, 0.0f, 0.0f}</td>
         </tr>
       </table>
   </td>

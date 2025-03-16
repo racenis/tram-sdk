@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -109,6 +109,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acc84d2050fc037feebe7e97681baf986"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bac8a5eb06119787111423ce520c005"><td class="memItemLeft" align="right" valign="top">virtual std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader_parser.html#a0bac8a5eb06119787111423ce520c005">read_string</a> ()=0</td></tr>
 <tr class="separator:a0bac8a5eb06119787111423ce520c005"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a398699124bf0cba7680196ca16425bf3"><td class="memItemLeft" align="right" valign="top">virtual std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader_parser.html#a398699124bf0cba7680196ca16425bf3">read_token</a> ()=0</td></tr>
+<tr class="separator:a398699124bf0cba7680196ca16425bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d6d0fc588569a550368355fb99c5724"><td class="memItemLeft" align="right" valign="top">virtual std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader_parser.html#a8d6d0fc588569a550368355fb99c5724">read_line</a> ()=0</td></tr>
 <tr class="separator:a8d6d0fc588569a550368355fb99c5724"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e9e3bce8f6b88355092541992be60ab"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_file_reader_parser.html#a2e9e3bce8f6b88355092541992be60ab">skip_newline</a> ()=0</td></tr>
@@ -428,6 +430,33 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classtram_1_1_text_reader_parser.html#a51d680fae0e08d2b468d114192d36516">tram::TextReaderParser</a>.</p>
+
+</div>
+</div>
+<a id="a398699124bf0cba7680196ca16425bf3" name="a398699124bf0cba7680196ca16425bf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a398699124bf0cba7680196ca16425bf3">&#9670;&nbsp;</a></span>read_token()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string_view tram::FileReaderParser::read_token </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classtram_1_1_text_reader_parser.html#ad02dd97ca99e1b028a5c662a7c46f1d3">tram::TextReaderParser</a>.</p>
 
 </div>
 </div>

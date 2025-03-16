@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -86,6 +86,12 @@ Macros</h2></td></tr>
 <tr class="separator:ab8acc3253ef25e7241078bb72714f386"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a152c2304044652f7572e5759c6535a2c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a152c2304044652f7572e5759c6535a2c">TRAM_SDK_ASSERT_MESSAGE</a>(EXPRESSION,  MESSAGE)&#160;&#160;&#160;if (!(EXPRESSION)) { Log(&quot;{}\n{}\nAssert at line {} in {}&quot;, MESSAGE, #EXPRESSION, __LINE__, __FILE__); abort(); }</td></tr>
 <tr class="separator:a152c2304044652f7572e5759c6535a2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f9f5f41852998a382c115e4f6bbf159"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a8f9f5f41852998a382c115e4f6bbf159">TRAM_SDK_ENTITY_NAME</a>(Name)</td></tr>
+<tr class="separator:a8f9f5f41852998a382c115e4f6bbf159"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a295f857ea2759f1ca46a41b9bf3dec1a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a295f857ea2759f1ca46a41b9bf3dec1a">TRAM_SDK_PROPERTY</a>(Name,  Flags)</td></tr>
+<tr class="separator:a295f857ea2759f1ca46a41b9bf3dec1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b6582f54dfcdb7471a7a86d9c01eafe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a2b6582f54dfcdb7471a7a86d9c01eafe">TRAM_SDK_VIRTUAL_PROPERTY</a>(Type,  Name,  Flags)</td></tr>
+<tr class="separator:a2b6582f54dfcdb7471a7a86d9c01eafe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ab8acc3253ef25e7241078bb72714f386" name="ab8acc3253ef25e7241078bb72714f386"></a>
@@ -134,6 +140,24 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a id="a8f9f5f41852998a382c115e4f6bbf159" name="a8f9f5f41852998a382c115e4f6bbf159"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f9f5f41852998a382c115e4f6bbf159">&#9670;&nbsp;</a></span>TRAM_SDK_ENTITY_NAME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TRAM_SDK_ENTITY_NAME</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Name</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad00c543490e5b3b7db91b1fdb62d44cb" name="ad00c543490e5b3b7db91b1fdb62d44cb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad00c543490e5b3b7db91b1fdb62d44cb">&#9670;&nbsp;</a></span>TRAM_SDK_IMPLEMENT_POOL</h2>
 
@@ -170,6 +194,34 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a id="a295f857ea2759f1ca46a41b9bf3dec1a" name="a295f857ea2759f1ca46a41b9bf3dec1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a295f857ea2759f1ca46a41b9bf3dec1a">&#9670;&nbsp;</a></span>TRAM_SDK_PROPERTY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TRAM_SDK_PROPERTY</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Flags&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a52706c5e76dff5554e6be98274f86e3d" name="a52706c5e76dff5554e6be98274f86e3d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a52706c5e76dff5554e6be98274f86e3d">&#9670;&nbsp;</a></span>TRAM_SDK_REGISTER_EVENT_DATATYPE</h2>
 
@@ -197,6 +249,40 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>This is experimental template. </p>
+
+</div>
+</div>
+<a id="a2b6582f54dfcdb7471a7a86d9c01eafe" name="a2b6582f54dfcdb7471a7a86d9c01eafe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b6582f54dfcdb7471a7a86d9c01eafe">&#9670;&nbsp;</a></span>TRAM_SDK_VIRTUAL_PROPERTY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TRAM_SDK_VIRTUAL_PROPERTY</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Type, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">Flags&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

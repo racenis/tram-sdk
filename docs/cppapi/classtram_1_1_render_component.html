@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Tramway SDK
+   <div id="projectname">Tramway SDK<span id="projectnumber">&#160;v0.1.1</span>
    </div>
   </td>
  </tr>
@@ -105,6 +105,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3eb6d145b4258093f8fcd1487edf2874"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a3eb6d145b4258093f8fcd1487edf2874">SetLightmap</a> (<a class="el" href="namespacetram.html#ad77b577436f476438699a1c4da9d549c">name_t</a> name)</td></tr>
 <tr class="memdesc:a3eb6d145b4258093f8fcd1487edf2874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the lightmap for the model.  <a href="classtram_1_1_render_component.html#a3eb6d145b4258093f8fcd1487edf2874">More...</a><br /></td></tr>
 <tr class="separator:a3eb6d145b4258093f8fcd1487edf2874"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81729832968e5f5656d3b230cd0f66fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a81729832968e5f5656d3b230cd0f66fd">SetEnvironmentMap</a> (<a class="el" href="classtram_1_1_render_1_1_material.html">Render::Material</a> *material)</td></tr>
+<tr class="memdesc:a81729832968e5f5656d3b230cd0f66fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the environment map for the model.  <a href="classtram_1_1_render_component.html#a81729832968e5f5656d3b230cd0f66fd">More...</a><br /></td></tr>
+<tr class="separator:a81729832968e5f5656d3b230cd0f66fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab67dd56c013753efd5c8fa9866daab88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#ab67dd56c013753efd5c8fa9866daab88">SetArmature</a> (<a class="el" href="classtram_1_1_animation_component.html">AnimationComponent</a> *armature)</td></tr>
 <tr class="memdesc:ab67dd56c013753efd5c8fa9866daab88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Links an <a class="el" href="classtram_1_1_animation_component.html" title="Plays back Animations.">AnimationComponent</a>.  <a href="classtram_1_1_render_component.html#ab67dd56c013753efd5c8fa9866daab88">More...</a><br /></td></tr>
 <tr class="separator:ab67dd56c013753efd5c8fa9866daab88"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -176,6 +179,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a3f3ff752d0389444e9450d9d3c27ac2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d0c1122a6e9b85ccd68fb5b2a3b2914"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_resource_proxy.html">ResourceProxy</a>&lt; <a class="el" href="classtram_1_1_render_1_1_material.html">Render::Material</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a7d0c1122a6e9b85ccd68fb5b2a3b2914">lightmap</a></td></tr>
 <tr class="separator:a7d0c1122a6e9b85ccd68fb5b2a3b2914"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8e60fbf5d87ba817101190869396393"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtram_1_1_resource_proxy.html">ResourceProxy</a>&lt; <a class="el" href="classtram_1_1_render_1_1_material.html">Render::Material</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#ae8e60fbf5d87ba817101190869396393">environmentmap</a></td></tr>
+<tr class="separator:ae8e60fbf5d87ba817101190869396393"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593b1a595fd07f68a4c4aa3fdfeb33c4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structtram_1_1_render_1_1drawlistentry__t.html">Render::drawlistentry_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a593b1a595fd07f68a4c4aa3fdfeb33c4">draw_list_entries</a></td></tr>
 <tr class="separator:a593b1a595fd07f68a4c4aa3fdfeb33c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affc6cba67cad84483c2dd69ba952a7f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtram_1_1_render_1_1_pose.html">Render::Pose</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#affc6cba67cad84483c2dd69ba952a7f3">pose</a> = nullptr</td></tr>
@@ -192,7 +197,7 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a9af00bf62b86a65cfecda4579cea9081"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae40a30e7729ab549faf072c9b0440ae5"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#ae40a30e7729ab549faf072c9b0440ae5">aabb_tree_leaf</a> = 0</td></tr>
 <tr class="separator:ae40a30e7729ab549faf072c9b0440ae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49a2e872ecfb59e33f5ab7974b01c13f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a49a2e872ecfb59e33f5ab7974b01c13f">render_flags</a></td></tr>
+<tr class="memitem:a49a2e872ecfb59e33f5ab7974b01c13f"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_render_component.html#a49a2e872ecfb59e33f5ab7974b01c13f">render_flags</a> = 0</td></tr>
 <tr class="separator:a49a2e872ecfb59e33f5ab7974b01c13f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classtram_1_1_entity_component"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classtram_1_1_entity_component')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classtram_1_1_entity_component.html">tram::EntityComponent</a></td></tr>
 <tr class="memitem:a67f362753d2e2c2e5859ceab8b9461ce inherit pro_attribs_classtram_1_1_entity_component"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtram_1_1_entity_component.html#a67f362753d2e2c2e5859ceab8b9461ce">resources_waiting</a> = 0</td></tr>
@@ -507,6 +512,26 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a81729832968e5f5656d3b230cd0f66fd" name="a81729832968e5f5656d3b230cd0f66fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81729832968e5f5656d3b230cd0f66fd">&#9670;&nbsp;</a></span>SetEnvironmentMap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tram::RenderComponent::SetEnvironmentMap </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtram_1_1_render_1_1_material.html">Render::Material</a> *&#160;</td>
+          <td class="paramname"><em>material</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the environment map for the model. </p>
+
+</div>
+</div>
 <a id="ad7c9df8966b4b2e87c0afbb9b75fffdc" name="ad7c9df8966b4b2e87c0afbb9b75fffdc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad7c9df8966b4b2e87c0afbb9b75fffdc">&#9670;&nbsp;</a></span>SetLayer()</h2>
 
@@ -770,6 +795,28 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ae8e60fbf5d87ba817101190869396393" name="ae8e60fbf5d87ba817101190869396393"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8e60fbf5d87ba817101190869396393">&#9670;&nbsp;</a></span>environmentmap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtram_1_1_resource_proxy.html">ResourceProxy</a>&lt;<a class="el" href="classtram_1_1_render_1_1_material.html">Render::Material</a>&gt; tram::RenderComponent::environmentmap</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a9af00bf62b86a65cfecda4579cea9081" name="a9af00bf62b86a65cfecda4579cea9081"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9af00bf62b86a65cfecda4579cea9081">&#9670;&nbsp;</a></span>layer</h2>
 
@@ -890,7 +937,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t tram::RenderComponent::render_flags</td>
+          <td class="memname">uint32_t tram::RenderComponent::render_flags = 0</td>
         </tr>
       </table>
   </td>

@@ -15,6 +15,9 @@ Some of these libraries are not covered under the MIT license, so check before m
 ## OpenAL-soft
 <https://github.com/kcat/openal-soft>
 
+## PortAudio 19.7.0
+<https://github.com/PortAudio/portaudio>
+
 ## glad
 <https://github.com/Dav1dde/glad>
 
@@ -27,6 +30,9 @@ Some of these libraries are not covered under the MIT license, so check before m
 ## stb_image
 <https://github.com/nothings/stb/blob/master/stb_image.h>
 
+## stb_image_write
+<https://github.com/nothings/stb/blob/master/stb_image_write.h>
+
 ## stb_vorbis
 <https://github.com/nothings/stb/blob/master/stb_vorbis.c>
 
@@ -35,5 +41,8 @@ Some of these libraries are not covered under the MIT license, so check before m
 
 ## SDL 2.30.4
 <https://www.libsdl.org/>
+
+## xatlas
+<https://github.com/jpcy/xatlas>
 
 Thanks to everyone for licensing their work under free licenses, so that I can appropriate it.
