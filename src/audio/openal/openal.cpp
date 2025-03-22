@@ -5,7 +5,7 @@
 #include <framework/logging.h>
 #include <framework/system.h>
 
-#ifndef _WIN32
+#ifdef __EMSCRIPTEN__
     #include <AL/alc.h>
     #include <AL/al.h>
 #else

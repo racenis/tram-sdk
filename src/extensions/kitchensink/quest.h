@@ -75,7 +75,7 @@ struct QuestVariable {
         } item;
     };
     
-    static QuestVariable Value(name_t, value_t);
+    static QuestVariable ValueVariable(name_t, value_t);
     static QuestVariable Objective(name_t, name_t, name_t, name_t);
     
     static QuestVariable Is(name_t, name_t, name_t, name_t, value_t);

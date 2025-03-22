@@ -4,6 +4,7 @@
 #define TRAM_SDK_TEMPLATES_STACK_H
 
 #include <string>
+#include <cstdint>
 #include <iostream>
 
 /* copy-pasting queue code might have not been the best idea. anyway, it would

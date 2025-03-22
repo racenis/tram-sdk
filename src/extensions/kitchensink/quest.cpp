@@ -32,7 +32,7 @@ QuestVariable& QuestVariable::operator=(const QuestVariable& other) {
     return *this;
 }
     
-QuestVariable QuestVariable::Value(name_t name, value_t value) {
+QuestVariable QuestVariable::ValueVariable(name_t name, value_t value) {
     QuestVariable var;
     
     var.type = QUEST_VAR_VALUE;
@@ -300,7 +300,7 @@ void Quest::SetVariable(name_t name, value_t value) {
         switch (variable.type) {
             case QUEST_VAR_VALUE: variable.value.value = value;             break;
             case QUEST_VAR_OBJECTIVE: variable.objective.value = value;     break;
-            default: variable = QuestVariable::Value(name, value);
+            default: variable = QuestVariable::ValueVariable(name, value);
         }
         
         
@@ -311,7 +311,7 @@ void Quest::SetVariable(name_t name, value_t value) {
     
     std::cout << "Inserted new variable " << name << std::endl;
     
-    QuestVariable new_variable = QuestVariable::Value(name, value);
+    QuestVariable new_variable = QuestVariable::ValueVariable(name, value);
     variables.push_back(new_variable);
 }
 
@@ -468,13 +468,13 @@ void Quest::LoadFromDisk(const char* filename) {
                     name_t type = file.read_name();
 
                     if (type == "bool") {
-                        variable = QuestVariable::Value(variable_name, file.read_name() == "true");
+                        variable = QuestVariable::ValueVariable(variable_name, file.read_name() == "true");
                     } else if (type == "int") {
-                        variable = QuestVariable::Value(variable_name, file.read_int32());
+                        variable = QuestVariable::ValueVariable(variable_name, file.read_int32());
                     } else if (type == "float") {
-                        variable = QuestVariable::Value(variable_name, file.read_float32());
+                        variable = QuestVariable::ValueVariable(variable_name, file.read_float32());
                     } else if (type == "name") {
-                        variable = QuestVariable::Value(variable_name, file.read_name());
+                        variable = QuestVariable::ValueVariable(variable_name, file.read_name());
                     } else {
                         std::cout << "unknown variable value type: " << type << std::endl;
                         abort();

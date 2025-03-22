@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include <cstdint>
 
 /* this is one of the oldest files in the library, hence why it looks so awful.
  * it probably would be a good idea to clean up the code, but editing this file

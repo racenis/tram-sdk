@@ -4,6 +4,7 @@
 #define TRAM_SDK_FRAMEWORK_UID_H
 
 #include <string>
+#include <cstdint>
 
 namespace tram {
 
