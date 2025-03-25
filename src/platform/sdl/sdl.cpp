@@ -8,6 +8,8 @@
 
 #include <render/api.h>
 
+#include <thread>
+
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include <glad.c>
@@ -34,6 +36,8 @@ static int screen_scale = 1;
 static int relpos_x = screen_width/2;
 static int relpos_y = screen_height/2;
 static bool cursor_enabled = false;
+
+static std::thread::id render_context_thread = std::this_thread::get_id();
 
 #ifdef _WIN32
 static IDirect3DDevice9* d3d_device = nullptr;
@@ -70,7 +74,7 @@ void Window::Init() {
         window_flags |= SDL_WINDOW_OPENGL;
     }
     
-    window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.0.9", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, window_flags);
+    window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, window_flags);
     if (window == nullptr) {
         Log(Severity::WARNING, System::PLATFORM, "SDL2 window didn't open! {}", SDL_GetError());
         abort();
@@ -186,6 +190,8 @@ void Window::Init() {
         SoftwareRenderContextUpdate();
     }
     
+    render_context_thread = std::this_thread::get_id();
+    
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
@@ -262,6 +268,47 @@ double Window::GetTime() {
     return (float)SDL_GetTicks() / 1000.0f;
 }
 
+// TODO: properly implement all of these very nice functions
+int Window::GetCurrentMonitor() {
+    return 0;
+}
+
+int Window::GetMonitorCount() {
+    return 1;
+}
+
+void Window::SetMonitor(int monitor) {
+    
+}
+
+bool Window::IsFullscreen() {
+    return false;
+}
+
+void Window::SetFullscreen(bool) {
+    
+}
+
+bool Window::IsVsync() {
+    return false;
+}
+
+void Window::SetVsync(bool) {
+    
+}
+
+bool Window::IsRawInput() {
+    return false;
+}
+
+void Window::SetRawInput(bool) {
+    
+}
+
+bool Window::IsRenderContextThread() {
+    return render_context_thread == std::this_thread::get_id();
+}
+
 static KeyboardKey SDLKeyToKeyboardKey(SDL_Keysym keycode);
 static KeyboardKey SDLMouseKeyToKeyboardKey(uint8_t button);
 
@@ -303,8 +350,8 @@ void Input::Update() {
                 if (cursor_enabled) {
                     KeyMouse((float)event.motion.x/screen_scale, (float)event.motion.y/screen_scale);
                 } else {
-                    relpos_x += event.motion.xrel * 3;
-                    relpos_y += event.motion.yrel * 3;
+                    relpos_x += event.motion.xrel * 2;
+                    relpos_y += event.motion.yrel * 2;
                     
                     KeyMouse((float)relpos_x/screen_scale, (float)relpos_y/screen_scale);
                 }
