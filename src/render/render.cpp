@@ -117,7 +117,7 @@ void Init () {
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
     SetFlags(colorlines_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/ | FLAG_DRAW_LINES | FLAG_DISABLE_LIGHTING);
-    SetLayer(colorlines_entry, 1);
+    SetLayer(colorlines_entry, LAYER_DEBUG);
     
     // generating fullbright lightmap
     Material* fullbright = Material::Make("fullbright", MATERIAL_LIGHTMAP);
@@ -145,7 +145,7 @@ void Init () {
     SetDrawListVertexArray(debugtext_entry, debugtext_vertex_array);
     SetDrawListShader(debugtext_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
     SetFlags(debugtext_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
-    SetLayer(debugtext_entry, 2);
+    SetLayer(debugtext_entry, LAYER_GUI);
     
     material_t debugtext_texture = font_debug->GetMaterial()->GetMaterial();
     SetDrawListMaterials(debugtext_entry, 1, &debugtext_texture);
@@ -466,6 +466,7 @@ static const char* vertex_format_names[MAX_VERTEX_FORMATS] = {
 static const char* material_type_names[MAX_MATERIAL_TYPES] = {
     "MATERIAL_TEXTURE",
     "MATERIAL_TEXTURE_ALPHA",
+    "MATERIAL_TEXTURE_BLEND",
     "MATERIAL_LIGHTMAP",
     "MATERIAL_ENVIRONMENTMAP",
     "MATERIAL_MSDF",

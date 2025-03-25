@@ -357,8 +357,10 @@ void CompileShaders() {
 
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "normal_static",     "normal_static");
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    "normal_static",     "normal_static_alpha");
+    RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_BLEND,    "normal_static",     "normal_static_blend");
     RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE,          "normal_dynamic",    "normal_dynamic");
     RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE_ALPHA,    "normal_dynamic",    "normal_dynamic_alpha");
+    RegisterShader(VERTEX_DYNAMIC,  MATERIAL_TEXTURE_BLEND,    "normal_dynamic",    "normal_dynamic_blend");
     RegisterShader(VERTEX_STATIC,   MATERIAL_WATER,            "normal_static",     "normal_water");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_TEXTURE_ALPHA,    "normal_sprite",     "normal_sprite");
     RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,       "line",              "line");

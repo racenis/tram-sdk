@@ -65,9 +65,9 @@ struct ShaderUniformModelMatrices {
     vec4 l2m2; vec4 l2m1; vec4 l20; vec4 l21; vec4 l22;
 };
 
-struct LayerParameters {
-    //vec3 camera_position = {0.0f, 0.0f, 0.0f};
-    //quat camera_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
+struct Layer {
+    std::vector<std::pair<uint64_t, GLDrawListEntry*>> forward_bucket;
+    std::vector<std::pair<uint64_t, GLDrawListEntry*>> transparency_bucket;
     
     mat4 projection_matrix = mat4(1.0f);
     mat4 view_matrix = mat4(1.0f);
@@ -81,7 +81,7 @@ struct LayerParameters {
 ShaderUniformMatrices matrices;
 ShaderUniformModelMatrices modelMatrices;
 
-static LayerParameters LAYER[7];
+static Layer layers[7];
 
 class ShaderBuffer {};
 
@@ -127,9 +127,9 @@ void UploadUniformBuffer (uint32_t handle, uint32_t data_size, void* data) {
 }
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
-    LAYER[layer].sun_direction = sun_direction;
-    LAYER[layer].sun_color = sun_color;
-    LAYER[layer].ambient_color = ambient_color;
+    layers[layer].sun_direction = sun_direction;
+    layers[layer].sun_color = sun_color;
+    layers[layer].ambient_color = ambient_color;
 }
 
 void SetViewParameters (vec3 position, quat rotation, uint32_t layer) {
@@ -151,6 +151,115 @@ void SetScreenClear (vec3 clear_color, bool clear) {
     screen_clear_color = clear_color;
 }
 
+
+static void SetupLayer(layer_t layer) {
+    modelMatrices.sunDirection =    vec4(layers[layer].sun_direction, 1.0f);
+    modelMatrices.sunColor =        vec4(layers[layer].sun_color, 1.0f);
+    modelMatrices.ambientColor =    vec4(layers[layer].ambient_color, 1.0f);
+
+    matrices.projection = layers[layer].projection_matrix;
+    matrices.view = layers[layer].view_matrix;
+    matrices.view_pos = layers[layer].view_position;
+
+    UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
+}
+
+static void Draw(GLDrawListEntry* robj) {
+    if (render_debug && !(robj->flags & FLAG_NO_DEBUG)) {
+        char debug_text[250];
+        
+        uint32_t tex_hash = 0;
+        for (uint32_t tex = 0; tex < robj->texCount; tex++) {
+            // TODO: figure out why we get nullptrs here
+            // maybe because of lines???
+            if (!robj->materials[tex]) continue;
+            tex_hash ^= robj->materials[tex]->gl_texture;
+        }
+        
+        sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nEnvironment: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
+            robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap, robj->environmentmap,
+            robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max),
+            robj->fade_near, robj->fade_far);
+        
+        vec3 pos = robj->matrix * glm::vec4(glm::mix(robj->aabb_min, robj->aabb_max, 0.5f), 1.0f);
+        
+        AddText(pos, debug_text);
+    }
+
+    glUseProgram(robj->shader);
+
+    if (robj->pose) {
+        UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(robj->pose->pose[0]));
+    } else {
+        UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(null_pose->pose[0]));
+    }
+
+    for (int i = 0; i < 15; i++) {
+        modelMatrices.colors[i] = robj->colors[i];
+        modelMatrices.texture_transforms[i] = robj->texture_transforms[i];
+        
+        if (!robj->materials[i]) continue;
+        
+        modelMatrices.specular[i].x = robj->materials[i]->specular_weight;
+        modelMatrices.specular[i].y = robj->materials[i]->specular_exponent;
+        modelMatrices.specular[i].z = robj->materials[i]->specular_transparency;
+        modelMatrices.specular[i].w = robj->materials[i]->reflectivity;
+    }
+    
+    modelMatrices.l00 = vec4(robj->harmonic.l00, 0.0f);
+    modelMatrices.l1m1 = vec4(robj->harmonic.l1m1, 0.0f);
+    modelMatrices.l10 = vec4(robj->harmonic.l10, 0.0f);
+    modelMatrices.l11 = vec4(robj->harmonic.l11, 0.0f);
+    modelMatrices.l2m2 = vec4(robj->harmonic.l2m2, 0.0f);
+    modelMatrices.l2m1 = vec4(robj->harmonic.l2m1, 0.0f);
+    modelMatrices.l20 = vec4(robj->harmonic.l20, 0.0f);
+    modelMatrices.l21 = vec4(robj->harmonic.l21, 0.0f);
+    modelMatrices.l22 = vec4(robj->harmonic.l22, 0.0f);
+
+    modelMatrices.modelLights.x = robj->lights[0];
+    modelMatrices.modelLights.y = robj->lights[1];
+    modelMatrices.modelLights.z = robj->lights[2];
+    modelMatrices.modelLights.w = robj->lights[3];
+
+    if (robj->flags & FLAG_NO_DIRECTIONAL) {
+        modelMatrices.sunWeight = 0.0f;
+    } else {
+        modelMatrices.sunWeight = 1.0f;
+    }
+
+    //modelMatrices.model = model;
+    modelMatrices.model = robj->matrix;
+    UploadUniformBuffer(model_matrix_uniform_buffer, sizeof(ShaderUniformModelMatrices), &modelMatrices);
+
+
+
+    for (unsigned int j = 0; j < robj->texCount; j++){
+        if (!robj->materials[j]) continue;
+        glActiveTexture(GL_TEXTURE0 + j);
+        glBindTexture(GL_TEXTURE_2D, robj->materials[j]->gl_texture);
+    }
+
+    if (robj->lightmap) {
+        glActiveTexture(GL_TEXTURE15);
+        glBindTexture(GL_TEXTURE_2D, robj->lightmap);
+    }
+    
+    if (robj->environmentmap) {
+        glActiveTexture(GL_TEXTURE15);
+        glBindTexture(GL_TEXTURE_2D, robj->environmentmap);
+    }
+
+    if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
+    if (robj->flags & FLAG_DRAW_INDEXED) {
+        glBindVertexArray(robj->vao);
+        glDrawElements(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
+    } else {
+        glBindVertexArray(robj->vao);
+        glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
+    }
+    if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);    
+}
+
 void RenderFrame() {
     if (clear_screen) {
         glClearColor(screen_clear_color.x, screen_clear_color.y, screen_clear_color.z, 1.0f);
@@ -159,32 +268,35 @@ void RenderFrame() {
         glClear(GL_DEPTH_BUFFER_BIT);
     }
     
+    // setting up data that is shared between layers
     modelMatrices.time = GetTickTime();
-    modelMatrices.sunDirection =    vec4(LAYER[0].sun_direction, 1.0f);
-    modelMatrices.sunColor =        vec4(LAYER[0].sun_color, 1.0f);
-    modelMatrices.ambientColor =    vec4(LAYER[0].ambient_color, 1.0f);
+    modelMatrices.sunDirection =    vec4(layers[0].sun_direction, 1.0f);
+    modelMatrices.sunColor =        vec4(layers[0].sun_color, 1.0f);
+    modelMatrices.ambientColor =    vec4(layers[0].ambient_color, 1.0f);
     modelMatrices.screenWidth =     SCREEN_WIDTH;
     modelMatrices.screenHeight =    SCREEN_HEIGHT;
 
-    matrices.projection = LAYER[0].projection_matrix;
-    matrices.view = LAYER[0].view_matrix;
-    matrices.view_pos = LAYER[0].view_position;
+    matrices.projection = layers[0].projection_matrix;
+    matrices.view = layers[0].view_matrix;
+    matrices.view_pos = layers[0].view_position;
 
 
     GLLight* first_light = PoolProxy<GLLight>::GetPool().begin().ptr;
     GLLight* last_light = PoolProxy<GLLight>::GetPool().end().ptr;
-
-    UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
+    
     UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight) * (last_light - first_light), first_light);
 
-    static uint32_t layer; layer = 0;
 
-    static std::vector<std::pair<uint64_t, GLDrawListEntry*>> rvec;
-    rvec.clear();
-
+    // clear out layer buckets
+    for (auto& layer : layers) {
+        layer.forward_bucket.clear();
+        layer.transparency_bucket.clear();
+    }
+    
+    // filter drawlistentries and bucket them
     for (auto& robj : PoolProxy<GLDrawListEntry>::GetPool()) {
         const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        const float dist = glm::distance(pos, LAYER[robj.layer].view_position);
+        const float dist = glm::distance(pos, layers[robj.layer].view_position);
         
         // distance culling
         if (dist > robj.fade_far || dist < robj.fade_near) {
@@ -193,7 +305,7 @@ void RenderFrame() {
 
         // frustum culling
         if (robj.flags & FLAG_USE_AABB) {
-            auto matrix = LAYER[robj.layer].projection_matrix * LAYER[robj.layer].view_matrix;
+            auto matrix = layers[robj.layer].projection_matrix * layers[robj.layer].view_matrix;
 
             vec4 plane_l = {matrix[0][3] - matrix[0][0], 
                             matrix[1][3] - matrix[1][0],
@@ -249,141 +361,55 @@ void RenderFrame() {
             }
         }
 
-        rvec.push_back(std::pair<uint64_t, GLDrawListEntry*>(robj.CalcSortKey(LAYER[robj.layer].view_position), &robj));
+        const uint64_t sort_key = robj.CalcSortKey(layers[robj.layer].view_position);
+
+        if (robj.flags & FLAG_TRANSPARENT) {
+            layers[robj.layer].transparency_bucket.push_back({sort_key, &robj});
+        } else {
+            layers[robj.layer].forward_bucket.push_back({sort_key, &robj});
+        }
     }
 
-    sort(rvec.begin(), rvec.end());
-
+    // sort the buckets and add up the drawcalls
     Stats::Remove(Stats::RESOURCE_DRAWCALL, Stats::GetStat(Stats::RESOURCE_DRAWCALL));
-    Stats::Add(Stats::RESOURCE_DRAWCALL, rvec.size());
-
-    for (auto [_, robj] : rvec) {
+    
+    for (auto& layer : layers) {
+        std::sort(layer.forward_bucket.begin(), layer.forward_bucket.end());
+        std::sort(layer.transparency_bucket.begin(), layer.transparency_bucket.end());
         
-        if (render_debug && !(robj->flags & FLAG_NO_DEBUG)) {
-            char debug_text[250];
-            
-            uint32_t tex_hash = 0;
-            for (uint32_t tex = 0; tex < robj->texCount; tex++) {
-                // TODO: figure out why we get nullptrs here
-                // maybe because of lines???
-                if (!robj->materials[tex]) continue;
-                tex_hash ^= robj->materials[tex]->gl_texture;
-            }
-            
-            sprintf(debug_text, "Layer: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nEnvironment: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
-                robj->layer, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap, robj->environmentmap,
-                robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max),
-                robj->fade_near, robj->fade_far);
-            
-            vec3 pos = robj->matrix * glm::vec4(glm::mix(robj->aabb_min, robj->aabb_max, 0.5f), 1.0f);
-            
-            AddText(pos, debug_text);
-        }
-        
-        if (layer != robj->layer) {
-            layer = robj->layer;
-            
-            glClear(GL_DEPTH_BUFFER_BIT);
-            
-            modelMatrices.sunDirection =    vec4(LAYER[layer].sun_direction, 1.0f);
-            modelMatrices.sunColor =        vec4(LAYER[layer].sun_color, 1.0f);
-            modelMatrices.ambientColor =    vec4(LAYER[layer].ambient_color, 1.0f);
-
-            matrices.projection = LAYER[layer].projection_matrix;
-            matrices.view = LAYER[layer].view_matrix;
-            matrices.view_pos = LAYER[layer].view_position;
-
-            UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
-        }
-
-        glUseProgram(robj->shader);
-
-        if (robj->pose) {
-            UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(robj->pose->pose[0]));
-        } else {
-            UploadUniformBuffer(bone_uniform_buffer, sizeof(Pose), glm::value_ptr(null_pose->pose[0]));
-        }
-
-        for (int i = 0; i < 15; i++) {
-            modelMatrices.colors[i] = robj->colors[i];
-            /*modelMatrices.specular[i].x = robj->specular_weights[i];clTabCtrl
-            modelMatrices.specular[i].y = robj->specular_exponents[i];
-            modelMatrices.specular[i].z = robj->specular_transparencies[i];*/
-            modelMatrices.texture_transforms[i] = robj->texture_transforms[i];
-            
-            if (!robj->materials[i]) continue;
-            
-            modelMatrices.specular[i].x = robj->materials[i]->specular_weight;
-            modelMatrices.specular[i].y = robj->materials[i]->specular_exponent;
-            modelMatrices.specular[i].z = robj->materials[i]->specular_transparency;
-            modelMatrices.specular[i].w = robj->materials[i]->reflectivity;
-            
-            /*modelMatrices.texture_transforms[i].x = robj->texture_transforms[i][0][0];
-            modelMatrices.texture_transforms[i].y = robj->texture_transforms[i][0][1];
-            modelMatrices.texture_transforms[i].z = robj->texture_transforms[i][1][0];
-            modelMatrices.texture_transforms[i].w = robj->texture_transforms[i][1][1];*/
-        }
-
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[0]].location, light_list.GetFirst()[robj->lights[0]].color);
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[1]].location, light_list.GetFirst()[robj->lights[1]].color);
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[2]].location, light_list.GetFirst()[robj->lights[2]].color);
-        //AddLine(vec3(robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f)), light_list.GetFirst()[robj->lights[3]].location, light_list.GetFirst()[robj->lights[3]].color);
-        
-        modelMatrices.l00 = vec4(robj->harmonic.l00, 0.0f);
-        modelMatrices.l1m1 = vec4(robj->harmonic.l1m1, 0.0f);
-        modelMatrices.l10 = vec4(robj->harmonic.l10, 0.0f);
-        modelMatrices.l11 = vec4(robj->harmonic.l11, 0.0f);
-        modelMatrices.l2m2 = vec4(robj->harmonic.l2m2, 0.0f);
-        modelMatrices.l2m1 = vec4(robj->harmonic.l2m1, 0.0f);
-        modelMatrices.l20 = vec4(robj->harmonic.l20, 0.0f);
-        modelMatrices.l21 = vec4(robj->harmonic.l21, 0.0f);
-        modelMatrices.l22 = vec4(robj->harmonic.l22, 0.0f);
-
-        modelMatrices.modelLights.x = robj->lights[0];
-        modelMatrices.modelLights.y = robj->lights[1];
-        modelMatrices.modelLights.z = robj->lights[2];
-        modelMatrices.modelLights.w = robj->lights[3];
-
-        if (robj->flags & FLAG_NO_DIRECTIONAL) {
-            modelMatrices.sunWeight = 0.0f;
-        } else {
-            modelMatrices.sunWeight = 1.0f;
-        }
-
-        //modelMatrices.model = model;
-        modelMatrices.model = robj->matrix;
-        UploadUniformBuffer(model_matrix_uniform_buffer, sizeof(ShaderUniformModelMatrices), &modelMatrices);
-
-
-
-        for (unsigned int j = 0; j < robj->texCount; j++){
-            if (!robj->materials[j]) continue;
-            glActiveTexture(GL_TEXTURE0 + j);
-            glBindTexture(GL_TEXTURE_2D, robj->materials[j]->gl_texture);
-        }
-
-        if (robj->lightmap) {
-            glActiveTexture(GL_TEXTURE15);
-            glBindTexture(GL_TEXTURE_2D, robj->lightmap);
-        }
-        
-        if (robj->environmentmap) {
-            glActiveTexture(GL_TEXTURE15);
-            glBindTexture(GL_TEXTURE_2D, robj->environmentmap);
-        }
-
-        if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
-        if (robj->flags & FLAG_DRAW_INDEXED) {
-            glBindVertexArray(robj->vao);
-            glDrawElements(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, robj->eboLen * 3, GL_UNSIGNED_INT, (void*)(robj->eboOff * 3 * sizeof(uint32_t)));
-        } else {
-            glBindVertexArray(robj->vao);
-            glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
-        }
-        if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);
-
-
+        Stats::Add(Stats::RESOURCE_DRAWCALL, layer.forward_bucket.size());
+        Stats::Add(Stats::RESOURCE_DRAWCALL, layer.transparency_bucket.size());
     }
+
+
+    // the depth buffer was already cleared when we cleared the color buffer
+    SetupLayer(LAYER_DEFAULT);
+    for (auto [_, robj] : layers[LAYER_DEFAULT].forward_bucket) {
+        Draw(robj);
+    }
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+    for (auto [_, robj] : layers[LAYER_DEFAULT].transparency_bucket) {
+        Draw(robj);
+    }
+    glDisable(GL_BLEND); 
+    
+    // the overlay layer is drawn on top of the default layer
+    glClear(GL_DEPTH_BUFFER_BIT);
+    SetupLayer(LAYER_OVERLAY);
+    
+    for (auto [_, robj] : layers[LAYER_OVERLAY].forward_bucket) {
+        Draw(robj);
+    }
+    
+    // finally we draw the GUI widgets and debug text on top of everything
+    glClear(GL_DEPTH_BUFFER_BIT);
+    SetupLayer(LAYER_GUI);
+    
+    for (auto [_, robj] : layers[LAYER_GUI].forward_bucket) {
+        Draw(robj);
+    }
+    
     
     if (render_debug) {
         for (auto& light : PoolProxy<GLLight>::GetPool()) {
@@ -407,16 +433,13 @@ void RenderFrame() {
 
 
 
-
-
-
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
-    LAYER[layer].view_matrix = matrix;
-    LAYER[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    layers[layer].view_matrix = matrix;
+    layers[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
-    LAYER[layer].projection_matrix = matrix;
+    layers[layer].projection_matrix = matrix;
 }
 
 void GetScreen(char* buffer, int w, int h) {

@@ -26,7 +26,7 @@ uint32_t GetFlags(drawlistentry_t entry) {
 }
 
 void SetFlags(drawlistentry_t entry, uint32_t flags) {
-    entry.gl->flags = flags;
+    entry.gl->flags = (entry.gl->flags & FLAG_TRANSPARENT) | flags;
 }
 
 void SetLayer(drawlistentry_t entry, uint32_t layer) {
@@ -101,7 +101,16 @@ void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_
 
 bool SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
     entry.gl->shader = FindShader(vertex_format, material_type, SHADER_NONE);
+    
+    // in the future the entry.gl could be a LinkedShader* from which we could
+    // then use ->GetFlags() to get the actual shader program, instead of doing
+    // that in here
+    
     if (entry.gl->shader) {
+        // we might consider removing this in the future
+        if (material_type == MATERIAL_TEXTURE_BLEND) {
+            entry.gl->flags = entry.gl->flags | FLAG_TRANSPARENT;
+        }
         return true;
     } else {
         entry.gl->shader = GetAnyShader(SHADER_NONE);

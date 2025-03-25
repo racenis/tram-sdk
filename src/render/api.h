@@ -91,6 +91,16 @@ void SetMaterialSpecularExponent(material_t material, float exponent);
 void SetMaterialSpecularTransparency(material_t material, float transparency);
 void SetMaterialReflectivity(material_t material, float reflectivity);
 
+// default layers
+enum LayerType {
+    LAYER_DEFAULT =     0,
+    LAYER_DEBUG =       1,
+    LAYER_OVERLAY =     1,
+    LAYER_REFLECTION =  3,
+    LAYER_GUI =         2,
+};
+
+// rendering contexts
 enum ContextType {
     CONTEXT_OPENGL,
     CONTEXT_WEBGL,

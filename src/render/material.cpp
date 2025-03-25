@@ -85,6 +85,8 @@ void Material::LoadMaterialInfo(const char* filename) {
             mat_type = MATERIAL_TEXTURE;
         } else if(mat_type_name == UID("alpha")){
             mat_type = MATERIAL_TEXTURE_ALPHA;
+        } else if(mat_type_name == UID("blend")){
+            mat_type = MATERIAL_TEXTURE_BLEND;
         } else if(mat_type_name == UID("lightmap")){
             mat_type = MATERIAL_LIGHTMAP;
         } else if(mat_type_name == UID("msdf")){
@@ -245,6 +247,7 @@ void Material::LoadFromDisk() {
             channels = 3;
             break;
         case MATERIAL_TEXTURE_ALPHA:
+        case MATERIAL_TEXTURE_BLEND:
             channels = 4;
             break;
         case MATERIAL_MSDF:
@@ -313,7 +316,7 @@ void Material::LoadFromMemory() {
     }
 
     // TODO: switch this out from checking 'type' and instead use 'channels'
-    if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
+    if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_TEXTURE_BLEND || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
         texture = API::CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     } else {
         texture = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
