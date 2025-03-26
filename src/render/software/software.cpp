@@ -5,17 +5,19 @@
 
 #include <templates/octree.h>
 
+#include <config.h>
+
 #include <cstdlib>
 #include <cstring>
 
 namespace tram::Render::API {
 
-Pool<SWDrawListEntry> draw_list("render list", 500, false);
-Pool<SWLight> light_list("light list", 200, false);
-Pool<SWTexture> texture_list("texture list", 200, false);
-Pool<SWVertexArray> vertex_arrays("vertex_arrays list", 200, false);
-Pool<SWIndexArray> index_arrays("index_arrays list", 200, false);
-
+Pool<SWDrawListEntry> draw_list("render list", 500);
+Pool<SWLight> light_list("light list", 200);
+Pool<SWTexture> texture_list("texture list", RESOURCE_LIMIT_MATERIAL);
+Pool<SWMaterial> material_list("material list", RESOURCE_LIMIT_MATERIAL);
+Pool<SWVertexArray> vertex_arrays("vertex_arrays list", 200);
+Pool<SWIndexArray> index_arrays("index_arrays list", 200);
 struct LayerParameters {
     mat4 projection_matrix = mat4(1.0f);
     mat4 view_matrix = mat4(1.0f);
@@ -36,6 +38,8 @@ static uint16_t screen_height = 600.0f;
 
 static uint16_t* screen_buffer = nullptr;
 static uint16_t* depth_buffer = nullptr;
+
+static Render::Pose* null_pose = nullptr;
 
 struct Scanline {
     uint16_t begin;     // x coord on which the span starts
@@ -1208,7 +1212,7 @@ void RenderFrame() {
                         vec2 lightmap_uvs[3] = {p0.lit, p1.lit, p2.lit};
                         
                         ScanlineConvertTriangle(scanlines, ps);
-                        RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->texture, entry->lightmap);
+                        RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->material->texture, entry->lightmap);
                     } else {
                         ClipTriangle clipped[12] = {{{{pr0, {1, 0, 0}}, {pr1, {0, 1, 0}}, {pr2, {0, 0, 1}}}}};
                         size_t tri_count = ClipTriangleList(clipped);
@@ -1265,7 +1269,7 @@ void RenderFrame() {
                             
                             Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
                             ScanlineConvertTriangle(scanlines, ps);
-                            RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->texture, entry->lightmap);
+                            RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->material->texture, entry->lightmap);
                         }
                     }
                     
@@ -1429,7 +1433,7 @@ void RenderFrame() {
                         vec3 speculars[3] = {spec_color0, spec_color1, spec_color2};
 
                         ScanlineConvertTriangle(scanlines, ps);
-                        RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->texture);
+                        RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->material->texture);
                     } else {
                         ClipTriangle clipped[12] = {{{{pos0, {1, 0, 0}}, {pos1, {0, 1, 0}}, {pos2, {0, 0, 1}}}}};
                         size_t tri_count = ClipTriangleList(clipped);
@@ -1469,7 +1473,7 @@ void RenderFrame() {
                             
                             Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
                             ScanlineConvertTriangle(scanlines, ps);
-                            RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->texture);
+                            RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->material->texture);
                         }
                     }
                     
@@ -1528,9 +1532,29 @@ void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
     entry.sw->lightmap = lightmap.sw_texture;
 }
 
+void SetEnvironmentMap(drawlistentry_t entry, texturehandle_t environmentmap) {
+    entry.sw->environmentmap = environmentmap.sw_texture;
+}
+
+void SetSphericalHarmonic(drawlistentry_t entry, sphericalharmonic_t harmonic) {
+    entry.sw->harmonic = harmonic;
+}
+
+void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max) {
+    //entry.sw->aabb_min = min;
+    //entry.sw->aabb_max = max;
+}
+
 void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color) {
     entry.sw->color = *color;
 }
+
+void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset) {
+    /*for (size_t i = 0; i < count; i++) {
+        entry.sw->texture_transforms[i] = offset[i];
+    }*/
+}
+
 
 void SetDrawListSpecularities(drawlistentry_t entry, size_t count, float* weight, float* exponent, float* transparency) {
     entry.sw->specular_weight = *weight;
@@ -1548,8 +1572,17 @@ void SetMatrix(drawlistentry_t entry, const mat4& matrix) {
     entry.sw->matrix = matrix;
 }
 
+void SetFadeDistance(drawlistentry_t entry, float near, float far) {
+    //entry.sw->fade_near = near;
+    //entry.sw->fade_far = far;
+}
+
 void SetDrawListVertexArray(drawlistentry_t entry, vertexarray_t vertex_array_handle) {
     entry.sw->vertex_array = vertex_array_handle.sw_vertex_array;
+}
+
+void SetDrawListSpriteArray(drawlistentry_t entry, spritearray_t sprite_array_handle) {
+    
 }
 
 void SetDrawListIndexArray(drawlistentry_t entry, indexarray_t index_array_handle) {
@@ -1561,12 +1594,49 @@ void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_
     entry.sw->index_length = index_length;
 }
 
-void SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
+bool SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
     // TODO: check if material_type has transparency and save that fact
+    return true;
 }
 
-void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* texture) {
+/*void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehandle_t* texture) {
     entry.sw->texture = texture->sw_texture;
+}*/
+
+void SetDrawListMaterials(drawlistentry_t entry, size_t texture_count, material_t* material) {
+    entry.sw->material = material->sw;
+}
+
+material_t MakeMaterial() {
+    return material_t{.sw = material_list.AddNew()};
+}
+
+void DeleteMaterial(material_t material) {
+    material_list.Remove(material.sw);
+}
+
+void SetMaterialTexture(material_t material, texturehandle_t texture) {
+    material.sw->texture = texture.sw_texture;
+}
+
+void SetMaterialColor(material_t material, vec4 color) {
+    material.sw->color = color;
+}
+
+void SetMaterialSpecularWeight(material_t material, float weight) {
+    material.sw->specular_weight = weight;
+}
+
+void SetMaterialSpecularExponent(material_t material, float exponent) {
+    material.sw->specular_exponent = exponent;
+}
+
+void SetMaterialSpecularTransparency(material_t material, float transparency) {
+    material.sw->specular_transparency = transparency;
+}
+
+void SetMaterialReflectivity(material_t material, float reflectivity) {
+    material.sw->reflectivity = reflectivity;
 }
 
 light_t MakeLight() {
@@ -1761,6 +1831,14 @@ void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data
     PackVertices(vertex_array, data, data_size / vertex_array.sw_vertex_array->format.attributes[0].stride);
 }
 
+spritearray_t CreateSpriteArray() {
+    return spritearray_t {.generic = nullptr};
+}
+
+void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
+    
+}
+
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
     layers[layer].view_matrix = matrix;
     layers[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1774,13 +1852,26 @@ void GetScreen(char* buffer, int w, int h) {
     // TODO: implement
 }
 
+bool IsDebugMode() {
+    return false;
+}
+
+void SetDebugMode(bool) {
+    
+}
+
 void Init() {
     depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
     
     // initialize the default pose
-    BLANK_POSE = PoolProxy<Render::Pose>::New();
+    /*BLANK_POSE = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         BLANK_POSE->pose[i] = mat4(1.0f);
+    }*/
+    
+    null_pose = PoolProxy<Render::Pose>::New();
+    for (size_t i = 0; i < BONE_COUNT; i++) {
+        null_pose->pose[i] = mat4(1.0f);
     }
 }
 

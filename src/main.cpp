@@ -176,7 +176,7 @@ int main(int argc, const char** argv) {
     follower = new PathFollower(Path::Find("test"), initial_follower, PATH_LINEAR);
     
     // initialize 400 chamberpots to test frustrum culling
-    for (int x = 0; x < 20; x++) {
+    /*for (int x = 0; x < 20; x++) {
         for (int y = 0; y < 20; y++) {
             RenderComponent* pot = PoolProxy<RenderComponent>::New();
             pot->SetModel("chamberpot2");
@@ -184,7 +184,7 @@ int main(int argc, const char** argv) {
             pot->SetLocation({10 - x, 25, 10 - y});
             pot->Init();
         }
-    }
+    }*/
     
     tolet_sprite = new Sprite(UID("poland"));
     

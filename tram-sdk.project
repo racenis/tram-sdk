@@ -176,12 +176,12 @@
       <File Name="src/platform/other.h"/>
       <File Name="src/platform/other.cpp"/>
       <VirtualDirectory Name="sdl">
-        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/platform/sdl/sdl.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/platform/image.h"/>
       <File Name="src/platform/image.cpp"/>
       <VirtualDirectory Name="glfw">
-        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig=""/>
+        <File Name="src/platform/glfw/glfw.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/platform/api.h"/>
       <File Name="src/platform/file.h"/>
@@ -207,8 +207,8 @@
       <File Name="src/render/scene.h"/>
       <File Name="src/render/scene.cpp"/>
       <VirtualDirectory Name="software">
-        <File Name="src/render/software/software.h" ExcludeProjConfig="Debug;"/>
-        <File Name="src/render/software/software.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/software/software.h" ExcludeProjConfig=""/>
+        <File Name="src/render/software/software.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <VirtualDirectory Name="direct3d">
         <File Name="src/render/direct3d/renderer.cpp" ExcludeProjConfig="Debug;"/>
@@ -224,22 +224,22 @@
       <File Name="src/render/model.h"/>
       <File Name="src/render/renderer.cpp"/>
       <VirtualDirectory Name="opengl">
-        <File Name="src/render/opengl/buffer.h"/>
-        <File Name="src/render/opengl/buffer.cpp"/>
-        <File Name="src/render/opengl/sprite.h"/>
-        <File Name="src/render/opengl/sprite.cpp"/>
-        <File Name="src/render/opengl/texture.h"/>
-        <File Name="src/render/opengl/texture.cpp"/>
-        <File Name="src/render/opengl/shader.h"/>
-        <File Name="src/render/opengl/drawlist.h"/>
-        <File Name="src/render/opengl/drawlist.cpp"/>
-        <File Name="src/render/opengl/material.h"/>
-        <File Name="src/render/opengl/material.cpp"/>
-        <File Name="src/render/opengl/light.cpp"/>
-        <File Name="src/render/opengl/light.h"/>
-        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig=""/>
-        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig=""/>
-        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig=""/>
+        <File Name="src/render/opengl/buffer.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/buffer.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/sprite.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/sprite.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/texture.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/texture.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/shader.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/drawlist.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/drawlist.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/material.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/material.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/light.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/light.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/renderer.h" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/shader.cpp" ExcludeProjConfig="Debug;"/>
+        <File Name="src/render/opengl/renderer.cpp" ExcludeProjConfig="Debug;"/>
       </VirtualDirectory>
       <File Name="src/render/render.h"/>
       <File Name="src/render/animation.h"/>

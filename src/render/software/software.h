@@ -29,6 +29,15 @@ struct SWTexture {
     uint8_t* pixels = nullptr;
 };
 
+struct SWMaterial {
+    SWTexture* texture = nullptr;
+    float specular_weight = 0.0f;
+    float specular_exponent = 1.0f;
+    float specular_transparency = 0.0f;
+    float reflectivity = 0.0f;
+    vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
+};
+
 enum SWVertexType {
     SW_STATIC_LIGHTMAPPED,
     SW_DYNAMIC_BLENDED,
@@ -77,7 +86,9 @@ struct SWDrawListEntry {
     SWIndexArray* index_array = nullptr;
     uint32_t index_length = 0;
     uint32_t index_offset = 0;
-    SWTexture* texture = nullptr;
+    sphericalharmonic_t harmonic;
+    SWMaterial* material = nullptr;
+    SWTexture* environmentmap = nullptr;
     vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
     float specular_weight = 1.0f;
     float specular_exponent = 1.0f;
