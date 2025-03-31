@@ -237,7 +237,7 @@ void Window::SetSize(int w, int h) {
     screen_height = h;
 }
 
-void SetScale(int s) {
+void Window::SetScale(int s) {
     screen_scale = s;
 }
 

@@ -138,7 +138,7 @@ function tick_function()
 	chamberpot:SetLocation(pudding)
 	
 	if crate == nil then
-		print("O NO WHERE CRATE")
+		--print("O NO WHERE CRATE")
 	else
 		location = crate:GetLocation()
 		location.y = 1.25 + 0.5 * math.sin(tram.GetTickTime())

@@ -538,11 +538,11 @@ void RasterizeTriangleLightmapped(ScanlineBuffer* scanlines, Point2D* vertices, 
             if (depth_buffer[y * screen_width + x] > depth_mix) continue;
             
             int32_t tex_x = (tex_x_mix >> 8) & (texture->width - 1);
-            int32_t tex_y = (tex_y_mix >> 8) & (texture->width - 1);
+            int32_t tex_y = (tex_y_mix >> 8) & (texture->height - 1);
             int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
             
             int32_t lit_x = (lit_x_mix >> 8) & (lightmap->width - 1);
-            int32_t lit_y = (lit_y_mix >> 8) & (lightmap->width - 1);
+            int32_t lit_y = (lit_y_mix >> 8) & (lightmap->height - 1);
             int32_t lit_offset = (lightmap->width * lit_y + lit_x) * lightmap->channels;
             
             uint16_t r = (((int32_t)texture->pixels[tex_offset + 0] * (int32_t)lightmap->pixels[lit_offset + 0]) & 0xFFFF) >> (16 - 5);
@@ -672,7 +672,7 @@ void RasterizeTriangleShadedTextured(ScanlineBuffer* scanlines, Point2D* vertice
             if (depth_buffer[y * screen_width + x] > depth_mix) continue;
             
             int32_t tex_x = (tex_x_mix >> 8) & (texture->width - 1);
-            int32_t tex_y = (tex_y_mix >> 8) & (texture->width - 1);
+            int32_t tex_y = (tex_y_mix >> 8) & (texture->height - 1);
             int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
             
             int32_t r = (((int32_t)texture->pixels[tex_offset + 0] * (col_r_mix >> 8) + spc_r_mix)) >> (16 - 5);
@@ -1849,7 +1849,21 @@ void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
 }
 
 void GetScreen(char* buffer, int w, int h) {
-    // TODO: implement
+    for (int y = 0; y < screen_height; y++) {
+        for (int x = 0; x < screen_width; x++) {
+            uint16_t color = screen_buffer[y * screen_width + x];
+            
+            uint8_t r = 0xFF & ((color >> 11) << 3);
+            uint8_t g = 0xFF & ((color >> 5) << 2);
+            uint8_t b = 0xFF & (color << 3); 
+            
+            int offset = 3 * ((h - y - 1) * w + x);
+            
+            buffer[offset + 0] = r;
+            buffer[offset + 1] = g;
+            buffer[offset + 2] = b;
+        }
+    }
 }
 
 bool IsDebugMode() {
