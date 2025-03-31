@@ -106,6 +106,7 @@ const char* GetVertexFormatName(vertexformat_t type);
 const char* GetMaterialTypeName(materialtype_t type);
 
 namespace API { struct SWVertexArray; }
+namespace API { struct RTVertexArray; }
 
 struct vertexarray_t {
     union {
@@ -118,17 +119,20 @@ struct vertexarray_t {
             uint32_t d3d_metadata;
         };
         API::SWVertexArray* sw_vertex_array;
+        API::RTVertexArray* rt_vertex_array;
         void* generic;
     };
 };
 
 namespace API { struct SWIndexArray; }
+namespace API { struct RTIndexArray; }
 
 struct indexarray_t {
     union {
         uint32_t gl_index_buffer;
         IDirect3DIndexBuffer9* d3d_index_buffer;
         API::SWIndexArray* sw_index_array;
+        API::RTIndexArray* rt_index_array;
         void* generic;
     };
 };
@@ -146,23 +150,27 @@ struct spritearray_t {
 namespace API { struct GLDrawListEntry; }
 namespace API { struct D3DDrawListEntry; }
 namespace API { struct SWDrawListEntry; }
+namespace API { struct RTDrawListEntry; }
 
 struct drawlistentry_t {
     union {
         API::GLDrawListEntry* gl;
         API::D3DDrawListEntry* d3d;
         API::SWDrawListEntry* sw;
+        API::RTDrawListEntry* rt;
         void* generic;
     };
 };
 
 namespace API { struct SWTexture; }
+namespace API { struct RTTexture; }
 
 struct texturehandle_t {
     union {
         uint32_t gl_texture_handle;
         IDirect3DTexture9* d3d_texture_handle;
         API::SWTexture* sw_texture;
+        API::RTTexture* rt_texture;
         void* generic;
     };
 };
@@ -170,12 +178,14 @@ struct texturehandle_t {
 namespace API { struct GLLight; }
 namespace API { struct D3DLight; }
 namespace API { struct SWLight; }
+namespace API { struct RTLight; }
 
 struct light_t {
     union {
         API::GLLight* gl;
         API::D3DLight* d3d;
         API::SWLight* sw;
+        API::RTLight* rt;
         void* generic;
     };
 };
@@ -183,12 +193,14 @@ struct light_t {
 namespace API { struct GLMaterial; }
 namespace API { struct D3DMaterial; }
 namespace API { struct SWMaterial; }
+namespace API { struct RTMaterial; }
 
 struct material_t {
     union {
         API::GLMaterial* gl;
         API::D3DMaterial* d3d;
         API::SWMaterial* sw;
+        API::RTMaterial* rt;
         void* generic;
     };
 };

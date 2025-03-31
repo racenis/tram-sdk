@@ -66,6 +66,7 @@
 #include <render/light.h>
 
 #include <platform/platform.h>
+#include <platform/api.h>
 #include <platform/image.h>
 
 using namespace tram;
@@ -107,6 +108,8 @@ int main(int argc, const char** argv) {
     Trigger::Register();
     StaticWorldObject::Register();
     Ext::Kitchensink::Button::Register();
+
+    Platform::Window::SetScale(3);
 
     Core::Init();           // core init should always be first
     UI::Init();
@@ -300,6 +303,10 @@ int main(int argc, const char** argv) {
     
     UI::BindKeyboardKey(UI::KEY_L, [](){
         Log(Severity::ERROR, System::MISC, "Key L was pressed and that now is an error.");
+    });
+    
+    UI::BindKeyboardKey(UI::KEY_KP_ADD, [](){
+        Render::API::SetInteractiveMode(!Render::API::IsInteractiveMode());
     });
     
 #ifdef __EMSCRIPTEN__

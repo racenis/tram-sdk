@@ -26,6 +26,9 @@ void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_colo
 void SetViewMatrix(const mat4& matrix, layer_t layer);
 void SetProjectionMatrix(const mat4& matrix, layer_t layer);
 
+bool IsInteractiveMode();
+void SetInteractiveMode(bool is_interactive);
+
 void GetScreen(char* buffer, int w, int h);
 
 void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader);
