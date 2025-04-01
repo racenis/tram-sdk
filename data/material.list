@@ -1,6 +1,6 @@
 MATv7
 brick001 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
-brick002 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick002 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 normal
 brick006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 brick010 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 brick011 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
@@ -11,7 +11,7 @@ brick025 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 brick046 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 brick050 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 brick051 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
-brick052 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+brick052 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 normal
 bush007 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 concrete018 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 concrete019 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
@@ -102,8 +102,8 @@ floppa flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 bingus flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 pienapaka flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 pienaveikals flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
-concrete067 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
-concrete090 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete067 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 normal
+concrete090 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 normal
 rail006 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 texcom_veneer flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 texcom_cloth flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
@@ -116,7 +116,7 @@ metal107 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 detail106 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 concrete105 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 metal104 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
-concrete103 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
+concrete103 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 normal
 window102 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 metal101 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 brick100 flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same

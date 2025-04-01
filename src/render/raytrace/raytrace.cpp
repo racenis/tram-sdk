@@ -166,536 +166,6 @@ void BlitLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint16_t color) {
     }
 }
 
-
-
-struct Point2D {
-  int32_t x;
-  int32_t y;
-  uint32_t depth;
-};
-
-template <bool set_span_first>
-void MakeSpans(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t p0, int32_t p1, int32_t skip_first, Scanline** scanline_array) {
-    Scanline* scanline = *scanline_array;
-
-    int32_t delta_x = x1 - x0;
-    int32_t advance = delta_x > 0 ? 1 : -1;
-
-    int32_t width = abs(delta_x);
-    int32_t height = y1 - y0;
-
-    if (height <= 0) return;
-    
-    int32_t total_spans = height - skip_first;
-    int32_t point_advance = -(0xFFFF / height);
-    int32_t point_sum = 0xFFFF;
-
-    if (width == 0) {
-        for (int32_t i = total_spans; i-- > 0; scanline++) {
-            if (set_span_first) {
-                scanline->begin = x0;
-                scanline->begin_p0 = p0;
-                scanline->begin_p1 = p1;
-                scanline->begin_adv = point_sum;
-            } else {
-                scanline->end = x0;
-                scanline->end_p0 = p0;
-                scanline->end_p1 = p1;
-                scanline->end_adv = point_sum;
-            }
-            
-            point_sum += point_advance;
-        }
-    } else if (width == height) {
-        if (skip_first) {
-            x0 += advance; 
-        }
-
-        for (int32_t i = total_spans; i-- > 0; scanline++) {
-            if (set_span_first) {
-                scanline->begin = x0;
-                scanline->begin_p0 = p0;
-                scanline->begin_p1 = p1;
-                scanline->begin_adv = point_sum;
-            } else {
-                scanline->end = x0;
-                scanline->end_p0 = p0;
-                scanline->end_p1 = p1;
-                scanline->end_adv = point_sum;
-            }
-            
-            point_sum += point_advance;
-            x0 += advance; 
-        }
-    } else if (height > width) {
-        int32_t error = 0;
-        if (delta_x < 0) {
-            error = -height + 1;
-        }
-
-        if (skip_first) {
-            error += width;
-            if (error > 0) {
-                x0 += advance; 
-                error -= height; 
-            }
-        }
-
-        for (int32_t i = total_spans; i-- > 0; scanline++) {
-            if (set_span_first) {
-                scanline->begin = x0;
-                scanline->begin_p0 = p0;
-                scanline->begin_p1 = p1;
-                scanline->begin_adv = point_sum;
-            } else {
-                scanline->end = x0;
-                scanline->end_p0 = p0;
-                scanline->end_p1 = p1;
-                scanline->end_adv = point_sum;
-            }
-
-            point_sum += point_advance;
-            
-            error += width;
-            if (error > 0) {
-                x0 += advance; 
-                error -= height; 
-            }
-        }
-    } else {
-        int32_t major_advance = (width / height) * advance;
-        int32_t error_advance = width % height;
-
-        int32_t error = 0;
-        if (delta_x < 0) {
-            error = -height + 1;
-        }
-
-        if (skip_first) {   
-            x0 += major_advance;    
-
-            error += error_advance;
-            if (error > 0) {
-                x0 += advance;   
-                error -= height; 
-            }
-        }
-
-        for (int32_t i = total_spans; i-- > 0; scanline++) {
-            if (set_span_first) {
-                scanline->begin = x0;
-                scanline->begin_p0 = p0;
-                scanline->begin_p1 = p1;
-                scanline->begin_adv = point_sum;
-            } else {
-                scanline->end = x0;
-                scanline->end_p0 = p0;
-                scanline->end_p1 = p1;
-                scanline->end_adv = point_sum;
-            }
-            
-            point_sum += point_advance;
-            x0 += major_advance;   
- 
-            error += error_advance;
-            if (error > 0) {
-                x0 += advance;      
-                error -= height; 
-            }
-        }
-    }
-
-    *scanline_array = scanline;
-}
-
-void ScanlineConvertTriangle(ScanlineBuffer* scanlines, Point2D* vertices) {
-    Scanline* span_ptr;
-
-    int32_t min_index = 0;
-    int32_t max_index = 0;
-
-    int32_t max_point_y = vertices->y;
-    int32_t min_point_y = vertices->y;
-
-    for (int32_t i = 1; i < 3; i++) {
-        if (vertices[i].y < min_point_y) {
-            min_index = i;
-            min_point_y = vertices[min_index].y;
-        } else if (vertices[i].y > max_point_y) {
-            max_index = i;
-            max_point_y = vertices[max_index].y;
-        }
-    }
-
-    if (min_point_y == max_point_y) return;
-
-    int32_t min_index_r = min_index;
-    int32_t min_index_l = min_index;
-
-    if (int32_t next_index = (min_index_r + 1) % 3; vertices[next_index].y == min_point_y) {
-        min_index_r = next_index;
-    }
-
-    if (int32_t prev_index = (min_index_l - 1 + 3) % 3; vertices[prev_index].y == min_point_y) {
-        min_index_l = prev_index;
-    }
-
-    int32_t left_edge_dir = -1;
-    bool top_is_flat = vertices[min_index_l].x != vertices[min_index_r].x;
-    if (top_is_flat) {
-        if (vertices[min_index_l].x > vertices[min_index_r].x) {
-            left_edge_dir = 1;
-            std::swap(min_index_l, min_index_r);
-        }
-    } else {
-        int32_t next_index = (min_index_r + 1) % 3;
-        int32_t prev_index = (min_index_l - 1 + 3) % 3;
-
-        int32_t delta_xn = vertices[next_index].x - vertices[min_index_l].x;
-        int32_t delta_yn = vertices[next_index].y - vertices[min_index_l].y;
-        int32_t delta_xp = vertices[prev_index].x - vertices[min_index_l].x;
-        int32_t delta_yp = vertices[prev_index].y - vertices[min_index_l].y;
-        
-        if (delta_xn * delta_yp - delta_yn * delta_xp < 0) {
-            left_edge_dir = 1;
-            std::swap(min_index_l, min_index_r);
-        }
-    }
-
-    /*int32_t*/ scanlines->scanline_length = max_point_y - min_point_y - 1 + top_is_flat;
-    /*int32_t*/ scanlines->start_y = min_point_y + 1 - top_is_flat;
-
-    if (scanlines->scanline_length <= 0) return;
-
-    span_ptr = scanlines->scanlines;
-    int32_t prev_index = min_index_l;
-    int32_t this_index = min_index_l;
-    bool skip_first = !top_is_flat;
-
-    do {                                
-        if (left_edge_dir > 0) {
-            this_index = (this_index + 1) % 3;
-        } else {
-            this_index = (this_index - 1 + 3) % 3;
-        }
-
-        MakeSpans<true>(vertices[prev_index].x,
-                        vertices[prev_index].y,
-                        vertices[this_index].x,
-                        vertices[this_index].y,
-                        prev_index,
-                        this_index,
-                        skip_first,
-                        &span_ptr);
-                 
-         prev_index = this_index;
-         skip_first = 0;
-    } while (this_index != max_index);
-
-    span_ptr = scanlines->scanlines;
-    prev_index = min_index_r;
-    this_index = min_index_r;
-    skip_first = !top_is_flat;
-
-    do {
-        if (left_edge_dir < 0) {
-            this_index = (this_index + 1) % 3;
-        } else {
-            this_index = (this_index - 1 + 3) % 3;
-        }
-        
-        MakeSpans<false>(vertices[prev_index].x - 1,
-                         vertices[prev_index].y,
-                         vertices[this_index].x - 1,
-                         vertices[this_index].y,
-                         prev_index,
-                         this_index,
-                         skip_first,
-                         &span_ptr);
-                 
-        prev_index = this_index;
-        skip_first = 0; 
-    } while (this_index != max_index);
-}
-
-void RasterizeTriangle(ScanlineBuffer* scanlines, Point2D* vertices) {
-    Scanline* span_ptr = scanlines->scanlines;
-    for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
-        int32_t begin_mix[3] = {0, 0, 0};
-        int32_t end_mix[3] = {0, 0, 0};
-        
-        begin_mix[span_ptr->begin_p0] = span_ptr->begin_adv;
-        begin_mix[span_ptr->begin_p1] = 0xFFFF - span_ptr->begin_adv;
-        
-        end_mix[span_ptr->end_p0] = span_ptr->end_adv;
-        end_mix[span_ptr->end_p1] = 0xFFFF - span_ptr->end_adv;
-        
-        int32_t span_length = span_ptr->end - span_ptr->begin + 1;
-        
-        if (span_length <= 0) continue;
-        
-        int32_t p0_adv = (end_mix[0] - begin_mix[0]) / span_length;
-        int32_t p1_adv = (end_mix[1] - begin_mix[1]) / span_length;
-        int32_t p2_adv = (end_mix[2] - begin_mix[2]) / span_length;
-        
-        int32_t p0_mix = begin_mix[0];
-        int32_t p1_mix = begin_mix[1];
-        int32_t p2_mix = begin_mix[2];
-        
-        for (int32_t x = span_ptr->begin; x <= span_ptr->end; x++) {
-            int32_t r = (p0_mix & 0xFFFF) >> (16 - 5);
-            int32_t g = (p1_mix & 0xFFFF) >> (16 - 6);
-            int32_t b = (p2_mix & 0xFFFF) >> (16 - 5);
-            
-            int32_t c = (r << (5 + 6)) | (g << (5)) | b;
-            
-            
-            int32_t depth = ((p0_mix * vertices[0].depth) >> 16)
-                          + ((p1_mix * vertices[1].depth) >> 16)
-                          + ((p2_mix * vertices[2].depth) >> 16);
-            
-            if (depth_buffer[y * screen_width + x] < depth) {
-                depth_buffer[y * screen_width + x] = depth;
-                BlitDot(x, y, c);
-            }
-            
-            p0_mix += p0_adv;
-            p1_mix += p1_adv;
-            p2_mix += p2_adv;
-        }
-    }
-}
-
-void RasterizeTriangleLightmapped(ScanlineBuffer* scanlines, Point2D* vertices, uint16_t color, vec2* texture_uvs, vec2* lightmap_uvs, RTTexture* texture, RTTexture* lightmap) {
-    int32_t p0_tex_x = texture_uvs[0].x * (float)texture->width * (float)(0xFF + 1);
-    int32_t p0_tex_y = texture_uvs[0].y * (float)texture->height * (float)(0xFF + 1);
-    int32_t p1_tex_x = texture_uvs[1].x * (float)texture->width * (float)(0xFF + 1);
-    int32_t p1_tex_y = texture_uvs[1].y * (float)texture->height * (float)(0xFF + 1);
-    int32_t p2_tex_x = texture_uvs[2].x * (float)texture->width * (float)(0xFF + 1);
-    int32_t p2_tex_y = texture_uvs[2].y * (float)texture->height * (float)(0xFF + 1);
-    
-    int32_t p0_lit_x = lightmap_uvs[0].x * (float)lightmap->width * (float)(0xFF + 1);
-    int32_t p0_lit_y = lightmap_uvs[0].y * (float)lightmap->height * (float)(0xFF + 1);
-    int32_t p1_lit_x = lightmap_uvs[1].x * (float)lightmap->width * (float)(0xFF + 1);
-    int32_t p1_lit_y = lightmap_uvs[1].y * (float)lightmap->height * (float)(0xFF + 1);
-    int32_t p2_lit_x = lightmap_uvs[2].x * (float)lightmap->width * (float)(0xFF + 1);
-    int32_t p2_lit_y = lightmap_uvs[2].y * (float)lightmap->height * (float)(0xFF + 1);
-    
-    Scanline* span_ptr = scanlines->scanlines;
-    for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
-        int32_t begin_mix[3] = {0, 0, 0};
-        int32_t end_mix[3] = {0, 0, 0};
-        
-        begin_mix[span_ptr->begin_p0] = span_ptr->begin_adv;
-        begin_mix[span_ptr->begin_p1] = 0xFFFF - span_ptr->begin_adv;
-        
-        end_mix[span_ptr->end_p0] = span_ptr->end_adv;
-        end_mix[span_ptr->end_p1] = 0xFFFF - span_ptr->end_adv;
-        
-        int32_t span_length = span_ptr->end - span_ptr->begin + 1;
-        
-        if (span_length <= 0) continue;
-        
-        int32_t depth_begin = ((begin_mix[0] * vertices[0].depth) >> 16) + ((begin_mix[1] * vertices[1].depth) >> 16) + ((begin_mix[2] * vertices[2].depth) >> 16);
-        int32_t depth_end = ((end_mix[0] * vertices[0].depth) >> 16) + ((end_mix[1] * vertices[1].depth) >> 16) + ((end_mix[2] * vertices[2].depth) >> 16);
-        
-        int32_t depth_adv = (depth_end - depth_begin) / span_length;
-        int32_t depth_mix = depth_begin;
-        
-        int32_t tex_x_begin = (((begin_mix[0] >> 8) * p0_tex_x) >> 8) + (((begin_mix[1] >> 8) * p1_tex_x) >> 8) + (((begin_mix[2] >> 8) * p2_tex_x) >> 8);
-        int32_t tex_y_begin = (((begin_mix[0] >> 8) * p0_tex_y) >> 8) + (((begin_mix[1] >> 8) * p1_tex_y) >> 8) + (((begin_mix[2] >> 8) * p2_tex_y) >> 8);
-        
-        int32_t tex_x_end = (((end_mix[0] >> 8) * p0_tex_x) >> 8) + (((end_mix[1] >> 8) * p1_tex_x) >> 8) + (((end_mix[2] >> 8) * p2_tex_x) >> 8);
-        int32_t tex_y_end = (((end_mix[0] >> 8) * p0_tex_y) >> 8) + (((end_mix[1] >> 8) * p1_tex_y) >> 8) + (((end_mix[2] >> 8) * p2_tex_y) >> 8);
-        
-        int32_t tex_x_adv = (tex_x_end - tex_x_begin) / span_length;
-        int32_t tex_y_adv = (tex_y_end - tex_y_begin) / span_length;
-        
-        int32_t tex_x_mix = tex_x_begin;
-        int32_t tex_y_mix = tex_y_begin;
-        
-        int32_t lit_x_begin = (((begin_mix[0] >> 8) * p0_lit_x) >> 8) + (((begin_mix[1] >> 8) * p1_lit_x) >> 8) + (((begin_mix[2] >> 8) * p2_lit_x) >> 8);
-        int32_t lit_y_begin = (((begin_mix[0] >> 8) * p0_lit_y) >> 8) + (((begin_mix[1] >> 8) * p1_lit_y) >> 8) + (((begin_mix[2] >> 8) * p2_lit_y) >> 8);
-        
-        int32_t lit_x_end = (((end_mix[0] >> 8) * p0_lit_x) >> 8) + (((end_mix[1] >> 8) * p1_lit_x) >> 8) + (((end_mix[2] >> 8) * p2_lit_x) >> 8);
-        int32_t lit_y_end = (((end_mix[0] >> 8) * p0_lit_y) >> 8) + (((end_mix[1] >> 8) * p1_lit_y) >> 8) + (((end_mix[2] >> 8) * p2_lit_y) >> 8);
-        
-        int32_t lit_x_adv = (lit_x_end - lit_x_begin) / span_length;
-        int32_t lit_y_adv = (lit_y_end - lit_y_begin) / span_length;
-        
-        int32_t lit_x_mix = lit_x_begin;
-        int32_t lit_y_mix = lit_y_begin;
-        
-        for (int32_t x = span_ptr->begin; x <= span_ptr->end; x++) {
-            depth_mix += depth_adv;
-            
-            tex_x_mix += tex_x_adv;
-            tex_y_mix += tex_y_adv;
-            
-            lit_x_mix += lit_x_adv;
-            lit_y_mix += lit_y_adv;
-            
-            if (depth_buffer[y * screen_width + x] > depth_mix) continue;
-            
-            int32_t tex_x = (tex_x_mix >> 8) & (texture->width - 1);
-            int32_t tex_y = (tex_y_mix >> 8) & (texture->height - 1);
-            int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
-            
-            int32_t lit_x = (lit_x_mix >> 8) & (lightmap->width - 1);
-            int32_t lit_y = (lit_y_mix >> 8) & (lightmap->height - 1);
-            int32_t lit_offset = (lightmap->width * lit_y + lit_x) * lightmap->channels;
-            
-            (void)tex_offset;
-            (void)lit_offset;
-            
-            uint16_t r = 5;//(((int32_t)texture->pixels[tex_offset + 0] * (int32_t)lightmap->pixels[lit_offset + 0]) & 0xFFFF) >> (16 - 5);
-            uint16_t g = 5;//(((int32_t)texture->pixels[tex_offset + 1] * (int32_t)lightmap->pixels[lit_offset + 1]) & 0xFFFF) >> (16 - 6);
-            uint16_t b = 5;//(((int32_t)texture->pixels[tex_offset + 2] * (int32_t)lightmap->pixels[lit_offset + 2]) & 0xFFFF) >> (16 - 5);
-            
-            // overwrite with depth
-            //r = depth_mix  >> (16 - 5);
-            //g = depth_mix  >> (16 - 6);
-            //b = depth_mix  >> (16 - 5);
-            
-            uint16_t c = (r << (5 + 6)) | (g << (5)) | b;
-            
-            depth_buffer[y * screen_width + x] = depth_mix;
-            BlitDot(x, y, c);
-        }
-    }
-}
-
-void RasterizeTriangleShadedTextured(ScanlineBuffer* scanlines, Point2D* vertices, vec3* colors, vec3* speculars, vec2* texture_uvs, RTTexture* texture) {
-    int32_t p0_tex_x = texture_uvs[0].x * (float)texture->width * (float)(0xFF + 1);
-    int32_t p0_tex_y = texture_uvs[0].y * (float)texture->height * (float)(0xFF + 1);
-    int32_t p1_tex_x = texture_uvs[1].x * (float)texture->width * (float)(0xFF + 1);
-    int32_t p1_tex_y = texture_uvs[1].y * (float)texture->height * (float)(0xFF + 1);
-    int32_t p2_tex_x = texture_uvs[2].x * (float)texture->width * (float)(0xFF + 1);
-    int32_t p2_tex_y = texture_uvs[2].y * (float)texture->height * (float)(0xFF + 1);
-    
-    int32_t p0_col_r = fabsf(colors[0].r) * (float)(0xFFFF + 1);
-    int32_t p0_col_g = fabsf(colors[0].g) * (float)(0xFFFF + 1);
-    int32_t p0_col_b = fabsf(colors[0].b) * (float)(0xFFFF + 1);
-    int32_t p1_col_r = fabsf(colors[1].r) * (float)(0xFFFF + 1);
-    int32_t p1_col_g = fabsf(colors[1].g) * (float)(0xFFFF + 1);
-    int32_t p1_col_b = fabsf(colors[1].b) * (float)(0xFFFF + 1);
-    int32_t p2_col_r = fabsf(colors[2].r) * (float)(0xFFFF + 1);
-    int32_t p2_col_g = fabsf(colors[2].g) * (float)(0xFFFF + 1);
-    int32_t p2_col_b = fabsf(colors[2].b) * (float)(0xFFFF + 1);
-    
-    int32_t p0_spc_r = fabsf(speculars[0].r) * (float)(0xFFFF + 1);
-    int32_t p0_spc_g = fabsf(speculars[0].g) * (float)(0xFFFF + 1);
-    int32_t p0_spc_b = fabsf(speculars[0].b) * (float)(0xFFFF + 1);
-    int32_t p1_spc_r = fabsf(speculars[1].r) * (float)(0xFFFF + 1);
-    int32_t p1_spc_g = fabsf(speculars[1].g) * (float)(0xFFFF + 1);
-    int32_t p1_spc_b = fabsf(speculars[1].b) * (float)(0xFFFF + 1);
-    int32_t p2_spc_r = fabsf(speculars[2].r) * (float)(0xFFFF + 1);
-    int32_t p2_spc_g = fabsf(speculars[2].g) * (float)(0xFFFF + 1);
-    int32_t p2_spc_b = fabsf(speculars[2].b) * (float)(0xFFFF + 1);
-    
-    Scanline* span_ptr = scanlines->scanlines;
-    for (int32_t y = scanlines->start_y; y < (scanlines->start_y + scanlines->scanline_length); y++, span_ptr++) {
-        int32_t begin_mix[3] = {0, 0, 0};
-        int32_t end_mix[3] = {0, 0, 0};
-        
-        begin_mix[span_ptr->begin_p0] = span_ptr->begin_adv;
-        begin_mix[span_ptr->begin_p1] = 0xFFFF - span_ptr->begin_adv;
-        
-        end_mix[span_ptr->end_p0] = span_ptr->end_adv;
-        end_mix[span_ptr->end_p1] = 0xFFFF - span_ptr->end_adv;
-        
-        int32_t span_length = span_ptr->end - span_ptr->begin + 1;
-        
-        if (span_length <= 0) continue;
-        
-        int32_t depth_begin = ((begin_mix[0] * vertices[0].depth) >> 16) + ((begin_mix[1] * vertices[1].depth) >> 16) + ((begin_mix[2] * vertices[2].depth) >> 16);
-        int32_t depth_end = ((end_mix[0] * vertices[0].depth) >> 16) + ((end_mix[1] * vertices[1].depth) >> 16) + ((end_mix[2] * vertices[2].depth) >> 16);
-        
-        int32_t depth_adv = (depth_end - depth_begin) / span_length;
-        int32_t depth_mix = depth_begin;
-        
-        int32_t tex_x_begin = (((begin_mix[0] >> 8) * p0_tex_x) >> 8) + (((begin_mix[1] >> 8) * p1_tex_x) >> 8) + (((begin_mix[2] >> 8) * p2_tex_x) >> 8);
-        int32_t tex_y_begin = (((begin_mix[0] >> 8) * p0_tex_y) >> 8) + (((begin_mix[1] >> 8) * p1_tex_y) >> 8) + (((begin_mix[2] >> 8) * p2_tex_y) >> 8);
-        
-        int32_t tex_x_end = (((end_mix[0] >> 8) * p0_tex_x) >> 8) + (((end_mix[1] >> 8) * p1_tex_x) >> 8) + (((end_mix[2] >> 8) * p2_tex_x) >> 8);
-        int32_t tex_y_end = (((end_mix[0] >> 8) * p0_tex_y) >> 8) + (((end_mix[1] >> 8) * p1_tex_y) >> 8) + (((end_mix[2] >> 8) * p2_tex_y) >> 8);
-        
-        int32_t tex_x_adv = (tex_x_end - tex_x_begin) / span_length;
-        int32_t tex_y_adv = (tex_y_end - tex_y_begin) / span_length;
-        
-        int32_t tex_x_mix = tex_x_begin;
-        int32_t tex_y_mix = tex_y_begin;
-        
-        int32_t col_r_begin = (((begin_mix[0] >> 8) * p0_col_r) >> 8) + (((begin_mix[1] >> 8) * p1_col_r) >> 8) + (((begin_mix[2] >> 8) * p2_col_r) >> 8);
-        int32_t col_g_begin = (((begin_mix[0] >> 8) * p0_col_g) >> 8) + (((begin_mix[1] >> 8) * p1_col_g) >> 8) + (((begin_mix[2] >> 8) * p2_col_g) >> 8);
-        int32_t col_b_begin = (((begin_mix[0] >> 8) * p0_col_b) >> 8) + (((begin_mix[1] >> 8) * p1_col_b) >> 8) + (((begin_mix[2] >> 8) * p2_col_b) >> 8);
-        
-        int32_t col_r_end = (((end_mix[0] >> 8) * p0_col_r) >> 8) + (((end_mix[1] >> 8) * p1_col_r) >> 8) + (((end_mix[2] >> 8) * p2_col_r) >> 8);
-        int32_t col_g_end = (((end_mix[0] >> 8) * p0_col_g) >> 8) + (((end_mix[1] >> 8) * p1_col_g) >> 8) + (((end_mix[2] >> 8) * p2_col_g) >> 8);
-        int32_t col_b_end = (((end_mix[0] >> 8) * p0_col_b) >> 8) + (((end_mix[1] >> 8) * p1_col_b) >> 8) + (((end_mix[2] >> 8) * p2_col_b) >> 8);
-        
-        int32_t col_r_adv = (col_r_end - col_r_begin) / span_length;
-        int32_t col_g_adv = (col_g_end - col_g_begin) / span_length;
-        int32_t col_b_adv = (col_b_end - col_b_begin) / span_length;
-        
-        int32_t col_r_mix = col_r_begin;
-        int32_t col_g_mix = col_g_begin;
-        int32_t col_b_mix = col_b_begin;
-        
-        int32_t spc_r_begin = (((begin_mix[0] >> 8) * p0_spc_r) >> 8) + (((begin_mix[1] >> 8) * p1_spc_r) >> 8) + (((begin_mix[2] >> 8) * p2_spc_r) >> 8);
-        int32_t spc_g_begin = (((begin_mix[0] >> 8) * p0_spc_g) >> 8) + (((begin_mix[1] >> 8) * p1_spc_g) >> 8) + (((begin_mix[2] >> 8) * p2_spc_g) >> 8);
-        int32_t spc_b_begin = (((begin_mix[0] >> 8) * p0_spc_b) >> 8) + (((begin_mix[1] >> 8) * p1_spc_b) >> 8) + (((begin_mix[2] >> 8) * p2_spc_b) >> 8);
-        
-        int32_t spc_r_end = (((end_mix[0] >> 8) * p0_spc_r) >> 8) + (((end_mix[1] >> 8) * p1_spc_r) >> 8) + (((end_mix[2] >> 8) * p2_spc_r) >> 8);
-        int32_t spc_g_end = (((end_mix[0] >> 8) * p0_spc_g) >> 8) + (((end_mix[1] >> 8) * p1_spc_g) >> 8) + (((end_mix[2] >> 8) * p2_spc_g) >> 8);
-        int32_t spc_b_end = (((end_mix[0] >> 8) * p0_spc_b) >> 8) + (((end_mix[1] >> 8) * p1_spc_b) >> 8) + (((end_mix[2] >> 8) * p2_spc_b) >> 8);
-        
-        int32_t spc_r_adv = (spc_r_end - spc_r_begin) / span_length;
-        int32_t spc_g_adv = (spc_g_end - spc_g_begin) / span_length;
-        int32_t spc_b_adv = (spc_b_end - spc_b_begin) / span_length;
-        
-        int32_t spc_r_mix = spc_r_begin;
-        int32_t spc_g_mix = spc_g_begin;
-        int32_t spc_b_mix = spc_b_begin;
-        
-        for (int32_t x = span_ptr->begin; x <= span_ptr->end; x++) {
-            depth_mix += depth_adv;
-            
-            tex_x_mix += tex_x_adv;
-            tex_y_mix += tex_y_adv;
-            
-            col_r_mix += col_r_adv;
-            col_g_mix += col_g_adv;
-            col_b_mix += col_b_adv;
-            
-            spc_r_mix += spc_r_adv;
-            spc_g_mix += spc_g_adv;
-            spc_b_mix += spc_b_adv;
-            
-            if (depth_buffer[y * screen_width + x] > depth_mix) continue;
-            
-            int32_t tex_x = (tex_x_mix >> 8) & (texture->width - 1);
-            int32_t tex_y = (tex_y_mix >> 8) & (texture->height - 1);
-            int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
-            
-            (void)tex_offset;
-            
-            int32_t r = 5;//(((int32_t)texture->pixels[tex_offset + 0] * (col_r_mix >> 8) + spc_r_mix)) >> (16 - 5);
-            int32_t g = 5;//(((int32_t)texture->pixels[tex_offset + 1] * (col_g_mix >> 8) + spc_g_mix)) >> (16 - 6);
-            int32_t b = 5;//(((int32_t)texture->pixels[tex_offset + 2] * (col_b_mix >> 8) + spc_b_mix)) >> (16 - 5);
-            
-            if (r & ~0x1F) r = 0x1F;
-            if (g & ~0x3F) g = 0x3F;
-            if (b & ~0x1F) b = 0x1F;
-            
-            uint16_t c = (r << (5 + 6)) | (g << (5)) | b;
-            
-            depth_buffer[y * screen_width + x] = depth_mix;
-            BlitDot(x, y, c);
-        }
-    }
-}
-
 struct StaticVertex {
     vec3 pos;
     vec3 nrm;
@@ -726,6 +196,9 @@ struct TreeTriangle {
     TreeVertex p0;
     TreeVertex p1;
     TreeVertex p2;
+    
+    vec3 tangent;
+    vec3 bitangent;
     
     RTMaterial* material;
 };
@@ -803,126 +276,6 @@ void ClipLineInClipSpace(vec4& point0, vec4& point1) {
     point1 = p1;
 }
 
-vec4 ClipSinglePointLine(vec4* outside, vec4* inside) {
-    vec4 p0 = *outside;
-    vec4 p1 = *inside;
-    
-    // clip against left plane
-    if (p0.w + p0.x < 0.0f) {
-        float a = (p0.w + p0.x) / ((p0.w + p0.x) - (p1.w + p1.x));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    // clip against right plane
-    if (p0.w - p0.x < 0.0f) {
-        float a = (p0.w - p0.x) / ((p0.w - p0.x) - (p1.w - p1.x));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    // clip against bottom plane
-    if (p0.w + p0.y < 0.0f) {
-        float a = (p0.w + p0.y) / ((p0.w + p0.y) - (p1.w + p1.y));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    // clip against top plane
-    if (p0.w - p0.y < 0.0f) {
-        float a = (p0.w - p0.y) / ((p0.w - p0.y) - (p1.w - p1.y));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    // clip against near plane
-    if (p0.w + p0.z < 0.0f) {
-        float a = (p0.w + p0.z) / ((p0.w + p0.z) - (p1.w + p1.z));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    // clip against far plane
-    if (p0.w - p0.z < 0.0f) {
-        float a = (p0.w - p0.z) / ((p0.w - p0.z) - (p1.w - p1.z));
-        p0 = (1.0f - a) * p0 + a * p1;
-    }
-    
-    return p0;
-}
-
-vec4 ClipSinglePointLineLeftPlane(vec4 outside, vec4 inside) {
-    float a = (outside.w + outside.x) / ((outside.w + outside.x) - (inside.w + inside.x));
-    return (1.0f - a) * outside + a * inside;
-}
-
-vec4 ClipSinglePointLineRightPlane(vec4 outside, vec4 inside) {
-    float a = (outside.w - outside.x) / ((outside.w - outside.x) - (inside.w - inside.x));
-    return (1.0f - a) * outside + a * inside;
-}
-
-vec4 ClipSinglePointLineBottomPlane(vec4 outside, vec4 inside) {
-    float a = (outside.w + outside.y) / ((outside.w + outside.y) - (inside.w + inside.y));
-    return (1.0f - a) * outside + a * inside;
-}
-
-vec4 ClipSinglePointLineTopPlane(vec4 outside, vec4 inside) {
-    float a = (outside.w - outside.y) / ((outside.w - outside.y) - (inside.w - inside.y));
-    return (1.0f - a) * outside + a * inside;
-}
-
-vec4 ClipSinglePointLineNearPlane(vec4 outside, vec4 inside) {
-    float a = (outside.w + outside.z) / ((outside.w + outside.z) - (inside.w + inside.z));
-    return (1.0f - a) * outside + a * inside;
-}
-
-vec4 ClipSinglePointLineFarPlane(vec4 outside, vec4 inside) {
-    float a = (outside.w - outside.z) / ((outside.w - outside.z) - (inside.w - inside.z));
-    return (1.0f - a) * outside + a * inside;
-}
-
-struct ClipPoint {
-    vec4 coordinate;
-    vec3 barycentric;
-};
-
-struct ClipTriangle {
-    ClipPoint points[3];
-};
-
-ClipPoint ClipSingleClipPointLineLeftPlane(ClipPoint outside, ClipPoint inside) {
-    float a = (outside.coordinate.w + outside.coordinate.x) / ((outside.coordinate.w + outside.coordinate.x) - (inside.coordinate.w + inside.coordinate.x));
-    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
-}
-
-ClipPoint ClipSingleClipPointLineRightPlane(ClipPoint outside, ClipPoint inside) {
-    float a = (outside.coordinate.w - outside.coordinate.x) / ((outside.coordinate.w - outside.coordinate.x) - (inside.coordinate.w - inside.coordinate.x));
-    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
-}
-
-ClipPoint ClipSingleClipPointLineBottomPlane(ClipPoint outside, ClipPoint inside) {
-    float a = (outside.coordinate.w + outside.coordinate.y) / ((outside.coordinate.w + outside.coordinate.y) - (inside.coordinate.w + inside.coordinate.y));
-    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
-}
-
-ClipPoint ClipSingleClipPointLineTopPlane(ClipPoint outside, ClipPoint inside) {
-    float a = (outside.coordinate.w - outside.coordinate.y) / ((outside.coordinate.w - outside.coordinate.y) - (inside.coordinate.w - inside.coordinate.y));
-    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
-}
-
-ClipPoint ClipSingleClipPointLineNearPlane(ClipPoint outside, ClipPoint inside) {
-    float a = (outside.coordinate.w + outside.coordinate.z) / ((outside.coordinate.w + outside.coordinate.z) - (inside.coordinate.w + inside.coordinate.z));
-    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
-}
-
-ClipPoint ClipSingleClipPointLineFarPlane(ClipPoint outside, ClipPoint inside) {
-    float a = (outside.coordinate.w - outside.coordinate.z) / ((outside.coordinate.w - outside.coordinate.z) - (inside.coordinate.w - inside.coordinate.z));
-    return {(1.0f - a) * outside.coordinate + a * inside.coordinate, (1.0f - a) * outside.barycentric + a * inside.barycentric};
-}
-
-void PerspectiveDivision(vec4& p) {
-    if (p.w != 0.0f) {
-        p.x /= p.w;
-        p.y /= p.w;
-        p.z /= p.w;
-    }
-}
-
 void PerspectiveDivision(vec4& p0, vec4& p1) {
     if (p0.w != 0.0f) {
         p0.x /= p0.w;
@@ -939,64 +292,6 @@ std::pair<int32_t, int32_t> ClipSpaceToScreenSpace(const vec4 p) {
     int32_t px = (p.x + 1.0f) * 0.5f * screen_width;
     int32_t py = (1.0f - p.y) * 0.5f * screen_height;
     return {px, py};
-}
-
-bool PointVisible(vec4 p) {    
-    // point outside left plane
-    if (p.w + p.x < 0.0f) {
-        return false;
-    }
-
-    // point outside right plane
-    if (p.w - p.x < 0.0f) {
-        return false;
-    }
-
-    // point outside bottom plane
-    if (p.w + p.y < 0.0f) {
-        return false;
-    }
-
-    // point outside top plane
-    if (p.w - p.y < 0.0f) {
-        return false;
-    }
-
-    // point outside near plane
-    if (p.w + p.z < 0.0f) {
-        return false;
-    }
-    
-    // point outside far plane
-    if (p.w - p.z < 0.0f) {
-        return false;
-    }
-    
-    return true;
-}
-
-bool PointOutsideLeftPlane(vec4 p) {    
-    return p.w + p.x < 0.0f;
-}
-
-bool PointOutsideRightPlane(vec4 p) {    
-    return p.w - p.x < 0.0f;
-}
-
-bool PointOutsideBottomPlane(vec4 p) {    
-    return p.w + p.y < 0.0f;
-}
-
-bool PointOutsideTopPlane(vec4 p) {    
-    return p.w - p.y < 0.0f;
-}
-
-bool PointOutsideNearPlane(vec4 p) {    
-    return p.w + p.z < 0.0f;
-}
-
-bool PointOutsideFarPlane(vec4 p) {    
-    return p.w - p.z < 0.0f;
 }
 
 bool LineVisible(vec4 p0, vec4 p1) {    
@@ -1033,39 +328,6 @@ bool LineVisible(vec4 p0, vec4 p1) {
     return true;
 }
 
-bool TriangleVisible(vec4 p0, vec4 p1, vec4 p2) {    
-    // line outside left plane
-    if (p0.w + p0.x < 0.0f && p1.w + p1.x < 0.0f && p2.w + p2.x < 0.0f) {
-        return false;
-    }
-
-    // line outside right plane
-    if (p0.w - p0.x < 0.0f && p1.w - p1.x < 0.0f && p2.w - p2.x < 0.0f) {
-        return false;
-    }
-
-    // line outside bottom plane
-    if (p0.w + p0.y < 0.0f && p1.w + p1.y < 0.0f && p2.w + p2.y < 0.0f) {
-        return false;
-    }
-
-    // line outside top plane
-    if (p0.w - p0.y < 0.0f && p1.w - p1.y < 0.0f && p2.w - p2.y < 0.0f) {
-        return false;
-    }
-
-    // line outside near plane
-    if (p0.w + p0.z < 0.0f && p1.w + p1.z < 0.0f && p2.w + p2.z < 0.0f) {
-        return false;
-    }
-    
-    // line outside far plane
-    if (p0.w - p0.z < 0.0f && p1.w - p1.z < 0.0f && p2.w - p2.z < 0.0f) {
-        return false;
-    }
-    
-    return true;
-}
 
 void ClipRenderLine(vec4 p0, vec4 p1, uint16_t color) {
     if (!LineVisible(p0, p1)) return;
@@ -1078,78 +340,6 @@ void ClipRenderLine(vec4 p0, vec4 p1, uint16_t color) {
     
     BlitLine(px0, py0, px1, py1, color);
 }
-
-size_t ClipTriangleList(ClipTriangle* triangles) {
-    // accidentally messed up calculations, this array should actually be 2^6? large?
-    // we could also fold in tri_list_1 into triangles
-    ClipTriangle tri_list_1[12] = {*triangles};
-    ClipTriangle tri_list_2[12];
-    size_t tri_count_working = 1;
-    size_t tri_count_buffered = 0;
-    ClipTriangle* working_list = tri_list_1;
-    ClipTriangle* buffer_list = tri_list_2;
-    
-    auto clip_lambda = [&](auto outside_func, auto clip_func) {
-        for (size_t i = 0; i < tri_count_working; i++) {
-            ClipPoint* in_points[3] = {nullptr, nullptr, nullptr};
-            ClipPoint* out_points[3] = {nullptr, nullptr, nullptr};
-            size_t in_point_count = 0;
-            size_t out_point_count = 0;
-            
-            for (size_t p = 0; p < 3; p++) {
-                if (outside_func(working_list[i].points[p].coordinate)) {
-                    out_points[out_point_count++] = &working_list[i].points[p];
-                } else {
-                    in_points[in_point_count++] = &working_list[i].points[p];
-                }
-            }
-            
-            switch (out_point_count) {
-                case 0:
-                    // triangle doesn't intersect plane, don't clip
-                    buffer_list[tri_count_buffered++] = working_list[i];
-                    break;
-                case 1: {
-                    ClipPoint clipped0 = clip_func(*out_points[0], *in_points[0]);
-                    ClipPoint clipped1 = clip_func(*out_points[0], *in_points[1]);
-                    
-                    buffer_list[tri_count_buffered++] = {{*in_points[1], *in_points[0], clipped0}};
-                    buffer_list[tri_count_buffered++] = {{*in_points[1], clipped0, clipped1}};
-                    
-                    } break;
-                case 2: {
-                    ClipPoint clipped0 = clip_func(*out_points[0], *in_points[0]);
-                    ClipPoint clipped1 = clip_func(*out_points[1], *in_points[0]);
-                    
-                    buffer_list[tri_count_buffered++] = {{*in_points[0], clipped0, clipped1}};
-                    } break;
-                case 3:
-                    // triangle completely outside of plane, discard
-                    break;
-            }
-        }
-        
-        assert(tri_count_buffered != 12);
-        
-        tri_count_working = tri_count_buffered;
-        tri_count_buffered = 0;
-        std::swap(working_list, buffer_list);
-    };
-    
-    clip_lambda(PointOutsideLeftPlane, ClipSingleClipPointLineLeftPlane);
-    clip_lambda(PointOutsideRightPlane, ClipSingleClipPointLineRightPlane);
-    clip_lambda(PointOutsideBottomPlane, ClipSingleClipPointLineBottomPlane);
-    clip_lambda(PointOutsideTopPlane, ClipSingleClipPointLineTopPlane);
-    clip_lambda(PointOutsideNearPlane, ClipSingleClipPointLineNearPlane);
-    clip_lambda(PointOutsideFarPlane, ClipSingleClipPointLineFarPlane);
-    
-    for (size_t i = 0; i < tri_count_working; i++) {
-        triangles[i] = working_list[i];
-    }
-    
-    return tri_count_working;
-}
-
 
 vec3 InverseProject(vec3 point) {
     point.y =  screen_height - point.y;
@@ -1188,9 +378,6 @@ int FindNearestTriangle(vec3 pos, vec3 dir) {
         vec3 v1 = tree_triangles[i].p1.pos - tree_triangles[i].p0.pos;
         vec3 v2 = tree_triangles[i].p2.pos - tree_triangles[i].p0.pos;
         
-        
-        
-        //if (glm::dot(tree_triangles[i].p0.nrm, dir) > 0.0f) continue; 
         if (glm::dot(glm::normalize(glm::cross(v1, v2)), dir) > 0.0f) continue; 
         
         vec3 intersection = RayTriangleIntersection(pos, dir, tree_triangles[i].p0.pos, tree_triangles[i].p1.pos, tree_triangles[i].p2.pos);
@@ -1213,6 +400,8 @@ int FindNearestTriangle(vec3 pos, vec3 dir) {
 bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
     //int nearest_intersect = -1;
     //float nearest_dist = INFINITY;
+    
+    //return false;
     
     float target_distance = glm::distance(pos, target);
     
@@ -1237,6 +426,21 @@ bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
 
 const float epsilon = 1.0f/255.0f;
 
+vec4 SampleTexture(RTTexture* texture, vec2 coords) {
+    int tex_x = coords.x * (float)texture->width;
+    int tex_y = coords.y * (float)texture->height;
+    
+    tex_x = tex_x % texture->width;
+    tex_y = tex_y % texture->height;
+    
+    if (tex_x < 0) tex_x += texture->width;
+    if (tex_y < 0) tex_y += texture->height;
+    
+    int offset = (tex_y * texture->width + tex_x);
+
+    return texture->pixels[offset];
+}
+
 vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     int nearest_intersect = FindNearestTriangle(pos, dir);
 
@@ -1248,30 +452,21 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     
     vec3 intersection = RayTriangleIntersection(pos, dir, tri.p0.pos, tri.p1.pos, tri.p2.pos);
     
-    
-    //vec3 color = {nearest_dist, nearest_dist, nearest_dist};
-    //vec3 color = intersection;
     vec3 barycentric = GetBarycentric(tri.p0.pos, tri.p1.pos, tri.p2.pos, intersection);
     
     vec2 tex_coords = barycentric.x * tri.p0.tex + barycentric.y * tri.p1.tex + barycentric.z * tri.p2.tex;
     vec3 normal = barycentric.x * tri.p0.nrm + barycentric.y * tri.p1.nrm + barycentric.z * tri.p2.nrm;
     
-    const auto& tex = *tri.material->texture;
-    int tex_x = tex_coords.x * (float)tex.width;
-    int tex_y = tex_coords.y * (float)tex.height;
+    //vec4 texture_color = SampleTexture(tri.material->normal_map ? tri.material->normal_map : tri.material->texture, tex_coords);
+    vec4 texture_color = SampleTexture(tri.material->texture, tex_coords);
     
-    tex_x = tex_x % tex.width;
-    tex_y = tex_y % tex.height;
+    if (tri.material->normal_map) {
+        mat3 normal_matrix = mat3(tri.tangent, tri.bitangent, normal);
+        
+        vec3 normal_sample = SampleTexture(tri.material->normal_map, tex_coords);
+        normal = glm::normalize(normal_matrix * (normal_sample * 2.0f - 1.0f)); 
+    }
     
-    if (tex_x < 0) tex_x += tex.width;
-    if (tex_y < 0) tex_y += tex.height;
-    
-    int offset = (tex_y * tex.width + tex_x);
-
-    vec4 texture_color = tex.pixels[offset];
-    
-
-    //vec3 view_dir = normalize(layers[0].view_position - vec3(intersection));
     vec3 view_dir = -dir;
 
     vec3 diffuse_color = {0.0f, 0.0f, 0.0f};
@@ -1283,13 +478,9 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     if (cap > 0 && tri.material->reflectivity) {
         reflection_color = FindColorFromRay(away_pos, glm::reflect(dir, normal), 0);
     }
-    
-    //diffuse_color = {0.5f, 0.5f, 0.5f};
-    
+
     for (const auto& light : light_list) {
         vec3 light_vec = light.location - vec3(intersection);
-        
-        
         
         float dist = glm::length(light_vec);
         float strn = glm::max(glm::dot(glm::normalize(light_vec), normal), 0.0f);
@@ -1326,9 +517,6 @@ void RenderFrame() {
     
     if (rendering_progress++ < screen_height)
     for (int x = 0; x < screen_width; x++) {
-        //vec3 far_point = Render::ProjectInverse({x, y, 0.0f});
-        //vec3 near_point = Render::ProjectInverse({x, y, 1000.0f});
-        
         vec3 far_point = InverseProject({x, y, 0.0f});
         vec3 near_point = InverseProject({x, y, 1000.0f});
         
@@ -1336,16 +524,10 @@ void RenderFrame() {
         vec3 look_position = near_point;
 
         vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1);
+        //vec3 pixel_color = FindColorFromRay(look_position, look_direction, 0);
         
         BlitDot(x, y, IntColor(glm::clamp(pixel_color, 0.0f, 1.0f)));
     }
-    
-    
-    
-    
-    /*if (++rendering_progress >= screen_height) {
-        is_rendering = false;
-    }*/
     
     }
     
@@ -1396,112 +578,6 @@ interactive:
                     ClipRenderLine(pr0, pr1, IntColor({1, 1, 1}));
                     ClipRenderLine(pr1, pr2, IntColor({1, 1, 1}));
                     ClipRenderLine(pr2, pr0, IntColor({1, 1, 1}));
-                    
-                    if (!TriangleVisible(pr0, pr1, pr2)) continue;
-                    
-                    // backface culling
-                    //vec2 ab = {pr1.x/pr1.w - pr0.x/pr0.w, pr1.y/pr1.w - pr0.y/pr0.w};
-                    //vec2 ac = {pr2.x/pr2.w - pr0.x/pr0.w, pr2.y/pr2.w - pr0.y/pr0.w};
-                    //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-                    
-                    /*if (PointVisible(pr0) && PointVisible(pr1) && PointVisible(pr2)) {
-                        PerspectiveDivision(pr0);
-                        PerspectiveDivision(pr1);
-                        PerspectiveDivision(pr2);
-        
-                        // backface culling
-                        vec2 ab = {pr1.x - pr0.x, pr1.y - pr0.y};
-                        vec2 ac = {pr2.x - pr0.x, pr2.y - pr0.y};
-                        if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-    
-                        auto [px0, py0] = ClipSpaceToScreenSpace(pr0);
-                        auto [px1, py1] = ClipSpaceToScreenSpace(pr1);
-                        auto [px2, py2] = ClipSpaceToScreenSpace(pr2);
-                        
-                        float depth0 = (pr0.z/pr0.w);
-                        float depth1 = (pr1.z/pr1.w);
-                        float depth2 = (pr2.z/pr2.w);
-                        
-                        if (depth0 < 0.0f) depth0 = 0.0f;
-                        if (depth1 < 0.0f) depth1 = 0.0f;
-                        if (depth2 < 0.0f) depth2 = 0.0f;
-                        
-                        if (depth0 > 1.0f) depth0 = 1.0f;
-                        if (depth1 > 1.0f) depth1 = 1.0f;
-                        if (depth2 > 1.0f) depth2 = 1.0f;
-                        
-                        uint32_t pz0 = (float)0xFFFF * depth0;
-                        uint32_t pz1 = (float)0xFFFF * depth1;
-                        uint32_t pz2 = (float)0xFFFF * depth2;
-                        
-                        Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                        
-                        vec2 texture_uvs[3] = {p0.tex, p1.tex, p2.tex};
-                        vec2 lightmap_uvs[3] = {p0.lit, p1.lit, p2.lit};
-                        
-                        ScanlineConvertTriangle(scanlines, ps);
-                        RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->material->texture, entry->lightmap);
-                    } else {
-                        ClipTriangle clipped[12] = {{{{pr0, {1, 0, 0}}, {pr1, {0, 1, 0}}, {pr2, {0, 0, 1}}}}};
-                        size_t tri_count = ClipTriangleList(clipped);
-                        
-                        for (size_t i = 0; i < tri_count; i++) {
-                            PerspectiveDivision(clipped[i].points[0].coordinate);
-                            PerspectiveDivision(clipped[i].points[1].coordinate);
-                            PerspectiveDivision(clipped[i].points[2].coordinate);
-        
-                            // backface culling doesn't work, since the triangle
-                            // triangle windigs get messed up? or something like
-                            // that.
-                            // TODO: fix
-                            //vec2 ab = {clipped[i].points[1].coordinate.x - clipped[i].points[0].coordinate.x, clipped[i].points[1].coordinate.y - clipped[i].points[0].coordinate.y};
-                            //vec2 ac = {clipped[i].points[2].coordinate.x - clipped[i].points[0].coordinate.x, clipped[i].points[2].coordinate.y - clipped[i].points[0].coordinate.y};
-                            //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-        
-                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0].coordinate);
-                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1].coordinate);
-                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2].coordinate);
-                            
-                            float depth0 = (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
-                            float depth1 = (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
-                            float depth2 = (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
-                            
-                            if (depth0 < 0.0f) depth0 = 0.0f;
-                            if (depth1 < 0.0f) depth1 = 0.0f;
-                            if (depth2 < 0.0f) depth2 = 0.0f;
-                            
-                            if (depth0 > 1.0f) depth0 = 1.0f;
-                            if (depth1 > 1.0f) depth1 = 1.0f;
-                            if (depth2 > 1.0f) depth2 = 1.0f;
-                            
-                            uint32_t pz0 = (float)0xFFFF * depth0;
-                            uint32_t pz1 = (float)0xFFFF * depth1;
-                            uint32_t pz2 = (float)0xFFFF * depth2;
-   
-                            const float bary00 = clipped[i].points[0].barycentric.x;
-                            const float bary01 = clipped[i].points[0].barycentric.y;
-                            const float bary02 = clipped[i].points[0].barycentric.z;
-                            const float bary10 = clipped[i].points[1].barycentric.x;
-                            const float bary11 = clipped[i].points[1].barycentric.y;
-                            const float bary12 = clipped[i].points[1].barycentric.z;
-                            const float bary20 = clipped[i].points[2].barycentric.x;
-                            const float bary21 = clipped[i].points[2].barycentric.y;
-                            const float bary22 = clipped[i].points[2].barycentric.z;
-                            
-                            vec2 texture_uvs[3] = {p0.tex * bary00 + p1.tex * bary01 + p2.tex * bary02, 
-                                                   p0.tex * bary10 + p1.tex * bary11 + p2.tex * bary12,
-                                                   p0.tex * bary20 + p1.tex * bary21 + p2.tex * bary22};
-                            vec2 lightmap_uvs[3] = {p0.lit * bary00 + p1.lit * bary01 + p2.lit * bary02, 
-                                                    p0.lit * bary10 + p1.lit * bary11 + p2.lit * bary12,
-                                                    p0.lit * bary20 + p1.lit * bary21 + p2.lit * bary22};
-                            
-                            Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                            ScanlineConvertTriangle(scanlines, ps);
-                            RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->material->texture, entry->lightmap);
-                        }
-                    }*/
-                    
-                    
                 }
                 
                 break;
@@ -1551,165 +627,6 @@ interactive:
                     ClipRenderLine(pos0, pos1, IntColor({1, 1, 1}));
                     ClipRenderLine(pos1, pos2, IntColor({1, 1, 1}));
                     ClipRenderLine(pos2, pos0, IntColor({1, 1, 1}));
-                    
-                    if (!TriangleVisible(pos0, pos1, pos2)) continue;
-                    
-                    /*// backface culling
-                    vec2 ab = {pos1.x/pos1.w - pos0.x/pos0.w, pos1.y/pos1.w - pos0.y/pos0.w};
-                    vec2 ac = {pos2.x/pos2.w - pos0.x/pos0.w, pos2.y/pos2.w - pos0.y/pos0.w};
-                    if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-                    
-                    vec4 local_nrm0 = vec4(p0.nrm, 0.0f);
-                    vec4 local_nrm1 = vec4(p1.nrm, 0.0f);
-                    vec4 local_nrm2 = vec4(p2.nrm, 0.0f);
-                    
-                    if (entry->pose) {
-                        vec4 local_nrm00 = entry->pose->pose[p0.ind.x] * local_nrm0;
-                        vec4 local_nrm01 = entry->pose->pose[p0.ind.y] * local_nrm0;
-                        vec4 local_nrm02 = entry->pose->pose[p0.ind.z] * local_nrm0;
-                        vec4 local_nrm03 = entry->pose->pose[p0.ind.w] * local_nrm0;
-                        
-                        vec4 local_nrm10 = entry->pose->pose[p1.ind.x] * local_nrm1;
-                        vec4 local_nrm11 = entry->pose->pose[p1.ind.y] * local_nrm1;
-                        vec4 local_nrm12 = entry->pose->pose[p1.ind.z] * local_nrm1;
-                        vec4 local_nrm13 = entry->pose->pose[p1.ind.w] * local_nrm1;
-                        
-                        vec4 local_nrm20 = entry->pose->pose[p2.ind.x] * local_nrm2;
-                        vec4 local_nrm21 = entry->pose->pose[p2.ind.y] * local_nrm2;
-                        vec4 local_nrm22 = entry->pose->pose[p2.ind.z] * local_nrm2;
-                        vec4 local_nrm23 = entry->pose->pose[p2.ind.w] * local_nrm2;
-                        
-                        local_nrm0 = local_nrm00 * p0.wgt.x + local_nrm01 * p0.wgt.y + local_nrm02 * p0.wgt.z + local_nrm03 * p0.wgt.w;
-                        local_nrm1 = local_nrm10 * p1.wgt.x + local_nrm11 * p1.wgt.y + local_nrm12 * p1.wgt.z + local_nrm13 * p1.wgt.w;
-                        local_nrm2 = local_nrm20 * p2.wgt.x + local_nrm21 * p2.wgt.y + local_nrm22 * p2.wgt.z + local_nrm23 * p2.wgt.w;
-                    }
-                    
-                    const vec3 world_nrm0 = glm::normalize(vec3(entry->matrix * local_nrm0));
-                    const vec3 world_nrm1 = glm::normalize(vec3(entry->matrix * local_nrm1));
-                    const vec3 world_nrm2 = glm::normalize(vec3(entry->matrix * local_nrm2));
-                    
-                    const vec3 view_dir0 = normalize(layers[0].view_position - vec3(world_pos0));
-                    const vec3 view_dir1 = normalize(layers[0].view_position - vec3(world_pos1));
-                    const vec3 view_dir2 = normalize(layers[0].view_position - vec3(world_pos2));
-                    
-                    vec3 color0, color1, color2;
-                    if (entry->flags & FLAG_NO_DIRECTIONAL) {
-                        color0 = {0.0f, 0.0f, 0.0f};
-                        color1 = {0.0f, 0.0f, 0.0f};
-                        color2 = {0.0f, 0.0f, 0.0f};
-                    } else {
-                        color0 = layers[0].ambient_color + layers[0].sun_color * glm::max(glm::dot(world_nrm0, normalize(layers[0].sun_direction)), 0.0f);
-                        color1 = layers[0].ambient_color + layers[0].sun_color * glm::max(glm::dot(world_nrm1, normalize(layers[0].sun_direction)), 0.0f);
-                        color2 = layers[0].ambient_color + layers[0].sun_color * glm::max(glm::dot(world_nrm2, normalize(layers[0].sun_direction)), 0.0f);
-                    }
-                    
-                    vec3 spec_color0 = {0.0f, 0.0f, 0.0f};
-                    vec3 spec_color1 = {0.0f, 0.0f, 0.0f};
-                    vec3 spec_color2 = {0.0f, 0.0f, 0.0f};
-                    
-                    for (size_t i = 0; i < 4; i++) {
-                        RTLight* light = entry->lights[i];
-
-                        if (!light) continue;
-                        
-                        vec3 light_vec0 = light->location - vec3(world_pos0);
-                        vec3 light_vec1 = light->location - vec3(world_pos1);
-                        vec3 light_vec2 = light->location - vec3(world_pos2);
-                        float dist0 = glm::length(light_vec0);
-                        float dist1 = glm::length(light_vec1);
-                        float dist2 = glm::length(light_vec2);
-                        float strn0 = glm::max(glm::dot(glm::normalize(light_vec0), world_nrm0), 0.0f);
-                        float strn1 = glm::max(glm::dot(glm::normalize(light_vec1), world_nrm1), 0.0f);
-                        float strn2 = glm::max(glm::dot(glm::normalize(light_vec2), world_nrm2), 0.0f);
-                        float attn0 = strn0 * (1.0f / (1.0f + 0.09f * dist0 + 0.032f * (dist0 * dist0)));
-                        float attn1 = strn1 * (1.0f / (1.0f + 0.09f * dist0 + 0.032f * (dist1 * dist1)));
-                        float attn2 = strn2 * (1.0f / (1.0f + 0.09f * dist0 + 0.032f * (dist2 * dist2)));
-                        float drct0 = glm::clamp(glm::pow(glm::max(glm::dot(light->direction, -glm::normalize(light_vec0)), 0.0f), light->exponent), 0.0f, 1.0f);
-                        float drct1 = glm::clamp(glm::pow(glm::max(glm::dot(light->direction, -glm::normalize(light_vec1)), 0.0f), light->exponent), 0.0f, 1.0f);
-                        float drct2 = glm::clamp(glm::pow(glm::max(glm::dot(light->direction, -glm::normalize(light_vec2)), 0.0f), light->exponent), 0.0f, 1.0f);
-                        
-                        float spec0 = glm::pow(glm::max(glm::dot(view_dir0, glm::reflect(-glm::normalize(light_vec0), world_nrm0)), 0.0f), entry->specular_exponent);
-                        float spec1 = glm::pow(glm::max(glm::dot(view_dir1, glm::reflect(-glm::normalize(light_vec1), world_nrm1)), 0.0f), entry->specular_exponent);
-                        float spec2 = glm::pow(glm::max(glm::dot(view_dir2, glm::reflect(-glm::normalize(light_vec2), world_nrm2)), 0.0f), entry->specular_exponent);
-                        
-                        color0 += light->color * attn0 * drct0;
-                        color1 += light->color * attn1 * drct1;
-                        color2 += light->color * attn2 * drct2;
-                        
-                        spec_color0 += entry->specular_weight * spec0 * light->color * drct0;
-                        spec_color1 += entry->specular_weight * spec1 * light->color * drct1;
-                        spec_color2 += entry->specular_weight * spec2 * light->color * drct2;
-                    }
-                    
-                    color0 += (1.0f - entry->specular_transparency) * spec_color0;
-                    color1 += (1.0f - entry->specular_transparency) * spec_color1;
-                    color2 += (1.0f - entry->specular_transparency) * spec_color2;
-                    
-                    if (PointVisible(pos0) && PointVisible(pos1) && PointVisible(pos2)) {
-                        PerspectiveDivision(pos0);
-                        PerspectiveDivision(pos1);
-                        PerspectiveDivision(pos2);
-    
-                        auto [px0, py0] = ClipSpaceToScreenSpace(pos0);
-                        auto [px1, py1] = ClipSpaceToScreenSpace(pos1);
-                        auto [px2, py2] = ClipSpaceToScreenSpace(pos2);
-                        
-                        uint32_t pz0 = (float)0xFFFF * (pos0.z/pos0.w);
-                        uint32_t pz1 = (float)0xFFFF * (pos1.z/pos1.w);
-                        uint32_t pz2 = (float)0xFFFF * (pos2.z/pos2.w);
-                        
-                        Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                        
-                        vec2 texture_uvs[3] = {p0.tex, p1.tex, p2.tex};
-                        vec3 colors[3] = {color0, color1, color2};
-                        vec3 speculars[3] = {spec_color0, spec_color1, spec_color2};
-
-                        ScanlineConvertTriangle(scanlines, ps);
-                        RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->material->texture);
-                    } else {
-                        ClipTriangle clipped[12] = {{{{pos0, {1, 0, 0}}, {pos1, {0, 1, 0}}, {pos2, {0, 0, 1}}}}};
-                        size_t tri_count = ClipTriangleList(clipped);
-                        
-                        for (size_t i = 0; i < tri_count; i++) {
-                            PerspectiveDivision(clipped[i].points[0].coordinate);
-                            PerspectiveDivision(clipped[i].points[1].coordinate);
-                            PerspectiveDivision(clipped[i].points[2].coordinate);
-        
-                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0].coordinate);
-                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1].coordinate);
-                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2].coordinate);
-                            
-                            uint32_t pz0 = (float)0xFFFF * (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
-                            uint32_t pz1 = (float)0xFFFF * (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
-                            uint32_t pz2 = (float)0xFFFF * (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
-   
-                            const float bary00 = clipped[i].points[0].barycentric.x;
-                            const float bary01 = clipped[i].points[0].barycentric.y;
-                            const float bary02 = clipped[i].points[0].barycentric.z;
-                            const float bary10 = clipped[i].points[1].barycentric.x;
-                            const float bary11 = clipped[i].points[1].barycentric.y;
-                            const float bary12 = clipped[i].points[1].barycentric.z;
-                            const float bary20 = clipped[i].points[2].barycentric.x;
-                            const float bary21 = clipped[i].points[2].barycentric.y;
-                            const float bary22 = clipped[i].points[2].barycentric.z;
-                            
-                            vec2 texture_uvs[3] = {p0.tex * bary00 + p1.tex * bary01 + p2.tex * bary02, 
-                                                   p0.tex * bary10 + p1.tex * bary11 + p2.tex * bary12,
-                                                   p0.tex * bary20 + p1.tex * bary21 + p2.tex * bary22};
-                            vec3 colors[3] = {color0 * bary00 + color1 * bary01 + color2 * bary02, 
-                                              color0 * bary10 + color1 * bary11 + color2 * bary12,
-                                              color0 * bary20 + color1 * bary21 + color2 * bary22};
-                            vec3 speculars[3] = {spec_color0 * bary00 + spec_color1 * bary01 + spec_color2 * bary02, 
-                                                 spec_color0 * bary10 + spec_color1 * bary11 + spec_color2 * bary12,
-                                                 spec_color0 * bary20 + spec_color1 * bary21 + spec_color2 * bary22};
-                            
-                            Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                            ScanlineConvertTriangle(scanlines, ps);
-                            RasterizeTriangleShadedTextured(scanlines, ps, colors, speculars, texture_uvs, entry->material->texture);
-                        }
-                    }*/
-                    
-                    
                 }
                 
                 break;
@@ -1799,113 +716,27 @@ void SetInteractiveMode(bool is_interactive) {
                     tree_triangle.p1.tex = p1.tex;
                     tree_triangle.p2.tex = p2.tex;
                     
+                    vec3 v01 = tree_triangle.p1.pos - tree_triangle.p0.pos;
+                    vec3 v02 = tree_triangle.p2.pos - tree_triangle.p0.pos;
+                    vec2 delta01 = p1.tex - p0.tex;
+                    vec2 delta02 = p2.tex - p0.tex; 
+                    
+                    float f = 1.0f / (delta01.x * delta02.y - delta02.x * delta01.y);
+
+                    tree_triangle.tangent.x = f * (delta02.y * v01.x - delta01.y * v02.x);
+                    tree_triangle.tangent.y = f * (delta02.y * v01.y - delta01.y * v02.y);
+                    tree_triangle.tangent.z = f * (delta02.y * v01.z - delta01.y * v02.z);
+
+                    tree_triangle.bitangent.x = f * (-delta02.x * v01.x + delta01.x * v02.x);
+                    tree_triangle.bitangent.y = f * (-delta02.x * v01.y + delta01.x * v02.y);
+                    tree_triangle.bitangent.z = f * (-delta02.x * v01.z + delta01.x * v02.z);
+                    
+                    tree_triangle.tangent = glm::normalize(tree_triangle.tangent);
+                    tree_triangle.bitangent = glm::normalize(tree_triangle.bitangent);
+                    
                     tree_triangle.material = entry->material;
                     
                     tree_triangles.push_back(tree_triangle);
-                    
-                    // backface culling
-                    //vec2 ab = {pr1.x/pr1.w - pr0.x/pr0.w, pr1.y/pr1.w - pr0.y/pr0.w};
-                    //vec2 ac = {pr2.x/pr2.w - pr0.x/pr0.w, pr2.y/pr2.w - pr0.y/pr0.w};
-                    //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-                    
-                    /*if (PointVisible(pr0) && PointVisible(pr1) && PointVisible(pr2)) {
-                        PerspectiveDivision(pr0);
-                        PerspectiveDivision(pr1);
-                        PerspectiveDivision(pr2);
-        
-                        // backface culling
-                        vec2 ab = {pr1.x - pr0.x, pr1.y - pr0.y};
-                        vec2 ac = {pr2.x - pr0.x, pr2.y - pr0.y};
-                        if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-    
-                        auto [px0, py0] = ClipSpaceToScreenSpace(pr0);
-                        auto [px1, py1] = ClipSpaceToScreenSpace(pr1);
-                        auto [px2, py2] = ClipSpaceToScreenSpace(pr2);
-                        
-                        float depth0 = (pr0.z/pr0.w);
-                        float depth1 = (pr1.z/pr1.w);
-                        float depth2 = (pr2.z/pr2.w);
-                        
-                        if (depth0 < 0.0f) depth0 = 0.0f;
-                        if (depth1 < 0.0f) depth1 = 0.0f;
-                        if (depth2 < 0.0f) depth2 = 0.0f;
-                        
-                        if (depth0 > 1.0f) depth0 = 1.0f;
-                        if (depth1 > 1.0f) depth1 = 1.0f;
-                        if (depth2 > 1.0f) depth2 = 1.0f;
-                        
-                        uint32_t pz0 = (float)0xFFFF * depth0;
-                        uint32_t pz1 = (float)0xFFFF * depth1;
-                        uint32_t pz2 = (float)0xFFFF * depth2;
-                        
-                        Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                        
-                        vec2 texture_uvs[3] = {p0.tex, p1.tex, p2.tex};
-                        vec2 lightmap_uvs[3] = {p0.lit, p1.lit, p2.lit};
-                        
-                        ScanlineConvertTriangle(scanlines, ps);
-                        RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->material->texture, entry->lightmap);
-                    } else {
-                        ClipTriangle clipped[12] = {{{{pr0, {1, 0, 0}}, {pr1, {0, 1, 0}}, {pr2, {0, 0, 1}}}}};
-                        size_t tri_count = ClipTriangleList(clipped);
-                        
-                        for (size_t i = 0; i < tri_count; i++) {
-                            PerspectiveDivision(clipped[i].points[0].coordinate);
-                            PerspectiveDivision(clipped[i].points[1].coordinate);
-                            PerspectiveDivision(clipped[i].points[2].coordinate);
-        
-                            // backface culling doesn't work, since the triangle
-                            // triangle windigs get messed up? or something like
-                            // that.
-                            // TODO: fix
-                            //vec2 ab = {clipped[i].points[1].coordinate.x - clipped[i].points[0].coordinate.x, clipped[i].points[1].coordinate.y - clipped[i].points[0].coordinate.y};
-                            //vec2 ac = {clipped[i].points[2].coordinate.x - clipped[i].points[0].coordinate.x, clipped[i].points[2].coordinate.y - clipped[i].points[0].coordinate.y};
-                            //if (ab.x * ac.y - ac.x * ab.y < 0.0f) continue;
-        
-                            auto [px0, py0] = ClipSpaceToScreenSpace(clipped[i].points[0].coordinate);
-                            auto [px1, py1] = ClipSpaceToScreenSpace(clipped[i].points[1].coordinate);
-                            auto [px2, py2] = ClipSpaceToScreenSpace(clipped[i].points[2].coordinate);
-                            
-                            float depth0 = (clipped[i].points[0].coordinate.z/clipped[i].points[0].coordinate.w);
-                            float depth1 = (clipped[i].points[1].coordinate.z/clipped[i].points[1].coordinate.w);
-                            float depth2 = (clipped[i].points[2].coordinate.z/clipped[i].points[2].coordinate.w);
-                            
-                            if (depth0 < 0.0f) depth0 = 0.0f;
-                            if (depth1 < 0.0f) depth1 = 0.0f;
-                            if (depth2 < 0.0f) depth2 = 0.0f;
-                            
-                            if (depth0 > 1.0f) depth0 = 1.0f;
-                            if (depth1 > 1.0f) depth1 = 1.0f;
-                            if (depth2 > 1.0f) depth2 = 1.0f;
-                            
-                            uint32_t pz0 = (float)0xFFFF * depth0;
-                            uint32_t pz1 = (float)0xFFFF * depth1;
-                            uint32_t pz2 = (float)0xFFFF * depth2;
-   
-                            const float bary00 = clipped[i].points[0].barycentric.x;
-                            const float bary01 = clipped[i].points[0].barycentric.y;
-                            const float bary02 = clipped[i].points[0].barycentric.z;
-                            const float bary10 = clipped[i].points[1].barycentric.x;
-                            const float bary11 = clipped[i].points[1].barycentric.y;
-                            const float bary12 = clipped[i].points[1].barycentric.z;
-                            const float bary20 = clipped[i].points[2].barycentric.x;
-                            const float bary21 = clipped[i].points[2].barycentric.y;
-                            const float bary22 = clipped[i].points[2].barycentric.z;
-                            
-                            vec2 texture_uvs[3] = {p0.tex * bary00 + p1.tex * bary01 + p2.tex * bary02, 
-                                                   p0.tex * bary10 + p1.tex * bary11 + p2.tex * bary12,
-                                                   p0.tex * bary20 + p1.tex * bary21 + p2.tex * bary22};
-                            vec2 lightmap_uvs[3] = {p0.lit * bary00 + p1.lit * bary01 + p2.lit * bary02, 
-                                                    p0.lit * bary10 + p1.lit * bary11 + p2.lit * bary12,
-                                                    p0.lit * bary20 + p1.lit * bary21 + p2.lit * bary22};
-                            
-                            Point2D ps[3] = {{px0, py0, pz0}, {px1, py1, pz1}, {px2, py2, pz2}};
-                            ScanlineConvertTriangle(scanlines, ps);
-                            RasterizeTriangleLightmapped(scanlines, ps, IntColor(COLOR_WHITE), texture_uvs, lightmap_uvs, entry->material->texture, entry->lightmap);
-                        }
-                    }*/
-                    
-                    
                 }
                 
                 break;
@@ -1942,10 +773,6 @@ void SetInteractiveMode(bool is_interactive) {
                         local_pos0 = local_pos00 * p0.wgt.x + local_pos01 * p0.wgt.y + local_pos02 * p0.wgt.z + local_pos03 * p0.wgt.w;
                         local_pos1 = local_pos10 * p1.wgt.x + local_pos11 * p1.wgt.y + local_pos12 * p1.wgt.z + local_pos13 * p1.wgt.w;
                         local_pos2 = local_pos20 * p2.wgt.x + local_pos21 * p2.wgt.y + local_pos22 * p2.wgt.z + local_pos23 * p2.wgt.w;
-                        
-                        /*local_pos0 /= local_pos0.w;
-                        local_pos1 /= local_pos1.w;
-                        local_pos2 /= local_pos2.w;*/
                     }
                     
                     const vec4 world_pos0 = entry->matrix * local_pos0;
@@ -1990,6 +817,24 @@ void SetInteractiveMode(bool is_interactive) {
                     tree_triangle.p0.tex = p0.tex;
                     tree_triangle.p1.tex = p1.tex;
                     tree_triangle.p2.tex = p2.tex;
+                    
+                    vec3 v01 = tree_triangle.p1.pos - tree_triangle.p0.pos;
+                    vec3 v02 = tree_triangle.p2.pos - tree_triangle.p0.pos;
+                    vec2 delta01 = p1.tex - p0.tex;
+                    vec2 delta02 = p2.tex - p0.tex; 
+                    
+                    float f = 1.0f / (delta01.x * delta02.y - delta02.x * delta01.y);
+
+                    tree_triangle.tangent.x = f * (delta02.y * v01.x - delta01.y * v02.x);
+                    tree_triangle.tangent.y = f * (delta02.y * v01.y - delta01.y * v02.y);
+                    tree_triangle.tangent.z = f * (delta02.y * v01.z - delta01.y * v02.z);
+
+                    tree_triangle.bitangent.x = f * (-delta02.x * v01.x + delta01.x * v02.x);
+                    tree_triangle.bitangent.y = f * (-delta02.x * v01.y + delta01.x * v02.y);
+                    tree_triangle.bitangent.z = f * (-delta02.x * v01.z + delta01.x * v02.z);
+                    
+                    tree_triangle.tangent = glm::normalize(tree_triangle.tangent);
+                    tree_triangle.bitangent = glm::normalize(tree_triangle.bitangent);
                     
                     tree_triangle.material = entry->material;
                     
@@ -2129,6 +974,10 @@ void DeleteMaterial(material_t material) {
 
 void SetMaterialTexture(material_t material, texturehandle_t texture) {
     material.rt->texture = texture.rt_texture;
+}
+
+void SetMaterialNormalMap(material_t material, texturehandle_t texture) {
+    material.rt->normal_map = texture.rt_texture;
 }
 
 void SetMaterialColor(material_t material, vec4 color) {

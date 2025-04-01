@@ -142,6 +142,8 @@ void Material::LoadMaterialInfo(const char* filename) {
             mat_tex_type = TEXTURE_NONE;
         } else if (mat_tex_type_name == "same") {
             mat_tex_type = TEXTURE_SAME;
+        } else if (mat_tex_type_name == "normal") {
+            mat_tex_type = TEXTURE_SAME_NORMAL;
         } else {
             mat_tex_type = TEXTURE_SOURCE;
             mat_source = Material::Find(mat_tex_type_name);
@@ -293,6 +295,34 @@ void Material::LoadFromDisk() {
         load_fail = true;
     }
 
+
+    if (texture_type == TEXTURE_SAME_NORMAL) {
+        strcpy(path, "data/textures/");
+        strcat(path, name);
+        strcat(path, ".normal.png");
+        
+        loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, 3);
+        
+        if (loadtexture) {
+            normal_map_width = loadwidth;
+            normal_map_height = loadheight;
+            normal_map_data = new uint8_t[normal_map_width * normal_map_height * channels];
+
+            for (size_t i = 0; i < normal_map_width * normal_map_height * 3; i++) {
+                normal_map_data[i] = loadtexture[i];
+            }
+            
+            stbi_image_free(loadtexture);
+        } else {            
+            normal_map_width = 64;
+            normal_map_height = 64;
+
+            normal_map_data = MakeNewErrorTexture(glm::normalize(vec3(0.25f, 0.75f, 1.0f)), glm::normalize(vec3(0.75f, 0.25f, 1.0f)));
+
+            std::cout << "Normal map " << name << " (" << path << ") couldn't be loaded!" << std::endl;
+        }
+    }
+
 }
 
 /// Pushes material textures to GPU.
@@ -322,9 +352,20 @@ void Material::LoadFromMemory() {
         texture = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     }
     
+    if (texture_type == TEXTURE_SAME_NORMAL) {
+        normal_map = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, normal_map_width, normal_map_height, normal_map_data);
+    }
+    
     API::SetMaterialTexture(material, texture);
     
+    if (texture_type == TEXTURE_SAME_NORMAL) {
+        API::SetMaterialNormalMap(material, normal_map);
+    }
+    
     float approx_memory = width * height * channels;  // image size
+    if (texture_type == TEXTURE_SAME_NORMAL) {
+        approx_memory += normal_map_width * normal_map_height * 3;
+    }
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
     
     approx_vram_usage = (size_t) approx_memory;
@@ -333,6 +374,11 @@ void Material::LoadFromMemory() {
 
     delete[] texture_data;
     texture_data = nullptr;
+    
+    if (normal_map_data) {
+        delete[] normal_map_data;
+        normal_map_data = nullptr;
+    }
     
     status = READY;
     return;

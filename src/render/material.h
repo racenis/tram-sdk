@@ -20,12 +20,13 @@ enum MaterialProperty {
     PROPERTY_GRASS,
     PROPERTY_CONCRETE,
     PROPERTY_FLESH
-};    
+};
 
 enum TextureType {
     TEXTURE_NONE,
     TEXTURE_SAME,
-    TEXTURE_SOURCE
+    TEXTURE_SOURCE,
+    TEXTURE_SAME_NORMAL
 };
 
 class Material : public Resource {
@@ -34,6 +35,7 @@ public:
     Material(name_t name, materialtype_t type);
     
     inline texturehandle_t GetTexture() const { return texture; }
+    inline texturehandle_t GetNormalMap() const { return normal_map; }
     inline material_t GetMaterial() const { return material; }
     inline uint32_t GetWidth() const { return width; }
     inline uint32_t GetHeight() const { return height; }
@@ -68,6 +70,7 @@ public:
     
 protected:
     texturehandle_t texture = {};
+    texturehandle_t normal_map = {};
     materialtype_t type = MATERIAL_TEXTURE;
     MaterialFilter filter = FILTER_NEAREST;
     MaterialProperty property = PROPERTY_METAL;
@@ -87,6 +90,9 @@ protected:
     uint32_t height = 0;
     uint8_t channels = 0;
     uint8_t* texture_data = nullptr;
+    uint32_t normal_map_width = 0;
+    uint32_t normal_map_height = 0;
+    uint8_t* normal_map_data = nullptr;
     size_t approx_vram_usage = 0;
     
     friend class Sprite;

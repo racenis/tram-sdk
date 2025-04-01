@@ -88,6 +88,7 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
 material_t MakeMaterial();
 void DeleteMaterial(material_t material);
 void SetMaterialTexture(material_t material, texturehandle_t texture);
+void SetMaterialNormalMap(material_t material, texturehandle_t texture);
 void SetMaterialColor(material_t material, vec4 color);
 void SetMaterialSpecularWeight(material_t material, float weight);
 void SetMaterialSpecularExponent(material_t material, float exponent);
