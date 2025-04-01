@@ -545,9 +545,12 @@ void RasterizeTriangleLightmapped(ScanlineBuffer* scanlines, Point2D* vertices, 
             int32_t lit_y = (lit_y_mix >> 8) & (lightmap->height - 1);
             int32_t lit_offset = (lightmap->width * lit_y + lit_x) * lightmap->channels;
             
-            uint16_t r = (((int32_t)texture->pixels[tex_offset + 0] * (int32_t)lightmap->pixels[lit_offset + 0]) & 0xFFFF) >> (16 - 5);
-            uint16_t g = (((int32_t)texture->pixels[tex_offset + 1] * (int32_t)lightmap->pixels[lit_offset + 1]) & 0xFFFF) >> (16 - 6);
-            uint16_t b = (((int32_t)texture->pixels[tex_offset + 2] * (int32_t)lightmap->pixels[lit_offset + 2]) & 0xFFFF) >> (16 - 5);
+            (void)tex_offset;
+            (void)lit_offset;
+            
+            uint16_t r = 5;//(((int32_t)texture->pixels[tex_offset + 0] * (int32_t)lightmap->pixels[lit_offset + 0]) & 0xFFFF) >> (16 - 5);
+            uint16_t g = 5;//(((int32_t)texture->pixels[tex_offset + 1] * (int32_t)lightmap->pixels[lit_offset + 1]) & 0xFFFF) >> (16 - 6);
+            uint16_t b = 5;//(((int32_t)texture->pixels[tex_offset + 2] * (int32_t)lightmap->pixels[lit_offset + 2]) & 0xFFFF) >> (16 - 5);
             
             // overwrite with depth
             //r = depth_mix  >> (16 - 5);
@@ -675,9 +678,11 @@ void RasterizeTriangleShadedTextured(ScanlineBuffer* scanlines, Point2D* vertice
             int32_t tex_y = (tex_y_mix >> 8) & (texture->height - 1);
             int32_t tex_offset = (texture->width * tex_y + tex_x) * texture->channels;
             
-            int32_t r = (((int32_t)texture->pixels[tex_offset + 0] * (col_r_mix >> 8) + spc_r_mix)) >> (16 - 5);
-            int32_t g = (((int32_t)texture->pixels[tex_offset + 1] * (col_g_mix >> 8) + spc_g_mix)) >> (16 - 6);
-            int32_t b = (((int32_t)texture->pixels[tex_offset + 2] * (col_b_mix >> 8) + spc_b_mix)) >> (16 - 5);
+            (void)tex_offset;
+            
+            int32_t r = 5;//(((int32_t)texture->pixels[tex_offset + 0] * (col_r_mix >> 8) + spc_r_mix)) >> (16 - 5);
+            int32_t g = 5;//(((int32_t)texture->pixels[tex_offset + 1] * (col_g_mix >> 8) + spc_g_mix)) >> (16 - 6);
+            int32_t b = 5;//(((int32_t)texture->pixels[tex_offset + 2] * (col_b_mix >> 8) + spc_b_mix)) >> (16 - 5);
             
             if (r & ~0x1F) r = 0x1F;
             if (g & ~0x3F) g = 0x3F;
@@ -931,8 +936,8 @@ void PerspectiveDivision(vec4& p0, vec4& p1) {
 }
 
 std::pair<int32_t, int32_t> ClipSpaceToScreenSpace(const vec4 p) {
-    int32_t px = 2 + (p.x + 1.0f) * 0.5f * (screen_width - 4);
-    int32_t py = 2 + (1.0f - p.y) * 0.5f * (screen_height - 4);
+    int32_t px = (p.x + 1.0f) * 0.5f * screen_width;
+    int32_t py = (1.0f - p.y) * 0.5f * screen_height;
     return {px, py};
 }
 
@@ -1155,21 +1160,162 @@ vec3 InverseProject(vec3 point) {
     return result;    
 }
 
-// TODO: fixy uppyu
 vec3 GetBarycentric(vec3 a, vec3 b, vec3 c, vec3 p) {
-    vec3 v0 = b - a, v1 = c - a, v2 = p - a;
-    float d00 = glm::dot(v0, v0);
-    float d01 = glm::dot(v0, v1);
-    float d11 = glm::dot(v1, v1);
-    float d20 = glm::dot(v2, v0);
-    float d21 = glm::dot(v2, v1);
-    float denom = d00 * d11 - d01 * d01;
+    const vec3 v1 = b - a;
+    const vec3 v2 = c - a; 
+    const vec3 v3 = p - a;
     
-    float v = (d11 * d20 - d01 * d21) / denom;
-    float w = (d00 * d21 - d01 * d20) / denom;
-    float u = 1.0f - v - w;
+    const float d1 = glm::dot(v1, v1);
+    const float d2 = glm::dot(v1, v2);
+    const float d3 = glm::dot(v2, v2);
+    const float d4 = glm::dot(v3, v1);
+    const float d5 = glm::dot(v3, v2);
+    
+    const float dominator = d1 * d3 - d2 * d2;
+    
+    const float v = (d3 * d4 - d2 * d5) / dominator;
+    const float w = (d1 * d5 - d2 * d4) / dominator;
+    const float u = 1.0f - v - w;
     
     return {u, v, w};
+}
+
+int FindNearestTriangle(vec3 pos, vec3 dir) {
+    int nearest_intersect = -1;
+    float nearest_dist = INFINITY;
+    
+    for (int i = 0; i < (int)tree_triangles.size(); i++) {
+        vec3 v1 = tree_triangles[i].p1.pos - tree_triangles[i].p0.pos;
+        vec3 v2 = tree_triangles[i].p2.pos - tree_triangles[i].p0.pos;
+        
+        
+        
+        //if (glm::dot(tree_triangles[i].p0.nrm, dir) > 0.0f) continue; 
+        if (glm::dot(glm::normalize(glm::cross(v1, v2)), dir) > 0.0f) continue; 
+        
+        vec3 intersection = RayTriangleIntersection(pos, dir, tree_triangles[i].p0.pos, tree_triangles[i].p1.pos, tree_triangles[i].p2.pos);
+        
+        if (intersection.x == INFINITY) {
+            continue;
+        }
+        
+        float intersection_distance = glm::distance(pos, intersection);
+        
+        if (intersection_distance < nearest_dist) {
+            nearest_intersect = i;
+            nearest_dist = intersection_distance;
+        }
+    }
+    
+    return nearest_intersect;
+}
+
+bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
+    //int nearest_intersect = -1;
+    //float nearest_dist = INFINITY;
+    
+    float target_distance = glm::distance(pos, target);
+    
+    for (int i = 0; i < (int)tree_triangles.size(); i++) {
+        //if (glm::dot(tree_triangles[i].p0.nrm, dir) > 0.0f) continue; 
+        
+        vec3 intersection = RayTriangleIntersection(pos, dir, tree_triangles[i].p0.pos, tree_triangles[i].p1.pos, tree_triangles[i].p2.pos);
+        
+        if (intersection.x == INFINITY) {
+            continue;
+        }
+
+        float intersection_distance = glm::distance(pos, intersection);
+        
+        if (intersection_distance < target_distance) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+const float epsilon = 1.0f/255.0f;
+
+vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
+    int nearest_intersect = FindNearestTriangle(pos, dir);
+
+    if (nearest_intersect == -1) {
+        return {0, 0, 0}; // or return clear color???
+    }
+
+    const auto& tri = tree_triangles[nearest_intersect];
+    
+    vec3 intersection = RayTriangleIntersection(pos, dir, tri.p0.pos, tri.p1.pos, tri.p2.pos);
+    
+    
+    //vec3 color = {nearest_dist, nearest_dist, nearest_dist};
+    //vec3 color = intersection;
+    vec3 barycentric = GetBarycentric(tri.p0.pos, tri.p1.pos, tri.p2.pos, intersection);
+    
+    vec2 tex_coords = barycentric.x * tri.p0.tex + barycentric.y * tri.p1.tex + barycentric.z * tri.p2.tex;
+    vec3 normal = barycentric.x * tri.p0.nrm + barycentric.y * tri.p1.nrm + barycentric.z * tri.p2.nrm;
+    
+    const auto& tex = *tri.material->texture;
+    int tex_x = tex_coords.x * (float)tex.width;
+    int tex_y = tex_coords.y * (float)tex.height;
+    
+    tex_x = tex_x % tex.width;
+    tex_y = tex_y % tex.height;
+    
+    if (tex_x < 0) tex_x += tex.width;
+    if (tex_y < 0) tex_y += tex.height;
+    
+    int offset = (tex_y * tex.width + tex_x);
+
+    vec4 texture_color = tex.pixels[offset];
+    
+
+    //vec3 view_dir = normalize(layers[0].view_position - vec3(intersection));
+    vec3 view_dir = -dir;
+
+    vec3 diffuse_color = {0.0f, 0.0f, 0.0f};
+    vec3 specular_color = {0.0f, 0.0f, 0.0f};
+    vec3 reflection_color = {0.0f, 0.0f, 0.0f};
+    
+    vec3 away_pos = intersection + 0.01f * normal;
+    
+    if (cap > 0 && tri.material->reflectivity) {
+        reflection_color = FindColorFromRay(away_pos, glm::reflect(dir, normal), 0);
+    }
+    
+    //diffuse_color = {0.5f, 0.5f, 0.5f};
+    
+    for (const auto& light : light_list) {
+        vec3 light_vec = light.location - vec3(intersection);
+        
+        
+        
+        float dist = glm::length(light_vec);
+        float strn = glm::max(glm::dot(glm::normalize(light_vec), normal), 0.0f);
+        float attn = strn * (1.0f / (1.0f + 0.09f * dist + 0.032f * (dist * dist)));
+
+        if (attn < epsilon) continue;
+
+        float drct = glm::clamp(glm::pow(glm::max(glm::dot(light.direction, -glm::normalize(light_vec)), 0.0f), light.exponent), 0.0f, 1.0f);
+
+        if (drct < epsilon) continue;
+
+        if (FindIfObstacle(away_pos, glm::normalize(light_vec), light.location)) {
+            continue;
+        }
+
+        float spec = glm::pow(glm::max(glm::dot(view_dir, glm::reflect(-glm::normalize(light_vec), normal)), 0.0f), tri.material->specular_exponent);
+
+        diffuse_color += light.color * attn * drct;
+        specular_color += tri.material->specular_weight * spec * light.color * drct;
+    }
+    
+    
+    
+    diffuse_color += (1.0f - tri.material->specular_transparency) * specular_color;
+
+    return vec3(texture_color) * diffuse_color + tri.material->specular_transparency * specular_color + tri.material->reflectivity * reflection_color;// + tri.material->specular_transparency * specular_color;
 }
 
 void RenderFrame() {
@@ -1178,7 +1324,7 @@ void RenderFrame() {
         
     const int y = rendering_progress;
     
-    if (++rendering_progress < screen_height)
+    if (rendering_progress++ < screen_height)
     for (int x = 0; x < screen_width; x++) {
         //vec3 far_point = Render::ProjectInverse({x, y, 0.0f});
         //vec3 near_point = Render::ProjectInverse({x, y, 1000.0f});
@@ -1188,70 +1334,10 @@ void RenderFrame() {
         
         vec3 look_direction = glm::normalize(far_point - near_point);
         vec3 look_position = near_point;
+
+        vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1);
         
-        
-        int nearest_intersect = -1;
-        float nearest_dist = INFINITY;
-        
-        for (int i = 0; i < (int)tree_triangles.size(); i++) {
-            if (glm::dot(tree_triangles[i].p0.nrm, look_direction) > 0.0f) continue; 
-            
-            vec3 intersection = RayTriangleIntersection(look_position, look_direction, tree_triangles[i].p0.pos, tree_triangles[i].p1.pos, tree_triangles[i].p2.pos);
-            
-            if (intersection.x == INFINITY) {
-                continue;
-            }
-            
-            float intersection_distance = glm::distance(look_position, intersection);
-            
-            if (intersection_distance < nearest_dist) {
-                nearest_intersect = i;
-                nearest_dist = intersection_distance;
-            }
-        }
-        
-        //if (nearest_dist != INFINITY) {
-        if (nearest_intersect != -1) {
-            const auto& tri = tree_triangles[nearest_intersect];
-            
-            vec3 intersection = RayTriangleIntersection(look_position, look_direction, tri.p0.pos, tri.p1.pos, tri.p2.pos);
-            
-            
-            //vec3 color = {nearest_dist, nearest_dist, nearest_dist};
-            //vec3 color = intersection;
-            vec3 barycentric = GetBarycentric(tri.p0.pos, tri.p1.pos, tri.p2.pos, intersection);
-            //color /= 7.0f;
-            //color = glm::clamp(color, 0.0f, 1.0f);
-            
-            vec2 tex_coords = barycentric.x * tri.p0.tex + barycentric.y * tri.p1.tex + barycentric.z * tri.p2.tex;
-            
-            const auto& tex = *tri.material->texture;
-            int tex_x = tex_coords.x * (float)tex.width;
-            int tex_y = tex_coords.y * (float)tex.height;
-            
-            tex_x = tex_x % tex.width;
-            tex_y = tex_y % tex.height;
-            
-            int offset = (tex_y * tex.width + tex_x) * tex.channels;
-            float r = (float)tex.pixels[offset + 0] / 255.0f;
-            float g = (float)tex.pixels[offset + 1] / 255.0f;
-            float b = (float)tex.pixels[offset + 2] / 255.0f;
-            
-            BlitDot(x, y, IntColor({r, g, b}));
-            
-            //BlitDot(x, y, IntColor(vec3(tex_coords, 1.0f)));
-            
-            /*if (!tri.material) {
-                BlitDot(x, y, IntColor(color));
-            }*/
-            
-            
-        } else {
-            BlitDot(x, y, IntColor({0, 0, 0}));
-        }
-        
-        
-        
+        BlitDot(x, y, IntColor(glm::clamp(pixel_color, 0.0f, 1.0f)));
     }
     
     
@@ -2103,9 +2189,25 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
         case TEXTUREFILTER_LINEAR_MIPMAPPED:    texture->mode = RT_BLENDED; break;
     }
     
-    int texture_size = texture->width * texture->height * texture->channels;
-    texture->pixels = (uint8_t*)malloc(texture_size);
-    memcpy(texture->pixels, data, texture_size);
+    int texture_size = texture->width * texture->height * sizeof(vec4);
+    texture->pixels = (vec4*)malloc(texture_size);
+    uint8_t* pix = (uint8_t*)data;
+    //memcpy(texture->pixels, data, texture_size);
+    for (int i = 0; i < texture->width * texture->height; i++) {
+        vec4 color = {0.0f, 0.0f, 0.0f, 255.0f};
+        
+        int offset = i * texture->channels;
+        
+        switch (color_mode) {
+            case COLORMODE_R:       color.x = pix[offset + 0];      break;
+            case COLORMODE_RG:      color.x = pix[offset + 0]; color.y = pix[offset + 1];    break;
+            case COLORMODE_RGB:     color.x = pix[offset + 0]; color.y = pix[offset + 1]; color.z = pix[offset + 2];  break;
+            case COLORMODE_RGBA:    color.x = pix[offset + 0]; color.y = pix[offset + 1]; color.z = pix[offset + 2]; color.w = pix[offset + 3];  break;
+        }
+        
+        
+        texture->pixels[i] = color / 255.0f;
+    }
     
     return texturehandle_t {.rt_texture = texture};
 }
