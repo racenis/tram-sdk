@@ -25,6 +25,12 @@ const char* GetVersion();
 namespace Core {
     void Init();
     void Update();
+    
+    void SetPlatformTime(bool);
+    void SetTime(double);
+    void AddTime(double);
+    
+    // TODO: maybe put GenerateID() and GetVersion() in here too
 }
 
 }

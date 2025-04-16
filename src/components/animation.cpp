@@ -350,7 +350,10 @@ void AnimationComponent::Refresh() {
             size_t keyframe_count = anim_info[i].keyframe_count[k];
             
             // if playback's current frame is after the last frame of the animation
-            if (anim.frame > keyframes[keyframe_count-1].frame) {
+            if (anim.frame < 0.0f) {
+                anim.repeats++;
+                anim.frame = keyframes[keyframe_count-1].frame - 0.1f;
+            } else if (anim.frame > keyframes[keyframe_count-1].frame) {
                 if (anim.pause_on_last_frame && anim.repeats == 1) {
                     anim.frame = keyframes[keyframe_count-1].frame - 0.1f;
                     anim.pause = true;

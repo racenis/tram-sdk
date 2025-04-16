@@ -274,6 +274,167 @@ private:
     bool error_flag = false;
 };
 
+class BinaryReaderParser : public FileReaderParser {
+public:
+    BinaryReaderParser(FileReader* reader) {
+        this->cur = reader->GetContents();
+        this->end = reader->GetContents() + reader->GetSize();
+    }
+    
+    int8_t read_int8() {
+        return from_binary<int8_t>();
+    }
+    
+    int16_t read_int16() {
+        return from_binary<int16_t>();
+    }
+    
+    int32_t read_int32() {
+        return from_binary<int32_t>();
+    }
+    
+    int64_t read_int64() {
+        return from_binary<int64_t>();
+    }
+    
+    
+    uint8_t read_uint8() {
+        return from_binary<uint8_t>();
+    }
+    
+    uint16_t read_uint16() {
+        return from_binary<uint16_t>();
+    }
+    
+    uint32_t read_uint32() {
+        return from_binary<uint32_t>();
+    }
+    
+    uint64_t read_uint64() {
+        return from_binary<uint64_t>();
+    }
+    
+    
+    float read_float32() {
+        return from_binary<float>();
+    }
+    
+    double read_float64() {
+        return from_binary<double>();
+    }
+    
+    name_t read_name() {
+        char buffer[200];
+        char* buf_it = buffer;
+        
+        const char* ncur = cur;
+        for (; ncur < end && *ncur != '\0'; ncur++) {
+            *buf_it++ = *ncur;
+        }
+        
+        if (skip_value) {
+            cur = ncur;
+        }
+        
+        error_flag = false;
+        
+        *buf_it = '\0';
+        
+        if (strlen(buffer) == 0 ) Log("NOT GOOD ZERO NAME");
+        
+        return UID(buffer);
+    }
+    
+    // TODO: figure out what this should do
+    std::string_view read_token() {
+        const char* begin = cur;
+        size_t length = 0;
+        
+        for (; !isspace(*cur) && cur < end; cur++) {
+            length++;
+        }
+        
+        return {begin, length};
+    }
+    
+    std::string_view read_string() {
+        const char* begin = cur;
+        size_t length = 0;
+        
+        for (; *cur != '\0' && cur < end; cur++) {
+            length++;
+        }
+        
+        cur++;
+        
+        return {begin, length};
+    }
+    
+    // TODO: figure out what this should do
+    std::string_view read_line() {
+        const char* first_char = cur;
+        const char* last_char = cur;
+    
+        while (*last_char != '\r' && *last_char != '\n' && last_char < end) {
+            last_char++;
+        }
+        
+        size_t line_length = last_char - first_char;
+        
+        if (skip_value) {
+            cur = last_char;
+        }
+        
+        return std::string_view (first_char, line_length);
+    }
+    
+    
+    void skip_newline() {
+        // doesn't do anything
+    }
+    
+    void skip_whitespace() {
+        // doesn't do anything
+    }
+    
+    bool is_continue() {
+        while (cur < end) {
+            if (!isspace(*cur)) return true;
+            cur++;
+        }
+        
+        return false;
+    }
+    
+    bool is_error() {
+        return error_flag;
+    }
+    
+    void reset_error() {
+        error_flag = false;
+    }
+private:
+    template <typename T>
+    T from_binary() {
+        if (cur + sizeof(T) >= end) {
+            error_flag = true;
+            return T();
+        }
+        
+        T value = *(T*)cur;
+        if (skip_value) {
+            cur += sizeof(T);
+        }
+        
+        return value;
+    }
+    
+
+    const char* cur = nullptr;
+    const char* end = nullptr;
+    bool error_flag = false;
+};
+
 class FileWriterParser {
 public:
     virtual void write_int8(int8_t value) = 0;
@@ -371,6 +532,75 @@ private:
     FileWriter* writer = nullptr;
 };
 
+class BinaryWriterParser : public FileWriterParser {
+public:
+    BinaryWriterParser(FileWriter* writer) {
+        this->writer = writer;
+    }
+    
+    virtual void write_int8(int8_t value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_int16(int16_t value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_int32(int32_t value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_int64(int64_t value) {
+        write_to_binary(value);
+    }
+    
+    
+    virtual void write_uint8(uint8_t value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_uint16(uint16_t value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_uint32(uint32_t value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_uint64(uint64_t value) {
+        write_to_binary(value);
+    }
+    
+    
+    virtual void write_float32(float value) {
+        write_to_binary(value);
+    }
+    
+    virtual void write_float64(double value) {
+        write_to_binary(value);
+    }
+    
+    
+    virtual void write_name(name_t value) {
+        writer->SetContents(value, strlen(value) + 1);
+    }
+    
+    virtual void write_string(const char* value)  {
+        writer->SetContents(value, strlen(value) + 1);
+    }
+    
+    virtual void write_newline() {
+        writer->SetContents("\n", 1);
+    }
+    
+private:
+    template <typename T>
+    void write_to_binary(T value) {
+        writer->SetContents((char*)&value, sizeof(T));
+    }
+    FileWriter* writer = nullptr;
+};
+
 /// Opens a file.
 /// @param path Path to the file. If no prefix is set, this path will be
 ///             interpreted as being relative to the project/executable
@@ -382,12 +612,21 @@ File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "Sorry, File::BINARY for files not implemented yet");
     }
     
+    if (mode & TEXT && mode & BINARY) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "File has both File::TEXT and File::BINARY flags set");
+    }
+    
     if (mode & READ) {
         reader = FileReader::GetReader(path);
         
         if (reader->GetStatus() != FileStatus::READY) return;
         
-        reader_parser = new TextReaderParser(reader);
+        if (mode & BINARY) {
+            reader_parser = new BinaryReaderParser(reader);
+        } else {
+            reader_parser = new TextReaderParser(reader);
+        }
+        
         
         if (mode & PAUSE_LINE) {
             reader_parser->set_skip_newline(false);
@@ -397,7 +636,11 @@ File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
         writer = FileWriter::GetWriter(path);
         
         if (writer->GetStatus() == FileStatus::READY) {
-            writer_parser = new TextWriterParser(writer);
+            if (mode & BINARY) {
+                writer_parser = new BinaryWriterParser(writer);
+            } else {
+                writer_parser = new TextWriterParser(writer);
+            }
         }
         
     } else {

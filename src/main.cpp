@@ -309,6 +309,24 @@ int main(int argc, const char** argv) {
         Render::API::SetInteractiveMode(!Render::API::IsInteractiveMode());
     });
     
+    
+    UI::BindKeyboardKey(UI::KEY_UP, [](){
+        Core::SetPlatformTime(true);
+    });
+    
+    UI::BindKeyboardKey(UI::KEY_DOWN, [](){
+        Core::SetPlatformTime(false);
+    });
+    
+    UI::BindKeyboardKey(UI::KEY_LEFT, [](){
+        Core::AddTime(-1.0f / 30.0f);
+    });
+    
+    UI::BindKeyboardKey(UI::KEY_RIGHT, [](){
+        Core::AddTime(1.0f / 30.0f);
+    });
+    
+    
 #ifdef __EMSCRIPTEN__
     UI::SetWebMainLoop(mainloop);
 #else
@@ -344,7 +362,7 @@ void mainloop() {
     //tolet_sprayer->SetFrame(0);
     
     // have mongus run around on a path
-    follower->Advance(0.025f);
+    follower->Advance(GetDeltaTime());
     
     Entity* mongus = Entity::Find("mongus");
     if (mongus && GetTick() > 120) {

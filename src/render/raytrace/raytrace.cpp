@@ -4,6 +4,7 @@
 #include <render/api.h>
 
 #include <templates/octree.h>
+#include <templates/aabb.h>
 
 #include <config.h>
 
@@ -40,25 +41,6 @@ static uint16_t* screen_buffer = nullptr;
 static uint16_t* depth_buffer = nullptr;
 
 static Render::Pose* null_pose = nullptr;
-
-struct Scanline {
-    uint16_t begin;     // x coord on which the span starts
-    uint16_t end;       // x coord on which the span ends
-    uint16_t begin_p0;  // first point for begin
-    uint16_t begin_p1;  // second point for begin
-    int32_t begin_adv;  // how far from the first point in begin, mapped to [0x0000, 0xFFFF]
-    uint16_t end_p0;    // same as for begin, but for end
-    uint16_t end_p1;    // ditto
-    int32_t end_adv;    // ditto
-};
-
-struct ScanlineBuffer {
-    Scanline scanlines[1000];
-    int32_t scanline_length = 0;
-    int32_t start_y = 0;
-};
-
-ScanlineBuffer* scanlines = new ScanlineBuffer;
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
@@ -204,6 +186,7 @@ struct TreeTriangle {
 };
 
 std::vector<TreeTriangle> tree_triangles;
+AABBTree* tree = nullptr;
 
 int rendering_progress = 0;
 bool is_rendering = false;
@@ -371,57 +354,46 @@ vec3 GetBarycentric(vec3 a, vec3 b, vec3 c, vec3 p) {
 }
 
 int FindNearestTriangle(vec3 pos, vec3 dir) {
-    int nearest_intersect = -1;
-    float nearest_dist = INFINITY;
-    
-    for (int i = 0; i < (int)tree_triangles.size(); i++) {
-        vec3 v1 = tree_triangles[i].p1.pos - tree_triangles[i].p0.pos;
-        vec3 v2 = tree_triangles[i].p2.pos - tree_triangles[i].p0.pos;
-        
-        if (glm::dot(glm::normalize(glm::cross(v1, v2)), dir) > 0.0f) continue; 
-        
-        vec3 intersection = RayTriangleIntersection(pos, dir, tree_triangles[i].p0.pos, tree_triangles[i].p1.pos, tree_triangles[i].p2.pos);
-        
-        if (intersection.x == INFINITY) {
-            continue;
-        }
-        
-        float intersection_distance = glm::distance(pos, intersection);
-        
-        if (intersection_distance < nearest_dist) {
-            nearest_intersect = i;
-            nearest_dist = intersection_distance;
-        }
+    uint32_t nearest = tree->FindIntersection(pos, dir, 32.0f, [&](vec3 pos, vec3 dir, uint32_t index) {
+        vec3 intersection = RayTriangleIntersection(pos,
+                                                    dir,
+                                                    tree_triangles[index].p0.pos,
+                                                    tree_triangles[index].p1.pos,
+                                                    tree_triangles[index].p2.pos);
+
+        if (intersection.x == INFINITY) return INFINITY;
+
+        return glm::distance(intersection, pos);
+    });
+
+    if (nearest == (uint32_t)-1) {
+        return -1;
     }
     
-    return nearest_intersect;
+    return nearest;
 }
 
 bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
-    //int nearest_intersect = -1;
-    //float nearest_dist = INFINITY;
-    
-    //return false;
-    
     float target_distance = glm::distance(pos, target);
     
-    for (int i = 0; i < (int)tree_triangles.size(); i++) {
-        //if (glm::dot(tree_triangles[i].p0.nrm, dir) > 0.0f) continue; 
-        
-        vec3 intersection = RayTriangleIntersection(pos, dir, tree_triangles[i].p0.pos, tree_triangles[i].p1.pos, tree_triangles[i].p2.pos);
-        
-        if (intersection.x == INFINITY) {
-            continue;
-        }
+    uint32_t nearest = tree->FindIntersection(pos, dir, target_distance, [&](vec3 pos, vec3 dir, uint32_t index) {
+        vec3 intersection = RayTriangleIntersection(pos,
+                                                    dir,
+                                                    tree_triangles[index].p0.pos,
+                                                    tree_triangles[index].p1.pos,
+                                                    tree_triangles[index].p2.pos);
 
-        float intersection_distance = glm::distance(pos, intersection);
-        
-        if (intersection_distance < target_distance) {
-            return true;
-        }
+        if (intersection.x == INFINITY) return INFINITY;
+
+        //return glm::distance(intersection, pos);
+        return glm::distance(intersection, pos) < target_distance ? 0.0f : INFINITY;
+    });
+
+    if (nearest == (uint32_t)-1) {
+        return false;
     }
     
-    return false;
+    return true;
 }
 
 const float epsilon = 1.0f/255.0f;
@@ -671,6 +643,8 @@ void SetInteractiveMode(bool is_interactive) {
     std::cout << "Begiinning ray-trace!" << std::endl;
     
     tree_triangles.clear();
+    if (tree) delete tree;
+    tree = new AABBTree;
     
     std::vector<std::pair<uint32_t, RTDrawListEntry*>> draw_list_sorted;
     for (auto& entry : draw_list) {
@@ -736,6 +710,9 @@ void SetInteractiveMode(bool is_interactive) {
                     
                     tree_triangle.material = entry->material;
                     
+                    tree->InsertLeaf(tree_triangles.size(),
+                                     MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
+                                     MergeAABBMax(MergeAABBMax(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos));
                     tree_triangles.push_back(tree_triangle);
                 }
                 
@@ -838,6 +815,9 @@ void SetInteractiveMode(bool is_interactive) {
                     
                     tree_triangle.material = entry->material;
                     
+                    tree->InsertLeaf(tree_triangles.size(),
+                                     MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
+                                     MergeAABBMax(MergeAABBMax(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos));
                     tree_triangles.push_back(tree_triangle);
                 }
                 

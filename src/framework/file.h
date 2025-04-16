@@ -68,7 +68,7 @@ public:
         WRITE = 2,      //< Opens the file for writing.
         PAUSE_LINE = 4, //< Pauses the parsing on every linebreak.
         TEXT = 8,       //< Opens file for reading/writing in whitespace seperated text format.
-        BINARY = 16     //< Not implemented yet.
+        BINARY = 16     //< Opens file for reading/writing in binary format.
     };
     
     // TODO: check whichever of these can be private and private them

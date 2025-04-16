@@ -31,6 +31,8 @@ static double frame_time = 0.0f;
 
 static float time_since_tick = 0.0f;
 
+static bool automatic_time = true;
+
 /// Generates a unique ID number.
 id_t GenerateID() {
     static id_t num = 0;
@@ -55,9 +57,15 @@ void Core::Init() {
 /// Updates the core system.
 /// @note This should be called only once per update cycle.
 void Core::Update() {
-    const double last_frame_time = frame_time;
-    frame_time = Platform::Window::GetTime();
-    delta_time = frame_time - last_frame_time;
+    static double last_platform_time = Platform::Window::GetTime();
+    const double platform_time = Platform::Window::GetTime();
+    const double platform_delta_time = platform_time - last_platform_time;
+    last_platform_time = Platform::Window::GetTime();
+    
+    if (automatic_time) {
+        delta_time = platform_delta_time;
+        frame_time = platform_time;
+    }
     
     frames++;
     
@@ -67,6 +75,10 @@ void Core::Update() {
     });
     
     time_since_tick += delta_time;
+    
+    if (!automatic_time) {
+        delta_time = 0.0f;
+    }
     
     // avoid overflowing event buffer on severe (1000ms+) lag
     if (time_since_tick > 1.0f) {
@@ -129,6 +141,41 @@ double GetFrameTime() {
 float GetDeltaTime() {
     return delta_time;
 }
+
+
+/// Enables/disables automatic time counting.
+/// By default the framework will use Platform time, which is determined by
+/// counting the number of seconds passed since the application window was
+/// opened. Some niche use cases need the time to be controlled manually, so we
+/// provide this function here, but most users won't need to use it.
+/// @warning Do not use, unless you know what you are doing.
+void Core::SetPlatformTime(bool platform_time) {
+    automatic_time = platform_time;
+}
+
+/// Sets the time to a new value.
+/// This function should be called once per frame, just after calling
+/// Core::Update().
+/// @note Needs SetPlatformTime() to be false.
+void Core::SetTime(double new_time) {
+    if (automatic_time) return;
+    
+    delta_time = new_time - frame_time;
+    frame_time = new_time;
+}
+
+/// Increments the time.
+/// This function should be called once per frame, just after calling
+/// Core::Update().
+/// @see AddTime()
+/// @note Needs SetPlatformTime() to be false.
+void Core::AddTime(double add_time) {
+    if (automatic_time) return;
+    
+    delta_time = add_time;
+    frame_time += add_time;
+}
+
 
 /// Returns the version identifier of the runtime.
 const char* GetVersion() {
