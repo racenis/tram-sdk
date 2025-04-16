@@ -10,6 +10,7 @@ namespace tram::Render::API {
 
 struct GLMaterial {
     uint32_t gl_texture = 0;
+    uint32_t gl_normal_map = 0;
     float specular_weight = 0.0f;
     float specular_exponent = 1.0f;
     float specular_transparency = 0.0f;

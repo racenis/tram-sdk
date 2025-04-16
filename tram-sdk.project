@@ -203,8 +203,19 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <VirtualDirectory Name="raytrace">
-        <File Name="src/render/raytrace/raytrace.h"/>
-        <File Name="src/render/raytrace/raytrace.cpp"/>
+        <File Name="src/render/raytrace/buffer.h"/>
+        <File Name="src/render/raytrace/buffer.cpp"/>
+        <File Name="src/render/raytrace/sprite.h"/>
+        <File Name="src/render/raytrace/sprite.cpp"/>
+        <File Name="src/render/raytrace/light.h"/>
+        <File Name="src/render/raytrace/material.h"/>
+        <File Name="src/render/raytrace/drawlist.h"/>
+        <File Name="src/render/raytrace/light.cpp"/>
+        <File Name="src/render/raytrace/material.cpp"/>
+        <File Name="src/render/raytrace/drawlist.cpp"/>
+        <File Name="src/render/raytrace/math.h"/>
+        <File Name="src/render/raytrace/raytrace.h" ExcludeProjConfig=""/>
+        <File Name="src/render/raytrace/raytrace.cpp" ExcludeProjConfig=""/>
       </VirtualDirectory>
       <File Name="src/render/light.cpp"/>
       <File Name="src/render/light.h"/>

@@ -22,6 +22,10 @@ void SetMaterialTexture(material_t material, texturehandle_t texture) {
     material.gl->gl_texture = texture.gl_texture_handle;
 }
 
+void SetMaterialNormalMap(material_t material, texturehandle_t texture) {
+    material.gl->gl_normal_map = texture.gl_texture_handle;
+}
+
 void SetMaterialColor(material_t material, vec4 color) {
     material.gl->color = color;
 }
