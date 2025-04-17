@@ -55,6 +55,7 @@
 #include <extensions/kitchensink/inventory.h>
 #include <extensions/kitchensink/soundtable.h>
 #include <extensions/kitchensink/probe.h>
+#include <extensions/kitchensink/imageassembly.h>
 #include <extensions/scripting/lua.h>
 
 #include <extensions/kitchensink/dialog.h>
@@ -361,6 +362,14 @@ void mainloop() {
     //Render::AddText(20, 20, std::to_string(ff.x).c_str(), ff);
     //Render::AddText(20, 40, std::to_string(ff.y).c_str(), ff);
     //Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
+    
+    if (API::IsFinishedRendering()) {
+        API::SetInteractiveMode(true);
+        
+        Kitchensink::ImageAssembly::Add(API::GetAssemblyLayers());
+        Kitchensink::ImageAssembly::Save("assembly.image");
+        Kitchensink::ImageAssembly::Reset();
+    }
     
     dingbat->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);
     //tolet_sprayer->SetLocation(Render::GetViewPosition() + Render::GetViewRotation() * DIRECTION_FORWARD);

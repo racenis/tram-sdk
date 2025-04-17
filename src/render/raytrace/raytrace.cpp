@@ -485,6 +485,10 @@ interactive:
 
 }
 
+bool IsFinishedRendering() {
+    return is_rendering && rendering_progress > screen_height;
+}
+
 bool IsInteractiveMode() {
     return !is_rendering;
 }
@@ -717,6 +721,7 @@ void SetInteractiveMode(bool is_interactive) {
 void SetMaterialAssemblyIndex(material_t material, int index) {
     material.rt->texture->assembly_index = index;
     texture_indices[index] = material.rt->texture;
+    assembly.textures.push_back({index, material.rt->texture->width, material.rt->texture->height});
 }
 
 void SetUseAssembly(bool use) {

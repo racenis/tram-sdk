@@ -607,11 +607,7 @@ private:
 ///             working directory.
 /// @param mode Mode is a bitmask consisting of flags that can be found in the
 ///             AccessMode enum.
-File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
-    if (mode & BINARY) {
-        Log(Severity::CRITICAL_ERROR, System::CORE, "Sorry, File::BINARY for files not implemented yet");
-    }
-    
+File::File(char const* path, uint32_t mode) : path(path), mode(mode) {    
     if (mode & TEXT && mode & BINARY) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "File has both File::TEXT and File::BINARY flags set");
     }

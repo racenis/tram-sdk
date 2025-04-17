@@ -17,14 +17,23 @@ struct AssemblyLayer {
     vec4 specular;
 };
 
+struct AssemblyTexture {
+    int index;
+    int width;
+    int height;
+};
+
 struct AssemblyLayers {
     int width, height;
+    std::vector<AssemblyTexture> textures;
     std::vector<std::vector<AssemblyLayer>> pixels;
 };
 
 void SetMaterialAssemblyIndex(material_t material, int index);
 void SetUseAssembly(bool);
 AssemblyLayers GetAssemblyLayers();
+
+bool IsFinishedRendering();
 
 
 }
