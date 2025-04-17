@@ -17,6 +17,7 @@ struct RTTexture {
     int width;
     int height;
     int channels;
+    int assembly_index = -1;
     RTTextureMode mode = RT_NEAREST;
     vec4* pixels = nullptr;
 };

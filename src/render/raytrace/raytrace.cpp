@@ -42,6 +42,8 @@ static uint16_t* depth_buffer = nullptr;
 
 static Render::Pose* null_pose = nullptr;
 
+static RTTexture* texture_indices[16] = {nullptr};
+
 const float epsilon = 1.0f/255.0f;
 
 struct TreeVertex {
@@ -66,6 +68,13 @@ static AABBTree* tree = nullptr;
 
 static int rendering_progress = 0;
 static bool is_rendering = false;
+static bool use_assembly_rendering = false;
+
+static AssemblyLayers assembly;
+
+std::vector<AssemblyLayer>& GetAssembly(int x, int y) {
+    return assembly.pixels[y * screen_width + x];
+}
 
 void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
@@ -160,6 +169,41 @@ bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
     return true;
 }
 
+std::pair<vec3, vec3> GetLightContribution(RTMaterial* material, vec3 view_dir, vec3 point, vec3 normal) {
+    vec3 diffuse_color = {0.0f, 0.0f, 0.0f};
+    vec3 specular_color = {0.0f, 0.0f, 0.0f};
+    
+    const vec3 away_pos = point + 0.01f * normal;
+    
+    for (const auto& light : PoolProxy<RTLight>::GetPool()) {
+        vec3 light_vec = light.location - point;
+        
+        float dist = glm::length(light_vec);
+        float strn = glm::max(glm::dot(glm::normalize(light_vec), normal), 0.0f);
+        float attn = strn * (1.0f / (1.0f + 0.09f * dist + 0.032f * (dist * dist)));
+
+        if (attn < epsilon) continue;
+
+        float drct = glm::clamp(glm::pow(glm::max(glm::dot(light.direction, -glm::normalize(light_vec)), 0.0f), light.exponent), 0.0f, 1.0f);
+
+        if (drct < epsilon) continue;
+
+        if (FindIfObstacle(away_pos, glm::normalize(light_vec), light.location)) {
+            continue;
+        }
+
+        float spec = glm::pow(glm::max(glm::dot(view_dir, glm::reflect(-glm::normalize(light_vec), normal)), 0.0f), material->specular_exponent);
+
+        diffuse_color += light.color * attn * drct;
+        specular_color += material->specular_weight * spec * light.color * drct;
+    }
+    
+    diffuse_color += (1.0f - material->specular_transparency) * specular_color;
+    specular_color *= material->specular_transparency;
+    
+    return {diffuse_color, specular_color};
+}
+
 vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     int nearest_intersect = FindNearestTriangle(pos, dir);
 
@@ -186,45 +230,106 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     }
     
     vec3 view_dir = -dir;
-
-    vec3 diffuse_color = {0.0f, 0.0f, 0.0f};
-    vec3 specular_color = {0.0f, 0.0f, 0.0f};
-    vec3 reflection_color = {0.0f, 0.0f, 0.0f};
-    
     vec3 away_pos = intersection + 0.01f * normal;
+
+    vec3 reflection_color = {0.0f, 0.0f, 0.0f};
     
     if (cap > 0 && tri.material->reflectivity) {
         reflection_color = FindColorFromRay(away_pos, glm::reflect(dir, normal), 0);
     }
 
-    for (const auto& light : PoolProxy<RTLight>::GetPool()) {
-        vec3 light_vec = light.location - vec3(intersection);
+    auto [diffuse_color, specular_color] = GetLightContribution(tri.material, view_dir, intersection, normal);
+
+    return vec3(texture_color) * diffuse_color + specular_color + tri.material->reflectivity * reflection_color;
+}
+
+std::vector<AssemblyLayer> FindAssemblyFromRay(vec3 pos, vec3 dir, int cap) {
+    int nearest_intersect = FindNearestTriangle(pos, dir);
+
+    if (nearest_intersect == -1) {
+        return {{vec4(screen_clear_color, 1.0f),
+                 -1,
+                 0,
+                 0,
+                 1.0f,
+                 {0.0f, 0.0f, 0.0f, 0.0f}}};        
+    }
+
+    const auto& tri = tree_triangles[nearest_intersect];
+    
+    vec3 intersection = RayTriangleIntersection(pos, dir, tri.p0.pos, tri.p1.pos, tri.p2.pos);
+    
+    vec3 barycentric = GetBarycentric(tri.p0.pos, tri.p1.pos, tri.p2.pos, intersection);
+    
+    vec2 tex_coords = barycentric.x * tri.p0.tex + barycentric.y * tri.p1.tex + barycentric.z * tri.p2.tex;
+    vec3 normal = barycentric.x * tri.p0.nrm + barycentric.y * tri.p1.nrm + barycentric.z * tri.p2.nrm;
+    
+    vec4 texture_color = SampleTexture(tri.material->texture, tex_coords);
+    
+    if (tri.material->normal_map) {
+        mat3 normal_matrix = mat3(tri.tangent, tri.bitangent, normal);
         
-        float dist = glm::length(light_vec);
-        float strn = glm::max(glm::dot(glm::normalize(light_vec), normal), 0.0f);
-        float attn = strn * (1.0f / (1.0f + 0.09f * dist + 0.032f * (dist * dist)));
-
-        if (attn < epsilon) continue;
-
-        float drct = glm::clamp(glm::pow(glm::max(glm::dot(light.direction, -glm::normalize(light_vec)), 0.0f), light.exponent), 0.0f, 1.0f);
-
-        if (drct < epsilon) continue;
-
-        if (FindIfObstacle(away_pos, glm::normalize(light_vec), light.location)) {
-            continue;
-        }
-
-        float spec = glm::pow(glm::max(glm::dot(view_dir, glm::reflect(-glm::normalize(light_vec), normal)), 0.0f), tri.material->specular_exponent);
-
-        diffuse_color += light.color * attn * drct;
-        specular_color += tri.material->specular_weight * spec * light.color * drct;
+        vec3 normal_sample = SampleTexture(tri.material->normal_map, tex_coords);
+        normal = glm::normalize(normal_matrix * (normal_sample * 2.0f - 1.0f)); 
     }
     
-    
-    
-    diffuse_color += (1.0f - tri.material->specular_transparency) * specular_color;
+    vec3 view_dir = -dir;
+    vec3 away_pos = intersection + 0.01f * normal;
 
-    return vec3(texture_color) * diffuse_color + tri.material->specular_transparency * specular_color + tri.material->reflectivity * reflection_color;// + tri.material->specular_transparency * specular_color;
+    std::vector<AssemblyLayer> layers;
+
+    if (cap > 0 && tri.material->reflectivity) {
+        layers = FindAssemblyFromRay(away_pos, glm::reflect(dir, normal), 0);
+    }
+
+    auto [diffuse_color, specular_color] = GetLightContribution(tri.material, view_dir, intersection, normal);
+
+    AssemblyLayer layer;
+    
+    if (tri.material->texture->assembly_index > 0) {
+        // sample
+        layer.diffuse = vec4(diffuse_color, 1.0f);
+        layer.texture = tri.material->texture->assembly_index;
+        layer.sample_x = tex_coords.x * (float)tri.material->texture->width;
+        layer.sample_y = tex_coords.y * (float)tri.material->texture->height;
+        layer.sublayer_opacity = tri.material->reflectivity;
+        layer.specular = vec4(specular_color, 1.0f); // nuu
+    } else {
+        // merge
+        layer.diffuse = texture_color * vec4(diffuse_color, 1.0f);
+        layer.texture = -1;
+        layer.sample_x = 0;
+        layer.sample_y = 0;
+        layer.sublayer_opacity = tri.material->reflectivity;
+        layer.specular = vec4(specular_color, 1.0f); // nuu
+    }
+    
+    layers.push_back(layer);
+    
+    return layers;
+    
+    //return vec3(texture_color) * diffuse_color + tri.material->specular_transparency * specular_color + tri.material->reflectivity * reflection_color;
+    //return vec3(texture_color) * diffuse_color + tri.material->specular_transparency * specular_color + tri.material->reflectivity * reflection_color;
+}
+
+vec3 GetColorFromAssembly(std::vector<AssemblyLayer>& layers) {
+    vec3 color = {0, 0, 0};
+    
+    for (auto& layer : layers) {
+        color *= layer.sublayer_opacity;
+        
+        if (layer.texture > 0) {
+            float u = (float)layer.sample_x / (float)texture_indices[layer.texture]->width;
+            float v = (float)layer.sample_y / (float)texture_indices[layer.texture]->height;
+            color += vec3(SampleTexture(texture_indices[layer.texture], {u, v})) * vec3(layer.diffuse);
+        } else {
+            color += vec3(layer.diffuse);
+        }
+        
+        color += vec3(layer.specular);
+    }
+    
+    return color;
 }
 
 void RenderFrame() {
@@ -241,10 +346,19 @@ void RenderFrame() {
         vec3 look_direction = glm::normalize(far_point - near_point);
         vec3 look_position = near_point;
 
-        vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1);
-        //vec3 pixel_color = FindColorFromRay(look_position, look_direction, 0);
+        if (!use_assembly_rendering) {
+            vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1);
+            //vec3 pixel_color = FindColorFromRay(look_position, look_direction, 0);
+            
+            BlitDot(x, y, IntColor(glm::clamp(pixel_color, 0.0f, 1.0f)));
+        } else {
+            auto layers = FindAssemblyFromRay(look_position, look_direction, 1);
+            
+            BlitDot(x, y, IntColor(glm::clamp(GetColorFromAssembly(layers), 0.0f, 1.0f)));
+            
+            GetAssembly(x, y) = layers;
+        }
         
-        BlitDot(x, y, IntColor(glm::clamp(pixel_color, 0.0f, 1.0f)));
     }
     
     }
@@ -387,6 +501,15 @@ void SetInteractiveMode(bool is_interactive) {
     is_rendering = true;
     
     std::cout << "Begiinning ray-trace!" << std::endl;
+    
+    if (use_assembly_rendering) {
+        assembly.width = screen_width;
+        assembly.height = screen_height;
+        
+        assembly.pixels.clear();
+        assembly.pixels.resize(screen_width * screen_height);
+    }
+    
     
     tree_triangles.clear();
     if (tree) delete tree;
@@ -591,7 +714,18 @@ void SetInteractiveMode(bool is_interactive) {
 
 }
 
+void SetMaterialAssemblyIndex(material_t material, int index) {
+    material.rt->texture->assembly_index = index;
+    texture_indices[index] = material.rt->texture;
+}
 
+void SetUseAssembly(bool use) {
+    use_assembly_rendering = use;
+}
+
+AssemblyLayers GetAssemblyLayers() {
+    return assembly;
+}
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
     layers[layer].view_matrix = matrix;

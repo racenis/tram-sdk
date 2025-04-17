@@ -8,6 +8,23 @@
 
 namespace tram::Render::API {
 
+struct AssemblyLayer {
+    vec4 diffuse;
+    int texture;
+    int sample_x;
+    int sample_y;
+    float sublayer_opacity;
+    vec4 specular;
+};
+
+struct AssemblyLayers {
+    int width, height;
+    std::vector<std::vector<AssemblyLayer>> pixels;
+};
+
+void SetMaterialAssemblyIndex(material_t material, int index);
+void SetUseAssembly(bool);
+AssemblyLayers GetAssemblyLayers();
 
 
 }

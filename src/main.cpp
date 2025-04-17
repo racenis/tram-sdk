@@ -69,6 +69,8 @@
 #include <platform/api.h>
 #include <platform/image.h>
 
+#include <render/raytrace/raytrace.h>
+
 using namespace tram;
 using namespace tram::Render;
 using namespace tram::UI;
@@ -188,6 +190,12 @@ int main(int argc, const char** argv) {
             pot->Init();
         }
     }*/
+    
+    auto teapotmat = Material::Find("Material.01");
+    teapotmat->Load();
+    Render::API::SetMaterialAssemblyIndex(teapotmat->GetMaterial(), 1);
+    Render::API::SetUseAssembly(true);
+    //AssemblyLayers GetAssemblyLayers();
     
     tolet_sprite = new Sprite(UID("poland"));
     
