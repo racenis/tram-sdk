@@ -147,7 +147,7 @@ int main(int argc, const char** argv) {
     
     Ext::Kitchensink::RegisterRenderEnvironmentMapShortcut();
 
-    Render::API::SetScreenClear({0.0f, 0.0f, 0.0f}, true);
+    Render::API::SetScreenClear({0.0f, 0.0f, 1.0f}, true);
 
     // loading the demo level
     LightGraph::Find("demo_mov")->Load();

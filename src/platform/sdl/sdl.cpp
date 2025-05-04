@@ -227,14 +227,14 @@ void Window::SetTitle(const char* title) {
 void Window::SetSize(int w, int h) {
     SDL_SetWindowSize(window, w, h);
     
+    screen_width = w;
+    screen_height = h;
+    
+    SoftwareRenderContextUpdate();
+    
     int ww = w/screen_scale;
     int hh = h/screen_scale;
     UI::ScreenResize(ww, hh);
-    
-    SoftwareRenderContextUpdate();
-
-    screen_width = w;
-    screen_height = h;
 }
 
 void Window::SetScale(int s) {

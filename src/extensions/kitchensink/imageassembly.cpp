@@ -161,6 +161,7 @@ public:
                 
                 Sample* texture = new Sample;
                 texture->SetRegisterDst(2);
+                texture->SetRegisterSrc(layer.texture);
                 texture->SetCoordX(layer.sample_x);
                 texture->SetCoordY(layer.sample_y);
                 
@@ -278,11 +279,14 @@ public:
         // emit input metadata
         file.write_uint8(0);
         file.write_uint8(0);
+        file.write_uint16(0);
         file.write_uint16(width);
         file.write_uint16(height);
         
         for (auto& texture : textures) {
             file.write_uint8(texture.index);
+            file.write_uint8(0);
+            file.write_uint16(0);
             file.write_uint16(texture.width);
             file.write_uint16(texture.height);
         }

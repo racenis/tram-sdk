@@ -38,7 +38,6 @@ static uint16_t screen_width = 800.0f;
 static uint16_t screen_height = 600.0f;
 
 static uint16_t* screen_buffer = nullptr;
-static uint16_t* depth_buffer = nullptr;
 
 static Render::Pose* null_pose = nullptr;
 
@@ -83,8 +82,6 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetScreenSize(float width, float height) {
-    depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
-    
     screen_width = width;
     screen_height = height;
 }
@@ -208,7 +205,11 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     int nearest_intersect = FindNearestTriangle(pos, dir);
 
     if (nearest_intersect == -1) {
-        return {0, 0, 0}; // or return clear color???
+        if (clear_screen) {
+            return screen_clear_color;
+        } else {
+            return {0, 0, 0};
+        }
     }
 
     const auto& tri = tree_triangles[nearest_intersect];
@@ -365,13 +366,15 @@ void RenderFrame() {
     
     return;
 interactive:
-    memset(depth_buffer, 0, screen_width * screen_height * sizeof(float));
-
-    if (clear_screen) {
+    /*if (clear_screen) {
         uint16_t clear_color = IntColor(screen_clear_color);
         for (int i = 0; i < screen_width * screen_height; i++) {
             screen_buffer[i] = clear_color;
         }
+    }*/
+    
+    for (int i = 0; i < screen_width * screen_height; i++) {
+        screen_buffer[i] = 0x0000;
     }
     
     std::vector<std::pair<uint32_t, RTDrawListEntry*>> draw_list_sorted;
@@ -505,6 +508,15 @@ void SetInteractiveMode(bool is_interactive) {
     is_rendering = true;
     
     std::cout << "Begiinning ray-trace!" << std::endl;
+    
+    // horrible spathetti code to render a wireframe befor estarting to raytrace
+    //is_rendering = false;
+    //RenderFrame();
+    //is_rendering = true;
+    
+    /*for (int i = 0; i < screen_width * screen_height; i++) {
+        screen_buffer[i] = 0x0000;
+    }*/
     
     if (use_assembly_rendering) {
         assembly.width = screen_width;
@@ -768,8 +780,6 @@ void SetDebugMode(bool) {
 }
 
 void Init() {
-    depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
-    
     // initialize the default pose
     /*BLANK_POSE = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
