@@ -65,6 +65,14 @@ inline void BlitLineOctant1(uint32_t x0, uint32_t y0, uint32_t delta_x, uint32_t
 }
 
 inline void BlitLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, auto blit_func) {
+    
+    // for some reason some vertices get a NaN bone weight?? and this crashes?
+    // it seems to happen for vertices where all bones have a zero weight, which
+    // seems to indicate some sort of a normalization error, but who knows
+    // TODO: fix this hack
+    if (x0 < 0 || y0 < 0 || x1 < 0 || y1 < 0) return;
+    if (x0 > 1000 || y0 > 1000 || x1 > 1000 || y1 > 1000) return;
+    
     if (y0 > y1) {
         std::swap(y0, y1);
         std::swap(x0, x1);

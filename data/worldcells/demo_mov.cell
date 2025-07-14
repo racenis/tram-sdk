@@ -1,4 +1,4 @@
-CELLv3 cell 0 1
+CELLv3 cell 0 0
 #staticwobj 0 worldspawn 0 0.000000 0.000000 0.000000 0.0 0.0 0.0 worldspawn fullbright
 #staticwobj 0 platforma 0 0.000000 0.000000 0.000000 0.0 0.0 0.0 platforma fullbright
 staticwobj 0 paliktnis 0 0.000000 0.000000 0.000000 -3.141593 0.058408 -3.141593 movs lightmap/movs

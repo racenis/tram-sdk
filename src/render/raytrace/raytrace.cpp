@@ -59,6 +59,8 @@ struct TreeTriangle {
     vec3 tangent;
     vec3 bitangent;
     
+    vec4 color;
+    
     RTMaterial* material;
 };
 
@@ -132,6 +134,9 @@ int FindNearestTriangle(vec3 pos, vec3 dir) {
                                                     tree_triangles[index].p1.pos,
                                                     tree_triangles[index].p2.pos);
 
+        if (glm::dot(dir, glm::normalize(glm::cross(tree_triangles[index].p1.pos - tree_triangles[index].p0.pos,
+                                                    tree_triangles[index].p2.pos - tree_triangles[index].p0.pos))) > 0.0f) return INFINITY;
+
         if (intersection.x == INFINITY) return INFINITY;
 
         return glm::distance(intersection, pos);
@@ -170,7 +175,20 @@ std::pair<vec3, vec3> GetLightContribution(RTMaterial* material, vec3 view_dir, 
     vec3 diffuse_color = {0.0f, 0.0f, 0.0f};
     vec3 specular_color = {0.0f, 0.0f, 0.0f};
     
+    diffuse_color += layers[0].ambient_color;
+    
     const vec3 away_pos = point + 0.01f * normal;
+    const vec3 sun_dir = layers[0].sun_direction;
+    
+    if (!FindIfObstacle(away_pos, sun_dir, sun_dir * 100.0f)) {
+        float drct = glm::clamp(glm::dot(normal, sun_dir), 0.0f, 1.0f);
+        float spec = glm::pow(glm::max(glm::dot(view_dir, glm::reflect(-sun_dir, normal)), 0.0f), material->specular_exponent);
+        
+        //std::cout << sun_dir.x << " "<< sun_dir.y << " "<< sun_dir.z << " " << std::endl;
+
+        diffuse_color += layers[0].sun_color * drct;
+        specular_color += material->specular_weight * spec * layers[0].sun_color * drct;
+    }
     
     for (const auto& light : PoolProxy<RTLight>::GetPool()) {
         vec3 light_vec = light.location - point;
@@ -289,15 +307,20 @@ std::vector<AssemblyLayer> FindAssemblyFromRay(vec3 pos, vec3 dir, int cap) {
     
     if (tri.material->texture->assembly_index > 0) {
         // sample
-        layer.diffuse = vec4(diffuse_color, 1.0f);
+        layer.diffuse = vec4(diffuse_color, 1.0f) * tri.material->color * tri.color;
         layer.texture = tri.material->texture->assembly_index;
         layer.sample_x = tex_coords.x * (float)tri.material->texture->width;
         layer.sample_y = tex_coords.y * (float)tri.material->texture->height;
+        if (layer.sample_x >= tri.material->texture->width) layer.sample_x = tri.material->texture->width - 1;
+        if (layer.sample_y >= tri.material->texture->height) layer.sample_y = tri.material->texture->height - 1;
+        if (layer.sample_x < 0) layer.sample_x = 0;
+        if (layer.sample_y < 0) layer.sample_y = 0;
+        // TODO: implement proper texture repeating
         layer.sublayer_opacity = tri.material->reflectivity;
         layer.specular = vec4(specular_color, 1.0f); // nuu
     } else {
         // merge
-        layer.diffuse = texture_color * vec4(diffuse_color, 1.0f);
+        layer.diffuse = texture_color * vec4(diffuse_color, 1.0f) * tri.material->color * tri.color;
         layer.texture = -1;
         layer.sample_x = 0;
         layer.sample_y = 0;
@@ -410,9 +433,11 @@ interactive:
                     vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
                     vec4 pr2 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p2.pos, 1.0f);
                     
-                    ClipRenderLine(pr0, pr1, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor({1, 1, 1}));});
-                    ClipRenderLine(pr1, pr2, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor({1, 1, 1}));});
-                    ClipRenderLine(pr2, pr0, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor({1, 1, 1}));});
+                    const vec3 color = entry->color;
+                    
+                    ClipRenderLine(pr0, pr1, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(color));});
+                    ClipRenderLine(pr1, pr2, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(color));});
+                    ClipRenderLine(pr2, pr0, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(color));});
                 }
                 
                 break;
@@ -459,9 +484,11 @@ interactive:
                     vec4 pos1 = layers[0].projection_matrix * layers[0].view_matrix * world_pos1;
                     vec4 pos2 = layers[0].projection_matrix * layers[0].view_matrix * world_pos2;
                     
-                    ClipRenderLine(pos0, pos1, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor({1, 1, 1}));});
-                    ClipRenderLine(pos1, pos2, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor({1, 1, 1}));});
-                    ClipRenderLine(pos2, pos0, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor({1, 1, 1}));});
+                    const vec3 color = entry->color;
+                    
+                    ClipRenderLine(pos0, pos1, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(color));});
+                    ClipRenderLine(pos1, pos2, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(color));});
+                    ClipRenderLine(pos2, pos0, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(color));});
                 }
                 
                 break;
@@ -594,6 +621,7 @@ void SetInteractiveMode(bool is_interactive) {
                     tree_triangle.bitangent = glm::normalize(tree_triangle.bitangent);
                     
                     tree_triangle.material = entry->material;
+                    tree_triangle.color = entry->color;
                     
                     tree->InsertLeaf(tree_triangles.size(),
                                      MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
@@ -699,6 +727,7 @@ void SetInteractiveMode(bool is_interactive) {
                     tree_triangle.bitangent = glm::normalize(tree_triangle.bitangent);
                     
                     tree_triangle.material = entry->material;
+                    tree_triangle.color = entry->color;
                     
                     tree->InsertLeaf(tree_triangles.size(),
                                      MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
@@ -731,6 +760,10 @@ void SetInteractiveMode(bool is_interactive) {
 }
 
 void SetMaterialAssemblyIndex(material_t material, int index) {
+    
+    // TODO: make the -1 index reset the material
+    // TODO: prevent duplicates, i.e. two textures with the same index
+    
     material.rt->texture->assembly_index = index;
     texture_indices[index] = material.rt->texture;
     assembly.textures.push_back({index, material.rt->texture->width, material.rt->texture->height});

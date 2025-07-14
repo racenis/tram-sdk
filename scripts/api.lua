@@ -299,6 +299,49 @@ function tram.math.quat(x, y, z, w)
 	return vector
 end
 
+function tram.math.mix(a, b, c)
+	if c > 1.0 then
+		c = 1.0
+	elseif c < 0.0 then
+		c = 0.0
+	end
+
+	if getmetatable(a) == tram.math._metatable_vec3 then
+		if getmetatable(b) ~= tram.math._metatable_vec3 then
+			error("First is vec3 but second isn't")
+		end
+		
+		local result = {}
+		
+		result.x = b.x * c + a.x * (1.0 - c)
+		result.y = b.y * c + a.y * (1.0 - c)
+		result.z = b.z * c + a.z * (1.0 - c)
+
+
+		setmetatable(result, tram.math._metatable_vec3)
+	
+		return result
+	elseif getmetatable(a) == tram.math._metatable_quat then
+		if getmetatable(b) ~= tram.math._metatable_quat then
+			error("First is quat but second isn't")
+		end
+		
+		local result = {}
+		
+		result.x = b.x * c + a.x * (1.0 - c)
+		result.y = b.y * c + a.y * (1.0 - c)
+		result.z = b.z * c + a.z * (1.0 - c)
+		result.w = b.w * c + a.w * (1.0 - c)
+
+
+		setmetatable(result, tram.math._metatable_quat)
+	
+		return result
+	else
+		error("Mixing not vec3 and not quat")
+	end
+end
+
 -- -------------------------------  CONSTANTS ------------------------------- --
 
 tram.math.DIRECTION_FORWARD = tram.math.vec3(0.0, 0.0, -1.0)

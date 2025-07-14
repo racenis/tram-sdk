@@ -193,6 +193,7 @@ int main(int argc, const char** argv) {
     }*/
     
     auto teapotmat = Material::Find("Material.01");
+    //auto teapotmat = Material::Find("dev/scaffold32x32");
     teapotmat->Load();
     Render::API::SetMaterialAssemblyIndex(teapotmat->GetMaterial(), 1);
     Render::API::SetUseAssembly(true);
@@ -364,7 +365,7 @@ void mainloop() {
     //Render::AddText(20, 60, std::to_string(ff.z).c_str(), ff);
     
     if (API::IsFinishedRendering()) {
-        API::SetInteractiveMode(true);
+        //API::SetInteractiveMode(true);
         
         Kitchensink::ImageAssembly::Add(API::GetAssemblyLayers());
         Kitchensink::ImageAssembly::Save("assembly.image");
