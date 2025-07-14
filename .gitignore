@@ -36,3 +36,9 @@ build
 tram-sdk-cppcheck-build-dir
 cppcheck
 Makefile
+
+# Codelite IDE files
+#compile_flags.txt
+#tram-sdk.cppcheck
+#tram-sdk.mk
+#tram-sdk.project
