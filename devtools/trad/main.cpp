@@ -369,10 +369,10 @@ void MovePositionTowardTriangleCenter(const AABBTree& tree,
 	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir, mid_dist);
 	if (glm::distance(nearest, pos) < mid_dist) {
 		//return {1.0f, 0.0f, 0.0f};
-		//pos += mid_dir * 0.3f;
+		pos += mid_dir * 0.3f;
 		//pos = nearest + 0.01f * normal;
 		//pos += mid_dir * (glm::distance(nearest, pos) + 0.02f);
-		pos = nearest + (mid_dir * 0.1f);
+		//pos = nearest + (mid_dir * 0.1f);
 	}
 }
 
@@ -903,8 +903,8 @@ int main(int argc, const char** argv) {
 				
 				// we might get a collision with the triangle, on which the texel is located
 				// on, so we move it off of the surface a little bit
-				pos += 0.01f * nrm;
-				mid += 0.01f * nrm;
+				pos += 0.05f * nrm;
+				mid += 0.05f * nrm;
 				
 				if (!fast) MovePositionTowardTriangleCenter(scene_tree, scene_triangles, pos, nrm, mid);
 				

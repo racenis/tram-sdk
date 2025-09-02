@@ -63,7 +63,8 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
 bool Button(const char* text, bool enabled = true, uint32_t width = 0);
 bool Slider(float& value, bool enabled = true, uint32_t width = 0);
 
-void Glyph(glyph_t glyph);
+void Glyph(glyph_t glyph); // TODO: implement this
+void Glyph(font_t font, glyph_t glyph); // TODO: yeet this
 void Text(const char* text, uint32_t orientation = TEXT_LEFT);
 bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
 void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);

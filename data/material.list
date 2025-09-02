@@ -164,6 +164,7 @@ kjeems flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 skavotaajs flat linear metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 metalakaste flat linear metal 1.0 1.0 1.0 1.0 32.0 0.0 0.0 same
 metalareste alpha linear metal 1.0 1.0 1.0 1.0 32.0 0.0 0.0 same
+translucent blend linear metal 1.0 1.0 1.0 1.0 32.0 0.0 0.0 same
 dev/nodraw flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 dev/light flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same
 dev/sound flat nearest metal 1.0 1.0 1.0 0.0 1.0 0.0 0.0 same

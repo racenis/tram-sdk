@@ -39,6 +39,10 @@ struct {
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.0f, 0.0f, 0.0f};
     
+    float fog_near = 0.0f;
+    float fog_far = 0.0f;
+    vec3 fog_color = {0.0f, 0.0f, 0.0f};
+    
     mat4 projection = mat4(1.0f);
     mat4 view = mat4(1.0f);
 } view_properties[7];
@@ -98,6 +102,13 @@ static void update_light(layer_t layer) {
                                view_properties[layer].sun_color, 
                                view_properties[layer].ambient_color, 
                                layer);
+}
+
+static void update_fog(layer_t layer) {
+    API::SetFogParameters(view_properties[layer].fog_color, 
+                          view_properties[layer].fog_near, 
+                          view_properties[layer].fog_far, 
+                          layer);
 }
 
 /// Initializes the rendering system.
@@ -199,6 +210,17 @@ void SetSunColor (color_t color, layer_t layer) {
 void SetAmbientColor (color_t color, layer_t layer) {
     view_properties[layer].ambient_color = color;
     update_light(layer);
+}
+
+void SetFogDistance(float near, float far, layer_t layer) {
+    view_properties[layer].fog_near = near;
+    view_properties[layer].fog_far = far;
+    update_fog(layer);
+}
+
+void SetFogColor(vec3 color, layer_t layer) {
+    view_properties[layer].fog_color = color;
+    update_fog(layer);
 }
 
 void SetScreenSize(float width, float height) {

@@ -27,6 +27,10 @@ struct LayerParameters {
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.3f, 0.3f, 0.3f};
+    
+    vec3 fog_color = {0.0f, 0.0f, 0.0f};
+    float fog_near = INFINITY;
+    float fog_far = INFINITY;
 };
 
 static LayerParameters layers[7];
@@ -77,10 +81,16 @@ std::vector<AssemblyLayer>& GetAssembly(int x, int y) {
     return assembly.pixels[y * screen_width + x];
 }
 
-void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
+void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
     layers[layer].sun_color = sun_color;
     layers[layer].ambient_color = ambient_color;
+}
+
+void SetFogParameters(vec3 color, float near, float far, uint32_t layer) {
+    layers[layer].fog_color = color;
+    layers[layer].fog_near = near;
+    layers[layer].fog_far = far;
 }
 
 void SetScreenSize(float width, float height) {
@@ -219,7 +229,7 @@ std::pair<vec3, vec3> GetLightContribution(RTMaterial* material, vec3 view_dir, 
     return {diffuse_color, specular_color};
 }
 
-vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
+vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap, float dist) {
     int nearest_intersect = FindNearestTriangle(pos, dir);
 
     if (nearest_intersect == -1) {
@@ -233,6 +243,8 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     const auto& tri = tree_triangles[nearest_intersect];
     
     vec3 intersection = RayTriangleIntersection(pos, dir, tri.p0.pos, tri.p1.pos, tri.p2.pos);
+    
+    float ray_dist = dist + glm::distance(pos, intersection);
     
     vec3 barycentric = GetBarycentric(tri.p0.pos, tri.p1.pos, tri.p2.pos, intersection);
     
@@ -254,12 +266,33 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap) {
     vec3 reflection_color = {0.0f, 0.0f, 0.0f};
     
     if (cap > 0 && tri.material->reflectivity) {
-        reflection_color = FindColorFromRay(away_pos, glm::reflect(dir, normal), 0);
+        reflection_color = FindColorFromRay(away_pos, glm::reflect(dir, normal), 0, ray_dist);
     }
-
+    
     auto [diffuse_color, specular_color] = GetLightContribution(tri.material, view_dir, intersection, normal);
 
-    return vec3(texture_color) * diffuse_color + specular_color + tri.material->reflectivity * reflection_color;
+    // pushing the intersection position a bit after the triangle, so that we
+    // don't have the ray intersecting with the same triangle again when we want
+    // to find further triangles after this triangle
+    vec3 into_pos = intersection + 0.01f * dir;
+    
+    // if texture is translucent, check what is behind it, since it's translucent
+    // TODO: add this to assembly ray function
+    vec3 translucent_color = {0.0f, 0.0f, 0.0f};
+    if (texture_color.w < 1.0f - epsilon) {
+        translucent_color = FindColorFromRay(into_pos, dir, 0, ray_dist);
+    }
+
+    float fog = 0.0f;
+    if (ray_dist > layers[0].fog_near) {
+        float dist_in_fog = ray_dist - layers[0].fog_near;
+        float total_fog = layers[0].fog_far - layers[0].fog_near;
+        
+        fog = dist_in_fog / total_fog;
+        if (fog > 1.0f) fog = 1.0f;
+    }
+    
+    return glm::mix(glm::mix(translucent_color, vec3(texture_color) * diffuse_color, texture_color.w) + specular_color + tri.material->reflectivity * reflection_color, layers[0].fog_color, fog);
 }
 
 std::vector<AssemblyLayer> FindAssemblyFromRay(vec3 pos, vec3 dir, int cap) {
@@ -371,7 +404,7 @@ void RenderFrame() {
         vec3 look_position = near_point;
 
         if (!use_assembly_rendering) {
-            vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1);
+            vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1, 0.0f);
             //vec3 pixel_color = FindColorFromRay(look_position, look_direction, 0);
             
             BlitDot(x, y, IntColor(glm::clamp(pixel_color, 0.0f, 1.0f)));

@@ -29,6 +29,9 @@ void SetSunDirection(vec3 direction, layer_t layer = 0);
 void SetSunColor(color_t color, layer_t layer = 0);
 void SetAmbientColor(color_t color, layer_t layer = 0);
 
+void SetFogDistance(float near, float far, layer_t layer = 0);
+void SetFogColor(vec3 color, layer_t layer = 0);
+
 void SetScreenSize(float width, float height);
 
 void SetOrthoRatio(float ratio, layer_t layer = 0);

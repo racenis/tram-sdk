@@ -699,6 +699,18 @@ void Init() {
         return true;
     });
     
+    SetFunction("__impl_render_set_fog_distance", {TYPE_FLOAT32, TYPE_FLOAT32, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[2].GetInt() ? array[2].GetInt() : 0;
+        Render::SetFogDistance(array[0], array[1], layer);
+        return true;
+    });
+    
+    SetFunction("__impl_render_set_fog_color", {TYPE_VEC3, TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[1].GetInt() ? array[1].GetInt() : 0;
+        Render::SetFogColor(array[0], layer);
+        return true;
+    });
+    
     SetFunction("__impl_render_set_screen_clear_color", {TYPE_VEC3}, [](valuearray_t array) -> value_t {
         Render::API::SetScreenClear(array[0], true);
         return true;
@@ -731,6 +743,11 @@ void Init() {
     SetFunction("__impl_render_get_view_position", {TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
         layer_t layer = array[0].GetInt() ? array[0].GetInt() : 0;
         return Render::GetViewPosition(layer);
+    });
+    
+    SetFunction("__impl_render_get_view_rotation", {TYPE_UNDEFINED}, [](valuearray_t array) -> value_t {
+        layer_t layer = array[0].GetInt() ? array[0].GetInt() : 0;
+        return Render::GetViewRotation(layer);
     });
     
     SetFunction("__impl_render_add_line", {TYPE_VEC3, TYPE_VEC3, TYPE_VEC3}, [](valuearray_t array) -> value_t {

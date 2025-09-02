@@ -104,6 +104,7 @@ static float SCREEN_HEIGHT = 600.0f;
 static Render::Pose* null_pose = nullptr;
 
 static Settings::Property<bool> render_debug = {false, "renderer-debug", Settings::NONE};
+static Settings::Property<bool> frustum_culling = {true, "frustum-culling", Settings::NONE};
 
 uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
     uint32_t handle;
@@ -304,7 +305,7 @@ void RenderFrame() {
         }
 
         // frustum culling
-        if (robj.flags & FLAG_USE_AABB) {
+        if (robj.flags & FLAG_USE_AABB && frustum_culling) {
             auto matrix = layers[robj.layer].projection_matrix * layers[robj.layer].view_matrix;
 
             vec4 plane_l = {matrix[0][3] - matrix[0][0], 

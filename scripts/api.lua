@@ -1264,6 +1264,14 @@ function tram.render.SetAmbientColor(color, layer)
 	__impl_render_set_ambient_color(color, layer)
 end
 
+function tram.render.SetDistanceColor(near, far, layer)
+	__impl_render_set_fog_distance(near, far, layer)
+end
+
+function tram.render.SetFogColor(color, layer)
+	__impl_render_set_fog_color(color, layer)
+end
+
 function tram.render.SetScreenClearColor(color)
 	__impl_render_set_screen_clear_color(color)
 end

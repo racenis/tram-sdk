@@ -22,6 +22,7 @@ void SetScreenSize(float width, float height);
 void SetScreenClear(vec3 clear_color, bool clear);
 
 void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, layer_t layer);
+void SetFogParameters(vec3 color, float near, float far, layer_t layer);
 
 void SetViewMatrix(const mat4& matrix, layer_t layer);
 void SetProjectionMatrix(const mat4& matrix, layer_t layer);

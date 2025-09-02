@@ -196,7 +196,7 @@ int main(int argc, const char** argv) {
     //auto teapotmat = Material::Find("dev/scaffold32x32");
     teapotmat->Load();
     Render::API::SetMaterialAssemblyIndex(teapotmat->GetMaterial(), 1);
-    Render::API::SetUseAssembly(true);
+    //Render::API::SetUseAssembly(true);
     //AssemblyLayers GetAssemblyLayers();
     
     tolet_sprite = new Sprite(UID("poland"));
