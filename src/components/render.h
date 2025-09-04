@@ -18,6 +18,7 @@ public:
     inline name_t GetLightmap() { return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
 
     void SetModel(name_t name);
+    void SetModel(Render::Model* model) { this->model = model; }
     void SetLightmap(name_t name);
     void SetEnvironmentMap(Render::Material* material);
     void SetArmature(AnimationComponent* armature);

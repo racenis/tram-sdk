@@ -103,6 +103,11 @@ modules = {
 		{"WEB": f" -I{tramsdk}libraries/bullet", "WIN32": f" -I{tramsdk}libraries/bullet", "WIN64": f" -I{tramsdk}libraries/bullet", "LINUX": f" -I/usr/include/bullet"},
 		{"WEB": web_bin, "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "WIN32": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "WIN64": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath ", "LINUX": "-lBulletSoftBody -lBulletDynamics -lBulletCollision -lLinearMath "}),
+	"physics/template": Module("physics/template",
+		"physics", 
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
 		
 	"extensions/camera": Module("extensions/camera",
 		"extensions", 

@@ -55,7 +55,7 @@ namespace tram::Render {
 
 static Hashmap<Model*> model_list ("model name list", 500);
 
-Model* Model::Find (name_t name) {
+Model* Model::Find(name_t name) {
     Model* model = model_list.Find (name);
     
     if (!model) {
@@ -418,49 +418,6 @@ void Model::LoadFromDisk() {
             // TODO: implement a better solution
             if (tcount < 10000) model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
-            /*materialtype_t material_type = materials[material_index]->GetType();
-            
-            size_t bucket = 0;
-            uint32_t material_index_in_bucket = 0;
-            
-            // try to find the bucket that contains this triangle's material
-            for (; bucket < triangle_buckets.size(); bucket++) {
-                if (triangle_buckets[bucket].material_type != material_type) continue;
-                
-                // check if material is in the bucket
-                for (size_t i = 0; i < triangle_buckets[bucket].materials.size(); i++) {
-                    if (triangle_buckets[bucket].materials[i] == material_index) {
-                        material_index_in_bucket = material_index;
-                        goto found_bucket;
-                    }
-                }
-                
-                // otherwise try to add it to the bucket
-                if (triangle_buckets[bucket].materials.size() < 15) {
-                    material_index_in_bucket = triangle_buckets[bucket].materials.size();
-                    triangle_buckets[bucket].materials.push_back(material_index);
-                    goto found_bucket;
-                }
-            }            
-            
-            found_bucket:
-
-            if (bucket < triangle_buckets.size()) {
-                triangle_buckets[bucket].triangles.push_back(index);
-            } else {
-                assert(triangle_buckets.size() < 3);
-                
-                triangle_buckets.push_back(TriangleBucket {
-                    .material_type = material_type,
-                    .materials = {material_index},
-                    .triangles = {index}
-                });
-            }
-
-            data->vertices[index.indices.x].texture = material_index_in_bucket;
-            data->vertices[index.indices.y].texture = material_index_in_bucket;
-            data->vertices[index.indices.z].texture = material_index_in_bucket;*/
-            
             data->vertices[index.indices.x].texture = bucket_index;
             data->vertices[index.indices.y].texture = bucket_index;
             data->vertices[index.indices.z].texture = bucket_index;
@@ -623,47 +580,6 @@ void Model::LoadFromDisk() {
             // TODO: implement a better solution
             if (tcount < 10000) model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
-            /*materialtype_t material_type = materials[material_index]->GetType();
-            
-            size_t bucket = 0;
-            
-            // try to find the bucket that contains this triangle's material
-            for (; bucket < triangle_buckets.size(); bucket++) {
-                if (triangle_buckets[bucket].material_type != material_type) continue;
-                
-                // check if material is in the bucket
-                for (size_t i = 0; i < triangle_buckets[bucket].materials.size(); i++) {
-                    if (triangle_buckets[bucket].materials[i] == material_index) {
-                        goto found_bucket2;
-                    }
-                }
-                
-                // otherwise try to add it to the bucket
-                if (triangle_buckets[bucket].materials.size() < 15) {
-                    triangle_buckets[bucket].materials.push_back(material_index);
-                    goto found_bucket2;
-                }
-            }            
-            
-            found_bucket2:
-
-            if (bucket < triangle_buckets.size()) {
-                triangle_buckets[bucket].triangles.push_back(index);
-            } else {
-                assert(triangle_buckets.size() < 3);
-                
-                triangle_buckets.push_back(TriangleBucket {
-                    .material_type = material_type,
-                    .materials = {material_index},
-                    .triangles = {index}
-                });
-            }
-
-            data->vertices[index.indices.x].texture = material_index;
-            data->vertices[index.indices.y].texture = material_index;
-            data->vertices[index.indices.z].texture = material_index;*/
-            
-            
             data->vertices[index.indices.x].texture = bucket_index;
             data->vertices[index.indices.y].texture = bucket_index;
             data->vertices[index.indices.z].texture = bucket_index;
@@ -738,7 +654,7 @@ void Model::LoadFromDisk() {
     if (File file (path, File::READ); file.is_open()) {
         name_t file_version = file.read_name();
         
-        if (file_version != UID("MDMDLv1")) {
+        if (file_version != "MDMDLv1") {
             std::cout << "Model " << path << " is not using right MDMDLv1 version!" << std::endl;
         }
         
@@ -837,6 +753,36 @@ load_failure:
     status = LOADED;
     
     load_fail = true;
+}
+
+
+void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pair<Material*, Material*>> mappings) {
+    assert(status == Resource::UNLOADED);
+    
+    this->source = source;
+    
+    this->source->AddReference();
+    Async::LoadDependency(this->source);
+        
+    for (Material* mat : this->source->materials) {
+        for (const auto& mapping : mappings) {
+            if (mapping.first == mat) {
+                materials.push_back(mapping.second);
+                goto next;
+            }
+        }
+        materials.push_back(mat);
+        next:;
+    }
+    
+    for (Material* mat : this->materials) {
+        mat->AddReference();
+        Async::LoadDependency(mat);
+    }
+    
+    status = LOADED;
+    
+    return;
 }
 
 }

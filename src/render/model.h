@@ -26,7 +26,7 @@ struct IndexRange {
 
 class Model : public Resource {
 public:
-    Model (name_t name) : Resource(name) {}
+    Model(name_t name) : Resource(name) {}
 
     void LoadFromDisk();
     void LoadFromMemory();
@@ -55,6 +55,8 @@ public:
     float GetFarDistance() const { return fade_far; }
     void SetNearDistance(float dist) { fade_near = dist; }
     void SetFarDistance(float dist) { fade_far = dist; }
+    
+    void LoadAsModificationModel(Model* source, std::initializer_list<std::pair<Material*, Material*>> mapping);
     
     static Model* Find(name_t name);
     

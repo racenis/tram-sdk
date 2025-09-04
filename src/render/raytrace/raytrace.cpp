@@ -255,7 +255,7 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap, float dist) {
     vec2 tex_coords = barycentric.x * tri.p0.tex + barycentric.y * tri.p1.tex + barycentric.z * tri.p2.tex;
     vec3 normal = barycentric.x * tri.p0.nrm + barycentric.y * tri.p1.nrm + barycentric.z * tri.p2.nrm;
     
-    vec4 texture_color = SampleTexture(tri.material->texture, tex_coords);
+    vec4 texture_color = tri.material->color * tri.color * SampleTexture(tri.material->texture, tex_coords);
     
     if (tri.material->normal_map) {
         mat3 normal_matrix = mat3(tri.tangent, tri.bitangent, normal);

@@ -45,6 +45,7 @@ public:
     inline float GetSpecularWeight() const { return specular_weight; }
     inline float GetSpecularExponent() const { return specular_exponent; }
     inline float GetSpecularTransparency() const { return specular_transparency; }
+    inline float GetReflectivity() const { return reflectivity; }
 
     // TODO: update the material in the API when these are called
     void SetMaterialType(materialtype_t type) { this->type = type; }
