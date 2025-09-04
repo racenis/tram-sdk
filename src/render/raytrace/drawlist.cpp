@@ -98,6 +98,10 @@ void SetDrawListIndexRange(drawlistentry_t entry, uint32_t index_offset, uint32_
 
 bool SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, materialtype_t material_type) {
     // TODO: check if material_type has transparency and save that fact
+    if (material_type == MATERIAL_TEXTURE_BLEND) {
+        entry.rt->translucent = true;
+    }
+    
     return true;
 }
 

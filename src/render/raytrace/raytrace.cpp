@@ -65,6 +65,8 @@ struct TreeTriangle {
     
     vec4 color;
     
+    bool translucent;
+    
     RTMaterial* material;
 };
 
@@ -163,6 +165,8 @@ bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
     float target_distance = glm::distance(pos, target);
     
     uint32_t nearest = tree->FindIntersection(pos, dir, target_distance, [&](vec3 pos, vec3 dir, uint32_t index) {
+        if (tree_triangles[index].translucent) return INFINITY;
+        
         vec3 intersection = RayTriangleIntersection(pos,
                                                     dir,
                                                     tree_triangles[index].p0.pos,
@@ -274,7 +278,7 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap, float dist) {
     // pushing the intersection position a bit after the triangle, so that we
     // don't have the ray intersecting with the same triangle again when we want
     // to find further triangles after this triangle
-    vec3 into_pos = intersection + 0.01f * dir;
+    vec3 into_pos = intersection + 0.0001f * dir;
     
     // if texture is translucent, check what is behind it, since it's translucent
     // TODO: add this to assembly ray function
@@ -655,6 +659,7 @@ void SetInteractiveMode(bool is_interactive) {
                     
                     tree_triangle.material = entry->material;
                     tree_triangle.color = entry->color;
+                    tree_triangle.translucent = entry->translucent;
                     
                     tree->InsertLeaf(tree_triangles.size(),
                                      MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
@@ -761,6 +766,7 @@ void SetInteractiveMode(bool is_interactive) {
                     
                     tree_triangle.material = entry->material;
                     tree_triangle.color = entry->color;
+                    tree_triangle.translucent = entry->translucent;
                     
                     tree->InsertLeaf(tree_triangles.size(),
                                      MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),

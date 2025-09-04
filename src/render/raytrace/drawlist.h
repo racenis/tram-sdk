@@ -27,6 +27,7 @@ struct RTDrawListEntry {
     RTMaterial* material = nullptr;
     RTTexture* environmentmap = nullptr;
     vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
+    bool translucent = false;
     float specular_weight = 1.0f;
     float specular_exponent = 1.0f;
     float specular_transparency = 1.0f;

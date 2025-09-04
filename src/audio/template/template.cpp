@@ -42,6 +42,10 @@ void SetListenerOrientation(quat orientation) {
     
 }
 
+void SetListenerGain(float gain) {
+    
+}
+
 /// Creates audio buffers from raw audio data.
 /// @param audio_data       Pointer to the raw audio data, stored as 16 bit PCM.
 /// @param length           Length of the raw audio data, in samples.

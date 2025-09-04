@@ -39,8 +39,8 @@ struct {
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.0f, 0.0f, 0.0f};
     
-    float fog_near = 0.0f;
-    float fog_far = 0.0f;
+    float fog_near = INFINITY;
+    float fog_far = INFINITY;
     vec3 fog_color = {0.0f, 0.0f, 0.0f};
     
     mat4 projection = mat4(1.0f);

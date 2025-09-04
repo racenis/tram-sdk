@@ -10,9 +10,17 @@
 
 #include <thread>
 
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <glad.c>
+#ifndef _WIN32
+    #include <sdl2/SDL.h>
+#else
+    #include <SDL.h>
+    #include <SDL_syswm.h>
+    #include <glad.c>
+#endif
+
+//#include <SDL.h>
+//#include <SDL_syswm.h>
+//#include <glad.c>
 
 #ifdef _WIN32
 #include <d3dx9.h>
@@ -87,12 +95,14 @@ void Window::Init() {
             abort();
         }
         
+#ifdef _WIN32
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
             Log(Severity::ERROR, System::PLATFORM, "OpenGL context didn't open!");
             abort();
         }
         
         SDL_GL_SetSwapInterval(1);
+#endif
     }
     
 #ifdef _WIN32
