@@ -15,6 +15,7 @@ def write_tram_animation(context, filepath):
         full_path = filepath + action.name + ".anim"
         
         print("Saving animation to: ", full_path)
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
         f = open(full_path, 'w', encoding='utf-8')
         
         f.write("ANIMv1\n")

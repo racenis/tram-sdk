@@ -75,7 +75,7 @@ def write_tram_collision_model(context, ob, filepath):
     if len(ob.children) == 0:
         out = object_to_collision_mesh(ob)
             
-
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
     f = open(filepath, 'w', encoding='utf-8')
 
     f.write(out)

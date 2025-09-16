@@ -62,7 +62,9 @@ static void SoftwareRenderContextUpdate() {
                            SDL_TEXTUREACCESS_STREAMING,
                            screen_width/screen_scale, screen_height/screen_scale);
     
-    frame_buffer = (uint32_t*)malloc(screen_width * screen_height * sizeof(uint32_t));
+    auto screenbuffersize = screen_width * screen_height * sizeof(uint32_t);
+    frame_buffer = (uint32_t*)malloc(screenbuffersize);
+    memset(frame_buffer, 0x0000, screenbuffersize);
     
     Render::API::SetDevice(frame_buffer);
 }

@@ -49,6 +49,7 @@ def write_tram_static_model(context, object, filepath):
             exp['polys'].append([poly.loop_indices[0], poly.loop_indices[i+1], poly.loop_indices[i+2], poly.material_index])
 
     #ok now to compile everything together and write to disk
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
     f = open(filepath, 'w', encoding='utf-8')
 
     info = ""

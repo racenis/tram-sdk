@@ -92,6 +92,7 @@ def write_tram_dynamic_model(context, ob, filepath):
 
     
     #ok now to compile everything together
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
     f = open(filepath, 'w', encoding='utf-8')
 
 
