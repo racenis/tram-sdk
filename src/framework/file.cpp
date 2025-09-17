@@ -136,7 +136,14 @@ public:
         
         *buf_it = '\0';
         
-        if (strlen(buffer) == 0 ) Log("NOT GOOD ZERO NAME");
+        // this only happens if read_name() is called while the cursor is
+        // pointing to whitespace, which should not happen, since we always skip
+        // whitespace before calling this method. alas, it does seem to happen
+        // anyway
+        // TODO: figure out where the bug is
+        if (*buffer == '\0') {
+            return UID();
+        }
         
         return UID(buffer);
     }
@@ -238,7 +245,7 @@ public:
 private:
     template <typename T>
     T from_chars() {
-        T value;
+        T value{};
         std::from_chars_result result = std::from_chars(cur, end, value);
         if (result.ec != std::errc()) {
             error_flag = true;
@@ -252,7 +259,7 @@ private:
 #ifdef __clang__
     template <>
     float from_chars<float>() {
-        float value;
+        float value = 0.0f;
         char* new_cursor = nullptr;
         value = strtof(cur, &new_cursor);
         
@@ -265,7 +272,7 @@ private:
 
     template <>
     double from_chars<double>() {
-        return from_chars<float>();
+        return from_chars<float>(); // haha, nice. very evil
     }
 #endif
 
