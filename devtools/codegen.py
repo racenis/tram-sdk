@@ -186,7 +186,7 @@ def typeify(str):
 	
 def enttipefy(str):
 	if str == "name_t":
-		return "name"
+		return "string"
 		
 	if str == "bool":
 		return "bool"
