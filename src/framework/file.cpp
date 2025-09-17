@@ -621,8 +621,8 @@ File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
     
     if (mode & READ) {
         reader = FileReader::GetReader(path);
-        
-        if (reader->GetStatus() != FileStatus::READY) return;
+
+        if (!reader || reader->GetStatus() != FileStatus::READY) return;
         
         if (mode & BINARY) {
             reader_parser = new BinaryReaderParser(reader);
@@ -638,7 +638,7 @@ File::File(char const* path, uint32_t mode) : path(path), mode(mode) {
     } else if (mode & WRITE) {
         writer = FileWriter::GetWriter(path);
         
-        if (writer->GetStatus() == FileStatus::READY) {
+        if (!writer || writer->GetStatus() == FileStatus::READY) {
             if (mode & BINARY) {
                 writer_parser = new BinaryWriterParser(writer);
             } else {

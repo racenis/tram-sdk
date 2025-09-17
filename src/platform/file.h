@@ -4,7 +4,6 @@
 #define TRAM_SDK_PLATFORM_FILE_H
 
 #include <cstddef>
-#include <string>
 #include <vector>
 
 namespace tram {
@@ -14,16 +13,9 @@ enum class FileStatus {
     READY
 };
 
-enum class FileMedium {
-    DISK,
-    USER,
-    ARCHIVE,
-    HTTP
-};
-
 struct FileSource {
-    FileMedium medium;
-    std::string path;
+    const char* protocol;
+    const char* prefix;
 };
 
 class FileReader {
@@ -37,8 +29,10 @@ public:
     
     static FileReader* GetReader(const char* path);
     
-    static void SetSearchList();
+    static void SetSearchList(std::vector<FileSource>);
     static std::vector<FileSource> GetSearchList();
+    
+    static void Register(const char* protocol, FileReader* (*constr)(const char* path));
 };
 
 class FileWriter {
@@ -51,8 +45,7 @@ public:
     
     static FileWriter* GetWriter(const char* path);
     
-    static void SetMediumList();
-    static std::vector<FileSource> GetMediumList();
+    static void Register(const char* protocol, FileWriter* (*constr)(const char* path));
 };
 
 }
