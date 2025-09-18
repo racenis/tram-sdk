@@ -15,7 +15,7 @@ enum class FileStatus {
 
 struct FileSource {
     const char* protocol;
-    const char* prefix;
+    const char* location;
 };
 
 class FileReader {
@@ -32,7 +32,7 @@ public:
     static void SetSearchList(std::vector<FileSource>);
     static std::vector<FileSource> GetSearchList();
     
-    static void Register(const char* protocol, FileReader* (*constr)(const char* path));
+    static void Register(const char* protocol, FileReader* (*constr)(const char* location, const char* path));
 };
 
 class FileWriter {

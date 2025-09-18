@@ -44,7 +44,7 @@ static std::vector<int> search_list_index;
 
 struct FileReaderProtocolInfo {
     const char* protocol;
-    FileReader* (*constr)(const char* path);
+    FileReader* (*constr)(const char* location, const char* path);
 };
 
 struct FileWriterProtocolInfo {
@@ -136,6 +136,13 @@ success:
     return true;
 }
 
+static const char* StripProtocol(const char* path) {
+    while (*path != '\0' && *path != '/')  path++;
+    path++; path++;
+    
+    return path;
+}
+
 FileReader* FileReader::GetReader(const char* path) {
     char protocol[PROTOCOL_LENGTH];
     if (!ExtractProtocol(path, protocol)) {
@@ -143,23 +150,21 @@ FileReader* FileReader::GetReader(const char* path) {
             const auto constr = reader_infos[search_list_index[i]].constr;
             if (!constr) continue;
             
-            const char* strip_path = path;
-            while (*strip_path != '\0' && *strip_path != '/')  strip_path++;
-            strip_path++; strip_path++;
-            char full_path[PATH_LIMIT + 50];
-            snprintf(full_path, PATH_LIMIT + 50, "%s://%s/%s", protocol, search_list[i].prefix, strip_path);
+            //const char* strip_path = path;
+            //char full_path[PATH_LIMIT + 50];
+            //snprintf(full_path, PATH_LIMIT + 50, "%s://%s/%s", protocol, search_list[i].location, strip_path);
             
-            auto reader = constr(path);
+            auto reader = constr(search_list[i].location, path);
             if (reader->GetStatus() == FileStatus::READY) return reader;
             
-            delete reader;
+            reader->Yeet();
         }
         
         return new DiskReader(path);
     }
     
     if (strcmp("file", protocol) == 0) {
-        return new DiskReader(path);
+        return new DiskReader(StripProtocol(path));
     }
     
     for (auto& p : reader_infos) {
@@ -167,7 +172,7 @@ FileReader* FileReader::GetReader(const char* path) {
         
         if (!p.constr) continue;
         
-        return p.constr(path);
+        return p.constr(nullptr, StripProtocol(path));
     }
     
     Log(Severity::ERROR, System::PLATFORM, "FileReader could not find protocol for {}!", path);
@@ -199,7 +204,7 @@ std::vector<FileSource> FileReader::GetSearchList() {
     return search_list;
 }
 
-void FileReader::Register(const char* protocol, FileReader* (*constr)(const char* path)) {
+void FileReader::Register(const char* protocol, FileReader* (*constr)(const char* location, const char* path)) {
     for (auto& p : reader_infos) {
         if (strcmp(p.protocol, protocol)) continue;
         p.protocol = protocol;
@@ -259,7 +264,7 @@ FileWriter* FileWriter::GetWriter(const char* path) {
     }
     
     if (strcmp("file", protocol) == 0) {
-        return new DiskWriter(path);
+        return new DiskWriter(StripProtocol(path));
     }
     
     for (auto& p : writer_infos) {
@@ -267,7 +272,7 @@ FileWriter* FileWriter::GetWriter(const char* path) {
 
         if (!p.constr) continue;
 
-        return p.constr(path);
+        return p.constr(StripProtocol(path));
     }
     
     Log(Severity::ERROR, System::PLATFORM, "FileWriter could not find protocol for {}!", path);
