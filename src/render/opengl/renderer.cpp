@@ -133,6 +133,12 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
     layers[layer].ambient_color = ambient_color;
 }
 
+void SetFogParameters(vec3 color, float near, float far, uint32_t layer) {
+    /*layers[layer].fog_color = color;
+    layers[layer].fog_near = near;
+    layers[layer].fog_far = far;*/
+}
+
 void SetViewParameters (vec3 position, quat rotation, uint32_t layer) {
     //LAYER[layer].camera_position = position;
     //LAYER[layer].camera_rotation = rotation;
