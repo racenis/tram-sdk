@@ -108,7 +108,12 @@ modules = {
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""}),
-		
+	
+	"extensions/file": Module("extensions/file",
+		"extensions", 
+		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/curl", "WIN64": f" -I{tramsdk}libraries/curl", "LINUX": f" -I{tramsdk}libraries/curl"},
+		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": "", "WIN32": "-lws2_32 -lcurl -lminiz", "WIN64": "-lws2_32 -lcurl -lminiz", "LINUX": "-lcurl -lminiz"}),
 	"extensions/camera": Module("extensions/camera",
 		"extensions", 
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},

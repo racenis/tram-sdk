@@ -240,6 +240,10 @@ public:
         fwrite(contents, size, 1, file_handle);
     }
     
+    bool Flush() {
+        return true;
+    }
+    
     void Yeet() {
         delete this;
     }

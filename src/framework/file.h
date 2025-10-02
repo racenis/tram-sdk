@@ -22,7 +22,7 @@ public:
     
     bool is_open();
     bool is_continue();
-            
+    
     void write_int8(int8_t value);
     void write_int16(int16_t value);
     void write_int32(int32_t value);
@@ -60,6 +60,8 @@ public:
     
     void skip_linebreak();
     void reset_flags();
+    
+    bool flush();
     
     bool was_error();
     

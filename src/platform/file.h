@@ -42,6 +42,7 @@ public:
     virtual void SetContents(const char* contents, size_t size) = 0;
     virtual FileStatus GetStatus() = 0;
     virtual void Yeet() = 0;
+    virtual bool Flush() = 0;
     
     static FileWriter* GetWriter(const char* path);
     

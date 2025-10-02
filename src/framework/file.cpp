@@ -738,6 +738,11 @@ void File::reset_flags() {
     if (reader_parser) reader_parser->reset_error();
 }
 
+bool File::flush() {
+    if (writer) return writer->Flush();
+    return false;
+}
+
 /// Checks if there has been an error.
 /// The error flag does not get cleared on its own, so if an error ocurred
 /// anywhere, this method will report that.
