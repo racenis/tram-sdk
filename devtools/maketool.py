@@ -54,12 +54,12 @@ modules = {
 		"platform", 
 		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/glfw", "WIN64": f" -I{tramsdk}libraries/glfw", "LINUX": ""},
 		{"WEB": "", "WIN32": "", 		"WIN64": "", "LINUX": ""},
-		{"WEB": "", "WIN32": "-lglfw3 -lgdi32", "WIN64": "-lglfw3 -lgdi32", "LINUX": "-lglfw"}),
+		{"WEB": " -sUSE_GLFW=3 ", "WIN32": "-lglfw3 -lgdi32", "WIN64": "-lglfw3 -lgdi32", "LINUX": "-lglfw"}),
 	"platform/sdl": Module("platform/sdl",
 		"platform", 
 		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/sdl2 -I{tramsdk}libraries/glad", "WIN64": f" -I{tramsdk}libraries/sdl2 -I{tramsdk}libraries/glad", "LINUX": ""},
 		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
-		{"WEB": "", "WIN32": "-lSDL2.dll -lgdi32 -ld3d9", "WIN64": "-lSDL2.dll -lgdi32 -ld3d9", "LINUX": "-lsdl2"}),
+		{"WEB": " -sUSE_SDL=2 ", "WIN32": "-lSDL2.dll -lgdi32 -ld3d9", "WIN64": "-lSDL2.dll -lgdi32 -ld3d9", "LINUX": "-lsdl2"}),
 		
 	"audio/openal": Module("audio/openal",
 		"audio", 
@@ -112,7 +112,7 @@ modules = {
 	"extensions/file": Module("extensions/file",
 		"extensions", 
 		{"WEB": "", "WIN32": f" -I{tramsdk}libraries/curl", "WIN64": f" -I{tramsdk}libraries/curl", "LINUX": f" -I{tramsdk}libraries/curl"},
-		{"WEB": "", "WIN32": "", "WIN64": "", "LINUX": ""},
+		{"WEB": web_bin, "WIN32": win32_bin, "WIN64": win64_bin, "LINUX": ""},
 		{"WEB": "", "WIN32": "-lws2_32 -lcurl -lminiz", "WIN64": "-lws2_32 -lcurl -lminiz", "LINUX": "-lcurl -lminiz"}),
 	"extensions/camera": Module("extensions/camera",
 		"extensions", 
@@ -293,7 +293,7 @@ def generate_makefile():
 			for unit in units:
 				makefile += objectify(unit) + ".o "
 			makefile += "-sASSERTIONS=2 -sSAFE_HEAP=0 -sALLOW_MEMORY_GROWTH "
-			makefile += "-sSTACK_OVERFLOW_CHECK=1 -sUSE_BULLET=1 -sUSE_GLFW=3 "
+			makefile += "-sSTACK_OVERFLOW_CHECK=1 -sUSE_BULLET=1 "
 			makefile += "-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -L./ "
 			makefile += "-o " + project_name + ".html --preload-file ./"
 		else:
