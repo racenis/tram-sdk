@@ -19,6 +19,8 @@
 #include <render/api.h>
 #include <render/error.h>
 
+#include <platform/file.h>
+
 #include <templates/hashmap.h>
 
 #include <config.h>
@@ -267,8 +269,12 @@ void Material::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".png");
 
-    stbi_set_flip_vertically_on_load(true);
-    loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, channels);
+    FileReader* file = FileReader::GetReader(path);
+        
+    if (file->GetStatus() == FileStatus::READY) {
+       stbi_set_flip_vertically_on_load(true);
+       loadtexture = stbi_load_from_memory((const unsigned char*)file->GetContents(), file->GetSize(), &loadwidth, &loadheight, &loadchannels, channels);
+    }
 
     if (loadchannels < channels) {
         std::cout << "Texture " << path << " should have " << (int)channels << " channels, but it has " << (int)loadchannels << "!" << std::endl;

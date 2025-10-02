@@ -152,6 +152,7 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 
 #### Random small things and bugs
 
+- Settings are buggy, write tests
 - Add logging to file
 	- Add different severities according to where the logs are sent to
 - Fix Octree
