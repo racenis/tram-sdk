@@ -20,6 +20,7 @@ enum {
 class Operation {
 public:
     virtual void Emit(File& file) = 0;
+    virtual int GetLength() = 0;
 
     void SetRegisterSrc(uint8_t reg) {
         src_reg = reg;
@@ -47,12 +48,20 @@ public:
         file.write_uint8(OP_MOVE);
         file.write_uint8(GetPackedRegister());
     }
+    
+    int GetLength() override {
+        return 2;
+    }
 };
 
 class Return : public Operation {
 public:
     void Emit(File& file) override {
         file.write_uint8(OP_RETURN);
+    }
+    
+    int GetLength() override {
+        return 1;
     }
 };
 
@@ -72,6 +81,10 @@ public:
     
     void SetColor(vec4 color) {
         this->color = color;
+    }
+    
+    int GetLength() override {
+        return 6;
     }
     
 private:
@@ -96,6 +109,10 @@ public:
         this->y = y;
     }
     
+    int GetLength() override {
+        return 6;
+    }
+    
 private:
     uint16_t x;
     uint16_t y;
@@ -107,6 +124,10 @@ public:
         file.write_uint8(OP_ADD);
         file.write_uint8(GetPackedRegister());
     }
+    
+    int GetLength() override {
+        return 2;
+    }
 };
 
 class Multiply : public Operation {
@@ -114,6 +135,10 @@ public:
     void Emit(File& file) override {
         file.write_uint8(OP_MULTIPLY);
         file.write_uint8(GetPackedRegister());
+    }
+    
+    int GetLength() override {
+        return 2;
     }
 };
     
@@ -199,6 +224,12 @@ public:
         operations.push_back(new Return);
     }
     
+    int GetLength() {
+        int len = 0;
+        for (auto operation : operations) len += operation->GetLength();
+        return len;
+    }
+    
     void Emit(File& file) {
         for (auto operation : operations) operation->Emit(file);
     }
@@ -227,6 +258,13 @@ public:
         file.write_uint16(width);
         file.write_uint16(height);
         
+        // emit frame length
+        int len = 0;
+        for (auto& pixel : pixels) {
+            len += pixel.GetLength();
+        }
+        file.write_int32(len);
+        
         // emit pixels
         for (auto& pixel : pixels) {
             pixel.Emit(file);
@@ -249,10 +287,7 @@ public:
         } else if (width != layers.width && height != layers.height) {
             std::cout << "Image set to " << width << "x" << height << " but fed a frame " << layers.width << "x" << layers.height << std::endl;
         }
-        
-        // TODO: add list of images to layers and also their 
-        // IMGBCODE flags .. input count . frame count .. width height .. each input width height .. frame header width height 
-        
+
         textures = layers.textures;
         
         frames.push_back(Frame(layers));
@@ -265,7 +300,7 @@ public:
         file.write_uint8('C'); file.write_uint8('O'); file.write_uint8('D'); file.write_uint8('E');
         
         // emit filetype version
-        file.write_uint16(0);
+        file.write_uint16(1);
         
         // emit flags
         file.write_uint16(0);
