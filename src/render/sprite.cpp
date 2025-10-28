@@ -52,7 +52,7 @@ void Sprite::LoadFromMemory() {
 }
 
 void Sprite::LoadFromDisk() {
-    std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
+    std::string filename = std::string("data/sprites/") + name.operator std::string() + ".spr";
     
     File file (filename.c_str(), File::READ);
     

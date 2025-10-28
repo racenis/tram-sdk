@@ -330,7 +330,7 @@ static const int SPHERE_HEIGHT = 8;
 static const int SPHERE_WIDTH = 8;
 static constexpr float pi = 3.14159f;
 
-static constexpr vec3 sphere_p(int h, int w) {
+static vec3 sphere_p(int h, int w) {
     float x = sin(pi * h/SPHERE_HEIGHT) * cos(2*pi * w/SPHERE_WIDTH);
     float y = sin(pi * h/SPHERE_HEIGHT) * sin(2*pi * w/SPHERE_WIDTH);
     float z = cos(pi * h/SPHERE_HEIGHT);

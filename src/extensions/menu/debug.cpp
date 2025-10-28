@@ -147,7 +147,7 @@ void InitCallbacks() {
     Message::SetInterceptCallback([](const Message& msg) {
         MessageIntercept* intercept = new MessageIntercept;
         
-        intercept->type = (std::string)Message::GetName(msg.type);
+        intercept->type = Message::GetName(msg.type).operator std::string();
         intercept->value = std::to_string((long long)msg.data);
         
         switch (msg.type) {
@@ -162,7 +162,7 @@ void InitCallbacks() {
             intercept->sender = "GOD";
         } else if (Entity* sender = Entity::Find(msg.sender); sender) {
             if (sender->GetName()) {
-                intercept->sender = (std::string)sender->GetName();
+                intercept->sender = sender->GetName().operator std::string();
             } else {
                 intercept->sender = sender->GetID();
             }
@@ -172,7 +172,7 @@ void InitCallbacks() {
         
         if (Entity* receiver = Entity::Find(msg.receiver); receiver) {
             if (receiver->GetName()) {
-                intercept->receiver = (std::string)receiver->GetName();
+                intercept->receiver = receiver->GetName().operator std::string();
             } else {
                 intercept->receiver = receiver->GetID();
             }
@@ -218,7 +218,7 @@ void UpdateCallbacks() {
             EventIntercept* intercept = new EventIntercept;
         
             intercept->subtype = std::to_string(event.subtype);
-            intercept->type = (std::string)Event::GetName(event.type);
+            intercept->type = Event::GetName(event.type).operator std::string();
             intercept->value = std::to_string((long long)event.data);
             
             switch (event.type) {
@@ -239,7 +239,7 @@ void UpdateCallbacks() {
                 intercept->emitter = "GOD";
             } else if (Entity* emitter = Entity::Find(event.poster); emitter) {
                 if (emitter->GetName()) {
-                    intercept->emitter = (std::string)emitter->GetName();
+                    intercept->emitter = emitter->GetName().operator std::string();
                 } else {
                     intercept->emitter = emitter->GetID();
                 }
@@ -595,7 +595,7 @@ void WorldCellProperties::Display() {
             if (GUI::Button("(view)")) {
                 std::vector<std::string> entities;
                 for (auto entity : cell->GetEntities()) {
-                    entities.push_back((std::string)entity->GetType() + " | " + (std::string)entity->GetName());
+                    entities.push_back(entity->GetType().operator std::string() + " | " + entity->GetName().operator std::string());
                 }
                 
                 // possible error here:
