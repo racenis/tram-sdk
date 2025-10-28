@@ -42,3 +42,6 @@ compile_flags.txt
 tram-sdk.cppcheck
 tram-sdk.mk
 tram-sdk.project
+
+# Visual Studio IDE files
+.vs
