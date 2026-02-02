@@ -168,8 +168,9 @@ mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, c
     return matrix;
 }
 
-vec3 euler_normalize(vec3 euler) {
+static vec3 euler_normalize(vec3 euler) {
     const float tupi = 2.0f * glm::pi<float>();
+    const float bias = 0.02f;
 
     float x = fmodf(euler.x, tupi);
     float y = fmodf(euler.y, tupi);
@@ -178,12 +179,24 @@ vec3 euler_normalize(vec3 euler) {
     if (x < 0.0f) x += tupi;
     if (y < 0.0f) y += tupi;
     if (z < 0.0f) z += tupi;
+    
+    if (x > tupi - bias) x = 0.0f;
+    if (y > tupi - bias) y = 0.0f;
+    if (z > tupi - bias) z = 0.0f;
 
     return  {x, y, z};
 }
 
-float euler_error(vec3 a, vec3 b) {
-    return fabsf(a.x - b.x) + fabsf(a.y - b.y) + fabsf(a.z - b.z);
+static vec3 euler_alt_normalize(vec3 euler) {
+    float x = atan2f(sinf(euler.x), cosf(euler.x));
+    float y = atan2f(sinf(euler.y), cosf(euler.y));
+    float z = atan2f(sinf(euler.z), cosf(euler.z));
+
+    return  {x, y, z};
+}
+
+static float euler_error(vec3 a, vec3 b) {
+    return pow(a.x - b.x, 4.0f) + pow(a.y - b.y, 4.0f) + pow(a.z - b.z, 4.0f);
 }
 
 /// Extracts euler angles from a quaternion.
@@ -198,12 +211,10 @@ vec3 EulerFromQuat(quat rotation, vec3 previous) {
     const bool previous_given = !std::isnan(previous.x);
 
     vec3 euler = glm::eulerAngles(rotation);
-
-
     vec3 euler_alt = {euler.x + pi, pi - euler.y, euler.z + pi};
 
-    euler = euler_normalize(euler);
-    euler_alt = euler_normalize(euler_alt);
+    euler = euler_alt_normalize(euler);
+    euler_alt = euler_alt_normalize(euler_alt);
 
     if (!previous_given) {
         previous = {0.0f, 0.0f, 0.0f};
@@ -230,7 +241,6 @@ vec3 EulerFromQuat(quat rotation, vec3 previous) {
             euler.x = previous.x;
         }
     }
-
 
     return euler_normalize(euler);
 }
