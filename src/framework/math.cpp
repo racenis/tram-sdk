@@ -2,6 +2,8 @@
 
 #include <framework/math.h>
 
+#include <cmath>
+
 /**
  * @file framework/math.cpp
  * 
@@ -164,6 +166,73 @@ mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, c
     matrix *= glm::toMat4(rotation);
     matrix = glm::scale(matrix, scale);
     return matrix;
+}
+
+vec3 euler_normalize(vec3 euler) {
+    const float tupi = 2.0f * glm::pi<float>();
+
+    float x = fmodf(euler.x, tupi);
+    float y = fmodf(euler.y, tupi);
+    float z = fmodf(euler.z, tupi);
+
+    if (x < 0.0f) x += tupi;
+    if (y < 0.0f) y += tupi;
+    if (z < 0.0f) z += tupi;
+
+    return  {x, y, z};
+}
+
+float euler_error(vec3 a, vec3 b) {
+    return fabsf(a.x - b.x) + fabsf(a.y - b.y) + fabsf(a.z - b.z);
+}
+
+/// Extracts euler angles from a quaternion.
+/// Since multiple sets of euler angles correspond to the same quaternion
+/// rotation, this function will attempt to find a set of euler angles that is
+/// nearest to some previous set of euler angles. It also gracefully handles
+/// gimbal locking.
+vec3 EulerFromQuat(quat rotation, vec3 previous) {
+    const float pi = glm::pi<float>();
+    const float epsilon = 0.02f;
+
+    const bool previous_given = !std::isnan(previous.x);
+
+    vec3 euler = glm::eulerAngles(rotation);
+
+
+    vec3 euler_alt = {euler.x + pi, pi - euler.y, euler.z + pi};
+
+    euler = euler_normalize(euler);
+    euler_alt = euler_normalize(euler_alt);
+
+    if (!previous_given) {
+        previous = {0.0f, 0.0f, 0.0f};
+    }
+
+    if (euler_error(previous, euler) > euler_error(previous, euler_alt)) {
+        std::swap(euler, euler_alt);
+    }
+
+    const bool gimbal_lock = fabsf(euler.y - 0.5f * pi) < epsilon
+        || fabsf(euler.y - 1.5f * pi) < epsilon;
+
+    if (!previous_given) {
+        if (gimbal_lock) {
+            euler.x = euler.x - euler.z;
+            euler.z = 0.0f;
+        }
+    } else {
+        if (gimbal_lock) {
+            euler.x = euler.x - euler.z;
+            euler.z = 0.0f;
+            
+            euler.z = previous.x - euler.x;
+            euler.x = previous.x;
+        }
+    }
+
+
+    return euler_normalize(euler);
 }
 
 }

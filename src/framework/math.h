@@ -42,6 +42,8 @@ void RotateAABB(vec3& min, vec3& max, mat4 rotation);
 mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation);
 mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, const vec3& scale);
 
+vec3 EulerFromQuat(quat rotation, vec3 previous = {NAN, NAN, NAN});
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_MATH_H
