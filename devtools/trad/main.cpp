@@ -328,9 +328,27 @@ vec3 FindNearestIntersection(const AABBTree& tree,
 							 const std::vector<SceneTriangle>& tris,
 							 const vec3& pos,
 							 const vec3& dir,
-							 float distance_limit)
+							 float distance_limit,
+							 bool frontface = true,
+							 bool backface = true,
+							 uint32_t* index = nullptr)
 {
 	uint32_t nearest = tree.FindIntersection(pos, dir, distance_limit, [&](vec3 pos, vec3 dir, uint32_t index) {
+		if (!backface || !frontface) {
+			vec3 v1v2 = glm::normalize(tris[index].triangle.v2.pos - tris[index].triangle.v1.pos);
+			vec3 v1v3 = glm::normalize(tris[index].triangle.v3.pos - tris[index].triangle.v1.pos);
+			
+			vec3 normal = glm::cross(v1v2, v1v3);
+			
+			float facing = glm::dot(normal, dir);
+			
+			// hit backface
+			if (facing > 0.0f && !backface) return INFINITY;
+			
+			// hit frontface
+			if (facing < 0.0f && !frontface) return INFINITY;
+		}
+		
 		vec3 intersection = RayTriangleIntersection(pos,
 													dir,
 													tris[index].triangle.v1.pos,
@@ -345,6 +363,8 @@ vec3 FindNearestIntersection(const AABBTree& tree,
 	if (nearest == (uint32_t)-1) {
 		return {INFINITY, INFINITY, INFINITY};
 	}
+	
+	if (index) *index = nearest;
 	
 	return RayTriangleIntersection(pos,
 								   dir,
@@ -366,7 +386,9 @@ void MovePositionTowardTriangleCenter(const AABBTree& tree,
 	// I have no idea what this does but okay
 	pos += 0.05f * mid_dir;
 	
-	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir, mid_dist);
+	uint32_t intersect;
+	
+	vec3 nearest = FindNearestIntersection(tree, tris, pos, mid_dir, mid_dist, true, true, &intersect);
 	if (glm::distance(nearest, pos) < mid_dist) {
 		//return {1.0f, 0.0f, 0.0f};
 		pos += mid_dir * 0.3f;
@@ -374,6 +396,127 @@ void MovePositionTowardTriangleCenter(const AABBTree& tree,
 		//pos += mid_dir * (glm::distance(nearest, pos) + 0.02f);
 		//pos = nearest + (mid_dir * 0.1f);
 	}
+}
+
+void MovePositionOutsideMesh(const AABBTree& tree,
+							 const std::vector<SceneTriangle>& tris,
+							 vec3& pos,
+							 const Triangle& triangle)
+{
+	
+	vec3 v1v2 = glm::normalize(triangle.v2.pos - triangle.v1.pos);
+	vec3 v1v3 = glm::normalize(triangle.v3.pos - triangle.v1.pos);
+	
+	vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+	vec3 tangent = glm::normalize(glm::cross(normal, v1v2));
+	vec3 bitangent = v1v2;
+	
+	const float dir_amount = 0.25f;
+	
+	vec3 dir1 = tangent;
+	vec3 dir2 = -tangent;
+	vec3 dir3 = bitangent;
+	vec3 dir4 = -bitangent;
+	
+	uint32_t nearest1 = -1;
+	uint32_t nearest2 = -1;
+	uint32_t nearest3 = -1;
+	uint32_t nearest4 = -1;
+	
+	// we want the find the furthest intersection, so we're reversing the ray
+	// direction and casting them from the other end
+	vec3 point1 = FindNearestIntersection(tree, tris, pos + dir_amount * dir1, -dir1, dir_amount, true, false, &nearest1);
+	vec3 point2 = FindNearestIntersection(tree, tris, pos + dir_amount * dir2, -dir2, dir_amount, true, false, &nearest2);
+	vec3 point3 = FindNearestIntersection(tree, tris, pos + dir_amount * dir3, -dir3, dir_amount, true, false, &nearest3);
+	vec3 point4 = FindNearestIntersection(tree, tris, pos + dir_amount * dir4, -dir4, dir_amount, true, false, &nearest4);
+	
+	vec3 pos2a = pos + dir_amount * dir2;
+	vec3 pos2b = -dir2;
+	
+	vec3 nearest_dir = {INFINITY, INFINITY, INFINITY};
+	float nearest_point = INFINITY;
+	
+	vec3 total_dir = {0.0f, 0.0f, 0.0f};
+	float total_point = 0.0f;
+	vec3 total_normal = {0.0f, 0.0f, 0.0f};
+	int intersects = 0;
+	
+	if (float dist = glm::distance(pos, point1); dist < dir_amount) {
+		total_dir += dir1;
+		total_point += dist;
+		intersects++;
+		
+		vec3 v1v2 = glm::normalize(tris[nearest1].triangle.v2.pos - tris[nearest1].triangle.v1.pos);
+		vec3 v1v3 = glm::normalize(tris[nearest1].triangle.v3.pos - tris[nearest1].triangle.v1.pos);
+		
+		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		
+		total_normal += normal;
+	}
+	
+	if (float dist = glm::distance(pos, point2); dist < dir_amount) {
+		total_dir += dir2;
+		total_point += dist;
+		intersects++;
+		
+		vec3 v1v2 = glm::normalize(tris[nearest2].triangle.v2.pos - tris[nearest2].triangle.v1.pos);
+		vec3 v1v3 = glm::normalize(tris[nearest2].triangle.v3.pos - tris[nearest2].triangle.v1.pos);
+		
+		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		
+		total_normal += normal;
+	}
+	
+	if (float dist = glm::distance(pos, point3); dist < dir_amount) {
+		total_dir += dir3;
+		total_point += dist;
+		intersects++;
+		
+		vec3 v1v2 = glm::normalize(tris[nearest3].triangle.v2.pos - tris[nearest3].triangle.v1.pos);
+		vec3 v1v3 = glm::normalize(tris[nearest3].triangle.v3.pos - tris[nearest3].triangle.v1.pos);
+		
+		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		
+		total_normal += normal;
+	}
+	
+	if (float dist = glm::distance(pos, point4); dist < dir_amount) {
+		total_dir += dir4;
+		total_point += dist;
+		intersects++;
+		
+		vec3 v1v2 = glm::normalize(tris[nearest4].triangle.v2.pos - tris[nearest4].triangle.v1.pos);
+		vec3 v1v3 = glm::normalize(tris[nearest4].triangle.v3.pos - tris[nearest4].triangle.v1.pos);
+		
+		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		
+		total_normal += normal;
+	}
+	
+	
+	if (float dist = glm::distance(pos, point1); dist < nearest_point) {
+		nearest_dir = dir1;
+		nearest_point = dist;
+	}
+	
+	if (float dist = glm::distance(pos, point2); dist < nearest_point) {
+		nearest_dir = dir2;
+		nearest_point = dist;
+	}
+	
+	if (float dist = glm::distance(pos, point3); dist < nearest_point) {
+		nearest_dir = dir3;
+		nearest_point = dist;
+	}
+	
+	if (float dist = glm::distance(pos, point4); dist < nearest_point) {
+		nearest_dir = dir4;
+		nearest_point = dist;
+	}
+	
+	if (nearest_point == INFINITY) return;
+	
+	pos += (total_normal/(float)intersects) * (total_point/(float)intersects + 0.1f);
 }
 
 bool IsTexelInShadow(const AABBTree& tree,
@@ -903,10 +1046,11 @@ int main(int argc, const char** argv) {
 				
 				// we might get a collision with the triangle, on which the texel is located
 				// on, so we move it off of the surface a little bit
-				pos += 0.05f * nrm;
+				vec3 shadow_pos = pos + 0.05f * nrm;
 				mid += 0.05f * nrm;
 				
-				if (!fast) MovePositionTowardTriangleCenter(scene_tree, scene_triangles, pos, nrm, mid);
+				//if (!fast) MovePositionTowardTriangleCenter(scene_tree, scene_triangles, shadow_pos, nrm, mid);
+				if (!fast) MovePositionOutsideMesh(scene_tree, scene_triangles, shadow_pos, tri.triangle);
 				
 				for (const auto& light : lights) {
 					const vec3 light_color = FindTexelColorFromLight(light, pos, nrm);
@@ -916,7 +1060,7 @@ int main(int argc, const char** argv) {
 						continue;
 					}
 
-					if (IsTexelInShadow(scene_tree, scene_triangles, pos, light.pos)) {
+					if (IsTexelInShadow(scene_tree, scene_triangles, shadow_pos, light.pos)) {
 						continue;
 					}
 					
