@@ -433,16 +433,11 @@ void MovePositionOutsideMesh(const AABBTree& tree,
 	vec3 pos2a = pos + dir_amount * dir2;
 	vec3 pos2b = -dir2;
 	
-	vec3 nearest_dir = {INFINITY, INFINITY, INFINITY};
-	float nearest_point = INFINITY;
-	
-	vec3 total_dir = {0.0f, 0.0f, 0.0f};
 	float total_point = 0.0f;
 	vec3 total_normal = {0.0f, 0.0f, 0.0f};
 	int intersects = 0;
 	
 	if (float dist = glm::distance(pos, point1); dist < dir_amount) {
-		total_dir += dir1;
 		total_point += dist;
 		intersects++;
 		
@@ -455,7 +450,6 @@ void MovePositionOutsideMesh(const AABBTree& tree,
 	}
 	
 	if (float dist = glm::distance(pos, point2); dist < dir_amount) {
-		total_dir += dir2;
 		total_point += dist;
 		intersects++;
 		
@@ -468,7 +462,6 @@ void MovePositionOutsideMesh(const AABBTree& tree,
 	}
 	
 	if (float dist = glm::distance(pos, point3); dist < dir_amount) {
-		total_dir += dir3;
 		total_point += dist;
 		intersects++;
 		
@@ -481,7 +474,6 @@ void MovePositionOutsideMesh(const AABBTree& tree,
 	}
 	
 	if (float dist = glm::distance(pos, point4); dist < dir_amount) {
-		total_dir += dir4;
 		total_point += dist;
 		intersects++;
 		
@@ -493,28 +485,7 @@ void MovePositionOutsideMesh(const AABBTree& tree,
 		total_normal += normal;
 	}
 	
-	
-	if (float dist = glm::distance(pos, point1); dist < nearest_point) {
-		nearest_dir = dir1;
-		nearest_point = dist;
-	}
-	
-	if (float dist = glm::distance(pos, point2); dist < nearest_point) {
-		nearest_dir = dir2;
-		nearest_point = dist;
-	}
-	
-	if (float dist = glm::distance(pos, point3); dist < nearest_point) {
-		nearest_dir = dir3;
-		nearest_point = dist;
-	}
-	
-	if (float dist = glm::distance(pos, point4); dist < nearest_point) {
-		nearest_dir = dir4;
-		nearest_point = dist;
-	}
-	
-	if (nearest_point == INFINITY) return;
+	if (!intersects) return;
 	
 	pos += (total_normal/(float)intersects) * (total_point/(float)intersects + 0.1f);
 }
