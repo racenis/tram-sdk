@@ -427,6 +427,13 @@ void EntityPicker::Display() {
                 text += std::to_string(comp->GetParent()->GetID());
                 text += " | ";
                 text += (const char*)comp->GetParent()->GetName();
+                text += " (";
+                text += std::to_string(res.intersection.x);
+                text += ", ";
+                text += std::to_string(res.intersection.y);
+                text += ", ";
+                text += std::to_string(res.intersection.z);
+                text += ")";
                 GUI::Text(text.c_str());
                 
                 if (GUI::ClickHandled()) {
