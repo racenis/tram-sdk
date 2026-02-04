@@ -313,6 +313,14 @@ TEST_CASE("AABB Tree Overlapping", "[aabb5]") {
 	Raycasts:		5255ms
 	Teardown:		5ms
 	Total time:		5276ms
+	
+	After tree rotation optimization
+	
+	Insertion:      30ms
+	Raycasts:       3281ms
+	Teardown:       30ms
+	Total time:     3341ms
+	
 */
 
 TEST_CASE("AABB Tree Timed Test", "[aabb6]") {

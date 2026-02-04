@@ -254,6 +254,135 @@ public:
         
         if (node->IsLeaf()) return;
         
+        int best_rotation = 0;
+        float best_volume = INFINITY;
+        
+        if (node->left && node->right && !node->right->IsLeaf() && node->right->left) {
+            vec3 min = node->left->min;
+            vec3 max = node->left->max;
+            
+            if (node->right->right) min = MergeAABBMin(min, node->right->right->min);
+            if (node->right->right) max = MergeAABBMax(max, node->right->right->max);
+            
+            float volume = AABBVolume(min, max);
+            
+            if (best_volume > volume && AABBVolume(node->right->min, node->right->max) > volume) {
+                best_volume = volume;
+                best_rotation = 1;
+            }
+        }
+        
+        if (node->left && node->right && !node->right->IsLeaf() && node->right->right) {
+            vec3 min = node->left->min;
+            vec3 max = node->left->max;
+            
+            if (node->right->left) min = MergeAABBMin(min, node->right->left->min);
+            if (node->right->left) max = MergeAABBMax(max, node->right->left->max);
+            
+            float volume = AABBVolume(min, max);
+            
+            if (best_volume > volume && AABBVolume(node->right->min, node->right->max) > volume) {
+                best_volume = volume;
+                best_rotation = 2;
+            }
+        }
+        
+        
+        if (node->right && node->left && !node->left->IsLeaf() && node->left->left) {
+            vec3 min = node->right->min;
+            vec3 max = node->right->max;
+            
+            if (node->left->right) min = MergeAABBMin(min, node->left->right->min);
+            if (node->left->right) max = MergeAABBMax(max, node->left->right->max);
+            
+            float volume = AABBVolume(min, max);
+            
+            if (best_volume > volume && AABBVolume(node->left->min, node->left->max) > volume) {
+                best_volume = volume;
+                best_rotation = 3;
+            }
+        }
+        
+        if (node->right && node->left && !node->left->IsLeaf() && node->left->right) {
+            vec3 min = node->right->min;
+            vec3 max = node->right->max;
+            
+            if (node->left->left) min = MergeAABBMin(min, node->left->left->min);
+            if (node->left->left) max = MergeAABBMax(max, node->left->left->max);
+            
+            float volume = AABBVolume(min, max);
+            
+            if (best_volume > volume && AABBVolume(node->left->min, node->left->max) > volume) {
+                best_volume = volume;
+                best_rotation = 4;
+            }
+        }
+        
+        
+        
+        if (best_rotation == 1) {
+            std::swap(node->left->parent, node->right->left->parent);
+            std::swap(node->left, node->right->left);
+            
+            vec3 min = node->right->left->min;
+            vec3 max = node->right->left->max;
+            
+            if (node->right->right) min = MergeAABBMin(min, node->right->right->min);
+            if (node->right->right) max = MergeAABBMax(max, node->right->right->max);
+            
+            node->right->min = min;
+            node->right->max = max;
+            
+        }
+        
+        if (best_rotation == 2) {
+            std::swap(node->left->parent, node->right->right->parent);
+            std::swap(node->left, node->right->right);
+            
+            vec3 min = node->right->right->min;
+            vec3 max = node->right->right->max;
+            
+            if (node->right->left) min = MergeAABBMin(min, node->right->left->min);
+            if (node->right->left) max = MergeAABBMax(max, node->right->left->max);
+            
+            node->right->min = min;
+            node->right->max = max;
+        }
+        
+        
+        if (best_rotation == 3) {
+            std::swap(node->right->parent, node->left->left->parent);
+            std::swap(node->right, node->left->left);
+            
+            vec3 min = node->left->left->min;
+            vec3 max = node->left->left->max;
+            
+            if (node->left->right) min = MergeAABBMin(min, node->left->right->min);
+            if (node->left->right) max = MergeAABBMax(max, node->left->right->max);
+            
+            node->left->min = min;
+            node->left->max = max;
+            
+        }
+        
+        if (best_rotation == 4) {
+            std::swap(node->right->parent, node->left->right->parent);
+            std::swap(node->right, node->left->right);
+            
+            vec3 min = node->left->right->min;
+            vec3 max = node->left->right->max;
+            
+            if (node->left->left) min = MergeAABBMin(min, node->left->left->min);
+            if (node->left->left) max = MergeAABBMax(max, node->left->left->max);
+            
+            node->left->min = min;
+            node->left->max = max;
+        }
+        
+        
+        
+        
+        
         Node* left_child = node->left;
         Node* right_child = node->right;
         
