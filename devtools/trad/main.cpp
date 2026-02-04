@@ -401,16 +401,11 @@ void MovePositionTowardTriangleCenter(const AABBTree& tree,
 void MovePositionOutsideMesh(const AABBTree& tree,
 							 const std::vector<SceneTriangle>& tris,
 							 vec3& pos,
-							 const Triangle& triangle)
+							 const vec3& normal,
+							 const vec3& tangent,
+							 const vec3& bitangent,
+							 float bias = 0.0f)
 {
-	
-	vec3 v1v2 = glm::normalize(triangle.v2.pos - triangle.v1.pos);
-	vec3 v1v3 = glm::normalize(triangle.v3.pos - triangle.v1.pos);
-	
-	vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
-	vec3 tangent = glm::normalize(glm::cross(normal, v1v2));
-	vec3 bitangent = v1v2;
-	
 	const float dir_amount = 0.25f;
 	
 	vec3 dir1 = tangent;
@@ -425,69 +420,77 @@ void MovePositionOutsideMesh(const AABBTree& tree,
 	
 	// we want the find the furthest intersection, so we're reversing the ray
 	// direction and casting them from the other end
-	vec3 point1 = FindNearestIntersection(tree, tris, pos + dir_amount * dir1, -dir1, dir_amount, true, false, &nearest1);
-	vec3 point2 = FindNearestIntersection(tree, tris, pos + dir_amount * dir2, -dir2, dir_amount, true, false, &nearest2);
-	vec3 point3 = FindNearestIntersection(tree, tris, pos + dir_amount * dir3, -dir3, dir_amount, true, false, &nearest3);
-	vec3 point4 = FindNearestIntersection(tree, tris, pos + dir_amount * dir4, -dir4, dir_amount, true, false, &nearest4);
-	
-	vec3 pos2a = pos + dir_amount * dir2;
-	vec3 pos2b = -dir2;
+	vec3 point1 = FindNearestIntersection(tree, tris, pos + dir_amount * dir1, -dir1, dir_amount + bias, true, false, &nearest1);
+	vec3 point2 = FindNearestIntersection(tree, tris, pos + dir_amount * dir2, -dir2, dir_amount + bias, true, false, &nearest2);
+	vec3 point3 = FindNearestIntersection(tree, tris, pos + dir_amount * dir3, -dir3, dir_amount + bias, true, false, &nearest3);
+	vec3 point4 = FindNearestIntersection(tree, tris, pos + dir_amount * dir4, -dir4, dir_amount + bias, true, false, &nearest4);
 	
 	float total_point = 0.0f;
 	vec3 total_normal = {0.0f, 0.0f, 0.0f};
 	int intersects = 0;
 	
-	if (float dist = glm::distance(pos, point1); dist < dir_amount) {
+	if (float dist = glm::distance(pos, point1); dist < dir_amount + bias) {
 		total_point += dist;
 		intersects++;
 		
 		vec3 v1v2 = glm::normalize(tris[nearest1].triangle.v2.pos - tris[nearest1].triangle.v1.pos);
 		vec3 v1v3 = glm::normalize(tris[nearest1].triangle.v3.pos - tris[nearest1].triangle.v1.pos);
 		
-		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		vec3 intersect_normal = glm::normalize(glm::cross(v1v2, v1v3));
 		
-		total_normal += normal;
+		if (glm::dot(intersect_normal, normal) > -0.1f) {
+			total_normal += intersect_normal;
+		}
 	}
 	
-	if (float dist = glm::distance(pos, point2); dist < dir_amount) {
+	if (float dist = glm::distance(pos, point2); dist < dir_amount + bias) {
 		total_point += dist;
 		intersects++;
 		
 		vec3 v1v2 = glm::normalize(tris[nearest2].triangle.v2.pos - tris[nearest2].triangle.v1.pos);
 		vec3 v1v3 = glm::normalize(tris[nearest2].triangle.v3.pos - tris[nearest2].triangle.v1.pos);
 		
-		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		vec3 intersect_normal = glm::normalize(glm::cross(v1v2, v1v3));
 		
-		total_normal += normal;
+		if (glm::dot(intersect_normal, normal) > -0.1f) {
+			total_normal += intersect_normal;
+		}
 	}
 	
-	if (float dist = glm::distance(pos, point3); dist < dir_amount) {
+	if (float dist = glm::distance(pos, point3); dist < dir_amount + bias) {
 		total_point += dist;
 		intersects++;
 		
 		vec3 v1v2 = glm::normalize(tris[nearest3].triangle.v2.pos - tris[nearest3].triangle.v1.pos);
 		vec3 v1v3 = glm::normalize(tris[nearest3].triangle.v3.pos - tris[nearest3].triangle.v1.pos);
 		
-		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		vec3 intersect_normal = glm::normalize(glm::cross(v1v2, v1v3));
 		
-		total_normal += normal;
+		if (glm::dot(intersect_normal, normal) > -0.1f) {
+			total_normal += intersect_normal;
+		}
 	}
 	
-	if (float dist = glm::distance(pos, point4); dist < dir_amount) {
+	if (float dist = glm::distance(pos, point4); dist < dir_amount + bias) {
 		total_point += dist;
 		intersects++;
 		
 		vec3 v1v2 = glm::normalize(tris[nearest4].triangle.v2.pos - tris[nearest4].triangle.v1.pos);
 		vec3 v1v3 = glm::normalize(tris[nearest4].triangle.v3.pos - tris[nearest4].triangle.v1.pos);
 		
-		vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+		vec3 intersect_normal = glm::normalize(glm::cross(v1v2, v1v3));
 		
-		total_normal += normal;
+		if (glm::dot(intersect_normal, normal) > -0.1f) {
+			total_normal += intersect_normal;
+		}
 	}
 	
 	if (!intersects) return;
 	
-	pos += (total_normal/(float)intersects) * (total_point/(float)intersects + 0.1f);
+	
+	float point_div = intersects > 2 ? 2 : intersects;
+	
+	pos += (total_normal/(float)intersects) * (total_point/point_div + 0.1f);
 }
 
 bool IsTexelInShadow(const AABBTree& tree,
@@ -644,6 +647,7 @@ int main(int argc, const char** argv) {
 		std::cout << "  -scale <integer>\tScales down lightmap\n";
 		std::cout << "  -fast\t\t\tDisables extra raycasts\n";
 		std::cout << "  -fullbright\t\tSets each triangle's color to white\n";
+		std::cout << "  -ambient <samples> <length>\t\tSets ambient occlusion samples and ray length\n";
 		std::cout << "  -worldspawn <name>\tTreats the named entity as a worldspawn and allows it\n\t\t\tto cast shadows\n";
 		
 		std::cout << "\nThis program should be run from project root, e.g. the ";
@@ -659,6 +663,9 @@ int main(int argc, const char** argv) {
 	bool paint_verts = false;
 	
 	bool force_fullbright = false;
+	
+	int ambient_occlusion = 0;
+	float ambient_length = 1.0f;
 	
 	bool fast = false;
 	
@@ -702,6 +709,11 @@ int main(int argc, const char** argv) {
 			force_fullbright = true;
 		}
 		
+		if (strcmp(argv[i], "-ambient") == 0) {
+			ambient_occlusion = atoi(argv[++i]);
+			ambient_length = atoi(argv[++i]);
+		}
+
 		if (strcmp(argv[i], "-worldspawn") == 0) {
 			worldspawns.push_back(argv[++i]);
 		}
@@ -999,7 +1011,7 @@ int main(int argc, const char** argv) {
 				l.Blit(col, row, {pos});
 			});
 			
-		} else if (force_fullbright) {
+		} else if (force_fullbright && !ambient_occlusion) {
 			
 			// rasterize triangle to fullbright
 			RasterizeTriangle(image_params, tri.triangle, [&](int col, int row, vec3 pos, vec3 nrm, vec3 mid){
@@ -1014,16 +1026,25 @@ int main(int argc, const char** argv) {
 				if (l.Blitted(col, row)) return;
 				
 				vec3 texel_color = {0.0f, 0.0f, 0.0f};
+
+				vec3 v1v2 = glm::normalize(tri.triangle.v2.pos - tri.triangle.v1.pos);
+				vec3 v1v3 = glm::normalize(tri.triangle.v3.pos - tri.triangle.v1.pos);
+				
+				vec3 normal = glm::normalize(glm::cross(v1v2, v1v3));
+				vec3 tangent = glm::normalize(glm::cross(normal, v1v2));
+				vec3 bitangent = v1v2;
 				
 				// we might get a collision with the triangle, on which the texel is located
 				// on, so we move it off of the surface a little bit
 				vec3 shadow_pos = pos + 0.05f * nrm;
 				mid += 0.05f * nrm;
 				
+				const float bias = ambient_occlusion ? 0.05f : 0.0f;
 				//if (!fast) MovePositionTowardTriangleCenter(scene_tree, scene_triangles, shadow_pos, nrm, mid);
-				if (!fast) MovePositionOutsideMesh(scene_tree, scene_triangles, shadow_pos, tri.triangle);
+				if (!fast) MovePositionOutsideMesh(scene_tree, scene_triangles, shadow_pos, normal, tangent, bitangent, bias);
 				
-				for (const auto& light : lights) {
+				
+				if (!force_fullbright) for (const auto& light : lights) {
 					const vec3 light_color = FindTexelColorFromLight(light, pos, nrm);
 
 					const float epsilon = 1.0f / 256.0f;
@@ -1036,6 +1057,56 @@ int main(int argc, const char** argv) {
 					}
 					
 					texel_color += light_color;
+				}
+				
+				float total_distance = 0.0f;
+				for (int n = 0; n < ambient_occlusion; n++) {
+					
+					const float double_inv = (1.0f / (glm::golden_ratio<float>() * glm::golden_ratio<float>()));
+					const float golden = glm::two_pi<float>() * double_inv;
+
+					// 1.0f is a scaling constant and 0.99f pulls the spiral in
+					// so that it doesn't go coplanar with flat part of the hemisphere
+					const float r = 0.99f * (1.0f * sqrtf((float)n)) / (1.0f * sqrtf((float)ambient_occlusion));
+					const float theta = golden * (float)n;
+					
+					const float x = r * sin(theta);
+					const float y = r * cos(theta);
+					const float z = sqrtf(1.0f - (x * x + y * y));
+
+					
+					
+					vec3 w = mat3(tangent, bitangent, normal) * vec3(x, y, z);
+					
+					
+					vec3 nearest = FindNearestIntersection(scene_tree,
+							 scene_triangles,
+							 shadow_pos,
+							 w,
+							 ambient_length,
+							 true,
+							 true);
+					
+					float dist = glm::distance(shadow_pos, nearest);
+					if (nearest.x == INFINITY || dist > ambient_length + bias) {
+						total_distance += 1.0f;
+						continue;
+					}
+					
+					total_distance += dist / ambient_length;
+					
+
+				}
+				
+				if (ambient_occlusion) {
+					float inv_occlusion = total_distance / (float)ambient_occlusion;
+
+					if (force_fullbright) {
+						texel_color = {inv_occlusion, inv_occlusion, inv_occlusion};
+					} else {
+						texel_color *= inv_occlusion;
+					}
+					
 				}
 				
 				l.Blit(col, row, {texel_color});
