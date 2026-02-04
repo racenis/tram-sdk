@@ -408,6 +408,26 @@ public:
         return tfar >= tnear ? tnear : INFINITY;
     }
     
+    int FindDepth() {
+        int depth = 0;
+        FindDepthRecursive(root, 1, depth);
+        return depth;
+    }
+    
+    void FindDepthRecursive(Node* node, int current, int& largest) {
+        if (current > largest) largest = current;
+        
+        if (node->IsLeaf()) return;
+        
+        if (node->left) {
+            FindDepthRecursive(node->left, current + 1, largest);
+        }
+        
+        if (node->right) {
+            FindDepthRecursive(node->right, current + 1, largest);
+        }
+    }
+    
     struct Node {
         bool IsLeaf () const { return right == 0; }
         

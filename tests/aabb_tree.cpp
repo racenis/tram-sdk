@@ -432,7 +432,7 @@ TEST_CASE("AABB Tree Degenerate Tree", "[aabb8]") {
 
 	}
 	
-	ASSERT(true)
+	ASSERT(10 >= tree.FindDepth())
 }
 
 END_TEST
