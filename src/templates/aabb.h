@@ -32,7 +32,9 @@ namespace tram {
     
 class AABBTree {
 public:
-    AABBTree() {}
+    AABBTree() {
+        this->root = (Node*)MakeNode();
+    }
     ~AABBTree() {
         //RemoveHierarchy(root);
         // TODO: fix 
@@ -40,66 +42,70 @@ public:
     
     typedef void* node_t;
     
-    vec3 GetAABBMin() { return root->min; }
-    vec3 GetAABBMax() { return root->max; }
+    node_t INVALID = nullptr;
+    
+    vec3 GetAABBMin() { return GetMin(root); }
+    vec3 GetAABBMax() { return GetMax(root); }
     
     struct Node;
     
     node_t InsertLeaf (uint32_t value, vec3 min, vec3 max) {
-        Node* new_node = new Node;
+        node_t new_node = MakeNode();
         
-        new_node->value = value;
+        SetValue(new_node, value);
         
-        new_node->min = min;
-        new_node->max = max;
+        SetMin(new_node, min);
+        SetMax(new_node, max);
         
-        if (root->left == nullptr) {
-            root->left = new_node;
-            new_node->parent = root;
+        // if root doesn't have both children, we want to fill them in asap,
+        // since it makes next operations significantly simpler
+        if (GetLeft(root) == INVALID) {
+            SetLeft(root, new_node);
+            SetParent(new_node, root);
             
-            if (root->right) {
+            if (GetRight(root) != INVALID) {
                 UpdateParentAABB(root);
             } else {
-                root->min = new_node->min;
-                root->max = new_node->max;
+                SetMin(root, GetMin(new_node));
+                SetMax(root, GetMax(new_node));
             }
             
             return new_node;
         }
         
-        if (root->right == nullptr) {
-            root->right = new_node;
-            new_node->parent = root;
-            
-            if (root->left) {
+        if (GetRight(root) == INVALID) {
+            SetRight(root, new_node);
+            SetParent(new_node, root);
+
+            if (GetLeft(root) != INVALID) {
                 UpdateParentAABB(root);
             } else {
-                root->min = new_node->min;
-                root->max = new_node->max;
+                SetMin(root, GetMin(new_node));
+                SetMax(root, GetMax(new_node));
             }
             
             return new_node;
         }
         
-        Node* sibling = (Node*)FindSibling(min, max, root);
-        Node* sibling_parent = sibling->parent;
-        Node* new_parent = new Node;
+        node_t sibling = FindSibling(min, max, root);
+        node_t sibling_parent = GetParent(sibling);
+        node_t new_parent = MakeNode();
         
-        if (sibling_parent->left == sibling) {
-            sibling_parent->left = new_parent;
-        } else if (sibling_parent->right == sibling) {
-            sibling_parent->right = new_parent;
+        if (GetLeft(sibling_parent) == sibling) {
+            SetLeft(sibling_parent, new_parent);
+        } else if (GetRight(sibling_parent) == sibling) {
+            SetRight(sibling_parent, new_parent);
         } else {
             assert(false);
         }
         
-        new_parent->parent = sibling_parent;
-        
-        new_parent->left = new_node;
-        new_parent->right = sibling;
-        
-        sibling->parent = new_parent;
-        new_node->parent = new_parent;
+        SetParent(new_parent, sibling_parent);
+
+        SetLeft(new_parent, new_node);
+        SetRight(new_parent, sibling);
+
+        SetParent(sibling, new_parent);
+        SetParent(new_node, new_parent);
         
         UpdateParentAABB(new_parent);
         
@@ -108,77 +114,74 @@ public:
         return new_node;
     }
     
-    void RemoveLeaf(node_t opaque_node) {
-        Node* node = (Node*)opaque_node;
+    void RemoveLeaf(node_t node) {
+        assert(node != INVALID);
         
-        assert(node);
+        node_t parent = GetParent(node);
+        node_t sibling = GetLeft(parent) == node ? GetRight(parent) : GetLeft(parent);
         
-        Node* parent = node->parent;
-        Node* sibling = parent->left == node ? parent->right : parent->left;
-        
-        if (parent->left != node && parent->right != node) {
+        if (GetLeft(parent) != node && GetRight(parent) != node) {
             assert(false);
         }
         
         if (parent == root) {
-            if (parent->left == node) {
-                parent->left = nullptr;
+            if (GetLeft(parent) == node) {
+                SetLeft(parent, INVALID);
                 
-                if (sibling) {
-                    parent->min = sibling->min;
-                    parent->max = sibling->max;
+                if (sibling != INVALID) {
+                    SetMin(parent, GetMin(sibling));
+                    SetMax(parent, GetMax(sibling));
                 }
             } else {
-                parent->right = nullptr;
+                SetRight(parent, INVALID);
                 
-                if (sibling) {
-                    parent->min = sibling->min;
-                    parent->max = sibling->max;
+                if (sibling != INVALID) {
+                    SetMin(parent, GetMin(sibling));
+                    SetMax(parent, GetMax(sibling));
                 }
             }
             
-            delete node;
+            YeetNode(node);
             
             ValidateTree(root);
             
             return;
         }
         
-        Node* grandparent = parent->parent;
+        node_t grandparent = GetParent(parent);
         
-        if (grandparent->left == parent) {
-            grandparent->left = sibling;
+        if (GetLeft(grandparent) == parent) {
+            SetLeft(grandparent, sibling);
         } else {
-            grandparent->right = sibling;
+            SetRight(grandparent, sibling);
         }
         
-        sibling->parent = grandparent;
+        assert(sibling != INVALID);
+        SetParent(sibling, grandparent);
         
         UpdateParentAABB(grandparent);
         
-        delete node;
-        delete parent;
+        YeetNode(node);
+        YeetNode(parent);
         
         ValidateTree(root);
     }
     
-    void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t opaque_node, std::vector<uint32_t>& result) const {
-        Node* node = (Node*)opaque_node;
-        
-        bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, node->min, node->max);
+    void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t node, std::vector<uint32_t>& result) const {
+        bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, GetMin(node), GetMax(node));
         
         if (is_node_intersect) {
-            if (node->IsLeaf() && node != root) {
-                result.push_back(node->value);
+            if (IsLeaf(node) && node != root) {
+                result.push_back(GetValue(node));
             } else {
-                if (node->left) FindIntersection (ray_pos, ray_dir, node->left, result);
-                if (node->right) FindIntersection (ray_pos, ray_dir, node->right, result);
+                if (GetLeft(node) != INVALID) FindIntersection (ray_pos, ray_dir, GetLeft(node), result);
+                if (GetRight(node) != INVALID) FindIntersection (ray_pos, ray_dir, GetRight(node), result);
             }
         }
     }
     
     uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) const {
-        bool root_intersects = AABBIntersect(ray_pos, ray_dir, root->min, root->max);
+        bool root_intersects = AABBIntersect(ray_pos, ray_dir, GetMin(root), GetMax(root));
 
         if (!root_intersects) {
             return -1;
@@ -205,15 +208,13 @@ public:
 private:
     
     // do we need this even?
-    void RemoveHierarchy(node_t opaque_node) {
-        Node* node = (Node*)opaque_node;
-        
-        if (node->IsLeaf()) {
-            delete node;
+    void RemoveHierarchy(node_t node) {
+        if (IsLeaf(node)) {
+            YeetNode(node);
         } else {
-            RemoveHierarchy(node->left);
-            RemoveHierarchy(node->right);
-            delete node;
+            RemoveHierarchy(GetLeft(node));
+            RemoveHierarchy(GetRight(node));
+            YeetNode(node);
         }
     }
     
@@ -587,15 +588,15 @@ public:
         delete (Node*)node;
     }
     
-    inline node_t GetLeft(node_t node) {
+    inline node_t GetLeft(node_t node) const {
         return ((Node*)node)->left;
     }
     
-    inline node_t GetRight(node_t node) {
+    inline node_t GetRight(node_t node) const {
         return ((Node*)node)->right;
     }
     
-    inline node_t GetParent(node_t node) {
+    inline node_t GetParent(node_t node) const {
         return ((Node*)node)->parent;
     }
     
@@ -612,11 +613,11 @@ public:
     }
     
     
-    inline vec3 GetMin(node_t node) {
+    inline vec3 GetMin(node_t node) const {
         return ((Node*)node)->min;
     }
     
-    inline vec3 GetMax(node_t node) {
+    inline vec3 GetMax(node_t node) const {
         return ((Node*)node)->max;
     }
     
@@ -629,7 +630,7 @@ public:
     }
     
     
-    inline uint32_t GetValue(node_t node) {
+    inline uint32_t GetValue(node_t node) const {
         return ((Node*)node)->value;
     }
     
@@ -638,7 +639,7 @@ public:
     }
     
     
-    inline bool IsLeaf(node_t node) {
+    inline bool IsLeaf(node_t node) const {
         return ((Node*)node)->IsLeaf();
     }
 
@@ -662,11 +663,11 @@ public:
         Node* right = nullptr;
         Node* parent = nullptr;
         
-        vec3 min;
-        vec3 max;
+        vec3 min = {0.0f, 0.0f, 0.0f};
+        vec3 max = {0.0f, 0.0f, 0.0f};
     };
     
-    Node* root = new Node {nullptr, nullptr, nullptr, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}};
+    Node* root = nullptr;
 };
 
 }
