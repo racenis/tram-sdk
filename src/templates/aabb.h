@@ -23,9 +23,9 @@ namespace tram {
 // 1. X     separate 'public' and 'private' functions
 // 2. X     alias node_t to void* and replace Node* with it
 // 3. X     since Node is now opaque, add small static inline getter/setter methods
-// 4. start moving away from directly accessing Node struct to static inline methods on the AABBTree class
-// 5. finish moving away
-// 6. now Node has been completely abstracted and node_t can be fully opaque
+// 4. X     start moving away from directly accessing Node struct to static inline methods on the AABBTree class
+// 5. X     finish moving away
+// 6. X     now Node has been completely abstracted and node_t can be fully opaque
 // 7. switch node_t to uint32_t mapping it to a Node*
 // 8. replace new/deletes with an array
 // 9. devise improved packing schemes for better performance
@@ -33,21 +33,25 @@ namespace tram {
 class AABBTree {
 public:
     AABBTree() {
-        this->root = (Node*)MakeNode();
+        this->root = MakeNode();
     }
+    
     ~AABBTree() {
+        // calling this causes segfault on program exit
+        // TODO: investigate
         //RemoveHierarchy(root);
-        // TODO: fix 
     }
     
     typedef void* node_t;
     
-    node_t INVALID = nullptr;
+    static constexpr node_t INVALID = nullptr;
     
     vec3 GetAABBMin() { return GetMin(root); }
     vec3 GetAABBMax() { return GetMax(root); }
     
+private:
     struct Node;
+public:
     
     node_t InsertLeaf (uint32_t value, vec3 min, vec3 max) {
         node_t new_node = MakeNode();
@@ -162,17 +166,8 @@ public:
         YeetNode(parent);
     }
     
-    void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t node, std::vector<uint32_t>& result) const {
-        bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, GetMin(node), GetMax(node));
-        
-        if (is_node_intersect) {
-            if (IsLeaf(node) && node != root) {
-                result.push_back(GetValue(node));
-            } else {
-                if (GetLeft(node) != INVALID) FindIntersection (ray_pos, ray_dir, GetLeft(node), result);
-                if (GetRight(node) != INVALID) FindIntersection (ray_pos, ray_dir, GetRight(node), result);
-            }
-        }
+    void FindIntersection(vec3 ray_pos, vec3 ray_dir, std::vector<uint32_t>& result) const {
+        FindIntersection(ray_pos, ray_dir, root, result);
     }
     
     uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) const {
@@ -200,9 +195,11 @@ public:
         return depth;
     }
     
-private:
+    const node_t GetRoot() const {
+        return root;
+    }
     
-    // do we need this even?
+private:
     void RemoveHierarchy(node_t node) {
         if (IsLeaf(node)) {
             YeetNode(node);
@@ -253,6 +250,19 @@ private:
             
         }
         
+    }
+    
+    void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t node, std::vector<uint32_t>& result) const {
+        bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, GetMin(node), GetMax(node));
+        
+        if (is_node_intersect) {
+            if (IsLeaf(node) && node != root) {
+                result.push_back(GetValue(node));
+            } else {
+                if (GetLeft(node) != INVALID) FindIntersection(ray_pos, ray_dir, GetLeft(node), result);
+                if (GetRight(node) != INVALID) FindIntersection(ray_pos, ray_dir, GetRight(node), result);
+            }
+        }
     }
     
     void FindAABBIntersection(node_t node, vec3 min, vec3 max, auto callback) {
@@ -627,7 +637,7 @@ public:
 
 
 
-
+private:
 
 
     struct Node {
@@ -647,7 +657,7 @@ public:
         vec3 max = {0.0f, 0.0f, 0.0f};
     };
     
-    Node* root = nullptr;
+    node_t root = INVALID;
 };
 
 }

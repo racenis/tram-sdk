@@ -114,7 +114,7 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
     std::vector<uint32_t> results;
     results.reserve(10);
     
-    scene_tree.FindIntersection(ray_pos, ray_dir, scene_tree.root, results);
+    scene_tree.FindIntersection(ray_pos, ray_dir, results);
     
     float nearest = INFINITY;
     QueryResponse nearest_result;
@@ -174,24 +174,24 @@ void FindAllIntersectionsFromAABB(vec3 min, vec3 max, std::function<void(Referen
 }
 
 
-static void DrawAABBNodeChildren(AABBTree::Node* node) {
-    if (node->IsLeaf()) {
-        AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
+static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node) {
+    if (tree.IsLeaf(node)) {
+        AddLineAABB(tree.GetMin(node), tree.GetMax(node), {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_CYAN);
     } else {
-        DrawAABBNodeChildren(node->left);
-        DrawAABBNodeChildren(node->right);
+        DrawAABBNodeChildren(tree, tree.GetLeft(node));
+        DrawAABBNodeChildren(tree, tree.GetRight(node));
         
-        if (node->parent == nullptr) {
-            AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_RED);
+        if (tree.GetParent(node) == AABBTree::INVALID) {
+            AddLineAABB(tree.GetMin(node), tree.GetMax(node), {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_RED);
         } else {
-            AddLineAABB(node->min, node->max, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_PINK);
+            AddLineAABB(tree.GetMin(node), tree.GetMax(node), {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f, 0.0f}, COLOR_PINK);
         }
     }
 }
 
 /// Draws the scene tree for a single frame.
 void DebugDrawTree() {
-    DrawAABBNodeChildren(scene_tree.root);
+    DrawAABBNodeChildren(scene_tree, scene_tree.GetRoot());
 }
 
 }

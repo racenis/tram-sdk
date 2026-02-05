@@ -144,7 +144,7 @@ void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>
     std::vector<uint32_t> results;
     results.reserve(10);
     
-    model_aabb->tree.FindIntersection(ray_pos, ray_dir, model_aabb->tree.root, results);
+    model_aabb->tree.FindIntersection(ray_pos, ray_dir, results);
     
     for (auto res : results) {
         result.push_back(model_aabb->triangles[res]);
@@ -166,17 +166,17 @@ static int leaf_counter = 0;
 
 //static std::set<uint32_t> lookedat_nodes;
 
-static void DrawAABBNodeChildren (AABBTree::Node* node, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation) {
+static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation) {
     //lookedat_nodes.emplace(node_id);
     
     total_counter++;
     
-    if (node->IsLeaf()) {
+    if (tree.IsLeaf(node)) {
         //AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
         
-        vec3 point1 = position + (rotation * triangles[node->value].point1);
-        vec3 point2 = position + (rotation * triangles[node->value].point2);
-        vec3 point3 = position + (rotation * triangles[node->value].point3);
+        vec3 point1 = position + (rotation * triangles[tree.GetValue(node)].point1);
+        vec3 point2 = position + (rotation * triangles[tree.GetValue(node)].point2);
+        vec3 point3 = position + (rotation * triangles[tree.GetValue(node)].point3);
         
         AddLine(point1, point2, COLOR_WHITE);
         AddLine(point2, point3, COLOR_WHITE);
@@ -184,13 +184,13 @@ static void DrawAABBNodeChildren (AABBTree::Node* node, const std::vector<AABBTr
         
         leaf_counter++;
     } else {
-        DrawAABBNodeChildren(node->left, triangles, position, rotation);
-        DrawAABBNodeChildren(node->right, triangles, position, rotation);
+        DrawAABBNodeChildren(tree, tree.GetLeft(node), triangles, position, rotation);
+        DrawAABBNodeChildren(tree, tree.GetRight(node), triangles, position, rotation);
         
-        if (node->parent == nullptr) {
-            AddLineAABB(node->min, node->max, position, rotation, COLOR_RED);
+        if (tree.GetParent(node) == AABBTree::INVALID) {
+            AddLineAABB(tree.GetMin(node), tree.GetMax(node), position, rotation, COLOR_RED);
         } else {
-            AddLineAABB(node->min, node->max, position, rotation, COLOR_PINK);
+            AddLineAABB(tree.GetMin(node), tree.GetMax(node), position, rotation, COLOR_PINK);
         }
         
         node_counter++;
@@ -209,7 +209,7 @@ void Model::DrawAABB(vec3 position, quat rotation) {
     node_counter = 0;
     leaf_counter = 0;
 
-    DrawAABBNodeChildren(model_aabb->tree.root, model_aabb->triangles, position, rotation);
+    DrawAABBNodeChildren(model_aabb->tree, model_aabb->tree.GetRoot(), model_aabb->triangles, position, rotation);
 }
 
 static vec3 TriangleAABBMin (vec3 point1, vec3 point2, vec3 point3) {
