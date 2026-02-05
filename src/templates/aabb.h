@@ -20,9 +20,9 @@ namespace tram {
 // Unfortunately such a refactor is a massive PITA.
 //
 // Plan:
-// 1. separate 'public' and 'private' functions
-// 2. alias node_t to void* and replace Node* with it
-// 3. since Node is now opaque, add small static inline getter/setter methods
+// 1. X     separate 'public' and 'private' functions
+// 2. X     alias node_t to void* and replace Node* with it
+// 3. X     since Node is now opaque, add small static inline getter/setter methods
 // 4. start moving away from directly accessing Node struct to static inline methods on the AABBTree class
 // 5. finish moving away
 // 6. now Node has been completely abstracted and node_t can be fully opaque
@@ -38,12 +38,14 @@ public:
         // TODO: fix 
     }
     
+    typedef void* node_t;
+    
     vec3 GetAABBMin() { return root->min; }
     vec3 GetAABBMax() { return root->max; }
     
     struct Node;
     
-    Node* InsertLeaf (uint32_t value, vec3 min, vec3 max) {
+    node_t InsertLeaf (uint32_t value, vec3 min, vec3 max) {
         Node* new_node = new Node;
         
         new_node->value = value;
@@ -79,7 +81,7 @@ public:
             return new_node;
         }
         
-        Node* sibling = FindSibling(min, max, root);
+        Node* sibling = (Node*)FindSibling(min, max, root);
         Node* sibling_parent = sibling->parent;
         Node* new_parent = new Node;
         
@@ -106,7 +108,9 @@ public:
         return new_node;
     }
     
-    void RemoveLeaf(Node* node) {
+    void RemoveLeaf(node_t opaque_node) {
+        Node* node = (Node*)opaque_node;
+        
         assert(node);
         
         Node* parent = node->parent;
@@ -158,7 +162,9 @@ public:
         ValidateTree(root);
     }
     
-    void FindIntersection(vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) const {
+    void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t opaque_node, std::vector<uint32_t>& result) const {
+        Node* node = (Node*)opaque_node;
+        
         bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, node->min, node->max);
         
         if (is_node_intersect) {
@@ -199,7 +205,9 @@ public:
 private:
     
     // do we need this even?
-    void RemoveHierarchy(Node* node) {
+    void RemoveHierarchy(node_t opaque_node) {
+        Node* node = (Node*)opaque_node;
+        
         if (node->IsLeaf()) {
             delete node;
         } else {
@@ -209,7 +217,9 @@ private:
         }
     }
     
-    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, Node* node, auto filter) const {
+    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, node_t opaque_node, auto filter) const {
+        Node* node = (Node*)opaque_node;
+        
         if (node->IsLeaf() && node != root) {
             float leaf_distance = filter(ray_pos, ray_dir, node->value);
             
@@ -251,7 +261,9 @@ private:
         
     }
     
-    void FindAABBIntersection(Node* node, vec3 min, vec3 max, auto callback) {
+    void FindAABBIntersection(node_t opaque_node, vec3 min, vec3 max, auto callback) {
+        Node* node = (Node*)opaque_node;
+        
         if (node->IsLeaf() && node != root) {
             if (AABBOverlap(min, max, node->min, node->max)) {
                 callback(node->value);
@@ -270,7 +282,8 @@ private:
         
     }
     
-    void UpdateParentAABB (Node* node) {
+    void UpdateParentAABB (node_t opaque_node) {
+        Node* node = (Node*)opaque_node;
         
         //assert(!node->IsLeaf());
         
@@ -437,7 +450,9 @@ private:
     }
     
     // searches the children of search_node to find a sibling for target_node
-    Node* FindSibling (vec3 min, vec3 max, Node* node) {
+    node_t FindSibling (vec3 min, vec3 max, node_t opaque_node) {
+        Node* node = (Node*)opaque_node;
+        
         assert(node);
 
         if (node->IsLeaf()) {
@@ -470,7 +485,9 @@ private:
     }
     
     
-    void ValidateTree (Node* node) {
+    void ValidateTree (node_t opaque_node) {
+        Node* node = (Node*)opaque_node;
+        
         return;
         if (root->parent != nullptr) {
             //if (((Node*)0)->IsLeaf()) assert(false);
@@ -479,7 +496,9 @@ private:
         return;
         ValidateTree (node, 0);
     }
-    void ValidateTree (Node* node, size_t num) {
+    void ValidateTree (node_t opaque_node, size_t num) {
+        Node* node = (Node*)opaque_node;
+        
         assert(node);
         assert((long long)node > 100);
         
@@ -543,7 +562,9 @@ private:
         return tfar >= tnear ? tnear : INFINITY;
     }
     
-    void FindDepthRecursive(Node* node, int current, int& largest) {
+    void FindDepthRecursive(node_t opaque_node, int current, int& largest) {
+        Node* node = (Node*)opaque_node;
+        
         if (current > largest) largest = current;
         
         if (node->IsLeaf()) return;
@@ -558,6 +579,76 @@ private:
     }
 
 public:
+    inline node_t MakeNode() {
+        return new Node;
+    }
+    
+    inline void YeetNode(node_t node) {
+        delete (Node*)node;
+    }
+    
+    inline node_t GetLeft(node_t node) {
+        return ((Node*)node)->left;
+    }
+    
+    inline node_t GetRight(node_t node) {
+        return ((Node*)node)->right;
+    }
+    
+    inline node_t GetParent(node_t node) {
+        return ((Node*)node)->parent;
+    }
+    
+    inline void SetLeft(node_t node, node_t value) {
+        ((Node*)node)->left = (Node*)value;
+    }
+    
+    inline void SetRight(node_t node, node_t value) {
+        ((Node*)node)->right = (Node*)value;
+    }
+    
+    inline void SetParent(node_t node, node_t value) {
+        ((Node*)node)->parent = (Node*)value;
+    }
+    
+    
+    inline vec3 GetMin(node_t node) {
+        return ((Node*)node)->min;
+    }
+    
+    inline vec3 GetMax(node_t node) {
+        return ((Node*)node)->max;
+    }
+    
+    inline void SetMin(node_t node, vec3 value) {
+        ((Node*)node)->min = value;
+    }
+    
+    inline void SetMax(node_t node, vec3 value) {
+        ((Node*)node)->max = value;
+    }
+    
+    
+    inline uint32_t GetValue(node_t node) {
+        return ((Node*)node)->value;
+    }
+    
+    inline void SetValue(node_t node, uint32_t value) {
+        ((Node*)node)->value = value;
+    }
+    
+    
+    inline bool IsLeaf(node_t node) {
+        return ((Node*)node)->IsLeaf();
+    }
+
+
+
+
+
+
+
+
     struct Node {
         bool IsLeaf () const { return right == 0; }
         

@@ -42,7 +42,7 @@ namespace tram::Render::AABB {
 
 struct AABBLeaf {
     ReferenceType ref_type;
-    AABBTree::Node* leaf;
+    AABBTree::node_t leaf;
     
     union {
         RenderComponent* rendercomponent;

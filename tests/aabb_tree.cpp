@@ -131,7 +131,7 @@ TEST_CASE("AABB Tree Basic Raycasts", "[aabb1]") {
 	
 	std::vector<Sphere> sphere_map(spheres.size());
 	
-	std::vector<AABBTree::Node*> nodes;
+	std::vector<AABBTree::node_t> nodes;
 	for (const auto& sphere : spheres) {
 		auto [min, max] = GetSphereAABB(sphere);
 		auto* node = tree.InsertLeaf(sphere.id, min, max);
@@ -172,7 +172,7 @@ TEST_CASE("AABB Tree Insert/Delete", "[aabb2]") {
 		421
 	);
 	
-	std::vector<AABBTree::Node*> nodes(all_spheres.size(), nullptr);
+	std::vector<AABBTree::node_t> nodes(all_spheres.size(), nullptr);
 	std::vector<bool> inserted(all_spheres.size(), false);
 	
 	for (int i = 0; i < 500; ++i) {
@@ -244,7 +244,7 @@ TEST_CASE("AABB Tree Empty", "[aabb3]") {
 TEST_CASE("AABB Tree Single", "[aabb4]") {
 	AABBTree tree;
 
-	std::vector<AABBTree::Node*> nodes;
+	std::vector<AABBTree::node_t> nodes;
 	Sphere sphere = {
 		.center = {10.0f, 0.0f, 0.0f},
 		.radius = 2.0f,
@@ -272,7 +272,7 @@ TEST_CASE("AABB Tree Single", "[aabb4]") {
 TEST_CASE("AABB Tree Overlapping", "[aabb5]") {
 	AABBTree tree;
 
-	std::vector<AABBTree::Node*> nodes;
+	std::vector<AABBTree::node_t> nodes;
 	Sphere sphere = {
 		.center = {10.0f, 0.0f, 0.0f},
 		.radius = 1.0f,
@@ -335,7 +335,7 @@ std::vector<Ray> rays = GenerateRays(25000, {-600.0f, -600.0f, -600.0f}, {600.0f
 	
 	auto insertion_time = std::chrono::high_resolution_clock::now();
 	
-	std::vector<AABBTree::Node*> nodes;
+	std::vector<AABBTree::node_t> nodes;
 	for (const auto& sphere : spheres) {
 		auto [min, max] = GetSphereAABB(sphere);
 		nodes.push_back(tree.InsertLeaf(sphere.id, min, max));
@@ -385,7 +385,7 @@ TEST_CASE("AABB Tree Shape Cast", "[aabb7]") {
 		{{10.0f, 10.0f, 0.0f}, 1.0f, 3},
 	};
 	
-	std::vector<AABBTree::Node*> nodes;
+	std::vector<AABBTree::node_t> nodes;
 	for (const auto& sphere : spheres) {
 		auto [min, max] = GetSphereAABB(sphere);
 		nodes.push_back(tree.InsertLeaf(sphere.id, min, max));
@@ -415,7 +415,7 @@ TEST_CASE("AABB Tree Degenerate Tree", "[aabb8]") {
 	const float SPHERE_RADIUS = 1.0f;
 	const float SPACING = 3.0f;
 	
-	std::vector<AABBTree::Node*> nodes;
+	std::vector<AABBTree::node_t> nodes;
 	
 	uint32_t sphere_id = 0;
 	
