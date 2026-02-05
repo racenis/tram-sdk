@@ -109,13 +109,12 @@ public:
         
         UpdateParentAABB(new_parent);
         
-        ValidateTree(root);
-        
         return new_node;
     }
     
     void RemoveLeaf(node_t node) {
         assert(node != INVALID);
+        assert(node != root);
         
         node_t parent = GetParent(node);
         node_t sibling = GetLeft(parent) == node ? GetRight(parent) : GetLeft(parent);
@@ -142,9 +141,7 @@ public:
             }
             
             YeetNode(node);
-            
-            ValidateTree(root);
-            
+
             return;
         }
         
@@ -163,8 +160,6 @@ public:
         
         YeetNode(node);
         YeetNode(parent);
-        
-        ValidateTree(root);
     }
     
     void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t node, std::vector<uint32_t>& result) const {
@@ -212,21 +207,19 @@ private:
         if (IsLeaf(node)) {
             YeetNode(node);
         } else {
-            RemoveHierarchy(GetLeft(node));
-            RemoveHierarchy(GetRight(node));
+            if (GetLeft(node) != INVALID) RemoveHierarchy(GetLeft(node));
+            if (GetRight(node) != INVALID) RemoveHierarchy(GetRight(node));
             YeetNode(node);
         }
     }
     
-    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, node_t opaque_node, auto filter) const {
-        Node* node = (Node*)opaque_node;
-        
-        if (node->IsLeaf() && node != root) {
-            float leaf_distance = filter(ray_pos, ray_dir, node->value);
+    void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, node_t node, auto filter) const {
+        if (IsLeaf(node) && node != root) {
+            float leaf_distance = filter(ray_pos, ray_dir, GetValue(node));
             
             if (leaf_distance < nearest_dist) {
                 nearest_dist = leaf_distance;
-                nearest_index = node->value;
+                nearest_index = GetValue(node);
             }
             
             return;
@@ -235,120 +228,116 @@ private:
         float left_distance = INFINITY;
         float right_distance = INFINITY;
         
-        if (node->left) left_distance = AABBDistance(ray_pos, ray_dir, node->left->min, node->left->max);
-        if (node->right) right_distance = AABBDistance(ray_pos, ray_dir, node->right->min, node->right->max);
+        if (GetLeft(node) != INVALID) left_distance = AABBDistance(ray_pos, ray_dir, GetMin(GetLeft(node)), GetMax(GetLeft(node)));
+        if (GetRight(node) != INVALID) right_distance = AABBDistance(ray_pos, ray_dir, GetMin(GetRight(node)), GetMax(GetRight(node)));
         
         if (left_distance < right_distance) {
             
             if (left_distance < nearest_dist && left_distance < distance_limit) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->left, filter);
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, GetLeft(node), filter);
             }
             
             if (right_distance < nearest_dist && right_distance < distance_limit) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->right, filter);
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, GetRight(node), filter);
             }
             
         } else {
             
             if (right_distance < nearest_dist && right_distance < distance_limit) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->right, filter);
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, GetRight(node), filter);
             }
             
             if (left_distance < nearest_dist && left_distance < distance_limit) {
-                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, node->left, filter);
+                FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, GetLeft(node), filter);
             }
             
         }
         
     }
     
-    void FindAABBIntersection(node_t opaque_node, vec3 min, vec3 max, auto callback) {
-        Node* node = (Node*)opaque_node;
-        
-        if (node->IsLeaf() && node != root) {
-            if (AABBOverlap(min, max, node->min, node->max)) {
-                callback(node->value);
+    void FindAABBIntersection(node_t node, vec3 min, vec3 max, auto callback) {
+        if (IsLeaf(node) && node != root) {
+            if (AABBOverlap(min, max, GetMin(node), GetMax(node))) {
+                callback(GetValue(node));
             }
             
             return;
         }
         
-        if (node->left && AABBOverlap(min, max, node->left->min, node->left->max)) {
-            FindAABBIntersection(node->left, min, max, callback);
+        if (GetLeft(node) != INVALID && AABBOverlap(min, max, GetMin(GetLeft(node)), GetMax(GetLeft(node)))) {
+            FindAABBIntersection(GetLeft(node), min, max, callback);
         }
         
-        if (node->right && AABBOverlap(min, max, node->right->min, node->right->max)) {
-            FindAABBIntersection(node->right, min, max, callback);
+        if (GetRight(node) != INVALID && AABBOverlap(min, max, GetMin(GetRight(node)), GetMax(GetRight(node)))) {
+            FindAABBIntersection(GetRight(node), min, max, callback);
         }
         
     }
     
-    void UpdateParentAABB (node_t opaque_node) {
-        Node* node = (Node*)opaque_node;
-        
-        //assert(!node->IsLeaf());
-        
-        if (node->IsLeaf()) return;
+    void UpdateParentAABB (node_t node) {
+        if (IsLeaf(node)) return;
         
         int best_rotation = 0;
         float best_volume = INFINITY;
         
-        if (node->left && node->right && !node->right->IsLeaf() && node->right->left) {
-            vec3 min = node->left->min;
-            vec3 max = node->left->max;
+        bool has_children = GetLeft(node) != INVALID && GetRight(node) != INVALID;
+        
+        if (has_children && !IsLeaf(GetRight(node)) && GetLeft(GetRight(node)) != INVALID) {
+            vec3 min = GetMin(GetLeft(node));
+            vec3 max = GetMax(GetLeft(node));
             
-            if (node->right->right) min = MergeAABBMin(min, node->right->right->min);
-            if (node->right->right) max = MergeAABBMax(max, node->right->right->max);
+            if (GetRight(GetRight(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetRight(GetRight(node))));
+            if (GetRight(GetRight(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetRight(GetRight(node))));
             
             float volume = AABBVolume(min, max);
             
-            if (best_volume > volume && AABBVolume(node->right->min, node->right->max) > volume) {
+            if (best_volume > volume && AABBVolume(GetMin(GetRight(node)), GetMax(GetRight(node))) > volume) {
                 best_volume = volume;
                 best_rotation = 1;
             }
         }
         
-        if (node->left && node->right && !node->right->IsLeaf() && node->right->right) {
-            vec3 min = node->left->min;
-            vec3 max = node->left->max;
+        if (has_children && !IsLeaf(GetRight(node)) && GetRight(GetRight(node)) != INVALID) {
+            vec3 min = GetMin(GetLeft(node));
+            vec3 max = GetMax(GetLeft(node));
             
-            if (node->right->left) min = MergeAABBMin(min, node->right->left->min);
-            if (node->right->left) max = MergeAABBMax(max, node->right->left->max);
+            if (GetLeft(GetRight(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetLeft(GetRight(node))));
+            if (GetLeft(GetRight(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetLeft(GetRight(node))));
             
             float volume = AABBVolume(min, max);
             
-            if (best_volume > volume && AABBVolume(node->right->min, node->right->max) > volume) {
+            if (best_volume > volume && AABBVolume(GetMin(GetRight(node)), GetMax(GetRight(node))) > volume) {
                 best_volume = volume;
                 best_rotation = 2;
             }
         }
         
         
-        if (node->right && node->left && !node->left->IsLeaf() && node->left->left) {
-            vec3 min = node->right->min;
-            vec3 max = node->right->max;
+        if (has_children && !IsLeaf(GetLeft(node)) && GetLeft(GetLeft(node)) != INVALID) {
+            vec3 min = GetMin(GetRight(node));
+            vec3 max = GetMax(GetRight(node));
             
-            if (node->left->right) min = MergeAABBMin(min, node->left->right->min);
-            if (node->left->right) max = MergeAABBMax(max, node->left->right->max);
+            if (GetRight(GetLeft(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetRight(GetLeft(node))));
+            if (GetRight(GetLeft(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetRight(GetLeft(node))));
             
             float volume = AABBVolume(min, max);
             
-            if (best_volume > volume && AABBVolume(node->left->min, node->left->max) > volume) {
+            if (best_volume > volume && AABBVolume(GetMin(GetLeft(node)), GetMax(GetLeft(node))) > volume) {
                 best_volume = volume;
                 best_rotation = 3;
             }
         }
         
-        if (node->right && node->left && !node->left->IsLeaf() && node->left->right) {
-            vec3 min = node->right->min;
-            vec3 max = node->right->max;
+        if (has_children && !IsLeaf(GetLeft(node)) && GetRight(GetLeft(node)) != INVALID) {
+            vec3 min = GetMin(GetRight(node));
+            vec3 max = GetMax(GetRight(node));
             
-            if (node->left->left) min = MergeAABBMin(min, node->left->left->min);
-            if (node->left->left) max = MergeAABBMax(max, node->left->left->max);
+            if (GetLeft(GetLeft(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetLeft(GetLeft(node))));
+            if (GetLeft(GetLeft(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetLeft(GetLeft(node))));
             
             float volume = AABBVolume(min, max);
             
-            if (best_volume > volume && AABBVolume(node->left->min, node->left->max) > volume) {
+            if (best_volume > volume && AABBVolume(GetMin(GetLeft(node)), GetMax(GetLeft(node))) > volume) {
                 best_volume = volume;
                 best_rotation = 4;
             }
@@ -357,161 +346,154 @@ private:
         
         
         if (best_rotation == 1) {
-            std::swap(node->left->parent, node->right->left->parent);
-            std::swap(node->left, node->right->left);
+            node_t parent1 = GetParent(GetLeft(node));
+            node_t parent2 = GetParent(GetLeft(GetRight(node)));
             
-            vec3 min = node->right->left->min;
-            vec3 max = node->right->left->max;
+            SetParent(GetLeft(node), parent2);
+            SetParent(GetLeft(GetRight(node)), parent1);
             
-            if (node->right->right) min = MergeAABBMin(min, node->right->right->min);
-            if (node->right->right) max = MergeAABBMax(max, node->right->right->max);
+            node_t node1 = GetLeft(node);
+            node_t node2 = GetLeft(GetRight(node));
             
-            node->right->min = min;
-            node->right->max = max;
+            SetLeft(node, node2);
+            SetLeft(GetRight(node), node1);
             
+            vec3 min = GetMin(GetLeft(GetRight(node)));
+            vec3 max = GetMax(GetLeft(GetRight(node)));
+            
+            if (GetRight(GetRight(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetRight(GetRight(node))));
+            if (GetRight(GetRight(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetRight(GetRight(node))));
+
+            SetMin(GetRight(node), min);
+            SetMax(GetRight(node), max);
         }
         
         if (best_rotation == 2) {
-            std::swap(node->left->parent, node->right->right->parent);
-            std::swap(node->left, node->right->right);
+            node_t parent1 = GetParent(GetLeft(node));
+            node_t parent2 = GetParent(GetRight(GetRight(node)));
             
-            vec3 min = node->right->right->min;
-            vec3 max = node->right->right->max;
+            SetParent(GetLeft(node), parent2);
+            SetParent(GetRight(GetRight(node)), parent1);
             
-            if (node->right->left) min = MergeAABBMin(min, node->right->left->min);
-            if (node->right->left) max = MergeAABBMax(max, node->right->left->max);
+            node_t node1 = GetLeft(node);
+            node_t node2 = GetRight(GetRight(node));
             
-            node->right->min = min;
-            node->right->max = max;
+            SetLeft(node, node2);
+            SetRight(GetRight(node), node1);
+            
+            vec3 min = GetMin(GetRight(GetRight(node)));
+            vec3 max = GetMax(GetRight(GetRight(node)));
+            
+            if (GetLeft(GetRight(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetLeft(GetRight(node))));
+            if (GetLeft(GetRight(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetLeft(GetRight(node))));
+
+            SetMin(GetRight(node), min);
+            SetMax(GetRight(node), max);
         }
         
         
         if (best_rotation == 3) {
-            std::swap(node->right->parent, node->left->left->parent);
-            std::swap(node->right, node->left->left);
+            node_t parent1 = GetParent(GetRight(node));
+            node_t parent2 = GetParent(GetLeft(GetLeft(node)));
             
-            vec3 min = node->left->left->min;
-            vec3 max = node->left->left->max;
+            SetParent(GetRight(node), parent2);
+            SetParent(GetLeft(GetLeft(node)), parent1);
             
-            if (node->left->right) min = MergeAABBMin(min, node->left->right->min);
-            if (node->left->right) max = MergeAABBMax(max, node->left->right->max);
+            node_t node1 = GetRight(node);
+            node_t node2 = GetLeft(GetLeft(node));
             
-            node->left->min = min;
-            node->left->max = max;
+            SetRight(node, node2);
+            SetLeft(GetLeft(node), node1);
             
+            vec3 min = GetMin(GetLeft(GetLeft(node)));
+            vec3 max = GetMax(GetLeft(GetLeft(node)));
+            
+            if (GetRight(GetLeft(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetRight(GetLeft(node))));
+            if (GetRight(GetLeft(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetRight(GetLeft(node))));
+
+            SetMin(GetLeft(node), min);
+            SetMax(GetLeft(node), max);
         }
         
         if (best_rotation == 4) {
-            std::swap(node->right->parent, node->left->right->parent);
-            std::swap(node->right, node->left->right);
+            node_t parent1 = GetParent(GetRight(node));
+            node_t parent2 = GetParent(GetRight(GetLeft(node)));
             
-            vec3 min = node->left->right->min;
-            vec3 max = node->left->right->max;
+            SetParent(GetRight(node), parent2);
+            SetParent(GetRight(GetLeft(node)), parent1);
             
-            if (node->left->left) min = MergeAABBMin(min, node->left->left->min);
-            if (node->left->left) max = MergeAABBMax(max, node->left->left->max);
+            node_t node1 = GetRight(node);
+            node_t node2 = GetRight(GetLeft(node));
             
-            node->left->min = min;
-            node->left->max = max;
+            SetRight(node, node2);
+            SetRight(GetLeft(node), node1);
+            
+            vec3 min = GetMin(GetRight(GetLeft(node)));
+            vec3 max = GetMax(GetRight(GetLeft(node)));
+
+            if (GetLeft(GetLeft(node)) != INVALID) min = MergeAABBMin(min, GetMin(GetLeft(GetLeft(node))));
+            if (GetLeft(GetLeft(node)) != INVALID) max = MergeAABBMax(max, GetMax(GetLeft(GetLeft(node))));
+
+            SetMin(GetLeft(node), min);
+            SetMax(GetLeft(node), max);
         }
         
         
+        node_t left_child = GetLeft(node);
+        node_t right_child = GetRight(node);
         
-        
-        
-        Node* left_child = node->left;
-        Node* right_child = node->right;
-        
-        if (!left_child || !right_child) {
+        if (left_child == INVALID || right_child == INVALID) {
             assert(node == root);
             
-            if (!left_child && right_child) {
-                node->min = right_child->min;
-                node->max = right_child->max;
-            } else if (left_child && !right_child) {
-                node->min = left_child->min;
-                node->max = left_child->max;
+            if (left_child == INVALID && right_child != INVALID) {
+                SetMin(node, GetMin(right_child));
+                SetMax(node, GetMax(right_child));
+            } else if (left_child != INVALID && right_child == INVALID) {
+                SetMin(node, GetMin(left_child));
+                SetMax(node, GetMax(left_child));
             } else {
-                node->min = {0.0f, 0.0f, 0.0f};
-                node->max = {0.0f, 0.0f, 0.0f};
+                SetMin(node, {0.0f, 0.0f, 0.0f});
+                SetMax(node, {0.0f, 0.0f, 0.0f});
             }
             
             return;
         }
         
         
-        node->min = MergeAABBMin(left_child->min, right_child->min);
-        node->max = MergeAABBMax(left_child->max, right_child->max);
+        SetMin(node, MergeAABBMin(GetMin(left_child), GetMin(right_child)));
+        SetMax(node, MergeAABBMax(GetMax(left_child), GetMax(right_child)));
         
-        if (node->parent != nullptr) {
-            UpdateParentAABB(node->parent);
+        if (GetParent(node) != INVALID) {
+            UpdateParentAABB(GetParent(node));
         }
         
-        assert(node->parent != node);
+        assert(GetParent(node) != node);
     }
     
     // searches the children of search_node to find a sibling for target_node
-    node_t FindSibling (vec3 min, vec3 max, node_t opaque_node) {
-        Node* node = (Node*)opaque_node;
-        
-        assert(node);
+    node_t FindSibling (vec3 min, vec3 max, node_t node) {
+        assert(node != INVALID);
 
-        if (node->IsLeaf()) {
+        if (IsLeaf(node)) {
             return node;
         }
         
-        if (node->left == nullptr) {
-            assert(false);
-        }
-        assert(node->left);
-        assert(node->right);
+        assert(GetLeft(node) != INVALID);
+        assert(GetRight(node) != INVALID);
         
-        vec3 left_merge_min = MergeAABBMin(min, node->left->min);
-        vec3 left_merge_max = MergeAABBMax(max, node->left->max);
+        vec3 left_merge_min = MergeAABBMin(min, GetMin(GetLeft(node)));
+        vec3 left_merge_max = MergeAABBMax(max, GetMax(GetLeft(node)));
         
-        vec3 right_merge_min = MergeAABBMin(min, node->right->min);
-        vec3 right_merge_max = MergeAABBMax(max, node->right->max);
+        vec3 right_merge_min = MergeAABBMin(min, GetMin(GetRight(node)));
+        vec3 right_merge_max = MergeAABBMax(max, GetMax(GetRight(node)));
         
         float left_merge_volume = AABBVolume(left_merge_min, left_merge_max);
         float right_merge_volume = AABBVolume(right_merge_min, right_merge_max);
         
-        //float left_merge_volume = AABBSurface(left_merge_min, left_merge_max);
-        //float right_merge_volume = AABBSurface(right_merge_min, right_merge_max);
-        
         if (left_merge_volume < right_merge_volume) {
-            return FindSibling(min, max, node->left);
+            return FindSibling(min, max, GetLeft(node));
         } else {
-            return FindSibling(min, max, node->right);
-        }
-    }
-    
-    
-    void ValidateTree (node_t opaque_node) {
-        Node* node = (Node*)opaque_node;
-        
-        return;
-        if (root->parent != nullptr) {
-            //if (((Node*)0)->IsLeaf()) assert(false);
-        }
-        
-        return;
-        ValidateTree (node, 0);
-    }
-    void ValidateTree (node_t opaque_node, size_t num) {
-        Node* node = (Node*)opaque_node;
-        
-        assert(node);
-        assert((long long)node > 100);
-        
-        if (num > 400) {
-            //if (((Node*)0)->IsLeaf()) assert(false);
-        }
-        
-        if (node->IsLeaf() && node != root) {
-            //assert(node->value < 40000);
-        } else {
-            if (node != root || (node == root && node->left))ValidateTree(node->left, num+1);
-            if (node != root || (node == root && node->right))ValidateTree(node->right, num+1);
+            return FindSibling(min, max, GetRight(node));
         }
     }
     
@@ -538,8 +520,8 @@ private:
     }
     
     static bool AABBIntersect (vec3 ray_pos, vec3 ray_dir, vec3 min, vec3 max) {
-        vec3 t1 = (min - ray_pos) / ray_dir; // what happens if ray_dir == 0.0f?
-        vec3 t2 = (max - ray_pos) / ray_dir; // TODO: check
+        vec3 t1 = (min - ray_pos) / ray_dir;
+        vec3 t2 = (max - ray_pos) / ray_dir;
         
         vec3 t1min = glm::min(t1, t2);
         vec3 t2max = glm::max(t1, t2);
@@ -551,8 +533,8 @@ private:
     }
     
     static float AABBDistance(vec3 ray_pos, vec3 ray_dir, vec3 min, vec3 max) {
-        vec3 t1 = (min - ray_pos) / ray_dir; // what happens if ray_dir == 0.0f?
-        vec3 t2 = (max - ray_pos) / ray_dir; // TODO: check
+        vec3 t1 = (min - ray_pos) / ray_dir;
+        vec3 t2 = (max - ray_pos) / ray_dir;
         
         vec3 t1min = glm::min(t1, t2);
         vec3 t2max = glm::max(t1, t2);
@@ -563,19 +545,17 @@ private:
         return tfar >= tnear ? tnear : INFINITY;
     }
     
-    void FindDepthRecursive(node_t opaque_node, int current, int& largest) {
-        Node* node = (Node*)opaque_node;
-        
+    void FindDepthRecursive(node_t node, int current, int& largest) {
         if (current > largest) largest = current;
         
-        if (node->IsLeaf()) return;
+        if (IsLeaf(node)) return;
         
-        if (node->left) {
-            FindDepthRecursive(node->left, current + 1, largest);
+        if (GetLeft(node) != INVALID) {
+            FindDepthRecursive(GetLeft(node), current + 1, largest);
         }
         
-        if (node->right) {
-            FindDepthRecursive(node->right, current + 1, largest);
+        if (GetRight(node) != INVALID) {
+            FindDepthRecursive(GetRight(node), current + 1, largest);
         }
     }
 
