@@ -13,6 +13,23 @@
 
 namespace tram {
 
+// TODO: increase speed even more!!
+//
+// Currently we are storing nodes as structs, connected as a linked list via pointers.
+// It would be more efficient to store indices into an array instead.
+// Unfortunately such a refactor is a massive PITA.
+//
+// Plan:
+// 1. separate 'public' and 'private' functions
+// 2. alias node_t to void* and replace Node* with it
+// 3. since Node is now opaque, add small static inline getter/setter methods
+// 4. start moving away from directly accessing Node struct to static inline methods on the AABBTree class
+// 5. finish moving away
+// 6. now Node has been completely abstracted and node_t can be fully opaque
+// 7. switch node_t to uint32_t mapping it to a Node*
+// 8. replace new/deletes with an array
+// 9. devise improved packing schemes for better performance
+    
 class AABBTree {
 public:
     AABBTree() {}
@@ -141,16 +158,6 @@ public:
         ValidateTree(root);
     }
     
-    void RemoveHierarchy(Node* node) {
-        if (node->IsLeaf()) {
-            delete node;
-        } else {
-            RemoveHierarchy(node->left);
-            RemoveHierarchy(node->right);
-            delete node;
-        }
-    }
-    
     void FindIntersection(vec3 ray_pos, vec3 ray_dir, Node* node, std::vector<uint32_t>& result) const {
         bool is_node_intersect = AABBIntersect(ray_pos, ray_dir, node->min, node->max);
         
@@ -179,7 +186,29 @@ public:
         return nearest_index;
     }
     
-    // this should be marked private
+    void FindAABBIntersection(vec3 min, vec3 max, auto callback) {
+        FindAABBIntersection(root, min, max, callback);
+    }
+    
+    int FindDepth() {
+        int depth = 0;
+        FindDepthRecursive(root, 1, depth);
+        return depth;
+    }
+    
+private:
+    
+    // do we need this even?
+    void RemoveHierarchy(Node* node) {
+        if (node->IsLeaf()) {
+            delete node;
+        } else {
+            RemoveHierarchy(node->left);
+            RemoveHierarchy(node->right);
+            delete node;
+        }
+    }
+    
     void FindIntersectionRecursive(vec3 ray_pos, vec3 ray_dir, float& nearest_dist, uint32_t& nearest_index, float distance_limit, Node* node, auto filter) const {
         if (node->IsLeaf() && node != root) {
             float leaf_distance = filter(ray_pos, ray_dir, node->value);
@@ -222,11 +251,6 @@ public:
         
     }
     
-    void FindAABBIntersection(vec3 min, vec3 max, auto callback) {
-        FindAABBIntersection(root, min, max, callback);
-    }
-    
-    // should be private
     void FindAABBIntersection(Node* node, vec3 min, vec3 max, auto callback) {
         if (node->IsLeaf() && node != root) {
             if (AABBOverlap(min, max, node->min, node->max)) {
@@ -245,8 +269,6 @@ public:
         }
         
     }
-    
-//private:
     
     void UpdateParentAABB (Node* node) {
         
@@ -473,22 +495,6 @@ public:
         }
     }
     
-    static vec3 MergeAABBMin (vec3 a, vec3 b) {
-        return vec3 {
-            a.x < b.x ? a.x : b.x,
-            a.y < b.y ? a.y : b.y,
-            a.z < b.z ? a.z : b.z
-        };// - vec3 {0.1f, 0.1f, 0.1f};
-    }
-    
-    static vec3 MergeAABBMax (vec3 a, vec3 b) {
-        return vec3 {
-            a.x > b.x ? a.x : b.x,
-            a.y > b.y ? a.y : b.y,
-            a.z > b.z ? a.z : b.z
-        };// + vec3 {0.1f, 0.1f, 0.1f};
-    }
-    
     static bool AABBOverlap(vec3 min, vec3 max, vec3 other_min, vec3 other_max) {
         return min.x <= other_max.x && max.x >= other_min.x &&
                min.y <= other_max.y && max.y >= other_min.y &&
@@ -537,12 +543,6 @@ public:
         return tfar >= tnear ? tnear : INFINITY;
     }
     
-    int FindDepth() {
-        int depth = 0;
-        FindDepthRecursive(root, 1, depth);
-        return depth;
-    }
-    
     void FindDepthRecursive(Node* node, int current, int& largest) {
         if (current > largest) largest = current;
         
@@ -556,7 +556,8 @@ public:
             FindDepthRecursive(node->right, current + 1, largest);
         }
     }
-    
+
+public:
     struct Node {
         bool IsLeaf () const { return right == 0; }
         

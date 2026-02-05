@@ -77,24 +77,6 @@ vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point
 
 }
 
-/// Merges the min component of an AABB.
-vec3 MergeAABBMin(vec3 a, vec3 b) {
-    return vec3 {
-        a.x < b.x ? a.x : b.x,
-        a.y < b.y ? a.y : b.y,
-        a.z < b.z ? a.z : b.z
-    };
-}
-
-/// Merges the max component of an AABB.
-vec3 MergeAABBMax(vec3 a, vec3 b) {
-    return vec3 {
-        a.x > b.x ? a.x : b.x,
-        a.y > b.y ? a.y : b.y,
-        a.z > b.z ? a.z : b.z
-    };
-}
-
 // TODO: create an AABB struct and use that instead of the min/max
 // this kind of signature: AABB RotateAABB(AABB box, quat rotation)
 

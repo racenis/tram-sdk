@@ -81,8 +81,8 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
     max = extents[0];
     
     for (auto& extent : extents) {
-        min = AABBTree::MergeAABBMin(min, extent);
-        max = AABBTree::MergeAABBMax(max, extent);
+        min = MergeAABBMin(min, extent);
+        max = MergeAABBMax(max, extent);
     }
 
     min += position;
