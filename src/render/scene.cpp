@@ -5,6 +5,8 @@
 #include <components/render.h>
 #include <render/model.h>
 
+#include <framework/ui.h>
+
 #include <templates/pool.h>
 #include <templates/aabb.h>
 #include <templates/octree.h>
@@ -100,6 +102,17 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
 /// Removes a leaf from 
 void RemoveLeaf(aabbleaf_t leaf_id) {
     AABBLeaf* leaf = (AABBLeaf*) leaf_id;
+    
+    // when the program exits and runs all of the destructors, the scene tree
+    // gets destructed before all of the rendercomponents, so when the
+    // rendercomponents call this function during their destruction, this
+    // function will try to remove leaves from an already destructed tree
+    //
+    // the proper way to handle this would be to delete all entities at the
+    // end of the program, but we are not very proper in this codebase!
+    if (UI::ShouldExit()) {
+        return;
+    }
     
     scene_tree.RemoveLeaf(leaf->leaf);
     scene_tree_leaves.Remove(leaf);

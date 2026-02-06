@@ -134,7 +134,7 @@ TEST_CASE("AABB Tree Basic Raycasts", "[aabb1]") {
 	std::vector<AABBTree::node_t> nodes;
 	for (const auto& sphere : spheres) {
 		auto [min, max] = GetSphereAABB(sphere);
-		auto* node = tree.InsertLeaf(sphere.id, min, max);
+		auto node = tree.InsertLeaf(sphere.id, min, max);
 		nodes.push_back(node);
 		sphere_map[sphere.id] = sphere;
 	}
@@ -156,7 +156,7 @@ TEST_CASE("AABB Tree Basic Raycasts", "[aabb1]") {
 		ASSERT(tree_id == brute_id)
 	}
 	
-	for (auto* node : nodes) {
+	for (auto node : nodes) {
 		tree.RemoveLeaf(node);
 	}
 }
@@ -172,7 +172,7 @@ TEST_CASE("AABB Tree Insert/Delete", "[aabb2]") {
 		421
 	);
 	
-	std::vector<AABBTree::node_t> nodes(all_spheres.size(), nullptr);
+	std::vector<AABBTree::node_t> nodes(all_spheres.size(), AABBTree::INVALID);
 	std::vector<bool> inserted(all_spheres.size(), false);
 	
 	for (int i = 0; i < 500; ++i) {
@@ -180,9 +180,9 @@ TEST_CASE("AABB Tree Insert/Delete", "[aabb2]") {
 		size_t idx = idx_dist(rng);
 		
 		if (inserted[idx]) {
-			if (nodes[idx] != nullptr) {
+			if (nodes[idx] != AABBTree::INVALID) {
 				tree.RemoveLeaf(nodes[idx]);
-				nodes[idx] = nullptr;
+				nodes[idx] = AABBTree::INVALID;
 				inserted[idx] = false;
 			}
 		} else {
@@ -218,8 +218,8 @@ TEST_CASE("AABB Tree Insert/Delete", "[aabb2]") {
 		ASSERT(tree_id == brute_id)
 	}
 
-	for (auto* node : nodes) {
-		if (node != nullptr) {
+	for (auto node : nodes) {
+		if (node != AABBTree::INVALID) {
 			tree.RemoveLeaf(node);
 		}
 	}
@@ -252,7 +252,7 @@ TEST_CASE("AABB Tree Single", "[aabb4]") {
 	};
 
 	auto [min, max] = GetSphereAABB(sphere);
-	auto* node = tree.InsertLeaf(sphere.id, min, max);
+	auto node = tree.InsertLeaf(sphere.id, min, max);
 	nodes.push_back(node);
 	
 	vec3 ray_pos = {0.0f, 0.0f, 0.0f};
@@ -301,7 +301,7 @@ TEST_CASE("AABB Tree Overlapping", "[aabb5]") {
 	
 	ASSERT (tree_id == brute_id)
 
-	for (auto* node : nodes) {
+	for (auto node : nodes) {
 		tree.RemoveLeaf(node);
 	}
 }
@@ -331,9 +331,11 @@ TEST_CASE("AABB Tree Timed Test", "[aabb6]") {
 		0.5f, 5.0f,
 		{-500.0f, -500.0f, -500.0f}, {500.0f, 500.0f, 500.0f});
 		
-std::vector<Ray> rays = GenerateRays(25000, {-600.0f, -600.0f, -600.0f}, {600.0f, 600.0f, 600.0f});
+	std::vector<Ray> rays = GenerateRays(25000, {-600.0f, -600.0f, -600.0f}, {600.0f, 600.0f, 600.0f});
 	
 	auto insertion_time = std::chrono::high_resolution_clock::now();
+	
+	tree.Reserve(spheres.size());
 	
 	std::vector<AABBTree::node_t> nodes;
 	for (const auto& sphere : spheres) {
@@ -357,7 +359,7 @@ std::vector<Ray> rays = GenerateRays(25000, {-600.0f, -600.0f, -600.0f}, {600.0f
 	
 	auto teardown_time = std::chrono::high_resolution_clock::now();
 	
-	for (auto* node : nodes) {
+	for (auto node : nodes) {
 		tree.RemoveLeaf(node);
 	}
 	
@@ -403,7 +405,7 @@ TEST_CASE("AABB Tree Shape Cast", "[aabb7]") {
 	
 	ASSERT(found.size() == 2 && found[0] == 0 && found[1] == 1)
 	
-	for (auto* node : nodes) {
+	for (auto node : nodes) {
 		tree.RemoveLeaf(node);
 	}
 }

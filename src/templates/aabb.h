@@ -37,14 +37,12 @@ public:
     }
     
     ~AABBTree() {
-        // calling this causes segfault on program exit
-        // TODO: investigate
-        //RemoveHierarchy(root);
+        RemoveHierarchy(root);
     }
     
-    typedef void* node_t;
+    typedef uint32_t node_t;
     
-    static constexpr node_t INVALID = nullptr;
+    static constexpr node_t INVALID = ~0;
     
     vec3 GetAABBMin() { return GetMin(root); }
     vec3 GetAABBMax() { return GetMax(root); }
@@ -121,6 +119,9 @@ public:
         assert(node != root);
         
         node_t parent = GetParent(node);
+        
+        assert(parent != INVALID);
+        
         node_t sibling = GetLeft(parent) == node ? GetRight(parent) : GetLeft(parent);
         
         if (GetLeft(parent) != node && GetRight(parent) != node) {
@@ -571,92 +572,140 @@ private:
 
 public:
     inline node_t MakeNode() {
-        return new Node;
+        if (node_freelist.size()) {
+            const node_t idx = node_freelist.back();
+            node_freelist.pop_back();
+            
+            // TODO: optimize cleaning
+            nodes[idx] = Node();
+            
+            mins[idx] = {0.0f, 0.0f, 0.0f};
+            maxes[idx] = {0.0f, 0.0f, 0.0f};
+            
+            return idx;
+        }
+        
+        const node_t idx = nodes.size();
+        
+        nodes.push_back(Node());
+        mins.push_back({0.0f, 0.0f, 0.0f});
+        maxes.push_back({0.0f, 0.0f, 0.0f});
+        
+        return idx;
     }
     
     inline void YeetNode(node_t node) {
-        delete (Node*)node;
+        if (IsLeaf(node)) {
+            value_freelist.push_back(GetLeft(node));
+        }
+        
+        node_freelist.push_back(node);
     }
     
     inline node_t GetLeft(node_t node) const {
-        return ((Node*)node)->left;
+        return nodes[node].left;
     }
     
     inline node_t GetRight(node_t node) const {
-        return ((Node*)node)->right;
+        return nodes[node].right;
     }
     
     inline node_t GetParent(node_t node) const {
-        return ((Node*)node)->parent;
+        return nodes[node].parent;
     }
     
     inline void SetLeft(node_t node, node_t value) {
-        ((Node*)node)->left = (Node*)value;
+        nodes[node].left = value;
     }
     
     inline void SetRight(node_t node, node_t value) {
-        ((Node*)node)->right = (Node*)value;
+        nodes[node].right = value;
     }
     
     inline void SetParent(node_t node, node_t value) {
-        ((Node*)node)->parent = (Node*)value;
+        nodes[node].parent = value;
     }
     
     
     inline vec3 GetMin(node_t node) const {
-        return ((Node*)node)->min;
+        return mins[node];
     }
     
     inline vec3 GetMax(node_t node) const {
-        return ((Node*)node)->max;
+        return maxes[node];
     }
     
     inline void SetMin(node_t node, vec3 value) {
-        ((Node*)node)->min = value;
+        mins[node] = value;
     }
     
     inline void SetMax(node_t node, vec3 value) {
-        ((Node*)node)->max = value;
+        maxes[node] = value;
     }
     
     
     inline uint32_t GetValue(node_t node) const {
-        return ((Node*)node)->value;
+        assert(IsLeaf(node));
+        
+        return values[GetLeft(node)];
     }
     
     inline void SetValue(node_t node, uint32_t value) {
-        ((Node*)node)->value = value;
+        assert(IsLeaf(node));
+        
+        if (GetLeft(node) != INVALID) {
+            values[GetLeft(node)] = value;
+            return;
+        }
+        
+        if (value_freelist.size()) {
+            const node_t idx = value_freelist.back();
+            value_freelist.pop_back();
+            
+            values[idx] = value;
+            
+            SetLeft(node, idx);
+            
+            return;
+        }
+        
+        const node_t idx = values.size();
+        values.push_back(value);
+        
+        SetLeft(node, idx);
     }
-    
     
     inline bool IsLeaf(node_t node) const {
-        return ((Node*)node)->IsLeaf();
+        return nodes[node].right == INVALID;
     }
 
-
-
-
+    void Reserve(size_t items) {
+        float depth = floorf(1.5f * logf((float)items));
+        float node_count = ceilf(powf(2.0f, depth + 1.0f) - 1.0f);
+        nodes.reserve(node_count);
+        mins.reserve(node_count);
+        maxes.reserve(node_count);
+        values.reserve(items);
+    }
 
 private:
 
-
     struct Node {
-        bool IsLeaf () const { return right == 0; }
-        
-        void Print () const { std::cout << " l: " << left << " r: " << right << " p: " << parent << std::endl; }
-        
-        union {
-            Node* left = nullptr;
-            uint32_t value;
-        };
-        
-        Node* right = nullptr;
-        Node* parent = nullptr;
-        
-        vec3 min = {0.0f, 0.0f, 0.0f};
-        vec3 max = {0.0f, 0.0f, 0.0f};
+        node_t left = INVALID;
+        node_t right = INVALID;
+        node_t parent = INVALID;
     };
     
+    std::vector<vec3> mins;
+    std::vector<vec3> maxes;
+    
+    std::vector<Node> nodes;
+    
+    std::vector<uint32_t> values;
+    
+    std::vector<uint32_t> node_freelist;
+    std::vector<uint32_t> value_freelist;
+
     node_t root = INVALID;
 };
 
