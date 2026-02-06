@@ -13,23 +13,6 @@
 
 namespace tram {
 
-// TODO: increase speed even more!!
-//
-// Currently we are storing nodes as structs, connected as a linked list via pointers.
-// It would be more efficient to store indices into an array instead.
-// Unfortunately such a refactor is a massive PITA.
-//
-// Plan:
-// 1. X     separate 'public' and 'private' functions
-// 2. X     alias node_t to void* and replace Node* with it
-// 3. X     since Node is now opaque, add small static inline getter/setter methods
-// 4. X     start moving away from directly accessing Node struct to static inline methods on the AABBTree class
-// 5. X     finish moving away
-// 6. X     now Node has been completely abstracted and node_t can be fully opaque
-// 7. switch node_t to uint32_t mapping it to a Node*
-// 8. replace new/deletes with an array
-// 9. devise improved packing schemes for better performance
-    
 class AABBTree {
 public:
     AABBTree() {
@@ -576,8 +559,7 @@ public:
             const node_t idx = node_freelist.back();
             node_freelist.pop_back();
             
-            // TODO: optimize cleaning
-            nodes[idx] = Node();
+            nodes[idx] = BLANK_NODE_MASK;
             
             mins[idx] = {0.0f, 0.0f, 0.0f};
             maxes[idx] = {0.0f, 0.0f, 0.0f};
@@ -587,7 +569,7 @@ public:
         
         const node_t idx = nodes.size();
         
-        nodes.push_back(Node());
+        nodes.push_back(BLANK_NODE_MASK);
         mins.push_back({0.0f, 0.0f, 0.0f});
         maxes.push_back({0.0f, 0.0f, 0.0f});
         
@@ -603,27 +585,36 @@ public:
     }
     
     inline node_t GetLeft(node_t node) const {
-        return nodes[node].left;
+        const node_t idx = nodes[node] & 0x1FFFFFULL;
+        return idx ^ 0x1FFFFF ? idx : INVALID;
     }
     
     inline node_t GetRight(node_t node) const {
-        return nodes[node].right;
+        const node_t idx = (nodes[node] >> 21) & 0x1FFFFFULL;
+        return idx ^ 0x1FFFFF ? idx : INVALID;
     }
     
     inline node_t GetParent(node_t node) const {
-        return nodes[node].parent;
+        const node_t idx = (nodes[node] >> 42) & 0x1FFFFFULL;
+        return idx ^ 0x1FFFFF ? idx : INVALID;
     }
     
     inline void SetLeft(node_t node, node_t value) {
-        nodes[node].left = value;
+        const uint64_t erased = nodes[node] & ~0x1FFFFFULL;
+        const uint64_t truncated = value & 0x1FFFFFULL;
+        nodes[node] = erased | truncated;
     }
     
     inline void SetRight(node_t node, node_t value) {
-        nodes[node].right = value;
+        const uint64_t erased = nodes[node] & ~(0x1FFFFFULL << 21);
+        const uint64_t truncated = value & 0x1FFFFFULL;
+        nodes[node] = erased | (truncated << 21);
     }
     
     inline void SetParent(node_t node, node_t value) {
-        nodes[node].parent = value;
+        const uint64_t erased = nodes[node] & ~(0x1FFFFFULL << 42);
+        const uint64_t truncated = value & 0x1FFFFFULL;
+        nodes[node] = erased | (truncated << 42);
     }
     
     
@@ -676,7 +667,7 @@ public:
     }
     
     inline bool IsLeaf(node_t node) const {
-        return nodes[node].right == INVALID;
+        return GetRight(node) == INVALID;
     }
 
     void Reserve(size_t items) {
@@ -688,18 +679,14 @@ public:
         values.reserve(items);
     }
 
-private:
+    private:
 
-    struct Node {
-        node_t left = INVALID;
-        node_t right = INVALID;
-        node_t parent = INVALID;
-    };
-    
+    static constexpr uint64_t BLANK_NODE_MASK = ~0 ^ (1ULL << 63);
+
     std::vector<vec3> mins;
     std::vector<vec3> maxes;
     
-    std::vector<Node> nodes;
+    std::vector<uint64_t> nodes;
     
     std::vector<uint32_t> values;
     
