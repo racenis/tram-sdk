@@ -6,37 +6,66 @@
 #include <vector>
 #include <algorithm>
 #include <framework/math.h>
-#include <templates/pool.h>
+
+#include <iostream>
+
+/*
+ * insteadable idea:
+ * 
+ * each node has a bucket
+ * first drop every node into root bucket
+ * 
+ * then when a bucket gets too clustered, check if nodes can be split
+ * if can, then deepen the thing
+ * 
+ * when last node gets removed from bucket, patch it back into parent
+ * 
+ * ACTIONS:
+ * 
+ * X    rip out old API
+ * 
+ * X    replace pool with vector
+ * 
+ * then just do basic bucket splitting
+ * 
+ * then do bucket taking back together
+ * 
+ * */
 
 namespace tram {
 
 template <typename T>
 class Octree {
 public:
-    Octree(const char* name, size_t size) : nodes(name, size) {
-        root = nodes.AddNew();
-        root->mid_point = {0.0f, 0.0f, 0.0f};
-        root->half_extent = 100.0f;
+    Octree(vec3 mid_point, float half_extent) {
+        root = nodes.size();
+        
+        nodes.push_back({
+            .mid_point = mid_point,
+            .half_extent = half_extent
+        });
     }
     
-    uint32_t Insert(vec3 point, T data) {
-        Node* new_leaf = nodes.AddNew(Node {.point = point, .data = data});
-        Insert(root, new_leaf);
-        return nodes.index(new_leaf);
+    typedef uint32_t node_t;
+    typedef uint32_t leaf_t;
+    
+    static constexpr node_t INVALID = ~0;
+    
+    leaf_t Insert(vec3 point, const T& data) {
+        return Insert(point, data, root);
     }
     
-    void Remove(uint32_t node) {
-        Remove(&nodes[node]);
+    void Remove(leaf_t leaf) {
+        YeetLeaf(leaf);
     }
 
     size_t Find(T* array, vec3 point) {
         NearestSearch search = {.point = point};
-        search.point = point;
 
-        FindNearest(&search, root);
+        Find(search, root);
 
-        for (int i = 0 ; i < search.found ; i++) {
-            array[i] = search.nearest[i]->data;
+        for (int i = 0 ; i < search.found; i++) {
+            array[i] = GetValue(search.nearest[i]);
         }
         
         return search.found;
@@ -45,21 +74,6 @@ public:
     void Draw() {
         Draw(root);
     }
-    
-    // temporary compatibility methods
-    // TODO: remove
-    uint32_t AddLeaf(T type, float x, float y, float z){
-        return Insert({x, y, z}, type);
-    }
-
-    void RemoveLeaf(uint32_t leaf_id){
-        Remove(leaf_id);
-    }
-
-    size_t FindNearest(T result[], float x, float y, float z){
-        return Find(result, {x, y, z});
-    }
-    
 protected:
     enum Octant {
         OCTANT_TOP_LEFT_BACK,
@@ -72,77 +86,8 @@ protected:
         OCTANT_BOTTOM_RIGHT_FRONT
     };
     
-    struct Node {
-        Node* octants[8] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
-        
-        Node* parent = nullptr;
-        
-        vec3 mid_point;
-        
-        float half_extent = 1.0f;
-        
-        vec3 point;
-        
-        T data;
-        
-        inline bool IsLeaf() {
-            return !IsNode();
-        }
-        
-        inline bool IsNode() {
-            for (int i = 0; i < 8; i++) if (octants[i]) return true; 
-            return false;
-        }
-    };
-    
-    Pool<Node> nodes;
-    
-    Node* root = nullptr;
-    
-    void Insert(Node* parent, Node* leaf) {
-        Octant octant_type = GetOctant(parent->mid_point, leaf->point);
-        Node*& octant = parent->octants[octant_type];
-        
-        if (octant) {
-            if (octant->IsNode()) {
-                Insert(octant, leaf);
-            } else {
-                Node* existing_leaf = octant;
-                
-                if (glm::distance(existing_leaf->point, leaf->point) == 0.0f) {
-                    std::cout << "Point " << leaf->point.x << " " <<  leaf->point.y << " " <<  leaf->point.z << " already in tree!" << std::endl; 
-                    return;
-                }
-                
-                octant = NewNode(octant_type, parent);
-                
-                Insert(octant, existing_leaf);
-                Insert(octant, leaf);
-            }
-        } else {
-            octant = leaf;
-            leaf->parent = parent;
-        }
-    }
-    
-    void Remove(Node* node) {
-        // don't allow removing root node
-        if (!node->parent) return;
-        
-        // remove node from parent
-        for (int i = 0; i < 8; i++) {
-            if (node->parent->octants[i] == node) {
-                node->parent->octants[i] = nullptr;
-                break;
-            }
-        }
-
-        //delete node;
-        nodes.Remove(node);
-    }
-    
     struct NearestSearch {
-        Node* nearest[4] = {nullptr, nullptr, nullptr, nullptr};
+        node_t nearest[4] = {INVALID, INVALID, INVALID, INVALID};
         float distance[4] = {INFINITY, INFINITY, INFINITY, INFINITY};
         int farthest_index = 0;
         float farthest_distance = -INFINITY;
@@ -150,115 +95,101 @@ protected:
         int found = 0;
     };
     
-    void FindNearest(NearestSearch* search, Node* parent_node) {
-        int first_octant = GetOctant(parent_node->mid_point, search->point);
-        
-        FindNearest(search, parent_node, first_octant);
-        
-        for (int i  = 0 ; i < 8; i++) {
-            if (i != first_octant) FindNearest(search, parent_node, i);
-        }
+    
+    leaf_t Insert(vec3 point, const T& data, node_t node) {
+        // TODO: find best node to put the data into
+        // for now we'll just put it in the first one i.e. root
+        return MakeLeaf(node, point, data);
     }
     
-    void FindNearest(NearestSearch* search, Node* parent_node, int octant) {
-        Node* search_node = parent_node->octants[octant];
+    void Find(NearestSearch& search, node_t node) {
+        // TODO: implement proper algorithm
+        // for now we'll just search the first node i.e. root
         
-        if (!search_node) return;
-        
-        if (search_node->IsNode()) {
-            // do the nearest check
-            if (search->found >= 4) {
-                float nearest_possible = glm::distance(search->point, search_node->mid_point) - 1.73205f * search_node->half_extent;
-                if (nearest_possible > search->farthest_distance) return;
-            }
+        // check all leaves for current node
+        for (leaf_t leaf : GetLeaves(node)) {
+            float dist = glm::distance(search.point, GetPoint(leaf));
             
-            FindNearest(search, search_node);
-        } else {
-            if (search->found < 4) {
-                float distance = glm::distance(search_node->point, search->point);
+            // make sure that all spots are filled in
+            if (search.found < 4) {
+                if (search.nearest[search.found] != INVALID) continue;
+                
+                search.nearest[search.found] = leaf;
+                search.distance[search.found] = dist;
+                
+                if (dist > search.farthest_distance) {
+                    search.farthest_distance = dist;
+                    search.farthest_index = search.found;
+                }
+                
+                search.found++;
+            } else if (dist < search.farthest_distance) {
 
-                search->nearest[search->found] = search_node;
-                search->distance[search->found] = distance;
+                search.nearest[search.farthest_index] = leaf;
+                search.distance[search.farthest_index] = dist;
                 
-                if (search->farthest_distance < distance) {
-                    search->farthest_distance = distance;
-                    search->farthest_index = search->found;
-                }
+                search.farthest_distance = -INFINITY;
                 
-                search->found++;
-            } else {
-                float distance = glm::distance(search_node->point, search->point);
                 
-                if (search->farthest_distance < distance) {
-                    return;
-                }
-                
-                search->distance[search->farthest_index] = distance;
-                search->nearest[search->farthest_index] = search_node;
-                
-                search->farthest_distance = -INFINITY;
+                // check if some other leaf is now the farthest
                 for (int i = 0; i < 4; i++) {
-                    if (search->farthest_distance < search->distance[i]) {
-                        search->farthest_distance = search->distance[i];
-                        search->farthest_index = i;
-                    }
+                    if (search.distance[i] < search.farthest_distance) continue;
+
+                    search.farthest_index = i;
+                    search.farthest_distance = search.distance[i];
                 }
             }
         }
     }
     
-    Node* NewNode(Octant octant, Node* parent) {
-        Node* node = nodes.AddNew();
-        
-        node->parent = parent;
-        
-        node->half_extent = parent->half_extent / 2.0f;
-        node->mid_point = parent->mid_point;
+    std::pair<vec3, float> GetDimensions(Octant octant, vec3 parent_midpoint, float parent_half_extent) {
+        float half_extent = parent_half_extent / 2.0f;
+        vec3 mid_point = parent_midpoint;
         
         switch (octant) {
             case OCTANT_TOP_LEFT_BACK:
-                node->mid_point.x -= node->half_extent;
-                node->mid_point.y += node->half_extent;
-                node->mid_point.z -= node->half_extent;
+                mid_point.x -= half_extent;
+                mid_point.y += half_extent;
+                mid_point.z -= half_extent;
                 break;
             case OCTANT_TOP_LEFT_FRONT:
-                node->mid_point.x -= node->half_extent;
-                node->mid_point.y += node->half_extent;
-                node->mid_point.z += node->half_extent;
+                mid_point.x -= half_extent;
+                mid_point.y += half_extent;
+                mid_point.z += half_extent;
                 break;
             case OCTANT_TOP_RIGHT_BACK:
-                node->mid_point.x += node->half_extent;
-                node->mid_point.y += node->half_extent;
-                node->mid_point.z -= node->half_extent;
+                mid_point.x += half_extent;
+                mid_point.y += half_extent;
+                mid_point.z -= half_extent;
                 break;
             case OCTANT_TOP_RIGHT_FRONT:
-                node->mid_point.x += node->half_extent;
-                node->mid_point.y += node->half_extent;
-                node->mid_point.z += node->half_extent;
+                mid_point.x += half_extent;
+                mid_point.y += half_extent;
+                mid_point.z += half_extent;
                 break;
             case OCTANT_BOTTOM_LEFT_BACK:
-                node->mid_point.x -= node->half_extent;
-                node->mid_point.y -= node->half_extent;
-                node->mid_point.z -= node->half_extent;
+                mid_point.x -= half_extent;
+                mid_point.y -= half_extent;
+                mid_point.z -= half_extent;
                 break;
             case OCTANT_BOTTOM_LEFT_FRONT:
-                node->mid_point.x -= node->half_extent;
-                node->mid_point.y -= node->half_extent;
-                node->mid_point.z += node->half_extent;
+                mid_point.x -= half_extent;
+                mid_point.y -= half_extent;
+                mid_point.z += half_extent;
                 break;
             case OCTANT_BOTTOM_RIGHT_BACK:
-                node->mid_point.x += node->half_extent;
-                node->mid_point.y -= node->half_extent;
-                node->mid_point.z -= node->half_extent;
+                mid_point.x += half_extent;
+                mid_point.y -= half_extent;
+                mid_point.z -= half_extent;
                 break;
             case OCTANT_BOTTOM_RIGHT_FRONT:
-                node->mid_point.x += node->half_extent;
-                node->mid_point.y -= node->half_extent;
-                node->mid_point.z += node->half_extent;
+                mid_point.x += half_extent;
+                mid_point.y -= half_extent;
+                mid_point.z += half_extent;
                 break;
         }
         
-        return node;
+        return {mid_point, half_extent};
     }
     
     Octant GetOctant(vec3 mid, vec3 point) {
@@ -292,11 +223,14 @@ protected:
             }
         }
         
+        assert(false);
     }
     
+    // TODO: move this code to??? wherever scene AABB tree gets drawn
+    /*
     void Draw(Node * node) {
         if (node->IsNode()) {
-            /*vec3 p00 = node->mid_point + vec3(node->width, node->width, node->width);
+            *//*vec3 p00 = node->mid_point + vec3(node->width, node->width, node->width);
             vec3 p01 = node->mid_point + vec3(-node->width, node->width, node->width);
             vec3 p02 = node->mid_point + vec3(node->width, node->width, -node->width);
             vec3 p03 = node->mid_point + vec3(-node->width, node->width, -node->width);
@@ -318,7 +252,7 @@ protected:
             AddLine(p00, p10, COLOR_YELLOW);
             AddLine(p01, p11, COLOR_YELLOW);
             AddLine(p02, p12, COLOR_YELLOW);
-            AddLine(p03, p13, COLOR_YELLOW);*/
+            AddLine(p03, p13, COLOR_YELLOW);*//*
             
             for (int i = 0 ; i < 8; i++) {
                 if (node->octants[i]) Draw(node->octants[i]);
@@ -326,8 +260,127 @@ protected:
         } else {
             //AddLineMarker(node->point, COLOR_GREEN);
         }
+    }*/
+    
+    
+    
+    struct Node {
+        std::vector<leaf_t> leaves;
+        
+        node_t octants[8] = {INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID, INVALID};
+        
+        node_t parent = INVALID;
+        Octant parent_octant = OCTANT_BOTTOM_LEFT_BACK;
+        
+        vec3 mid_point = {0.0f, 0.0f, 0.0f};
+        float half_extent = 1.0f;
+    };
+    
+    struct Leaf {
+        node_t parent = INVALID;
+        vec3 point = {0.0f, 0.0f, 0.0f};
+        T value;
+    };
+    
+    inline node_t MakeNode(node_t parent, Octant octant) {
+        node_t idx = nodes.size();
+        nodes.push_back(Node());
+        
+        auto [mid, ext] = GetDimensions(octant, nodes[parent].mid_point, nodes[parent].half_extent);
+        
+        nodes[idx].mid_point = mid;
+        nodes[idx].half_extent = ext;
+        
+        nodes[idx].parent = parent;
+        nodes[idx].parent_octant = octant;
+        
+        nodes[parent].octants[octant] = idx;
+        
+        return idx;
+        
+        // TODO: implement freelist
     }
     
+    inline void YeetNode(node_t node) {
+        node_t parent = nodes[node].parent;
+        
+        assert(node != root);
+        assert(parent != INVALID);
+        
+        // reparent all children
+        for (leaf_t leaf : nodes[node].leaves) {
+            nodes[parent].leaves.push_back(leaf);
+            leaves[leaf].parent = parent;
+        }
+        
+        nodes[parent].octants[nodes[node].parent_octant] = INVALID;
+        nodes[node].parent = INVALID;
+        
+        
+        // TODO: implement freelist
+    }
+    
+    inline leaf_t MakeLeaf(node_t parent, vec3 point, const T& value) {
+        leaf_t idx = leaves.size();
+        leaves.push_back(Leaf());
+        
+        leaves[idx].point = point;
+        leaves[idx].value = value;
+        
+        leaves[idx].parent = parent;
+        
+        nodes[parent].leaves.push_back(idx);
+        
+        TrySplitting(parent);
+        
+        return idx;
+        
+        // TODO: implement freelist
+    }
+    
+    inline void YeetLeaf(leaf_t leaf) {
+        node_t parent = leaves[leaf].parent;
+        
+        auto it = nodes[parent].leaves.begin();
+        auto end = nodes[parent].leaves.end();
+        while (it < end && *it != leaf) it++;
+        
+        assert(it != end);
+        
+        nodes[parent].leaves.erase(it);
+        
+        TryFolding(parent);
+
+        // TODO: implement freelist
+    }
+
+    inline const std::vector<leaf_t>& GetLeaves(node_t node) {
+        return nodes[node].leaves;
+    }
+    
+    inline void TryFolding(node_t node) {
+        // TODO: implement
+        // - check if any leaves
+        // - check if any octants
+        // - if not, then delete node
+    }
+    
+    inline void TrySplitting(node_t node) {
+        // TODO: implement
+    }
+
+    inline vec3 GetPoint(leaf_t leaf) {
+        return leaves[leaf].point;
+    }
+    
+    inline T GetValue(leaf_t leaf) {
+        return leaves[leaf].value;
+    }
+    
+    std::vector<Node> nodes;
+    std::vector<Leaf> leaves;
+    
+    node_t root = INVALID;
 };
 
 }

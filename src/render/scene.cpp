@@ -229,7 +229,7 @@ void AddLight(light_t light, vec3 pos, float dist) {
     new_light->position = pos;
     new_light->distance = dist;
     
-    new_light->tree_handle = light_tree.AddLeaf(new_light, pos.x, pos.y, pos.z);
+    new_light->tree_handle = light_tree.Insert(pos, new_light);
 }
 
 /// Finds the 4 nearest lights to a given position.
@@ -237,7 +237,7 @@ void AddLight(light_t light, vec3 pos, float dist) {
 /// @param dest     Pointer to an array of 4 light_t.
 void FindLights(vec3 position, light_t* dest) {
     Light* lights[4] = {nullptr, nullptr, nullptr, nullptr};
-    light_tree.FindNearest(lights, position.x, position.y, position.z);
+    light_tree.Find(lights, position);
     
     for (int i = 0; i < 4; i++) {
         if (lights[i]) {
@@ -258,7 +258,7 @@ void RemoveLight(light_t light) {
         }
     }
     
-    light_tree.RemoveLeaf(remove_light->tree_handle);
+    light_tree.Remove(remove_light->tree_handle);
     light_list.Remove(remove_light);
 }
 
