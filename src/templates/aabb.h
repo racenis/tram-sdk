@@ -671,7 +671,7 @@ public:
     }
 
     void Reserve(size_t items) {
-        float depth = floorf(1.5f * logf((float)items));
+        float depth = floorf(1.5f * log2f((float)items));
         float node_count = ceilf(powf(2.0f, depth + 1.0f) - 1.0f);
         nodes.reserve(node_count);
         mins.reserve(node_count);
