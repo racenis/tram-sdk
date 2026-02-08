@@ -114,7 +114,8 @@ static _test_case* _last_test_case = nullptr;
     
 
 #define START_TEST \
-    int main(int argc, char** argv) {
+    int main(int argc, char** argv) { \
+        printf("Running all tests...\n");
         
 #define END_TEST \
         bool fail = false;\

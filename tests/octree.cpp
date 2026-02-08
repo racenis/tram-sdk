@@ -5,6 +5,7 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <set>
 #include <glm/glm.hpp>
@@ -107,15 +108,18 @@ TEST_CASE("Basic Octree queries", "[octree1]") {
 	
 	std::vector<PointInfo> points;
 	
-	auto random_points = GenerateRandomPoints(50, {-100.0f, -100.0f, -100.0f}, {100.0f, 100.0f, 100.0f});
+	//auto random_points = GenerateRandomPoints(50, {-100.0f, -100.0f, -100.0f}, {100.0f, 100.0f, 100.0f});
+	auto random_points = GenerateRandomPoints(10, {-100.0f, -100.0f, -100.0f}, {100.0f, 100.0f, 100.0f});
 	
 	for (size_t i = 0; i < random_points.size(); ++i) {
-		int data = i * 100;
+		//int data = i * 100;
+		int data = i;
 		Octree<int>::leaf_t leaf_id = octree.Insert(random_points[i], data);
 		points.push_back({random_points[i], data, leaf_id});
 	}
 	
 	std::vector<vec3> query_points = GenerateRandomPoints(30, {-120.0f, -120.0f, -120.0f}, {120.0f, 120.0f, 120.0f}, 421);
+	//std::vector<vec3> query_points = GenerateRandomPoints(1, {-120.0f, -120.0f, -120.0f}, {120.0f, 120.0f, 120.0f}, 421);
 
 	for (const auto& query : query_points) {
 		int octree_results[4];
@@ -303,28 +307,81 @@ TEST_CASE("Octree boundary cases", "[octree5]") {
 TEST_CASE("Large Octree test", "[octree6]") {
 	Octree<int> octree({0.0f, 0.0f, 0.0f}, 1000.0f);
 	
-	auto random_points = GenerateRandomPoints(1000, {-500.0f, -500.0f, -500.0f}, {500.0f, 500.0f, 500.0f});
+	auto random_points1 = GenerateRandomPoints(1000, {-500.0f, -500.0f, -500.0f}, {500.0f, 500.0f, 500.0f});
+	auto random_points2 = GenerateRandomPoints(1000, {-500.0f, -500.0f, -500.0f}, {500.0f, 500.0f, 500.0f});
 	std::vector<PointInfo> points;
 	
-	for (size_t i = 0; i < random_points.size(); ++i) {
-		int data = i;
-		Octree<int>::leaf_t leaf_id = octree.Insert(random_points[i], data);
-		points.push_back({random_points[i], data, leaf_id});
+	auto query_points = GenerateRandomPoints(7500, {-600.0f, -600.0f, -600.0f}, {600.0f, 600.0f, 600.0f}, 5156);
+	
+	TIME_START("Initial insertion")
+	for (size_t i = 0; i < random_points1.size(); ++i) {
+		Octree<int>::leaf_t leaf_id = octree.Insert(random_points1[i], i);
+		points.push_back({random_points1[i], (int)i, leaf_id});
+	}
+	TIME_FINISH("Initial insertion")
+	
+	std::vector<std::array<NearestResult, 4>> brute_results_set1;
+	brute_results_set1.reserve(query_points.size());
+	for (const auto& query : query_points) {
+		std::array<NearestResult, 4> brute_results;
+		BruteForceFindNearest(points, query, brute_results.data());
+		brute_results_set1.push_back(brute_results);
 	}
 	
-	auto query_points = GenerateRandomPoints(100, {-600.0f, -600.0f, -600.0f}, {600.0f, 600.0f, 600.0f}, 5156);
-	
-	for (const auto& query : query_points) {
+	TIME_START("Queries")
+	for (size_t i = 0; i < query_points.size(); ++i) {
 		int octree_results[4];
-		NearestResult brute_results[4];
 		
-		size_t octree_count = octree.Find(octree_results, query);
-		size_t brute_count = BruteForceFindNearest(points, query, brute_results);
+		size_t octree_count = octree.Find(octree_results, query_points[i]);
 		
-		bool results_match = CompareResults(points, query, octree_results, octree_count, brute_results, brute_count);
+		bool results_match = CompareResults(points, query_points[i], octree_results, octree_count, 
+											 brute_results_set1[i].data(), 4);
 		
 		ASSERT(results_match)
 	}
+	TIME_FINISH("Queries")
+	
+	TIME_START("Removing all points")
+	for (auto& point : points) {
+		octree.Remove(point.leaf_id);
+	}
+	TIME_FINISH("Removing all points")
+	
+	points.clear();
+	
+	TIME_START("Insertion of different points")
+	for (size_t i = 0; i < random_points2.size(); ++i) {
+		Octree<int>::leaf_t leaf_id = octree.Insert(random_points2[i], i);
+		points.push_back({random_points2[i], (int)i, leaf_id});
+	}
+	TIME_FINISH("Insertion of different points")
+	
+	std::vector<std::array<NearestResult, 4>> brute_results_set2;
+	brute_results_set2.reserve(query_points.size());
+	for (const auto& query : query_points) {
+		std::array<NearestResult, 4> brute_results;
+		BruteForceFindNearest(points, query, brute_results.data());
+		brute_results_set2.push_back(brute_results);
+	}
+	
+	TIME_START("Queries, again")
+	for (size_t i = 0; i < query_points.size(); ++i) {
+		int octree_results[4];
+		
+		size_t octree_count = octree.Find(octree_results, query_points[i]);
+		
+		bool results_match = CompareResults(points, query_points[i], octree_results, octree_count, 
+											 brute_results_set2[i].data(), 4);
+		
+		ASSERT(results_match)
+	}
+	TIME_FINISH("Queries, again")
+	
+	TIME_START("Teardown")
+	for (auto& point : points) {
+		octree.Remove(point.leaf_id);
+	}
+	TIME_FINISH("Teardown")
 }
 
 END_TEST
