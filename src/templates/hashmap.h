@@ -21,7 +21,7 @@ namespace tram {
 template <typename T>
 class Hashmap {
 public:
-    constexpr Hashmap(const char* name, size_t max_size) {
+    constexpr Hashmap(const char* name, size_t max_size, size_t padding = 10) {
         this->name = name;
         this->max_size = max_size;
         this->hash_parameter = max_size * 2;
@@ -224,7 +224,6 @@ protected:
         uint32_t flags = 0;
         T value;
     };
-    const size_t padding = 10;
 
     enum {
         FLAG_RECORD = 1,
