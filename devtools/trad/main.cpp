@@ -8,6 +8,7 @@
 // - make program go vroom vroom
 // - add indirect lighting
 // - add emissive materials
+// - go through ray tracing gems and see if anything is useful in there
 
 #include <iostream>
 #include <vector>
@@ -1039,10 +1040,8 @@ int main(int argc, const char** argv) {
 				vec3 shadow_pos = pos + 0.05f * nrm;
 				mid += 0.05f * nrm;
 				
-				const float bias = ambient_occlusion ? 0.05f : 0.0f;
 				//if (!fast) MovePositionTowardTriangleCenter(scene_tree, scene_triangles, shadow_pos, nrm, mid);
-				if (!fast) MovePositionOutsideMesh(scene_tree, scene_triangles, shadow_pos, normal, tangent, bitangent, bias);
-				
+				if (!fast) MovePositionOutsideMesh(scene_tree, scene_triangles, shadow_pos, normal, tangent, bitangent, 0.0f);
 				
 				if (!force_fullbright) for (const auto& light : lights) {
 					const vec3 light_color = FindTexelColorFromLight(light, pos, nrm);
@@ -1057,6 +1056,10 @@ int main(int argc, const char** argv) {
 					}
 					
 					texel_color += light_color;
+				}
+				
+				if (ambient_occlusion) {
+					MovePositionOutsideMesh(scene_tree, scene_triangles, shadow_pos, normal, tangent, bitangent, 0.1f);
 				}
 				
 				float total_distance = 0.0f;
@@ -1088,7 +1091,7 @@ int main(int argc, const char** argv) {
 							 true);
 					
 					float dist = glm::distance(shadow_pos, nearest);
-					if (nearest.x == INFINITY || dist > ambient_length + bias) {
+					if (nearest.x == INFINITY || dist > ambient_length + 0.1f) {
 						total_distance += 1.0f;
 						continue;
 					}
