@@ -36,6 +36,10 @@ public:
             std::cout << "StackPool " << name << " out of space!" << std::endl;
             return nullptr;
         }
+        
+        if (!units) {
+            return nullptr;
+        }
 
         T* allocation = last;
         
