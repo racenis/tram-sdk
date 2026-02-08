@@ -34,8 +34,8 @@ struct _test_case {
     
     void timefinish(const char* name) {
         int idx = 0;
-        while (idx < 10 && strcmp(times_names[idx], name) != 0) idx++;
-        if (idx >= 10) {
+        while (idx < totl_times && strcmp(times_names[idx], name) != 0) idx++;
+        if (idx >= totl_times) {
             printf("Forgot to call TIME_START(\"%s\")!\n", name);
             return;
         }
@@ -67,7 +67,7 @@ struct _test_case {
         decltype(*times_ends - *times_starts) time_sum = {};
         for (int i = 0; i < totl_times; i++) {
             if (times_ends[i] == INVALID_TIME) {
-                printf("Forgot to call TIME_FINISH(\"%s\") twice!\n", times_names[i]);
+                printf("Forgot to call TIME_FINISH(\"%s\")!\n", times_names[i]);
                 continue;
             }
             auto time = times_ends[i] - times_starts[i];
