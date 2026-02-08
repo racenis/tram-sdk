@@ -75,7 +75,7 @@ public:
         if (T* elem = last - 1; elem < memory_start) {
             return *(memory_end - 1);
         } else {
-            return *last;
+            return *elem;
         }
     }
     
