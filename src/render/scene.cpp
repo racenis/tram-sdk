@@ -219,7 +219,7 @@ struct Light {
 };
 
 Pool<Light> light_list("lighttree pool", 200);
-Octree<Light*> light_tree("light tree", 200);;
+Octree<Light*> light_tree({0.0f, 0.0f, 0.0f}, 1000.0f);;
 
 /// Adds a light to the light tree.
 void AddLight(light_t light, vec3 pos, float dist) {

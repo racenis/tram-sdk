@@ -9,29 +9,6 @@
 
 #include <iostream>
 
-/*
- * insteadable idea:
- * 
- * each node has a bucket
- * first drop every node into root bucket
- * 
- * then when a bucket gets too clustered, check if nodes can be split
- * if can, then deepen the thing
- * 
- * when last node gets removed from bucket, patch it back into parent
- * 
- * ACTIONS:
- * 
- * X    rip out old API
- * 
- * X    replace pool with vector
- * 
- * then just do basic bucket splitting
- * 
- * then do bucket taking back together
- * 
- * */
-
 namespace tram {
 
 template <typename T>
@@ -97,19 +74,38 @@ protected:
     
     
     leaf_t Insert(vec3 point, const T& data, node_t node) {
-        // TODO: find best node to put the data into
-        // for now we'll just put it in the first one i.e. root
+        node_t better_node = GetChild(node, GetOctant(GetMidPoint(node), point));
+        if (better_node != INVALID) {
+            return Insert(point, data, better_node);
+        }
+        
         return MakeLeaf(node, point, data);
     }
     
     void Find(NearestSearch& search, node_t node) {
-        // TODO: implement proper algorithm
-        // for now we'll just search the first node i.e. root
+        // find deepest node in which the search point is in
+        node_t priority = GetChild(node, GetOctant(GetMidPoint(node), search.point));
+        if (priority != INVALID) {
+            Find(search, priority);
+        }
+        
+        for (int oct = 0; oct < 8; oct++) {
+            node_t child = GetChild(node, (Octant)oct);
+            
+            if (child == INVALID) continue;
+            if (child == priority) continue;
+            
+            float dist = NodeDistanceNearest2(GetMidPoint(child), GetHalfExtent(child), search.point);
+            
+            if (search.found >= 4 && dist > search.farthest_distance) continue;
+            
+            Find(search, child);
+        }
         
         // check all leaves for current node
         for (leaf_t leaf : GetLeaves(node)) {
-            float dist = glm::distance(search.point, GetPoint(leaf));
-            
+            float dist = Distance2(search.point, GetPoint(leaf));
+
             // make sure that all spots are filled in
             if (search.found < 4) {
                 if (search.nearest[search.found] != INVALID) continue;
@@ -130,7 +126,6 @@ protected:
                 
                 search.farthest_distance = -INFINITY;
                 
-                
                 // check if some other leaf is now the farthest
                 for (int i = 0; i < 4; i++) {
                     if (search.distance[i] < search.farthest_distance) continue;
@@ -142,7 +137,7 @@ protected:
         }
     }
     
-    std::pair<vec3, float> GetDimensions(Octant octant, vec3 parent_midpoint, float parent_half_extent) {
+    static inline std::pair<vec3, float> GetDimensions(Octant octant, vec3 parent_midpoint, float parent_half_extent) {
         float half_extent = parent_half_extent / 2.0f;
         vec3 mid_point = parent_midpoint;
         
@@ -192,7 +187,7 @@ protected:
         return {mid_point, half_extent};
     }
     
-    Octant GetOctant(vec3 mid, vec3 point) {
+    static inline Octant GetOctant(vec3 mid, vec3 point) {
         if (point.y < mid.y) {
             if (point.x < mid.x) {
                 if (point.z < mid.z) {
@@ -224,6 +219,29 @@ protected:
         }
         
         assert(false);
+    }
+    
+    inline float Distance2(vec3 a, vec3 b) {
+        vec3 d = a - b;
+        return d.x * d.x + d.y * d.y + d.z * d.z;
+    }
+    
+    static inline float NodeDistanceNearest2(vec3 mid_point, float half_extent, vec3 query) {
+        vec3 d = glm::abs(query - mid_point) - half_extent;
+        vec3 outside = max(d, vec3(0.0f));
+
+        return outside.x * outside.x + outside.y * outside.y + outside.z * outside.z;
+    }
+    
+    static inline float NodeDistanceNearest(vec3 mid_point, float half_extent, vec3 query) {
+        vec3 d = glm::abs(query - mid_point) - half_extent;
+        vec3 outside = max(d, vec3(0.0f));
+
+        return glm::length(outside);
+    }
+    
+    static inline float NodeDistanceFarthest(vec3 mid_point, float half_extent, vec3 query) {
+        return glm::length(glm::abs(query - mid_point) + half_extent);
     }
     
     // TODO: move this code to??? wherever scene AABB tree gets drawn
@@ -283,8 +301,15 @@ protected:
     };
     
     inline node_t MakeNode(node_t parent, Octant octant) {
-        node_t idx = nodes.size();
-        nodes.push_back(Node());
+        node_t idx = INVALID;
+        if (node_freelist.size()) {
+            idx = node_freelist.back();
+            node_freelist.pop_back();
+            nodes[idx] = Node{};
+        } else {
+            idx = nodes.size();
+            nodes.push_back(Node());
+        }
         
         auto [mid, ext] = GetDimensions(octant, nodes[parent].mid_point, nodes[parent].half_extent);
         
@@ -297,8 +322,6 @@ protected:
         nodes[parent].octants[octant] = idx;
         
         return idx;
-        
-        // TODO: implement freelist
     }
     
     inline void YeetNode(node_t node) {
@@ -316,14 +339,20 @@ protected:
         nodes[parent].octants[nodes[node].parent_octant] = INVALID;
         nodes[node].parent = INVALID;
         
-        
-        // TODO: implement freelist
+        node_freelist.push_back(node);
     }
     
     inline leaf_t MakeLeaf(node_t parent, vec3 point, const T& value) {
-        leaf_t idx = leaves.size();
-        leaves.push_back(Leaf());
-        
+        leaf_t idx = INVALID;
+        if (leaf_freelist.size()) {
+            idx = leaf_freelist.back();
+            leaf_freelist.pop_back();
+            leaves[idx] = Leaf{};
+        } else {
+            idx = leaves.size();
+            leaves.push_back(Leaf());
+        }
+
         leaves[idx].point = point;
         leaves[idx].value = value;
         
@@ -334,8 +363,6 @@ protected:
         TrySplitting(parent);
         
         return idx;
-        
-        // TODO: implement freelist
     }
     
     inline void YeetLeaf(leaf_t leaf) {
@@ -351,22 +378,75 @@ protected:
         
         TryFolding(parent);
 
-        // TODO: implement freelist
+        leaf_freelist.push_back(leaf);
     }
 
-    inline const std::vector<leaf_t>& GetLeaves(node_t node) {
+    inline std::vector<leaf_t>& GetLeaves(node_t node) {
         return nodes[node].leaves;
     }
     
+    inline vec3 GetMidPoint(node_t node) {
+        return nodes[node].mid_point;
+    }
+    
+    inline float GetHalfExtent(node_t node) {
+        return nodes[node].half_extent;
+    }
+    
+    inline node_t GetChild(node_t node, Octant octant) {
+        return nodes[node].octants[octant];
+    }
+    
+    
     inline void TryFolding(node_t node) {
-        // TODO: implement
-        // - check if any leaves
-        // - check if any octants
-        // - if not, then delete node
+        if (node == root) return;
+        
+        if (GetLeaves(node).size()) return;
+        
+        for (int i = 0; i < 8; i++) {
+            if (GetChild(node, (Octant)i) != INVALID) return;
+        }
+        
+        node_t parent = nodes[node].parent;
+        YeetNode(node);
+        
+        TryFolding(parent);
     }
     
     inline void TrySplitting(node_t node) {
-        // TODO: implement
+        if (GetLeaves(node).size() < 4) return;
+        
+        // first we'll check if it's even worth splitting the tree.
+        // if all leaves are right next to each other, they'll just
+        // end up in the same node anyway and we'll just increase
+        // the depth of the tree for no reason. also identical points
+        // could force the split function to recurse indefinitely
+        bool worth_it = false;
+        vec3 first = GetPoint(GetLeaves(node)[0]);
+        for (size_t i = 1; i < GetLeaves(node).size(); i++) {
+            if (Distance2(first, GetPoint(GetLeaves(node)[i])) < 1.0f) continue;
+            
+            worth_it = true;
+            break;
+        }
+        
+        if (!worth_it) return;
+        
+        // move all leaves
+        for (leaf_t leaf : GetLeaves(node)) {
+            
+            Octant oct = GetOctant(GetMidPoint(node), GetPoint(leaf));
+            node_t oct_node = GetChild(node, oct);
+            
+            if (oct_node == INVALID) {
+                oct_node = MakeNode(node, oct);
+            }
+            
+            leaves[leaf].parent = oct_node;
+            GetLeaves(oct_node).push_back(leaf);
+        }
+        
+        GetLeaves(node).clear();
     }
 
     inline vec3 GetPoint(leaf_t leaf) {
@@ -379,6 +459,9 @@ protected:
     
     std::vector<Node> nodes;
     std::vector<Leaf> leaves;
+    
+    std::vector<node_t> node_freelist;
+    std::vector<leaf_t> leaf_freelist;
     
     node_t root = INVALID;
 };
