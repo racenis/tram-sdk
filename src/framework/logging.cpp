@@ -2,6 +2,7 @@
 
 #include <framework/logging.h>
 #include <framework/system.h>
+#include <platform/terminal.h>
 #include <platform/other.h>
 #include <cstring>
 #include <charconv>
@@ -78,7 +79,10 @@ void flush_console(Severity severity, System::system_t system) {
         return;
     }
     
+    using namespace Platform;
+    
     const char* severity_text = nullptr;
+    Platform::TerminalColor color = TerminalColor::DEFAULT;
     
     switch (severity) {
         case Severity::DEFAULT:         severity_text = "[    ]";   break;
@@ -89,7 +93,20 @@ void flush_console(Severity severity, System::system_t system) {
         default:                        severity_text = "[    ]";   break;     
     }
     
+    switch (severity) {
+        case Severity::DEFAULT:         color = TerminalColor::DEFAULT;      break;
+        case Severity::WARNING:         color = TerminalColor::LIGHT_YELLOW; break;
+        case Severity::ERROR:           color = TerminalColor::LIGHT_RED;    break;
+        case Severity::CRITICAL_ERROR:  color = TerminalColor::LIGHT_RED;    break;
+        case Severity::INFO:            color = TerminalColor::DEFAULT;      break;
+        default:                        color = TerminalColor::DEFAULT;      break;     
+    }
+    
     const char* system_text = system == 6 ? nullptr : System::GetShortName(system);
+    
+    if (color != TerminalColor::DEFAULT) {
+        SwitchForeground(color);
+    }
     
     if (system_text) {
         std::cout << severity_text << ' ' << '[' << system_text << ']' << ' ';
@@ -99,7 +116,13 @@ void flush_console(Severity severity, System::system_t system) {
         console_log_callback(0, buffer);
     }
     
-    std::cout << buffer << std::endl;
+    std::cout << buffer;
+    
+    if (color != TerminalColor::DEFAULT) {
+        SwitchForeground(TerminalColor::DEFAULT);
+    }
+    
+    std::cout << std::endl;
     
     // some people might say "loggers shouldn't act as asserts" but they are wrong!
     // consider this:
