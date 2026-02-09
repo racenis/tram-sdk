@@ -100,7 +100,7 @@ void Animation::LoadFromDisk() {
         return;
     }
 
-    Log(Severity::WARNING, System::RENDER, "Loading animation: {}", filename);
+    Log(Severity::INFO, System::RENDER, "Loading animation: {}", filename);
 
     name_t header = file.read_name();
     
