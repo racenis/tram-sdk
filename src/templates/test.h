@@ -3,6 +3,8 @@
 #ifndef TRAM_SDK_TEMPLATES_TEST_H
 #define TRAM_SDK_TEMPLATES_TEST_H
 
+#include <platform/terminal.cpp>
+
 #include <cstdio>
 #include <cstring>
 #include <chrono>
@@ -61,7 +63,13 @@ struct _test_case {
         int p = totl_asserts - fail_asserts;
         int t = totl_asserts;
         
-        printf("Test %s %s (%i/%i)\n", fullname, abbrv, p, t);
+        printf("Test %s %s ", fullname, abbrv);
+        
+        tram::Platform::SwitchForeground(p == t ? tram::Platform::TerminalColor::GREEN : tram::Platform::TerminalColor::LIGHT_RED);
+        printf("(%i/%i)", p, t);
+        
+        tram::Platform::SwitchForeground(tram::Platform::TerminalColor::DEFAULT);
+        printf("\n");
         
 
         decltype(*times_ends - *times_starts) time_sum = {};
