@@ -134,6 +134,7 @@ bool UID::no_quote(const char* str) {
     for (const char* c = str; *c != '\0'; c++) {
         if (*c == ' ') return false;
         if (*c == '"') return false;
+        if (isspace(*c)) return false;
     }
     
     return true;
