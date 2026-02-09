@@ -4,11 +4,13 @@ compiler = g++ -std=c++20 -I../src/ -I../libraries/glfw3/ -I../libraries/
 libraries = -L../libraries/binaries/win64/ $\
 	-lglfw3 -lgdi32 -lopengl32
 
+.PHONY: compile test test_all clean
+
 # compile all of the tests
 compile: core uid event aabb_tree hashmap octree pool queue stack stackpool
 
 # run all of the tests
-test: compile
+test:
 	core
 	uid
 	event
@@ -20,6 +22,20 @@ test: compile
 	queue
 	stack
 	stackpool
+
+# run all tests until end, even if one fails
+test_all:
+	-core
+	-uid
+	-event
+	
+	-aabb_tree
+	-hashmap
+	-octree
+	-pool
+	-queue
+	-stack
+	-stackpool
 	
 clean:
 	del core.exe
