@@ -28,15 +28,15 @@ public:
     
     static constexpr node_t INVALID = ~0;
     
-    leaf_t Insert(vec3 point, const T& data) {
+    leaf_t insert(vec3 point, const T& data) {
         return Insert(point, data, root);
     }
-    
-    void Remove(leaf_t leaf) {
+        
+    void remove(leaf_t leaf) {
         YeetLeaf(leaf);
     }
 
-    size_t Find(T* array, vec3 point) {
+    size_t find(T* array, vec3 point) {
         NearestSearch search = {.point = point};
 
         Find(search, root);
@@ -47,10 +47,12 @@ public:
         
         return search.found;
     }
+    
+    // aliases, do not use for new code
+    leaf_t Insert(vec3 point, const T& data) { return insert(point, data); }
+    void Remove(leaf_t leaf) { remove(leaf); }
+    size_t Find(T* array, vec3 point) { return find(array, point); }
 
-    void Draw() {
-        Draw(root);
-    }
 protected:
     enum Octant {
         OCTANT_TOP_LEFT_BACK,

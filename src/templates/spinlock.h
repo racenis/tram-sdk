@@ -12,15 +12,18 @@ namespace tram {
 
 class Spinlock {
 public:
-    void Lock() {
-        while (lock.exchange(true));
+    void lock() {
+        while (lock_atomic.exchange(true));
     }
     
-    void Unlock() {
-        lock.store(false);
+    void unlock() {
+        lock_atomic.store(false);
     }
+    
+    void Lock() { lock(); }
+    void Unlock() { unlock(); }
 private:
-    std::atomic<bool> lock = {false};
+    std::atomic<bool> lock_atomic = {false};
 };
     
 }

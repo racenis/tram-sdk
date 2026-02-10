@@ -31,7 +31,7 @@ public:
         }
     }
 
-    T* AddNew(size_t units) {
+    T* allocate(size_t units) {
         if (allocated_size + units > available_size) {
             std::cout << "StackPool " << name << " out of space!" << std::endl;
             return nullptr;
@@ -49,22 +49,18 @@ public:
         return allocation;
     }
     
-    T* allocate(size_t units) {
-        return AddNew(units);
-    }
-    
-    void Reset() {
+    void reset() {
         allocated_size = 0;
         last = first;
-    }
-    
-    void reset() {
-        Reset();
     }
     
     size_t size() { return allocated_size; }
     T* begin() { return first; }
     T* end() { return last; }
+
+    // aliases, do not use for new code
+    T* AddNew(size_t units) { return allocate(units); }
+    void Reset() { reset(); }
 
 protected:
     std::string name;

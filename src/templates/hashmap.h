@@ -42,11 +42,11 @@ public:
         }
     }
     
-    T Find(UID key) {
+    T find(UID key) {
         return Find(key.key);
     }
     
-    T Find(uint32_t key) {
+    T find(uint32_t key) {
         uint32_t hash = key % hash_parameter;
         
         Record* candidate = first + hash;
@@ -71,11 +71,11 @@ public:
         return T();
     }
     
-    bool Exists(UID key) {
+    bool exists(UID key) {
         return Exists(key.key);
     }
     
-    bool Exists(uint32_t key) {
+    bool exists(uint32_t key) {
         uint32_t hash = key % hash_parameter;
         
         Record* candidate = first + hash;
@@ -100,11 +100,11 @@ public:
         return false;
     }
     
-    void Insert(UID key, T value) {
-        Insert(key.key, value);
+    void insert(UID key, T value) {
+        insert(key.key, value);
     }
     
-    void Insert(uint32_t key, T value) {
+    void insert(uint32_t key, T value) {
         if (size == max_size) {
             std::cout << "Hashmap " << name << " density reached!" << std::endl;
         }
@@ -143,12 +143,12 @@ public:
         candidate->value = value;
         candidate->flags = FLAG_RECORD;
     }
-    
-    void Remove(UID key) {
-        Remove(key.key);
+ 
+    void remove(UID key) {
+        remove(key.key);
     }
-    
-    void Remove(uint32_t key) {
+   
+    void remove(uint32_t key) {
         uint32_t hash = key % hash_parameter;
         
         Record* candidate = first + hash;
@@ -217,6 +217,16 @@ public:
         
         return candidate->value;
     }
+    
+    // previous aliases, do not use for new code
+    void Remove(UID key) { remove(key.key); }
+    void Remove(uint32_t key) {remove(key); }
+    void Insert(UID key, T value) {insert(key.key, value); }
+    void Insert(uint32_t key, T value) {insert(key, value); }
+    bool Exists(uint32_t key) {return exists(key); }
+    bool Exists(UID key) {return Exists(key.key); }
+    T Find(uint32_t key) {return find(key); }
+    T Find(UID key) { return Find(key.key); }
     
 protected:
     struct Record {
