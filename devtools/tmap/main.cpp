@@ -8,6 +8,7 @@
 #include <map>
 
 #include <cstdarg>
+#include <cstring>
 
 #include <framework/logging.h>
 #include <framework/file.h>
@@ -51,27 +52,36 @@ int main(int argc, const char** argv) {
 	std::cout << "Tramway SDK -- Lightmap packer" << std::endl;
 	
 	if (argc < 3) {
-		std::cout << "Usage: tmap model size [padding]";
-		std::cout << "\n\tmodel is the name of the model, which will be packed";
-		std::cout << "\n\tsize is the size of the lightmap, in pixels";
-		std::cout << "\n\tpadding is the padding of lightmap segemnts, in pixels";
+		std::cout << "Usage: tmap <model> <size> [options]";
+		std::cout << "\n\nArguments:";
+		std::cout << "\n  <model>\t\tName of the model, which will be packed";
+		std::cout << "\n  <size> is the size of the lightmap, in pixels";
+		
+		std::cout << "\n\nOptions:";
+		std::cout << "\n  -pad <pixels> Padding of lightmap segments, in pixels";
+		std::cout << "\n  -density <integer> Number of texels per meter";
 		return 0;
 	}
 	
 	const char* model_name = argv[1];
 	int lightmap_size = atoi(argv[2]);
-	int lightmap_padding = argc >= 4 ? atoi(argv[3]) : 2;
+	int lightmap_padding = 2;
+	int lightmap_density = 4;
 	
 	if ((lightmap_size & (lightmap_size - 1)) != 0 || lightmap_size < 1) {
 		std::cout << "Lightmap size has to be a power of two." << std::endl;
 		return 0;
 	}
 	
-	/*for (int i = 5; i < argc; i++) {
-		if (strcmp(argv[i], "-pack") == 0) {
-			packing = true;
+	for (int i = 3; i < argc; i++) {
+		if (strcmp(argv[i], "-pad") == 0) {
+			lightmap_padding = atoi(argv[++i]);
 		}
-	}*/
+		
+		if (strcmp(argv[i], "-density") == 0) {
+			lightmap_density = atoi(argv[++i]);
+		}
+	}
 		
 	// +-----------------------------------------------------------------------+
 	// +                                                                       +
@@ -245,7 +255,7 @@ int main(int argc, const char** argv) {
 	//pack_options.texelsPerUnit = 16.0f;
 	pack_options.padding = lightmap_padding;
 	pack_options.resolution = lightmap_size;
-	pack_options.texelsPerUnit = 4;
+	pack_options.texelsPerUnit = lightmap_density;
 	//pack_options.bilinear = true;
 	//pack_options.blockAlign = true;
 	//pack_options.bruteForce = true;
