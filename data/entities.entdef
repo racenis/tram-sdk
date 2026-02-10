@@ -3,28 +3,28 @@
 begin
 	name staticwobj
 	model none
-	field string model
-	field string lightmap
+	field string model "none"
+	field string lightmap "none"
 end
 
 begin
 	name crate
 	model none
-	field string model
-	field string collision-model
+	field string model "none"
+	field string collision-model "none"
 end
 
 begin
 	name light
 	model dev/light
-	field float color-r
-	field float color-g
-	field float color-b
-	field float distance
-	field float direction-x
-	field float direction-y
-	field float direction-z
-	field float exponent
+	field float color-r 1.0
+	field float color-g 1.0
+	field float color-b 1.0
+	field float distance 8.0
+	field float direction-x 1.0
+	field float direction-y 0.0
+	field float direction-z 0.0
+	field float exponent 0.0
 end
 
 begin
@@ -35,25 +35,25 @@ end
 begin
 	name sound
 	model dev/sound
-	field uint flags
-	field string sound
-	field float volume
+	field uint flags 0
+	field string sound "none"
+	field float volume 1.0
 end
 
 begin
 	name decoration
 	model none
-	field uint flags
-	field string model
-	field string animation
+	field uint flags 0
+	field string model "none"
+	field string animation "none"
 end
 
 begin
 	name trigger
 	model none
-	field uint flags
-	field uint collision-mask
-	field string model
+	field uint flags 0
+	field uint collision-mask -1
+	field string model "none"
 end
 
 # additional extension entities
@@ -62,16 +62,16 @@ begin
 	name button
 	model none
 	
-	field uint button-flags
-	field string model
-	field string lightmap
-	field origin origin
-	field direction direction
-	field float speed
-	field float pause
-	field float distance
-	field string sound
-	field string parent
+	field uint button-flags 0
+	field string model "none"
+	field string lightmap "none"
+	field origin origin 0.0 0.0 0.0
+	field direction direction 1.0 0.0 0.0
+	field float speed 0.5
+	field float pause 0.0
+	field float distance 1.0
+	field string sound "none"
+	field string parent "none"
 	
 	gizmo cyan point origin
 	gizmo cyan normal direction 
