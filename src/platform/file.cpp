@@ -218,7 +218,15 @@ void FileReader::Register(const char* protocol, FileReader* (*constr)(const char
 class DiskWriter : public FileWriter {
 public:
     DiskWriter(const char* path) {
-        this->file_handle = fopen(path, "wb");
+        this->full_path = new char[PATH_LIMIT + 10];
+        this->temp_path = new char[PATH_LIMIT + 10];
+        
+        strcpy(full_path, path);
+        strcpy(temp_path, path);
+        
+        strcat(temp_path, ".tmp");
+        
+        this->file_handle = fopen(temp_path, "wb");
 
         if (file_handle != nullptr) {
             Log (Severity::INFO, System::PLATFORM, "Opened file for writing: {}", path);
@@ -234,6 +242,13 @@ public:
             
             file_handle = nullptr;
         }
+        
+        remove(full_path);
+        
+        rename(temp_path, full_path);
+        
+        delete[] full_path;
+        delete[] temp_path;
     }
     
     void SetContents(const char* contents, size_t size) {
@@ -258,7 +273,8 @@ public:
     
 private:
     FILE* file_handle = nullptr;
-
+    char* full_path = nullptr;
+    char* temp_path = nullptr;
 };
 
 FileWriter* FileWriter::GetWriter(const char* path) {
