@@ -58,6 +58,8 @@ public:
     std::string_view read_token();
     std::string_view read_line();
     
+    size_t get_line();
+    
     void skip_linebreak();
     void reset_flags();
     

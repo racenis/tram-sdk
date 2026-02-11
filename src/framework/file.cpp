@@ -54,6 +54,8 @@ public:
     virtual std::string_view read_token() = 0;
     virtual std::string_view read_line() = 0;
     
+    virtual size_t get_line() = 0;
+    
     virtual void skip_newline() = 0;
     virtual void skip_whitespace() = 0;
     
@@ -152,7 +154,7 @@ public:
         const char* begin = cur;
         size_t length = 0;
         
-        for (; !isspace(*cur) && cur < end; cur++) {
+        for (; cur < end && !isspace(*cur); cur++) {
             length++;
         }
         
@@ -167,6 +169,7 @@ public:
         size_t length = 0;
         
         for (; *cur != delimiter && cur < end; cur++) {
+            if (*cur == '\n') current_line++;
             length++;
         }
         
@@ -192,13 +195,16 @@ public:
         return std::string_view (first_char, line_length);
     }
     
+    size_t get_line() {
+        return current_line;
+    }
     
     void skip_newline() {
         while (*cur != '\r' && *cur != '\n' && cur < end) {
             cur++;
         }
         
-        while (cur < end && (*cur == '\n' || *cur == '\r')) cur++;
+        while (cur < end && ((*cur == '\n' && ++current_line) || *cur == '\r')) cur++;
     }
     
     void skip_whitespace() {
@@ -214,7 +220,7 @@ public:
                 while (cur < end && *cur != '\n' && *cur != '\r') cur++;
                 
                 // skip over linebreak
-                while (cur < end && (*cur == '\n' || *cur == '\r')) cur++;
+                while (cur < end && ((*cur == '\n' && ++current_line) || *cur == '\r')) cur++;
                 
                 // skip over comments, if any on next line
                 skip_whitespace();
@@ -222,7 +228,8 @@ public:
                 return;
             }
             
-            cur++;
+            // advance cursor and count newlines
+            if (*cur++ == '\n') current_line++;
         }
     }
     
@@ -275,6 +282,8 @@ private:
         return from_chars<float>(); // haha, nice. very evil
     }
 #endif
+
+    size_t current_line = 1;
 
     const char* cur = nullptr;
     const char* end = nullptr;
@@ -395,6 +404,9 @@ public:
         return std::string_view (first_char, line_length);
     }
     
+    size_t get_line() {
+        return 0;
+    }
     
     void skip_newline() {
         // doesn't do anything
@@ -725,7 +737,10 @@ std::string_view File::read_token() { reader_parser->skip_whitespace(); return r
 std::string_view File::read_string() { reader_parser->skip_whitespace(); return reader_parser->read_string(); }
 
 /// Parses off the remaining line.
-std::string_view File::read_line() { return reader_parser->read_line(); }
+std::string_view File::read_line() { auto line = reader_parser->read_line(); reader_parser->skip_newline(); return line; }
+
+/// Returns current line number.
+size_t File::get_line() { return reader_parser->get_line(); }
 
 /// Skips over a linebreak.
 /// Probably only useful if the file has been opened for reading in the
