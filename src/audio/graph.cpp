@@ -41,7 +41,7 @@ SoundGraph* SoundGraph::Find(name_t name) {
 }
 
 void SoundGraph::LoadFromDisk() {
-    std::string filename = std::string("data/worldcells/") + std::string(name) + ".sound";
+    std::string filename = std::string("data/worldcells/") + name.operator std::string() + ".sound";
     
     File file (filename.c_str(), File::READ);
     

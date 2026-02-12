@@ -314,7 +314,7 @@ void Model::LoadFromDisk() {
         uint32_t vcount;   // number of vertices
         
         if (!has_header) {
-            std::from_chars<uint32_t>(header.begin(), header.end(), vcount);
+            std::from_chars((const char*)header.data(), (const char*)header.data() + header.size(), vcount);
         } else {
             vcount = file.read_uint32();
         }
