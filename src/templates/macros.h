@@ -28,7 +28,7 @@
 // Code generation macros
 #define TRAM_SDK_ENTITY_NAME(Name)
 #define TRAM_SDK_PROPERTY(Name, Flags)
-#define TRAM_SDK_VIRTUAL_PROPERTY(Type, Name, Flags)
+#define TRAM_SDK_VIRTUAL_PROPERTY(Type, Name, Flags, ...)
 #define TRAM_SDK_KEY_VALUE(Key, Value)
 
 #endif // TRAM_SDK_TEMPLATES_MACROS_H
