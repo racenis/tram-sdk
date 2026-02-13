@@ -37,7 +37,7 @@ public:
     void write_float64(double value);
     
     void write_name(name_t value);
-    void write_string(const char* value);
+    void write_string(const char* value, char delimiter = '"');
     void write_newline();
     
     int8_t read_int8();
@@ -54,7 +54,7 @@ public:
     double read_float64();
     
     name_t read_name();
-    std::string_view read_string();
+    std::string_view read_string(char delimiter = '"');
     std::string_view read_token();
     std::string_view read_line();
     

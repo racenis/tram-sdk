@@ -50,7 +50,7 @@ public:
     virtual double read_float64() = 0;
     
     virtual name_t read_name() = 0;
-    virtual std::string_view read_string() = 0;
+    virtual std::string_view read_string(char delimiter) = 0;
     virtual std::string_view read_token() = 0;
     virtual std::string_view read_line() = 0;
     
@@ -161,14 +161,17 @@ public:
         return {begin, length};
     }
     
-    std::string_view read_string() {
-        char delimiter = *cur;
-        cur++;
+    std::string_view read_string(char delimiter) {
+        if (delimiter == *cur) {
+            cur++;
+        } else {
+            delimiter = 0;
+        }
         
         const char* begin = cur;
         size_t length = 0;
         
-        for (; *cur != delimiter && cur < end; cur++) {
+        for (; (delimiter && *cur != delimiter || !delimiter && !isspace(*cur)) && cur < end; cur++) {
             if (*cur == '\n') current_line++;
             length++;
         }
@@ -208,6 +211,10 @@ public:
     }
     
     void skip_whitespace() {
+        //char f[2] = "e";
+        //f[0] = *cur;
+        //Log("skip: '{}' flag: {}", f, skip_newline_flag);
+        
         while (cur < end) {
             if (*cur == '\n' && !skip_newline_flag) {
                 return;
@@ -234,9 +241,10 @@ public:
     }
     
     bool is_continue() {
-        while (cur < end) {
-            if (!isspace(*cur)) return true;
-            cur++;
+        skip_whitespace();
+        
+        for (const char* c = cur; c < end; c++) {
+            if (!isspace(*c)) return true;
         }
         
         return false;
@@ -373,7 +381,7 @@ public:
         return {begin, length};
     }
     
-    std::string_view read_string() {
+    std::string_view read_string(char delimiter) {
         const char* begin = cur;
         size_t length = 0;
         
@@ -435,7 +443,7 @@ public:
 private:
     template <typename T>
     T from_binary() {
-        if (cur + sizeof(T) >= end) {
+        if (cur + sizeof(T) > end) {
             error_flag = true;
             return T();
         }
@@ -470,8 +478,18 @@ public:
     virtual void write_float64(double value) = 0;
     
     virtual void write_name(name_t value) = 0;
-    virtual void write_string(const char* value) = 0;
+    virtual void write_string(const char* value, char delimiter) = 0;
     virtual void write_newline() = 0;
+    
+    bool is_error() {
+        return error_flag;
+    }
+    
+    void reset_error() {
+        error_flag = false;
+    }
+protected:
+    bool error_flag = false;
 };
 
 class TextWriterParser : public FileWriterParser {
@@ -528,8 +546,18 @@ public:
         writer->SetContents(" ", 1);
     }
     
-    virtual void write_string(const char* value)  {
+    virtual void write_string(const char* value, char delimiter)  {
+        for (const char* c = value; *c != '\0'; c++) {
+            if (*c == delimiter) {
+                Log(Severity::ERROR, System::CORE, "String `{}` contains delimiter `{}`, skipping.");
+                error_flag = true;
+                return;
+            }
+        }
+        
+        if (delimiter) writer->SetContents(&delimiter, 1);
         writer->SetContents(value, strlen(value));
+        if (delimiter) writer->SetContents(&delimiter, 1);
         writer->SetContents(" ", 1);
     }
     
@@ -604,7 +632,7 @@ public:
         writer->SetContents(value, strlen(value) + 1);
     }
     
-    virtual void write_string(const char* value)  {
+    virtual void write_string(const char* value, char delimiter)  {
         writer->SetContents(value, strlen(value) + 1);
     }
     
@@ -629,6 +657,10 @@ private:
 File::File(char const* path, uint32_t mode) : path(path), mode(mode) {    
     if (mode & TEXT && mode & BINARY) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "File has both File::TEXT and File::BINARY flags set");
+    }
+    
+    if (mode & READ && mode & WRITE) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "File has both File::READ and File::WRITE flags set");
     }
     
     if (mode & READ) {
@@ -713,7 +745,7 @@ void File::write_float32(float value) { writer_parser->write_float32(value);}
 void File::write_float64(double value) { writer_parser->write_float64(value); }
 
 void File::write_name(name_t value) { writer_parser->write_name(value); }
-void File::write_string(const char* value) { writer_parser->write_string(value); }
+void File::write_string(const char* value, char delimiter) { writer_parser->write_string(value, delimiter); }
 
 /// Writes a newline to the file.
 /// The newline is just the `\n` character.
@@ -734,7 +766,7 @@ double File::read_float64() { reader_parser->skip_whitespace(); return reader_pa
 
 name_t File::read_name() { reader_parser->skip_whitespace(); return reader_parser->read_name(); }
 std::string_view File::read_token() { reader_parser->skip_whitespace(); return reader_parser->read_token(); }
-std::string_view File::read_string() { reader_parser->skip_whitespace(); return reader_parser->read_string(); }
+std::string_view File::read_string(char delimiter) { reader_parser->skip_whitespace(); return reader_parser->read_string(delimiter); }
 
 /// Parses off the remaining line.
 std::string_view File::read_line() { auto line = reader_parser->read_line(); reader_parser->skip_newline(); return line; }
@@ -751,6 +783,7 @@ void File::skip_linebreak() { reader_parser->skip_newline(); }
 /// Resets the error flag.
 void File::reset_flags() {
     if (reader_parser) reader_parser->reset_error();
+    if (writer_parser) writer_parser->reset_error();
 }
 
 bool File::flush() {
@@ -767,6 +800,7 @@ bool File::flush() {
 /// there was an error in parsing that specific method.
 bool File::was_error() {
     if (reader_parser) return reader_parser->is_error();
+    if (writer_parser) return writer_parser->is_error();
     return false;
 }
 
