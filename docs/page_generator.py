@@ -101,6 +101,8 @@ pages = ["index",
 		 "documentation/render/model",
 		 "documentation/render/sprite",
 		 
+		 "documentation/tools/codegen",
+		 
 		 "documentation/plugin",
 		 "documentation/leveleditor",
 		 "documentation/entitydefinition",
