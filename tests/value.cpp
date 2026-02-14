@@ -60,29 +60,20 @@ TEST_CASE("Value from integer", "[value3]") {
 	ASSERT(int32_val.GetType() == TYPE_INT32)
 	ASSERT((int32_t)int32_val == 123456)
 	
-	value_t v_uint8((uint8_t)255);
-	ASSERT(v_uint8.IsInt())
-	ASSERT(v_uint8.GetType() == TYPE_UINT32)
-	ASSERT((uint8_t)v_uint8 == 255)
+	value_t uint8_val((uint8_t)255);
+	ASSERT(uint8_val.IsInt())
+	ASSERT(uint8_val.GetType() == TYPE_UINT32)
+	ASSERT((uint8_t)uint8_val == 255)
 	
-	value_t v_uint16((uint16_t)65535);
-	ASSERT(v_uint16.IsInt())
-	ASSERT(v_uint16.GetType() == TYPE_UINT32)
-	ASSERT((uint16_t)v_uint16 == 65535)
+	value_t uint16_val((uint16_t)65535);
+	ASSERT(uint16_val.IsInt())
+	ASSERT(uint16_val.GetType() == TYPE_UINT32)
+	ASSERT((uint16_t)uint16_val == 65535)
 	
-	value_t v_uint32((uint32_t)4000000000U);
-	ASSERT(v_uint32.IsInt())
-	ASSERT(v_uint32.GetType() == TYPE_UINT32)
-	ASSERT((uint32_t)v_uint32 == 4000000000U)
-	
-	// note that large 64-bit int values get clipped
-	value_t int64_val((int64_t)-9876543210LL);
-	ASSERT(int64_val.IsInt())
-	ASSERT((int64_t)int64_val != -9876543210LL)
-	
-	value_t v_uint64((uint64_t)18446744073709551615ULL);
-	ASSERT(v_uint64.IsInt())
-	ASSERT((uint64_t)v_uint64 != 18446744073709551615ULL)
+	value_t uint32_val((uint32_t)4000000000U);
+	ASSERT(uint32_val.IsInt())
+	ASSERT(uint32_val.GetType() == TYPE_UINT32)
+	ASSERT((uint32_t)uint32_val == 4000000000U)
 }
 
 TEST_CASE("Value from floats", "[value4]") {
@@ -91,11 +82,6 @@ TEST_CASE("Value from floats", "[value4]") {
 	ASSERT(float_val.GetType() == TYPE_FLOAT32)
 	float f = (float)float_val;
 	ASSERT(f == 420.69f)
-	
-	value_t double_val = 420.69;
-	ASSERT(double_val.IsFloat())
-	double d = (double)double_val;
-	ASSERT(d = 420.69)
 }
 
 TEST_CASE("Value from UIDs", "[value5]") {
@@ -269,13 +255,6 @@ TEST_CASE("Value comparison between different ints", "[value16]") {
 	ASSERT(int8_val == uint8_val)
 }
 
-TEST_CASE("Value comparison between different floats", "[value17]") {
-	value_t float_val = 420.69f;
-	value_t double_val = 420.69f;
-	
-	ASSERT(float_val == double_val)
-}
-
 TEST_CASE("Value conversions for non-bools", "[value18]") {
 	value_t zero_val = 0;
 	value_t nonzero_val = 420;
@@ -354,14 +333,11 @@ TEST_CASE("Value bool conversions", "[value21]") {
 	value_t float_val_zero(0.0f);
 	ASSERT(!float_val_zero)
 	
-	value_t double_val_zero(0.0);
-	ASSERT(!double_val_zero)
-	
 	value_t int8_val_zero((int8_t)0);
 	ASSERT(!int8_val_zero)
 	
-	value_t v_uint32_zero((uint32_t)0);
-	ASSERT(!v_uint32_zero)
+	value_t uint32_zero_val((uint32_t)0);
+	ASSERT(!uint32_zero_val)
 }
 
 TEST_CASE("Value integer edge cases", "[value22]") {
@@ -432,9 +408,6 @@ TEST_CASE("Value negative number bool conversions", "[value25]") {
 	
 	value_t float_negative_val = -420.69f;
 	ASSERT(float_negative_val)
-	
-	value_t double_negative_val = -4.69;
-	ASSERT(double_negative_val)
 }
 
 END_TEST

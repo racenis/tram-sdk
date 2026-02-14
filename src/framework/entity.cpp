@@ -421,7 +421,7 @@ Entity* Entity::Make(name_t type, File* file) {
     
     SharedEntityData shared_data {
         type,
-        file->read_uint64(),
+        file->read_uint32(),
         file->read_name(),
         file->read_uint32(),
         vec3 {file->read_float32(), file->read_float32(), file->read_float32()},

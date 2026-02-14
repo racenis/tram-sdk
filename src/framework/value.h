@@ -59,25 +59,19 @@ public:
     
     Value(int8_t value) : int32_value(value) { type = TYPE_INT32; }
     Value(int16_t value) : int32_value(value) { type = TYPE_INT32; }
-    Value(int64_t value) : int32_value(value) { type = TYPE_INT32; }
+    Value(int32_t value) : int32_value(value) { type = TYPE_INT32; }
     
     Value(uint8_t value) : uint32_value(value) { type = TYPE_UINT32; }
     Value(uint16_t value) : uint32_value(value) { type = TYPE_UINT32; }
-    Value(uint64_t value) : uint32_value(value) { type = TYPE_UINT32; }
-    
-    Value(double value) : float_value(value) { type = TYPE_FLOAT32; }
-    
-    Value(int32_t value) : int32_value(value) { type = TYPE_INT32; }
-    
     Value(uint32_t value) : uint32_value(value) { type = TYPE_UINT32; }
-
+    
+    Value(float value) : float_value(value) { type = TYPE_FLOAT32; }
+    
     Value(vec2 value) : vec2_value(value) { type = TYPE_VEC2; }
     Value(vec3 value) : vec3_value(value) { type = TYPE_VEC3; }
     Value(vec4 value) : vec4_value(value) { type = TYPE_VEC4; }
     
     Value(quat value) : quat_value(value) { type = TYPE_QUAT; }
-
-    Value(float value) : float_value(value) { type = TYPE_FLOAT32; }
     
     operator bool() const {
         switch (type) {
@@ -115,18 +109,12 @@ public:
         return string_value;
     }
     
-
     operator int8_t() const { return (int32_t)*this; }
     operator int16_t() const { return (int32_t)*this; }
-    operator int64_t() const { return (int32_t)*this; }
+    operator int32_t() const { AssertType(TYPE_INT32); return int32_value; }
     
     operator uint8_t() const { return (uint32_t)*this; }
     operator uint16_t() const { return (uint32_t)*this; }
-    operator uint64_t() const { return (uint32_t)*this; }
-    
-    operator double() const { return (float)*this; }
-    
-    operator int32_t() const { AssertType(TYPE_INT32); return int32_value; }
     operator uint32_t() const { AssertType(TYPE_UINT32); return uint32_value; }
     
     operator float() const { AssertType(TYPE_FLOAT32); return float_value; } 
@@ -136,8 +124,6 @@ public:
     operator vec4() const { AssertType(TYPE_VEC4); return vec4_value; }
     
     operator quat() const { AssertType(TYPE_QUAT); return quat_value; }
-    
-    
     
     inline bool IsBool() const { return type == TYPE_BOOL; }
     inline bool IsInt() const { return type == TYPE_INT32 || type == TYPE_UINT32; }
@@ -182,7 +168,6 @@ public:
             case TYPE_QUAT:         return std::to_string(quat_value.x) + ";" + std::to_string(quat_value.y) + ";" + std::to_string(quat_value.z) + ";" + std::to_string(quat_value.w);
             default:                return "unknown";
         }
-            
     }
     
     inline Type GetType() const { return type; }

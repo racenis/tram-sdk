@@ -131,7 +131,7 @@ protected:
 
 struct SharedEntityData {
     name_t type;
-    uint64_t id = 0;
+    id_t id = 0;
     name_t name;
     uint32_t flags = 0;
     vec3 position = {0.0f, 0.0f, 0.0f};

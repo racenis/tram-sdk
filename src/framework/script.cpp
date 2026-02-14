@@ -95,7 +95,7 @@ void Init() {
     });
     
     SetFunction("__impl_core_get_tick_time", {}, [](valuearray_t) -> value_t {
-        return GetTickTime();
+        return (float)GetTickTime();
     });
     
     SetFunction("__impl_core_get_delta_time", {}, [](valuearray_t) -> value_t {
