@@ -4,6 +4,7 @@
 #define TRAM_SDK_FRAMEWORK_VALUE_H
 
 #include <cassert>
+#include <cstring>
 
 #include <framework/type.h>
 #include <framework/uid.h>
@@ -39,7 +40,7 @@ public:
             case TYPE_NAME:
                 if (other.GetType() != TYPE_NAME) return false; else return name_value == other.name_value;
             case TYPE_STRING:
-                return false; // TODO: fix this
+                if (other.IsString()) return strcmp(string_value, other.string_value) == 0; else if (other.IsName()) return string_value == other.name_value; else return false;
             case TYPE_VEC2:
                 if (other.GetType() != TYPE_VEC2) return false; else return vec2_value == other.vec2_value;
             case TYPE_VEC3:
@@ -78,7 +79,22 @@ public:
 
     Value(float value) : float_value(value) { type = TYPE_FLOAT32; }
     
-    operator bool() const { AssertType(TYPE_BOOL); return bool_value; }
+    operator bool() const {
+        switch (type) {
+            case TYPE_UNDEFINED:    return false;
+            case TYPE_BOOL:         return bool_value;
+            case TYPE_INT32:        return int32_value;
+            case TYPE_UINT32:       return uint32_value;
+            case TYPE_FLOAT32:      return float_value != 0.0f;
+            case TYPE_NAME:         return name_value;
+            case TYPE_STRING:       return string_value;
+            case TYPE_VEC2:         return vec2_value != vec2(0.0f, 0.0f);
+            case TYPE_VEC3:         return vec3_value != vec3(0.0f, 0.0f, 0.0f);
+            case TYPE_VEC4:         return vec4_value != vec4(0.0f, 0.0f, 0.0f, 0.0f);
+            case TYPE_QUAT:         return quat_value != quat(1.0f, 0.0f, 0.0f, 0.0f);
+            default:                return false;
+        }
+    }
     
     operator name_t() const {
         if (type == TYPE_STRING) {
@@ -111,8 +127,6 @@ public:
     operator double() const { return (float)*this; }
     
     operator int32_t() const { AssertType(TYPE_INT32); return int32_value; }
-
-    //operator uint16_t() const { if (type != TYPE_UINT16) {__asm__ volatile("int $0x03");} /*assert(type == TYPE_UINT16);*/ return uint16_value; }
     operator uint32_t() const { AssertType(TYPE_UINT32); return uint32_value; }
     
     operator float() const { AssertType(TYPE_FLOAT32); return float_value; } 
