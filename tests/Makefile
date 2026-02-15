@@ -7,7 +7,7 @@ libraries = -L../libraries/binaries/win64/ $\
 .PHONY: compile test test_all clean
 
 # compile all of the tests
-compile: core uid event value file aabb_tree hashmap octree pool queue stack stackpool
+compile: core uid event value file settings aabb_tree hashmap octree pool queue stack stackpool
 
 # run all of the tests
 test:
@@ -16,6 +16,7 @@ test:
 	event
 	value
 	file
+	settings
 	
 	aabb_tree
 	hashmap
@@ -32,6 +33,7 @@ test_all:
 	-event
 	-value
 	-file
+	-settings
 	
 	-aabb_tree
 	-hashmap
@@ -47,6 +49,7 @@ clean:
 	del event.exe
 	del value.exe
 	del file.exe
+	del settings.exe
 	
 	del aabb_tree.exe
 	del hashmap.exe
@@ -68,6 +71,8 @@ value:
 	$(compiler) value.cpp -o value $(libraries)
 file:
 	$(compiler) file.cpp -o file $(libraries)
+settings:
+	$(compiler) settings.cpp -o settings $(libraries)
 	
 aabb_tree:
 	$(compiler) aabb_tree.cpp -o aabb_tree $(libraries)
