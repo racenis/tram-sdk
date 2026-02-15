@@ -65,7 +65,11 @@ struct _test_case {
         
         printf("Test %s %s ", fullname, abbrv);
         
-        tram::Platform::SwitchForeground(p == t ? tram::Platform::TerminalColor::GREEN : tram::Platform::TerminalColor::LIGHT_RED);
+        auto test_color = tram::Platform::TerminalColor::GREEN;
+        if (p != t) test_color = tram::Platform::TerminalColor::LIGHT_RED;
+        if (t == 0) test_color = tram::Platform::TerminalColor::LIGHT_YELLOW;
+        
+        tram::Platform::SwitchForeground(test_color);
         printf("(%i/%i)", p, t);
         
         tram::Platform::SwitchForeground(tram::Platform::TerminalColor::DEFAULT);
