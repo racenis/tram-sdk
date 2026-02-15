@@ -40,7 +40,7 @@ std::vector<name_t> GetSettings(uint32_t filter);
 template<typename T>
 struct Property {
     Property(std::initializer_list<value_t> values) {
-        value = values.begin()[0];
+        value = (T)values.begin()[0];
         
         const char* name = values.begin()[1];
         uint32_t flags = values.begin()[2];
@@ -51,11 +51,6 @@ struct Property {
     Property(const T& value) {
         this->value = value;
     }
-    
-    /*T& operator=(const Setting<T>& other) {
-        this->value = other;
-        return *this;
-    }*/
     
     operator T() {
         return value;
