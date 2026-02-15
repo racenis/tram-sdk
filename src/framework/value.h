@@ -175,6 +175,11 @@ protected:
     Type type;
     
     void AssertType(Type type) const {
+        
+        // idk if this will cause problems in the future, but let's just allow it for now
+        if (this->type == TYPE_INT32 && type == TYPE_UINT32) return;
+        if (this->type == TYPE_UINT32 && type == TYPE_INT32) return;
+        
         if (this->type != type) {
             Log(Severity::CRITICAL_ERROR, System::CORE, "Value of type {} used in a {} context", TypeToString(this->type), TypeToString(type));
         }
