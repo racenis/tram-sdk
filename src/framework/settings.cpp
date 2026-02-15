@@ -137,10 +137,10 @@ void Register(uint32_t& value, const char* name, uint32_t flags) {
 
 
 
-Value Get(name_t name) {
+value_t Get(name_t name) {
     auto setting = lookup_setting(name);
     
-    if (!setting) return Value();
+    if (!setting) return value_t();
     
     switch (setting->type) {
         case TYPE_BOOL:
@@ -161,7 +161,7 @@ Value Get(name_t name) {
     }
 }
 
-void Set(name_t name, Value value) {
+void Set(name_t name, value_t value) {
     auto setting = all_settings.Find(name);
     
     if (!setting) {

@@ -25,8 +25,8 @@ void Register(float& value, const char* name, uint32_t flags);
 void Register(int32_t& value, const char* name, uint32_t flags);
 void Register(uint32_t& value, const char* name, uint32_t flags);
 
-Value Get(name_t name);
-void Set(name_t name, Value value);
+value_t Get(name_t name);
+void Set(name_t name, value_t value);
 
 void Parse(const char** argv, int argc);
 
