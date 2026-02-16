@@ -71,6 +71,7 @@ namespace implementation {
 }
 
 void SetSystemLoggingSeverity(System::system_t system, Severity min_severity);
+void SetFileLogging(bool enabled);
 
 void SetDisplayLogCallback(void(int, const char*));
 void SetConsoleLogCallback(void(int, const char*));

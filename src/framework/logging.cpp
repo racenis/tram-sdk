@@ -5,6 +5,7 @@
 #include <platform/terminal.h>
 #include <platform/other.h>
 #include <cstring>
+#include <ctime>
 #include <charconv>
 #include <iostream>
 #include <vector>
@@ -20,6 +21,7 @@
 namespace tram {
 
 static std::vector<Severity> severities;
+static FILE* log_file = nullptr;
 
 /// Sets the logging severity filter.
 /// @param system       System for which the filter will apply.
@@ -31,6 +33,33 @@ void SetSystemLoggingSeverity(System::system_t system, Severity min_severity) {
     }
     
     severities[system] = min_severity;
+}
+
+/// Sets file logging.
+void SetFileLogging(bool enabled) {
+    if (!enabled) {
+        if (!log_file) return;
+        
+        fclose(log_file);
+        log_file = nullptr;
+        
+        return;
+    }
+    
+    std::time_t epoch_time;
+    std::time(&epoch_time);
+    std::tm date_time = *std::localtime(&epoch_time);
+    
+    char time_str[100];
+    std::strftime(time_str, 100, "--%Y-%b-%d--%H-%M-%S", &date_time);
+    
+    char file_name[200];
+    strcpy(file_name, "application-log");
+    strcat(file_name, time_str);
+    strcat(file_name, ".txt");
+    
+    log_file = fopen(file_name, "w");
+    setvbuf(log_file, NULL, _IOFBF, 8192);
 }
 
 static void(*display_log_callback)(int, const char*) = nullptr;
@@ -123,6 +152,16 @@ void flush_console(Severity severity, System::system_t system) {
     }
     
     std::cout << std::endl;
+    
+    if (log_file) {
+        if (system_text) {
+            fprintf(log_file, "%s [%s] %s\n", severity_text, system_text, buffer);
+        } else {
+            fprintf(log_file, "%s\n", buffer);
+        }
+        
+    }
+    
     
     // some people might say "loggers shouldn't act as asserts" but they are wrong!
     // consider this:
