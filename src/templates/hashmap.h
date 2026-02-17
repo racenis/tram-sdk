@@ -234,7 +234,39 @@ protected:
         uint32_t flags = 0;
         T value;
     };
+    
+public:
+    struct iterator {
+        iterator(Hashmap<T>::Record* ptr, Hashmap<T>* map) : ptr(ptr), map(map) {
+            if (ptr->flags & FLAG_RECORD) return;
+            (*this)++;
+        }
+        
+        T& operator*() const { return ptr->value; }
+        T* operator->() { return &ptr->value; }
 
+        iterator& operator++() {
+            while (++ptr < map->last) {
+                if (ptr->flags & FLAG_RECORD) return *this;
+            }
+            
+            ptr = map->last;
+            return *this;
+        }  
+
+        iterator operator++(int) { iterator tmp = *this; ++(*this); return tmp; }
+
+        friend bool operator== (const iterator& a, const iterator& b) { return a.ptr == b.ptr; };
+        friend bool operator!= (const iterator& a, const iterator& b) { return a.ptr != b.ptr; };  
+        
+        Hashmap<T>::Record* ptr;
+        Hashmap<T>* map;
+    };
+    
+    iterator begin() { return iterator(first, this); }
+    iterator end() { return iterator(last, this); }
+    
+protected:
     enum {
         FLAG_RECORD = 1,
         FLAG_DELETED = 2
