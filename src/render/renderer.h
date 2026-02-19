@@ -20,7 +20,9 @@ enum renderflags: uint32_t {
     FLAG_DRAW_LINES = 128,          //< Object is rendered as lines. Otherwise rendered as triangles.
     FLAG_DISABLE_LIGHTING = 256,    //< Object is rendered without lighting.
     FLAG_NO_DEBUG = 512,            //< Object does not get debugged.
-    FLAG_USE_AABB = 1024            //< Object has an AABB that can be used for filtering.
+    FLAG_USE_AABB = 1024,           //< Object has an AABB that can be used for filtering.
+    FLAG_LINE_FILL_POLY = 2048,     //< Triangle meshes are rendered as lines
+    FLAG_POINT_FILL_POLY = 4096,    //< Triangle meshes are rendered as points
 };
 
 /// Texture color mode.

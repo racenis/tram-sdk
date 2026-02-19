@@ -238,6 +238,22 @@ void RenderComponent::SetTextureOffset(name_t material, vec4 offset) {
     }
 }
 
+void RenderComponent::SetLineDrawingMode(bool enabled) {
+    if (enabled) {
+        render_flags |= FLAG_LINE_FILL_POLY;
+    } else {
+        render_flags &= ~FLAG_LINE_FILL_POLY;
+    }
+    
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::SetFlags(entry, render_flags);
+            }
+        }
+    }
+}
+
 /// Sets the scale of the model.
 void RenderComponent::SetColor(vec3 color) {
     this->color = color;

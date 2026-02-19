@@ -7,6 +7,7 @@
 #include <components/physics.h>
 
 #include <framework/serialization.h>
+#include <framework/settings.h>
 
 /**
  * @class tram::StaticWorldObject entities/staticworldobject.h <entities/staticworldobject.h>
@@ -18,6 +19,8 @@
 
 namespace tram {
 
+static Settings::Property<bool> STATIC_WOBJ_WIREFRAME = {true, "staticwobj-wireframe", Settings::NONE};
+    
 using namespace tram::Physics;
 
 enum {
@@ -50,6 +53,8 @@ void StaticWorldObject::UpdateParameters() {
     if (IsLoaded()) {
         rendercomponent->SetLocation(location);
         rendercomponent->SetRotation(rotation);
+        
+        rendercomponent->SetLineDrawingMode(STATIC_WOBJ_WIREFRAME);
     }
 }
 

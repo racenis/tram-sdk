@@ -36,6 +36,8 @@ public:
     void SetLayer(uint32_t layer);
     void SetTextureOffset(name_t material, vec4 offset);
     
+    void SetLineDrawingMode(bool enabled);
+    
     void SetDirectionaLight(bool enabled);
     void SetRenderDebug(bool enabled);
 
