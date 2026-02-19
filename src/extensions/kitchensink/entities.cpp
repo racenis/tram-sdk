@@ -323,6 +323,7 @@ void Button::MessageHandler(Message& msg) {
     // play locked sound
     if (msg.type == Message::ACTIVATE_ONCE && (flags & BUTTON_FLAG_LOCKED)) {
         PlaySound(SOUND_LOCKED)
+        FireSignal(Signal::LOCKED_USE, progress);
     }
     
     // button is being pressed and it is momentary
