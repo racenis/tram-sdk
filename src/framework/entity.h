@@ -9,6 +9,8 @@
 #include <framework/value.h>
 #include <framework/signal.h>
 
+#include <vector>
+
 namespace tram {
 
 class WorldCell;
@@ -88,6 +90,8 @@ public:
     static void RegisterType(name_t name, entity_make, entity_clear, std::initializer_list<FieldInfo> fields);
     
     inline SignalTable* GetSignalTable() { return signals; }
+    
+    std::vector<Entity*> GetAllOfType(name_t type);
     
     static Entity* Make(name_t type, File* file);
     static Entity* Make(name_t type, const SharedEntityData&, const ValueArray&);

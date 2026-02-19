@@ -413,6 +413,16 @@ void Entity::Yeet() {
     Unregister();
 }
 
+/// Finds all entities of a given type.
+std::vector<Entity*> GetAllOfType(name_t type) {
+    std::vector<Entity*> ents;
+    for (Entity* ent : entity_id_list) {
+        if (ent->GetType() != type) continue;
+        ents.push_back(ent);
+    }
+    return ents;
+}
+
 /// Loads an Entity from a File.
 Entity* Entity::Make(name_t type, File* file) {
     auto record = registered_entity_types.Find(type);
