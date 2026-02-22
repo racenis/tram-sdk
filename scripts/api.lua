@@ -1555,6 +1555,10 @@ tram.render._metatable_rendercomponent = {
 			error("RenderComponent SetTextureOffset not implemented!")
 		end,
 		
+		SetLineDrawingMode = function(self, enabled)
+			return __impl_components_render_set_line_drawing_mode(self.index, enabled)
+		end,
+		
 		SetDirectionalLight = function(self, enabled)
 			return __impl_components_render_set_directional_light(self.index, enabled)
 		end,

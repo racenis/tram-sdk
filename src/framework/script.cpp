@@ -950,6 +950,11 @@ void Init() {
         return true;
     });
     
+    SetFunction("__impl_components_render_set_line_drawing_mode", {TYPE_UINT32, TYPE_BOOL}, [](valuearray_t array) -> value_t {
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetLineDrawingMode(array[1]);
+        return true;
+    });
+    
     SetFunction("__impl_components_render_set_directional_light", {TYPE_UINT32, TYPE_BOOL}, [](valuearray_t array) -> value_t {
         PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetDirectionaLight(array[1]);
         return true;
