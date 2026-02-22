@@ -27,7 +27,7 @@ struct SettingInfo {
     };
     Type type;
     
-    name_t name;
+    const char* name;
     uint32_t flags;
 };
 
@@ -36,12 +36,22 @@ static size_t last_setting = 0;
 
 static Hashmap<SettingInfo*> all_settings("settings map", SETTING_LIMIT);
 
-static SettingInfo* lookup_setting(name_t name) {
-    auto setting = all_settings.Find(name);
+// okay so if you enter anything into the hashmap before the it's constructed?
+// instant crash. the problem is that the hashmap is touched by properties that
+// are like static? and depending on how the program is linked, they may decide
+// to initialize before the hashmap has been initialized. and then it crashes.
+// but if the parse command is called, that means that the main function has
+// started to run and the hashmap has been totally initialized, so we can start
+// using it. so that's why we have this variable here. it's so that we don't get
+// UB and NO it's NOT the fun kind of UB.
+static bool parsed = false;
+
+static SettingInfo* lookup_setting(const char* name) {
+    auto setting = parsed ? all_settings.Find(name) : nullptr;
     
     if (!setting) {
         for (size_t i = 0; i < last_setting; i++) {
-            if (settings[i].name != name) continue;
+            if (strcmp(settings[i].name, name)) continue;
             
             setting = &settings[i];
             
@@ -162,17 +172,7 @@ value_t Get(name_t name) {
 }
 
 void Set(name_t name, value_t value) {
-    auto setting = all_settings.Find(name);
-    
-    if (!setting) {
-        for (size_t i = 0; i < last_setting; i++) {
-            if (settings[i].name != name) continue;
-            
-            setting = &settings[i];
-            
-            all_settings.Insert(name, setting);
-        }
-    }
+    auto setting = lookup_setting(name);
     
     if (setting) {
         if (value.GetType() != setting->type) {
@@ -193,6 +193,8 @@ void Set(name_t name, value_t value) {
 
 void Parse(const char** argv, int argc) {
     Log("Parsing settings from CLI");
+    
+    parsed = true;
     
     for (int i = 1; i < argc; i++) {
         const char* name = argv[i];
