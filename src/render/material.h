@@ -55,7 +55,7 @@ public:
     void SetSpecular(float weight, float exponent,  float transparency) { specular_weight = weight; specular_exponent = exponent; specular_transparency = transparency; }
     void SetReflectivity(float reflectivity) { this->reflectivity = reflectivity; }
     void SetTextureType(TextureType texture_type) { this->texture_type = texture_type; }
-    void SetSource(Material* source) { this->source = source; }
+    void SetSource(Material* source);
     
     void MakePattern(vec3 color1, vec3 color2);
     

@@ -14,6 +14,7 @@
 #include <framework/stats.h>
 
 #include <framework/file.h>
+#include <framework/logging.h>
 
 #include <render/material.h>
 #include <render/api.h>
@@ -225,6 +226,23 @@ void Material::MakePattern(vec3 color1, vec3 color2) {
     texture_data = MakeNewErrorTexture(color1, color2);
 
     status = LOADED;
+}
+
+void Material::SetSource(Material* source) {
+    this->source = source;
+    
+    while (source) {
+        if (this != source) {
+            source = source->source;
+            continue;
+        }
+        
+        this->source = nullptr;
+        this->texture_type = TEXTURE_NONE;
+        
+        Log(Severity::ERROR, System::RENDER, "Detected cycle when assigning source material to {}!", this->name);
+        return;
+    }
 }
 
 void Material::LoadFromDisk() {
