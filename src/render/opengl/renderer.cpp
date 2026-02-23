@@ -256,8 +256,10 @@ static void Draw(GLDrawListEntry* robj) {
         glBindTexture(GL_TEXTURE_2D, robj->environmentmap);
     }
     
+#ifndef __EMSCRIPTEN__
     if (robj->flags & FLAG_LINE_FILL_POLY) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (robj->flags & FLAG_POINT_FILL_POLY) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+#endif
 
     if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
     if (robj->flags & FLAG_DRAW_INDEXED) {
@@ -269,7 +271,9 @@ static void Draw(GLDrawListEntry* robj) {
     }
     if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);
     
+#ifndef __EMSCRIPTEN__
     if (robj->flags & (FLAG_LINE_FILL_POLY | FLAG_POINT_FILL_POLY)) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
 }
 
 void RenderFrame() {
