@@ -29,7 +29,7 @@ public:
     virtual void LoadFromDisk() = 0;
     virtual void LoadFromMemory() = 0;
     
-    void Load() { LoadFromDisk(); LoadFromMemory(); }
+    void Load() { if (status == UNLOADED) LoadFromDisk(); if (status == LOADED) LoadFromMemory(); }
     
     virtual void Unload() = 0;
 protected:
