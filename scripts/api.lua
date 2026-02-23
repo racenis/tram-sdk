@@ -197,9 +197,18 @@ tram.math._metatable_vec3 = {
 
 function tram.math.vec3(x, y, z)
 	vector = {}
-	vector.x = x
-	vector.y = y
-	vector.z = z
+
+	if getmetatable(x) == tram.math._metatable_vec3 then
+		vector.x = x.x
+		vector.y = x.y
+		vector.z = x.z
+	elseif x ~= nil and y ~= nil and z ~= nil then
+		vector.x = x
+		vector.y = y
+		vector.z = z
+	else
+		error("Something is wrong with vec3 constructor parameters!")
+	end
 	
 	setmetatable(vector, tram.math._metatable_vec3)
 	
@@ -283,7 +292,14 @@ function tram.math.quat(x, y, z, w)
 		vector.x = sr * cp * cy - cr * sp * sy;
 		vector.y = cr * sp * cy + sr * cp * sy;
 		vector.z = cr * cp * sy - sr * sp * cy;
-		
+	
+	-- copy constructor
+	elseif getmetatable(x) == tram.math._metatable_quat then
+		vector.x = x.x
+		vector.y = x.y
+		vector.z = x.z
+		vector.w = x.w
+
 	-- normal parametric constructor
 	elseif x ~= nil and y ~= nil and z ~= nil and w ~= nil then
 		vector.x = x
