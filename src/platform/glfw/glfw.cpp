@@ -36,6 +36,8 @@ static KeyboardKey GLFWKeyToKeyboardKey(int keycode);
 
 static std::thread::id render_context_thread = std::this_thread::get_id();
 
+static Window::callbacks_t callbacks;
+
 void Window::Init() {
     glfwInit();
 
@@ -81,30 +83,30 @@ void Window::Init() {
 #endif
 
     glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height) {
-        UI::ScreenResize(width, height);
+        callbacks.screen_resize(width, height);
     });
 
     glfwSetWindowCloseCallback(WINDOW, [](GLFWwindow* window) {
-        UI::ScreenClose();
+        callbacks.screen_close();
     });
 
     glfwSetKeyCallback(WINDOW, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
-            KeyPress(GLFWKeyToKeyboardKey(key));
+            callbacks.key_press(GLFWKeyToKeyboardKey(key));
         }
         
         if (action == GLFW_RELEASE) {
-            KeyRelease(GLFWKeyToKeyboardKey(key));
+            callbacks.key_release(GLFWKeyToKeyboardKey(key));
         }
         
         // GLFW doesn't forward backspace to CharCallback, so instead we will
         // handle this here.
         if (action == GLFW_PRESS || action == GLFW_REPEAT) switch (key) {
             case GLFW_KEY_BACKSPACE:
-                KeyCode(8);
+                callbacks.key_code(8);
                 break;
             case GLFW_KEY_ENTER:
-                KeyCode(10);
+                callbacks.key_code(10);
                 break;
             default:
                 break;
@@ -112,25 +114,25 @@ void Window::Init() {
     });
     
     glfwSetCursorPosCallback(WINDOW, [](GLFWwindow* window, double xpos, double ypos) {
-        KeyMouse(xpos, ypos);
+        callbacks.key_mouse(xpos, ypos);
     });
     
     glfwSetMouseButtonCallback(WINDOW, [](GLFWwindow* window, int button, int action, int mods) {
         if (action == GLFW_PRESS) {
-            KeyPress(GLFWKeyToKeyboardKey(button));
+            callbacks.key_press(GLFWKeyToKeyboardKey(button));
         }
         
         if (action == GLFW_RELEASE) {
-            KeyRelease(GLFWKeyToKeyboardKey(button));
+            callbacks.key_release(GLFWKeyToKeyboardKey(button));
         }
     });
     
     glfwSetScrollCallback(WINDOW, [](GLFWwindow* window, double xoffset, double yoffset) {
-        KeyScroll(yoffset);
+        callbacks.key_scroll(yoffset);
     });
     
     glfwSetCharCallback(WINDOW, [](GLFWwindow* window, unsigned int codepoint) {
-        KeyCode(codepoint);
+        callbacks.key_code(codepoint);
     });
 
 
@@ -256,6 +258,9 @@ bool Window::IsRenderContextThread() {
     return render_context_thread == std::this_thread::get_id();
 }
 
+void Window::SetCallbacks(callbacks_t window_callbacks) {
+    callbacks = window_callbacks;
+}
 
 void Input::Init() {
     

@@ -3,6 +3,8 @@
 #ifndef TRAM_SDK_PLATFORM_API_H
 #define TRAM_SDK_PLATFORM_API_H
 
+#include <framework/ui.h>
+
 #include <cstddef>
 
 /**
@@ -53,6 +55,18 @@ bool IsRawInput();
 void SetRawInput(bool);
 
 bool IsRenderContextThread();
+
+struct callbacks_t {
+    void (*key_press)(UI::KeyboardKey key) = nullptr;
+    void (*key_release)(UI::KeyboardKey key) = nullptr;
+    void (*key_code)(uint16_t code) = nullptr;
+    void (*key_mouse)(float x_value, float y_value) = nullptr;
+    void (*key_scroll)(float value) = nullptr;
+    void (*screen_resize)(int w, int h) = nullptr;
+    void (*screen_close)() = nullptr;
+};
+
+void SetCallbacks(callbacks_t callbacks);
 
 }
 

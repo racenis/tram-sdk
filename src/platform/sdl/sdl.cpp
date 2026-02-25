@@ -45,6 +45,8 @@ static int relpos_x = screen_width/2;
 static int relpos_y = screen_height/2;
 static bool cursor_enabled = false;
 
+static Window::callbacks_t callbacks;
+
 static std::thread::id render_context_thread = std::this_thread::get_id();
 
 #ifdef _WIN32
@@ -197,7 +199,7 @@ void Window::Init() {
         //Render::API::SetScreenSize(ww, hh);
         Render::SetScreenSize(ww, hh);
 
-        UI::ScreenResize(screen_width/screen_scale, screen_height/screen_scale);
+        callbacks.screen_resize(screen_width/screen_scale, screen_height/screen_scale);
 
         SoftwareRenderContextUpdate();
     }
@@ -246,7 +248,7 @@ void Window::SetSize(int w, int h) {
     
     int ww = w/screen_scale;
     int hh = h/screen_scale;
-    UI::ScreenResize(ww, hh);
+    callbacks.screen_resize(ww, hh);
 }
 
 void Window::SetScale(int s) {
@@ -321,6 +323,10 @@ bool Window::IsRenderContextThread() {
     return render_context_thread == std::this_thread::get_id();
 }
 
+void Window::SetCallbacks(callbacks_t window_callbacks) {
+    callbacks = window_callbacks;
+}
+
 static KeyboardKey SDLKeyToKeyboardKey(SDL_Keysym keycode);
 static KeyboardKey SDLMouseKeyToKeyboardKey(uint8_t button);
 
@@ -346,39 +352,39 @@ void Input::Update() {
 
                         SoftwareRenderContextUpdate();
 
-                        UI::ScreenResize(screen_width/screen_scale, screen_height/screen_scale);
+                        callbacks.screen_resize(screen_width/screen_scale, screen_height/screen_scale);
                         } break;
                     default:
                         break;
                 }
                 break;
             case SDL_KEYDOWN:
-                KeyPress(SDLKeyToKeyboardKey(event.key.keysym));
+                callbacks.key_press(SDLKeyToKeyboardKey(event.key.keysym));
                 break;
             case SDL_KEYUP:
-                KeyRelease(SDLKeyToKeyboardKey(event.key.keysym));
+                callbacks.key_release(SDLKeyToKeyboardKey(event.key.keysym));
                 break;
             case SDL_MOUSEMOTION:
                 if (cursor_enabled) {
-                    KeyMouse((float)event.motion.x/screen_scale, (float)event.motion.y/screen_scale);
+                    callbacks.key_mouse((float)event.motion.x/screen_scale, (float)event.motion.y/screen_scale);
                 } else {
                     relpos_x += event.motion.xrel * 2;
                     relpos_y += event.motion.yrel * 2;
                     
-                    KeyMouse((float)relpos_x/screen_scale, (float)relpos_y/screen_scale);
+                    callbacks.key_mouse((float)relpos_x/screen_scale, (float)relpos_y/screen_scale);
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                KeyPress(SDLMouseKeyToKeyboardKey(event.button.button));
+                callbacks.key_press(SDLMouseKeyToKeyboardKey(event.button.button));
                 break;
             case SDL_MOUSEBUTTONUP:
-                KeyRelease(SDLMouseKeyToKeyboardKey(event.button.button));
+                callbacks.key_release(SDLMouseKeyToKeyboardKey(event.button.button));
                 break;
             case SDL_MOUSEWHEEL:
-                KeyScroll(event.wheel.y);
+                callbacks.key_scroll(event.wheel.y);
                 break;
             case SDL_QUIT:
-                UI::ScreenClose();
+                callbacks.screen_close();
                 break;
             default:
                 break;

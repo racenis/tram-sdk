@@ -116,11 +116,96 @@ void BindKeyboardKey(KeyboardKey key, void (*action)(KeyboardKey)) {
     key_action_bindings[key] = {.special_option2 = action};
 }
 
+static bool GenerateEvent() {
+    switch (input_state) {
+        case STATE_DEFAULT:
+        case STATE_CURSOR:
+            return true;
+        case STATE_NO_INPUT:
+        case STATE_FLYING:
+        case STATE_MENU_OPEN:
+            return false;  
+        default:
+            return false;
+    }
+}
+
+static void key_press_callback(KeyboardKey key) {
+    const auto& binding = key_action_bindings[key];
+
+    if (binding.action && GenerateEvent()) {            
+        Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
+    } else if (binding.special_option) {
+        binding.special_option();
+    } else if (binding.special_option2) {
+        binding.special_option2(key);
+    }
+    
+    keyboard_keys_values[key] = true;
+}
+
+static void key_release_callback(KeyboardKey key) {
+    const auto& binding = key_action_bindings[key];
+    
+    if (binding.action && input_state == STATE_DEFAULT) {            
+        Event::Post({Event::KEYUP, binding.action, 0, nullptr});
+    }
+    
+    keyboard_keys_values[key] = false;
+}
+
+static void key_code_callback(uint16_t code) {
+    Event::Post({Event::KEYCHAR, code, 0, nullptr});
+}
+
+static void key_mouse_callback(float xpos, float ypos) {
+    static float last_xpos = xpos;
+    static float last_ypos = ypos;
+    keyboard_axis_deltas[KEY_MOUSE_X] = xpos - last_xpos;
+    keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - last_ypos;
+    keyboard_axis_values[KEY_MOUSE_X] = xpos;
+    keyboard_axis_values[KEY_MOUSE_Y] = ypos;
+    last_xpos = xpos;
+    last_ypos = ypos;
+
+    if (input_state == STATE_DEFAULT) {
+        Event::Post({Event::CURSORPOS, 0xFFFF, 0, nullptr});
+    }
+}
+
+static void key_scroll_callback(float value) {
+    keyboard_axis_values[KEY_MOUSE_SCROLL] = value;
+}
+
+static void screen_resize_callback(int width, int height) {
+    screen_width = width;
+    screen_height = height;
+    Render::SetScreenSize(width, height);
+}
+
+static void screen_close_callback() {
+    exit = true;
+}
+
+bool ShouldExit() {
+    return exit;
+}
+
 /// Initializes the UI system.
 /// This will open the window.
 void Init() {
     System::SetState(System::UI, System::INIT);
     System::AssertDependency(System::CORE);
+    
+    Platform::Window::SetCallbacks({
+        .key_press = key_press_callback,
+        .key_release = key_release_callback,
+        .key_code = key_code_callback,
+        .key_mouse = key_mouse_callback,
+        .key_scroll = key_scroll_callback,
+        .screen_resize = screen_resize_callback,
+        .screen_close = screen_close_callback
+    });
     
     Platform::Window::Init();
     
@@ -208,7 +293,6 @@ float GetScreenHeight() {
 
 
 void SetWindowTitle(const char* title) {
-    
     Platform::Window::SetTitle(title);
 }
 
@@ -251,21 +335,6 @@ void SetInputState(InputState state) {
     }
 }
 
-
-static bool GenerateEvent() {
-    switch (input_state) {
-        case STATE_DEFAULT:
-        case STATE_CURSOR:
-            return true;
-        case STATE_NO_INPUT:
-        case STATE_FLYING:
-        case STATE_MENU_OPEN:
-            return false;  
-        default:
-            return false;
-    }
-}
-
 InputState GetInputState() {
     return input_state;
 }
@@ -294,67 +363,6 @@ float GetAxisSensitivity(KeyboardAxis key) {
 
 void SetAxisSensitivity(KeyboardAxis key, float value) {
     keyboard_axis_sensitivity[key] = value;
-}
-
-void KeyPress(KeyboardKey key) {
-    const auto& binding = key_action_bindings[key];
-
-    if (binding.action && GenerateEvent()) {            
-        Event::Post({Event::KEYDOWN, binding.action, 0, nullptr});
-    } else if (binding.special_option) {
-        binding.special_option();
-    } else if (binding.special_option2) {
-        binding.special_option2(key);
-    }
-    
-    keyboard_keys_values[key] = true;
-}
-
-void KeyRelease(KeyboardKey key) {
-    const auto& binding = key_action_bindings[key];
-    
-    if (binding.action && input_state == STATE_DEFAULT) {            
-        Event::Post({Event::KEYUP, binding.action, 0, nullptr});
-    }
-    
-    keyboard_keys_values[key] = false;
-}
-
-void KeyCode(uint16_t code) {
-    Event::Post({Event::KEYCHAR, code, 0, nullptr});
-}
-
-void KeyMouse(float xpos, float ypos) {
-    static float last_xpos = xpos;
-    static float last_ypos = ypos;
-    keyboard_axis_deltas[KEY_MOUSE_X] = xpos - last_xpos;
-    keyboard_axis_deltas[KEY_MOUSE_Y] = ypos - last_ypos;
-    keyboard_axis_values[KEY_MOUSE_X] = xpos;
-    keyboard_axis_values[KEY_MOUSE_Y] = ypos;
-    last_xpos = xpos;
-    last_ypos = ypos;
-
-    if (input_state == STATE_DEFAULT) {
-        Event::Post({Event::CURSORPOS, 0xFFFF, 0, nullptr});
-    }
-}
-
-void KeyScroll(float value) {
-    keyboard_axis_values[KEY_MOUSE_SCROLL] = value;
-}
-
-void ScreenResize(int width, int height) {
-    screen_width = width;
-    screen_height = height;
-    Render::SetScreenSize(width, height);
-}
-
-void ScreenClose() {
-    exit = true;
-}
-
-bool ShouldExit() {
-    return exit;
 }
 
 static Hashmap<keyboardaction_t> name_t_to_keyboardaction_t("name_t_to_keyboardaction_t", KEYBOARDACTION_LIMIT);
