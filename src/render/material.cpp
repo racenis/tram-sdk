@@ -246,6 +246,55 @@ void Material::SetSource(Material* source) {
     }
 }
 
+static ColorMode ChannelsToColorMode(int channels) {
+    switch (channels) {
+        case 0: assert(false);
+        case 1: return COLORMODE_R;
+        case 2: return COLORMODE_RG;
+        case 3: return COLORMODE_RGB;
+        case 4: return COLORMODE_RGBA;
+        default: assert(false);
+    }
+    abort();
+}
+
+void Material::SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, uint16_t height) {
+    if (status == READY) {
+        this->width = width;
+        this->height = height;
+        this->channels = channels;
+        
+        API::SetTextureImage(texture, ChannelsToColorMode(channels), width, height, data);
+        
+        return;
+    }
+    
+    if (status == LOADED) {
+        delete[] this->texture_data;
+    }
+    
+    size_t buffer_size = width * height * channels;
+    
+    this->width = width;
+    this->height = height;
+    this->channels = channels;
+    this->texture_data = new uint8_t[buffer_size];
+    
+    mempcpy(this->texture_data, data, buffer_size);
+    
+    status = LOADED;
+}
+
+void Material::FlushToAPI() {
+    if (status != LOADED) return;
+    
+    API::SetMaterialColor(material, vec4(color, 1.0f));
+    API::SetMaterialSpecularWeight(material, specular_weight);
+    API::SetMaterialSpecularExponent(material, specular_exponent);
+    API::SetMaterialSpecularTransparency(material, specular_transparency);
+    API::SetMaterialReflectivity(material, reflectivity);
+}
+
 void Material::LoadFromDisk() {
     assert(status == UNLOADED);
 
@@ -328,6 +377,10 @@ void Material::LoadFromDisk() {
         
         loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, 3);
         
+        if (loadchannels != 3) {
+            std::cout << "Texture " << path << " should have 3 channels, but it has " << (int)loadchannels << "!" << std::endl;
+        }
+        
         if (loadtexture) {
             normal_map_width = loadwidth;
             normal_map_height = loadheight;
@@ -357,11 +410,7 @@ void Material::LoadFromMemory() {
     assert(status == LOADED);
 
     material = API::MakeMaterial();
-    API::SetMaterialColor(material, vec4(color, 1.0f));
-    API::SetMaterialSpecularWeight(material, specular_weight);
-    API::SetMaterialSpecularExponent(material, specular_exponent);
-    API::SetMaterialSpecularTransparency(material, specular_transparency);
-    API::SetMaterialReflectivity(material, reflectivity);
+    FlushToAPI();
 
     if (texture_type == TEXTURE_SOURCE) {
         texture = source->texture;
@@ -369,13 +418,8 @@ void Material::LoadFromMemory() {
         status = READY;
         return;
     }
-
-    // TODO: switch this out from checking 'type' and instead use 'channels'
-    if (type == MATERIAL_TEXTURE_ALPHA || type == MATERIAL_TEXTURE_BLEND || type == MATERIAL_MSDF || type == MATERIAL_GLYPH) {
-        texture = API::CreateTexture(COLORMODE_RGBA, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
-    } else {
-        texture = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
-    }
+    
+    texture = API::CreateTexture(ChannelsToColorMode(channels), filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, texture_data);
     
     if (texture_type == TEXTURE_SAME_NORMAL) {
         normal_map = API::CreateTexture(COLORMODE_RGB, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, normal_map_width, normal_map_height, normal_map_data);
@@ -407,6 +451,14 @@ void Material::LoadFromMemory() {
     
     status = READY;
     return;
+}
+
+void Material::Unload() {
+    assert(status == LOADED);
+    
+    if (texture.generic) API::YeetTexture(texture);
+    if (normal_map.generic) API::YeetTexture(normal_map);
+    if (material.generic) API::YeetMaterial(material);
 }
 
 }

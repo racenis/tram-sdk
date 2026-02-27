@@ -5,6 +5,7 @@
 
 #include <render/render.h>
 #include <render/renderer.h>
+#include <render/api.h>
 
 namespace tram::Render::API {
 

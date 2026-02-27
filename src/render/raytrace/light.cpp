@@ -10,7 +10,7 @@ light_t MakeLight() {
     return light_t {.rt = PoolProxy<RTLight>::New()};
 }
 
-void DeleteLight(light_t light) {
+void YeetLight(light_t light) {
     PoolProxy<RTLight>::Delete(light.rt);
 }
 

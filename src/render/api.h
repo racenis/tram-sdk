@@ -71,8 +71,9 @@ void UpdateVertexArray(vertexarray_t& vertex_buffer, size_t data_size, void* dat
 
 // texture functions
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);
-// TODO: add deletion function
-// TODO: add update functions (filter?)
+void SetTextureFilter(texturehandle_t texture, TextureFilter texture_filter);
+void SetTextureImage(texturehandle_t texture, ColorMode color_mode, uint32_t width, uint32_t height, void* data);
+void YeetTexture(texturehandle_t texture);
 
 // sprite functions
 spritearray_t CreateSpriteArray();
@@ -81,13 +82,13 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data);
 
 // light functions
 light_t MakeLight();
-void DeleteLight(light_t light);
+void YeetLight(light_t light);
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent);
 // TODO: decompose big function?
 
 // material functions
 material_t MakeMaterial();
-void DeleteMaterial(material_t material);
+void YeetMaterial(material_t material);
 void SetMaterialTexture(material_t material, texturehandle_t texture);
 void SetMaterialNormalMap(material_t material, texturehandle_t texture);
 void SetMaterialColor(material_t material, vec4 color);

@@ -14,7 +14,7 @@ material_t MakeMaterial() {
     return {PoolProxy<GLMaterial>::New()};
 }
 
-void DeleteMaterial(material_t material) {
+void YeetMaterial(material_t material) {
     PoolProxy<GLMaterial>::Delete(material.gl);
 }
 

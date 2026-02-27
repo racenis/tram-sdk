@@ -317,7 +317,7 @@ light_t MakeLight() {
     return light_t{ .d3d = light };
 }
 
-void DeleteLight(light_t light) {
+void YeetLight(light_t light) {
     D3DLight* light_ptr = light.d3d;
     uint32_t light_id = light_ptr - light_list.GetFirst();
     uint32_t leaf_id = light_tree_ids [light_id];

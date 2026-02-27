@@ -1611,7 +1611,7 @@ material_t MakeMaterial() {
     return material_t{.sw = material_list.AddNew()};
 }
 
-void DeleteMaterial(material_t material) {
+void YeetMaterial(material_t material) {
     material_list.Remove(material.sw);
 }
 
@@ -1643,7 +1643,7 @@ light_t MakeLight() {
     return light_t {.sw = light_list.AddNew()};
 }
 
-void DeleteLight(light_t light) {
+void YeetLight(light_t light) {
     light_list.Remove(light.sw);
 }
 

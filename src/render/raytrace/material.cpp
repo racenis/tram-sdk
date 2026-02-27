@@ -13,7 +13,7 @@ material_t MakeMaterial() {
     return material_t{.rt = material_list.AddNew()};
 }
 
-void DeleteMaterial(material_t material) {
+void YeetMaterial(material_t material) {
     material_list.Remove(material.rt);
 }
 

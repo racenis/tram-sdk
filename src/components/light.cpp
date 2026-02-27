@@ -38,7 +38,7 @@ void LightComponent::Init() {
 }
 
 LightComponent::~LightComponent() {
-    Render::API::DeleteLight(light);
+    Render::API::YeetLight(light);
     Render::LightTree::RemoveLight(light);
     
     light = {};

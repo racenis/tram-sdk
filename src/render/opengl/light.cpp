@@ -14,7 +14,7 @@ light_t MakeLight() {
     return {PoolProxy<GLLight>::New()};
 }
 
-void DeleteLight(light_t light) {
+void YeetLight(light_t light) {
     PoolProxy<GLLight>::Delete(light.gl);
 }
 

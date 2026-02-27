@@ -44,22 +44,23 @@ public:
     inline float GetSpecularTransparency() const { return specular_transparency; }
     inline float GetReflectivity() const { return reflectivity; }
 
-    // TODO: update the material in the API when these are called
-    void SetMaterialType(materialtype_t type) { this->type = type; }
-    void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; }
-    void SetMaterialProperty(MaterialProperty property) { this->property = property; }
-    void SetColor(color_t color) { this->color = color; }
-    void SetSpecular(float weight, float exponent,  float transparency) { specular_weight = weight; specular_exponent = exponent; specular_transparency = transparency; }
-    void SetReflectivity(float reflectivity) { this->reflectivity = reflectivity; }
-    void SetTextureType(TextureType texture_type) { this->texture_type = texture_type; }
+    inline void SetMaterialType(materialtype_t type) { this->type = type; FlushToAPI(); }
+    inline void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; FlushToAPI(); }
+    inline void SetMaterialProperty(MaterialProperty property) { this->property = property; FlushToAPI(); }
+    inline void SetColor(color_t color) { this->color = color; FlushToAPI(); }
+    inline void SetSpecular(float weight, float exponent,  float transparency) { specular_weight = weight; specular_exponent = exponent; specular_transparency = transparency; FlushToAPI(); }
+    inline void SetReflectivity(float reflectivity) { this->reflectivity = reflectivity; FlushToAPI(); }
+    inline void SetTextureType(TextureType texture_type) { this->texture_type = texture_type; FlushToAPI(); }
     void SetSource(Material* source);
+    void SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, uint16_t height);
     
+    // TODO: yeet this
     void MakePattern(vec3 color1, vec3 color2);
     
     void LoadFromDisk();
     void LoadFromMemory();
     
-    void Unload() {}
+    void Unload();
     
     static Material* Find(name_t name);
     static Material* Make(name_t name, materialtype_t type);
@@ -69,7 +70,9 @@ public:
 protected:
     Material(name_t name) : Resource(name) {}
     Material(name_t name, materialtype_t type);
-
+    
+    void FlushToAPI();
+    
     texturehandle_t texture = {};
     texturehandle_t normal_map = {};
     materialtype_t type = MATERIAL_TEXTURE;
