@@ -31,9 +31,6 @@ enum TextureType {
 
 class Material : public Resource {
 public:
-    Material(name_t name) : Resource(name) {}
-    Material(name_t name, materialtype_t type);
-    
     inline texturehandle_t GetTexture() const { return texture; }
     inline texturehandle_t GetNormalMap() const { return normal_map; }
     inline material_t GetMaterial() const { return material; }
@@ -68,8 +65,11 @@ public:
     static Material* Make(name_t name, materialtype_t type);
     
     static void LoadMaterialInfo(const char* filename);
-    
+
 protected:
+    Material(name_t name) : Resource(name) {}
+    Material(name_t name, materialtype_t type);
+
     texturehandle_t texture = {};
     texturehandle_t normal_map = {};
     materialtype_t type = MATERIAL_TEXTURE;

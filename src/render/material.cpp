@@ -65,7 +65,7 @@ void Material::LoadMaterialInfo(const char* filename) {
         std::cout << "Invalid material file type " << path << std::endl;
         abort();
     }
-
+    
     while (file.is_continue()) {
         materialtype_t mat_type;
         MaterialFilter mat_filter;
@@ -155,7 +155,8 @@ void Material::LoadMaterialInfo(const char* filename) {
         Material* material = material_list.Find(mat_name);
     
         if (!material) {
-            material = PoolProxy<Material>::New(mat_name);
+            material = PoolProxy<Material>::GetPool().allocate();
+            new(material) Material(mat_name);
             material_list.Insert(UID(mat_name), material);
         }
 
@@ -183,8 +184,8 @@ Material* Material::Make(name_t name, materialtype_t type) {
     Material* material = material_list.Find(name);
     
     if (!material) {
-        //material = PoolProxy<Material>::New(name, type, FILTER_NEAREST);
-        material = PoolProxy<Material>::New(name, type);
+        material = PoolProxy<Material>::GetPool().allocate();
+        new(material) Material(name, type);
         material_list.Insert(UID(name), material);
     }
     
@@ -204,9 +205,9 @@ Material* Material::Find(name_t name){
     Material* material = material_list.Find(name);
     
     if (!material) {
-        //material = PoolProxy<Material>::New(name, MATERIAL_LIGHTMAP, FILTER_LINEAR);
-        material = PoolProxy<Material>::New(name);
-        material_list.Insert(UID(name), material);
+        material = PoolProxy<Material>::GetPool().allocate();
+        new(material) Material(name);
+        material_list.Insert(name, material);
     }
     
     return material;
