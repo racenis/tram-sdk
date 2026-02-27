@@ -58,32 +58,10 @@ public:
     
     template <typename... Args>
     T* make(Args&&... args) {
-        if (current_size == full_size) {
-            std::cout << "Pool " << print_name << " out of space!" << std::endl;
-            abort();
-        }
-
-        T* new_obj;
-
-        if (last_free != last) {
-            new_obj = last_free;
-            uint64_t* skip = reinterpret_cast<uint64_t*>(last_free);
-            skip++;
-            T** skip2 = reinterpret_cast<T**>(skip);
-            last_free = *skip2;
-        } else {
-            new_obj = last_free;
-            last++;
-            last_free++;
-            
-            *((uint64_t*)last) = 0;
-            *(((uint64_t*)last) + 1) = 0;
-        }
+        T* new_obj = allocate();
         
         new(new_obj) T(std::forward<Args>(args)...);
         
-        current_size++;
-
         return new_obj;
     }
     
@@ -111,7 +89,36 @@ public:
     bool validate (const T* ptr) const {
         return ptr >= first && ptr <= last && *((uint64_t*)ptr) != 0;
     }
+    
+    /// Allocates memory, but doesn't construct type instance -- be careful
+    T* allocate() {
+        if (current_size == full_size) {
+            std::cout << "Pool " << print_name << " out of space!" << std::endl;
+            abort();
+        }
 
+        T* new_obj;
+
+        if (last_free != last) {
+            new_obj = last_free;
+            uint64_t* skip = reinterpret_cast<uint64_t*>(last_free);
+            skip++;
+            T** skip2 = reinterpret_cast<T**>(skip);
+            last_free = *skip2;
+        } else {
+            new_obj = last_free;
+            last++;
+            last_free++;
+            
+            *((uint64_t*)last) = 0;
+            *(((uint64_t*)last) + 1) = 0;
+        }
+        
+        current_size++;
+
+        return new_obj;
+    }
+    
     // aliases to not break old code. do not use for new code
     template <typename... Args>
     T* AddNew(Args&&... args) { return make(std::forward<Args>(args)...); }
