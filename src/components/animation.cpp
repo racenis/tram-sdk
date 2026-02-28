@@ -30,8 +30,8 @@
 namespace tram {
 
 template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION);
-template <> void Component<AnimationComponent>::init() { ptr = PoolProxy<AnimationComponent>::New(); }
-template <> void Component<AnimationComponent>::yeet() { PoolProxy<AnimationComponent>::Delete(ptr); }
+template <> void Component<AnimationComponent>::init() { ptr = AnimationComponent::Make(); }
+template <> void Component<AnimationComponent>::yeet() { AnimationComponent::Yeet(ptr); }
 
 AnimationComponent::AnimationComponent() : model(this) {
     pose = PoolProxy<Render::Pose>::New();
@@ -459,6 +459,19 @@ void AnimationComponent::Refresh() {
         Render::AddLine(o, poz * vec4(z, 1.0f), Render::COLOR_BLUE);
         */
     }
+}
+
+/// Creates a new AnimationComponent.
+AnimationComponent* AnimationComponent::Make() {
+    AnimationComponent* ptr = PoolProxy<AnimationComponent>::GetPool().allocate();
+    new(ptr) AnimationComponent();
+    return ptr;
+}
+
+/// Deletes an AnimationComponent.
+void AnimationComponent::Yeet(AnimationComponent* component) {
+    component->~AnimationComponent();
+    PoolProxy<AnimationComponent>::GetPool().deallocate(component);
 }
 
 static EventListener frame_event;

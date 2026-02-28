@@ -12,7 +12,6 @@ namespace tram {
 
 class AnimationComponent : public EntityComponent {
 public:
-    void Start();
     void SetModel(Render::Model* model) { this->model = model; }
     void SetModel(name_t model) { this->model = Render::Model::Find(model); }
     Render::Model* GetModel() { return model.get(); }
@@ -42,6 +41,10 @@ public:
     
     void Refresh();
     void EventHandler(Event &event) { return; }
+    
+    static AnimationComponent* Make();
+    static void Yeet(AnimationComponent* component);
+    
     static bool IsDebugInfoDraw();
     static void SetDebugInfoDraw(bool draw);
     static void Update();
@@ -63,6 +66,8 @@ protected:
         uint32_t keyframe_count[Render::BONE_COUNT] = {0};
     };
 
+    void Start();
+    
     void FindKeyframePointers(Render::Animation* animation, size_t animation_index);
 
     Render::Keyframe base_pose[Render::BONE_COUNT];
@@ -81,7 +86,6 @@ protected:
     
     AnimationComponent();
     ~AnimationComponent();
-    template <typename> friend class Pool;
 };
 
 }

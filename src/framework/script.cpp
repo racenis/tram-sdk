@@ -1027,7 +1027,7 @@ void Init() {
 
 
     SetFunction("__impl_components_animation_make", {}, [](valuearray_t array) -> value_t {
-        AnimationComponent* component = PoolProxy<AnimationComponent>::New();
+        AnimationComponent* component = AnimationComponent::Make();
         
         if (component) {
             return (uint32_t)PoolProxy<AnimationComponent>::GetPool().index(component);
@@ -1042,7 +1042,7 @@ void Init() {
     });
     
     SetFunction("__impl_components_animation_delete", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        PoolProxy<AnimationComponent>::Delete(&PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]]);
+        AnimationComponent::Yeet(&PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[0]]);
         return true;
     });
 
