@@ -459,6 +459,8 @@ void Material::Unload() {
     if (texture.generic) API::YeetTexture(texture);
     if (normal_map.generic) API::YeetTexture(normal_map);
     if (material.generic) API::YeetMaterial(material);
+    
+    status = UNLOADED;
 }
 
 }
