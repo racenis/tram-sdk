@@ -66,15 +66,8 @@ public:
     }
     
     void yeet(T* obj) {
-        assert(obj >= first && obj < last); // pointer is in pool
         obj->~T(); // destruct
-        uint64_t* skip = reinterpret_cast<uint64_t*>(obj);
-        *skip = 0; // mark as empty
-        skip++;
-        T** next_free = reinterpret_cast<T**>(skip);
-        *next_free = last_free; // add pointer to previous free place
-        last_free = obj;
-        current_size--;
+        deallocate(obj);
     }
     
     T& operator[](size_t index) { return *(first + index); } // note that there is no checking for whether the index is valid
@@ -117,6 +110,18 @@ public:
         current_size++;
 
         return new_obj;
+    }
+    
+    /// Deallocates memory, but doesn't destruct type instance -- be careful
+    void deallocate(T* obj) {
+        assert(obj >= first && obj < last); // pointer is in pool
+        uint64_t* skip = reinterpret_cast<uint64_t*>(obj);
+        *skip = 0; // mark as empty
+        skip++;
+        T** next_free = reinterpret_cast<T**>(skip);
+        *next_free = last_free; // add pointer to previous free place
+        last_free = obj;
+        current_size--;
     }
     
     // aliases to not break old code. do not use for new code
