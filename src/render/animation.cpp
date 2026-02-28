@@ -152,7 +152,15 @@ void Animation::LoadFromDisk() {
 }
 
 void Animation::Unload() {
-
+    free(keyframes);
+    free(headers);
+    
+    keyframes = nullptr;
+    headers = nullptr;
+    
+    header_count = 0;
+    
+    status = UNLOADED;
 }
 
 Keyframe* Animation::GetKeyframes(name_t bone) {
