@@ -53,6 +53,8 @@ const uint32_t RESOURCE_LIMIT_MATERIAL = 500;
 const uint32_t RESOURCE_LIMIT_SPRITE = 500;
 const uint32_t RESOURCE_LIMIT_LIGHT_GRAPH = 250;    // same as worldcell limit
 const uint32_t RESOURCE_LIMIT_SOUND_GRAPH = 250;    // ditto
+const uint32_t RESOURCE_LIMIT_ANIMATION = 50;
+const uint32_t RESOURCE_LIMIT_POSE = 100;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |

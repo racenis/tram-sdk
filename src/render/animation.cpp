@@ -8,6 +8,8 @@
 #include <templates/hashmap.h>
 #include <templates/stackpool.h>
 
+#include <config.h>
+
 #include <cstring>
 
 /**
@@ -77,16 +79,12 @@
 
 using namespace tram;
 
-template <> Pool<Render::Animation> PoolProxy<Render::Animation>::pool ("animation pool", 50);
-template <> Pool<Render::Pose> PoolProxy<Render::Pose>::pool ("pose pool", 100);
+template <> Pool<Render::Animation> PoolProxy<Render::Animation>::pool("animation pool", RESOURCE_LIMIT_ANIMATION);
+template <> Pool<Render::Pose> PoolProxy<Render::Pose>::pool("pose pool", RESOURCE_LIMIT_POSE);
 
 namespace tram::Render {
     
-Hashmap<Animation*> animation_list ("model name list", 500);
-
-// this is dumb, we should not do this!!!!
-// TODO: fix
-StackPool<uint8_t> animation_pool ("animation keyframe pool", 1024 * 1024);
+Hashmap<Animation*> animation_list("animation name list", 500);
 
 void Animation::LoadFromDisk() {
     char filename [100] = "data/animations/";
