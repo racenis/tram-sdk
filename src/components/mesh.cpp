@@ -123,6 +123,7 @@ MeshComponent::~MeshComponent() {
     for (size_t i = 0; i < API::GetMaxIndexRangeLength(); i++) {
         if (!materials[i]) continue;
         materials[i]->RemoveReference();
+        Async::CancelRequest(this, materials[i]);
     }
     
     delete[] materials;
@@ -280,6 +281,7 @@ void MeshComponent::Commit() {
 void MeshComponent::SetMaterial(Render::Material* material, uint32_t index) {
     assert(!this->IsReady());
     assert(index < API::GetMaxIndexRangeLength());
+    assert(material);
     if (material_type_set) {
         assert(material_type == material->GetType());
     } else {
@@ -288,6 +290,11 @@ void MeshComponent::SetMaterial(Render::Material* material, uint32_t index) {
     }
     materials[index] = material;
     material->AddReference();
+    
+    if (material->GetStatus() != Resource::READY) {
+        this->resources_waiting++;
+        Async::RequestResource(this, material);
+    }
 }
 
 /// Sets the world parameters for model rendering.
