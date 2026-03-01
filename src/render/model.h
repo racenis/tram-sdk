@@ -10,12 +10,6 @@ namespace tram::Render {
 struct ModelData;
 struct ModelAABB;
 
-struct AABBTriangle {
-    vec3 point1, point2, point3;
-    vec3 normal;
-    uint32_t material;
-};
-
 struct IndexRange {
     uint32_t index_offset = 0;
     uint32_t index_length = 0;

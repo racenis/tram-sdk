@@ -10,6 +10,7 @@
 
 namespace tram {
     class RenderComponent;
+    class MeshComponent;
 }
 
 namespace tram::Render {
@@ -19,7 +20,8 @@ namespace tram::Render {
 namespace tram::Render::AABB {
 
 enum ReferenceType : uint32_t {
-    REFERENCE_RENDERCOMPONENT = 1
+    REFERENCE_RENDERCOMPONENT = 1,
+    REFERENCE_MESHCOMPONENT = 2
 };
     
 struct QueryResponse {
@@ -31,6 +33,7 @@ struct QueryResponse {
 };
     
 aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale);    
+aabbleaf_t InsertLeaf(MeshComponent* component);    
 void RemoveLeaf(aabbleaf_t leaf);
 
 QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask);

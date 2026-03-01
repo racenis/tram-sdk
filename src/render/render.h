@@ -97,6 +97,12 @@ struct SphericalHarmonic {
     vec3 l00, l1m1, l10, l11, l2m2, l2m1, l20, l21, l22;
 };
 
+struct AABBTriangle {
+    vec3 point1, point2, point3;
+    vec3 normal;
+    uint32_t material;
+};
+
 typedef SphericalHarmonic sphericalharmonic_t;
 
 vertexformat_t RegisterVertexFormat(const char* name);

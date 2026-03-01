@@ -6,6 +6,15 @@
 
 #include <framework/logging.h>
 
+/*
+ * PROBLEM: vertex attribute stride/offset might be difficult to understand for
+ *          non-graphics programmers
+ * 
+ * We should introduce a new function that registers vertex definitions based
+ * off of an array of type enum values.
+ * 
+*/
+
 namespace tram::Render {
 
 const static VertexAttribute vertex_static_definition[5] = {

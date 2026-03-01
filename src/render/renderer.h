@@ -67,7 +67,7 @@ struct VertexDefinition {
     size_t attribute_count;
 };
 
-void RegisterVertexDefinition (vertexformat_t format, VertexDefinition definition);
+void RegisterVertexDefinition(vertexformat_t format, VertexDefinition definition);
 VertexDefinition GetVertexDefinition(vertexformat_t format);
 
 

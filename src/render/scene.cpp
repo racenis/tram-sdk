@@ -3,6 +3,7 @@
 #include <render/scene.h>
 
 #include <components/render.h>
+#include <components/mesh.h>
 #include <render/model.h>
 
 #include <framework/ui.h>
@@ -15,7 +16,13 @@
  * the AABB tree API is a bit cumbersome to use. it could be significantly
  * improved.
  * 
- * perhaps we should rename the AABB tree to SceneTree??
+ * perhaps we should rename the AABB tree to SceneTree?? // yeah, would be less confusing
+ * 
+ * under this API the scene tree NEEDS to know what tf is a RenderComponent or
+ * MeshComponent, but we want to be able to NOT compile in these components into
+ * the runtime (maybe, idk)
+ * 
+ * SO WE need a better API.. whatevs
  */
 
 /**
@@ -48,6 +55,7 @@ struct AABBLeaf {
     
     union {
         RenderComponent* rendercomponent;
+        MeshComponent* meshcomponent;
     };
 };
     
@@ -59,6 +67,7 @@ static Pool<AABBLeaf> scene_tree_leaves("Scene AABB tree leaf pool", 1000);
 // TODO: fix
 
 /// Inserts a RenderComponent leaf into the scene tree.
+/// This is done automatically by the RenderComponent itself, so
 /// @return Handle to the inserted leaf.
 aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale) {
     vec3 min = component->GetModel()->GetAABBMin() * scale;
@@ -94,6 +103,47 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
 
     leaf->ref_type = REFERENCE_RENDERCOMPONENT;
     leaf->rendercomponent = component;
+    leaf->leaf = scene_tree.InsertLeaf(scene_tree_leaves.index(leaf), min, max);
+    
+    return leaf;
+}
+
+/// Inserts a MeshComponent leaf into the scene tree.
+/// @return Handle to the inserted leaf.
+aabbleaf_t InsertLeaf(MeshComponent* component) {
+    vec3 min = component->GetAABBMin() * component->GetScale();
+    vec3 max = component->GetAABBMax() * component->GetScale();
+    
+    vec3 extents[8] = {
+        {min.x, min.y, min.z},
+        {max.x, min.y, min.z},
+        {min.x, max.y, min.z},
+        {min.x, min.y, max.z},
+        {max.x, max.y, min.z},
+        {max.x, min.y, max.z},
+        {max.x, max.y, max.z},
+        {min.x, max.y, max.z}
+    };
+    
+    for (auto& extent : extents) {
+        extent = component->GetRotation() * extent;
+    }
+    
+    min = extents[0];
+    max = extents[0];
+    
+    for (auto& extent : extents) {
+        min = MergeAABBMin(min, extent);
+        max = MergeAABBMax(max, extent);
+    }
+
+    min += component->GetLocation();
+    max += component->GetLocation();
+    
+    AABBLeaf* leaf = scene_tree_leaves.AddNew();
+
+    leaf->ref_type = REFERENCE_RENDERCOMPONENT;
+    leaf->meshcomponent = component;
     leaf->leaf = scene_tree.InsertLeaf(scene_tree_leaves.index(leaf), min, max);
     
     return leaf;
