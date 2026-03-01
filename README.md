@@ -142,42 +142,226 @@ make
 ```
 
 ### Dependencies
+
 Header files and binaries (for MinGW x86/x86_64 and WebAssembly) included in `libraries` directory.
 Check [/libraries/README.md](/libraries/README.md) for more information.
 
 ### Contributions
-No code contributions accepted right now, but if you find a bug or have a suggestion, then you can open a github issue.
+
+Due to risks associated with LLM use, we are not accepting code contributions
+for the runtime (this repository) part of the project. LLMs and other machine
+learning based coding tools exhibit a propensity for emitting code that is
+incompatible with the MIT license. Alas, there is no good way to separate genuine
+human code from AI slop, ergo we will not be able to accept any code pull
+requests for this repository.
+
+However, you can still help by submitting bug reports or suggestions for
+improvements.
+
+#### Why not accepting code
+Consider this example: you use this framework to create a project. Maybe due to
+the platform that you are using, or due to some other requirement you are also
+using a third party closed source library.
+
+Later it is determined that a contributor has added GPL licensed code to the
+framework. Now you can either release the source code to your project and
+violate the third party's license or you keep the source closed and violate the
+GPL.
+
+Either way, the outcome is doubleplus ungood.
+
+## Milestones
+
+### Getting last major features in
+
+Currently we have most of the planned features for v1.0.0, after which the core
+framework should be mostly feature-complete.
+
+In the future we'll keep tweaking the core framework, but most of the efforts
+will be focused on additional backends, integrations and extensions.
+
+### Developing professional-grade projects
+
+We have several projects in the works and they all use this framework. We'll
+get them to at least prototype or demo state.
+
+This will allow us to find additional deficiencies in the framework and help
+ensure that the framework has all the features needed for full productions.
+
+### Final touches and extensive testing
+
+We'll finish all planned changes that will break the API.
+
+We'll finally set up automated testing, some kind of CI, dockerized
+cross-platform builds and automated release builds.
+
+This should help us track down most of remaining bugs and ensure that we catch
+any regressions.
+
+### Switching to proper development practices
+
+This means semantic versioning, proper change logs and possibly even supporting
+multiple branches.
 
 ## To-do list
 
-#### Random small things and bugs
+#### For v0.1.2
 
-- Settings are buggy, write tests
-- Add logging to file
-	- Add different severities according to where the logs are sent to
-- Fix Octree
-	- Write some unit tests
-	- Check what happens when point is put directly on plane or origin
+- Finish particles
+	- Steal ideas from various particle editors
+- Finish sprites
+	- Make them not be distorted horizontally in the shader
+	- Add rotations
+- Add entity that shows messages in 3D space
+	- Just calls DebugText
+	- Can be toggled on/off
+	- Can have a distance set
+- Material editor GUI applet
+- Particle editor GUI applet
+- Sprite editor GUI applet
+- Model/animation viewer GUI applet
+- Allow setting alpha for any model
+	- Make sure that vec4 color gets passed into API from Render/MeshComponents
+	- Make sure that it makes its way into shaders
+	- Add a renderflag to enable alpha blending
+	- Merge _blend.frag files into .frag files
+	- Consider moving _alpha.frag from separate file to compile flag
+- Allow packing additional textures
+	- Like color texture + normal or specular map
+	- Allow more than 15 textures for OpenGL API
+	- Also add separate texture array sampler for lightmaps/environment maps
+- Add some more asserts to the GUI system
+	- Like when pushing/popping, changing state, etc.
+- Make the engine work without any files
+	- That means that it will run just fine without any files on the disk
+	
+#### For v0.2.0
+
+- Plugins
+	- Essentially a .zip file with `data/`, `scripts/` and `shaders/` directories
+	- Would allow easy DLC/mods/etc.
+	- Loaded as either directories or archives
+- Finish serialization
+	- Allow re-loading WorldCells
+	- Serialize WorldCell state to disk
+		- Includes all entities
+	- Save and load settings
+	- Deserialize WorldCell state from disk
+- Network replication
+	- Allow basic entities to be replicated over network
+	- Also custom data
+	- We can always upgrade the protocol later
+- Launcher GUI
+	- Allows configuring settings
+	- Reordering plugins
+	- Changing language
+	- Selecting executable to run
+- Add SoundGraph features to level editor
+	- Allow tagging nodes as portals
+	- Add effect parameters
+	- Automatically derive some parameters
+		- Like reverb/echo
+	- Automatically generate links between nodes
+		- Also discover rooms and link room nodes together
+- Add SoundGraph stuff to AudioComponent
+	- Will need to add OpenAL plugin
+	- Like the one that supports various effects
+- Add Navmesh features to level editor
+	- Automatically connect nodes
+	- Add parameter that determines max width/height
+- Implement Navmesh follower
+	- Can add flags
+		- Avoid obstacles
+		- Discovers obstacles
+		- Ignores directions
+		- Etc.
+- Additional Navmesh features
+	- Objects can temporarily block navmesh nodes
+	- Agents will route around them
+- Planar reflections
+	- Setup special material
+	- Add reflection plane
+	- Only single reflection plane rendered
+		- Use environment map as a backup
+	- Polygons near reflection plane
+	- For OpenGL
+		- Add reflection pane
+		- Render upside-down + clipped scene
+		- Render in reflective surfaces
+		- Render rest of the scene
+
+#### For v1.0.0
+
+- Add some kind of crash reporting
+- Make sure that GUI programs work on Linux
+- Finally add Macintosh support for everything
+- Unit tests
+	- Improve DecalComponent
+		- Attach it to RenderComponents
+			- When they move, it moves
+		- Allow attachments to posed objects
+		- Maybe modify SceneTree
+			- Allow entities to subscribe to RenderComponent movements
+		- Maybe implement decal batching
+			- Multiple decals on same RenderComponent 
+	- AnimationComponent
+		- Use file mock
+		- Parse some in-memory animation files
+		- Check if the pose matrices more or less correct
+		- Also check detaching bones
+	- AudioComponent
+		- Use mock for backend
+		- Component and Integration trivial
+		- Test SoundGraph!!
+	- MeshComponent
+		- Mock render backend
+		- Just check if a couple of triangles get copied correctly
+	- ParticleComponent
+		- Just some smoke tests
+	- SpriteComponent
+		- Just check that it clips stuff correctly from sprite sheets
+	- Scripting
+		- Just go through all Lua functions and check that they don't crash
+		- Maybe some math functions we could test a little more
+	- Async
+		- Might be a good idea to mock some components and test it
+- Integration tests
+	- Rendering
+		- Use the low-level render API to test integration
+		- Ideas: untextured cube, shiny sphere, lights, no lights, etc.
+		- Render to image
+		- Compare images to previously correct renders for regressions
+		- Use OpenGL/Vulkan/Direct3D emulators
+- Scripts for running all tests automatically
+- Dockerfiles for running all tests in a container
+- Additional dockerfiles
+	- Compiling framework
+	- Compiling level editor
+	- Compiling GUI applets
+- Fully automated builds
+- Final code pass
+	- Remove old comments
+	- Check if comments are still relevant
+	- Expand and check Doxygen comments
+- Final documentation pass
+	- Expand the documentation
+	- Double check it
+
+#### Bug fixes
 - Sound table does not play if only one sound
-- Put triangle definition into math.h
-- And also switch triangle intersection thingy
-- Add directional lights to lightmapper
+- Issue for Direct3D on some hardware
+	- When you see it, you see it
+	- Only happens on some hardware, hard to replicate
+	- Try using Direct3D wrappers like WINE or dgVoodoo
+- Fix animation scaling translation
+	- There's something weird going on if you both scale and translate in an animation
+
+
+### New features that would be nice to have, but are not very important
 - Improve GUI::Textbox
 	- Add cursor movement
 	- Add selection
 	- Add copy-pasting
-- Allow lookup of all entities of a type
-	- We already have all entities registered in the ID hashmap
-	- All that we would need to do is modify hashmap to allow iteration
-	- Won't be used a lot, can be slow
-- Add option to draw rendercomponent as lines
-- Add option to draw staticwobjs as lines
-- Add on_locked_use to button
-- Add entity that shows messages in 3D space
-- Write a sprite editor applet
- 
-#### Should do later
-
 - Python scripting
 	- Should allow accessing basic library functionality through Python.
 	- Probably should have OOP abstractions and stuff.
@@ -185,36 +369,27 @@ No code contributions accepted right now, but if you find a bug or have a sugges
 	- Leverage the free Assimp library to parse various 3D model formats.
 	- Convert said model formats to tram-sdk .stmdl and .dymdl formats.
 	- Perhaps write Blender importers in addition to existing exporters.
-- Add a better disk abstraction
-	- File() should also open files that are located in compressed archives.
-	- Also should open and be able to write files through HTTP.
-- Finish particles
-	- Steal ideas from various particle editors
-- Finish sprites
-	- Make them not be distorted horizontally in the shader
-
-#### For very later versions
 - Occlusion culling
-- Add rotations to sprites
-- Add some more asserts to the GUI system.
-- Rewrite path following for the PhysicsComponent
-- Implement navigation
-- Add more rendering stuff
-	- Single drawlistthingy can be in multiple layers
-	- Add shear test
-- Make the engine work without any files
-	- That means that it will run just fine without any files on the disk
-- Fix animation scaling translation
-	- There's something weird going on if you both scale and translate in an animation
-- Make Raycast that returns multiple points
-- Make the engine embeddable into Pascal programs
-	
-### New features that would be nice to have, but are not very important
+- AnimationComponent multi-threading
+	- Could improve performance a bit
+	- Need to do more extensive profiling
 - Input recording and playback
+	- Would need to make sure that we can create deterministic logic
+	- Then we would just record keyboard/mouse events
+	- Would also allow inserting previously recorded events
 - AudioComponents can play more than 128 sounds at the same time
-- Split animation into animation and StreamableAnimation
-	- Animations that need to be streamed in and later removed have their own keyframe pools
 - Sprite batching
+	- Currently each SpriteComponent gets its own vertex buffer
+	- We would put all sprites that share a material in the same vertex buffer
 - Vertex animation
+	- Accomplished through blend shapes
 - 3D text component
+	- Generates a mesh that spells out a text
 - Tilemaps
+	- Load in a tilemap format
+		- Maybe one of the ones used by Tiled
+	- Generate a mesh for rendering and maybe collisions
+	- Allow dynamic modifications of tilemap
+- Achievements and social features
+	- Will need to check what different stores and platforms offer
+	- Ideally the API would allow code to be written once and work everywhere
