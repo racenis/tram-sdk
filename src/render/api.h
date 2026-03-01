@@ -58,7 +58,7 @@ bool SetDrawListShader(drawlistentry_t entry, vertexformat_t vertex_format, mate
 
 void SetDrawListMaterials(drawlistentry_t entry, size_t material_count, material_t* materials);
 
-void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color);
+void SetDrawListColor(drawlistentry_t entry, vec4 color);
 
 void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset);
 void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max);

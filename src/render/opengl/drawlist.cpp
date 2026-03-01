@@ -54,10 +54,8 @@ void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max) {
     entry.gl->aabb_max = max;
 }
 
-void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* colors) {
-    for (size_t i = 0; i < count; i++) {
-        entry.gl->colors[i] = colors[i];
-    }
+void SetDrawListColor(drawlistentry_t entry, vec4 color) {
+    entry.gl->color = color;
 }
 
 void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset) {

@@ -202,10 +202,12 @@ static void Draw(GLDrawListEntry* robj) {
     }
 
     for (int i = 0; i < 15; i++) {
-        modelMatrices.colors[i] = robj->colors[i];
+        modelMatrices.colors[i] = robj->color;
         modelMatrices.texture_transforms[i] = robj->texture_transforms[i];
         
         if (!robj->materials[i]) continue;
+        
+        modelMatrices.colors[i] = robj->color * robj->materials[i]->color;
         
         modelMatrices.specular[i].x = robj->materials[i]->specular_weight;
         modelMatrices.specular[i].y = robj->materials[i]->specular_exponent;

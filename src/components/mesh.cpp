@@ -414,7 +414,7 @@ void MeshComponent::SetColor(vec3 color) {
             colors[i] = vec4(this->materials[i]->GetColor() * color, 1.0f);
         }
     
-        Render::API::SetDrawListColors(draw_list_entry, API::GetMaxIndexRangeLength(), colors);
+        Render::API::SetDrawListColor(draw_list_entry, vec4(color, 1.0f));
     }
 }
 
@@ -440,7 +440,7 @@ void MeshComponent::Start() {
 
     Render::API::SetDrawListVertexArray(draw_list_entry, vertex_array);
     Render::API::SetDrawListMaterials(draw_list_entry, material_count, materials);
-    Render::API::SetDrawListColors(draw_list_entry, API::GetMaxIndexRangeLength(), colors);
+    Render::API::SetDrawListColor(draw_list_entry, vec4(color, 1.0f));
     Render::API::SetDrawListTextureOffsets(draw_list_entry, API::GetMaxIndexRangeLength(), offsets);
     const bool found_shader = Render::API::SetDrawListShader(draw_list_entry, vertex_format, material_type);
     Render::API::SetDrawListIndexRange(draw_list_entry, 0, vertices);

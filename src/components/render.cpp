@@ -259,16 +259,10 @@ void RenderComponent::SetColor(vec3 color) {
     this->color = color;
     
     if (is_ready) {
-        auto& index_ranges = model->GetIndexRanges();
-    
-        for (size_t i = 0; i < index_ranges.size(); i++) {
-            vec4 colors[15];
-
-            for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
-                colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor() * color, 1.0f);
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::SetDrawListColor(entry, vec4(color, 1.0f));
             }
-
-            Render::API::SetDrawListColors(draw_list_entries[i], index_ranges[i].material_count, colors);
         }
     }
 }
@@ -331,7 +325,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListIndexArray(entry, model->GetIndexArray());
         Render::API::SetDrawListMaterials(entry, index_ranges[i].material_count, materials);
         //Render::API::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
-        Render::API::SetDrawListColors(entry, index_ranges[i].material_count, colors);
+        Render::API::SetDrawListColor(entry, vec4(color, 1.0f));
         //Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_exponents, specular_transparencies);
         const bool found_shader = Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
