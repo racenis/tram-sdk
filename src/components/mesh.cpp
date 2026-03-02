@@ -15,6 +15,18 @@
  * @see https://racenis.github.io/tram-sdk/documentation/components/mesh.html
  */
 
+/*
+ * THERE IS A PROBLEM!
+ * 
+ * mesh vertex doesn't allow setting of ivecs... proposed solution is that
+ * instead of value_t, we have an std::pair<int, char[16]> consisting of
+ * VertexAttribute::type type and the actual value. then we have a bunch of
+ * different AddAttribute overloads.
+ * 
+ * also we should fix the FFP_IGNORE problem for determining material
+ * 
+ * */
+
 namespace tram {
 
 using namespace tram::Render;
@@ -272,6 +284,8 @@ void MeshComponent::Reserve(Render::vertexformat_t format, size_t vertex_count) 
 }
 
 void MeshComponent::Commit() {
+    if (!is_ready) return;
+    
     API::UpdateVertexArray(vertex_array, buffer_size, buffer);
     Render::API::SetDrawListIndexRange(draw_list_entry, 0, vertices);
     
@@ -460,9 +474,9 @@ void MeshComponent::Start() {
         Log(Severity::WARNING, System::RENDER, "Can't find shader for combination of {} and {}!", GetVertexFormatName(vertex_format), GetMaterialTypeName(material_type));
     }
     
-    Commit();
-    
     is_ready = true;
+    
+    Commit();
 }
 
 void MeshComponent::RefreshAABB() {

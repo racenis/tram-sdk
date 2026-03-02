@@ -80,7 +80,7 @@ protected:
     int buffer_size = 0;
     int vertices = 0;
 
-    Render::drawlistentry_t draw_list_entry;
+    Render::drawlistentry_t draw_list_entry = {.generic = nullptr};
     Render::Material** materials;
     vec4* offsets;
     
