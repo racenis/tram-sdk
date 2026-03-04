@@ -59,7 +59,7 @@ void AnimationTable::SwitchState(name_t state, AnimationStateComponent* state_co
     
     // determine which states will be yeeted because of the new state
     std::vector<AnimStateSpace*> cancel_spaces;
-    cancel_spaces.push_back(next_state_space.base());
+    cancel_spaces.push_back(&next_state_space[0]);
     
     for (auto& space : state_spaces) {
         bool cancel = false;

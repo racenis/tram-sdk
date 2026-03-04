@@ -158,7 +158,7 @@ LightGraph* LightGraph::Find(name_t name) {
 }
 
 void LightGraph::LoadFromDisk() {
-    std::string filename = std::string("data/worldcells/") + std::string(name) + ".light";
+    std::string filename = std::string("data/worldcells/") + name.operator std::string() + ".light";
     
     File file (filename.c_str(), File::READ);
     

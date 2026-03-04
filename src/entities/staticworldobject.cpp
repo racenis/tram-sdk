@@ -107,7 +107,7 @@ void StaticWorldObject::Serialize() {
 void StaticWorldObject::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::PING:
-            Log("Entity {} : {} was pinged by {} : {}!", id, name, msg.sender, msg.sender ? Entity::Find(msg.sender)->GetName() : "none");
+            Log("Entity {} : {} was pinged by {} : {}!", id, name, msg.sender, msg.sender ? Entity::Find(msg.sender)->GetName() : name_t("none"));
             break;
         case Message::SELECT:
             break;
