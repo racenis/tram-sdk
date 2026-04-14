@@ -43,6 +43,8 @@ public:
     inline float GetSpecularExponent() const { return specular_exponent; }
     inline float GetSpecularTransparency() const { return specular_transparency; }
     inline float GetReflectivity() const { return reflectivity; }
+    inline TextureType GetTextureType() const { return texture_type; }
+    inline Material* GetSource() const { return source; }
 
     inline void SetMaterialType(materialtype_t type) { this->type = type; FlushToAPI(); }
     inline void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; FlushToAPI(); }

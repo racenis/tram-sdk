@@ -20,6 +20,11 @@ struct SpriteFrame {
     uint16_t border_v;
 };
 
+struct SpriteMarker {
+    name_t name;
+    uint16_t frame;
+};
+
 class Sprite : public Resource {
 public:
     Sprite (UID name) : Resource(name) {}
@@ -30,12 +35,16 @@ public:
     void LoadFromMemory();
     
     void Unload() {}
+    
+    uint16_t FindMarker(name_t name);
 
     const std::vector<SpriteFrame>& GetFrames() { return frames; };
+    const std::vector<SpriteMarker>& GetMarkers() { return markers; };
 
     static Sprite* Find(name_t name);
 protected:
     std::vector<SpriteFrame> frames;
+    std::vector<SpriteMarker> markers;
     Material* material = nullptr;
 };
     

@@ -286,13 +286,15 @@ void Material::SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, 
 }
 
 void Material::FlushToAPI() {
-    if (status != LOADED) return;
+    if (status != READY) return;
     
     API::SetMaterialColor(material, vec4(color, 1.0f));
     API::SetMaterialSpecularWeight(material, specular_weight);
     API::SetMaterialSpecularExponent(material, specular_exponent);
     API::SetMaterialSpecularTransparency(material, specular_transparency);
     API::SetMaterialReflectivity(material, reflectivity);
+    
+    API::SetTextureFilter(texture, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR);
 }
 
 void Material::LoadFromDisk() {
@@ -409,6 +411,8 @@ void Material::LoadFromDisk() {
 void Material::LoadFromMemory() {
     assert(status == LOADED);
 
+    // TODO: add a check that this is being called from render thread
+
     material = API::MakeMaterial();
     FlushToAPI();
 
@@ -454,11 +458,19 @@ void Material::LoadFromMemory() {
 }
 
 void Material::Unload() {
-    assert(status == LOADED);
+    assert(status == READY);
+    
+    // TODO: add a check that this is being called from render thread
+    
+    std::cout << "unloading tha tolet" << std::endl;
     
     if (texture.generic) API::YeetTexture(texture);
     if (normal_map.generic) API::YeetTexture(normal_map);
     if (material.generic) API::YeetMaterial(material);
+    
+    texture.generic = nullptr;
+    normal_map.generic = nullptr;
+    material.generic = nullptr;
     
     status = UNLOADED;
 }

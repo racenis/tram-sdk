@@ -77,11 +77,11 @@ void Sprite::LoadFromDisk() {
     name_t header = file.read_name();
     name_t material_name = file.read_name();
     
-    if (header != "SPRv2") {
+    if (header != "SPRv2" && header != "SPRv3") {
         Log("Incorrect sprite header \"{}\" in file \"{}\"", header, filename);
     }
     
-    while (file.is_continue()) {
+    if (header == "SPRv2") while (file.is_continue()) {
         frames.push_back ({
             .offset_x = file.read_uint16(),
             .offset_y = file.read_uint16(),
@@ -94,6 +94,28 @@ void Sprite::LoadFromDisk() {
         });
     }
     
+    if (header == "SPRv3") while (file.is_continue()) {
+        name_t record_type = file.read_name();
+        
+        
+        
+        if (record_type == "frame") frames.push_back ({
+            .offset_x = file.read_uint16(),
+            .offset_y = file.read_uint16(),
+            .width = file.read_uint16(),
+            .height = file.read_uint16(),
+            .midpoint_x = file.read_uint16(),
+            .midpoint_y = file.read_uint16(),
+            .border_h = file.read_uint16(),
+            .border_v = file.read_uint16()
+        });
+        
+        if (record_type == "marker") markers.push_back({
+            .name = file.read_name(),
+            .frame = (uint16_t)frames.size()
+        });
+    }
+    
     if (!material) {
         material = Material::Find(UID(material_name));
     }
@@ -102,5 +124,12 @@ void Sprite::LoadFromDisk() {
     Async::LoadDependency(material);
     
     status = LOADED;
+}
+
+uint16_t Sprite::FindMarker(name_t name) {
+    for (auto& marker : markers) {
+        if (marker.name == name) return marker.frame;
+    }
+    return -1;
 }
 
