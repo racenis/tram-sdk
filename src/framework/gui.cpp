@@ -266,7 +266,7 @@ void Update() {
 
     
     // upload the generated glyph vertex triangles to the GPU
-    UpdateVertexArray(glyphvertices_vertex_array, glyphvertices.size() * sizeof(SpriteVertex), &glyphvertices[0]);
+    UpdateVertexArray(glyphvertices_vertex_array, glyphvertices.size() * sizeof(SpriteVertex), glyphvertices.data());
     SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size());
     glyphvertices.clear();
     keycode_queue.clear();

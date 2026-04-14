@@ -174,13 +174,13 @@ void Render () {
 #endif // ENGINE_EDITOR_MODE
     
     // upload debug lines
-    UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), &colorlines[0]);
+    UpdateVertexArray(colorlines_vertex_array, colorlines.size() * sizeof(LineVertex), colorlines.data());
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListIndexRange(colorlines_entry, 0, colorlines.size());
     colorlines.clear();
     
     // upload debug texts
-    UpdateVertexArray(debugtext_vertex_array, textvertices.size() * sizeof(SpriteVertex), &textvertices[0]);
+    UpdateVertexArray(debugtext_vertex_array, textvertices.size() * sizeof(SpriteVertex), textvertices.data());
     SetDrawListIndexRange(debugtext_entry, 0, textvertices.size());
     textvertices.clear();
     
