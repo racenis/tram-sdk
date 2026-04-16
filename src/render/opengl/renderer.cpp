@@ -461,7 +461,14 @@ void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
 }
 
 void GetScreen(char* buffer, int w, int h) {
-    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+    unsigned char* rgba = (unsigned char*)malloc(w * h * 4);
+    glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, rgba);
+    for (int i = 0; i < w * h; ++i) {
+        buffer[i*3 + 0] = rgba[i*4 + 0];
+        buffer[i*3 + 1] = rgba[i*4 + 1];
+        buffer[i*3 + 2] = rgba[i*4 + 2];
+    }
+    free(rgba);
 }
 
 bool IsInteractiveMode() {
