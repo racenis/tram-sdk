@@ -9,3 +9,4 @@
 #include <stb_image.h>
 
 #include <platform/other.cpp>
+#include <platform/terminal.cpp>

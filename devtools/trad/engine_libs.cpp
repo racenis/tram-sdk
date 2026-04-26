@@ -6,3 +6,4 @@
 #include <framework/math.cpp>
 
 #include <platform/other.cpp>
+#include <platform/terminal.cpp>
