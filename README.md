@@ -393,3 +393,13 @@ multiple branches.
 - Achievements and social features
 	- Will need to check what different stores and platforms offer
 	- Ideally the API would allow code to be written once and work everywhere
+- Enhance TBSP program
+	- Add Valve .map format support
+	- Switch to double precision
+	- Improve brush clipping
+- Enhance TMAP program
+	- Add support for setting different lightmap texel densities
+	- Allow per-surface densities
+		- Need to implement alternative packing algorithm
+- Add support for model compression
+- Add support for animation compression
