@@ -165,6 +165,10 @@ void Window::SetSize(int w, int h) {
     glfwSetWindowSize(WINDOW, w, h);
 }
 
+void Window::SetScale(int s) {
+    
+}
+
 void Window::SetCursor(CursorType cursor) {
     glfwSetCursor(WINDOW, cursors[cursor]);
 }
