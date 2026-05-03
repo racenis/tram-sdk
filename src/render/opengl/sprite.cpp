@@ -67,7 +67,7 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
         vertices.push_back(bottom_right);
     }
     
-    UpdateVertexArray(array.vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+    UpdateVertexArray(array.vertex_array, sizeof(SpriteVertex) * vertices.size(), vertices.data());
 }
 
 }

@@ -141,7 +141,7 @@ void ParticleComponent::UpdateRenderListObject(){
         vertices.push_back(bottom_right);
     }
     
-    UpdateVertexArray(vertex_array, sizeof(SpriteVertex) * vertices.size(), &vertices[0]);
+    UpdateVertexArray(vertex_array, sizeof(SpriteVertex) * vertices.size(), vertices.data());
     SetDrawListIndexRange(draw_list_entry, 0, /*6 * */vertices.size());
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
