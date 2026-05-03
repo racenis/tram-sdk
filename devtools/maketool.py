@@ -220,7 +220,7 @@ def generate_makefile():
 	if not os.path.isdir(project_path + "src"):
 		sys.exit("Can't find the ./src/ directory!")
 		
-	print("Generating makefile...")
+	print("Generating makefile... ", end="")
 	
 	units = []
 	source_path = project_path + "src/"
@@ -317,11 +317,16 @@ def generate_makefile():
 	print("ok.")
 	
 mode = sys.argv[1] if len(sys.argv) > 1 else -1
+flag = sys.argv[2] if len(sys.argv) > 2 else -1
 
 if mode == "config":
 	print_config()
 	print("")
 	validate_config()
+elif mode == "generate" and flag == "--force":
+	if not validate_config():
+		print("Config invalid! Generating anyway.")
+	generate_makefile()
 elif mode == "generate":
 	if validate_config():
 		generate_makefile()
