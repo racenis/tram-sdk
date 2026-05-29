@@ -46,10 +46,10 @@ struct Triangle {
 
 struct SpritePoint {
     vec3 position;
-    vec3 center;
     vec3 color;
     float rotation;
-    vec2 dimensions;
+    vec2 dimensions;        // TODO: figure out what units this is in
+    vec2 midpoint;
     vec2 texture_offset;
     vec2 texture_size;
     uint32_t texture;

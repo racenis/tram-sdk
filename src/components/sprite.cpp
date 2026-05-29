@@ -70,21 +70,22 @@ void SpriteComponent::UpdateRenderListObject() {
     if (!is_ready) return;
 
     // maybe cache these values, instead of re-calculating them for each frame?
-    float tex_width = (float)sprite->GetFrames()[anim_frame].width / (float)sprite->GetMaterial()->GetWidth();//sprite->width;
-    float tex_height = (float)sprite->GetFrames()[anim_frame].height / (float)sprite->GetMaterial()->GetHeight(); //sprite->height;
-    float tex_w_off = (float)sprite->GetFrames()[anim_frame].offset_x / (float)sprite->GetMaterial()->GetWidth();//(float)(anim_frame % sprite->frames_w) * tex_width;
-    float tex_h_off = (float)sprite->GetFrames()[anim_frame].offset_y / (float)sprite->GetMaterial()->GetHeight();//(float)(anim_frame / sprite->frames_w) * tex_height;
-    //float half_width = tex_width; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
-    //float half_height = tex_height; //* sprite->GetFrames()[anim_frame].scale / 2.0f;
+    float tex_width = (float)sprite->GetFrames()[anim_frame].width / (float)sprite->GetMaterial()->GetWidth();
+    float tex_height = (float)sprite->GetFrames()[anim_frame].height / (float)sprite->GetMaterial()->GetHeight();
+    float tex_w_off = (float)sprite->GetFrames()[anim_frame].offset_x / (float)sprite->GetMaterial()->GetWidth();
+    float tex_h_off = (float)sprite->GetFrames()[anim_frame].offset_y / (float)sprite->GetMaterial()->GetHeight();
+    
+    float tex_x_mid = (float)sprite->GetFrames()[anim_frame].midpoint_x / (float)sprite->GetMaterial()->GetWidth();
+    float tex_y_mid = (float)sprite->GetFrames()[anim_frame].midpoint_y / (float)sprite->GetMaterial()->GetHeight();
 
     tex_h_off = 1.0f - tex_h_off - tex_height;
 
     Render::SpritePoint point;
     point.position = {0.0f, 0.0f, 0.0f};
-    point.center = {0.0f, 0.0f, 0.0f};
     point.color = COLOR_WHITE;
-    point.rotation = 0.0f;
-    point.dimensions = {tex_width * 10.0f, tex_height * 10.0f};
+    point.rotation = rotation;
+    point.dimensions = {tex_width * 10.0f, tex_height * 10.0f}; // ?? what in 
+    point.midpoint = {tex_x_mid * 10.0f, tex_y_mid * 10.0f}; // yeah idk
     point.texture_offset = {tex_w_off, tex_h_off};
     point.texture_size = {tex_width, tex_height};
     point.texture = 0;

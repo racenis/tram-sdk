@@ -34,6 +34,11 @@ public:
         location = nlocation;
         UpdateRenderListObject();
     }
+    
+    void SetRotation(float rotation) {
+        this->rotation = rotation;
+        UpdateRenderListObject();
+    }
 
     void EventHandler(Event &event){return;}
 
@@ -41,6 +46,7 @@ protected:
     ResourceProxy<Render::Sprite> sprite;
 
     vec3 location;
+    float rotation;
     
     size_t anim_frame = 0;
     size_t anim_speed = 0;
