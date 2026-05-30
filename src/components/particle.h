@@ -4,55 +4,56 @@
 #define TRAM_SDK_COMPONENTS_PARTICLECOMPONENT_H
 
 #include <render/render.h>
-#include <render/sprite.h>
+#include <render/particle.h>
 
 namespace tram {
 
 class ParticleComponent : public EntityComponent {
 public:
-    struct Particle {
-        vec3 coords;
-        vec3 velocity;
-        uint32_t age;
-    };
-    
-    ParticleComponent() : sprite(this) {}
+    ParticleComponent();
     ~ParticleComponent();
-    inline name_t GetSprite() { return sprite->GetName(); }
-
-    void SetSprite(Render::Sprite* sprite) {
-        this->sprite = sprite;
-    }
-
+    
     void Start();
     
     void Update();
-
     void UpdateRenderListObject();
 
-    void UpdateLocation(vec3 nlocation){
-        location = nlocation;
+    void UpdateLocation(vec3 location){
+        this->location = location;
         UpdateRenderListObject();
     }
 
+    void SetParticle(Render::Particle* particle) {this->particle = particle;} 
+
     void EventHandler(Event &event){return;}
-    
-    void EmitParticle (const Particle& particle);
-
-    // put these behind getter/setter methods, maybe?
-    uint32_t emission_rate = 1;
-    uint32_t particle_max_age = 120;
-    vec3 gravity = vec3(0.0f, -0.005f, 0.0f);
-    vec3 initial_velocity = vec3(0.0f, 0.15f, 0.0f);
-    float initial_velocity_randomness = 0.1f;
 protected:
-    std::vector<Particle> particles;
-    ResourceProxy<Render::Sprite> sprite;
+    ResourceProxy<Render::Particle> particle;
 
-    vec3 location;
+    vec3 location = {0.0f, 0.0f, 0.0f};
 
     Render::drawlistentry_t draw_list_entry = {};
     Render::vertexarray_t vertex_array = {};
+    Render::spritearray_t sprite_array = {};
+    
+    struct System {
+        std::vector<bool> slots;
+        float since_last_emit = 0.0f;
+        Render::Particle::System* system = nullptr;
+    };
+    
+    void PerformOperation(const Render::Particle::Operation* op, int offset, int count);
+    void PerformConstraint(const Render::Particle::Constraint* ct, int system);
+    void PerformEmit(const Render::Particle::Emitter* em, int system);
+    
+    float& AsScalar(Render::Particle::LookupInfo info, int index);
+    vec3& AsVector(Render::Particle::LookupInfo info, int index);
+    
+    void MergeIn(Render::Particle::LookupInfo info, int index, Render::Particle::MergeType type, vec3 value);
+    void MergeIn(Render::Particle::LookupInfo info, int index, Render::Particle::MergeType type, float value);
+    
+    std::vector<System> systems;
+
+    float* data = nullptr;
 };
 
 }
