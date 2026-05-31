@@ -103,11 +103,8 @@ public:
     };
     
     struct Emitter {
-        name_t rate;
-        name_t delay;
-        
-        LookupInfo rate_lookup;
-        LookupInfo delay_lookup;
+        Parameter rate;
+        Parameter delay;
     };
     
     class System {
@@ -120,7 +117,7 @@ public:
         void AddOperation(Operation operation);
         void AddInitializer(Operation operation);
         void AddConstraint(Constraint constraint);
-        void AddEmitter(name_t rate_property, name_t delay_property);
+        void AddEmitter(Parameter rate, Parameter delay);
         
         Sprite* GetSprite();
         Material* GetWire();
@@ -188,6 +185,8 @@ protected:
     LookupInfo FindValueKey(name_t name, System* system);
     void FillKeys(Operation& op, System* system);
     void FillKeys(Constraint& op, System* system);
+    
+    void ActuallyLoadFromDisk();
     
     int data_size = 0;
 };

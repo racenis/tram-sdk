@@ -7,6 +7,8 @@
 
 #include <config.h>
 
+#include <cstring>
+
 /**
  * @class tram::ParticleComponent components/particle.h <components/particle.h>
  * 
@@ -62,6 +64,7 @@ void ParticleComponent::PerformOperation(const Render::Particle::Operation* op, 
         case Render::Particle::OperationType::OSCILLATOR: 
             for (int i = 0; i < count; i++) {
                 float val = AsScalar(op->param1, i + offset) * cosf(1.0f / AsScalar(op->param2, i + offset) * 2.0f * 3.14f * GetFrameTime() + AsScalar(op->param3, i + offset));
+                if (std::isnan(val) || std::isinf(val)) val = 0.0f;
                 MergeIn(op->target_lookup, i + offset, op->merge, op->dest, val);
             }
             break;
@@ -116,11 +119,11 @@ void ParticleComponent::PerformConstraint(const Render::Particle::Constraint* ct
 }
 
 void ParticleComponent::PerformEmit(const Render::Particle::Emitter* em, int system) {
-    if (AsScalar(em->delay_lookup, system) > systems[system].since_last_emit) {
+    if (AsScalar(em->delay, system) > systems[system].since_last_emit) {
         return;
     }
     
-    int emits = AsScalar(em->rate_lookup, system);
+    int emits = AsScalar(em->rate, system);
     
     if (!emits) return;
     
@@ -129,7 +132,6 @@ void ParticleComponent::PerformEmit(const Render::Particle::Emitter* em, int sys
         systems[system].slots[i] = true;
         emits--;
         
-        std::cout << "placing in slot " << i << std::endl;
         for (int op = 0; systems[system].system->GetInitializer(op); op++) {
             PerformOperation(systems[system].system->GetInitializer(op), i, 1);
         }
@@ -156,8 +158,12 @@ float& ParticleComponent::AsScalar(Render::Particle::LookupInfo info, int index,
 vec3& ParticleComponent::AsVector(Render::Particle::LookupInfo info, int index, Render::Particle::MergeDest dest) {
     if (!info.array) index = 0;
     
+    // this shouldn't happen, but we'll indulge nevertheless
     if (info.type == Render::Particle::DataType::SCALAR) {
-        return *(vec3*)&data[info.offset + index];
+        static vec3 vector;
+        float fval = data[info.offset + index];
+        vector = {fval, fval, fval};
+        return vector;
     }
     
     return *(vec3*)&data[info.offset + index * 3];
@@ -309,6 +315,7 @@ void ParticleComponent::Start() {
     if (is_ready) return;
     
     data = new float[particle->GetDataSize()];
+    memset(data, 0, particle->GetDataSize() * sizeof(float));
     
     Particle::System* systems[16];
     for (int i = 0; i < 16; i++) systems[i] = nullptr;
@@ -443,7 +450,7 @@ void ParticleComponent::UpdateRenderListObject() {
             point.midpoint = {tex_x_mid * 10.0f, tex_y_mid * 10.0f};
             point.texture_offset = {tex_w_off, tex_h_off};
             point.texture_size = {tex_width, tex_height};
-            point.texture = i;
+            point.texture = s;
 
             AddLineMarker(position, COLOR_GREEN);
             

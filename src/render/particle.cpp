@@ -4,6 +4,7 @@
 
 #include <framework/async.h>
 #include <framework/logging.h>
+#include <framework/file.h>
 
 #include <templates/hashmap.h>
 
@@ -72,9 +73,213 @@ static int size_of_data(const Particle::Data& data, int nums) {
     return size_of_data_type(data.type) * nums;
 }
 
+static Particle::Data parse_data(File& file) {
+    Particle::Data data;
+    data.name = file.read_name();
+    auto type = file.read_name();
+    
+    if (type == "scalar") {
+        data.type = Particle::DataType::SCALAR;
+    } else if (type == "vector") {
+        data.type = Particle::DataType::VECTOR;
+    } else {
+        data.type = Particle::DataType::SCALAR;
+        Log("Unrecognized .prt DataType: {}", type);
+    }
+    
+    return data;
+}
+
+static Particle::Parameter parse_param(File& file) {
+    Particle::Parameter param;
+    name_t type = file.read_name();
+    
+    if (type == "none") {
+        param.type = Particle::ParamType::NONE;
+    } else if (type == "data") {
+        param.type = Particle::ParamType::DATA;
+    } else if (type == "scalar") {
+        param.type = Particle::ParamType::SCALAR;
+    } else if (type == "vector") {
+        param.type = Particle::ParamType::VECTOR;
+    } else {
+        param.type = Particle::ParamType::NONE;
+        Log("Unrecognized .prt ParamType: {}", type);
+    }
+    
+    switch (param.type) {
+        case Particle::ParamType::NONE:
+            break;
+        case Particle::ParamType::DATA:
+            param.data = file.read_name();
+            break;
+        case Particle::ParamType::SCALAR:
+            param.scalar = file.read_float32();
+            break;
+        case Particle::ParamType::VECTOR:
+            param.vector = {file.read_float32(), file.read_float32(), file.read_float32()};
+            break;
+    }
+    
+    return param;
+}
+
+static void parse_system(File& file, Particle::System* sys) {
+    while (file.is_continue()) {
+        name_t record_type = file.read_name();
+        
+        if (record_type == "sprite") {
+            sys->SetSprite(Sprite::Find(file.read_name())); continue;
+        }
+        
+        if (record_type == "wire") {
+            sys->SetWire(Material::Find(file.read_name())); continue;
+        }
+        
+        if (record_type == "model") {
+            sys->SetModel(Model::Find(file.read_name())); continue;
+        }
+        
+        if (record_type == "value") {
+            sys->AddValue(parse_data(file));
+        }
+        
+        if (record_type == "operation" || record_type == "initializer") {
+            Particle::Operation op;
+            name_t optype = file.read_name();
+            name_t mergetype = file.read_name();
+            name_t mergedest = file.read_name();
+            op.target = file.read_name();
+            
+            op.param1 = parse_param(file);
+            op.param2 = parse_param(file);
+            op.param3 = parse_param(file);
+            op.param4 = parse_param(file);
+            
+            if (optype == "copy") {
+                op.type = Particle::OperationType::COPY;
+            } else if (optype == "oscillator") {
+                op.type = Particle::OperationType::OSCILLATOR;
+            } else if (optype == "noise") {
+                op.type = Particle::OperationType::NOISE;
+            } else if (optype == "clamp") {
+                op.type = Particle::OperationType::CLAMP;
+            } else if (optype == "normalize") {
+                op.type = Particle::OperationType::NORMALIZE;
+            } else if (optype == "copy") {
+                op.type = Particle::OperationType::COPY;
+            } else {
+                op.type = Particle::OperationType::COPY;
+                Log("Unrecognized .prt OperationType: {}", optype);
+            }
+            
+            if (mergetype == "set") {
+                op.merge = Particle::MergeType::SET;
+            } else if (mergetype == "add") {
+                op.merge = Particle::MergeType::ADD;
+            } else if (mergetype == "sub") {
+                op.merge = Particle::MergeType::SUBTRACT;
+            } else if (mergetype == "mul") {
+                op.merge = Particle::MergeType::MULTIPLY;
+            } else if (mergetype == "div") {
+                op.merge = Particle::MergeType::DIVIDE;
+            } else {
+                op.merge = Particle::MergeType::SET;
+                Log("Unrecognized .prt MergeType: {}", mergetype);
+            }
+            
+            if (mergedest == "any") {
+                op.dest = Particle::MergeDest::ANY;
+            } else if (mergedest == "x") {
+                op.dest = Particle::MergeDest::X;
+            } else if (mergedest == "y") {
+                op.dest = Particle::MergeDest::Y;
+            } else if (mergedest == "z") {
+                op.dest = Particle::MergeDest::Z;
+            } else {
+                op.dest = Particle::MergeDest::ANY;
+                Log("Unrecognized .prt MergeDest: {}", mergedest);
+            }
+            
+            if (record_type == "operation") {
+                sys->AddOperation(op);
+            }
+            
+             if (record_type == "initializer") {
+                sys->AddInitializer(op);
+            }
+        }
+        
+        if (record_type == "emitter") {
+            Particle::Parameter rate = parse_param(file);
+            Particle::Parameter delay = parse_param(file);
+            sys->AddEmitter(rate, delay);
+        }
+        
+        if (record_type == "end") {
+            return;
+        }
+    }
+}
+
+void Particle::ActuallyLoadFromDisk() {
+    std::string filename = std::string("data/particles/") + std::string(name) + ".prt";
+
+    File file (filename.c_str(), File::READ);
+    
+    if (!file.is_open()) {
+        Log("Particle not found: {}", filename);
+        
+        // TODO: generate some kind of a blank particle thing
+        
+        // make sure that base gets created
+        (void)GetBaseSystem();
+        
+        status = LOADED;
+        load_fail = true;
+        
+        return;
+    }
+    
+    name_t header = file.read_name();
+    
+    if (header != "PRTv1") {
+        Log("Incorrect particle header \"{}\" in file \"{}\"", header, filename);
+    }
+    
+    
+    while (file.is_continue()) {
+        name_t record_type = file.read_name();
+        
+        if (record_type == "control") {
+            auto control = parse_data(file);
+            AddControl(control.name, control.type);
+            
+            continue;
+        }
+        
+        if (record_type == "base") {
+            auto sys = GetBaseSystem();
+            parse_system(file, sys);
+            
+            continue;
+        }
+        
+        if (record_type == "system") {
+            auto sys = CreateSystem();
+            parse_system(file, sys);
+            
+            continue;
+        }
+        
+        Log("Unrecognized .prt secion: {}", record_type);
+    }
+    
+}
+
 void Particle::LoadFromDisk() {
     if (!base && !systems.size()) {
-        // TODO: load from disk here
+        ActuallyLoadFromDisk();
     }
     
     // pack all data values
@@ -111,8 +316,12 @@ void Particle::LoadFromDisk() {
     
     for (auto sys : systems) {
         for (auto &emit : sys->emits) {
-            emit.rate_lookup = FindValueKey(emit.rate, sys);
-            emit.delay_lookup = FindValueKey(emit.delay, sys);
+            if (emit.rate.type == ParamType::DATA) {
+                emit.rate.data_lookup = FindValueKey(emit.rate.data, sys);
+            }
+            if (emit.delay.type == ParamType::DATA) {
+                emit.delay.data_lookup = FindValueKey(emit.delay.data, sys);
+            }
         }
     }
     
@@ -157,6 +366,21 @@ void Particle::Unload() {
         }
     }
     
+    if (base) {
+        delete base;
+        base = nullptr;
+    }
+    
+    for (auto sys : systems) {
+        delete sys;
+    }
+    systems.clear();
+    
+    controls.clear();
+    control_offsets.clear();
+    
+    data_size = 0;
+    
     status = Resource::UNLOADED;
 }
 
@@ -188,8 +412,8 @@ void Particle::System::AddConstraint(Constraint constraint) {
     constrs.push_back(constraint);
 }
 
-void Particle::System::AddEmitter(name_t rate_property, name_t delay_property) {
-    emits.push_back({rate_property, delay_property});
+void Particle::System::AddEmitter(Parameter rate, Parameter delay) {
+    emits.push_back({rate, delay});
 }
 
 Sprite* Particle::System::GetSprite() {
