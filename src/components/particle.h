@@ -45,11 +45,14 @@ protected:
     void PerformConstraint(const Render::Particle::Constraint* ct, int system);
     void PerformEmit(const Render::Particle::Emitter* em, int system);
     
-    float& AsScalar(Render::Particle::LookupInfo info, int index);
-    vec3& AsVector(Render::Particle::LookupInfo info, int index);
+    float& AsScalar(Render::Particle::LookupInfo info, int index, Render::Particle::MergeDest dest = Render::Particle::MergeDest::ANY);
+    vec3& AsVector(Render::Particle::LookupInfo info, int index, Render::Particle::MergeDest dest = Render::Particle::MergeDest::ANY);
     
-    void MergeIn(Render::Particle::LookupInfo info, int index, Render::Particle::MergeType type, vec3 value);
-    void MergeIn(Render::Particle::LookupInfo info, int index, Render::Particle::MergeType type, float value);
+    float AsScalar(const Render::Particle::Parameter& param, int index);
+    vec3 AsVector(const Render::Particle::Parameter& param, int index);
+    
+    void MergeIn(Render::Particle::LookupInfo info, int index, Render::Particle::MergeType type, Render::Particle::MergeDest dest, vec3 value);
+    void MergeIn(Render::Particle::LookupInfo info, int index, Render::Particle::MergeType type, Render::Particle::MergeDest dest, float value);
     
     std::vector<System> systems;
 

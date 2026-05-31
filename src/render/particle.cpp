@@ -27,17 +27,17 @@ Particle* Particle::Find(name_t name) {
 }
 
 Particle::LookupInfo Particle::FindValueKey(name_t name, System* system) {
-    if (system) for (int i = 0; i < system->vals.size(); i++) {
+    if (system) for (int i = 0; i < (int)system->vals.size(); i++) {
         if (system->vals[i].name != name) continue;
         return {system->vals[i].type, true, system->data_offsets[i]};
     }
     
-    for (int i = 0; i < base->vals.size(); i++) {
+    for (int i = 0; i < (int)base->vals.size(); i++) {
         if (base->vals[i].name != name) continue;
         return {base->vals[i].type, false, base->data_offsets[i]};
     }
     
-    for (int i = 0; i < controls.size(); i++) {
+    for (int i = 0; i < (int)controls.size(); i++) {
         if (controls[i].name != name) continue;
         return {controls[i].type, false, control_offsets[i]};
     }
@@ -49,9 +49,10 @@ Particle::LookupInfo Particle::FindValueKey(name_t name, System* system) {
 
 void Particle::FillKeys(Operation& op, System* system) {
     op.target_lookup = FindValueKey(op.target, system);
-    if (op.type == OperationType::COPY) {
-        op.copy_params.source_lookup = FindValueKey(op.copy_params.source, system);
-    }
+    if (op.param1.type == ParamType::DATA) op.param1.data_lookup = FindValueKey(op.param1.data, system);
+    if (op.param2.type == ParamType::DATA) op.param2.data_lookup = FindValueKey(op.param2.data, system);
+    if (op.param3.type == ParamType::DATA) op.param3.data_lookup = FindValueKey(op.param3.data, system);
+    if (op.param4.type == ParamType::DATA) op.param4.data_lookup = FindValueKey(op.param4.data, system);
 }
 
 void Particle::FillKeys(Constraint& ct, System* system) {
@@ -63,6 +64,8 @@ static int size_of_data_type(Particle::DataType type) {
         case Particle::DataType::SCALAR: return 1;
         case Particle::DataType::VECTOR: return 3;
     }
+    assert(false);
+    return -1;
 }
 
 static int size_of_data(const Particle::Data& data, int nums) {
@@ -78,6 +81,11 @@ void Particle::LoadFromDisk() {
     for (auto& val : base->vals) {
         base->data_offsets.push_back(data_size);
         data_size += size_of_data(val, 1);
+    }
+    
+    for (auto& ctrl : controls) {
+        control_offsets.push_back(data_size);
+        data_size += size_of_data(ctrl, 1);
     }
     
     for (auto sys: systems)
@@ -197,27 +205,27 @@ Model* Particle::System::GetModel() {
 }
 
 const Particle::Data* Particle::System::GetValue(int index) {
-    if (index >= vals.size()) return nullptr;
+    if (index >= (int)vals.size()) return nullptr;
     return &vals[index];
 }
 
 const Particle::Operation* Particle::System::GetOperation(int index) {
-    if (index >= ops.size()) return nullptr;
+    if (index >= (int)ops.size()) return nullptr;
     return &ops[index];
 }
 
 const Particle::Operation* Particle::System::GetInitializer(int index) {
-    if (index >= ops.size()) return nullptr;
-    return &ops[index];
+    if (index >= (int)inits.size()) return nullptr;
+    return &inits[index];
 }
 
 const Particle::Constraint* Particle::System::GetConstraint(int index) {
-    if (index >= ops.size()) return nullptr;
+    if (index >= (int)constrs.size()) return nullptr;
     return &constrs[index];
 }
 
 const Particle::Emitter* Particle::System::GetEmitter(int index) {
-    if (index >= emits.size()) return nullptr;
+    if (index >= (int)emits.size()) return nullptr;
     return &emits[index];
 }
 
@@ -228,7 +236,7 @@ Particle::System* Particle::CreateSystem() {
 }
 
 int Particle::GetSystems(Particle::System** array, int array_size) {
-    int retrieve = array_size > systems.size() ? systems.size() : array_size;
+    int retrieve = array_size > (int)systems.size() ? (int)systems.size() : array_size;
     for (int i = 0; i < retrieve; i++) array[i] = systems[i];
     return retrieve;
 }
@@ -243,17 +251,17 @@ void Particle::AddControl(name_t name, DataType type) {
 }
 
 name_t Particle::GetControlName(int index) {
-    if (index >= controls.size()) return name_t();
+    if (index >= (int)controls.size()) return name_t();
     return controls[index].name;
 }
 
 Particle::DataType Particle::GetControlType(int index) {
-    if (index >= controls.size()) return Particle::DataType {};
+    if (index >= (int)controls.size()) return Particle::DataType {};
     return controls[index].type;
 }
 
 int Particle::GetControlOffset(int index) {
-    if (index >= controls.size()) return 0;
+    if (index >= (int)controls.size()) return 0;
     return control_offsets[index];
 }
 

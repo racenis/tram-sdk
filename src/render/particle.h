@@ -28,8 +28,6 @@ public:
     };
     
     enum class OperationType {
-        CONSTANT_SCALAR,
-        CONSTANT_VECTOR,
         COPY,
         OSCILLATOR,
         NOISE,
@@ -45,52 +43,45 @@ public:
         DIVIDE
     };
     
+    enum class MergeDest {
+        ANY,
+        X,
+        Y,
+        Z
+    };
+    
     struct LookupInfo {
         DataType type;
         bool array;
         int offset;
     };
     
+    enum class ParamType {
+        NONE,
+        DATA,
+        SCALAR,
+        VECTOR
+    };
+    
+    struct Parameter {
+        ParamType type;
+        name_t data;
+        LookupInfo data_lookup;
+        float scalar;
+        vec3 vector;
+    };
+    
     struct Operation {
         OperationType type;
         MergeType merge;
+        MergeDest dest;
         name_t target;
         LookupInfo target_lookup;
         
-        union {
-            struct {
-                float value;
-            } constant_scalar_params;
-            struct {
-                float x, y, z;
-            } constant_vector_params;
-            struct {
-                name_t source;
-                LookupInfo source_lookup;
-            } copy_params;
-            struct {
-                float frequency;
-                float phase;
-                float amplitude;
-            } oscillator_params;
-            struct {
-                float amplitude;
-                float offset;
-            } noise_params;
-            struct {
-                float min;
-                float max;
-            } clamp_params;
-        };
-        
-        // we have these two methods because name_t isn't trivial or something.
-        // as in, it has specially defined destructor and assignment methods.
-        // I don't remember why it has those. TODO: fix
-        Operation(const Operation& other) {
-            memcpy(this, &other, sizeof(Operation));
-        }
-        
-        ~Operation() {};
+        Parameter param1;
+        Parameter param2;
+        Parameter param3;
+        Parameter param4;
     };
     
     enum class ConstraintType {
@@ -100,6 +91,7 @@ public:
     
     struct Constraint {
         ConstraintType type;
+        MergeDest dest;
         name_t property;
         LookupInfo property_lookup;
         
@@ -189,7 +181,7 @@ public:
     static Particle* Find(name_t name);
 protected:
     std::vector<System*> systems;
-    System* base;
+    System* base = nullptr;
     std::vector<Data> controls;
     std::vector<int> control_offsets;
     
