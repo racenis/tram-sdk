@@ -32,7 +32,6 @@ protected:
     vec3 location = {0.0f, 0.0f, 0.0f};
 
     Render::drawlistentry_t draw_list_entry = {};
-    Render::vertexarray_t vertex_array = {};
     Render::spritearray_t sprite_array = {};
     
     struct System {

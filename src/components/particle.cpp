@@ -105,12 +105,12 @@ void ParticleComponent::PerformConstraint(const Render::Particle::Constraint* ct
     if (!systems[system].slots[i]) continue;
     switch (ct->type) {
         case Render::Particle::ConstraintType::GREATER_THAN:
-            if (AsScalar(ct->property_lookup, i, ct->dest) > ct->comparison_params.value) {
+            if (AsScalar(ct->property_lookup, i, ct->dest) > AsScalar(ct->param1, i)) {
                 systems[system].slots[i] = false;
             }
             break;
         case Render::Particle::ConstraintType::LESSER_THAN:
-            if (AsScalar(ct->property_lookup, i, ct->dest) < ct->comparison_params.value) {
+            if (AsScalar(ct->property_lookup, i, ct->dest) < AsScalar(ct->param1, i)) {
                 systems[system].slots[i] = false;
             }
             break;

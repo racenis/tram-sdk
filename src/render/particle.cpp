@@ -58,6 +58,10 @@ void Particle::FillKeys(Operation& op, System* system) {
 
 void Particle::FillKeys(Constraint& ct, System* system) {
     ct.property_lookup = FindValueKey(ct.property, system);
+    if (ct.param1.type == ParamType::DATA) ct.param1.data_lookup = FindValueKey(ct.param1.data, system);
+    if (ct.param2.type == ParamType::DATA) ct.param2.data_lookup = FindValueKey(ct.param2.data, system);
+    if (ct.param3.type == ParamType::DATA) ct.param3.data_lookup = FindValueKey(ct.param3.data, system);
+    if (ct.param4.type == ParamType::DATA) ct.param4.data_lookup = FindValueKey(ct.param4.data, system);
 }
 
 static int size_of_data_type(Particle::DataType type) {
@@ -141,7 +145,7 @@ static void parse_system(File& file, Particle::System* sys) {
         }
         
         if (record_type == "value") {
-            sys->AddValue(parse_data(file));
+            sys->AddValue(parse_data(file)); continue;
         }
         
         if (record_type == "operation" || record_type == "initializer") {
@@ -166,8 +170,6 @@ static void parse_system(File& file, Particle::System* sys) {
                 op.type = Particle::OperationType::CLAMP;
             } else if (optype == "normalize") {
                 op.type = Particle::OperationType::NORMALIZE;
-            } else if (optype == "copy") {
-                op.type = Particle::OperationType::COPY;
             } else {
                 op.type = Particle::OperationType::COPY;
                 Log("Unrecognized .prt OperationType: {}", optype);
@@ -208,12 +210,54 @@ static void parse_system(File& file, Particle::System* sys) {
              if (record_type == "initializer") {
                 sys->AddInitializer(op);
             }
+            
+            continue;
+        }
+        
+        if (record_type == "constraint") {
+            Particle::Constraint ct;
+            name_t type = file.read_name();
+            name_t dest = file.read_name();
+            ct.property = file.read_name();
+            
+            ct.param1 = parse_param(file);
+            ct.param2 = parse_param(file);
+            ct.param3 = parse_param(file);
+            ct.param4 = parse_param(file);
+            
+            if (type == "gt") {
+                ct.type = Particle::ConstraintType::GREATER_THAN;
+            } else if (type == "lt") {
+                ct.type = Particle::ConstraintType::LESSER_THAN;
+            } else {
+                ct.type = Particle::ConstraintType::GREATER_THAN;
+                Log("Unrecognized .prt ConstraintType: {}", type);
+            }
+            
+            if (dest == "any") {
+                ct.dest = Particle::MergeDest::ANY;
+            } else if (dest == "x") {
+                ct.dest = Particle::MergeDest::X;
+            } else if (dest == "y") {
+                ct.dest = Particle::MergeDest::Y;
+            } else if (dest == "z") {
+                ct.dest = Particle::MergeDest::Z;
+            } else {
+                ct.dest = Particle::MergeDest::ANY;
+                Log("Unrecognized .prt MergeDest: {}", dest);
+            }
+            
+            sys->AddConstraint(ct);
+            
+            continue;
         }
         
         if (record_type == "emitter") {
             Particle::Parameter rate = parse_param(file);
             Particle::Parameter delay = parse_param(file);
             sys->AddEmitter(rate, delay);
+            
+            continue;
         }
         
         if (record_type == "end") {
@@ -272,7 +316,7 @@ void Particle::ActuallyLoadFromDisk() {
             continue;
         }
         
-        Log("Unrecognized .prt secion: {}", record_type);
+        Log("Unrecognized .prt section: {}", record_type);
     }
     
 }

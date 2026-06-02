@@ -95,11 +95,10 @@ public:
         name_t property;
         LookupInfo property_lookup;
         
-        union {
-            struct {
-                float value;
-            } comparison_params;
-        };
+        Parameter param1;
+        Parameter param2;
+        Parameter param3;
+        Parameter param4;
     };
     
     struct Emitter {
