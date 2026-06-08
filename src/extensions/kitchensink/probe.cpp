@@ -63,8 +63,6 @@ void RenderEnvironmentMaps(WorldCell* cell) {
     char* sphere_front = (char*)malloc(map_size * map_size * 3);
     char* sphere_back = (char*)malloc(map_size * map_size * 3);
     
-    char* sphere_output = (char*)malloc(map_size * 2 * map_size * 3);
-    
     // step through each environment probe position and render the environment map
     for (auto [id, probe] : graph->GetEnvironmentProbes()) {
         
@@ -202,25 +200,11 @@ void RenderEnvironmentMaps(WorldCell* cell) {
             }
         }
         
-        // put both sphere maps next to each other in a final single image
-        for (int x = 0; x < map_size; x++) {
-            for (int y = 0; y < map_size; y++) {
-                auto offset_in = (y * map_size + x) * 3;
-                auto offset_o1 = (y * 2 * map_size + x) * 3;
-                auto offset_o2 = (y * 2 * map_size + x + map_size) * 3;
-                
-                sphere_output[offset_o1 + 0] = sphere_front[offset_in + 0];
-                sphere_output[offset_o1 + 1] = sphere_front[offset_in + 1];
-                sphere_output[offset_o1 + 2] = sphere_front[offset_in + 2];
-                sphere_output[offset_o2 + 0] = sphere_back[offset_in + 0];
-                sphere_output[offset_o2 + 1] = sphere_back[offset_in + 1];
-                sphere_output[offset_o2 + 2] = sphere_back[offset_in + 2];
-            }
-        }
+        auto filename_front = std::string("data/environments/") + (const char*)graph->GetName() + "." + std::to_string(id) + ".0";
+        auto filename_back = std::string("data/environments/") + (const char*)graph->GetName() + "." + std::to_string(id) + ".1";
         
-        auto filename = std::string("data/textures/environment/") + (const char*)graph->GetName() + "." + std::to_string(id);
-        
-        Platform::SaveImageToDisk((filename + ".png").c_str(), 2 * map_size, map_size, sphere_output);
+        Platform::SaveImageToDisk((filename_front + ".png").c_str(), map_size, map_size, sphere_front);
+        Platform::SaveImageToDisk((filename_back + ".png").c_str(), map_size, map_size, sphere_back);
     }
     
     // release buffers
