@@ -184,6 +184,13 @@ struct texturehandle_t {
     };
 };
 
+struct texturearray_t {
+    union {
+        uint32_t gl_texture_handle;
+        void* generic;
+    };
+};
+
 namespace API { struct GLLight; }
 namespace API { struct D3DLight; }
 namespace API { struct SWLight; }

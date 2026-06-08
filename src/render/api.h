@@ -75,6 +75,11 @@ void SetTextureFilter(texturehandle_t texture, TextureFilter texture_filter);
 void SetTextureImage(texturehandle_t texture, ColorMode color_mode, uint32_t width, uint32_t height, void* data);
 void YeetTexture(texturehandle_t texture);
 
+texturearray_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, uint32_t layers, void* data);
+void SetTextureFilter(texturearray_t texture, TextureFilter texture_filter);
+void SetTextureImage(texturearray_t texture, ColorMode color_mode, uint32_t width, uint32_t height, uint32_t layers, void* data);
+void YeetTexture(texturearray_t texture);
+
 // sprite functions
 spritearray_t CreateSpriteArray();
 void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data);
