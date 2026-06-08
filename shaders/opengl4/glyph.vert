@@ -12,7 +12,8 @@ out vec2 vert_uv;
 out vec3 vert_color;
 flat out uint vert_tex_index;
 
-uniform sampler2D sampler[16];
+uniform sampler2D sampler[15];
+uniform sampler2DArray samplerArray;
 
 layout (std140) uniform ModelMatrices {
     mat4 model;

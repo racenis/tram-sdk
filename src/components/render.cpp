@@ -51,7 +51,7 @@ void RenderComponent::SetModel(name_t name) {
 /// Lightmaps are rendered only for static models, so setting a lightmap for
 /// a dynamic model will do nothing.
 void RenderComponent::SetLightmap(name_t name) {
-    lightmap = Render::Material::Make(name, MATERIAL_LIGHTMAP);
+    lightmap = Render::Lightmap::Find(name);
     
     /*if (is_ready) {
         for (auto entry : draw_list_entries) {
@@ -330,7 +330,7 @@ void RenderComponent::InsertDrawListEntries() {
         const bool found_shader = Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
-        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
+        Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturearray_t {});
         Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturehandle_t {});
         Render::API::SetFlags(entry, render_flags);
         Render::API::SetLayer(entry, layer);

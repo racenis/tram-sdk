@@ -8,7 +8,8 @@ in vec2 cscale;
 in float thick;
 flat in uint texindex;
 
-uniform sampler2D sampler[16];
+uniform sampler2D sampler[15];
+uniform sampler2DArray samplerArray;
 
 void main()
 {

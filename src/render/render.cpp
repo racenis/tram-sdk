@@ -6,6 +6,7 @@
 #include <render/render.h>
 #include <render/renderer.h>
 #include <render/vertices.h>
+#include <render/lightmap.h>
 #include <components/render.h>
 #include <components/sprite.h>
 #include <components/particle.h>
@@ -130,10 +131,9 @@ void Init () {
     SetFlags(colorlines_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/ | FLAG_DRAW_LINES | FLAG_DISABLE_LIGHTING);
     SetLayer(colorlines_entry, LAYER_DEBUG);
     
-    // generating fullbright lightmap
-    Material* fullbright = Material::Make("fullbright", MATERIAL_LIGHTMAP);
-    fullbright->MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
-    fullbright->LoadFromMemory();
+    // loading fullbright lightmap
+    Lightmap* fullbright = Lightmap::Find("fullbright");
+    fullbright->Load();
     
     // generating fulldark environmentmap
     Material* fulldark = Material::Make("fulldark", MATERIAL_LIGHTMAP);

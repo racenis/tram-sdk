@@ -25,7 +25,8 @@ layout (std140) uniform ModelMatrices {
 	vec4 texture_transforms[15];
 };
 
-uniform sampler2D sampler[16];
+uniform sampler2D sampler[15];
+uniform sampler2DArray samplerArray;
 
 void main() {
     float offse = mod(time / 5.0, 1.0);

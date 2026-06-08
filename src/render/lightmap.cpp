@@ -75,8 +75,22 @@ static uint32_t layer_count_for_type(LightmapType type) {
 void Lightmap::LoadFromDisk() {
     assert(status == UNLOADED);
     
-    uint32_t layer_count = layer_count_for_type(type);
+    // ideally we would handle the `fullbright` lightmap using a shader flag,
+    // but for now we'll just treat it as a special lightmap that gets generated
+    // instead of being loaded.
+    // this is kinda stinky and we *WILL* fix it.. later.. sometime..
+    if (name == "fullbright") {
+        type = LIGHTMAP_CHANNELS;
+        width = 32;
+        height = 32;
+        size_t size = width * height * 3 * layer_count_for_type(type);
+        texture_data = new uint8_t[size];
+        memset(texture_data, 255, size);
+        status = LOADED;
+        return;
+    }
     
+    uint32_t layer_count = layer_count_for_type(type);
     
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;

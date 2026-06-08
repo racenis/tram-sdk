@@ -7,6 +7,7 @@
 #include <render/api.h>
 #include <render/scene.h>
 #include <render/vertices.h>
+#include <render/lightmap.h>
 #include <render/material.h>
 
 #include <framework/logging.h>
@@ -47,7 +48,7 @@ void DecalComponent::Start() {
     SetDrawListIndexRange(draw_list_entry, 0, 0);
     SetFlags(draw_list_entry, FLAG_RENDER);
     SetDrawListMaterials(draw_list_entry, 1, &texture_handle);
-    SetLightmap(draw_list_entry, Material::Find("fullbright")->GetTexture());
+    SetLightmap(draw_list_entry, Lightmap::Find("fullbright")->GetTexture());
     SetDrawListShader(draw_list_entry, VERTEX_STATIC, MATERIAL_TEXTURE_ALPHA);
 
     is_ready = true;

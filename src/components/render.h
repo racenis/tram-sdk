@@ -4,6 +4,7 @@
 #define TRAM_SDK_COMPONENTS_RENDERCOMPONENT_H
 
 #include <render/model.h>
+#include <render/lightmap.h>
 
 namespace tram {
 
@@ -47,7 +48,7 @@ protected:
     void RefreshAABB();
 
     ResourceProxy<Render::Model> model;
-    ResourceProxy<Render::Material> lightmap;
+    ResourceProxy<Render::Lightmap> lightmap;
     ResourceProxy<Render::Material> environmentmap;
 
     std::vector<Render::drawlistentry_t> draw_list_entries;

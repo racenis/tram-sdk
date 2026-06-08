@@ -250,7 +250,7 @@ static void Draw(GLDrawListEntry* robj) {
 
     if (robj->lightmap) {
         glActiveTexture(GL_TEXTURE15);
-        glBindTexture(GL_TEXTURE_2D, robj->lightmap);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, robj->lightmap);
     }
     
     if (robj->environmentmap) {
@@ -563,7 +563,7 @@ ContextType GetContext() {
 }
 
 uint32_t GetMaxIndexRangeLength() {
-    return 15;
+    return 14;
 }
 
 void SetDevice(void*) {

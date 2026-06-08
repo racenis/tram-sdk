@@ -234,7 +234,7 @@ public:
         glUniform1i(glGetUniformLocation(linked_shader, "sampler[12]"), 12);
         glUniform1i(glGetUniformLocation(linked_shader, "sampler[13]"), 13);
         glUniform1i(glGetUniformLocation(linked_shader, "sampler[14]"), 14);
-        glUniform1i(glGetUniformLocation(linked_shader, "sampler[15]"), 15);
+        glUniform1i(glGetUniformLocation(linked_shader, "samplerArray"), 15);
         glUseProgram(0);
         
         for (auto [name, binding] : all_uniform_blocks) {

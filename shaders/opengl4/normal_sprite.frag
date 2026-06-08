@@ -8,7 +8,8 @@ out vec4 fragment;
 in vec2 vert_uv;
 flat in uint vert_tex_index;
 
-uniform sampler2D sampler[16];
+uniform sampler2D sampler[15];
+uniform sampler2DArray samplerArray;
 
 void main() {
     fragment = texture(sampler[vert_tex_index], vert_uv);

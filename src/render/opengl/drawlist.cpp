@@ -37,7 +37,7 @@ void SetPose(drawlistentry_t entry, Pose* pose) {
     entry.gl->pose = pose;
 }
 
-void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
+void SetLightmap(drawlistentry_t entry, texturearray_t lightmap) {
     entry.gl->lightmap = lightmap.gl_texture_handle;
 }
 
