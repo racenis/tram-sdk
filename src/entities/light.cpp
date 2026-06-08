@@ -18,9 +18,11 @@ namespace tram {
 
 enum {
     FIELD_COLOR,
+    FIELD_BRIGHTNESS,
+    FIELD_EXPONENT,
     FIELD_DISTANCE,
-    FIELD_DIRECTION,
-    FIELD_EXPONENT
+    FIELD_CHANNEL,
+    FIELD_FLAGS
 };
 
 void Light::Register() {
@@ -30,9 +32,11 @@ void Light::Register() {
         [](Entity* a) { delete a; },
         {
             {FIELD_COLOR,       TYPE_VEC3,      FIELD_SERIALIZE},
+            {FIELD_BRIGHTNESS,  TYPE_FLOAT32,   FIELD_SERIALIZE},
+            {FIELD_EXPONENT,    TYPE_FLOAT32,   FIELD_SERIALIZE},
             {FIELD_DISTANCE,    TYPE_FLOAT32,   FIELD_SERIALIZE},
-            {FIELD_DIRECTION,   TYPE_VEC3,      FIELD_SERIALIZE},
-            {FIELD_EXPONENT,    TYPE_FLOAT32,   FIELD_SERIALIZE}
+            {FIELD_CHANNEL,     TYPE_UINT32,    FIELD_SERIALIZE},
+            {FIELD_FLAGS,       TYPE_UINT32,    FIELD_SERIALIZE}
         }
     );
 }
@@ -44,8 +48,9 @@ name_t Light::GetType() {
 Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array) : Entity(shared_data) {
     color = field_array[FIELD_COLOR];
     distance = field_array[FIELD_DISTANCE];
-    direction = field_array[FIELD_DIRECTION];
-    exponent = field_array[FIELD_EXPONENT];    
+    exponent = field_array[FIELD_EXPONENT];
+    
+    color = color * (float)field_array[FIELD_BRIGHTNESS];
 }
 
 void Light::UpdateParameters () {
@@ -62,7 +67,7 @@ void Light::Load () {
         light.make();
         light->SetColor(color);
         light->SetDistance(distance);
-        light->SetDirection(direction);
+        light->SetDirection(rotation * DIRECTION_UP);
         light->SetExponent(exponent);
 
         light->Init();

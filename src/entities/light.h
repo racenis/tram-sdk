@@ -27,7 +27,6 @@ protected:
     
     vec3 color;
     float distance;
-    vec3 direction;
     float exponent;
 };
 
