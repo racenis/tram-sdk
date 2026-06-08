@@ -414,12 +414,12 @@ void Material::LoadFromMemory() {
     // TODO: add a check that this is being called from render thread
 
     material = API::MakeMaterial();
-    FlushToAPI();
-
+    
     if (texture_type == TEXTURE_SOURCE) {
         texture = source->texture;
         API::SetMaterialTexture(material, texture);
         status = READY;
+        FlushToAPI();
         return;
     }
     
@@ -454,6 +454,9 @@ void Material::LoadFromMemory() {
     }
     
     status = READY;
+    
+    FlushToAPI();
+    
     return;
 }
 
