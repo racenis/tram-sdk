@@ -22,6 +22,7 @@ public:
     void SetModel(name_t name);
     void SetModel(Render::Model* model) { this->model = model; }
     void SetLightmap(name_t name);
+    void SetLightmap(Render::Lightmap* lightmap);
     void SetEnvironmentMap(Render::Environment* material);
     void SetArmature(AnimationComponent* armature);
 

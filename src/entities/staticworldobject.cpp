@@ -71,7 +71,7 @@ void StaticWorldObject::Load(){
     rendercomponent.make();
     rendercomponent->SetParent(this);
     rendercomponent->SetModel(model);
-    rendercomponent->SetLightmap(lightmap);
+    rendercomponent->SetLightmap(lightmap ? Render::Lightmap::Find(lightmap) : Render::Lightmap::Find(id));
     rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
 
     physicscomponent.make();

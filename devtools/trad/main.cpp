@@ -164,6 +164,11 @@ struct Light {
 	vec3 color;
 	float radius;
 	
+	vec3 dir;
+	float exp;
+	uint32_t channel;
+	uint32_t flags;
+	
 	uint32_t entity;
 };
 
@@ -800,12 +805,22 @@ int main(int argc, const char** argv) {
 			Light light;
 			
 			light.entity = cell.read_uint32();
-			cell.read_name();
-			cell.read_uint32();
+			cell.read_name(); // entity name
+			cell.read_uint32(); // entity flags
 			light.pos = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
-			cell.read_float32(); cell.read_float32(); cell.read_float32();
-			light.color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			
+			vec3 euler = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			light.dir = quat(euler) * DIRECTION_UP;
+			
+			vec3 color = {cell.read_float32(), cell.read_float32(), cell.read_float32()};
+			float brightness = cell.read_float32();
+			light.color = color * brightness;
+			
+			light.exp = cell.read_float32();
 			light.radius = cell.read_float32();
+			
+			light.channel = cell.read_uint32();
+			light.flags = cell.read_uint32();
 
 			lights.push_back(light);    
 		}
@@ -1187,7 +1202,7 @@ int main(int argc, const char** argv) {
 	
 	for (auto& entity: entities) {
 		
-		if (!entity.lightmap_name || entity.lightmap_name == "fullbright") continue;
+		if ((!entity.lightmap_name && !entity.id) || entity.lightmap_name == "fullbright") continue;
 		
 		auto& l = entity.lightmap;
 		
@@ -1212,8 +1227,14 @@ int main(int argc, const char** argv) {
 		}
 		
 		// then write it to a png
-		std::string output_path = "data/textures/";
-		output_path += (const char*)entity.lightmap_name;
+		std::string output_path = "data/lightmaps/";
+		
+		if (entity.lightmap_name) {
+			output_path += (const char*)entity.lightmap_name;
+		} else {
+			output_path += std::to_string(entity.id);
+		}
+		
 		output_path += ".png";
 		
 		if (!stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0)) {

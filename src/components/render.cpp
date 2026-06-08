@@ -62,6 +62,15 @@ void RenderComponent::SetLightmap(name_t name) {
     }*/
 };
 
+/// Sets the lightmap for the model.
+/// Lightmaps are rendered only for static models, so setting a lightmap for
+/// a dynamic model will do nothing.
+void RenderComponent::SetLightmap(Lightmap* lightmap) {
+    this->lightmap = lightmap;
+};
+
+
+
 /// Sets the environment map for the model.
 void RenderComponent::SetEnvironmentMap(Render::Environment* material) {
     environmentmap = material;
