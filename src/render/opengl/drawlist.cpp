@@ -41,7 +41,7 @@ void SetLightmap(drawlistentry_t entry, texturearray_t lightmap) {
     entry.gl->lightmap = lightmap.gl_texture_handle;
 }
 
-void SetEnvironmentMap(drawlistentry_t entry, texturehandle_t environmentmap) {
+void SetEnvironmentMap(drawlistentry_t entry, texturearray_t environmentmap) {
     entry.gl->environmentmap = environmentmap.gl_texture_handle;
 }
 

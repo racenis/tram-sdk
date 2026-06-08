@@ -5,6 +5,7 @@
 
 #include <render/model.h>
 #include <render/lightmap.h>
+#include <render/environment.h>
 
 namespace tram {
 
@@ -21,7 +22,7 @@ public:
     void SetModel(name_t name);
     void SetModel(Render::Model* model) { this->model = model; }
     void SetLightmap(name_t name);
-    void SetEnvironmentMap(Render::Material* material);
+    void SetEnvironmentMap(Render::Environment* material);
     void SetArmature(AnimationComponent* armature);
 
     void Start();
@@ -49,7 +50,7 @@ protected:
 
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Lightmap> lightmap;
-    ResourceProxy<Render::Material> environmentmap;
+    ResourceProxy<Render::Environment> environmentmap;
 
     std::vector<Render::drawlistentry_t> draw_list_entries;
 

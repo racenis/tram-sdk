@@ -208,7 +208,7 @@ static void Draw(GLDrawListEntry* robj) {
         if (!robj->materials[i]) continue;
         
         modelMatrices.colors[i] = robj->color * robj->materials[i]->color;
-        
+
         modelMatrices.specular[i].x = robj->materials[i]->specular_weight;
         modelMatrices.specular[i].y = robj->materials[i]->specular_exponent;
         modelMatrices.specular[i].z = robj->materials[i]->specular_transparency;
@@ -255,7 +255,7 @@ static void Draw(GLDrawListEntry* robj) {
     
     if (robj->environmentmap) {
         glActiveTexture(GL_TEXTURE15);
-        glBindTexture(GL_TEXTURE_2D, robj->environmentmap);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, robj->environmentmap);
     }
     
 #ifndef __EMSCRIPTEN__

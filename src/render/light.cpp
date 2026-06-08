@@ -2,7 +2,7 @@
 
 #include <render/light.h>
 
-#include <render/material.h>
+#include <render/environment.h>
 
 #include <framework/file.h>
 #include <framework/logging.h>
@@ -48,8 +48,8 @@ std::vector<std::pair<uint32_t, vec3>> LightGraph::GetEnvironmentProbes() {
     return probes;
 }
 
-Material* LightGraph::LookupEnvironmentMap(vec3 position) {
-    Material* nearest = nullptr;
+Environment* LightGraph::LookupEnvironmentMap(vec3 position) {
+    Environment* nearest = nullptr;
     float nearest_dist = INFINITY;
     for (auto& graph : PoolProxy<Render::LightGraph>::GetPool()) {
         for (auto& node : graph.nodes) {
@@ -251,8 +251,7 @@ void LightGraph::LoadFromDisk() {
     for (uint32_t i = 0; i < nodes.size(); i++) {
         if (!nodes[i].has_reflection) continue;
         
-        auto material_name = std::string("environment/") + (const char*)GetName() + "." + std::to_string(i);
-        nodes[i].environment_map = Render::Material::Make(material_name, MATERIAL_ENVIRONMENTMAP);
+        nodes[i].environment_map = Render::Environment::Find(GetName(), i);
         nodes[i].environment_map->AddReference();
         nodes[i].environment_map->Load();
     }

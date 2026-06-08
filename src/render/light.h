@@ -10,7 +10,7 @@
 
 namespace tram::Render {
     
-class Material;
+class Environment;
     
 class LightGraph : public Resource {
 public:
@@ -25,14 +25,14 @@ public:
     
     static bool ContainsEntity(id_t entity);
     static SphericalHarmonic LookupHarmonic(vec3 position, uint32_t layers);
-    static Material* LookupEnvironmentMap(vec3 position);
+    static Environment* LookupEnvironmentMap(vec3 position);
     static LightGraph* Find(name_t name);
 protected:
     struct Node {
         vec3 position;
         bool has_light = false;
         bool has_reflection = false;
-        Material* environment_map = nullptr;
+        Environment* environment_map = nullptr;
         std::vector<SphericalHarmonic> constants;
     };
     

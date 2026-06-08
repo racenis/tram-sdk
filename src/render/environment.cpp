@@ -84,6 +84,21 @@ static uint32_t layer_count_for_type(EnvironmentType type) {
 void Environment::LoadFromDisk() {
     assert(status == UNLOADED);
     
+    // ideally we would handle the `fulldark` environment map using a shader
+    // flag, but for now we'll just treat it as a special environment map that
+    // gets generated instead of being loaded.
+    // this is kinda stinky and we *WILL* fix it.. later.. sometime..
+    if (name == "fulldark") {
+        type = ENVIRONMENT_SPHERE;
+        width = 32;
+        height = 32;
+        size_t size = width * height * 3 * layer_count_for_type(type);
+        texture_data = new uint8_t[size];
+        memset(texture_data, 0, size);
+        status = LOADED;
+        return;
+    }
+    
     uint32_t layer_count = layer_count_for_type(type);
     
     int loadwidth, loadheight, loadchannels;

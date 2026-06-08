@@ -63,7 +63,7 @@ void RenderComponent::SetLightmap(name_t name) {
 };
 
 /// Sets the environment map for the model.
-void RenderComponent::SetEnvironmentMap(Render::Material* material) {
+void RenderComponent::SetEnvironmentMap(Render::Environment* material) {
     environmentmap = material;
     //std::cout << "setting:" << material << std::endl;
     //if (material != environmentmap.get()) std::cout << "newnenwnenwenwnew\n\n\n\n\n\n\n\n" << std::endl;
@@ -71,7 +71,7 @@ void RenderComponent::SetEnvironmentMap(Render::Material* material) {
     if (is_ready && material && material->GetStatus() == Resource::READY) {
         for (auto entry : draw_list_entries) {
             if (entry.generic) {
-                Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturehandle_t {});
+                Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturearray_t {});
             }
         }
     }
@@ -331,7 +331,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
         Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturearray_t {});
-        Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturehandle_t {});
+        Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturearray_t {});
         Render::API::SetFlags(entry, render_flags);
         Render::API::SetLayer(entry, layer);
 

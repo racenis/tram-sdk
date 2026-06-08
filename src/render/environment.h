@@ -1,7 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-#ifndef TRAM_SDK_RENDER_LIGHTMAP_H
-#define TRAM_SDK_RENDER_LIGHTMAP_H
+#ifndef TRAM_SDK_RENDER_ENVIRONMENT_H
+#define TRAM_SDK_RENDER_ENVIRONMENT_H
 
 #include <render/render.h>
 
@@ -29,7 +29,7 @@ public:
     static Environment* Find(name_t name);
 protected:
     Environment(name_t name) : Resource(name) {}
-    Environment(name_t graph, uint32_t index) : Resource(std::to_string(index)) {} // TODO: fix
+    Environment(name_t graph, uint32_t index) : Resource(std::string(graph)+"."+std::to_string(index)) {} // TODO: fix
     
     texturearray_t texture = {};
 
@@ -46,4 +46,4 @@ protected:
 
 }
 
-#endif // TRAM_SDK_RENDER_LIGHTMAP_H
+#endif // TRAM_SDK_RENDER_ENVIRONMENT_H
