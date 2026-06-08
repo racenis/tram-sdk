@@ -47,7 +47,7 @@ class ResourceProxy {
 public:
     ResourceProxy(EntityComponent* parent) : parent(parent) {}
     ~ResourceProxy() { set(nullptr); }
-    void set(Resource* new_res){
+    void set(T* new_res){
         if (new_res == resource) return;
         
         if (resource) {
@@ -66,14 +66,17 @@ public:
             }
         }
     }
-    T* get() { return (T*)resource; }
-    T* operator= (Resource* res) { set(res); return get(); }
-    T* operator->() { return (T*)resource; }
-    T& operator*() { return *((T*)resource); }
+    T* get() { return resource; }
+    T* operator= (T* res) { set(res); return get(); }
+    T* operator->() { return resource; }
+    T& operator*() { return *resource; }
+
+    static_assert(std::is_base_of_v<Resource, T>, "ResourceProxy must proxy a Resource");
+    
     explicit operator bool() { return resource != nullptr; }
 protected:
     EntityComponent* parent;
-    Resource* resource = nullptr;
+    T* resource = nullptr;
 };
 
 }
