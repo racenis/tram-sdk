@@ -333,7 +333,7 @@ Inventory* Inventory::Find(Entity* entity) {
 
 
 void Inventory::LoadFromDisk(const char* filename) {
-    char path [100] = "data/";
+    char path [PATH_LIMIT] = "data/";
     strcat(path, filename);
     strcat(path, ".item");
 

@@ -414,7 +414,7 @@ void Entity::Yeet() {
 }
 
 /// Finds all entities of a given type.
-std::vector<Entity*> GetAllOfType(name_t type) {
+std::vector<Entity*> Entity::GetAllOfType(name_t type) {
     std::vector<Entity*> ents;
     for (Entity* ent : entity_id_list) {
         if (ent->GetType() != type) continue;
@@ -438,7 +438,7 @@ Entity* Entity::Make(name_t type, File* file) {
         vec3 {file->read_float32(), file->read_float32(), file->read_float32()}
     };
     
-    static std::vector<Value> fields;
+    static thread_local std::vector<Value> fields;
     fields.clear();
     
     for (size_t i = 0; i < record.fieldcount; i++) {

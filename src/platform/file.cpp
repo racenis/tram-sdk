@@ -73,7 +73,12 @@ public:
         
         char* file_data = new char[file_size + 1];
         
-        fread(file_data, file_size, 1, file_handle);
+        if (!fread(file_data, file_size, 1, file_handle)) {
+            Log (Severity::WARNING, System::PLATFORM, "Failed to read whole file: {}", path);
+            delete[] file_data;
+            return;
+        }
+        
         Log (Severity::INFO, System::PLATFORM, "Read {} bytes from file: {}", file_size, path);
 
         file_data[file_size] = '\0';
@@ -243,16 +248,21 @@ public:
             file_handle = nullptr;
         }
         
-        remove(full_path);
-        
-        rename(temp_path, full_path);
+        if (!write_failed) {
+            remove(full_path);
+            rename(temp_path, full_path);
+        }
         
         delete[] full_path;
         delete[] temp_path;
     }
     
     void SetContents(const char* contents, size_t size) {
-        fwrite(contents, size, 1, file_handle);
+        size_t bytes_written = fwrite(contents, size, 1, file_handle);
+        if (bytes_written != size) {
+            Log(Severity::ERROR, System::PLATFORM, "Failed to write to: {}", temp_path);
+            write_failed = true;
+        }
     }
     
     bool Flush() {
@@ -275,6 +285,8 @@ private:
     FILE* file_handle = nullptr;
     char* full_path = nullptr;
     char* temp_path = nullptr;
+    
+    bool write_failed = false;
 };
 
 FileWriter* FileWriter::GetWriter(const char* path) {

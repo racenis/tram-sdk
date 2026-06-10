@@ -212,8 +212,12 @@ static void set_function(name_t name, std::vector<Type> parameters, value_t (*fu
 
 static value_t call_function(name_t name, std::vector<Value> parameters) {
     lua_getglobal(L, name);
-	for (auto& val : parameters) push_value_to_stack(val);
-	lua_call(L, parameters.size(), 1);
+    for (auto& val : parameters) push_value_to_stack(val);
+    if (lua_pcall(L, parameters.size(), 1, 0) != LUA_OK) {
+        std::cout << "VERY BAD TERRIBLE: " << lua_tostring(L, -1) << std::endl; 
+        lua_pop(L, 1);
+        return value_t();
+    }
     value_t ret = get_value_from_stack(lua_gettop(L), best_value(lua_gettop(L)));
     lua_pop(L, 1);
     return ret;

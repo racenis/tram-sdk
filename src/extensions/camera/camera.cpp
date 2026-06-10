@@ -60,6 +60,7 @@ void Camera::Update() {
 
 Camera::~Camera() {
     if (this == selected_camera) selected_camera = nullptr;
+    if (following_listener) Event::RemoveListener(following_listener);
 }
 
 void Camera::SetViewTransform() {

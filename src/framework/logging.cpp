@@ -83,11 +83,7 @@ void SetConsoleLogCallback(void(*callback)(int, const char*)) {
 
 namespace tram::implementation {
 
-// since all of the formats use the same buffer? we should probably add a some
-// sort of a lock or something. so that you can Log from multiple threads.
-// actually a better idea would be to allocate this on the Log() template
-// functions stack and then pass a pointer down into concatfmt etc.
-char buffer[500] = {'\0'}; // yes.. haha .. YES!!
+thread_local char buffer[500] = {'\0'}; // yes.. haha .. YES!!
 
 void concat_fmt(std::string_view& str) {
     size_t open_bracket = str.find_first_of('{');

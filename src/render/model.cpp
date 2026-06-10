@@ -18,6 +18,8 @@
 #include <templates/hashmap.h>
 #include <templates/aabb.h>
 
+#include <config.h>
+
 #include <charconv>
 
 /* it would be a good idea to yeet ModelData struct.
@@ -287,7 +289,7 @@ static uint32_t PutTriangleInBucket (
 void Model::LoadFromDisk() {
     assert(status == UNLOADED);
     std::ifstream file;
-    char path[200];
+    char path[PATH_LIMIT];
     
     std::vector<TriangleBucket> triangle_buckets;
     std::vector<BucketMapping> bucket_mappings;

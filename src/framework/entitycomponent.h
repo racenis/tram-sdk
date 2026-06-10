@@ -22,10 +22,10 @@ public:
 
     virtual void EventHandler(Event &event) = 0;
 
-    inline bool IsReady() { return is_ready; }
-    inline bool IsInit() { return is_init; }
+    inline bool IsReady() const { return is_ready; }
+    inline bool IsInit() const { return is_init; }
     
-    inline Entity* GetParent() { return parent; }
+    inline Entity* GetParent() const { return parent; }
     inline void SetParent(Entity* parent) { this->parent = parent; }
 
 protected:

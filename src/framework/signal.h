@@ -7,6 +7,8 @@
 #include <framework/event.h>
 #include <framework/uid.h>
 
+#include <config.h>
+
 namespace tram {
 
 typedef uint32_t signal_t;
@@ -53,7 +55,7 @@ public:
     void Fire(signal_t signal, id_t sender, Value value);
     void Add(const Signal& signal);
 public:
-    Signal signals[10];
+    Signal signals[SIGNAL_PER_ENTITY_LIMIT];
     size_t signal_count = 0;
 };
     

@@ -94,12 +94,12 @@ void Lightmap::LoadFromDisk() {
     
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
-    char path[100];
+    char path[PATH_LIMIT];
     
     if (name) {
-        snprintf(path, 100, "data/lightmaps/%s.png", (const char*)name);
+        snprintf(path, PATH_LIMIT, "data/lightmaps/%s.png", (const char*)name);
     } else {
-        snprintf(path, 100, "data/lightmaps/%i.png", index);
+        snprintf(path, PATH_LIMIT, "data/lightmaps/%i.png", index);
     }
 
 
@@ -123,9 +123,9 @@ void Lightmap::LoadFromDisk() {
     for (uint32_t layer = 0; layer < layer_count; layer++) {
         if (layer >= 1) {
             if (name) {
-                snprintf(path, 100, "data/lightmaps/%s.%i.png", (const char*)name, layer);
+                snprintf(path, PATH_LIMIT, "data/lightmaps/%s.%i.png", (const char*)name, layer);
             } else {
-                snprintf(path, 100, "data/lightmaps/%i.%i.png", index, layer);
+                snprintf(path, PATH_LIMIT, "data/lightmaps/%i.%i.png", index, layer);
             }
             
             file = FileReader::GetReader(path);

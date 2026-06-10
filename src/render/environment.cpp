@@ -103,13 +103,13 @@ void Environment::LoadFromDisk() {
     
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
-    char path[100];
+    char path[PATH_LIMIT];
   
     for (uint32_t layer = 0; layer < layer_count; layer++) {
         if (name) {
-            snprintf(path, 100, "data/environments/%s.%i.png", (const char*)name, layer);
+            snprintf(path, PATH_LIMIT, "data/environments/%s.%i.png", (const char*)name, layer);
         } else {
-            snprintf(path, 100, "data/environments/%s.%i.%i.png", (const char*)graph, index, layer);
+            snprintf(path, PATH_LIMIT, "data/environments/%s.%i.%i.png", (const char*)graph, index, layer);
         }
         
         FileReader* file = FileReader::GetReader(path);

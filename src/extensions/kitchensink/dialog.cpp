@@ -8,6 +8,8 @@
 
 #include <framework/file.h>
 
+#include <config.h>
+
 using namespace tram;
 template <> Pool<Ext::Kitchensink::DialogTopic> PoolProxy<Ext::Kitchensink::DialogTopic>::pool("DialogTopic pool", 500);
 static Hashmap<Ext::Kitchensink::DialogTopic*> item_class_list("DialogTopic list", 500);
@@ -86,7 +88,7 @@ DialogTopic* DialogTopic::Find(name_t name) {
 }
 
 void DialogTopic::LoadFromDisk(const char* filename) {
-    char path [100] = "data/";
+    char path [PATH_LIMIT] = "data/";
     strcat(path, filename);
     strcat(path, ".dialog");
 

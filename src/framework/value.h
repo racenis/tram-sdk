@@ -138,7 +138,7 @@ public:
     inline int GetInt() const {
         switch (type) {
             case TYPE_INT32:    return int32_value;
-            case TYPE_UINT32:   return int32_value;
+            case TYPE_UINT32:   return uint32_value;
             case TYPE_FLOAT32:  return float_value;
             default: return 0;
         }

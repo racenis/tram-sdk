@@ -44,7 +44,7 @@ public:
         }
         
         // otherwise compile the shader again
-        char path[256];
+        char path[PATH_LIMIT];
         strcpy(path, shader_path);
         strcat(path, name);
         strcat(path, ".vert");
@@ -113,7 +113,7 @@ public:
         }
         
         // otherwise compile the shader again
-        char path[256];
+        char path[PATH_LIMIT];
         strcpy(path, shader_path);
         strcat(path, name);
         strcat(path, ".frag");

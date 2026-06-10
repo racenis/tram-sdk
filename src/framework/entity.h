@@ -38,7 +38,7 @@ public:
     
     inline name_t GetName() const { return name; }
     inline id_t GetID() const { return id; }
-    inline WorldCell* GetCell() { return cell; }
+    inline WorldCell* GetCell() const { return cell; }
     inline bool IsLoaded() const { return flags & LOADED; }
     inline bool IsAutoLoad() const { return !(flags & DISABLE_AUTO_LOAD); }
     inline bool IsPersistent() const { return !(flags & NON_PERSISTENT); }
@@ -65,8 +65,8 @@ public:
         CheckTransition();
     }
     
-    inline const vec3& GetLocation() { return location; }
-    inline const quat& GetRotation() { return rotation; }
+    inline const vec3& GetLocation() const { return location; }
+    inline const quat& GetRotation() const { return rotation; }
 
     virtual void MessageHandler(Message& msg) = 0;
     virtual void EventHandler(Event &event) {};
@@ -89,9 +89,9 @@ public:
     static void RegisterType(name_t name, entity_make, entity_clear, const FieldInfo* fields, size_t fieldcount);
     static void RegisterType(name_t name, entity_make, entity_clear, std::initializer_list<FieldInfo> fields);
     
-    inline SignalTable* GetSignalTable() { return signals; }
+    inline SignalTable* GetSignalTable() const { return signals; }
     
-    std::vector<Entity*> GetAllOfType(name_t type);
+    static std::vector<Entity*> GetAllOfType(name_t type);
     
     static Entity* Make(name_t type, File* file);
     static Entity* Make(name_t type, const SharedEntityData&, const ValueArray&);

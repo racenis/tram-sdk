@@ -31,6 +31,7 @@ const float CAMERA_MULTIPLIER = 1.0f / 8.0f;
 
 const float PHYSICS_GROUND_PLANE = -9.0f;
 const float PHYSICS_GRAVITY = -9.8f;
+const uint32_t RIGIDBODY_LIMIT = 500;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -104,6 +105,10 @@ const uint32_t RESOURCE_LOADER_REQUEST_LIMIT = 1750;
 const uint32_t ENTITY_LIMIT = 5000;
 const uint32_t NAMED_ENTITY_LIMIT = 500;
 
+// worldcell limits
+const uint32_t WORLDCELL_LIMIT = 250;
+const uint32_t WORLDCELL_TRANSITION_LIMIT = 250;
+
 // Limit for total sum of characters that can be stored in all language strings
 const uint32_t LANUGAGE_STRING_CHARACTER_LIMIT = 10000;
 
@@ -124,19 +129,16 @@ const uint32_t MESSAGE_TYPE_LIMIT = 100;
 
 // Limit for signal types
 const uint32_t SIGNAL_TYPE_LIMIT = 100;
-
-const uint32_t WORLDCELL_TRANSITION_LIMIT = 250;
-const uint32_t KEYBOARDACTION_LIMIT = 100;
+const uint32_t SIGNAL_PER_ENTITY_LIMIT = 16;
 
 // Limit for total sum of characters that can be stored in all names
 const uint32_t UID_CHARACTER_LIMIT = 20000;
 
 // Limit for the number of names
-const uint32_t UID_LIMIT = 2000
-;
-const uint32_t WORLDCELL_LIMIT = 250;
+const uint32_t UID_LIMIT = 2000;
 
-const uint32_t RIGIDBODY_LIMIT = 500;
+// Limits for keyboard actions
+const uint32_t KEYBOARDACTION_LIMIT = 100;
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |

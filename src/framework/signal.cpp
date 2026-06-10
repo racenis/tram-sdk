@@ -161,8 +161,7 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
 }
 
 void SignalTable::Add(const Signal& signal) {
-    //assert(signal_count < 10);
-    if (signal_count >= 10) return; // TODO: add errore message
+    if (signal_count >= SIGNAL_PER_ENTITY_LIMIT) return; // TODO: add errore message
     signals[signal_count++] = signal;
 }
 

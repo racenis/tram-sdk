@@ -308,6 +308,8 @@ void RemoveLight(light_t light) {
         }
     }
     
+    if (!remove_light) return;
+    
     light_tree.Remove(remove_light->tree_handle);
     light_list.Remove(remove_light);
 }

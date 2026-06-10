@@ -5,6 +5,7 @@
 
 #include <string>
 #include <iostream>
+#include <atomic>
 #include <cassert>
 #include <cstdint>
 
@@ -72,7 +73,7 @@ public:
     
     T& operator[](size_t index) { return *(first + index); } // note that there is no checking for whether the index is valid
     
-    iterator begin()  {auto ptr = first; while (*((uint64_t*)ptr) == 0 && ptr < last) ptr++; return ptr; }
+    iterator begin()  {auto ptr = first; while (ptr < last && *((uint64_t*)ptr) == 0) ptr++; return ptr; }
     iterator end() { return last; }
     
     size_t size() const {return current_size;}
@@ -80,11 +81,13 @@ public:
     
     /// Checks if an object can be accessed through iteration.
     bool validate (const T* ptr) const {
-        return ptr >= first && ptr <= last && *((uint64_t*)ptr) != 0;
+        return ptr >= first && ptr < last && *((uint64_t*)ptr) != 0;
     }
     
-    /// Allocates memory, but doesn't construct type instance -- be careful
+    /// Allocates memory, but doesn't construct type instance -- be careful.
     T* allocate() {
+        lock();
+        
         if (current_size == full_size) {
             std::cout << "Pool " << print_name << " out of space!" << std::endl;
             abort();
@@ -102,18 +105,21 @@ public:
             new_obj = last_free;
             last++;
             last_free++;
-            
+
             *((uint64_t*)last) = 0;
             *(((uint64_t*)last) + 1) = 0;
         }
         
         current_size++;
+        
+        unlock();
 
         return new_obj;
     }
     
-    /// Deallocates memory, but doesn't destruct type instance -- be careful
+    /// Deallocates memory, but doesn't destruct type instance -- be careful.
     void deallocate(T* obj) {
+        lock();
         assert(obj >= first && obj < last); // pointer is in pool
         uint64_t* skip = reinterpret_cast<uint64_t*>(obj);
         *skip = 0; // mark as empty
@@ -122,7 +128,11 @@ public:
         *next_free = last_free; // add pointer to previous free place
         last_free = obj;
         current_size--;
+        unlock();
     }
+    
+    void lock() { while (spinlock.exchange(true)); }
+    void unlock() { spinlock.store(false); }
     
     // aliases to not break old code. do not use for new code
     template <typename... Args>
@@ -139,6 +149,8 @@ protected:
     T* first;
     T* last;
     T* last_free;
+
+    std::atomic<bool> spinlock = {false};
 
     // make sure that there will be enough room for the empty place marker and free list pointer
     static_assert(sizeof(T) >= sizeof(T*) + sizeof(uint64_t));
@@ -170,7 +182,7 @@ public:
     ~PoolPtr () { PoolProxy<T>::Delete(ptr); }
     T* GetResource() { return ptr; }
     T* operator->() { return ptr; }
-    T& operator*() { return ptr; }
+    T& operator*() { return *ptr; }
     explicit operator bool() { return ptr != nullptr; }
 protected:
     T* ptr;

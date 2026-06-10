@@ -191,7 +191,7 @@ void Render () {
 /// Sets the sun direction.
 /// @param direction    Normal vector pointing towards the sun.
 /// @param layer        Rendering layer to which the sun direction will be applied.
-void SetSunDirection (color_t direction, layer_t layer) {
+void SetSunDirection (vec3 direction, layer_t layer) {
     view_properties[layer].sun_direction = direction;
     update_light(layer);
 }

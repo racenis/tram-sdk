@@ -35,9 +35,8 @@ static bool automatic_time = true;
 
 /// Generates a unique ID number.
 id_t GenerateID() {
-    static id_t num = 0;
-    num++;
-    return num;
+    static std::atomic<id_t> num = 0;
+    return ++num;
 }
 
 /// Initializes the core of the framework.

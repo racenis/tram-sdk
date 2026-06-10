@@ -256,7 +256,17 @@ void SetRigidbodyRotation(rigidbody_t rigidbody, quat rotation) {
 }
 
 void SetRigidbodyMass(rigidbody_t rigidbody, float mass) {
-    // ??? where did this go ???
+    if (mass == 0.0f) {
+        rigidbody.bt_metadata->collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
+    } else {
+        rigidbody.bt_metadata->collision_flags &= ~btCollisionObject::CF_STATIC_OBJECT;
+    }
+    
+    rigidbody.bt_rigidbody->setCollisionFlags(rigidbody.bt_metadata->collision_flags);
+    btScalar rigidbody_mass = mass;
+    btVector3 rigidbody_inertia (0.0f, 0.0f, 0.0f);
+    rigidbody.bt_rigidbody->getCollisionShape()->calculateLocalInertia(rigidbody_mass, rigidbody_inertia);
+    rigidbody.bt_rigidbody->setMassProps(mass, rigidbody_inertia);
 }
 
 void PushRigidbody(rigidbody_t rigidbody, vec3 direction) {
@@ -303,8 +313,8 @@ void SetRigidbodyLinearFactor(rigidbody_t rigidbody, vec3 factor) {
 }
 
 void SetRigidbodyVelocity(rigidbody_t rigidbody, vec3 velocity) {
-    if (velocity.x != 0.0f &&
-        velocity.y != 0.0f &&
+    if (velocity.x != 0.0f ||
+        velocity.y != 0.0f ||
         velocity.z != 0.0f
     ) {
         rigidbody.bt_rigidbody->activate();
@@ -333,7 +343,7 @@ void DisableRigidbodyDeactivation(rigidbody_t rigidbody) {
 trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec3 position, quat rotation) {
     RigidbodyMetadata* metadata = rigidbody_metadata_pool.AddNew();
    
-    metadata->type = METADATA_RIGIDBODY;
+    metadata->type = METADATA_TRIGGER;
     metadata->collision_mask = mask;
     metadata->collision_group = group;
     metadata->collision_flags = 0;
@@ -555,6 +565,7 @@ void StepPhysics() {
             auto& posB = contact.getPositionWorldOnB();
             vec3 point = {posA.getX(), posA.getY(), posA.getZ()};
             vec3 normal = -glm::normalize(point - vec3 {posB.getX(), posB.getY(), posB.getZ()});
+            // TODO: switch to using m_normalWorldOnB from contact
             
             // reverse the normal
             if (swapped) normal = -normal;

@@ -7,6 +7,8 @@
 #include <templates/pool.h>
 #include <templates/hashmap.h>
 
+#include <config.h>
+
 #include <unordered_map>
 #include <cstring>
 
@@ -57,14 +59,14 @@ Navmesh* Navmesh::Find (name_t name) {
 }
 
 void Navmesh::LoadFromDisk() {
-    char path[100] = "data/navmeshes/";
+    char path[PATH_LIMIT] = "data/navmeshes/";
     strcat(path, name);
     strcat(path, ".navmesh");
     
     File file (path, File::READ);
     
     if (!file.is_open()) {
-        std::cout << "Can't find path file: " << path << std::endl; return;
+        std::cout << "Can't find navmesh file: " << path << std::endl; return;
     }
     
     if (file.read_name() != "NAVMESHv1") {

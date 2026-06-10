@@ -70,11 +70,6 @@ struct ResourceRequest {
         
         EntityComponent* requester;
     };
-    
-    // TODO: check if we still need this padding
-#ifndef __x86_64__
-    void* padding[2];
-#endif
 };
 
 static Queue<ResourceRequest*> disk_loader_queue("Async::LoadResourcesFromDisk() queue", RESOURCE_LOADER_QUEUE_LIMIT);
@@ -112,7 +107,8 @@ void RequestResource(void(*callback)(void* data), void* data, Resource* resource
     }
     
     disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
-        .notification_type = RequestNotification::COMPONENT,
+        .notification_type = RequestNotification::CALLBACK,
+        .resource = resource,
         .callback = callback,
         .callback_data = data
     }));
@@ -125,10 +121,14 @@ void RequestResource(void(*callback)(void* data), void* data, Resource* resource
 ///       be notified.
 void CancelRequest(EntityComponent* requester, Resource* resource) {
     for (auto& request : request_pool) {
+        if (request.requester != requester || request.resource != resource) continue;
+        
+        request_pool.lock();
         if (request.requester == requester && request.resource == resource) {
             request.notification_type = RequestNotification::NONE;
             request.requester = nullptr;
         }
+        request_pool.unlock();
     }
 }
 
@@ -240,6 +240,7 @@ void LoadResourcesFromMemory() {
 }
 
 /// Notifies EntityComponents about finished resources.
+/// This function should be called from the main thread.
 void FinishResources() {
     for (ResourceRequest* request; finished_queue.try_pop(request);) {
         switch (request->notification_type) {

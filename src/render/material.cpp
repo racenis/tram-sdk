@@ -48,7 +48,7 @@ static Hashmap<Material*> material_list("Material name list", RESOURCE_LIMIT_MAT
 void Material::LoadMaterialInfo(const char* filename) {
     using namespace tram::Render;
     
-    char path [100] = "data/";
+    char path [PATH_LIMIT] = "data/";
     strcat (path, filename);
     strcat (path, ".list");
 
@@ -313,7 +313,7 @@ void Material::LoadFromDisk() {
 
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
-    char path[100] = "data/textures/";
+    char path[PATH_LIMIT] = "data/textures/";
 
     switch (type) {
         case MATERIAL_LIGHTMAP:

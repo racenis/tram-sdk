@@ -126,7 +126,7 @@ void SetInitialized(uint32_t system, bool is_initialized) {
     if (system == System::INVALID || system >= last_system) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "Accessing invalid system_t {}", system);
     }
-    system_infos[system].state = READY;
+    system_infos[system].state = is_initialized ? READY : YEET;
 }
 
 /// Checks if a system is initialized.

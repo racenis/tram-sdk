@@ -302,7 +302,7 @@ Character* Character::Find(id_t entity_id) {
 }
 
 void Character::LoadFromDisk(const char* filename) {
-    char path [100] = "data/";
+    char path [PATH_LIMIT] = "data/";
     strcat(path, filename);
     strcat(path, ".char");
 
