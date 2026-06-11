@@ -80,7 +80,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_RIGHT, KeyBinding {.action = KEY_ACTION_RIGHT}},
 
     {KEY_F1, KeyBinding {.special_option = [](){ exit = true; }}},
-    {KEY_F9, KeyBinding {.special_option = [](){ input_state = (input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING; }}},
+    {KEY_F9, KeyBinding {.special_option = [](){ SetInputState((input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING); }}},
     {KEY_F12, KeyBinding {.special_option = [](){
         char* buffer = (char*)malloc(screen_width * screen_height * 3);
 
@@ -226,14 +226,16 @@ void Update() {
         vec3 camera_position = GetViewPosition();
         quat camera_rotation = GetViewRotation();
         
+        const float acc = CAMERA_SPEED * ((keyboard_keys_values[KEY_LEFT_SHIFT]) ? 4.0f : 1.0f);
+        
         if (keyboard_keys_values[KEY_W])
-            camera_position += camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED * GetDeltaTime();
+            camera_position += camera_rotation * DIRECTION_FORWARD * acc * GetDeltaTime();
         if (keyboard_keys_values[KEY_S])
-            camera_position -= camera_rotation * DIRECTION_FORWARD * CAMERA_SPEED * GetDeltaTime();
+            camera_position -= camera_rotation * DIRECTION_FORWARD * acc * GetDeltaTime();
         if (keyboard_keys_values[KEY_A])
-            camera_position -= camera_rotation * DIRECTION_SIDE * CAMERA_SPEED * GetDeltaTime();
+            camera_position -= camera_rotation * DIRECTION_SIDE * acc * GetDeltaTime();
         if (keyboard_keys_values[KEY_D])
-            camera_position += camera_rotation * DIRECTION_SIDE * CAMERA_SPEED * GetDeltaTime();
+            camera_position += camera_rotation * DIRECTION_SIDE * acc * GetDeltaTime();
             
         camera_yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_SENSITIVITY * GetDeltaTime();
         camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY * GetDeltaTime();
@@ -331,6 +333,12 @@ void SetInputState(InputState state) {
         case STATE_MENU_OPEN:
         case STATE_CURSOR:
             Platform::Window::EnableCursor();
+    }
+
+    if (state == STATE_FLYING) {
+        vec3 direction = Render::GetViewRotation() * DIRECTION_FORWARD;
+        camera_pitch = -glm::degrees(asinf(direction.y));
+        camera_yaw = glm::degrees(atan2f(direction.x, -direction.z));
     }
 }
 
