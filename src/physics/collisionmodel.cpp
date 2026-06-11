@@ -51,7 +51,7 @@ void CollisionModel::LoadFromDisk () {
     File file(path, File::READ);
 
     if (!file.is_open()) {
-        Log(Severity::WARNING, System::PHYSICS, "Can't find collisionmodel: {}", path);
+        Log(Severity::NOTE, System::PHYSICS, "Can't find collisionmodel: {}", path);
         
         shape = Physics::API::MakeCollisionShape(nullptr, 0);
         load_fail = true;

@@ -29,7 +29,7 @@ static FILE* log_file = nullptr;
 ///                     All lower severities will be filtered out.
 void SetSystemLoggingSeverity(System::system_t system, Severity min_severity) {
     if (system >= severities.size()) {
-        severities.assign(system + 1, Severity::WARNING);
+        severities.assign(system + 1, Severity::NOTE);
     }
     
     severities[system] = min_severity;
@@ -99,7 +99,7 @@ void concat_fmt(std::string_view& str) {
 
 void flush_console(Severity severity, System::system_t system) {
     const bool severity_known = (size_t) system < severities.size();
-    if ((!severity_known && severity < Severity::WARNING) || (severity_known && severity < severities[system])) {
+    if ((!severity_known && severity < Severity::NOTE) || (severity_known && severity < severities[system])) {
         buffer[0] = '\0';
         return;
     }
@@ -115,6 +115,7 @@ void flush_console(Severity severity, System::system_t system) {
         case Severity::ERROR:           severity_text = "[ERRR]";   break;
         case Severity::CRITICAL_ERROR:  severity_text = "[CRIT]";   break;
         case Severity::INFO:            severity_text = "[INFO]";   break;
+        case Severity::NOTE:            severity_text = "[NOTE]";   break;
         default:                        severity_text = "[    ]";   break;     
     }
     
@@ -124,6 +125,7 @@ void flush_console(Severity severity, System::system_t system) {
         case Severity::ERROR:           color = TerminalColor::LIGHT_RED;    break;
         case Severity::CRITICAL_ERROR:  color = TerminalColor::LIGHT_RED;    break;
         case Severity::INFO:            color = TerminalColor::DEFAULT;      break;
+        case Severity::NOTE:            color = TerminalColor::DEFAULT;      break;
         default:                        color = TerminalColor::DEFAULT;      break;     
     }
     

@@ -6,7 +6,6 @@
 
 #include <lua.hpp>
 
-#include <iostream>
 #include <cstring>
 
 /**
@@ -18,6 +17,7 @@
 namespace tram::Ext::Scripting::Lua {
 
 static lua_State* L = nullptr;
+static uint32_t lua_system = -1;
 
 // Takes a Lua value from Lua stack and tries to find the best fit for it from
 // the types that are supported by value_t.
@@ -214,7 +214,7 @@ static value_t call_function(name_t name, std::vector<Value> parameters) {
     lua_getglobal(L, name);
     for (auto& val : parameters) push_value_to_stack(val);
     if (lua_pcall(L, parameters.size(), 1, 0) != LUA_OK) {
-        std::cout << "VERY BAD TERRIBLE: " << lua_tostring(L, -1) << std::endl; 
+        Log(Severity::ERROR, lua_system, "Message: {}", lua_tostring(L, -1));
         lua_pop(L, 1);
         return value_t();
     }
@@ -287,24 +287,34 @@ class Lua : public Script::Interface {
 };
 
 void Init() {
-    if (L) {
-        return; // TODO: add error
+    if (System::IsInitialized(lua_system)) {
+        Log(Severity::CRITICAL_ERROR, lua_system, "Lua is already initialized!");
     }
+    
+    if (lua_system == (uint32_t)-1) {
+        lua_system = System::Register("Lua", "LUA");
+    }
+    
+    System::SetState(lua_system, System::INIT);
     
     L = luaL_newstate();
     luaL_openlibs(L);
 
     Script::SetInterface(new Lua);
+    
+    System::SetState(lua_system, System::READY);
 }
 
 void Uninit() {
-    if (!L) {
-        return; // TODO: add error
+    if (!System::IsInitialized(lua_system)) {
+        Log(Severity::CRITICAL_ERROR, lua_system, "Lua was not initialized!");
     }
     
     lua_close(L);
     
     L = nullptr;
+    
+    System::SetState(lua_system, System::YEET);
 }
 
 }

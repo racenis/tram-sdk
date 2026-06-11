@@ -96,7 +96,7 @@ void DialogTopic::LoadFromDisk(const char* filename) {
     File file (path, File::READ);
 
     if (!file.is_open()) {
-        Log(Severity::WARNING, Kitchensink::System(), "Can't open dialog file: {}", path);
+        Log(Severity::NOTE, Kitchensink::System(), "Can't open dialog file: {}", path);
         return;
     }
 

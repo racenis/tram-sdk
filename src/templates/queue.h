@@ -3,7 +3,7 @@
 #ifndef TRAM_SDK_TEMPLATES_QUEUE_H
 #define TRAM_SDK_TEMPLATES_QUEUE_H
 
-#include <iostream>
+#include <framework/logging.h>
 #include <atomic>
 
 namespace tram {
@@ -37,7 +37,7 @@ public:
         lock();
         
         if (count == csize) {
-            std::cout << "Queue " << name << " out of space!" << std::endl;
+            Log(Severity::CRITICAL_ERROR, System::CORE, "Queue {} out of space!", name);
             unlock();
             return;
         }

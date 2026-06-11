@@ -26,8 +26,6 @@
 
 #include <config.h>
 
-#include <fstream>
-
 /**
  * @class tram::Render::Material render/material.h <render/material.h>
  * 
@@ -347,7 +345,7 @@ void Material::LoadFromDisk() {
     }
 
     if (loadchannels < channels) {
-        Log(Severity::WARNING, System::RENDER, "Texture {} should have {} channels, but it has {}!", path, (int)channels, (int)loadchannels);
+        Log(Severity::INFO, System::RENDER, "Texture {} should have {} channels, but it has {}!", path, (int)channels, (int)loadchannels);
     }
 
     if (loadtexture) {
@@ -364,7 +362,7 @@ void Material::LoadFromDisk() {
         stbi_image_free(loadtexture);
 
     } else {
-        Log(Severity::WARNING, System::RENDER, "Texture {} ({}) couldn't be loaded!", name, path);
+        Log(Severity::NOTE, System::RENDER, "Texture {} ({}) couldn't be loaded!", name, path);
 
         MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
         
@@ -380,7 +378,7 @@ void Material::LoadFromDisk() {
         loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, 3);
         
         if (loadchannels != 3) {
-            Log(Severity::WARNING, System::RENDER, "Texture {} should have 3 channels, but it has {}!", path, (int)loadchannels);
+            Log(Severity::INFO, System::RENDER, "Texture {} should have 3 channels, but it has {}!", path, (int)loadchannels);
         }
         
         if (loadtexture) {
@@ -399,7 +397,7 @@ void Material::LoadFromDisk() {
 
             normal_map_data = MakeNewErrorTexture(glm::normalize(vec3(0.25f, 0.75f, 1.0f)), glm::normalize(vec3(0.75f, 0.25f, 1.0f)));
 
-            Log(Severity::WARNING, System::RENDER, "Normal map {} ({}) couldn't be loaded!", name, path);
+            Log(Severity::NOTE, System::RENDER, "Normal map {} ({}) couldn't be loaded!", name, path);
         }
     }
 

@@ -12,7 +12,6 @@
 
 #include <framework/async.h>
 
-#include <fstream>
 #include <cstring>
 
 #include <templates/hashmap.h>
@@ -288,7 +287,6 @@ static uint32_t PutTriangleInBucket (
 
 void Model::LoadFromDisk() {
     assert(status == UNLOADED);
-    std::ifstream file;
     char path[PATH_LIMIT];
     
     std::vector<TriangleBucket> triangle_buckets;
@@ -305,7 +303,7 @@ void Model::LoadFromDisk() {
         model_data = data;
         model_aabb = new ModelAABB;
 
-        std::cout << "Loading!!!: " << path << std::endl;
+        Log(Severity::INFO, System::RENDER, "Loading file: {}", path);
 
         // doing some extra work, so that we can load the old .stmdl that didn't
         // have a header
@@ -479,15 +477,16 @@ void Model::LoadFromDisk() {
         model_data = data;
         model_aabb = new ModelAABB;
 
-        std::cout << "Loading: " << path << std::endl;
+        Log(Severity::INFO, System::RENDER, "Loading file: {}", path);
 
         assert(data);
         
         name_t file_version = file.read_name();
         
         if (file_version != UID("DYMDLv1")) {
-            std::cout << "Model " << path << " is not using right DYMDLv1 version!" << std::endl;
-            std::cout << "Add \"DYMDLv1\" to file and also add bone roll to the bone definitions (0.0 to the end of lines), or reexport." << std::endl;
+            Log(Severity::WARNING, System::RENDER, "Model {} is not using right DYMDLv1 version!", path);
+            Log(Severity::WARNING, System::RENDER, "Add \"DYMDLv1\" to file and also add bone roll to the bone definitions (0.0 to the end of lines), or reexport.");
+            goto load_failure;
         }
         
         
@@ -498,7 +497,7 @@ void Model::LoadFromDisk() {
         uint32_t gcount = file.read_uint32();   // number of vertex groups
 
         if (mcount == 0) {
-            Log(Severity::ERROR, System::RENDER, "Model {} has zero materials!", path);
+            Log(Severity::WARNING, System::RENDER, "Model {} has zero materials!", path);
             goto load_failure;
         }
 
@@ -612,7 +611,7 @@ void Model::LoadFromDisk() {
             name_t group = file.read_name();
             
             if (armature[i].name != group) {
-                std::cout << "Model " << name << " group " << group << " is not matching bone " << armature[i].name << "!" << std::endl;
+                Log(Severity::WARNING, System::RENDER, "Model {} group {} is not matching bone {}!", name, group, armature[i].name);
             }
             
             data->groups.push_back(group);
@@ -657,10 +656,10 @@ void Model::LoadFromDisk() {
         name_t file_version = file.read_name();
         
         if (file_version != "MDMDLv1") {
-            std::cout << "Model " << path << " is not using right MDMDLv1 version!" << std::endl;
+            Log(Severity::WARNING, System::RENDER, "Model {} is not using right MDMDLv1 version!", path);
         }
         
-        std::cout << "Loading: " << path << std::endl;
+        Log(Severity::INFO, System::RENDER, "Loading file: {}", path);
         
         name_t source_model = file.read_name();
         
@@ -699,7 +698,7 @@ void Model::LoadFromDisk() {
     // ok, so the model isn't static or dynamic
     // we have no other model types, so it means that there actually isn't any usable model
 
-    std::cout << "Model file for " << name << " couldn't be accessed!" << std::endl;
+    Log(Severity::NOTE, System::RENDER, "Model file for {} couldn't be accessed!", name);
 
 load_failure:
     

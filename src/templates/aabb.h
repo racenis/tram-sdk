@@ -7,8 +7,6 @@
 #include <framework/logging.h>
 #include <framework/core.h>
 
-#include <iostream>
-
 #include <vector>
 
 namespace tram {

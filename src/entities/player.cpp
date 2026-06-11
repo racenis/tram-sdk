@@ -93,22 +93,22 @@ void Player::SetParameters() {
 
 void Player::MessageHandler(Message& msg) {
     if (msg.type == Message::PING) {
-        Log ("Player was pinged with {}!", (long long) msg.data);
+        Log (Severity::DEFAULT, System::MISC, "Player was pinged with {}!", (long long) msg.data);
     }
     
     if (msg.type == Message::SET_FLAG_ON && msg.data_value) {
         const name_t flag = *msg.data_value;
         
         if (flag == "noclip") {
-            Log("Noclip turned on.");
+            Log(Severity::DEFAULT, System::MISC, "Noclip turned on.");
             plomp->SetNoclip(true);
             
         } else if (flag == "mouselook") {
-            Log("Mouselook turned on.");
+            Log(Severity::DEFAULT, System::MISC, "Mouselook turned on.");
             plomp->SetKeyboardLook(false);
             
         } else {
-            Log ("Player does not have flag {}!", flag);
+            Log(Severity::WARNING, System::MISC, "Player does not have flag {}!", flag);
         }
     }
     
@@ -116,15 +116,15 @@ void Player::MessageHandler(Message& msg) {
         const name_t flag = *msg.data_value;
         
         if (flag == "noclip") {
-            Log("Noclip turned off.");
+            Log(Severity::DEFAULT, System::MISC,"Noclip turned off.");
             plomp->SetNoclip(false);
             
         } else if (flag == "mouselook") {
-            Log("Mouselook turned of.");
+            Log(Severity::DEFAULT, System::MISC,"Mouselook turned of.");
             plomp->SetKeyboardLook(true);
             
         } else {
-            Log ("Player does not have flag {}!", flag);
+            Log(Severity::WARNING, System::MISC, "Player does not have flag {}!", flag);
         }
     }
 }

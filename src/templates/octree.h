@@ -7,8 +7,6 @@
 #include <algorithm>
 #include <framework/math.h>
 
-#include <iostream>
-
 namespace tram {
 
 template <typename T>

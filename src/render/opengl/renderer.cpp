@@ -513,9 +513,8 @@ void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, u
         case GL_DEBUG_SEVERITY_MEDIUM_ARB:          severity_str = "MEDIUM";            break;
         case GL_DEBUG_SEVERITY_LOW_ARB:             severity_str = "LOW";               break;
     }
-
-    std::cout << "OpenGL Debug Message: " << source_str << " " << type_str << " " << severity_str << " " << id << std::endl;
-    std::cout << message << std::endl;
+    
+    Log(Severity::WARNING, System::RENDER, "GL: {} {} {} {}\n{}", source_str, type_str, severity_str, id, message);
 }
 #endif
 

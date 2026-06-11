@@ -11,7 +11,6 @@
 #include <config.h>
 
 #include <cstring>
-#include <fstream>
 
 /**
  * @namespace tram::Language

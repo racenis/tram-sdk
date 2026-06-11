@@ -3,8 +3,6 @@
 #include <framework/script.h>
 
 #include <cstring>
-
-#include <iostream>
 #include <algorithm>
 
 #include <framework/core.h>

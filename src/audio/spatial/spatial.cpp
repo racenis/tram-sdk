@@ -218,7 +218,7 @@ audiobuffer_t* MakeAudioBuffer(const int16_t* audio_data, int32_t length, int32_
             break;
         default:
             buffer.sample_rate = SAMPLERATE_44100;
-            std::cout << "Unrecognized sample rate: " << samples << std::endl;
+            Log(Severity::WARNING, System::AUDIO, "Unrecognized sample rate: {}", samples);
             break;
     }
     

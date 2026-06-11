@@ -12,6 +12,7 @@ namespace tram {
 
 enum class Severity {
     INFO,           //< For debugging and other verbose messages. Not printed by default.
+    NOTE,           //< For messages about missing files and other non-critical information.
     WARNING,        //< For errors that are corrected and require no end-user intervention.
     ERROR,          //< For significant erros that can be corrected, but require the end-user to be notified.
     CRITICAL_ERROR, //< For errors that cannot be recovered from.

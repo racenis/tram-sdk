@@ -148,7 +148,7 @@ void Lightmap::LoadFromDisk() {
             stbi_image_free(loadtexture);
             loadtexture = nullptr;
         } else {
-            Log(Severity::WARNING, System::RENDER,  "Lightmap {} ({}) couldn't be loaded!", (name ? std::string(name) : std::to_string(index)), path);
+            Log(Severity::NOTE, System::RENDER,  "Lightmap {} ({}) couldn't be loaded!", (name ? std::string(name) : std::to_string(index)), path);
 
             load_fail = true;
             

@@ -5,7 +5,7 @@
 
 #include <string>
 #include <cstdint>
-#include <iostream>
+#include <framework/logging.h>
 
 /* copy-pasting queue code might have not been the best idea. anyway, it would
  * be nice to yeet all of the old names of methods an keep only the new aliases.
@@ -71,7 +71,7 @@ namespace tram {
     protected:
         T* AllocateTop() {
             if (current_size == full_size) {
-                std::cout << "Stack " << print_name << " out of space!" << std::endl;
+                Log(Severity::CRITICAL_ERROR, System::CORE, "Stack {} out of space!", print_name);
                 return nullptr;
             }
 
@@ -84,7 +84,7 @@ namespace tram {
         
         void RemoveTop()  {
             if (last == first_end) {
-                std::cout << "Stack " << print_name << " already empty!" << std::endl;
+                Log(Severity::CRITICAL_ERROR, System::CORE, "Stack {} already empty!", print_name);
             };
             last--;
             current_size--;

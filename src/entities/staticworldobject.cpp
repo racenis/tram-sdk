@@ -107,7 +107,7 @@ void StaticWorldObject::Serialize() {
 void StaticWorldObject::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::PING:
-            Log("Entity {} : {} was pinged by {} : {}!", id, name, msg.sender, msg.sender ? Entity::Find(msg.sender)->GetName() : "none");
+            Log(Severity::DEFAULT, System::MISC, "Entity {} : {} was pinged by {} : {}!", id, name, msg.sender, msg.sender ? Entity::Find(msg.sender)->GetName() : "none");
             break;
         case Message::SELECT:
             break;
@@ -115,7 +115,7 @@ void StaticWorldObject::MessageHandler(Message& msg) {
             Yeet();
             break;
         default:
-            Log("StaticWorldObject doesn't know how to handle {} message!", Message::GetName(msg.type));
+            Log(Severity::DEFAULT, System::MISC, "StaticWorldObject doesn't know how to handle {} message!", Message::GetName(msg.type));
     }
 };
 

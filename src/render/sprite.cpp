@@ -12,9 +12,6 @@
 
 #include <config.h>
 
-#include <fstream>
-#include <sstream>
-
 /**
  * @class tram::Render::Sprite render/sprite.h <render/sprite.h>
  * 
@@ -57,8 +54,9 @@ void Sprite::LoadFromDisk() {
     File file (filename.c_str(), File::READ);
     
     if (!file.is_open()) {
-        Log("Sprite not found: {}", filename);
+        Log(Severity::WARNING, System::RENDER, "Sprite not found: {}", filename);
         
+    sprite_error:
         frames.push_back({
             0, 0,
             64, 64,
@@ -78,7 +76,8 @@ void Sprite::LoadFromDisk() {
     name_t material_name = file.read_name();
     
     if (header != "SPRv2" && header != "SPRv3") {
-        Log("Incorrect sprite header \"{}\" in file \"{}\"", header, filename);
+        Log(Severity::WARNING, System::RENDER, "Incorrect sprite header \"{}\" in file \"{}\"", header, filename);
+        goto sprite_error;
     }
     
     if (header == "SPRv2") while (file.is_continue()) {

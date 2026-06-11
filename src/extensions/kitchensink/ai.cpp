@@ -39,7 +39,7 @@ AIPackage* AIPackage::Make(name_t name, valuearray_t params) {
     ai_package_constr constr = ai_package_list.Find(name);
     
     if (!constr) {
-        Log(Severity::WARNING, Kitchensink::System(), "AIPackage {} not found!", name);
+        Log(Severity::NOTE, Kitchensink::System(), "AIPackage {} not found!", name);
         return nullptr;
     } else {
         return constr(params);

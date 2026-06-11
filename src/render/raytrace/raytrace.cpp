@@ -562,7 +562,7 @@ bool IsInteractiveMode() {
 
 void SetInteractiveMode(bool is_interactive) {
     if (is_interactive) {
-        std::cout << "Cancelling ray-trace!!" << std::endl;
+        Log(Severity::DEFAULT, System::RENDER, "Cancelling ray-trace!!");
         rendering_progress = 0;
         is_rendering = false;
         return;
@@ -571,7 +571,7 @@ void SetInteractiveMode(bool is_interactive) {
     rendering_progress = 0;
     is_rendering = true;
     
-    std::cout << "Begiinning ray-trace!" << std::endl;
+    Log(Severity::DEFAULT, System::RENDER, "Begiinning ray-trace!");
     
     // horrible spathetti code to render a wireframe befor estarting to raytrace
     //is_rendering = false;

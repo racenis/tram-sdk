@@ -8,8 +8,6 @@
 
 #include <framework/script.h>
 
-#include <iostream>
-
 namespace tram {
 
 // TODO: make constr_func etc. into typedefs??

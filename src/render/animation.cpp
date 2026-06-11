@@ -94,7 +94,7 @@ void Animation::LoadFromDisk() {
     File file (filename, File::READ);
 
     if (!file.is_open()) {
-        Log(Severity::WARNING, System::RENDER, "Can't open {}!", filename);
+        Log(Severity::NOTE, System::RENDER, "Can't open {}!", filename);
         return;
     }
 
@@ -103,7 +103,7 @@ void Animation::LoadFromDisk() {
     name_t header = file.read_name();
     
     if (header != "ANIMv1") {
-        Log("Unrecognized header '{}' in animation {}", header, filename);
+        Log(Severity::WARNING, System::RENDER, "Unrecognized header '{}' in animation {}", header, filename);
         return;
     }
     

@@ -66,7 +66,7 @@ void Path::LoadFromDisk() {
     File file (path, File::READ);
     
     if (!file.is_open()) {
-        Log(Severity::WARNING, System::CORE, "Can't find path file: {}", path);
+        Log(Severity::NOTE, System::CORE, "Can't find path file: {}", path);
         return;
     }
     

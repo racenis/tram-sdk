@@ -1,9 +1,6 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <cassert>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cstring>
 
 #include <config.h>
@@ -353,7 +350,7 @@ uint32_t GetAnyShader(shaderflags_t mask) {
 }
 
 void CompileShaders() {
-    std::cout << "Loading shaders... " << std::flush;
+    Log(Severity::INFO, System::RENDER, "Loading default shaders...");
 
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE,          "normal_static",     "normal_static");
     RegisterShader(VERTEX_STATIC,   MATERIAL_TEXTURE_ALPHA,    "normal_static",     "normal_static_alpha");
@@ -367,7 +364,7 @@ void CompileShaders() {
     RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,             "text",              "text");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,            "glyph",             "glyph");
     
-    std::cout << "done!" << std::endl;
+    Log(Severity::INFO, System::RENDER, "Finished default shaders!");
 }
 
 }

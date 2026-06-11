@@ -368,18 +368,17 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
     if (!texture) {
         switch (result) {
             case D3DERR_INVALIDCALL:
-                std::cout << "Texture creation failed! (D3DERR_INVALIDCALL)" << std::endl;
+                Log(Severity::CRITICAL_ERROR, System::RENDER, "Texture creation failed! (D3DERR_INVALIDCALL)");
                 break;
             case D3DERR_OUTOFVIDEOMEMORY:
-                std::cout << "Texture creation failed! (D3DERR_OUTOFVIDEOMEMORY)" << std::endl;
+                Log(Severity::CRITICAL_ERROR, System::RENDER, "Texture creation failed! (D3DERR_OUTOFVIDEOMEMORY)");
                 break;
             case E_OUTOFMEMORY:
-                std::cout << "Texture creation failed! (E_OUTOFMEMORY)" << std::endl;
+                Log(Severity::CRITICAL_ERROR, System::RENDER, "Texture creation failed! (E_OUTOFMEMORY)");
                 break;
             default:
-                std::cout << "Texture creation failed! Error code: " << result << std::endl;
+                Log(Severity::CRITICAL_ERROR, System::RENDER, "Texture creation failed! Error code: {}", result);
             } 
-        abort();
     }
 
     D3DLOCKED_RECT rect;
@@ -609,7 +608,7 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
     FVFHelper helper = VertexDefinitionToFVF(vertex_format);
     
     if (helper.fvf == 0) {
-        std::cout << "FVF could not be determined!" << std::endl;
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "FVF could not be determined!");
         return;
     }
     

@@ -143,7 +143,7 @@ void Environment::LoadFromDisk() {
             stbi_image_free(loadtexture);
             loadtexture = nullptr;
         } else {
-            Log(Severity::WARNING, System::RENDER, "File not found: {}", path);
+            Log(Severity::NOTE, System::RENDER, "File not found: {}", path);
             
             load_fail = true;
             

@@ -364,7 +364,7 @@ public:
         
         *buf_it = '\0';
         
-        if (strlen(buffer) == 0 ) Log("NOT GOOD ZERO NAME");
+        if (strlen(buffer) == 0 ) Log(Severity::WARNING, System::CORE, "NOT GOOD ZERO NAME");
         
         return UID(buffer);
     }

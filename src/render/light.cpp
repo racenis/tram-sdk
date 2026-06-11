@@ -163,14 +163,14 @@ void LightGraph::LoadFromDisk() {
     File file (filename.c_str(), File::READ);
     
     if (!file.is_open()) {
-        Log("Light graph not found: {}", filename);
+        Log(Severity::NOTE, System::RENDER, "Light graph not found: {}", filename);
         return;
     }
     
     name_t header = file.read_name();
     
     if (header != "LIGHTGRAPHv1") {
-        Log("Light unrecognized header '{}' in file: {}", header, filename);
+        Log(Severity::NOTE, System::RENDER, "Light unrecognized header '{}' in file: {}", header, filename);
         return;
     }
     

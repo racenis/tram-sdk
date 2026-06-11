@@ -399,12 +399,12 @@ void Inventory::LoadFromDisk(const char* filename) {
             } else if (effect_type == "negate-change") {
                 new_effect.type = EFFECT_NEGATE_CHANGE;
             } else {
-                Log(Severity::WARNING, Kitchensink::System(), "Unrecognized effect type '{}' in file:", effect_type, filename);
+                Log(Severity::WARNING, Kitchensink::System(), "Unrecognized effect type '{}' in file: {}", effect_type, path);
             }
             
             item->effects.push_back(new_effect);
         } else {
-            Log(Severity::WARNING, Kitchensink::System(), "Unrecognized record '{}' in file:", record, filename);
+            Log(Severity::WARNING, Kitchensink::System(), "Unrecognized record '{}' in file: {}", record, path);
         }
     }
 }

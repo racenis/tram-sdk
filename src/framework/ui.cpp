@@ -15,7 +15,6 @@
 
 #include <config.h>
 
-#include <fstream>
 #include <cstring>
 #include <algorithm>
 #include <ctime>

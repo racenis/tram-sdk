@@ -2,6 +2,8 @@
 
 #include <extensions/kitchensink/probe.h>
 
+#include <extensions/kitchensink/kitchensink.h>
+
 #include <render/light.h>
 #include <render/api.h>
 
@@ -18,7 +20,7 @@ void RegisterRenderEnvironmentMapShortcut() {
         auto cell = WorldCell::Find(Render::GetViewPosition());
         
         if (!cell) {
-            Log("Couldn't find cell for capture!");
+            Log(Severity::ERROR, Kitchensink::System(), "Couldn't find cell for capture!");
         }
         
         RenderEnvironmentMaps(cell);
@@ -30,11 +32,11 @@ void RenderEnvironmentMaps(WorldCell* cell) {
     auto graph = Render::LightGraph::Find(cell->GetName());
     
     if (graph->GetStatus() != Resource::READY) {
-        Log("Cell graph {} not loaded!", cell->GetName());
+        Log(Severity::ERROR, Kitchensink::System(),"Cell graph {} not loaded!", cell->GetName());
         return;
     }
     
-    Log("Capturing cell {}...", cell->GetName());
+    Log(Severity::DEFAULT, Kitchensink::System(),"Capturing cell {}...", cell->GetName());
 
     const int map_size = 512;
     

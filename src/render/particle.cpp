@@ -88,7 +88,7 @@ static Particle::Data parse_data(File& file) {
         data.type = Particle::DataType::VECTOR;
     } else {
         data.type = Particle::DataType::SCALAR;
-        Log("Unrecognized .prt DataType: {}", type);
+        Log(Severity::WARNING, System::RENDER, "Unrecognized .prt DataType: {}", type);
     }
     
     return data;
@@ -108,7 +108,7 @@ static Particle::Parameter parse_param(File& file) {
         param.type = Particle::ParamType::VECTOR;
     } else {
         param.type = Particle::ParamType::NONE;
-        Log("Unrecognized .prt ParamType: {}", type);
+        Log(Severity::WARNING, System::RENDER, "Unrecognized .prt ParamType: {}", type);
     }
     
     switch (param.type) {
@@ -172,7 +172,7 @@ static void parse_system(File& file, Particle::System* sys) {
                 op.type = Particle::OperationType::NORMALIZE;
             } else {
                 op.type = Particle::OperationType::COPY;
-                Log("Unrecognized .prt OperationType: {}", optype);
+                Log(Severity::WARNING, System::RENDER, "Unrecognized .prt OperationType: {}", optype);
             }
             
             if (mergetype == "set") {
@@ -187,7 +187,7 @@ static void parse_system(File& file, Particle::System* sys) {
                 op.merge = Particle::MergeType::DIVIDE;
             } else {
                 op.merge = Particle::MergeType::SET;
-                Log("Unrecognized .prt MergeType: {}", mergetype);
+                Log(Severity::WARNING, System::RENDER, "Unrecognized .prt MergeType: {}", mergetype);
             }
             
             if (mergedest == "any") {
@@ -200,7 +200,7 @@ static void parse_system(File& file, Particle::System* sys) {
                 op.dest = Particle::MergeDest::Z;
             } else {
                 op.dest = Particle::MergeDest::ANY;
-                Log("Unrecognized .prt MergeDest: {}", mergedest);
+                Log(Severity::WARNING, System::RENDER, "Unrecognized .prt MergeDest: {}", mergedest);
             }
             
             if (record_type == "operation") {
@@ -231,7 +231,7 @@ static void parse_system(File& file, Particle::System* sys) {
                 ct.type = Particle::ConstraintType::LESSER_THAN;
             } else {
                 ct.type = Particle::ConstraintType::GREATER_THAN;
-                Log("Unrecognized .prt ConstraintType: {}", type);
+                Log(Severity::WARNING, System::RENDER, "Unrecognized .prt ConstraintType: {}", type);
             }
             
             if (dest == "any") {
@@ -244,7 +244,7 @@ static void parse_system(File& file, Particle::System* sys) {
                 ct.dest = Particle::MergeDest::Z;
             } else {
                 ct.dest = Particle::MergeDest::ANY;
-                Log("Unrecognized .prt MergeDest: {}", dest);
+                Log(Severity::WARNING, System::RENDER, "Unrecognized .prt MergeDest: {}", dest);
             }
             
             sys->AddConstraint(ct);
@@ -271,9 +271,20 @@ void Particle::ActuallyLoadFromDisk() {
 
     File file (filename.c_str(), File::READ);
     
-    if (!file.is_open()) {
-        Log("Particle not found: {}", filename);
+    
+    bool failed = !file.is_open();
+    if (failed) {
+        Log(Severity::NOTE, tram::System::RENDER, "Particle not found: {}", filename);
+    } else {
+        name_t header = file.read_name();
         
+        if (header != "PRTv1") {
+            Log(Severity::WARNING, tram::System::RENDER, "Incorrect particle header \"{}\" in file \"{}\"", header, filename);
+            failed = true;
+        }
+    }
+    
+    if (failed) {
         // TODO: generate some kind of a blank particle thing
         
         // make sure that base gets created
@@ -285,11 +296,7 @@ void Particle::ActuallyLoadFromDisk() {
         return;
     }
     
-    name_t header = file.read_name();
     
-    if (header != "PRTv1") {
-        Log("Incorrect particle header \"{}\" in file \"{}\"", header, filename);
-    }
     
     
     while (file.is_continue()) {
@@ -316,7 +323,7 @@ void Particle::ActuallyLoadFromDisk() {
             continue;
         }
         
-        Log("Unrecognized .prt section: {}", record_type);
+        Log(Severity::WARNING, tram::System::RENDER, "Unrecognized .prt section: {}", record_type);
     }
     
 }

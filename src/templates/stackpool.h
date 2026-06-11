@@ -4,7 +4,7 @@
 #define TRAM_SDK_TEMPLATES_STACKPOOL_H
 
 #include <string>
-#include <iostream>
+#include <framework/logging.h>
 
 namespace tram {
 
@@ -33,7 +33,7 @@ public:
 
     T* allocate(size_t units) {
         if (allocated_size + units > available_size) {
-            std::cout << "StackPool " << name << " out of space!" << std::endl;
+            Log(Severity::CRITICAL_ERROR, System::CORE, "StackPool {} out of space!", name);
             return nullptr;
         }
         

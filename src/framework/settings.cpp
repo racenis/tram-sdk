@@ -74,7 +74,7 @@ static std::vector<RawSetting> raw_settings;
 
 void SetFromRaw(SettingInfo& info) {
     if (!info.bool32) {
-        Log("Setting {} has no data pointer!", info.name);
+        Log(Severity::WARNING, System::CORE, "Setting {} has no data pointer!", info.name);
         return;
     }
     
@@ -94,24 +94,24 @@ void SetFromRaw(SettingInfo& info) {
                 break;
             case TYPE_FLOAT32:
                 if (!setting.value) {
-                    Log("cannot set {} since ther eisno value", info.name);
+                    Log(Severity::WARNING, System::CORE, "cannot set {} since ther eisno value", info.name);
                 }
                 *info.float32 = atof(setting.value);
                 break;
             case TYPE_INT32:
                 if (!setting.value) {
-                    Log("cannot set {} since ther eisno value", info.name);
+                    Log(Severity::WARNING, System::CORE, "cannot set {} since ther eisno value", info.name);
                 }
                 *info.int32 = atoi(setting.value);
                 break;
             case TYPE_UINT32:
                 if (!setting.value) {
-                    Log("cannot set {} since ther eisno value", info.name);
+                    Log(Severity::WARNING, System::CORE, "cannot set {} since ther eisno value", info.name);
                 }
                 *info.uint32 = atoi(setting.value);
                 break;
             default:
-                Log("hello setting invalid");
+                Log(Severity::WARNING, System::CORE, "hello setting invalid");
             
         }
     } 
@@ -121,7 +121,7 @@ void SetFromRaw(SettingInfo& info) {
 
 void SetAndStore(SettingInfo info) {
     if (lookup_setting(info.name)) {
-        Log("Setting '{}' already registered, skipping!", info.name);
+        Log(Severity::WARNING, System::CORE, "Setting '{}' already registered, skipping!", info.name);
         return;
     }
     
@@ -176,7 +176,7 @@ void Set(name_t name, value_t value) {
     
     if (setting) {
         if (value.GetType() != setting->type) {
-            Log("Trying to set a setting to {}, but it is a {}", TypeToString(value.GetType()), TypeToString(setting->type));
+            Log(Severity::WARNING, System::CORE, "Trying to set a setting to {}, but it is a {}", TypeToString(value.GetType()), TypeToString(setting->type));
             return;
         }
         
@@ -192,7 +192,7 @@ void Set(name_t name, value_t value) {
 
 
 void Parse(const char** argv, int argc) {
-    Log("Parsing settings from CLI");
+    Log(Severity::WARNING, System::CORE, "Parsing settings from CLI");
     
     parsed = true;
     
@@ -234,7 +234,7 @@ void Parse(const char** argv, int argc) {
         i++;
     }
     
-    Log("Applying CLI values to settings");
+    Log(Severity::WARNING, System::CORE, "Applying CLI values to settings");
     
     for (size_t i = 0; i < last_setting; i++) SetFromRaw(settings[i]);
 }

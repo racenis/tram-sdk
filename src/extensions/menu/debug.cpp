@@ -952,7 +952,7 @@ void Console::Display() {
             value_t value = Script::Evaluate(text);
             
             //std::cout << TypeToString(value.GetType()) << " : " << value.ToString() <<std::endl;
-            Log("{} : {}", TypeToString(value.GetType()), value.ToString());
+            Log(Severity::DEFAULT, System::INVALID, "{} : {}", TypeToString(value.GetType()), value.ToString());
             
             *text = '\0';
         }

@@ -46,14 +46,14 @@ void SoundGraph::LoadFromDisk() {
     File file (filename.c_str(), File::READ);
     
     if (!file.is_open()) {
-        Log("Sound graph not found: {}", filename);
+        Log(Severity::NOTE, System::AUDIO, "Sound graph not found: {}", filename);
         return;
     }
     
     name_t header = file.read_name();
     
     if (header != "SOUNDGRAPHv1") {
-        Log("Sprite not found: {}", filename);
+        Log(Severity::NOTE, System::AUDIO, "Sprite not found: {}", filename);
         return;
     }
     
