@@ -339,6 +339,11 @@ void DebugMenu::Display() {
             Message::Send(msg);
         }
         
+        static bool wireframe = false;
+        if (GUI::CheckBox(wireframe, "Wireframe ")) {
+            Settings::Set("staticwobj-wireframe", wireframe);
+        }
+        
         
     GUI::PopFrame();
     GUI::PopFrame();

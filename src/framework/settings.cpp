@@ -29,6 +29,8 @@ struct SettingInfo {
     
     const char* name;
     uint32_t flags;
+    
+    void (*callback)(const char* name) = nullptr;
 };
 
 static SettingInfo settings[SETTING_LIMIT];
@@ -145,9 +147,14 @@ void Register(uint32_t& value, const char* name, uint32_t flags) {
     SetAndStore(SettingInfo{.uint32 = &value, .type = TYPE_UINT32, .name = name, .flags = flags});
 }
 
+void SetCallback(const char* name, void (*callback)(const char* name)) {
+    auto setting = lookup_setting(name);
+    if (setting) {
+        setting->callback = callback;
+    }
+}
 
-
-value_t Get(name_t name) {
+value_t Get(const char* name) {
     auto setting = lookup_setting(name);
     
     if (!setting) return value_t();
@@ -171,7 +178,7 @@ value_t Get(name_t name) {
     }
 }
 
-void Set(name_t name, value_t value) {
+void Set(const char* name, value_t value) {
     auto setting = lookup_setting(name);
     
     if (setting) {
@@ -186,6 +193,10 @@ void Set(name_t name, value_t value) {
             *setting->int32 = value.GetFloat();
         } else if (value.IsBool()) {
             *setting->bool32 = value;
+        }
+        
+        if (setting->callback) {
+            setting->callback(setting->name);
         }
     }
 }
@@ -239,7 +250,7 @@ void Parse(const char** argv, int argc) {
     for (size_t i = 0; i < last_setting; i++) SetFromRaw(settings[i]);
 }
 
-uint32_t Flags(name_t name) {
+uint32_t Flags(const char* name) {
     auto setting = lookup_setting(name);
     
     if (!setting) return 0;

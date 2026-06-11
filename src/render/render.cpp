@@ -83,12 +83,11 @@ static void update_projection(layer_t layer) {
     
     mat4 matrix;
     if (fov == 0.0f) {
-        matrix = glm::ortho((-ratio) / view_properties[layer].ortho_ratio,
-                            (+ratio) / view_properties[layer].ortho_ratio,
-                            (-(1.0f/ratio)) / view_properties[layer].ortho_ratio,
-                            (+(1.0f/ratio)) / view_properties[layer].ortho_ratio,
-                            //view_properties[layer].near_plane,
-                            -view_properties[layer].far_plane,
+        matrix = glm::ortho(-ratio * view_properties[layer].ortho_ratio,
+                            +ratio * view_properties[layer].ortho_ratio,
+                            -1.0f * view_properties[layer].ortho_ratio,
+                            +1.0f * view_properties[layer].ortho_ratio,
+                            view_properties[layer].near_plane,
                             view_properties[layer].far_plane);
     } else {
         matrix = glm::perspective(glm::radians(view_properties[layer].view_fov), ratio, view_properties[layer].near_plane, view_properties[layer].far_plane);

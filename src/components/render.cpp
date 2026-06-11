@@ -329,6 +329,9 @@ void RenderComponent::InsertDrawListEntries() {
         light_t lights[4];
         Render::LightTree::FindLights(location, lights);
         Render::API::SetLights(entry, lights);
+        if (!lightmap) {
+            Render::API::SetSphericalHarmonic(entry, LightGraph::LookupHarmonic(location, -1));
+        }
 
         Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
         Render::API::SetDrawListIndexArray(entry, model->GetIndexArray());

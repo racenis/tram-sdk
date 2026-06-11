@@ -25,15 +25,17 @@ void Register(float& value, const char* name, uint32_t flags);
 void Register(int32_t& value, const char* name, uint32_t flags);
 void Register(uint32_t& value, const char* name, uint32_t flags);
 
-value_t Get(name_t name);
-void Set(name_t name, value_t value);
+void SetCallback(const char* name, void (*callback)(const char* name));
+
+value_t Get(const char* name);
+void Set(const char* name, value_t value);
 
 void Parse(const char** argv, int argc);
 
 void Save(const char* file);
 void Load(const char* file);
 
-uint32_t Flags(name_t name);
+uint32_t Flags(const char* name);
 
 std::vector<name_t> GetSettings(uint32_t filter);
 

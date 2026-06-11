@@ -18,7 +18,7 @@
  */
 
 namespace tram {
-
+    
 static Settings::Property<bool> STATIC_WOBJ_WIREFRAME = {true, "staticwobj-wireframe", Settings::NONE};
     
 using namespace tram::Physics;
@@ -27,6 +27,19 @@ enum {
     FIELD_MODEL,
     FIELD_LIGHTMAP
 };
+
+static void toggle_wireframe(const char*) {
+    Message msg {
+        .type = STATIC_WOBJ_WIREFRAME ? Message::SET_FLAG_ON : Message::SET_FLAG_OFF,
+        .sender = 0,
+        .data_value = Message::AllocateData<Value>(name_t("wireframe"))
+    };
+    
+    for (auto ent : Entity::GetAllOfType("staticwobj")) {
+        msg.receiver = ent->GetID();
+        Message::Send(msg);
+    }
+}
 
 void StaticWorldObject::Register() {
     Entity::RegisterType(
@@ -38,6 +51,7 @@ void StaticWorldObject::Register() {
             {FIELD_LIGHTMAP,    TYPE_NAME,      FIELD_SERIALIZE}
         }
     );
+    Settings::SetCallback("staticwobj-wireframe", toggle_wireframe);
 }
 
 name_t StaticWorldObject::GetType() {
@@ -114,9 +128,24 @@ void StaticWorldObject::MessageHandler(Message& msg) {
         case Message::KILL:
             Yeet();
             break;
+        case Message::SET_FLAG_ON:
+        case Message::SET_FLAG_OFF: {
+            const name_t flag = *msg.data_value;
+            if (flag == "wireframe") {
+                rendercomponent->SetLineDrawingMode(msg.type == Message::SET_FLAG_ON);
+            } else {
+                Log(Severity::WARNING, System::MISC, "Staticwobj does not have flag {}!", flag);
+            }
+        } break;
+        
         default:
             Log(Severity::DEFAULT, System::MISC, "StaticWorldObject doesn't know how to handle {} message!", Message::GetName(msg.type));
     }
+    
+    
+    
 };
+
+
 
 }
