@@ -286,6 +286,21 @@ class Lua : public Script::Interface {
     }
 };
 
+static int lua_logger(lua_State* L) {
+    char buffer[420] = {'\0'};
+    int args = lua_gettop(L);
+
+    for (int i = 1; i <= args; i++) {
+        const char* str = luaL_tolstring(L, i, NULL);
+        strcat(buffer, str);
+        lua_pop(L, 1);
+        strcat(buffer, " ");
+    }
+
+    Log(Severity::DEFAULT, lua_system, buffer);
+    return 0;
+}
+
 void Init() {
     if (System::IsInitialized(lua_system)) {
         Log(Severity::CRITICAL_ERROR, lua_system, "Lua is already initialized!");
@@ -299,7 +314,10 @@ void Init() {
     
     L = luaL_newstate();
     luaL_openlibs(L);
-
+    
+    lua_pushcfunction(L, lua_logger);
+    lua_setglobal(L, "print");
+    
     Script::SetInterface(new Lua);
     
     System::SetState(lua_system, System::READY);

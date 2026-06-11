@@ -37,12 +37,12 @@ struct SystemInfo {
 static SystemInfo system_infos[SYSTEM_LIMIT] = {
     {"Invalid",                     "INV",      YEET},
     {"Core",                        "CORE",     YEET},
-    {"Platform",                    "PLATFORM", YEET},
+    {"Platform",                    "PLATFM", YEET},
     {"User Interface",              "UI",       YEET},
     {"Graphical User Interface",    "GUI",      YEET},
     {"Async",                       "ASYNC",    YEET},
     {"Rendering",                   "RENDER",   YEET},
-    {"Physics",                     "PHYSICS",  YEET},
+    {"Physics",                     "PHYSCS",  YEET},
     {"Audio",                       "AUDIO",    YEET},
     {"Misc",                        "MISC",     YEET},
 };

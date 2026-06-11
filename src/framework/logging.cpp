@@ -135,21 +135,49 @@ void flush_console(Severity severity, System::system_t system) {
         SwitchForeground(color);
     }
     
+    char flush_buffer[489] = {'\0'};
     if (system_text) {
-        std::cout << severity_text << ' ' << '[' << system_text << ']' << ' ';
+        char padding[16];
+        int chars = 6 - strlen(system_text);
+        for (int i = 0; i <= chars; i++) padding[i] = ' ';
+        if (chars < 0) chars = 0;
+        if (chars >= 15) chars = 15;
+        padding[chars] = '\0';
+        
+        sprintf(flush_buffer, "%s [%s]%s ", severity_text, system_text, padding);
     }
     
     if (console_log_callback) {
         console_log_callback(0, buffer);
     }
     
-    std::cout << buffer;
+    int segment_start = 0;
+    int segment_length = 0;
+    int last_space = 0;
+    for (int i = 0;; i++) {
+        if (isspace(buffer[i])) last_space = i;
+        if (++segment_length < 64 && buffer[i] != '\0') continue;
+        
+        if (segment_start != 0) strcat(flush_buffer, "                ");
+        
+        if (buffer[i] != '\0') buffer[last_space] = '\0';
+        strcat(flush_buffer, &buffer[segment_start]);
+        strcat(flush_buffer, "\n");
+        
+        if (buffer[i] == '\0') {
+            break;
+        }
+        
+        segment_length = 0;
+        segment_start = last_space + 1;
+        i = last_space;
+    }
+    
+    std::cout << flush_buffer << std::flush;
     
     if (color != TerminalColor::DEFAULT) {
         SwitchForeground(TerminalColor::DEFAULT);
     }
-    
-    std::cout << std::endl;
     
     if (log_file) {
         if (system_text) {
