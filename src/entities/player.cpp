@@ -75,11 +75,11 @@ void Player::Unload() {
 }
 
 void Player::Serialize() {
-    std::cout << "Player not seriaziable" << std::endl;
+    Log(Severity::WARNING, System::MISC, "Player not seriaziable");
 }
 
 void Player::SerializeString(std::string& str) {
-    std::cout << "Player not stringable" << std::endl;
+    Log(Severity::WARNING, System::MISC, "Player not stringable");
 }
 
 void Player::UpdateParameters() {

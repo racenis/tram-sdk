@@ -1,6 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <extensions/kitchensink/inventory.h>
+#include <extensions/kitchensink/kitchensink.h>
 
 #include <templates/hashmap.h>
 
@@ -92,9 +93,9 @@ void ItemClass::FireIdle(Inventory* inventory) {
 InventoryManager* InventoryManager::New(name_t compartment) {
     auto info = inv_factory.Find(compartment);
     
-    if (!info) {
-        std::cout << "No InventoryManager found for " << compartment << "!" << std::endl;
-        
+    if (!info) {        
+        Log(Severity::WARNING, Kitchensink::System(), "No InventoryManager found for {}!", compartment);
+
         return new ListInventoryManager;
     }
     
@@ -231,7 +232,7 @@ bool Inventory::EquipItem(name_t item_class) {
     
     // check if has item
     if (item_compartment->GetItemCount(item_class) < 1) {
-        std::cout << "can't equip item ("<<item_class<<") that not have; has " << item_compartment->GetItemCount(item_class) << std::endl;
+        Log(Severity::WARNING, Kitchensink::System(), "Can't equip item ({}) that not have; has '{}'", item_class, item_compartment->GetItemCount(item_class));
         return false;
     }
     
@@ -250,13 +251,9 @@ bool Inventory::EquipItem(name_t item_class) {
         while (!next_callback->OnEquip(item_info, this) && next_callback->base_class) {
             next_callback = ItemClass::Find(next_callback->base_class);
         }
-        
-        std::cout <<"equipped to an existing slot" << std::endl;
-        
+
         return true;
     }
-    
-    std::cout <<"equipped to new slot" << std::endl;
     
     // otherwise equip and install slot
     auto next_callback = item_info;
@@ -340,18 +337,18 @@ void Inventory::LoadFromDisk(const char* filename) {
     File file(path, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't open inventory file '" << path << "'" << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Can't open item file: {}", path);
+        return;
     }
 
     name_t file_type = file.read_name();
 
     if (file_type != "ITEMv1") {
-        std::cout << "Invalid item file type " << path << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in item file: {}", file_type, path);
+        return;
     }
     
-    std::cout << "Loading: " << filename << std::endl;
+    Log(Severity::INFO, Kitchensink::System(), "Loading item:", path);
 
     while (file.is_continue()) {
         name_t record = file.read_name();
@@ -402,12 +399,12 @@ void Inventory::LoadFromDisk(const char* filename) {
             } else if (effect_type == "negate-change") {
                 new_effect.type = EFFECT_NEGATE_CHANGE;
             } else {
-                std::cout << "Unrecognized effect type " << effect_type <<" in file: " << filename << std::endl;
+                Log(Severity::WARNING, Kitchensink::System(), "Unrecognized effect type '{}' in file:", effect_type, filename);
             }
             
             item->effects.push_back(new_effect);
         } else {
-            std::cout << "Unrecognized record " << record <<" in file: " << filename << std::endl;
+            Log(Severity::WARNING, Kitchensink::System(), "Unrecognized record '{}' in file:", record, filename);
         }
     }
 }

@@ -64,9 +64,8 @@ void Window::Init() {
     
     WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", nullptr, nullptr);
     if (WINDOW == nullptr) {
-        Log(Severity::ERROR, System::UI, "GLFW window didn't open!");
         glfwTerminate();
-        abort();
+        Log(Severity::CRITICAL_ERROR, System::UI, "GLFW window didn't open!");
     }
 
     glfwMakeContextCurrent(WINDOW);
@@ -75,8 +74,7 @@ void Window::Init() {
     // random settings that we don't need on web platform
 #ifdef _WIN32
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            Log(Severity::ERROR, System::UI, "OpenGL context didn't open");
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::UI, "OpenGL context didn't open!");
         }
 
         glfwSwapInterval(1);
@@ -404,8 +402,8 @@ static KeyboardKey GLFWKeyToKeyboardKey (int keycode) {
         case GLFW_KEY_RIGHT_ALT:        return KEY_RIGHT_ALT;
         case GLFW_KEY_RIGHT_SUPER:      return KEY_RIGHT_SUPER;
         case GLFW_KEY_MENU:             return KEY_MENU;
-        default: 
-            std::cout << "UNRECOGNIZED KEYCODE: " << keycode << std::endl;
+        default:
+            Log(Severity::WARNING, System::UI, "UNRECOGNIZED KEYCODE: {}", keycode);
             return KEY_SPACE;
     }
 }    

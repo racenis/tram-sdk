@@ -2,6 +2,8 @@
 
 #include <framework/uid.h>
 
+#include <framework/logging.h>
+
 #include <cstring>
 
 #include <templates/stackpool.h>
@@ -72,8 +74,7 @@ UID::UID(const char* value) {
     
     if (existing) {
         if (strcmp(existing, value) != 0) {
-            std::cout << "UID collision " << existing << " with " << value << std::endl; 
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::CORE, "UID collision {} with {}", existing, value);
         }
         
         this->key = existing.key;

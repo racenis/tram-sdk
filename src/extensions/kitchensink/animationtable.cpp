@@ -1,6 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <extensions/kitchensink/animationtable.h>
+#include <extensions/kitchensink/kitchensink.h>
 
 #include <render/render.h>
 #include <entities/sound.h>
@@ -51,8 +52,8 @@ AnimationTable* AnimationTable::Find(name_t name) {
 void AnimationTable::SwitchState(name_t state, AnimationStateComponent* state_component) {
     auto next_state = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == state; });
     if (next_state == states.end()) {
-        std::cout << "AnimationTable " << this->name << " state " << state << " not found!" << std::endl;
-        assert(false);
+        Log(Severity::WARNING, Kitchensink::System(), "AnimationTable {} state {} not found!", this->name, state);
+        return;
     }
     
     auto next_state_space = std::find_if(state_spaces.begin(), state_spaces.end(), [=](auto& f) { return f.name == next_state->state_space; });
@@ -146,8 +147,8 @@ void AnimationTable::SwitchState(name_t state, AnimationStateComponent* state_co
             if (trans.into_state != next_state->name) continue;
             
             if (cancel_from) {
-                std::cout << "AnimationTable " << this->name << " transition " << cancel_from << " and " << prev_state->name << " conflict into " << next_state->name << std::endl;
-                assert(false);
+                Log(Severity::WARNING, Kitchensink::System(), "AnimationTable {} transition {} and {} conflict into {}", this->name, cancel_from, prev_state->name, next_state->name);
+                return;
             } else {
                 cancel_from = prev_state->name;
             }
@@ -173,8 +174,8 @@ void AnimationTable::SwitchState(name_t state, AnimationStateComponent* state_co
 void AnimationTable::AddStateSpace(name_t name, name_t parent) {
     auto ptr = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == parent; });
     if (ptr == states.end()) {
-        std::cout << "AnimationTable " << this->name << " parent state " << parent << " for " << name << " not found!" << std::endl;
-        assert(false);
+        Log(Severity::WARNING, Kitchensink::System(), "AnimationTable {} parent state {} for {} not found!", this->name, parent, name);
+        return;
     }
     
     state_spaces.push_back({.name = name, .parent = parent});
@@ -188,8 +189,8 @@ void AnimationTable::AddState(name_t state, name_t space) {
 void AnimationTable::SetStateAnimation(name_t state, name_t animation_name, uint32_t repeats, float weight, float speed, bool pause_last) {
     auto ptr = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == state; });
     if (ptr == states.end()) {
-        std::cout << "AnimationTable " << this->name << " state " << state << " not found!" << std::endl;
-        assert(false);
+        Log(Severity::WARNING, Kitchensink::System(), "AnimationTable {} state {} not found!", this->name, state);
+        return;
     }
     ptr->animation = animation_name;
     ptr->repeats = repeats;
@@ -202,8 +203,8 @@ void AnimationTable::SetStateAnimation(name_t state, name_t animation_name, uint
 void AnimationTable::SetStateNextState(name_t state, name_t next_state) {
     auto ptr = std::find_if(states.begin(), states.end(), [=](auto& f) { return f.name == state; });
     if (ptr == states.end()) {
-        std::cout << "AnimationTable " << this->name << " state " << state << " not found!" << std::endl;
-        assert(false);
+        Log(Severity::WARNING, Kitchensink::System(), "AnimationTable {} state {} not found!", this->name, state);
+        return;
     }
     ptr->next_state = next_state;
 }

@@ -1,6 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <extensions/kitchensink/ai.h>
+#include <extensions/kitchensink/kitchensink.h>
 
 #include <framework/script.h>
 #include <render/render.h>
@@ -38,7 +39,7 @@ AIPackage* AIPackage::Make(name_t name, valuearray_t params) {
     ai_package_constr constr = ai_package_list.Find(name);
     
     if (!constr) {
-        std::cout << "AIPackage " << name << " not found!" << std::endl;
+        Log(Severity::WARNING, Kitchensink::System(), "AIPackage {} not found!", name);
         return nullptr;
     } else {
         return constr(params);

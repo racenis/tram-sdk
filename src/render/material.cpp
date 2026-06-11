@@ -55,15 +55,15 @@ void Material::LoadMaterialInfo(const char* filename) {
     File file (path, File::READ);
     
     if (!file.is_open()) {
-        std::cout << "Can't open texture info file '" << path << "'" << std::endl;
+        Log(Severity::WARNING, System::RENDER, "Can't open material info file: ", path);
         return;
     }
     
     name_t file_type = file.read_name();
     
     if (file_type != "MATv7") {
-        std::cout << "Invalid material file type " << path << std::endl;
-        abort();
+        Log(Severity::WARNING, System::RENDER, "Invalid material file type '{}' in: {}", file_type, path);
+        return;
     }
     
     while (file.is_continue()) {
@@ -102,7 +102,7 @@ void Material::LoadMaterialInfo(const char* filename) {
             mat_type = FindMaterialType(mat_type_name);
             
             if (mat_type == (materialtype_t)-1) {
-                std::cout << "Error material list material: " << mat_name << std::endl;
+                Log(Severity::WARNING, System::RENDER, "Unknown material type '{}' for material {} in: {}", mat_type_name, mat_name, path);
                 continue;
             }
         }
@@ -255,7 +255,7 @@ static ColorMode ChannelsToColorMode(int channels) {
         case 4: return COLORMODE_RGBA;
         default: assert(false);
     }
-    abort();
+    return COLORMODE_RGBA;
 }
 
 void Material::SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, uint16_t height) {
@@ -347,7 +347,7 @@ void Material::LoadFromDisk() {
     }
 
     if (loadchannels < channels) {
-        std::cout << "Texture " << path << " should have " << (int)channels << " channels, but it has " << (int)loadchannels << "!" << std::endl;
+        Log(Severity::WARNING, System::RENDER, "Texture {} should have {} channels, but it has {}!", path, (int)channels, (int)loadchannels);
     }
 
     if (loadtexture) {
@@ -364,7 +364,7 @@ void Material::LoadFromDisk() {
         stbi_image_free(loadtexture);
 
     } else {
-        std::cout << "Texture " << name << " (" << path << ") couldn't be loaded!" << std::endl;
+        Log(Severity::WARNING, System::RENDER, "Texture {} ({}) couldn't be loaded!", name, path);
 
         MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
         
@@ -380,7 +380,7 @@ void Material::LoadFromDisk() {
         loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, 3);
         
         if (loadchannels != 3) {
-            std::cout << "Texture " << path << " should have 3 channels, but it has " << (int)loadchannels << "!" << std::endl;
+            Log(Severity::WARNING, System::RENDER, "Texture {} should have 3 channels, but it has {}!", path, (int)loadchannels);
         }
         
         if (loadtexture) {
@@ -399,7 +399,7 @@ void Material::LoadFromDisk() {
 
             normal_map_data = MakeNewErrorTexture(glm::normalize(vec3(0.25f, 0.75f, 1.0f)), glm::normalize(vec3(0.75f, 0.25f, 1.0f)));
 
-            std::cout << "Normal map " << name << " (" << path << ") couldn't be loaded!" << std::endl;
+            Log(Severity::WARNING, System::RENDER, "Normal map {} ({}) couldn't be loaded!", name, path);
         }
     }
 
@@ -464,8 +464,6 @@ void Material::Unload() {
     assert(status == READY);
     
     // TODO: add a check that this is being called from render thread
-    
-    std::cout << "unloading tha tolet" << std::endl;
     
     if (texture.generic) API::YeetTexture(texture);
     if (normal_map.generic) API::YeetTexture(normal_map);

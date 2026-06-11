@@ -66,11 +66,13 @@ void Navmesh::LoadFromDisk() {
     File file (path, File::READ);
     
     if (!file.is_open()) {
-        std::cout << "Can't find navmesh file: " << path << std::endl; return;
+        Log(Severity::WARNING, System::CORE, "Can't find navmesh file: {}", path);
+        return;
     }
     
     if (file.read_name() != "NAVMESHv1") {
-        std::cout << "Unrecognized navmesh format in " << path << std::endl; return;
+        Log(Severity::WARNING, System::CORE, "Unrecognized navmesh format in {}", path);
+        return;
     }
     
     file.read_name(); // skip navmesh name

@@ -78,7 +78,7 @@ void SoundGraph::LoadFromDisk() {
         } else if (record_type == "sound") {
             // TODO: implement
         } else {
-            std::cout << "unknown sound graph record: " << record_type << std::endl;
+            Log(Severity::WARNING, System::AUDIO, "Unknown sound graph record:", record_type);
     }
     }
     

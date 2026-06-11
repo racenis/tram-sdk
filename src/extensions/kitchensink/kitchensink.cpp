@@ -37,4 +37,8 @@ void Update() {
     
 }
 
+uint32_t System() {
+    return KITCHENSINK_SYSTEM;
+}
+
 }

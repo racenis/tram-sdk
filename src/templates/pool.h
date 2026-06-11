@@ -4,7 +4,7 @@
 #define TRAM_SDK_TEMPLATES_POOL_H
 
 #include <string>
-#include <iostream>
+#include <framework/logging.h>
 #include <atomic>
 #include <cassert>
 #include <cstdint>
@@ -89,8 +89,7 @@ public:
         lock();
         
         if (current_size == full_size) {
-            std::cout << "Pool " << print_name << " out of space!" << std::endl;
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::CORE, "Pool {} out of space!", print_name);
         }
 
         T* new_obj;

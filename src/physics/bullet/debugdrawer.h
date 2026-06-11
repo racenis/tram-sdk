@@ -16,7 +16,7 @@ public:
     };
 
     void reportErrorWarning(const char* warningString) {
-        std::cout << warningString << std::endl;
+        Log(Severity::WARNING, System::PHYSICS, warningString);
     };
 
     void draw3dText(const btVector3& location, const char* textString) {

@@ -16,7 +16,7 @@ class Player : public Entity {
 public:
     Player();
     Player(name_t);
-    ~Player() {std::cout << "Player destructor!" << std::endl; Unload();}
+    ~Player() {Log(Severity::WARNING, System::MISC, "Player destructor!"); Unload();}
     void Load();
     void Unload();
     void Serialize();

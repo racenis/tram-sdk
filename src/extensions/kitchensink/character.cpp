@@ -3,6 +3,7 @@
 #include <extensions/kitchensink/character.h>
 
 #include <extensions/kitchensink/attributes.h>
+#include <extensions/kitchensink/kitchensink.h>
 
 #include <framework/entity.h>
 #include <framework/file.h>
@@ -309,18 +310,18 @@ void Character::LoadFromDisk(const char* filename) {
     File file (path, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't open dialog file '" << path << "'" << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Can't open character file: {}", path);
+        return;
     }
 
     name_t file_type = file.read_name();
 
-    if (file_type != "DIALOGv1") {
-        std::cout << "Invalid quest file type " << path << std::endl;
-        abort();
+    if (file_type != "CHARv1") {
+        Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in character file: {}", file_type, path);
+        return;
     }
     
-    std::cout << "Loading: " << filename << std::endl;
+    Log(Severity::INFO, Kitchensink::System(), "Loading character:", path);
 
     while (file.is_continue()) {
         auto record = file.read_name();
@@ -372,8 +373,8 @@ void Character::LoadFromDisk(const char* filename) {
             character_class->AddBaseClass(base_class);
             
         } else {
-            std::cout << "unknown character record: " << record << std::endl;
-            abort();
+            Log(Severity::WARNING, Kitchensink::System(), "Unknown character record '{}' in file:", record, path);
+            file.skip_linebreak();
         }
     }
 }

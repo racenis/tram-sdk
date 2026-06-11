@@ -45,7 +45,7 @@ Particle::LookupInfo Particle::FindValueKey(name_t name, System* system) {
     
     Log(Severity::CRITICAL_ERROR, tram::System::RENDER,
         "Key '{}' not found in particle system '{}'!", name, this->name);
-    abort();
+    return {};
 }
 
 void Particle::FillKeys(Operation& op, System* system) {

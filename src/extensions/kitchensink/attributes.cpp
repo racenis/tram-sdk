@@ -1,6 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <extensions/kitchensink/attributes.h>
+#include <extensions/kitchensink/kitchensink.h>
 
 #include <framework/core.h>
 #include <framework/file.h>
@@ -136,18 +137,18 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
     File file (path, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't open attribute file '" << path << "'" << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Can't open attribute file: {}", path);
+        return;
     }
 
     name_t file_type = file.read_name();
 
     if (file_type != "ATTRIBv1") {
-        std::cout << "Invalid attribute file type " << path << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in attribute file: {}", file_type, path);
+        return;
     }
     
-    std::cout << "Loading: " << filename << std::endl;
+    Log(Severity::INFO, Kitchensink::System(), "Loading attribute:", path);
 
     while (file.is_continue()) {
         auto record = file.read_name();
@@ -179,8 +180,8 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
             container->effects.push_back(new_effect);
             
         } else {
-            std::cout << "unknown attribute record: " << record << std::endl;
-            abort();
+            Log(Severity::WARNING, Kitchensink::System(), "Unknown attribute record '{}' in file:", record, path);
+            file.skip_linebreak();
         }
     }
 }

@@ -244,7 +244,7 @@ void LightGraph::LoadFromDisk() {
         } else if (record_type == "entity") {
             entities.push_back(file.read_uint32());
         } else {
-            std::cout << "unknown light graph record: " << record_type << std::endl;
+            Log(Severity::WARNING, System::RENDER, "Unknown light graph record:", record_type);
         }
     }
     

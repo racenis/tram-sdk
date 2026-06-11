@@ -4,7 +4,7 @@
 #define TRAM_SDK_TEMPLATES_HASHMAP_H
 
 #include <framework/uid.h>
-#include <iostream> // error message
+#include <framework/logging.h>
 #include <cstring>  // memset
 
 /* instead of having two sets of each method, one with uint32_t and the other
@@ -106,7 +106,7 @@ public:
     
     void insert(uint32_t key, T value) {
         if (size == max_size) {
-            std::cout << "Hashmap " << name << " density reached!" << std::endl;
+            Log(Severity::ERROR, System::CORE, "Hashmap {} density reached!", name);
         }
         
         uint32_t hash = key % hash_parameter;
@@ -133,8 +133,7 @@ public:
         }
         
         if (candidate == last) {
-            std::cout << "Hashmap " << name << " overflow!" << std::endl;
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::CORE, "Hashmap {} overflow!", name);
         }
         
         size++;
@@ -201,14 +200,13 @@ public:
         }
         
         if (candidate == last) {
-            std::cout << "Hashmap " << name << " overflow!" << std::endl;
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::CORE, "Hashmap {} overflow!", name);
         }
         
         size++;
         
         if (size == max_size) {
-            std::cout << "Hashmap " << name << " density reached!" << std::endl;
+            Log(Severity::ERROR, System::CORE, "Hashmap {} density reached!", name);
         }
         
         candidate->key = key;

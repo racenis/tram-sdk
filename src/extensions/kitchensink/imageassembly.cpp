@@ -1,5 +1,7 @@
 #include <extensions/kitchensink/imageassembly.h>
 
+#include <extensions/kitchensink/kitchensink.h>
+
 #include <framework/file.h>
 
 namespace tram::Kitchensink::ImageAssembly {
@@ -285,7 +287,7 @@ public:
             width = layers.width;
             height = layers.height;
         } else if (width != layers.width && height != layers.height) {
-            std::cout << "Image set to " << width << "x" << height << " but fed a frame " << layers.width << "x" << layers.height << std::endl;
+            Log(Severity::WARNING, Ext::Kitchensink::System(), "Image set to {}x{} but fed a frame {}x{}", width, height, layers.width, layers.height);
         }
 
         textures = layers.textures;

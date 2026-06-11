@@ -73,8 +73,7 @@ static void SoftwareRenderContextUpdate() {
 
 void Window::Init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        Log(Severity::WARNING, System::PLATFORM, "SDL2 didn't open!");
-        abort();
+        Log(Severity::CRITICAL_ERROR, System::PLATFORM, "SDL2 didn't open!");
     }
     
     uint32_t window_flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
@@ -88,21 +87,18 @@ void Window::Init() {
     
     window = SDL_CreateWindow((const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, window_flags);
     if (window == nullptr) {
-        Log(Severity::WARNING, System::PLATFORM, "SDL2 window didn't open! {}", SDL_GetError());
-        abort();
+        Log(Severity::CRITICAL_ERROR, System::PLATFORM, "SDL2 window didn't open: {}", SDL_GetError());
     }
     
     if (Render::API::GetContext() == Render::API::CONTEXT_OPENGL) {
         void* context = SDL_GL_CreateContext(window);
         if (context == nullptr) {
-            Log(Severity::ERROR, System::PLATFORM, "SDL2 context didn't open! {}", SDL_GetError());
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::PLATFORM, "SDL2 context didn't open: {}", SDL_GetError());
         }
         
 #ifdef _WIN32
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-            Log(Severity::ERROR, System::PLATFORM, "OpenGL context didn't open!");
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::PLATFORM, "OpenGL context didn't open!");
         }
         
         SDL_GL_SetSwapInterval(1);
@@ -113,8 +109,7 @@ void Window::Init() {
     if (Render::API::GetContext() == Render::API::CONTEXT_DIRECT3D) {
         IDirect3D9* d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
         if (!d3d9) {
-            Log(Severity::ERROR, System::PLATFORM, "Direct3D didn't open!");
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::PLATFORM, "Direct3D didn't open!");
         }
         
         D3DCAPS9 caps;
@@ -126,12 +121,12 @@ void Window::Init() {
             Log(Severity::DEFAULT, System::PLATFORM, "Hardware T&L available.");
         } else {
             vertex_processing = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-            Log(Severity::DEFAULT, System::PLATFORM, "Hardware T&L unavailable.");
+            Log(Severity::WARNING, System::PLATFORM, "Hardware T&L unavailable.");
         }
         
         if (caps.MaxVertexBlendMatrixIndex == 0) {
             vertex_processing = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-            Log(Severity::DEFAULT, System::PLATFORM, "Hardware matrix blending unavailable.");
+            Log(Severity::WARNING, System::PLATFORM, "Hardware matrix blending unavailable.");
         }
         
         SDL_SysWMinfo wm_info;
@@ -175,8 +170,7 @@ void Window::Init() {
 
             if (FAILED(hr)) {
                 d3d9->Release();
-                std::cout << "Direct3D device didn't get created!" << std::endl;
-                abort();
+                Log(Severity::CRITICAL_ERROR, System::PLATFORM, "Direct3D device didn't get created!");
             }
         }
     
@@ -190,8 +184,7 @@ void Window::Init() {
         renderer = SDL_CreateRenderer(window, -1, 0 /*SDL_RENDERER_SOFTWARE*/);
         
         if (!renderer) {
-            Log(Severity::ERROR, System::PLATFORM, "SDL_Renderer didn't open!");
-            abort();
+            Log(Severity::CRITICAL_ERROR, System::PLATFORM, "SDL_Renderer didn't open!");
         }
 
         int ww = screen_width/screen_scale;

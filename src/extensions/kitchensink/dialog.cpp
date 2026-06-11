@@ -2,6 +2,7 @@
 
 #include <extensions/kitchensink/dialog.h>
 #include <extensions/kitchensink/quest.h>
+#include <extensions/kitchensink/kitchensink.h>
 
 #include <templates/pool.h>
 #include <templates/hashmap.h>
@@ -95,18 +96,18 @@ void DialogTopic::LoadFromDisk(const char* filename) {
     File file (path, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't open dialog file '" << path << "'" << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Can't open dialog file: {}", path);
+        return;
     }
 
     name_t file_type = file.read_name();
 
     if (file_type != "DIALOGv1") {
-        std::cout << "Invalid quest file type " << path << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in dialog file: {}", file_type, path);
+        return;
     }
     
-    std::cout << "Loading: " << filename << std::endl;
+    Log(Severity::INFO, Kitchensink::System(), "Loading dialog:", path);
 
     while (file.is_continue()) {
         auto record = file.read_name();
@@ -128,8 +129,8 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             } else if (type == "import-multiple") {
                 topic->type = DIALOG_IMPORT_MULTIPLE;
             } else {
-                std::cout << "unknown dialog topic type: " << type << std::endl;
-                abort();
+                Log(Severity::WARNING, Kitchensink::System(), "Unknown dialog topic type '{}' in file:", type, path);
+                file.skip_linebreak();
             }
             
         } else if (record == "action") {
@@ -138,8 +139,9 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             DialogTopic* topic = DialogTopic::Find(name);
             
             if (!topic) {
-                std::cout << "can't find dialog topic: " << name << std::endl;
-                abort();
+                Log(Severity::WARNING, Kitchensink::System(), "Can't find dialog topic '{}' in file:", name, path);
+                file.skip_linebreak();
+                continue;
             }
             
             topic->action.quest = file.read_name();
@@ -151,8 +153,9 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             DialogTopic* topic = DialogTopic::Find(name);
             
             if (!topic) {
-                std::cout << "can't find dialog topic: " << name << std::endl;
-                abort();
+                Log(Severity::WARNING, Kitchensink::System(), "Can't find dialog topic '{}' in file:", name, path);
+                file.skip_linebreak();
+                continue;
             }
             
             topic->condition.quest = file.read_name();
@@ -164,15 +167,16 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             DialogTopic* topic = DialogTopic::Find(name);
             
             if (!topic) {
-                std::cout << "can't find dialog topic: " << name << std::endl;
-                abort();
+                Log(Severity::WARNING, Kitchensink::System(), "Can't find dialog topic '{}' in file:", name, path);
+                file.skip_linebreak();
+                continue;
             }
             
             topic->next_topics.push_back(file.read_name());
             
-        }  else {
-            std::cout << "unknown dialog record: " << record << std::endl;
-            abort();
+        } else {
+            Log(Severity::WARNING, Kitchensink::System(), "Unknown dialog record '{}' in file:", record, path);
+            file.skip_linebreak();
         }
     }
 }

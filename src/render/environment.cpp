@@ -118,7 +118,8 @@ void Environment::LoadFromDisk() {
             loadtexture = stbi_load_from_memory((const unsigned char*)file->GetContents(), file->GetSize(), &loadwidth, &loadheight, &loadchannels, 3);
 
             if (texture_data && (loadwidth != (int)width || loadheight != (int)height)) {
-                std::cout << "Environment map" << (name ? std::string(name) : std::string(graph) + std::to_string(index)) << " layer " << layer << " dimensions of " << loadwidth << " by " << loadheight << " don't match first frame dimensions of " << width << " by " << height << std::endl;
+                Log(Severity::WARNING, System::RENDER, "Environment map {} layer {} dimensions of {} by {} don't match first frame dimensions of {} by {}",
+                        (name ? std::string(name) : std::to_string(index)), layer, loadwidth, loadheight, width, height);
                 stbi_image_free(loadtexture);
                 loadtexture = nullptr;
             }
@@ -142,7 +143,7 @@ void Environment::LoadFromDisk() {
             stbi_image_free(loadtexture);
             loadtexture = nullptr;
         } else {
-            std::cout << "Environment map " << (name ? std::string(name) : std::string(graph) + std::to_string(index)) << " (" << path << ") couldn't be loaded!" << std::endl;
+            Log(Severity::WARNING, System::RENDER, "File not found: {}", path);
             
             load_fail = true;
             

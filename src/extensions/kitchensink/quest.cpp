@@ -3,6 +3,7 @@
 #include <extensions/kitchensink/quest.h>
 
 #include <extensions/kitchensink/inventory.h>
+#include <extensions/kitchensink/Kitchensink.h>
 
 #include <framework/entity.h>
 #include <framework/script.h>
@@ -220,7 +221,7 @@ static value_t GetSecond(const QuestVariable* var) {
 value_t QuestVariable::Evaluate() {
     switch (type) {
         case QUEST_VAR_INVALID:
-            std::cout << "Attempting to evaluate invalid variable " << name << std::endl;
+            Log(Severity::WARNING, Kitchensink::System(), "Attempting to evaluate invalid quest variable '{}'", name);
             return false;
         case QUEST_VAR_VALUE:
             return value.value;
@@ -254,8 +255,8 @@ value_t QuestVariable::Evaluate() {
             return inventory->GetItemCount(item.item);
         }
         default:
-            assert(false);
-            abort();
+            Log(Severity::WARNING, Kitchensink::System(), "Can't evaluate quest variable type {}!", type);
+            return false;
     }
 }
     
@@ -303,42 +304,33 @@ void Quest::SetVariable(name_t name, value_t value) {
             default: variable = QuestVariable::ValueVariable(name, value);
         }
         
-        
-        std::cout << "Set value of variable " << name << std::endl; 
+        Log(Severity::INFO, Kitchensink::System(), "Set value of quest variable '{}' in quest {}", name, this->name);
         return;
         
     }
     
-    std::cout << "Inserted new variable " << name << std::endl;
+    Log(Severity::INFO, Kitchensink::System(), "Inserter new quest variable '{}' in quest {}", name, this->name);
     
     QuestVariable new_variable = QuestVariable::ValueVariable(name, value);
     variables.push_back(new_variable);
 }
 
 void Quest::FireTrigger(name_t name) {
-    std::cout << "finding tirgger" << std::endl;
     for (auto& trigger : triggers) {
         if (trigger.name != name) continue;
         
-        if (trigger.condition) std::cout << trigger.name << " has condintuion!" << std::endl;
-        if (!trigger.condition) std::cout <<  trigger.name << " dosent condintuion!" << std::endl;
-        if (trigger.condition) std::cout << "condniton: " << trigger.condition << " = " << (bool)GetVariable(trigger.condition) << std::endl;
-        
         // TODO: implement GetBool()
         if (trigger.condition && !GetVariable(trigger.condition)/*.GetBool()*/) continue;
-        
-        
         
         switch (trigger.type) {
             case QUEST_TGR_SET_VARIABLE:
                 SetVariable(trigger.variable, trigger.value);
                 break;
             case QUEST_TGR_SET_OBJECTIVE:
-                std::cout << "Setting objective..." << std::endl;
                 for (auto& obj : variables) {
                     if (obj.name != trigger.variable) continue;
                     obj.objective.value = trigger.value;
-                    std::cout << "Objective " << obj.name << " set to " << trigger.value.GetInt() << std::endl;
+                    Log(Severity::INFO, Kitchensink::System(), "Objective {} set to '{}' in quest {}", obj.name, trigger.value.GetInt(), this->name);
                 }
                 break;
             case QUEST_TGR_INCREMENT:
@@ -377,7 +369,7 @@ public:
     name_t GetType() { return "none"; }
     void MessageHandler(Message& msg) {
         name_t trigger = *(Value*)msg.data;
-        std::cout << name << " triggered " << trigger << std::endl;
+        Log(Severity::INFO, Kitchensink::System(), "Received message for trigger '{}' in quest {}", trigger, name);
         Quest::Find(name)->FireTrigger(trigger);
     }
 };
@@ -417,8 +409,8 @@ static std::pair<name_t, value_t> LoadVariableSecond(File& file) {
     } else if (type == "name") {
         value = file.read_name();
     } else {
-        std::cout << "unknown variable comparison: " << type << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Unknown variable comparison '{}' in file:", type, file.path);
+        value = false;
     }
     
     return {quest, value};
@@ -432,23 +424,23 @@ void Quest::LoadFromDisk(const char* filename) {
     File file (path, File::READ);
 
     if (!file.is_open()) {
-        std::cout << "Can't open quest file '" << path << "'" << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Can't open quest file: {}", path);
+        return;
     }
 
     name_t file_type = file.read_name();
 
     if (file_type != "QUESTv1") {
-        std::cout << "Invalid quest file type " << path << std::endl;
-        abort();
+        Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in quest file: {}", file_type, path);
+        return;
     }
     
-    std::cout << "Loading: " << filename << std::endl;
+    Log(Severity::INFO, Kitchensink::System(), "Loading quest:", path);
 
     while (file.is_continue()) {
         if (auto record = file.read_name(); record != "quest") {
-            std::cout << "unknown quest record: " << record << std::endl;
-            abort();
+            Log(Severity::WARNING, Kitchensink::System(), "Unknown quest record '{}' in file:", record, path);
+            file.skip_linebreak();
         }
         
         name_t quest_name = file.read_name();
@@ -476,8 +468,8 @@ void Quest::LoadFromDisk(const char* filename) {
                     } else if (type == "name") {
                         variable = QuestVariable::ValueVariable(variable_name, file.read_name());
                     } else {
-                        std::cout << "unknown variable value type: " << type << std::endl;
-                        abort();
+                        Log(Severity::WARNING, Kitchensink::System(), "Unknown variable value type '{}' in file:", type, path);
+                        file.skip_linebreak();
                     }
                 } else if (variable_type == "is") {
                     auto q1 = file.read_name();
@@ -532,8 +524,8 @@ void Quest::LoadFromDisk(const char* filename) {
                     auto state = file.read_name();
                     variable = QuestVariable::Objective(variable_name, state, title, desc);
                 } else {
-                    std::cout << "unknown variable type: " << variable_type << std::endl;
-                    abort();
+                    Log(Severity::WARNING, Kitchensink::System(), "Unknown variable type '{}' in file:", variable_type, path);
+                    file.skip_linebreak();
                 }
                 
                 quest->variables.push_back(variable);
@@ -559,14 +551,14 @@ void Quest::LoadFromDisk(const char* filename) {
                     auto variable = file.read_name();
                     trigger.SetIncrement(variable);
                 } else {
-                    std::cout << "unknown trigger type: " << trigger_type << std::endl;
-                    abort();
+                    Log(Severity::WARNING, Kitchensink::System(), "Unknown trigger type '{}' in file:", trigger_type, path);
+                    file.skip_linebreak();
                 }
                 
                 quest->triggers.push_back(trigger);
             } else {
-                std::cout << "unknown quest parameter: " << record_type << std::endl;
-                abort();
+                Log(Severity::WARNING, Kitchensink::System(), "Unknown quest parameter '{}' in file:", record_type, path);
+                file.skip_linebreak();
             }
             
         }
