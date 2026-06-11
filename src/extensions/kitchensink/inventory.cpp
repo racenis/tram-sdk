@@ -334,21 +334,21 @@ void Inventory::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".item");
 
-    File file(path, File::READ);
+    File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::WARNING, Kitchensink::System(), "Can't open item file: {}", path);
         return;
     }
 
-    name_t file_type = file.read_name();
+    name_t file_type = file.read_name(); file.skip_linebreak();
 
     if (file_type != "ITEMv1") {
         Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in item file: {}", file_type, path);
         return;
     }
     
-    Log(Severity::INFO, Kitchensink::System(), "Loading item:", path);
+    Log(Severity::INFO, Kitchensink::System(), "Loading item: {}", path);
 
     while (file.is_continue()) {
         name_t record = file.read_name();
@@ -400,12 +400,15 @@ void Inventory::LoadFromDisk(const char* filename) {
                 new_effect.type = EFFECT_NEGATE_CHANGE;
             } else {
                 Log(Severity::WARNING, Kitchensink::System(), "Unrecognized effect type '{}' in file: {}", effect_type, path);
+                file.skip_linebreak(); continue;
             }
             
             item->effects.push_back(new_effect);
         } else {
             Log(Severity::WARNING, Kitchensink::System(), "Unrecognized record '{}' in file: {}", record, path);
         }
+        
+        file.skip_linebreak();
     }
 }
 

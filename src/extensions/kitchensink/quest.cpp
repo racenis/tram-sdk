@@ -421,29 +421,30 @@ void Quest::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".quest");
 
-    File file (path, File::READ);
+    File file (path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open quest file: {}", path);
         return;
     }
 
-    name_t file_type = file.read_name();
+    name_t file_type = file.read_name(); file.skip_linebreak();
 
     if (file_type != "QUESTv1") {
         Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in quest file: {}", file_type, path);
         return;
     }
     
-    Log(Severity::INFO, Kitchensink::System(), "Loading quest:", path);
+    Log(Severity::INFO, Kitchensink::System(), "Loading quest: {}", path);
 
     while (file.is_continue()) {
         if (auto record = file.read_name(); record != "quest") {
             Log(Severity::WARNING, Kitchensink::System(), "Unknown quest record '{}' in file:", record, path);
             file.skip_linebreak();
+            continue;
         }
         
-        name_t quest_name = file.read_name();
+        name_t quest_name = file.read_name(); file.skip_linebreak();
         
         Quest* quest = Quest::Find(quest_name);
         
@@ -469,7 +470,7 @@ void Quest::LoadFromDisk(const char* filename) {
                         variable = QuestVariable::ValueVariable(variable_name, file.read_name());
                     } else {
                         Log(Severity::WARNING, Kitchensink::System(), "Unknown variable value type '{}' in file:", type, path);
-                        file.skip_linebreak();
+                        file.skip_linebreak(); continue;
                     }
                 } else if (variable_type == "is") {
                     auto q1 = file.read_name();
@@ -525,7 +526,7 @@ void Quest::LoadFromDisk(const char* filename) {
                     variable = QuestVariable::Objective(variable_name, state, title, desc);
                 } else {
                     Log(Severity::WARNING, Kitchensink::System(), "Unknown variable type '{}' in file:", variable_type, path);
-                    file.skip_linebreak();
+                    file.skip_linebreak(); continue;
                 }
                 
                 quest->variables.push_back(variable);
@@ -552,15 +553,15 @@ void Quest::LoadFromDisk(const char* filename) {
                     trigger.SetIncrement(variable);
                 } else {
                     Log(Severity::WARNING, Kitchensink::System(), "Unknown trigger type '{}' in file:", trigger_type, path);
-                    file.skip_linebreak();
+                    file.skip_linebreak(); continue;
                 }
                 
                 quest->triggers.push_back(trigger);
             } else {
                 Log(Severity::WARNING, Kitchensink::System(), "Unknown quest parameter '{}' in file:", record_type, path);
-                file.skip_linebreak();
             }
             
+            file.skip_linebreak();
         }
     }
 }

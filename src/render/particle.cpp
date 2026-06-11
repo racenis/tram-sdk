@@ -96,6 +96,7 @@ static Particle::Data parse_data(File& file) {
 
 static Particle::Parameter parse_param(File& file) {
     Particle::Parameter param;
+    file.skip_linebreak();
     name_t type = file.read_name();
     
     if (type == "none") {
@@ -131,21 +132,21 @@ static Particle::Parameter parse_param(File& file) {
 static void parse_system(File& file, Particle::System* sys) {
     while (file.is_continue()) {
         name_t record_type = file.read_name();
-        
+
         if (record_type == "sprite") {
-            sys->SetSprite(Sprite::Find(file.read_name())); continue;
+            sys->SetSprite(Sprite::Find(file.read_name())); file.skip_linebreak(); continue;
         }
         
         if (record_type == "wire") {
-            sys->SetWire(Material::Find(file.read_name())); continue;
+            sys->SetWire(Material::Find(file.read_name())); file.skip_linebreak(); continue;
         }
         
         if (record_type == "model") {
-            sys->SetModel(Model::Find(file.read_name())); continue;
+            sys->SetModel(Model::Find(file.read_name())); file.skip_linebreak(); continue;
         }
         
         if (record_type == "value") {
-            sys->AddValue(parse_data(file)); continue;
+            sys->AddValue(parse_data(file)); file.skip_linebreak(); continue;
         }
         
         if (record_type == "operation" || record_type == "initializer") {
@@ -211,7 +212,7 @@ static void parse_system(File& file, Particle::System* sys) {
                 sys->AddInitializer(op);
             }
             
-            continue;
+            file.skip_linebreak(); continue;
         }
         
         if (record_type == "constraint") {
@@ -249,7 +250,7 @@ static void parse_system(File& file, Particle::System* sys) {
             
             sys->AddConstraint(ct);
             
-            continue;
+            file.skip_linebreak(); continue;
         }
         
         if (record_type == "emitter") {
@@ -257,26 +258,30 @@ static void parse_system(File& file, Particle::System* sys) {
             Particle::Parameter delay = parse_param(file);
             sys->AddEmitter(rate, delay);
             
-            continue;
+            file.skip_linebreak(); continue;
         }
         
         if (record_type == "end") {
             return;
         }
+        
+        Log(Severity::WARNING, System::RENDER, "Unrecognized .prt record: {}", record_type);
+        
+        file.skip_linebreak();
     }
 }
 
 void Particle::ActuallyLoadFromDisk() {
     std::string filename = std::string("data/particles/") + std::string(name) + ".prt";
 
-    File file (filename.c_str(), File::READ);
+    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
     
     
     bool failed = !file.is_open();
     if (failed) {
         Log(Severity::NOTE, tram::System::RENDER, "Particle not found: {}", filename);
     } else {
-        name_t header = file.read_name();
+        name_t header = file.read_name(); file.skip_linebreak();
         
         if (header != "PRTv1") {
             Log(Severity::WARNING, tram::System::RENDER, "Incorrect particle header \"{}\" in file \"{}\"", header, filename);
@@ -297,33 +302,32 @@ void Particle::ActuallyLoadFromDisk() {
     }
     
     
-    
-    
     while (file.is_continue()) {
-        name_t record_type = file.read_name();
+        name_t record_type = file.read_name(); file.skip_linebreak();
         
         if (record_type == "control") {
             auto control = parse_data(file);
             AddControl(control.name, control.type);
             
-            continue;
+            file.skip_linebreak(); continue;
         }
         
         if (record_type == "base") {
             auto sys = GetBaseSystem();
             parse_system(file, sys);
             
-            continue;
+            file.skip_linebreak(); continue;
         }
         
         if (record_type == "system") {
             auto sys = CreateSystem();
             parse_system(file, sys);
             
-            continue;
+            file.skip_linebreak(); continue;
         }
         
         Log(Severity::WARNING, tram::System::RENDER, "Unrecognized .prt section: {}", record_type);
+        file.skip_linebreak();
     }
     
 }

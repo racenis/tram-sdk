@@ -63,7 +63,7 @@ void Path::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".path");
     
-    File file (path, File::READ);
+    File file (path, File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::NOTE, System::CORE, "Can't find path file: {}", path);
@@ -74,6 +74,8 @@ void Path::LoadFromDisk() {
         Log(Severity::WARNING, System::CORE, "Unrecognized path format in: {}", path);
         return;
     }
+    
+    file.skip_linebreak();
     
     while (file.is_continue()) {
         name_t entry_type = file.read_name();
@@ -105,6 +107,8 @@ void Path::LoadFromDisk() {
                 this->edge_infos[edge_index].type = PATH_RIGHT;
             }
         }
+        
+        file.skip_linebreak();
     }
 }
 

@@ -50,14 +50,14 @@ void Material::LoadMaterialInfo(const char* filename) {
     strcat (path, filename);
     strcat (path, ".list");
 
-    File file (path, File::READ);
+    File file (path, File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::WARNING, System::RENDER, "Can't open material info file: ", path);
         return;
     }
     
-    name_t file_type = file.read_name();
+    name_t file_type = file.read_name(); file.skip_linebreak();
     
     if (file_type != "MATv7") {
         Log(Severity::WARNING, System::RENDER, "Invalid material file type '{}' in: {}", file_type, path);
@@ -166,6 +166,8 @@ void Material::LoadMaterialInfo(const char* filename) {
         material->SetReflectivity(mat_reflectivity);
         material->SetTextureType(mat_tex_type);
         material->SetSource(mat_source);
+        
+        file.skip_linebreak();
     }
 }
 

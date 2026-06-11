@@ -307,21 +307,21 @@ void Character::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".char");
 
-    File file (path, File::READ);
+    File file (path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open character file: {}", path);
         return;
     }
 
-    name_t file_type = file.read_name();
+    name_t file_type = file.read_name(); file.skip_linebreak();
 
     if (file_type != "CHARv1") {
         Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in character file: {}", file_type, path);
         return;
     }
     
-    Log(Severity::INFO, Kitchensink::System(), "Loading character:", path);
+    Log(Severity::INFO, Kitchensink::System(), "Loading character: {}", path);
 
     while (file.is_continue()) {
         auto record = file.read_name();
@@ -374,8 +374,9 @@ void Character::LoadFromDisk(const char* filename) {
             
         } else {
             Log(Severity::WARNING, Kitchensink::System(), "Unknown character record '{}' in file:", record, path);
-            file.skip_linebreak();
         }
+        
+        file.skip_linebreak();
     }
 }
 

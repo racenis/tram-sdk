@@ -51,7 +51,7 @@ void Sprite::LoadFromMemory() {
 void Sprite::LoadFromDisk() {
     std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
     
-    File file (filename.c_str(), File::READ);
+    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::WARNING, System::RENDER, "Sprite not found: {}", filename);
@@ -73,7 +73,7 @@ void Sprite::LoadFromDisk() {
     }
     
     name_t header = file.read_name();
-    name_t material_name = file.read_name();
+    name_t material_name = file.read_name(); file.skip_linebreak();
     
     if (header != "SPRv2" && header != "SPRv3") {
         Log(Severity::WARNING, System::RENDER, "Incorrect sprite header \"{}\" in file \"{}\"", header, filename);
@@ -91,12 +91,11 @@ void Sprite::LoadFromDisk() {
             .border_h = file.read_uint16(),
             .border_v = file.read_uint16()
         });
+        file.skip_linebreak();
     }
     
     if (header == "SPRv3") while (file.is_continue()) {
         name_t record_type = file.read_name();
-        
-        
         
         if (record_type == "frame") frames.push_back ({
             .offset_x = file.read_uint16(),
@@ -113,6 +112,8 @@ void Sprite::LoadFromDisk() {
             .name = file.read_name(),
             .frame = (uint16_t)frames.size()
         });
+        
+        file.skip_linebreak();
     }
     
     if (!material) {

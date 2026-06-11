@@ -93,21 +93,21 @@ void DialogTopic::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".dialog");
 
-    File file (path, File::READ);
+    File file (path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open dialog file: {}", path);
         return;
     }
 
-    name_t file_type = file.read_name();
+    name_t file_type = file.read_name(); file.skip_linebreak();
 
     if (file_type != "DIALOGv1") {
         Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in dialog file: {}", file_type, path);
         return;
     }
     
-    Log(Severity::INFO, Kitchensink::System(), "Loading dialog:", path);
+    Log(Severity::INFO, Kitchensink::System(), "Loading dialog: {}", path);
 
     while (file.is_continue()) {
         auto record = file.read_name();
@@ -130,7 +130,6 @@ void DialogTopic::LoadFromDisk(const char* filename) {
                 topic->type = DIALOG_IMPORT_MULTIPLE;
             } else {
                 Log(Severity::WARNING, Kitchensink::System(), "Unknown dialog topic type '{}' in file:", type, path);
-                file.skip_linebreak();
             }
             
         } else if (record == "action") {
@@ -140,7 +139,6 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             
             if (!topic) {
                 Log(Severity::WARNING, Kitchensink::System(), "Can't find dialog topic '{}' in file:", name, path);
-                file.skip_linebreak();
                 continue;
             }
             
@@ -154,7 +152,6 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             
             if (!topic) {
                 Log(Severity::WARNING, Kitchensink::System(), "Can't find dialog topic '{}' in file:", name, path);
-                file.skip_linebreak();
                 continue;
             }
             
@@ -168,7 +165,6 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             
             if (!topic) {
                 Log(Severity::WARNING, Kitchensink::System(), "Can't find dialog topic '{}' in file:", name, path);
-                file.skip_linebreak();
                 continue;
             }
             
@@ -176,8 +172,9 @@ void DialogTopic::LoadFromDisk(const char* filename) {
             
         } else {
             Log(Severity::WARNING, Kitchensink::System(), "Unknown dialog record '{}' in file:", record, path);
-            file.skip_linebreak();
         }
+        
+        file.skip_linebreak();
     }
 }
 

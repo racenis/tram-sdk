@@ -79,7 +79,7 @@ WorldCell* WorldCell::Find(vec3 point) {
 /// This will flag the cell as loaded and will load all of the entities that
 /// have been flagged as being automatically loaded.
 void WorldCell::Load() {
-    Log(Severity::INFO, System::CORE, "Loading cell:", name);
+    Log(Severity::INFO, System::CORE, "Loading cell: {}", name);
     
     if (!entities.size() && !(flags & LOADED_FROM_DISK)) {
         Log(Severity::ERROR, System::CORE, "Cell '{}' has no entities. Forgot to load from disk?", name);

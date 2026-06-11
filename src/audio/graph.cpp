@@ -43,14 +43,14 @@ SoundGraph* SoundGraph::Find(name_t name) {
 void SoundGraph::LoadFromDisk() {
     std::string filename = std::string("data/worldcells/") + std::string(name) + ".sound";
     
-    File file (filename.c_str(), File::READ);
+    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::NOTE, System::AUDIO, "Sound graph not found: {}", filename);
         return;
     }
     
-    name_t header = file.read_name();
+    name_t header = file.read_name(); file.skip_linebreak();
     
     if (header != "SOUNDGRAPHv1") {
         Log(Severity::NOTE, System::AUDIO, "Sprite not found: {}", filename);
@@ -79,7 +79,9 @@ void SoundGraph::LoadFromDisk() {
             // TODO: implement
         } else {
             Log(Severity::WARNING, System::AUDIO, "Unknown sound graph record:", record_type);
-    }
+        }
+        
+        file.skip_linebreak();
     }
     
     status = READY;

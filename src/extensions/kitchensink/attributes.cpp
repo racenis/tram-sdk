@@ -134,21 +134,21 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".attrib");
 
-    File file (path, File::READ);
+    File file (path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open attribute file: {}", path);
         return;
     }
 
-    name_t file_type = file.read_name();
+    name_t file_type = file.read_name(); file.skip_linebreak();
 
     if (file_type != "ATTRIBv1") {
         Log(Severity::WARNING, Kitchensink::System(), "Invalid file type '{}' in attribute file: {}", file_type, path);
         return;
     }
     
-    Log(Severity::INFO, Kitchensink::System(), "Loading attribute:", path);
+    Log(Severity::INFO, Kitchensink::System(), "Loading attribute: {}", path);
 
     while (file.is_continue()) {
         auto record = file.read_name();
@@ -181,8 +181,9 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
             
         } else {
             Log(Severity::WARNING, Kitchensink::System(), "Unknown attribute record '{}' in file:", record, path);
-            file.skip_linebreak();
         }
+        
+        file.skip_linebreak();
     }
 }
 
