@@ -61,9 +61,8 @@ public:
         collision_height_crouch = crouch_height;
     }
     
-    inline void SetStepHeight(float height, float crouch_height) {
+    inline void SetStepHeight(float height) {
         step_height = height;
-        step_height_crouch = crouch_height;
     }
     
     inline void SetWallCollisionCallback(void (*callback)(ControllerComponent*, Physics::Collision)) {
@@ -75,6 +74,7 @@ public:
     inline void SetCrouchSpeed(float speed) { this->crouch_speed = speed; }
     inline void SetFlySpeed(float speed) { this->fly_speed = speed; }
     inline void SetFriction(float friction) { this->friction = friction; }
+    inline void SetAcceleration(float acceleration) { this->acceleration = acceleration; }
     inline void SetCollisionGroup(uint32_t group) { this->collision_group = group; }
 protected:
     FPSControllerComponent() = default;
@@ -95,19 +95,20 @@ protected:
     
     float collision_width = 0.35f;
     float collision_height = 1.85f;
-    float collision_height_crouch = 0.5f;
+    float collision_height_crouch = 0.75f;
     
     float step_height = 0.35f;
-    float step_height_crouch = 0.15f;
     
-    float walk_speed = 0.1f;
-    float run_speed = 0.2f;
-    float crouch_speed = 0.05f;
-    float fly_speed = 0.2f;
+    float walk_speed = 4.0f;
+    float run_speed = 8.0f;
+    float crouch_speed = 2.0f;
+    float fly_speed = 16.0f;
     
     float friction = 0.89f;
+    float acceleration = 1.0f;
     
     bool crouching = false;
+    bool squished = false;
     bool running = false;
     bool flying = false;
     

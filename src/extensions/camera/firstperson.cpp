@@ -145,6 +145,16 @@ void FirstPersonCamera::Update () {
     term_loc += following_offset;
     term_loc += vec3(0.0f, 1.0f, 0.0f) * fabsf(sinf(bob)) * bobbing_distance * bobbing_weight * shake_multiplier;
     
+    if (vertical_smoothing > 0.0f) {
+        last_verts[0] = last_verts[1];
+        last_verts[1] = last_verts[2];
+        last_verts[2] = last_verts[3];
+        last_verts[3] = term_loc.y;
+        
+        float smoothened = (last_verts[0] + last_verts[1] + last_verts[2] + last_verts[3]) / 4.0f;
+        term_loc.y = glm::mix(term_loc.y, smoothened, vertical_smoothing);
+    }
+    
     if (following_interpolation != 1.0f) {
         term_loc = glm::mix(Render::GetViewPosition(), term_loc, following_interpolation);
     }

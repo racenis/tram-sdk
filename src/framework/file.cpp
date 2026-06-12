@@ -171,7 +171,7 @@ public:
         const char* begin = cur;
         size_t length = 0;
         
-        for (; (delimiter && *cur != delimiter || !delimiter && !isspace(*cur)) && cur < end; cur++) {
+        for (; ((delimiter && *cur != delimiter) || (!delimiter && !isspace(*cur))) && cur < end; cur++) {
             if (*cur == '\n') current_line++;
             length++;
         }

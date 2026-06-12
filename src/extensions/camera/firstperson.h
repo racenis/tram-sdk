@@ -28,6 +28,7 @@ public:
     
     inline void SetFollowingInterpolation(float following_interpolation) { this->following_interpolation = following_interpolation; }
     inline void SetFollowingOffset(vec3 offset) { this->following_offset = offset; }
+    inline void SetVerticalSmoothing(float smoothing) { this->vertical_smoothing = smoothing; }
     
 protected:
     float tilt = 0.0f;
@@ -48,8 +49,10 @@ protected:
     float yaw = 0.0f;
     float pitch = 0.0f;
     
-    vec3 following_offset = vec3 (0.0f, 0.0f, 0.0f);
+    vec3 following_offset = {0.0f, 0.0f, 0.0f};
     float following_interpolation = 1.0f;
+    float vertical_smoothing = 0.0f;
+    float last_verts[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 };
 
 }

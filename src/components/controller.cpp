@@ -143,7 +143,7 @@ void FPSControllerComponent::Start() {
     
     crouch_collision->SetCollisionMask(-1 ^ collision_group);
     crouch_collision->SetCollisionGroup(Physics::COLL_TRIGGER);
-    crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height_crouch));
+    crouch_collision->SetShape(Physics::CollisionShape::Cylinder(collision_width, (collision_height_crouch/2.0f) - step_height));
     crouch_collision->SetStoreCollisions(true);
     
     walk_collision->Init();
@@ -163,6 +163,7 @@ void FPSControllerComponent::Run() {
 }
 
 void FPSControllerComponent::Crouch() {
+    squished = true;
     crouching = true;
 }
 
@@ -204,23 +205,28 @@ void FPSControllerComponent::ApplyDynamics() {
         // get the move speed
         float target_speed = walk_speed;
         if (running) target_speed = run_speed;
-        if (crouching) target_speed = crouch_speed;
-
-        // helps with floaty feeling
-        if (is_in_air) target_speed *= 0.33f;
-
+        if (squished) target_speed = crouch_speed;
+        if (flying) target_speed = fly_speed;
+        
+        // convert m/s into m/f
+        target_speed *= 1.0f / 60.0f;
+        
         // convert local space direction into global space direction and normalize it
         vec3 wish_dir = glm::normalize(parent->GetRotation() * move_direction);
         if (std::isnan(wish_dir.x) || std::isnan(wish_dir.y) || std::isnan(wish_dir.z)) wish_dir = vec3(0.0f, 0.0f, 0.0f);
         
-        // clip the move direction so that it doesn't exceed maximum velocity
         float current_speed = glm::dot(velocity, wish_dir); 
-        float add_speed = target_speed - current_speed;
+        const float acc_cap = target_speed * (1.0f - current_speed / target_speed);
+        const float acc_inc = std::pow(0.01f, 1.0f / (acceleration * 60.0f));
+        float add_speed = (target_speed * (1.0f - acc_inc) - current_speed * (friction - acc_inc)) / friction;
         add_speed = add_speed < 0.0f ? 0.0f : add_speed;
-        add_speed = add_speed > 0.02f ? 0.02f : add_speed;
-        
+        add_speed = add_speed > acc_cap ? acc_cap : add_speed;
+
         // add the move direction to the velocity
         auto add_velocity = wish_dir * add_speed;
+        
+        // keep entity from flying off
+        if (is_in_air) add_velocity *= 0.1f;
         
         velocity.x += add_velocity.x;
         velocity.z += add_velocity.z;
@@ -232,11 +238,6 @@ void FPSControllerComponent::ApplyDynamics() {
 }
 
 void FPSControllerComponent::RecoverFromCollisions() {
-    const float height = crouching ? collision_height_crouch : collision_height;
-    const float step = crouching ? step_height_crouch : step_height;
-    const float half_height = height / 2.0f;
-    const float width = collision_width;
-    
     // if not colliding, just apply the velocity.
     if (!collide) {
         vec3 new_pos = parent->GetLocation() + velocity;
@@ -248,12 +249,49 @@ void FPSControllerComponent::RecoverFromCollisions() {
     vec3 old_pos = parent->GetLocation();
     quat old_rot = parent->GetRotation();
     vec3 new_pos = old_pos + velocity;
+    
+    if (!crouching && squished) {
+        vec3 mid = parent->GetLocation();
+        mid.y -= collision_height_crouch / 2.0f;
+        mid.y += collision_height / 2.0f;
         
+        auto ceiling_collision = Physics::Raycast(mid - vec3(0, collision_height / 2.0f - 0.1f, 0),
+                                                  mid + vec3(0, collision_height / 2.0f + 0.1f, 0),
+                                                 -1 ^ (collision_group | Physics::COLL_TRIGGER));
+        
+        auto ceiling_collisions = Physics::Shapecast(
+            Physics::CollisionShape::Cylinder(collision_width, collision_height / 2.0f),
+            mid + vec3(0.0f, 0.2f, 0.0f),
+            mid + vec3(0.0f, 0.1f, 0.0f),
+            -1 ^ collision_group
+        );
+        
+        if (!ceiling_collisions.size() && !ceiling_collision.collider) squished = false;
+    }
+    
+    const float height = squished ? collision_height_crouch : collision_height;
+    const float half_height = height / 2.0f;
+    const float width = collision_width;
+    
+    // this should prevent the push from shoving peeps through the
+    // ceiling when walking up a slope
+    auto ceiling_collision = Physics::Raycast(new_pos,
+                                              new_pos + vec3(0, half_height, 0),
+                                             -1 ^ (collision_group | Physics::COLL_TRIGGER));
+    auto floor_collision = Physics::Raycast(new_pos,
+                                              new_pos - vec3(0, half_height + 0.1f, 0),
+                                             -1 ^ (collision_group | Physics::COLL_TRIGGER));
+    if (ceiling_collision.collider && floor_collision.collider && floor_collision.normal.y < 0.98f) {
+        vec3 slope = normalize(DIRECTION_UP - glm::dot(-DIRECTION_UP, floor_collision.normal) * floor_collision.normal);
+        velocity = {0.0f, 0.0f, 0.0f};
+        velocity += slope * 0.15f;
+    }
+    
     // check if new position is on the ground
     auto ground_collisions = Physics::Shapecast(
-        Physics::CollisionShape::Cylinder(width, half_height),
-        new_pos + vec3(0.0f, step, 0.0f),
-        new_pos - vec3(0.0f, 0.1f, 0.0f),
+        Physics::CollisionShape::Cylinder(width * 0.9f, half_height),
+        new_pos + vec3(0.0f, step_height, 0.0f),
+        new_pos - vec3(0.0f, step_height, 0.0f),
         -1 ^ collision_group
     );
     
@@ -275,21 +313,26 @@ void FPSControllerComponent::RecoverFromCollisions() {
             }
         }
         
-        if (lowest_collision.y != INFINITY) {
-            //Render::AddLineMarker({new_pos.x, character_bottom_height, new_pos.z}, Render::COLOR_RED);
-        }
-        
         // if there is such a collision, then put the character at that position
         if (lowest_collision.y != INFINITY) {
+            
             // calcuate step height
             float step_height = lowest_collision.y - character_bottom_height;
             
             // check if stepping up is allowed and then step up
             if (lowest_collision_normal.y > 0.70f && step_height > 0.0f /*&& step_height < 0.35f*/) {
-                new_pos.y = lowest_collision.y + half_height + 0.01f;
+                vec3 step_up = new_pos;
+                step_up.y = lowest_collision.y + half_height + 0.01f;
+            
+                new_pos = step_up;
                 velocity.y = 0.0f;
                 is_in_air = false;
             }
+            
+            if (lowest_collision_normal.y < 0.70f && lowest_collision_normal.y > 0.02f) {
+                is_in_air = true;
+            }
+            
         } else if (!is_in_air) {
             // if character is a certain distance above the ground, we will move the
             // character to the ground. this will help with the floaty feeling when
@@ -303,12 +346,12 @@ void FPSControllerComponent::RecoverFromCollisions() {
             }
             
             float character_bottom_height = new_pos.y - half_height;
-            float step_height = highest_collision - character_bottom_height;
+            float step = highest_collision - character_bottom_height;
             
-            if (step_height < 0.0f && step_height > -0.1f) {
+            if (step < 0.0f && step > -step_height) {
                 new_pos.y = highest_collision + half_height + 0.01f;
                 velocity.y = 0.0f;
-                is_in_air = false;;
+                is_in_air = false;
             }
         }
     } else {
@@ -316,15 +359,14 @@ void FPSControllerComponent::RecoverFromCollisions() {
         is_in_air = true;
     }
     
-    bool did_v = false;
-    
-    TriggerComponent* collider = crouching ? crouch_collision.get() : walk_collision.get();
+    TriggerComponent* collider = squished ? crouch_collision.get() : walk_collision.get();
+    const float squash = collider->GetStoredCollisions().size() > 4 ? 0.25f : 0.5f;
     for (auto& col : collider->GetStoredCollisions()) {
-        if (col.distance != 0.0f) {
-            new_pos -= col.normal * col.distance;
+        if (col.distance > 0.0f) {
+            continue;
         }
         
-        if (did_v) continue;
+        new_pos -= col.normal * col.distance * squash;
         
         // project velocity to collision surface
         auto plane_normal = glm::normalize(-col.normal);
@@ -332,6 +374,11 @@ void FPSControllerComponent::RecoverFromCollisions() {
 
         if (std::isnan(velocity.x) || std::isnan(velocity.z)) {
             velocity = {0.0f, 0.0f, 0.0f};
+        }
+        
+        // if we don't do this, it looks like you get stuck on the ceiling
+        if (col.normal.y < -0.98f) {
+            velocity.y = 0.0f;
         }
         
         // add wall slide friction
@@ -344,8 +391,6 @@ void FPSControllerComponent::RecoverFromCollisions() {
         if (wallbonk_callback) {
             wallbonk_callback(this, col);
         }
-        
-        did_v = true;
     }
         
     // make controller follow whatever entity it is standing on
@@ -377,8 +422,8 @@ void FPSControllerComponent::RecoverFromCollisions() {
     }
     standing_on_prev = standing_on;
     
-    walk_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
-    crouch_collision->SetLocation(new_pos + vec3(0.0f, 0.35f * 0.5f, 0.0f));
+    walk_collision->SetLocation(new_pos + vec3(0.0f, step_height * 0.5f, 0.0f));
+    crouch_collision->SetLocation(new_pos + vec3(0.0f, step_height * 0.5f, 0.0f));
     
     // apply new position to character
     parent->UpdateTransform(new_pos, old_rot);

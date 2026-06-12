@@ -561,18 +561,15 @@ void StepPhysics() {
         
         for (int i = 0; i < contactManifold->getNumContacts(); i++) {
             auto& contact = contactManifold->getContactPoint(i);
-            auto& posA = contact.getPositionWorldOnA();
             auto& posB = contact.getPositionWorldOnB();
-            vec3 point = {posA.getX(), posA.getY(), posA.getZ()};
-            vec3 normal = -glm::normalize(point - vec3 {posB.getX(), posB.getY(), posB.getZ()});
-            // TODO: switch to using m_normalWorldOnB from contact
-            
+            vec3 point = {posB.getX(), posB.getY(), posB.getZ()};
+            vec3 normal = {contact.m_normalWorldOnB.getX(),
+                           contact.m_normalWorldOnB.getY(),
+                           contact.m_normalWorldOnB.getZ()};
+
             // reverse the normal
             if (swapped) normal = -normal;
-            
-            // this is to avoid accidental division by zero
-            if (contact.getDistance() == 0.0f) normal = {0.0f, 1.0f, 0.0f};
-            
+
             API::RigidbodyMetadata* metadata_a = (API::RigidbodyMetadata*)obj_a->getUserPointer();
             API::RigidbodyMetadata* metadata_b = (API::RigidbodyMetadata*)obj_b->getUserPointer();
             

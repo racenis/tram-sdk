@@ -257,8 +257,7 @@ public:
     }
     
     void SetContents(const char* contents, size_t size) {
-        size_t bytes_written = fwrite(contents, size, 1, file_handle);
-        if (bytes_written != size) {
+        if (!fwrite(contents, size, 1, file_handle)) {
             Log(Severity::ERROR, System::PLATFORM, "Failed to write to: {}", temp_path);
             write_failed = true;
         }
