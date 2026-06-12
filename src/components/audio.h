@@ -18,8 +18,9 @@ class AudioComponent : public EntityComponent {
 public:
     AudioComponent() : sound(this){}
     ~AudioComponent();
-    void Start();
+    
     void SetLocation(vec3 location);
+    void SetSound(Audio::Sound* sound);
     void SetSound(name_t name);
     void SetRepeating(bool is_repeating);
     bool IsPlaying();
@@ -40,6 +41,8 @@ protected:
     vec3 location = {0.0f, 0.0f, 0.0f};
     bool repeat = false;
     bool play_on_start = false;
+    
+    void Start();
     
     void SetupModel();
     Component<RenderComponent> model;

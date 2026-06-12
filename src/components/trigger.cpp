@@ -21,13 +21,9 @@ template <> void Component<TriggerComponent>::init() { ptr = PoolProxy<TriggerCo
 template <> void Component<TriggerComponent>::yeet() { PoolProxy<TriggerComponent>::Delete(ptr); }
 
 void TriggerComponent::Start() {
-    if (!shape.bt_shape && model) {
-        shape = model->GetShape();
-    }
-    
-    assert(shape.bt_shape);
+    assert(shape.bt_shape || (model && model->GetShape().bt_shape));
 
-    trigger = API::MakeTrigger(shape, collisionMask, collisionGroup, location, rotation);
+    trigger = API::MakeTrigger(model ? model->GetShape() : shape, collisionMask, collisionGroup, location, rotation);
     
     API::SetTriggerCollisionCallback(trigger, [](void* obj_a, void* obj_b, API::ObjectCollision collision) {
         TriggerComponent* trigger_component = (TriggerComponent*)obj_a;
@@ -45,11 +41,46 @@ void TriggerComponent::Start() {
 TriggerComponent::~TriggerComponent(){
     API::YeetTrigger(trigger);
     
-    if (shape.bt_shape && !model.get()) API::YeetCollisionShape(shape);
+    if (shape.bt_shape) API::YeetCollisionShape(shape);
 };
+
+/// Sets the model for the collision shape of the trigger.
+/// @deprecated Use SetModel(Physics::CollisionModel*) instead.
+void TriggerComponent::SetModel(name_t model) {
+    SetModel(Physics::CollisionModel::Find(model));
+}
+
+/// Sets the model for the collision shape of the trigger.
+void TriggerComponent::SetModel(Physics::CollisionModel* model) {
+    if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized TriggerComponents cannot accept models! Ignoring TriggerComponent::SetModel() call.");
+        return;
+    }
+    
+    if (shape.bt_shape) {
+        Log(Severity::WARNING, System::RENDER, "TriggerComponent already has shape set! Ignoring TriggerComponent::SetModel() call.");
+        return;
+    }
+    
+    this->model = model;
+}
 
 /// Sets a collision shape for the trigger.
 void TriggerComponent::SetShape(Physics::CollisionShape shape) {
+    if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized TriggerComponents cannot accept shapes! Ignoring TriggerComponent::SetShape() call.");
+        return;
+    }
+    
+    if (model) {
+        Log(Severity::WARNING, System::RENDER, "TriggerComponent already has model set! Ignoring TriggerComponent::SetShape() call.");
+        return;
+    }
+    
+    if (this->shape.bt_shape) {
+        API::YeetCollisionShape(this->shape);
+    }
+    
     this->shape = API::MakeCollisionShape(shape);
 }
 

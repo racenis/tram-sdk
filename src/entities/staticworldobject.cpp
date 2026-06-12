@@ -115,7 +115,7 @@ void StaticWorldObject::Unload(){
 
 void StaticWorldObject::Serialize() {
     model = rendercomponent->GetModel()->GetName();
-    lightmap = rendercomponent->GetLightmap();
+    lightmap = rendercomponent->GetLightmap()->GetName();
 };
 
 void StaticWorldObject::MessageHandler(Message& msg) {

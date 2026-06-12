@@ -12,17 +12,13 @@ class DecalComponent : public EntityComponent {
 public:
     DecalComponent() : sprite(this) {}
     ~DecalComponent();
-    inline name_t GetSprite() { return sprite->GetName(); }
+    inline Render::Sprite* GetSprite() { return sprite.get(); }
 
     void SetSprite(Render::Sprite* sprite) {
         this->sprite = sprite;
     }
 
-    void Start();
-    
     void Update();
-
-    void UpdateRenderListObject();
 
     void SetScale(float scale) {
         this->scale = scale;
@@ -52,6 +48,9 @@ protected:
     float scale = 1.0f;
     
     uint32_t frame = 0;
+
+    void Start();
+    void UpdateRenderListObject();
 
     Render::drawlistentry_t draw_list_entry = {};
     Render::vertexarray_t vertex_array = {};

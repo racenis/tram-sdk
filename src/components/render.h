@@ -15,29 +15,32 @@ class RenderComponent : public EntityComponent {
 public:
     RenderComponent();
     ~RenderComponent();
-    inline Render::Model* GetModel() { return model.get(); }
-
-    inline name_t GetLightmap() { return (lightmap.get() == nullptr) ? 0 : lightmap->GetName();};
-
+    
     void SetModel(name_t name);
     void SetModel(Render::Model* model) { this->model = model; }
     void SetLightmap(name_t name);
     void SetLightmap(Render::Lightmap* lightmap);
-    void SetEnvironmentMap(Render::Environment* material);
+    void SetEnvironmentMap(Render::Environment* environment);
     void SetArmature(AnimationComponent* armature);
+    void SetPose(AnimationComponent* armature);
 
-    void Start();
+    inline Render::Model* GetModel() { return model.get(); }
+    inline Render::Lightmap* GetLightmap() { return lightmap.get(); }
 
-    vec3 GetLocation() const { return location; }
-    quat GetRotation() const { return rotation; }
-    vec3 GetScale() const { return scale; }
 
-    void SetLocation(vec3 nlocation);
-    void SetRotation(quat nrotation);
+
+
+    void SetLocation(vec3 location);
+    void SetRotation(quat rotation);
     void SetScale(vec3 scale);
     void SetColor(vec3 color);
     void SetLayer(uint32_t layer);
+    void SetLayers(uint32_t layers);
     void SetTextureOffset(name_t material, vec4 offset);
+    
+    inline vec3 GetLocation() const { return location; }
+    inline quat GetRotation() const { return rotation; }
+    inline vec3 GetScale() const { return scale; }
     
     void SetLineDrawingMode(bool enabled);
     
@@ -48,10 +51,11 @@ public:
 protected:
     void InsertDrawListEntries();
     void RefreshAABB();
+    void Start();
 
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Lightmap> lightmap;
-    ResourceProxy<Render::Environment> environmentmap;
+    ResourceProxy<Render::Environment> environment;
 
     std::vector<Render::drawlistentry_t> draw_list_entries;
 

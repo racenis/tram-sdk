@@ -20,11 +20,10 @@ public:
     TriggerComponent() : model(this){}
     ~TriggerComponent();
     void EventHandler(Event &event){};
-    void Start();
 
     Physics::CollisionModel* GetModel() { return model.get(); }
-    void SetModel(name_t model) { this->model = Physics::CollisionModel::Find(model); }
-    void SetModel(Physics::CollisionModel* model) { this->model = model; }
+    void SetModel(name_t model);
+    void SetModel(Physics::CollisionModel* model);
     void SetShape(Physics::CollisionShape shape);
 
     void SetActivationCallback(collision_callback activation) { this->activation = activation; }
@@ -69,6 +68,8 @@ private:
     filter_callback filter = nullptr;
 
     bool store_collisions = false;
+    
+    void Start();
     
     std::vector<std::pair<uint32_t, Physics::Collision>> active_collisions;
     

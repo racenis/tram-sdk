@@ -25,6 +25,23 @@
  * - skeletal hierarchy (neat effects)
  * - skeleton bone to keyframe header mapping (expensive lookup)
  * - bone space matrices
+ * 
+ * FULL OPTIMIZATION PLAN
+ * 
+ * AnimationPlaybackInfo -> keyframes + count
+ * ! these are 100% needed (saves time mapping bone name to keyframe)
+ * 
+ * AnimationPlaybackInfo as a whole
+ * ! could be stored in a pool shared between all components.
+ * ! then they would be allocated as needed
+ * 
+ * bone parents instead of whole skeleton copy
+ * ! actually already implemented. nice I guess
+ * 
+ * Component as a whole
+ * ! would cache all of the matrices
+ * ! invalidation on bone change
+ * 
  */
 
 namespace tram {
@@ -64,6 +81,29 @@ void AnimationComponent::Start() {
     }
 
     is_ready = true;
+}
+
+/// Sets the model which will be animated.
+/// @deprecated Use SetModel(Render::Model*) instead.
+void AnimationComponent::SetModel(name_t model) {
+    SetModel(Render::Model::Find(model));
+}
+
+/// Sets the model which will be animated.
+/// Before linking an AnimationComponent to a RenderComponent, both of them need
+/// to have the exact same model set for both of them.
+void AnimationComponent::SetModel(Render::Model* model) {
+    if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized AnimationComponents cannot accept models! Ignoring AnimationComponent::SetModel() call.");
+        return;
+    }
+    
+    if (!model) {
+        Log(Severity::WARNING, System::RENDER, "Initialized AnimationComponents must accept valid models! Ignoring AnimationComponent::SetModel() call.");
+        return;
+    }
+    
+    this->model = model;
 }
 
 /// Sets procedural animation keyframe.
@@ -170,7 +210,7 @@ void AnimationComponent::Stop(name_t animation_name) {
 }
 
 /// Sets animation's pause state.
-/// This will do nothing, if the animation is not playing. Pausing an already paused
+/// This will do nothing if the animation is not playing. Pausing an already paused
 /// or continuing an already playing animation will do nothing.
 /// @param animation_name   Name of the animation to pause.
 /// @param pause            Set to true to pause the animation, set to false to continue.

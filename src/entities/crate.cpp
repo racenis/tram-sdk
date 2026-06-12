@@ -115,7 +115,7 @@ void Crate::Unload() {
 
 void Crate::Serialize() {
     model = rendercomponent->GetModel()->GetName();
-    collmodel = physicscomponent->GetModel();
+    collmodel = physicscomponent->GetModel()->GetName();
 }
 
 void Crate::MessageHandler(Message& msg){

@@ -17,9 +17,13 @@
  * requested resources have been loaded and then calls the component's Start()
  * method.
  * 
+ * After a component has been started, it doesn't accept any parameters which
+ * would result in it having to request resource loads. Once a component is
+ * started, it can only be destroyed and recreated, not uninitialized.
+ * 
  * @fn tram::EntityComponent::IsReady
  * Returns the component's readiness.
- * The component is considered ready when it's Init() method has been called,
+ * The component is considered ready when its Init() method has been called,
  * all of it's Resource dependencies have been loaded and its Start() method has
  * been called.
  * @return True if the component's Start() method has been called.

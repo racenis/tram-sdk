@@ -20,6 +20,30 @@
  * Projects decals onto the scene.
  * @see https://racenis.github.io/tram-sdk/documentation/components/decal.html
  */
+ 
+ /*
+  * IDEAS! for optimizations, alternate modes, etc. !!!
+  * 
+  * 1. CURRENT MODE
+  * - as soon as decal loads, it projects itself onto whatever is in the scene.
+  * - fine for static objects
+  * - maybe need to add a scene flag for static objects
+  * - flag should be optional
+  * 
+  * 2. SPLAT MODE
+  * - decal retains all of its vertices
+  * - can splat multiple times
+  * - would have a method like splat(pos, rot)
+  * 
+  * 3. TARGET MODE
+  * - can target a specific rendercomponent
+  * - maybe can even apply an armature deformation
+  * 
+  * yeah that's it
+  *
+  * 
+  * 
+  */
 
 namespace tram {
 using namespace tram::Render;

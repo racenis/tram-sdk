@@ -12,8 +12,8 @@ namespace tram {
 
 class AnimationComponent : public EntityComponent {
 public:
-    void SetModel(Render::Model* model) { this->model = model; }
-    void SetModel(name_t model) { this->model = Render::Model::Find(model); }
+    void SetModel(Render::Model* model);
+    void SetModel(name_t model);
     Render::Model* GetModel() { return model.get(); }
     Render::Pose* GetPose() { return pose; }
     
@@ -39,7 +39,6 @@ public:
     
     void Reparent(name_t bone_name, name_t new_parent);
     
-    void Refresh();
     void EventHandler(Event &event) { return; }
     
     static AnimationComponent* Make();
@@ -67,6 +66,7 @@ protected:
     };
 
     void Start();
+    void Refresh();
     
     void FindKeyframePointers(Render::Animation* animation, size_t animation_index);
 

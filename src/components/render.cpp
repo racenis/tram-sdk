@@ -14,6 +14,21 @@
 /**
  * @class tram::RenderComponent components/render.h <components/render.h>
  * 
+ * @fn tram::RenderComponent::GetModel
+ * @return Pointer to a model, or `nullptr` if it hasn't been set.
+ * 
+ * @fn tram::RenderComponent::GetLightmap
+ * @return Pointer to a lightmap, or `nullptr` if it hasn't been set.
+ * 
+ * @fn tram::RenderComponent::GetLocation
+ * @return Position of the component.
+ * 
+ * @fn tram::RenderComponent::GetRotation
+ * @return Rotation of the component.
+ * 
+ * @fn tram::RenderComponent::GetScale
+ * @return Scale of the component.
+ * 
  * Renders a Model.
  * @see https://racenis.github.io/tram-sdk/documentation/components/render.html
  */
@@ -31,86 +46,98 @@ template <> void Component<RenderComponent>::yeet() { PoolProxy<RenderComponent>
 /// If the model is not already loaded, then it will be added to loader queue
 /// and the component will start when it the loading is complete.
 void RenderComponent::SetModel(name_t name) {
-    model = Render::Model::Find(name);
-    
-    /*if (is_ready) {
-        for (auto entry : draw_list_entries) {
-            if (entry.generic) {
-                RemoveDrawListEntry(entry);
-            }
-        }
-        
-        draw_list_entries.clear();
-        
-        InsertDrawListEntries();
-        RefreshAABB();
-    }*/
-};
-
-/// Sets the lightmap for the model.
-/// Lightmaps are rendered only for static models, so setting a lightmap for
-/// a dynamic model will do nothing.
-void RenderComponent::SetLightmap(name_t name) {
-    lightmap = Render::Lightmap::Find(name);
-    
-    /*if (is_ready) {
-        for (auto entry : draw_list_entries) {
-            if (entry.generic) {
-                Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturehandle_t {});
-            }
-        }
-    }*/
-};
-
-/// Sets the lightmap for the model.
-/// Lightmaps are rendered only for static models, so setting a lightmap for
-/// a dynamic model will do nothing.
-void RenderComponent::SetLightmap(Lightmap* lightmap) {
-    this->lightmap = lightmap;
-};
-
-
-
-/// Sets the environment map for the model.
-void RenderComponent::SetEnvironmentMap(Render::Environment* material) {
-    environmentmap = material;
-    //std::cout << "setting:" << material << std::endl;
-    //if (material != environmentmap.get()) std::cout << "newnenwnenwenwnew\n\n\n\n\n\n\n\n" << std::endl;
-    
-    if (is_ready && material && material->GetStatus() == Resource::READY) {
-        for (auto entry : draw_list_entries) {
-            if (entry.generic) {
-                Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturearray_t {});
-            }
-        }
+    if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized RenderComponents cannot accept models! Ignoring RenderComponent::SetModel() call.");
+        return;
     }
     
-    
-    
-}
+    model = Render::Model::Find(name);
+};
 
-/// Links an AnimationComponent.
-/// This needs to be set, so that the model can be rendered with the animations
-/// played by the AnimationComponent.
-/// Alternatively, this can be set to a nullptr, if no animations are to be played.
-/// This affects only dynamic models, static models don't play animations.
-void RenderComponent::SetArmature(AnimationComponent* armature) {
-    if (armature) {
-        pose = armature->GetPose();
-    } else {
-        pose = nullptr;
+/// Sets the lightmap for the model.
+/// @deprecated Use SetLightmap(Lightmap*) method instead.
+void RenderComponent::SetLightmap(name_t name) {
+    SetLightmap(Render::Lightmap::Find(name));
+};
+
+/// Sets the lightmap for the model.
+/// Lightmaps are rendered only for static models, so setting a lightmap for
+/// a dynamic model have no effect.
+/// @param lightmap Pointer to a lightmap.
+void RenderComponent::SetLightmap(Lightmap* lightmap) {
+    if (environment) {
+        Log(Severity::WARNING, System::RENDER, "RenderComponent already has an environment map! Ignoring RenderComponent::SetLightmap() call.");
+        return;
     }
     
     if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized RenderComponents cannot accept lightmaps! Ignoring RenderComponent::SetLightmap() call.");
+        return;
+    }
+    
+    this->lightmap = lightmap;
+};
+
+/// Sets the environment map for the model.
+/// If calling this method after the component has been initialized, the
+/// evironment map needs to be have already been loaded.
+/// Before initialization finishes, the component will instead request the load
+/// of the map resource and will wait until it is ready.
+/// This method can also be used to clear the environment map.
+/// @param environment Pointer to environment map to set or `nullptr`.
+void RenderComponent::SetEnvironmentMap(Render::Environment* environment) {
+    if (lightmap) {
+        Log(Severity::WARNING, System::RENDER, "RenderComponent already has a lightmap! Ignoring RenderComponent::SetEnvironmentMap() call.");
+        return;
+    }
+    
+    if (!is_ready) {
+        this->environment = environment;
+        return;
+    }
+    
+    if (!environment) {
         for (auto entry : draw_list_entries) {
-            if (entry.generic) {
-                Render::API::SetPose(entry, pose);
-            }
+            if (!entry.generic) continue;
+            Render::API::SetEnvironmentMap(entry, texturearray_t {});
+        }
+        return;
+    }
+    
+    if (environment->GetStatus() != Resource::READY) {
+        Log(Severity::WARNING, System::RENDER, "Initialized RenderComponents can only accept loaded environment maps! Ignoring RenderComponent::SetEnvironmentMap() call");
+        return;
+    }
+    
+    for (auto entry : draw_list_entries) {
+        if (!entry.generic) continue;
+        Render::API::SetEnvironmentMap(entry, environment->GetTexture() );
+    }    
+}
+
+/// Links an AnimationComponent.
+/// @deprecated Use SetPose(AnimationComponent*) instead.
+void RenderComponent::SetArmature(AnimationComponent* armature) {
+    SetPose(armature);
+}
+
+/// Links an AnimationComponent.
+/// This needs to be set so that the model can be rendered with the animations
+/// played by the AnimationComponent.
+/// Alternatively, this can also be set to a nullptr if no animations are to be played.
+/// This affects only dynamic models, static models cannot play animations.
+void RenderComponent::SetPose(AnimationComponent* armature){
+    this->pose = armature ? armature->GetPose() : nullptr;
+
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (!entry.generic) continue;
+            Render::API::SetPose(entry, pose);
         }
     }
 };
 
-RenderComponent::RenderComponent() : model(this), lightmap(this), environmentmap(this) {
+RenderComponent::RenderComponent() : model(this), lightmap(this), environment(this) {
     render_flags = FLAG_RENDER | FLAG_DRAW_INDEXED;
 }
 
@@ -128,7 +155,12 @@ RenderComponent::~RenderComponent() {
     }
 };
 
-/// Sets the world parameters for model rendering.
+/// Sets the directional light for model rendering.
+/// Enables/disables directional lighting for a model. Setup the scene's
+/// directional lighting using `Render::SetSunDirection()` and
+/// `Render::SetSunColor()` functions.
+/// @param True if model should be rendered with the directional light, false
+///        otherwise.
 void RenderComponent::SetDirectionaLight(bool enabled) {
     if (!enabled) {
         render_flags |= FLAG_NO_DIRECTIONAL;
@@ -215,18 +247,45 @@ void RenderComponent::SetScale(vec3 scale) {
     }
 }
 
+/// Sets the render layer of the component.
+/// @deprecated Use SetLayers(uint32_t) instead.
 void RenderComponent::SetLayer(uint32_t layer) {
-    this->layer = layer;
+    SetLayers(1 << layer);
+}
+
+/// Sets the render layers of the rendercomponent.
+/// The layers parameter is a bitmask, with the least significant bit
+/// representing layer zero and most significant bit representing layer 31.
+/// Default layer is zero.
+/// At least a single layer must be selected.
+/// @param layers Bitmask containing layers in which the model will be drawn.
+void RenderComponent::SetLayers(uint32_t layers) {
+    if (!layer) {
+        Log(Severity::WARNING, System::RENDER, "RenderComponents must belong to at least a single layer! Ignoring RenderComponent::SetLayers() call.");
+        return;
+    }
+    
+    // TODO: finish implementation
+    this->layer = layers;
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
-            if (entry.generic) {
-                Render::API::SetLayer(entry, layer);
-            }
+            if (!entry.generic) continue;
+            Render::API::SetLayer(entry, layer);
         }
     }
 }
 
+/// Sets the texture offset of a material.
+/// Allows changing the texture UV offset of a material. This can be used to
+/// create, e.g. animated textures.
+/// The X and Y parameters of the offset are normalized texture space offset
+/// coordinates, e.g. you can set them to `(0.0, 0.5)` to offset the texture
+/// horizontally by a half of its width.
+/// The Z and W parameters are currently ignored and are reserved for future
+/// use, so for now set them to `1.0`.
+/// @param material Name of the material.
+/// @param offset   Special offset vector.
 void RenderComponent::SetTextureOffset(name_t material, vec4 offset) {
     if (is_ready) {
         auto& index_ranges = model->GetIndexRanges();
@@ -247,6 +306,8 @@ void RenderComponent::SetTextureOffset(name_t material, vec4 offset) {
     }
 }
 
+/// Sets the line drawing mode.
+/// If enabled, the model will be drawn as a wireframe.
 void RenderComponent::SetLineDrawingMode(bool enabled) {
     if (enabled) {
         render_flags |= FLAG_LINE_FILL_POLY;
@@ -302,10 +363,6 @@ void RenderComponent::RefreshAABB() {
 }
 
 void RenderComponent::InsertDrawListEntries() {
-    /*if (!pose) {
-        pose = BLANK_POSE;
-    }*/
-    
     auto& index_ranges = model->GetIndexRanges();
     
     for (size_t i = 0; i < index_ranges.size(); i++) {
@@ -314,16 +371,10 @@ void RenderComponent::InsertDrawListEntries() {
         texturehandle_t textures[15];
         material_t materials[15];
         vec4 colors[15];
-        //float specular_weights[15];
-        //float specular_exponents[15];
-        //float specular_transparencies[15];
         for (uint32_t j = 0; j < index_ranges[i].material_count; j++) {
             materials[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetMaterial();
             textures[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetTexture();
             colors[j] = vec4(model->GetMaterials()[index_ranges[i].materials[j]]->GetColor() * color, 1.0f);
-            //specular_weights[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularWeight();
-            //specular_exponents[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularExponent();
-            //specular_transparencies[j] = model->GetMaterials()[index_ranges[i].materials[j]]->GetSpecularTransparency();
         }
 
         light_t lights[4];
@@ -336,14 +387,12 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
         Render::API::SetDrawListIndexArray(entry, model->GetIndexArray());
         Render::API::SetDrawListMaterials(entry, index_ranges[i].material_count, materials);
-        //Render::API::SetDrawListTextures(entry, index_ranges[i].material_count, textures);
         Render::API::SetDrawListColor(entry, vec4(color, 1.0f));
-        //Render::API::SetDrawListSpecularities(entry, index_ranges[i].material_count, specular_weights, specular_exponents, specular_transparencies);
         const bool found_shader = Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 
         Render::API::SetLightmap(entry, lightmap ? lightmap->GetTexture() : texturearray_t {});
-        Render::API::SetEnvironmentMap(entry, environmentmap ? environmentmap->GetTexture() : texturearray_t {});
+        Render::API::SetEnvironmentMap(entry, environment ? environment->GetTexture() : texturearray_t {});
         Render::API::SetFlags(entry, render_flags);
         Render::API::SetLayer(entry, layer);
 

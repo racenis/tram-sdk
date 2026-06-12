@@ -26,7 +26,7 @@
  */
 
 namespace tram {
-    
+
 using namespace tram::Audio;
 using namespace tram::Audio::API;
 
@@ -69,8 +69,19 @@ void AudioComponent::Start() {
 }
 
 /// Sets the sound that the component will play.
+/// @deprecated Use SetSound(Audio::Sound*) instead.
 void AudioComponent::SetSound(name_t name) {
-    this->sound = Sound::Find(name);
+    SetSound(Sound::Find(name));
+}
+
+/// Sets the sound that the component will play.
+void AudioComponent::SetSound(Audio::Sound* sound) {
+    if (is_ready) {
+        Log(Severity::WARNING, System::AUDIO, "Initialized AudioComponents cannot accept sounds! Ignoring AudioComponent::SetSound() call.");
+        return;
+    }
+    
+    this->sound = sound;
 }
 
 /// Sets the location from which the sound will play.

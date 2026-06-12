@@ -16,8 +16,9 @@ public:
     void EventHandler(Event &event) {}
     void Start();
 
-    name_t GetModel();
+    Physics::CollisionModel* GetModel();
     void SetModel(name_t model);
+    void SetModel(Physics::CollisionModel* model);
 
     void SetMass(float mass);
     void SetShape(Physics::CollisionShape shape);

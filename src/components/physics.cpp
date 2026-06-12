@@ -81,13 +81,24 @@ PhysicsComponent::~PhysicsComponent(){
 }
 
 /// Returns the name of the collision model.
-name_t PhysicsComponent::GetModel () {
-    return collision_model ? collision_model->GetName() : UID();
+Physics::CollisionModel* PhysicsComponent::GetModel () {
+    return collision_model.get();
 }
 
 /// Sets the collision model.
-void PhysicsComponent::SetModel (name_t model) {
-    collision_model = Physics::CollisionModel::Find(model);
+/// @deprecated Use SetModel(Physics::CollisionModel*) method instead.
+void PhysicsComponent::SetModel(name_t model) {
+    SetModel(Physics::CollisionModel::Find(model));
+}
+
+/// Sets the collision model.
+void PhysicsComponent::SetModel(Physics::CollisionModel* model) {
+    if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized PhysicsComponents cannot accept models! Ignoring PhysicsComponent::SetModel() call.");
+        return;
+    }
+    
+    this->collision_model = model;
 }
 
 /// Returns the collision mask.
