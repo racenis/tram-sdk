@@ -13,8 +13,8 @@ class AnimationComponent;
 
 class RenderComponent : public EntityComponent {
 public:
-    RenderComponent();
-    ~RenderComponent();
+    static RenderComponent* Make();
+    static void Yeet(RenderComponent* component);
     
     void SetModel(name_t name);
     void SetModel(Render::Model* model) { this->model = model; }
@@ -26,9 +26,6 @@ public:
 
     inline Render::Model* GetModel() { return model.get(); }
     inline Render::Lightmap* GetLightmap() { return lightmap.get(); }
-
-
-
 
     void SetLocation(vec3 location);
     void SetRotation(quat rotation);
@@ -52,6 +49,9 @@ protected:
     void InsertDrawListEntries();
     void RefreshAABB();
     void Start();
+
+    RenderComponent();
+    ~RenderComponent();
 
     ResourceProxy<Render::Model> model;
     ResourceProxy<Render::Lightmap> lightmap;

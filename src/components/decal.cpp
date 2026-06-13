@@ -49,8 +49,8 @@ namespace tram {
 using namespace tram::Render;
 
 template <> Pool<DecalComponent> PoolProxy<DecalComponent>::pool("DecalComponent pool", COMPONENT_LIMIT_DECAL);
-template <> void Component<DecalComponent>::init() { ptr = PoolProxy<DecalComponent>::New(); }
-template <> void Component<DecalComponent>::yeet() { PoolProxy<DecalComponent>::Delete(ptr); }
+template <> void Component<DecalComponent>::init() { ptr = DecalComponent::Make(); }
+template <> void Component<DecalComponent>::yeet() { DecalComponent::Yeet(ptr); }
 
 using namespace API;
 
@@ -61,6 +61,10 @@ DecalComponent::~DecalComponent() {
 };
 
 void DecalComponent::Start() {
+    if (!sprite) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Decal component doesn't have its sprite set!");
+    }
+    
     assert(!is_ready);
 
     CreateVertexArray(GetVertexDefinition(VERTEX_STATIC), vertex_array);
@@ -364,6 +368,19 @@ void DecalComponent::UpdateRenderListObject() {
     Render::API::SetDrawListIndexRange(draw_list_entry, 0, verts.size());
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(vec3(0.0f, 0.0f, 0.0f), quat(1.0f, 0.0f, 0.0f, 0.0f)));
+}
+
+/// Creates a new DecalComponent.
+DecalComponent* DecalComponent::Make() {
+    DecalComponent* ptr = PoolProxy<DecalComponent>::GetPool().allocate();
+    new(ptr) DecalComponent();
+    return ptr;
+}
+
+/// Deletes an DecalComponent.
+void DecalComponent::Yeet(DecalComponent* component) {
+    component->~DecalComponent();
+    PoolProxy<DecalComponent>::GetPool().deallocate(component);
 }
 
 }

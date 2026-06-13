@@ -13,8 +13,8 @@ class RenderComponent;
 
 class AudioComponent : public EntityComponent {
 public:
-    AudioComponent() : sound(this){}
-    ~AudioComponent();
+    static AudioComponent* Make();
+    static void Yeet(AudioComponent* component);
     
     void SetLocation(vec3 location);
     void SetSound(Audio::Sound* sound);
@@ -38,6 +38,9 @@ protected:
     bool play_on_start = false;
     
     void Start();
+    
+    AudioComponent() : sound(this) {}
+    ~AudioComponent();
 };
 
 }

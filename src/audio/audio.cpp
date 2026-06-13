@@ -51,7 +51,7 @@ void Update() {
 void Uninit() {
     
     // we need to yeet all of the resources, otherwise OpenAL will complain
-    for (auto& it : PoolProxy<AudioComponent>::GetPool()) it.~AudioComponent();
+    for (auto& it : PoolProxy<AudioComponent>::GetPool()) AudioComponent::Yeet(&it);
     for (auto& it : PoolProxy<Sound>::GetPool()) it.Unload();
     
     API::Uninit();

@@ -21,14 +21,15 @@ namespace tram {
 
 class PlayerComponent : public EntityComponent {
 public:
-    void EventHandler (Event &event);
-    void Init();
-    PlayerComponent();
-    ~PlayerComponent();
+    static PlayerComponent* Make();
+    static void Yeet(PlayerComponent* component);
+    
     void SetControllerComponent (ControllerComponent* comp) { controller = comp; }
-    void Start() {}
+    void Start();
     void SetNoclip(bool value);
     void SetKeyboardLook(bool value);
+    
+    void EventHandler(Event &event);
     
     inline quat GetLookRotation() { return look_rotation; }
     inline vec3 GetDirectionFacing() { return direction_facing; }
@@ -44,6 +45,9 @@ private:
     bool keyboard_look = false;
     
     void UpdateLook();
+    
+    PlayerComponent();
+    ~PlayerComponent();
     
     ControllerComponent* controller = nullptr;
 };

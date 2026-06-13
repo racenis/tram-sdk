@@ -33,8 +33,8 @@ using namespace tram::Audio;
 using namespace tram::Audio::API;
 
 template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("AudioComponent pool", COMPONENT_LIMIT_AUDIO);
-template <> void Component<AudioComponent>::init() { ptr = PoolProxy<AudioComponent>::New(); }
-template <> void Component<AudioComponent>::yeet() { PoolProxy<AudioComponent>::Delete(ptr); }
+template <> void Component<AudioComponent>::init() { ptr = AudioComponent::Make(); }
+template <> void Component<AudioComponent>::yeet() { AudioComponent::Yeet(ptr); }
 
 static Settings::Property<bool> draw_source = {false, "audio-draw-icon", Settings::NONE};
 static Settings::Property<bool> draw_info = {false, "audio-draw-info", Settings::NONE};
@@ -65,13 +65,6 @@ static void check_event(const char*) {
     } 
 }
 
-static void make() {
-    Settings::SetCallback("audio-draw-icon", check_event);
-    Settings::SetCallback("audio-draw-info", check_event);
-    
-    check_event(nullptr);
-}
-
 AudioComponent::~AudioComponent() {
     assert(is_ready);
     is_ready = false;
@@ -80,6 +73,10 @@ AudioComponent::~AudioComponent() {
 }
 
 void AudioComponent::Start() {
+    if (!sound) {
+        Log(Severity::CRITICAL_ERROR, System::AUDIO, "Audio component doesn't have its sound set!");
+    }
+    
     source = MakeAudioSource();
 
     SetAudioSourcePitch(source, 1.0f);
@@ -97,9 +94,6 @@ void AudioComponent::Start() {
     }
 
     is_ready = true;
-    
-    static bool made = false;
-    if (!made) made = true, make();
 }
 
 /// Sets the sound that the component will play.
@@ -173,6 +167,29 @@ bool AudioComponent::IsPlaying() {
     } else {
         return play_on_start;
     }
+}
+
+/// Creates a new AudioComponent.
+AudioComponent* AudioComponent::Make() {
+    static bool made = false;
+    if (!made) {
+        Settings::SetCallback("audio-draw-icon", check_event);
+        Settings::SetCallback("audio-draw-info", check_event);
+        
+        check_event(nullptr);
+        
+        made = true;
+    }
+    
+    AudioComponent* ptr = PoolProxy<AudioComponent>::GetPool().allocate();
+    new(ptr) AudioComponent();
+    return ptr;
+}
+
+/// Deletes an AudioComponent.
+void AudioComponent::Yeet(AudioComponent* component) {
+    component->~AudioComponent();
+    PoolProxy<AudioComponent>::GetPool().deallocate(component);
 }
 
 }

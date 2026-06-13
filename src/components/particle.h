@@ -10,10 +10,8 @@ namespace tram {
 
 class ParticleComponent : public EntityComponent {
 public:
-    ParticleComponent();
-    ~ParticleComponent();
-    
-    void Start();
+    static ParticleComponent* Make();
+    static void Yeet(ParticleComponent* component);
     
     void Update();
     void UpdateRenderListObject();
@@ -56,6 +54,11 @@ protected:
     std::vector<System> systems;
 
     float* data = nullptr;
+    
+    void Start();
+    
+    ParticleComponent();
+    ~ParticleComponent();
 };
 
 }

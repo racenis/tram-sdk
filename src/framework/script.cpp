@@ -883,7 +883,7 @@ void Init() {
     // CMOMOAWMDPA WMDP MPAWDM PAW DMAPWD MAWD P
 
     SetFunction("__impl_components_render_make", {}, [](valuearray_t array) -> value_t {
-        RenderComponent* component = PoolProxy<RenderComponent>::New();
+        RenderComponent* component = RenderComponent::Make();
         
         if (component) {
             return (uint32_t)PoolProxy<RenderComponent>::GetPool().index(component);
@@ -964,7 +964,7 @@ void Init() {
     });
     
     SetFunction("__impl_components_render_delete", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        PoolProxy<RenderComponent>::Delete(&PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]]);
+        RenderComponent::Yeet(&PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]]);
         return true;
     });
 
@@ -974,7 +974,7 @@ void Init() {
 
 
     SetFunction("__impl_components_light_make", {}, [](valuearray_t array) -> value_t {
-        LightComponent* component = PoolProxy<LightComponent>::New();
+        LightComponent* component = LightComponent::Make();
         
         if (component) {
             return (uint32_t)PoolProxy<LightComponent>::GetPool().index(component);
@@ -989,7 +989,7 @@ void Init() {
     });
     
     SetFunction("__impl_components_light_delete", {TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        PoolProxy<LightComponent>::Delete(&PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]]);
+        LightComponent::Yeet(&PoolProxy<LightComponent>::GetPool()[(uint32_t)array[0]]);
         return true;
     });
 

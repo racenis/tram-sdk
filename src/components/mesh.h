@@ -34,9 +34,9 @@ private:
 
 class MeshComponent : public EntityComponent {
 public:
-    MeshComponent();
-    ~MeshComponent();
-
+    static MeshComponent* Make();
+    static void Yeet(MeshComponent* component);
+    
     void Add(const MeshVertex& v1, const MeshVertex& v2);
     void Add(const MeshVertex& v1, const MeshVertex& v2, const MeshVertex& v3);
     void Clear();
@@ -71,10 +71,12 @@ public:
     void EventHandler(Event &event) { return; }
 protected:
     void RefreshAABB();
-    
     void Start();
     
     void InsertVertex(const MeshVertex& vertex, vec3& point, uint32_t& material);
+
+    MeshComponent();
+    ~MeshComponent();
 
     char* buffer = nullptr;
     int buffer_size = 0;

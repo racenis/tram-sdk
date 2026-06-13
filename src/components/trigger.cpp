@@ -17,11 +17,13 @@ using namespace tram::Physics;
 namespace tram {
 
 template <> Pool<TriggerComponent> PoolProxy<TriggerComponent>::pool("TriggerComponent pool", COMPONENT_LIMIT_TRIGGER);
-template <> void Component<TriggerComponent>::init() { ptr = PoolProxy<TriggerComponent>::New(); }
-template <> void Component<TriggerComponent>::yeet() { PoolProxy<TriggerComponent>::Delete(ptr); }
+template <> void Component<TriggerComponent>::init() { ptr = TriggerComponent::Make(); }
+template <> void Component<TriggerComponent>::yeet() { TriggerComponent::Yeet(ptr); }
 
 void TriggerComponent::Start() {
-    assert(shape.bt_shape || (model && model->GetShape().bt_shape));
+    if (!shape.bt_shape && (!model || !model->GetShape().bt_shape)) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Trigger component doesn't have either a shape or a model set!");
+    }
 
     trigger = API::MakeTrigger(model ? model->GetShape() : shape, collisionMask, collisionGroup, location, rotation);
     
@@ -181,6 +183,19 @@ std::vector<Physics::Collision> TriggerComponent::Poll() {
     //DYNAMICS_WORLD->contactTest(trigger.bt_collisionshape, callback);
     
     return collisions;
+}
+
+/// Creates a new TriggerComponent.
+TriggerComponent* TriggerComponent::Make() {
+    TriggerComponent* ptr = PoolProxy<TriggerComponent>::GetPool().allocate();
+    new(ptr) TriggerComponent();
+    return ptr;
+}
+
+/// Deletes an TriggerComponent.
+void TriggerComponent::Yeet(TriggerComponent* component) {
+    component->~TriggerComponent();
+    PoolProxy<TriggerComponent>::GetPool().deallocate(component);
 }
 
 }

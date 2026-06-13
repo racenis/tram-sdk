@@ -124,6 +124,10 @@ void ControllerComponent::Update() {
 // +---------------------------------------------------------------------------+
 
 void FPSControllerComponent::Start() {
+    if (!parent) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Character controller doesn't have its parent set!");
+    }
+    
     walk_collision.make();
     crouch_collision.make();
     
@@ -436,6 +440,10 @@ void FPSControllerComponent::ResetMove() {
 // +---------------------------------------------------------------------------+
 
 void RaycastControllerComponent::Start() {
+    if (!parent) {
+        Log(Severity::CRITICAL_ERROR, System::CORE, "Character controller doesn't have its parent set!");
+    }
+    
     wall_collision.make();
     
     wall_collision->SetCollisionMask(-1 ^ collision_group);

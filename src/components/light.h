@@ -11,9 +11,9 @@ namespace tram {
 
 class LightComponent : public EntityComponent {
 public:
-    void Init ();
-    void Start () {}
-    
+    static LightComponent* Make();
+    static void Yeet(LightComponent* component);
+
     void SetLocation(vec3 location);
     void SetColor(Render::color_t color);
     void SetDistance(float dist);
@@ -25,9 +25,12 @@ public:
     vec3 GetLocation() const { return location; }
 
     void EventHandler(Event &event) { return; }
-    ~LightComponent();
 protected:
     void Update();
+    void Start();
+    
+    LightComponent() = default;
+    ~LightComponent();
     
     Render::light_t light = {};
     vec3 location = {0.0f, 0.0f, 0.0f};

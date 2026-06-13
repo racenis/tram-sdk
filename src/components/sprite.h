@@ -10,8 +10,9 @@ namespace tram {
 
 class SpriteComponent : public EntityComponent {
 public:
-    SpriteComponent() : sprite(this){}
-    ~SpriteComponent();
+    static SpriteComponent* Make();
+    static void Yeet(SpriteComponent* component);
+    
     inline Render::Sprite* GetSprite() { return sprite.get(); }
 
     void SetSprite(Render::Sprite* sprite){
@@ -49,6 +50,9 @@ protected:
     
     void Start();
     void UpdateRenderListObject();
+    
+    SpriteComponent() : sprite(this) {}
+    ~SpriteComponent();
     
     Render::drawlistentry_t draw_list_entry = {};
     Render::vertexarray_t vertex_array = {};

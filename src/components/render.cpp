@@ -39,8 +39,8 @@ using namespace tram::Render;
 using namespace tram::Render::API;
 
 template <> Pool<RenderComponent> PoolProxy<RenderComponent>::pool("RenderComponent pool", COMPONENT_LIMIT_RENDER);
-template <> void Component<RenderComponent>::init() { ptr = PoolProxy<RenderComponent>::New(); }
-template <> void Component<RenderComponent>::yeet() { PoolProxy<RenderComponent>::Delete(ptr); }
+template <> void Component<RenderComponent>::init() { ptr = RenderComponent::Make(); }
+template <> void Component<RenderComponent>::yeet() { RenderComponent::Yeet(ptr); }
 
 /// Set the model that the component will render.
 /// If the model is not already loaded, then it will be added to loader queue
@@ -338,14 +338,8 @@ void RenderComponent::SetColor(vec3 color) {
 }
 
 void RenderComponent::Start() {
-    if (is_ready) {
-        for (auto entry : draw_list_entries) {
-            if (entry.generic) {
-                Render::API::RemoveDrawListEntry(entry);
-            }
-        }
-        
-        draw_list_entries.clear();
+    if (!model) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Render component doesn't have its model set!");
     }
     
     InsertDrawListEntries();
@@ -419,6 +413,19 @@ void RenderComponent::InsertDrawListEntries() {
         
         draw_list_entries.push_back(entry);
     }
+}
+
+/// Creates a new RenderComponent.
+RenderComponent* RenderComponent::Make() {
+    RenderComponent* ptr = PoolProxy<RenderComponent>::GetPool().allocate();
+    new(ptr) RenderComponent();
+    return ptr;
+}
+
+/// Deletes an RenderComponent.
+void RenderComponent::Yeet(RenderComponent* component) {
+    component->~RenderComponent();
+    PoolProxy<RenderComponent>::GetPool().deallocate(component);
 }
 
 }

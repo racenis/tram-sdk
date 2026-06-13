@@ -19,8 +19,8 @@ namespace tram {
 using namespace tram::Render;
 
 template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("SpriteComponent pool", COMPONENT_LIMIT_SPRITE);
-template <> void Component<SpriteComponent>::init() { ptr = PoolProxy<SpriteComponent>::New(); }
-template <> void Component<SpriteComponent>::yeet() { PoolProxy<SpriteComponent>::Delete(ptr); }
+template <> void Component<SpriteComponent>::init() { ptr = SpriteComponent::Make(); }
+template <> void Component<SpriteComponent>::yeet() { SpriteComponent::Yeet(ptr); }
 
 using namespace API;
 
@@ -31,7 +31,9 @@ SpriteComponent::~SpriteComponent() {
 };
 
 void SpriteComponent::Start() {
-    assert(!is_ready);
+    if (!sprite) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Sprite component doesn't have its model set!");
+    }
 
     //CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
     sprite_array = CreateSpriteArray();
@@ -106,6 +108,19 @@ void SpriteComponent::Pause() {
 
 void SpriteComponent::SetPlaySpeed (size_t speed) {
     anim_speed = speed;
+}
+
+/// Creates a new SpriteComponent.
+SpriteComponent* SpriteComponent::Make() {
+    SpriteComponent* ptr = PoolProxy<SpriteComponent>::GetPool().allocate();
+    new(ptr) SpriteComponent();
+    return ptr;
+}
+
+/// Deletes an SpriteComponent.
+void SpriteComponent::Yeet(SpriteComponent* component) {
+    component->~SpriteComponent();
+    PoolProxy<SpriteComponent>::GetPool().deallocate(component);
 }
 
 }

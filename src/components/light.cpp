@@ -24,8 +24,8 @@
 namespace tram {
 
 template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("LightComponent pool", COMPONENT_LIMIT_LIGHT);   
-template <> void Component<LightComponent>::init() { ptr = PoolProxy<LightComponent>::New(); }
-template <> void Component<LightComponent>::yeet() { PoolProxy<LightComponent>::Delete(ptr); }
+template <> void Component<LightComponent>::init() { ptr = LightComponent::Make(); }
+template <> void Component<LightComponent>::yeet() { LightComponent::Yeet(ptr); }
 
 static Settings::Property<bool> draw_light = {false, "light-draw-icon", Settings::NONE};
 
@@ -45,13 +45,7 @@ static void check_event(const char*) {
     } 
 }
 
-static void make() {
-    Settings::SetCallback("light-draw-icon", check_event);
-    check_event(nullptr);
-}
-
-// TODO: put this in Start()
-void LightComponent::Init() {
+void LightComponent::Start() {
     light = Render::API::MakeLight();
     
     Render::LightTree::AddLight(light, location, distance);
@@ -60,9 +54,6 @@ void LightComponent::Init() {
     is_ready = true;
     
     Update();
-    
-    static bool made = false;
-    if (!made) made = true, make();
 }
 
 LightComponent::~LightComponent() {
@@ -118,6 +109,27 @@ Render::color_t LightComponent::GetColor() {
 /// Returns the distance of the light.
 float LightComponent::GetDistance() {
     return this->distance;
+}
+
+/// Creates a new LightComponent.
+LightComponent* LightComponent::Make() {
+    static bool made = false;
+    if (!made) {
+        Settings::SetCallback("light-draw-icon", check_event);
+        check_event(nullptr);
+        
+        made = true;
+    }
+    
+    LightComponent* ptr = PoolProxy<LightComponent>::GetPool().allocate();
+    new(ptr) LightComponent();
+    return ptr;
+}
+
+/// Deletes an LightComponent.
+void LightComponent::Yeet(LightComponent* component) {
+    component->~LightComponent();
+    PoolProxy<LightComponent>::GetPool().deallocate(component);
 }
 
 }

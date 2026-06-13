@@ -33,8 +33,8 @@ using namespace tram::Render;
 using namespace tram::Render::API;
 
 template <> Pool<MeshComponent> PoolProxy<MeshComponent>::pool("MeshComponent pool", COMPONENT_LIMIT_RENDER);
-template <> void Component<MeshComponent>::init() { ptr = PoolProxy<MeshComponent>::New(); }
-template <> void Component<MeshComponent>::yeet() { PoolProxy<MeshComponent>::Delete(ptr); }
+template <> void Component<MeshComponent>::init() { ptr = MeshComponent::Make(); }
+template <> void Component<MeshComponent>::yeet() { MeshComponent::Yeet(ptr); }
 
 MeshVertex::MeshVertex(Render::vertexformat_t format) {
     assert(GetVertexFormatName(format) && "Is valid format");
@@ -485,6 +485,19 @@ void MeshComponent::RefreshAABB() {
     }
     
     aabb_tree_leaf = AABB::InsertLeaf(this);
+}
+
+/// Creates a new MeshComponent.
+MeshComponent* MeshComponent::Make() {
+    MeshComponent* ptr = PoolProxy<MeshComponent>::GetPool().allocate();
+    new(ptr) MeshComponent();
+    return ptr;
+}
+
+/// Deletes an MeshComponent.
+void MeshComponent::Yeet(MeshComponent* component) {
+    component->~MeshComponent();
+    PoolProxy<MeshComponent>::GetPool().deallocate(component);
 }
 
 }

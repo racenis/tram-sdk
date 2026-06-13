@@ -11,10 +11,8 @@ namespace tram {
 
 class PhysicsComponent : public EntityComponent {
 public:
-    PhysicsComponent() : collision_model(this) {}
-    ~PhysicsComponent();
-    void EventHandler(Event &event) {}
-    void Start();
+    static PhysicsComponent* Make();
+    static void Yeet(PhysicsComponent* component);
 
     Physics::CollisionModel* GetModel();
     void SetModel(name_t model);
@@ -50,6 +48,8 @@ public:
 
     void SetVelocity(const vec3& velocity);
     vec3 GetVelocity();
+    
+    void EventHandler(Event &event) {}
 private:
     ResourceProxy<Physics::CollisionModel> collision_model;
     Physics::collisionshape_t collision_shape = {nullptr};
@@ -72,6 +72,11 @@ private:
 
     uint32_t rigidbody_collision_mask = -1;
     uint32_t rigidbody_collision_group = -1;
+    
+    void Start();
+    
+    PhysicsComponent() : collision_model(this) {}
+    ~PhysicsComponent();
 };
 
 }

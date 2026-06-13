@@ -14,8 +14,8 @@
 namespace tram {
 
 template <> Pool<PlayerComponent> PoolProxy<PlayerComponent>::pool("PlayerComponent pool", COMPONENT_LIMIT_PLAYER);
-template <> void Component<PlayerComponent>::init() { ptr = PoolProxy<PlayerComponent>::New(); }
-template <> void Component<PlayerComponent>::yeet() { PoolProxy<PlayerComponent>::Delete(ptr); }
+template <> void Component<PlayerComponent>::init() { ptr = PlayerComponent::Make(); }
+template <> void Component<PlayerComponent>::yeet() { PlayerComponent::Yeet(ptr); }
 
 // technically incorrect, but it's not like we're going to have more than one
 // player components running at the same time.. right?
@@ -26,7 +26,7 @@ PlayerComponent::PlayerComponent() {
     
 }
 
-void PlayerComponent::Init() {
+void PlayerComponent::Start() {
     keydown.make(Event::KEYDOWN, this);
     keypress.make(Event::KEYPRESS, this);
     mouseposition.make(Event::CURSORPOS, this);
@@ -126,6 +126,19 @@ void PlayerComponent::EventHandler(Event &event) {
         if (event.subtype == KEY_ACTION_SPRINT)         controller->Run();
         if (event.subtype == KEY_ACTION_FLY)            controller->Fly();
     }
+}
+
+/// Creates a new PlayerComponent.
+PlayerComponent* PlayerComponent::Make() {
+    PlayerComponent* ptr = PoolProxy<PlayerComponent>::GetPool().allocate();
+    new(ptr) PlayerComponent();
+    return ptr;
+}
+
+/// Deletes an PlayerComponent.
+void PlayerComponent::Yeet(PlayerComponent* component) {
+    component->~PlayerComponent();
+    PoolProxy<PlayerComponent>::GetPool().deallocate(component);
 }
 
 }

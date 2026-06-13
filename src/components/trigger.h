@@ -17,10 +17,9 @@ typedef bool (*filter_callback)(TriggerComponent*, PhysicsComponent*);
     
 class TriggerComponent : public EntityComponent {
 public:
-    TriggerComponent() : model(this){}
-    ~TriggerComponent();
-    void EventHandler(Event &event){};
-
+    static TriggerComponent* Make();
+    static void Yeet(TriggerComponent* component);
+    
     Physics::CollisionModel* GetModel() { return model.get(); }
     void SetModel(name_t model);
     void SetModel(Physics::CollisionModel* model);
@@ -48,6 +47,8 @@ public:
     void Collision(const Physics::Collision& collision);
     void ResetCollisions();
     
+    void EventHandler(Event &event) {}
+    
     std::vector<Physics::Collision> Poll();
 private:
     ResourceProxy<Physics::CollisionModel> model;
@@ -71,8 +72,10 @@ private:
     
     void Start();
     
-    std::vector<std::pair<uint32_t, Physics::Collision>> active_collisions;
+    TriggerComponent() : model(this){}
+    ~TriggerComponent();
     
+    std::vector<std::pair<uint32_t, Physics::Collision>> active_collisions;
     std::vector<Physics::Collision> stored_collisions;
 };
 

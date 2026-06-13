@@ -70,6 +70,10 @@ AnimationComponent::~AnimationComponent() {
 }
 
 void AnimationComponent::Start() {
+    if (!model) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Animation component doesn't have its model set!");
+    }
+    
     // it's probably not necessary to cache this, but whatever
     armature_bone_count = model->GetArmature().size();
     armature_bones = &model->GetArmature()[0];

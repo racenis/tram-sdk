@@ -10,8 +10,9 @@ namespace tram {
 
 class DecalComponent : public EntityComponent {
 public:
-    DecalComponent() : sprite(this) {}
-    ~DecalComponent();
+    static DecalComponent* Make();
+    static void Yeet(DecalComponent* component);
+    
     inline Render::Sprite* GetSprite() { return sprite.get(); }
 
     void SetSprite(Render::Sprite* sprite) {
@@ -51,6 +52,9 @@ protected:
 
     void Start();
     void UpdateRenderListObject();
+
+    DecalComponent() : sprite(this) {}
+    ~DecalComponent();
 
     Render::drawlistentry_t draw_list_entry = {};
     Render::vertexarray_t vertex_array = {};

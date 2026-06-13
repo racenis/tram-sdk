@@ -22,8 +22,8 @@ using namespace tram::Render;
 using namespace tram::Render::API;
 
 template <> Pool<ParticleComponent> PoolProxy<ParticleComponent>::pool("ParticleComponent pool", COMPONENT_LIMIT_PARTICLE);
-template <> void Component<ParticleComponent>::init() { ptr = PoolProxy<ParticleComponent>::New(); }
-template <> void Component<ParticleComponent>::yeet() { PoolProxy<ParticleComponent>::Delete(ptr); }
+template <> void Component<ParticleComponent>::init() { ptr = ParticleComponent::Make(); }
+template <> void Component<ParticleComponent>::yeet() { ParticleComponent::Yeet(ptr); }
 
 ParticleComponent::ParticleComponent() : particle(this) {
     
@@ -312,7 +312,9 @@ void ParticleComponent::MergeIn(Render::Particle::LookupInfo info, int index, Re
 }
 
 void ParticleComponent::Start() {
-    if (is_ready) return;
+    if (!particle) {
+        Log(Severity::CRITICAL_ERROR, tram::System::RENDER, "Particle component doesn't have its particle set!");
+    }
     
     data = new float[particle->GetDataSize()];
     memset(data, 0, particle->GetDataSize() * sizeof(float));
@@ -464,5 +466,18 @@ void ParticleComponent::UpdateRenderListObject() {
     
     AddLineMarker(location, COLOR_WHITE);
 }
-    
+
+/// Creates a new ParticleComponent.
+ParticleComponent* ParticleComponent::Make() {
+    ParticleComponent* ptr = PoolProxy<ParticleComponent>::GetPool().allocate();
+    new(ptr) ParticleComponent();
+    return ptr;
+}
+
+/// Deletes an ParticleComponent.
+void ParticleComponent::Yeet(ParticleComponent* component) {
+    component->~ParticleComponent();
+    PoolProxy<ParticleComponent>::GetPool().deallocate(component);
+}
+
 }

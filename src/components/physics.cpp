@@ -19,8 +19,8 @@ using namespace tram::Physics;
 namespace tram {
 
 template <> Pool<PhysicsComponent> PoolProxy<PhysicsComponent>::pool("PhysicsComponent pool", COMPONENT_LIMIT_PHYSICS);
-template <> void Component<PhysicsComponent>::init() { ptr = PoolProxy<PhysicsComponent>::New(); }
-template <> void Component<PhysicsComponent>::yeet() { PoolProxy<PhysicsComponent>::Delete(ptr); }
+template <> void Component<PhysicsComponent>::init() { ptr = PhysicsComponent::Make(); }
+template <> void Component<PhysicsComponent>::yeet() { PhysicsComponent::Yeet(ptr); }
 
 void PhysicsComponent::Start() {
     if (collision_model.get()) {
@@ -342,6 +342,19 @@ vec3 PhysicsComponent::GetVelocity () {
     } else {
         return {0.0f, 0.0f, 0.0f};
     }
+}
+
+/// Creates a new PhysicsComponent.
+PhysicsComponent* PhysicsComponent::Make() {
+    PhysicsComponent* ptr = PoolProxy<PhysicsComponent>::GetPool().allocate();
+    new(ptr) PhysicsComponent();
+    return ptr;
+}
+
+/// Deletes an PhysicsComponent.
+void PhysicsComponent::Yeet(PhysicsComponent* component) {
+    component->~PhysicsComponent();
+    PoolProxy<PhysicsComponent>::GetPool().deallocate(component);
 }
 
 }
