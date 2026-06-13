@@ -46,8 +46,8 @@ void Init();
 void Update();
 font_t RegisterFont(Render::Sprite* sprite);
 
-void SetScaling(uint32_t);
-uint32_t GetScaling();
+void SetScaling(int32_t);
+int32_t GetScaling();
 
 bool ClickHandled();
 
@@ -79,7 +79,7 @@ void SetGlyphDefaults(Render::color_t, font_t, GlyphType);
 void PopFrameKeepCursor(bool = false, bool = true);
 void PushFrameRelative(uint32_t orientation, uint32_t offset);
 void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool = false, bool = true);
-void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+void PushFrame(int32_t x, int32_t y, uint32_t w, uint32_t h);
 void PopFrame();
 
 

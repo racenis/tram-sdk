@@ -96,8 +96,11 @@ void SettingsMenu::Display() {
         GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         switch (tab) {
             default: {
-                bool enable_debug = true;
-                GUI::CheckBox(enable_debug, "Enable debug mode", false);
+                bool enable_debug = Settings::Get("enable-debug");
+                if (GUI::CheckBox(enable_debug, "Enable debug mode")) {
+                    Settings::Set("enable-debug", enable_debug);
+                    Settings::SetFlag("enable-debug", Settings::MODIFIED, true);
+                }
                 GUI::NewLine();
                 
                 GUI::Text("GUI Scale ");
@@ -107,6 +110,7 @@ void SettingsMenu::Display() {
                     GUI::RadioButton(3, gui_scale, "3")
                 ) {
                     GUI::SetScaling(gui_scale);
+                    Settings::SetFlag("gui-scale", Settings::MODIFIED, true);
                 }
                 GUI::NewLine();
                 
@@ -116,6 +120,7 @@ void SettingsMenu::Display() {
                     GUI::Text("Camera shake ");
                     if (GUI::Slider(shake)) {
                         Settings::Set("camerashake", shake);
+                        Settings::SetFlag("camerashake", Settings::MODIFIED, true);
                     }
                     GUI::NewLine();
                 }
@@ -219,14 +224,20 @@ void SettingsMenu::Display() {
             } break;
             case 2: {
                 float fov = Render::GetViewFov() / 180.0f;
-                float clp = Render::GetViewDistance() / 2000.0f;
+                float clp = Render::GetViewDistance() / 2.0f;
                 
                 GUI::Text("Field of view"); GUI::NewLine();
                 GUI::Text("Render distance"); GUI::NewLine();
                 bool vsync = Platform::Window::IsVsync();
                 bool fullscreen = Platform::Window::IsFullscreen();
-                if (GUI::CheckBox(vsync, "VSync")) Platform::Window::SetVsync(vsync);
-                if (GUI::CheckBox(fullscreen, "Fullscreen")) Platform::Window::SetFullscreen(fullscreen);
+                if (GUI::CheckBox(vsync, "VSync")) {
+                    Platform::Window::SetVsync(vsync);
+                    Settings::SetFlag("window-vsync", Settings::MODIFIED, true);
+                }
+                if (GUI::CheckBox(fullscreen, "Fullscreen")) {
+                    Platform::Window::SetFullscreen(fullscreen);
+                    Settings::SetFlag("window-fullscreen", Settings::MODIFIED, true);
+                }
                 
                 GUI::NewLine();
                 
@@ -240,6 +251,7 @@ void SettingsMenu::Display() {
                     GUI::RadioButton(3, monitor, "4", monitor_count > 3)
                 ) {
                     Platform::Window::SetMonitor(monitor);
+                    Settings::SetFlag("window-monitor", Settings::MODIFIED, true);
                 }
                 
                 GUI::NewLine();
@@ -255,22 +267,37 @@ void SettingsMenu::Display() {
                     resolution = 3;
                 }
                 
-                if (GUI::RadioButton(0, resolution, "640x480")) UI::SetWindowSize(640, 480);
-                if (GUI::RadioButton(1, resolution, "800x600")) UI::SetWindowSize(800, 600);
-                if (GUI::RadioButton(2, resolution, "1024x768")) UI::SetWindowSize(1024, 768);
+                bool reschange = false;
+                if (GUI::RadioButton(0, resolution, "640x480")) UI::SetWindowSize(640, 480), reschange = true;
+                if (GUI::RadioButton(1, resolution, "800x600")) UI::SetWindowSize(800, 600), reschange = true;
+                if (GUI::RadioButton(2, resolution, "1024x768")) UI::SetWindowSize(1024, 768), reschange = true;
                 GUI::RadioButton(3, resolution, "Other", false);
+                if (reschange) {
+                    Settings::SetFlag("window-width", Settings::MODIFIED, true);
+                    Settings::SetFlag("window-height", Settings::MODIFIED, true);
+                }
                 
                 GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
                     bool fovch = GUI::Slider(fov, true, 150);
                     fov *= 180.0f;
-                    if (fovch) Render::SetViewFov(fov);
+                    if (fovch) {
+                        Render::SetViewFov(fov, 0);
+                        Render::SetViewFov(fov, 1);
+                        Settings::Set("render-fov", fov);
+                        Settings::SetFlag("render-fov", Settings::MODIFIED, true);
+                    }
                     GUI::TextBox((string_float(fov) + "\xb0").c_str(), 50);
                     
                     GUI::NewLine();
                     bool clpch = GUI::Slider(clp, true, 150);
-                    clp *= 2000.0f;
-                    if (clpch) Render::SetViewDistance(clp);
-                    GUI::TextBox((string_float(clp) + "m").c_str(), 50);
+                    clp *= 2.0f;
+                    if (clpch) {
+                        Render::SetViewDistance(clp, 0);
+                        Render::SetViewDistance(clp, 1);
+                        Settings::Set("render-dist", clp);
+                        Settings::SetFlag("render-dist", Settings::MODIFIED, true);
+                    }
+                    GUI::TextBox((string_float(clp) + "x").c_str(), 50);
                 GUI::PopFrame();
             } break;
             case 3: {
@@ -284,7 +311,10 @@ void SettingsMenu::Display() {
                     vol *= 2.0f;
                     GUI::TextBox(string_float(vol).c_str(), 50);
                     
-                    if (changed) Audio::SetVolume(vol);
+                    if (changed) {
+                        Audio::SetVolume(vol);
+                        Settings::SetFlag("audio-volume", Settings::MODIFIED, true);
+                    }
                 GUI::PopFrame();
             } break;
             }

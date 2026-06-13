@@ -266,6 +266,17 @@ uint32_t Flags(const char* name) {
     return setting->flags;
 }
 
+void SetFlag(const char* name, uint32_t flag, bool enabled) {
+    auto setting = lookup_setting(name);
+    if (!setting) return;
+    
+    if (enabled) {
+        setting->flags |= flag;
+    } else {
+        setting->flags &= ~flag;
+    }
+}
+
 std::vector<name_t> GetSettings(uint32_t filter) {
     std::vector<name_t> filtered;
     

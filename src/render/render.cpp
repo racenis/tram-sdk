@@ -3,6 +3,7 @@
 #include <framework/core.h>
 #include <framework/system.h>
 #include <framework/stats.h>
+#include <framework/settings.h>
 #include <render/render.h>
 #include <render/renderer.h>
 #include <render/vertices.h>
@@ -40,6 +41,8 @@ struct {
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.0f, 0.0f, 0.0f};
     
+    float view_dist = 1.0f;
+    
     float fog_near = INFINITY;
     float fog_far = INFINITY;
     vec3 fog_color = {0.0f, 0.0f, 0.0f};
@@ -51,8 +54,8 @@ struct {
 static float screen_width = 800.0f;
 static float screen_height = 600.0f;
 
-bool THIRD_PERSON = false;
-bool DRAW_RENDER_DEBUG = false;
+static Settings::Property<float> render_fov = {60.0f, "render-fov", Settings::NONE};
+static Settings::Property<float> render_dist = {1.0f, "render-dist", Settings::NONE};
 
 // TODO: make these static???
 
@@ -74,6 +77,7 @@ static void update_view(layer_t layer) {
     view_properties[layer].view = glm::inverse(glm::translate(mat4(1.0f), pos) * glm::toMat4(rot));
     
     API::SetViewMatrix(view_properties[layer].view, layer);
+    API::SetViewDistance(view_properties[layer].view_dist, layer);
 }
 
 static void update_projection(layer_t layer) {
@@ -117,6 +121,10 @@ void Init () {
     assert(System::IsInitialized(System::UI));
     
     API::Init();
+    
+    // load in settings
+    view_properties[0].view_fov = view_properties[1].view_fov = render_fov;
+    view_properties[0].view_dist = view_properties[1].view_dist = render_dist;
     
     // this will initialize the projection matrices
     Render::SetScreenSize(screen_width, screen_height);
@@ -252,10 +260,20 @@ void SetOrthoRatio(float ratio, layer_t layer) {
 }
 
 void SetViewDistance(float dist, layer_t layer) {
+    view_properties[layer].view_dist = dist;
+    update_view(layer);
+}
+
+float GetViewDistance(layer_t layer) {
+    return view_properties[layer].view_dist;
+}
+
+void SetClipDistance(float dist, layer_t layer) {
     view_properties[layer].far_plane = dist;
     update_projection(layer);
 }
-float GetViewDistance(layer_t layer) {
+
+float GetClipDistance(layer_t layer) {
     return view_properties[layer].far_plane;
 }
 

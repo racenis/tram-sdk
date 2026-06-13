@@ -6,6 +6,7 @@
 #include <framework/ui.h>
 #include <framework/system.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 
 #include <thread>
 
@@ -38,6 +39,13 @@ static std::thread::id render_context_thread = std::this_thread::get_id();
 
 static Window::callbacks_t callbacks;
 
+static Settings::Property<int32_t> window_width = {800, "window-width", Settings::NONE};
+static Settings::Property<int32_t> window_height = {600, "window-height", Settings::NONE};
+
+static Settings::Property<bool> window_vsync = {true, "window-vsync", Settings::NONE};
+static Settings::Property<bool> window_fullscreen = {false, "window-fullscreen", Settings::NONE};
+static Settings::Property<int32_t> window_monitor = {0, "window-monitor", Settings::NONE};
+
 void Window::Init() {
     glfwInit();
 
@@ -62,7 +70,7 @@ void Window::Init() {
 
     glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
     
-    WINDOW = glfwCreateWindow(800, 600, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", nullptr, nullptr);
+    WINDOW = glfwCreateWindow(window_width, window_height, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", nullptr, nullptr);
     if (WINDOW == nullptr) {
         glfwTerminate();
         Log(Severity::CRITICAL_ERROR, System::UI, "GLFW window didn't open!");
@@ -76,12 +84,21 @@ void Window::Init() {
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             Log(Severity::CRITICAL_ERROR, System::UI, "OpenGL context didn't open!");
         }
-
-        glfwSwapInterval(1);
 #endif
+
+#ifndef __EMSCRIPTEN__
+        glfwSwapInterval(window_vsync ? 1 : 0);
+#endif
+
 
     glfwSetFramebufferSizeCallback(WINDOW, [](GLFWwindow* window, int width, int height) {
         callbacks.screen_resize(width, height);
+        
+        window_width = width;
+        window_height = height;
+        
+        Settings::SetFlag("window-width", Settings::MODIFIED, true);
+        Settings::SetFlag("window-height", Settings::MODIFIED, true);
     });
 
     glfwSetWindowCloseCallback(WINDOW, [](GLFWwindow* window) {
@@ -195,9 +212,8 @@ double Window::GetTime() {
     return glfwGetTime();
 }
 
-int current_monitor = 0;
 int Window::GetCurrentMonitor() {
-    return current_monitor;
+    return window_monitor;
 }
 
 int Window::GetMonitorCount() {
@@ -207,49 +223,45 @@ int Window::GetMonitorCount() {
 }
 
 void Window::SetMonitor(int monitor) {
-    current_monitor = monitor;
+    window_monitor = monitor;
 }
 
-bool is_fullscreen = false;
 bool Window::IsFullscreen() {
-    return is_fullscreen;
+    return window_fullscreen;
 }
 
 void Window::SetFullscreen(bool fullscreen) {
-    is_fullscreen = fullscreen;
+    window_fullscreen = fullscreen;
     if (fullscreen) {
         int monitor_count;
         GLFWmonitor** monitors = glfwGetMonitors(&monitor_count);
-        assert(current_monitor < monitor_count);
-        int width, height;
-        glfwGetWindowSize(WINDOW, &width, &height);
+        assert(window_monitor < monitor_count);
         glfwSetWindowMonitor(WINDOW,
-                             monitors[current_monitor],
+                             monitors[window_monitor],
                              0,
                              0,
-                             width,
-                             height,
+                             window_width,
+                             window_height,
                              60);
     } else {
         glfwSetWindowMonitor(WINDOW,
                             nullptr,
                             16,
                             32,
-                            800,
-                            600,
+                            window_width,
+                            window_height,
                             60);
     }
 }
 
-bool vsync = true;
 bool Window::IsVsync() {
-    return vsync;
+    return window_vsync;
 }
 
 void Window::SetVsync(bool value) {
-    vsync = value;
+    window_vsync = value;
     
-    if (vsync) {
+    if (window_vsync) {
         glfwSwapInterval(1);
     } else {
         glfwSwapInterval(0);

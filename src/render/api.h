@@ -27,6 +27,8 @@ void SetFogParameters(vec3 color, float near, float far, layer_t layer);
 void SetViewMatrix(const mat4& matrix, layer_t layer);
 void SetProjectionMatrix(const mat4& matrix, layer_t layer);
 
+void SetViewDistance(float dist, layer_t layer);
+
 bool IsInteractiveMode();
 void SetInteractiveMode(bool is_interactive);
 

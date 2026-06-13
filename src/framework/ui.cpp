@@ -9,6 +9,7 @@
 #include <framework/ui.h>
 #include <framework/system.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 
 #include <render/render.h>
 #include <render/api.h>
@@ -55,6 +56,8 @@ static float keyboard_axis_values[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_deltas[KEY_LASTAXIS] = {0.0f};
 static float keyboard_axis_sensitivity[KEY_LASTAXIS] = {1.0f, 1.0f, 1.0f};
 
+static Settings::Property<bool> enable_debug = {true, "enable-debug", Settings::USER};
+
 struct KeyBinding {
     keyboardaction_t action = KEY_ACTION_NONE;
     void (*special_option)(void) = nullptr;
@@ -79,9 +82,10 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
     {KEY_LEFT, KeyBinding {.action = KEY_ACTION_LEFT}},
     {KEY_RIGHT, KeyBinding {.action = KEY_ACTION_RIGHT}},
 
-    {KEY_F1, KeyBinding {.special_option = [](){ exit = true; }}},
-    {KEY_F9, KeyBinding {.special_option = [](){ SetInputState((input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING); }}},
+    {KEY_F1, KeyBinding {.special_option = [](){ if (enable_debug) exit = true; }}},
+    {KEY_F9, KeyBinding {.special_option = [](){ if (enable_debug) SetInputState((input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING); }}},
     {KEY_F12, KeyBinding {.special_option = [](){
+        if (!enable_debug) return;
         char* buffer = (char*)malloc(screen_width * screen_height * 3);
 
         std::time_t epoch_time;

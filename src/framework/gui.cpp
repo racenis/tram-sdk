@@ -8,6 +8,7 @@
 #include <framework/logging.h>
 #include <framework/event.h>
 #include <framework/language.h>
+#include <framework/settings.h>
 
 #include <render/api.h>
 #include <render/vertices.h>
@@ -38,8 +39,8 @@
 namespace tram::GUI {
 
 struct FrameObject {
-    uint32_t x, y, w, h;
-    uint32_t cursor_x, cursor_y;
+    int32_t x, y, w, h;
+    int32_t cursor_x, cursor_y;
     uint32_t stack_height;
 };
 
@@ -62,7 +63,7 @@ static bool cursor_set = false;
 // some users have screens with way too many pixels and they just keep
 // complaining that they can't see anything, so that's why I made this scaling
 // feature.
-static uint32_t scaling = 1;
+static Settings::Property<int32_t> scaling = {1, "gui-scale", Settings::NONE};
 
 // here we put all the keycodes that come in. the keycodes depend on the
 // keyboard layout, unlike regular UI keys. we use them for textboxes
@@ -173,13 +174,13 @@ void SetGlyphDefaults(Render::color_t color, font_t font, GlyphType type) {
 /// If set to `1`, the GUI will be drawn normally. If set to `2`, then
 /// everything will be drawn twice as large. If set to `3`, then everything
 /// will be drawn three times as large. I don't recommend going above that.
-void SetScaling(uint32_t scale) {
+void SetScaling(int32_t scale) {
     scaling = scale;
 }
 
 /// Returns the scaling factor.
 /// See SetScaling().
-uint32_t GetScaling() {
+int32_t GetScaling() {
     return scaling;
 }
 
@@ -392,7 +393,7 @@ uint32_t GlyphBorderV(font_t font, glyph_t glyph) {
     return fonts[font]->GetFrames()[glyph].border_v;
 }
 
-void DrawGlyph(font_t font, glyph_t glyph, const vec3& color, uint32_t x, uint32_t y, uint32_t w = 0, uint32_t h = 0) {
+void DrawGlyph(font_t font, glyph_t glyph, const vec3& color, int32_t x, int32_t y, uint32_t w = 0, uint32_t h = 0) {
     const auto& info = fonts[font]->GetFrames()[glyph];
     
     if (!w) w = info.width;
@@ -403,8 +404,8 @@ void DrawGlyph(font_t font, glyph_t glyph, const vec3& color, uint32_t x, uint32
 
 /// Draws a glyph from a font.
 void Glyph(font_t font, glyph_t glyph) {
-    uint32_t cursor_x = frame_stack.top().cursor_x;
-    uint32_t cursor_y = frame_stack.top().cursor_y;
+    int32_t cursor_x = frame_stack.top().cursor_x;
+    int32_t cursor_y = frame_stack.top().cursor_y;
     
     DrawGlyph(font, glyph, widget_color_stack.top(), cursor_x, cursor_y);
     
@@ -423,7 +424,7 @@ void Glyph(font_t font, glyph_t glyph) {
 /// If you are using a default widget layout font, you can use the enum values
 /// WIDGET_WINDOW, WIDGET_REVERSE_WINDOW, WIDGET_BUTTON, WIDGET_SELECT_BOX or
 /// WIDGET_BORDER for the glyph index.
-void DrawBox(font_t font, glyph_t glyph, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+void DrawBox(font_t font, glyph_t glyph, int32_t x, int32_t y, uint32_t w, uint32_t h) {
     const glyph_t top_lft = glyph + 0;
     const glyph_t top_mid = glyph + 1;
     const glyph_t top_rgt = glyph + 2;
@@ -470,8 +471,8 @@ uint32_t TextWidth(font_t font, const char* text) {
 ///                    TEXT_JUSTIFIED. The default is TEXT_LEFT.
 /// @param text        The text that will drawn to screen.
 void Text(const char* text, uint32_t orientation) {
-    uint32_t cursor_x = frame_stack.top().cursor_x;
-    uint32_t cursor_y = frame_stack.top().cursor_y;
+    int32_t cursor_x = frame_stack.top().cursor_x;
+    int32_t cursor_y = frame_stack.top().cursor_y;
     // depending on alignment we could also choose other cursor_x and cursor_y
     
     font_t font  = text_font_stack.top();
@@ -507,7 +508,7 @@ void Text(const char* text, uint32_t orientation) {
 /// Draws a horizontal bar.
 /// Similar to how DrawBox() is used, except we only have 3 squares, the left,
 /// middle and right.
-void DrawBoxHorizontal(font_t font, glyph_t glyph,  uint32_t x, uint32_t y, uint32_t w) {
+void DrawBoxHorizontal(font_t font, glyph_t glyph,  int32_t x, int32_t y, uint32_t w) {
     const glyph_t lft = glyph + 0;
     const glyph_t mid = glyph + 1;
     const glyph_t rgt = glyph + 2;
@@ -520,7 +521,7 @@ void DrawBoxHorizontal(font_t font, glyph_t glyph,  uint32_t x, uint32_t y, uint
 /// Pushes a frame.
 /// The coordinates are in absolute screen cooordinates. This function could be
 /// useful for something, I just can't think of anything.
-void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+void PushFrame(int32_t x, int32_t y, uint32_t w, uint32_t h) {
     uint32_t stack_height = frame_stack.top().stack_height;
     
     FrameObject* new_frame = frame_stack.AddNew();
@@ -544,10 +545,10 @@ void PushFrame(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
 /// you wanted to use make the topmost 200px part of the screen a frame, you 
 /// would set the orientation to FRAME_TOP and offset to 200.
 void PushFrameRelative(uint32_t orientation, uint32_t offset) {
-    uint32_t x = frame_stack.top().x;
-    uint32_t y = frame_stack.top().y;
-    uint32_t w = frame_stack.top().w;
-    uint32_t h = frame_stack.top().h;
+    int32_t x = frame_stack.top().x;
+    int32_t y = frame_stack.top().y;
+    int32_t w = frame_stack.top().w;
+    int32_t h = frame_stack.top().h;
     
     switch (orientation) {
         default: break;
@@ -607,26 +608,26 @@ void PopFrame() {
 /// Identical to PushFrameRelative(), except this function will not reset the
 /// cursor to the top-left corner of the frame.
 void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool keep_x, bool keep_y) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     PushFrameRelative(orientation, offset);
     if (keep_x) frame_stack.top().cursor_x = x;
     if (keep_y) frame_stack.top().cursor_y = y;
 }
 
 void PopFrameKeepCursor(bool keep_x, bool keep_y) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     frame_stack.Remove();
     if (keep_x) frame_stack.top().cursor_x = x;
     if (keep_y) frame_stack.top().cursor_y = y;
 }
 
-bool CursorOver(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
-    uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
-    uint32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y) / scaling;
+bool CursorOver(int32_t x, int32_t y, uint32_t w, uint32_t h) {
+    int32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
+    int32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y) / scaling;
     
-    return cur_x > x && cur_y > y && cur_x < x + w && cur_y < y + h;
+    return cur_x > x && cur_y > y && cur_x < x + (int32_t)w && cur_y < y + (int32_t)h;
 }
 
 // call this to check if user just pressed click
@@ -660,8 +661,8 @@ bool Clicked() {
 /// @param width    Width of the button, in pixels.
 /// @return         True if the button was clicked on.
 bool Button(const char* text, bool enabled, uint32_t width) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     uint32_t w = width ? width : TextWidth(2, text) + 16;
     uint32_t h = 22;
     
@@ -701,8 +702,8 @@ bool Button(const char* text, bool enabled, uint32_t width) {
 /// @return         True if the button was clicked on. The new selected button
 ///                 index will be written to the selected parameter.
 bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enabled) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     
     glyph_t style = WIDGET_RADIO_BUTTON;
     
@@ -735,8 +736,8 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
 /// @return         True if clicked on. The modified state of the button will be
 ///                 written out to the selected parameter.
 bool CheckBox(bool& selected, const char* text, bool enabled) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     
     glyph_t style = WIDGET_CHECK_BUTTON;
     
@@ -769,8 +770,8 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
 /// @return         True if the slider was clicked on. The slider's new value
 ///                 will be written out to the value variable.
 bool Slider(float& value, bool enabled, uint32_t width) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     uint32_t w = width ? width : 100;
     uint32_t h = 22;
     
@@ -830,8 +831,8 @@ void NewLine(uint32_t line) {
 /// Draws a horizontal divider.
 void HorizontalDivider() {
     NewLine();
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     uint32_t w = frame_stack.top().cursor_x - frame_stack.top().x + frame_stack.top().w;
     DrawBoxHorizontal(0, WIDGET_DIVIDER_HORIZONTAL, x, y, w);
     frame_stack.top().cursor_x = frame_stack.top().x;
@@ -856,8 +857,8 @@ void FillFrame(glyph_t glyph) {
 /// @param enabled  If false, the textbox won't be editable.
 /// @param w,h      Dimensions of the textbox, in pixels.
 bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     if (w == 0) w = 100;
     if (h == 0) h = 22;
     
@@ -919,8 +920,8 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
 /// accepts a `const char*` text. This also means that the text in the textbox
 /// won't be editable and it will be drawn as disabled.
 void TextBox(const char* text, uint32_t w, uint32_t h) {
-    uint32_t x = frame_stack.top().cursor_x;
-    uint32_t y = frame_stack.top().cursor_y;
+    int32_t x = frame_stack.top().cursor_x;
+    int32_t y = frame_stack.top().cursor_y;
     if (w == 0) w = 100;
     if (h == 0) h = 22;
 

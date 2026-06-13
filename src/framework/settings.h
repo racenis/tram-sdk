@@ -17,6 +17,8 @@ enum : uint32_t {
     
     // maybe we could add some read-only or write-only flags?
     
+    MODIFIED = 8,     //< User has modified the setting.
+    
     NONE = 0
 };
 
@@ -36,6 +38,7 @@ void Save(const char* file);
 void Load(const char* file);
 
 uint32_t Flags(const char* name);
+void SetFlag(const char* name, uint32_t flag, bool enabled);
 
 std::vector<name_t> GetSettings(uint32_t filter);
 

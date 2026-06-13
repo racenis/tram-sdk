@@ -73,6 +73,8 @@ struct Layer {
     mat4 view_matrix = mat4(1.0f);
     vec3 view_position = {1.0f, 1.0f, 1.0f};
     
+    float view_distance = 1.0f;
+    
     vec3 sun_direction = {0.0f, 1.0f, 0.0f};
     vec3 sun_color = {1.0f, 1.0f, 1.0f};
     vec3 ambient_color = {0.3f, 0.3f, 0.3f};
@@ -316,9 +318,10 @@ void RenderFrame() {
     for (auto& robj : PoolProxy<GLDrawListEntry>::GetPool()) {
         const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
         const float dist = glm::distance(pos, layers[robj.layer].view_position);
+        const float mult = layers[robj.layer].view_distance;
         
         // distance culling
-        if (dist > robj.fade_far || dist < robj.fade_near) {
+        if (dist > mult * robj.fade_far || dist < mult * robj.fade_near) {
             continue;
         }
 
@@ -459,6 +462,10 @@ void SetViewMatrix(const mat4& matrix, layer_t layer) {
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
     layers[layer].projection_matrix = matrix;
+}
+
+void SetViewDistance(float dist, layer_t layer) {
+    layers[layer].view_distance = dist;
 }
 
 void GetScreen(char* buffer, int w, int h) {
