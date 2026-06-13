@@ -47,10 +47,10 @@ namespace tram {
 
 template <> Pool<FPSControllerComponent> PoolProxy<FPSControllerComponent>::pool("FPSControllerComponent pool", COMPONENT_LIMIT_CONTROLLER);
 template <> Pool<RaycastControllerComponent> PoolProxy<RaycastControllerComponent>::pool("RaycastControllerComponent pool", COMPONENT_LIMIT_CONTROLLER);
-template <> void Component<FPSControllerComponent>::init() { ptr = PoolProxy<FPSControllerComponent>::New(); }
-template <> void Component<FPSControllerComponent>::yeet() { PoolProxy<FPSControllerComponent>::Delete(ptr); }
-template <> void Component<RaycastControllerComponent>::init() { ptr = PoolProxy<RaycastControllerComponent>::New(); }
-template <> void Component<RaycastControllerComponent>::yeet() { PoolProxy<RaycastControllerComponent>::Delete(ptr); }
+template <> void Component<FPSControllerComponent>::init() { ptr = FPSControllerComponent::Make(); }
+template <> void Component<FPSControllerComponent>::yeet() { FPSControllerComponent::Yeet(ptr); }
+template <> void Component<RaycastControllerComponent>::init() { ptr = RaycastControllerComponent::Make(); }
+template <> void Component<RaycastControllerComponent>::yeet() { RaycastControllerComponent::Yeet(ptr); }
 
 static Settings::Property<bool> draw_debug = {false, "controller-draw", Settings::NONE};
 
@@ -431,7 +431,18 @@ void FPSControllerComponent::ResetMove() {
     flying = false;
 }
 
+/// Creates a new FPSControllerComponent.
+FPSControllerComponent* FPSControllerComponent::Make() {
+    FPSControllerComponent* ptr = PoolProxy<FPSControllerComponent>::GetPool().allocate();
+    new(ptr) FPSControllerComponent();
+    return ptr;
+}
 
+/// Deletes an FPSControllerComponent.
+void FPSControllerComponent::Yeet(FPSControllerComponent* component) {
+    component->~FPSControllerComponent();
+    PoolProxy<FPSControllerComponent>::GetPool().deallocate(component);
+}
 
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -610,6 +621,20 @@ void RaycastControllerComponent::ResetMove() {
     running = false;
     crouching = false;
     flying = false;
+}
+
+
+/// Creates a new RaycastControllerComponent.
+RaycastControllerComponent* RaycastControllerComponent::Make() {
+    RaycastControllerComponent* ptr = PoolProxy<RaycastControllerComponent>::GetPool().allocate();
+    new(ptr) RaycastControllerComponent();
+    return ptr;
+}
+
+/// Deletes an RaycastControllerComponent.
+void RaycastControllerComponent::Yeet(RaycastControllerComponent* component) {
+    component->~RaycastControllerComponent();
+    PoolProxy<RaycastControllerComponent>::GetPool().deallocate(component);
 }
 
 }

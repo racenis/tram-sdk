@@ -51,8 +51,8 @@ public:
     
     void EventHandler(Event &event) {}
 private:
-    ResourceProxy<Physics::CollisionModel> collision_model;
-    Physics::collisionshape_t collision_shape = {nullptr};
+    ResourceProxy<Physics::CollisionModel> model;
+    Physics::collisionshape_t shape = {nullptr};
     Physics::rigidbody_t rigidbody = {nullptr};
 
     float rigidbody_mass = 1.0f;
@@ -75,7 +75,7 @@ private:
     
     void Start();
     
-    PhysicsComponent() : collision_model(this) {}
+    PhysicsComponent() : model(this) {}
     ~PhysicsComponent();
 };
 

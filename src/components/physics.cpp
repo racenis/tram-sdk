@@ -23,8 +23,8 @@ template <> void Component<PhysicsComponent>::init() { ptr = PhysicsComponent::M
 template <> void Component<PhysicsComponent>::yeet() { PhysicsComponent::Yeet(ptr); }
 
 void PhysicsComponent::Start() {
-    if (collision_model.get()) {
-        collision_shape = collision_model->GetShape();
+    if (!shape.bt_shape && (!model || !model->GetShape().bt_shape)) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Trigger component doesn't have either a shape or a model set!");
     }
     
     API::get_trf_callback get_callback = nullptr;
@@ -49,7 +49,7 @@ void PhysicsComponent::Start() {
         };
     }
     
-    rigidbody = API::MakeRigidbody(collision_shape,
+    rigidbody = API::MakeRigidbody(model ? model->GetShape() : shape,
                                    rigidbody_mass,
                                    rigidbody_position,
                                    rigidbody_rotation,
@@ -82,7 +82,7 @@ PhysicsComponent::~PhysicsComponent(){
 
 /// Returns the name of the collision model.
 Physics::CollisionModel* PhysicsComponent::GetModel () {
-    return collision_model.get();
+    return model.get();
 }
 
 /// Sets the collision model.
@@ -97,8 +97,13 @@ void PhysicsComponent::SetModel(Physics::CollisionModel* model) {
         Log(Severity::WARNING, System::RENDER, "Initialized PhysicsComponents cannot accept models! Ignoring PhysicsComponent::SetModel() call.");
         return;
     }
-    
-    this->collision_model = model;
+
+    if (shape.bt_shape) {
+        Log(Severity::WARNING, System::RENDER, "PhysicsComponent already has a shape set! Ignoring PhysicsComponent::SetModel() call.");
+        return;
+    }
+
+    this->model = model;
 }
 
 /// Returns the collision mask.
@@ -145,7 +150,21 @@ void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
 
 /// Sets the collision shape of the physics object.
 void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
-    collision_shape = API::MakeCollisionShape(shape);
+    if (is_ready) {
+        Log(Severity::WARNING, System::RENDER, "Initialized PhysicsComponents cannot accept shapes! Ignoring PhysicsComponent::SetShape() call.");
+        return;
+    }
+    
+    if (model) {
+        Log(Severity::WARNING, System::RENDER, "PhysicsComponent already has a model set! Ignoring PhysicsComponent::SetShape() call.");
+        return;
+    }
+    
+    if (this->shape.bt_shape) {
+        API::YeetCollisionShape(this->shape);
+    }
+    
+    this->shape = API::MakeCollisionShape(shape);
 }
 
 /// Sets the mass of the physics object.
