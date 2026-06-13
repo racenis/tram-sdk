@@ -380,7 +380,7 @@ void AnimationComponent::Refresh() {
     
     if (!is_ready) return;
     Render::Keyframe anim_mixed[Render::BONE_COUNT];
-    for (uint64_t i = 0; i < armature_bone_count; i++) anim_mixed[i] = base_pose[i];
+    for (size_t i = 0; i < armature_bone_count; i++) anim_mixed[i] = base_pose[i];
     
     // increment animations' frames and check if they have stopped/repeated
     for (size_t i = 0; i < ANIM_COUNT; i++) {
@@ -477,8 +477,7 @@ void AnimationComponent::Refresh() {
     }
 
     // convert mixed keyframes to pose matrices
-    for(uint64_t i = 0; i < armature_bone_count; i++){
-
+    for (size_t i = 0; i < armature_bone_count; i++) {
         pose->pose[i] = mat4(1.0f);
 
         mat4 modelToBone = glm::translate(mat4(1.0f), -armature_bones[i].head);
@@ -507,17 +506,48 @@ void AnimationComponent::Refresh() {
         } else {
             pose->pose[i] = pose->pose[armature_bone_parents[i]] * boneToModel * boneAnim * modelToBone;
         }
+    }
+    
+    if (!draw_info || !GetParent() || glm::distance(Render::GetViewPosition(), GetParent()->GetLocation()) > 15.0f) return;
+    
+    for (size_t i = 0; i < armature_bone_count; i++) {
+        const auto& head = armature_bones[i].head;
+        const auto& tail = armature_bones[i].tail;
         
-        /* idk i don't remember what this debugging code is for, but might be useful
-        vec3 o(0.0f);
-        vec3 x(1.0f, 0.0f, 0.0f);
-        vec3 y(0.0f, 0.0f, -1.0f);
-        vec3 z(0.0f, 1.0f, 0.0f);
-        o = poz * vec4(o, 1.0f);
-        Render::AddLine(o, poz * vec4(x, 1.0f), Render::COLOR_RED);
-        Render::AddLine(o, poz * vec4(y, 1.0f), Render::COLOR_GREEN);
-        Render::AddLine(o, poz * vec4(z, 1.0f), Render::COLOR_BLUE);
-        */
+        vec3 front_dir = glm::normalize(tail - head);
+        float length = glm::length(tail - head);
+        float width = length * 0.1f;
+        
+        vec3 side_dir_a = glm::cross(front_dir, DIRECTION_UP);
+        if (glm::length(side_dir_a) < 0.9f) side_dir_a = DIRECTION_SIDE;
+        vec3 side_dir_b = glm::cross(front_dir, side_dir_a);
+        
+        vec3 rect_mid = head + 0.3f * (tail - head);
+        
+        mat4 world = PositionRotationToMatrix(GetParent()->GetLocation(), GetParent()->GetRotation()) * pose->pose[i];
+        
+        vec4 rect_a = world * vec4(rect_mid + width * side_dir_a, 1.0f);
+        vec4 rect_b = world * vec4(rect_mid + width * side_dir_b, 1.0f);
+        vec4 rect_c = world * vec4(rect_mid - width * side_dir_a, 1.0f);
+        vec4 rect_d = world * vec4(rect_mid - width * side_dir_b, 1.0f);
+        
+        vec4 w_tail = world * vec4(tail, 1.0f);
+        vec4 w_head = world * vec4(head, 1.0f);
+        
+        Render::AddLine(vec3(w_tail), vec3(rect_a), Render::COLOR_CYAN);
+        Render::AddLine(vec3(w_tail), vec3(rect_b), Render::COLOR_CYAN);
+        Render::AddLine(vec3(w_tail), vec3(rect_c), Render::COLOR_CYAN);
+        Render::AddLine(vec3(w_tail), vec3(rect_d), Render::COLOR_CYAN);
+        
+        Render::AddLine(vec3(rect_a), vec3(rect_b), Render::COLOR_CYAN);
+        Render::AddLine(vec3(rect_b), vec3(rect_c), Render::COLOR_CYAN);
+        Render::AddLine(vec3(rect_c), vec3(rect_d), Render::COLOR_CYAN);
+        Render::AddLine(vec3(rect_d), vec3(rect_a), Render::COLOR_CYAN);
+        
+        Render::AddLine(vec3(rect_a), vec3(w_head), Render::COLOR_CYAN);
+        Render::AddLine(vec3(rect_b), vec3(w_head), Render::COLOR_CYAN);
+        Render::AddLine(vec3(rect_c), vec3(w_head), Render::COLOR_CYAN);
+        Render::AddLine(vec3(rect_d), vec3(w_head), Render::COLOR_CYAN);
     }
 }
 
