@@ -22,12 +22,10 @@ public:
     
     vec3 GetColor();
     float GetDistance();
+    vec3 GetLocation() const { return location; }
 
     void EventHandler(Event &event) { return; }
     ~LightComponent();
-    
-    static bool IsLightDraw();
-    static void SetLightDraw(bool);
 protected:
     void Update();
     
@@ -37,9 +35,6 @@ protected:
     float distance = 15.0f;
     vec3 direction = {0.0f, 0.0f, -1.0f};
     float exponent = 0.0f;
-    
-    void SetupModel();
-    Component<RenderComponent> model;
 };
 
 }

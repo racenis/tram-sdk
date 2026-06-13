@@ -888,29 +888,19 @@ void Options::Display() {
     GUI::FillFrame(GUI::WIDGET_BUTTON);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
 
-        bool renderer_debug = Render::API::IsDebugMode();
+        bool renderer_debug = Settings::Get("renderer-debug");
+        bool audio_debug = Settings::Get("audio-draw-icon");
+        bool sound_debug = Settings::Get("audio-draw-info");
+        bool anim_debug = Settings::Get("animation-draw-info");
+        bool light_debug = Settings::Get("light-draw-icon");
+        bool controller_debug = Settings::Get("controller-draw");
         
-        bool audio_debug = AudioComponent::IsDebugInfoDraw();
-        bool sound_debug = AudioComponent::IsSourceDraw();
-        
-        bool anim_debug = AnimationComponent::IsDebugInfoDraw();
-        bool light_debug = LightComponent::IsLightDraw();
-        bool controller_debug = ControllerComponent::IsDebugInfoDraw();
-        
-        GUI::CheckBox(renderer_debug, "Renderer Debug ");
-        GUI::CheckBox(audio_debug, "Audio Debug ");
-        GUI::CheckBox(sound_debug, "Draw AudioComponent ");
-        GUI::CheckBox(anim_debug, "Animation Debug ");
-        GUI::CheckBox(light_debug, "Light Debug ");
-        GUI::CheckBox(controller_debug, "Controller Debug ");
-        
-        
-        Render::API::SetDebugMode(renderer_debug);
-        AudioComponent::SetDebugInfoDraw(audio_debug);
-        AudioComponent::SetSourceDraw(sound_debug);
-        AnimationComponent::SetDebugInfoDraw(anim_debug);
-        LightComponent::SetLightDraw(light_debug);
-        ControllerComponent::SetDebugInfoDraw(controller_debug);
+        if (GUI::CheckBox(renderer_debug, "Renderer Debug "))       Settings::Set("renderer-debug", renderer_debug);
+        if (GUI::CheckBox(sound_debug, "Audio Debug "))             Settings::Set("audio-draw-info", sound_debug);
+        if (GUI::CheckBox(audio_debug, "Draw AudioComponent "))     Settings::Set("audio-draw-icon", audio_debug);
+        if (GUI::CheckBox(anim_debug, "Animation Debug "))          Settings::Set("animation-draw-info", anim_debug);
+        if (GUI::CheckBox(light_debug, "Light Debug "))             Settings::Set("light-draw-icon", light_debug);
+        if (GUI::CheckBox(controller_debug, "Controller Debug "))   Settings::Set("controller-draw", controller_debug);
         
     GUI::PopFrame();
     GUI::PopFrame();

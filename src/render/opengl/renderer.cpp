@@ -569,12 +569,4 @@ void SetDevice(void*) {
     // OpenGL doesn't need a device!
 }
 
-bool IsDebugMode() {
-    return render_debug;
-}
-
-void SetDebugMode(bool mode) {
-    render_debug = mode;
-}
-
 }

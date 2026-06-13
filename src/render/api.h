@@ -124,9 +124,6 @@ ContextType GetContext();
 uint32_t GetMaxIndexRangeLength();
 void SetDevice(void*);
 
-bool IsDebugMode();
-void SetDebugMode(bool);
-
 }
 
 #endif // TRAM_SDK_RENDER_API_H

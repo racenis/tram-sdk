@@ -843,14 +843,6 @@ void GetScreen(char* buffer, int w, int h) {
     }
 }
 
-bool IsDebugMode() {
-    return false;
-}
-
-void SetDebugMode(bool) {
-    
-}
-
 void Init() {
     // initialize the default pose
     /*BLANK_POSE = PoolProxy<Render::Pose>::New();

@@ -3,6 +3,7 @@
 #include <components/animation.h>
 
 #include <framework/entity.h>
+#include <framework/settings.h>
 #include <config.h>
 
 #include <cstring>
@@ -49,6 +50,8 @@ namespace tram {
 template <> Pool<AnimationComponent> PoolProxy<AnimationComponent>::pool("AnimationComponent pool", COMPONENT_LIMIT_ANIMATION);
 template <> void Component<AnimationComponent>::init() { ptr = AnimationComponent::Make(); }
 template <> void Component<AnimationComponent>::yeet() { AnimationComponent::Yeet(ptr); }
+
+static Settings::Property<bool> draw_info = {false, "animation-draw-info", Settings::NONE};
 
 AnimationComponent::AnimationComponent() : model(this) {
     pose = PoolProxy<Render::Pose>::New();
@@ -338,6 +341,23 @@ void AnimationComponent::Reparent(name_t bone_name, name_t new_parent) {
 /// This static function calls the Refresh() method on all of the ArmatureComponents.
 void AnimationComponent::Update() {
     for (auto& comp : PoolProxy<AnimationComponent>::GetPool()) comp.Refresh();
+    
+    if (draw_info) for (auto& comp : PoolProxy<AnimationComponent>::GetPool()) {
+        if (!comp.parent) continue;
+        char str[200] = "";
+        char buf[100];
+        for (size_t i = 0; i < ANIM_COUNT; i++) {
+            if (!comp.anim_playing[i]) continue;
+            sprintf(buf, "[%i] %.2f | %i | %s\n",
+                (int)i,
+                comp.anim_info[i].weight,
+                comp.anim_info[i].repeats,
+                (const char*)comp.anim_playing[i]);
+            strcat(str, buf);
+        }
+        
+        Render::AddText(comp.GetParent()->GetLocation(), str);
+    }
 }
 
 /// Sets an animation to a specific frame.
@@ -512,46 +532,6 @@ AnimationComponent* AnimationComponent::Make() {
 void AnimationComponent::Yeet(AnimationComponent* component) {
     component->~AnimationComponent();
     PoolProxy<AnimationComponent>::GetPool().deallocate(component);
-}
-
-static EventListener frame_event;
-static bool draw_info = false;
-
-/// Checks whether the debug text is drawn.
-/// Check SetDebugInfoDraw() for more info.
-bool AnimationComponent::IsDebugInfoDraw() {
-    return draw_info;
-}
-
-/// Sets the drawing of debug info.
-/// If set to true, each frame some debug text will be drawn for each animation
-/// component. This is useful for debugging.
-void AnimationComponent::SetDebugInfoDraw(bool draw) {
-    if (draw_info == draw) return;
-    draw_info = draw;
-    
-    if (draw) {
-        frame_event.make(Event::FRAME, [](Event&) {
-            for (auto& comp : PoolProxy<AnimationComponent>::GetPool()) {
-                if (!comp.parent) continue;
-                char str[200] = "";
-                char buf[100];
-                for (size_t i = 0; i < ANIM_COUNT; i++) {
-                    if (!comp.anim_playing[i]) continue;
-                    sprintf(buf, "[%i] %.2f | %i | %s\n",
-                        (int)i,
-                        comp.anim_info[i].weight,
-                        comp.anim_info[i].repeats,
-                        (const char*)comp.anim_playing[i]);
-                    strcat(str, buf);
-                }
-                
-                Render::AddText(comp.GetParent()->GetLocation(), str);
-            }
-        });
-    } else {
-        frame_event.clear();
-    } 
 }
 
 }

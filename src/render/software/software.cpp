@@ -1866,14 +1866,6 @@ void GetScreen(char* buffer, int w, int h) {
     }
 }
 
-bool IsDebugMode() {
-    return false;
-}
-
-void SetDebugMode(bool) {
-    
-}
-
 void Init() {
     depth_buffer = (uint16_t*)malloc(screen_width * screen_height * sizeof(float));
     

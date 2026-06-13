@@ -8,6 +8,8 @@
 #include <audio/api.h>
 #include <audio/sound.h>
 
+#include <render/render.h>
+
 #include <config.h>
 
 /**
@@ -34,10 +36,41 @@ template <> Pool<AudioComponent> PoolProxy<AudioComponent>::pool("AudioComponent
 template <> void Component<AudioComponent>::init() { ptr = PoolProxy<AudioComponent>::New(); }
 template <> void Component<AudioComponent>::yeet() { PoolProxy<AudioComponent>::Delete(ptr); }
 
-static Settings::Property<bool> draw_source = {false, "audio-draw-source", Settings::NONE};
+static Settings::Property<bool> draw_source = {false, "audio-draw-icon", Settings::NONE};
 static Settings::Property<bool> draw_info = {false, "audio-draw-info", Settings::NONE};
 
 static EventListener frame_event;
+
+static void check_event(const char*) {
+    if (draw_source || draw_info) {
+        frame_event.make(Event::FRAME, [](Event&) {
+            for (auto& source : PoolProxy<AudioComponent>::GetPool()) {
+                if(draw_info) {
+                    char str[100];
+                    sprintf(str, "Playing: %s\nRepeats: %s\nSound: %s",
+                            source.IsPlaying() ? "yes" : "no",
+                            source.IsRepeating() ? "yes" : " no",
+                            source.GetSound() ? (const char*)source.GetSound()->GetName() : "none");
+                    Render::AddText(source.GetLocation(), str);
+                }
+                if (draw_source) {
+                    if (glm::distance(source.GetLocation(), Render::GetViewPosition()) < 15.0f) {
+                        Render::AddIcon(source.GetLocation(), 9);
+                    }
+                }
+            }
+        });
+    } else {
+        frame_event.clear();
+    } 
+}
+
+static void make() {
+    Settings::SetCallback("audio-draw-icon", check_event);
+    Settings::SetCallback("audio-draw-info", check_event);
+    
+    check_event(nullptr);
+}
 
 AudioComponent::~AudioComponent() {
     assert(is_ready);
@@ -62,10 +95,11 @@ void AudioComponent::Start() {
     if (play_on_start) {
         PlayAudioSource(source);
     }
-    
-    SetupModel();
-    
+
     is_ready = true;
+    
+    static bool made = false;
+    if (!made) made = true, make();
 }
 
 /// Sets the sound that the component will play.
@@ -91,10 +125,7 @@ void AudioComponent::SetLocation(vec3 location) {
     if (is_ready) {
         SetAudioSourcePosition(source, location);
     }
-    
-    if (model) {
-        model->SetLocation(location);
-    }
+
 }
 
 /// Sets whether the component will repeat its sound.
@@ -142,67 +173,6 @@ bool AudioComponent::IsPlaying() {
     } else {
         return play_on_start;
     }
-}
-
-
-void AudioComponent::SetupModel() {
-    if (draw_source) {
-        model.make();
-        model->SetModel("dev/sound");
-        model->SetLocation(this->location);
-        model->SetParent(this->parent);
-        model->SetLightmap("fullbright");
-        model->Init();
-    } else {
-        model.clear();
-    }
-}
-
-/// Checks whether the audio source is drawn.
-/// Check SetSourceDraw() for more info.
-bool AudioComponent::IsSourceDraw() {
-    return draw_source;
-}
-
-/// Checks whether the debug text is drawn.
-/// Check SetDebugInfoDraw() for more info.
-bool AudioComponent::IsDebugInfoDraw() {
-    return draw_info;
-}
-
-/// Sets the drawing of audio sources.
-/// If set to true, each audio component will initialize a 3D model, which will
-/// allow you to see the posiiton of the audio sources. Useful for debugging.
-void AudioComponent::SetSourceDraw(bool draw) {
-    if (draw_source == draw) return;
-    draw_source = draw;
-    
-    for (auto& source : PoolProxy<AudioComponent>::GetPool()) {
-        source.SetupModel();
-    }
-}
-
-/// Sets the drawing of debug info.
-/// If set to true, each frame some debug text will be drawn for each audio
-/// source. This is useful for debugging.
-void AudioComponent::SetDebugInfoDraw(bool draw) {
-    if (draw_info == draw) return;
-    draw_info = draw;
-    
-    if (draw) {
-        frame_event.make(Event::FRAME, [](Event&) {
-            for (auto& source : PoolProxy<AudioComponent>::GetPool()) {
-                char str[100];
-                sprintf(str, "Playing: %s\nRepeats: %s\nSound: %s",
-                        source.IsPlaying() ? "yes" : "no",
-                        source.repeat ? "yes" : " no",
-                        source.sound ? (const char*)source.sound->GetName() : "none");
-                Render::AddText(source.location, str);
-            }
-        });
-    } else {
-        frame_event.clear();
-    } 
 }
 
 }

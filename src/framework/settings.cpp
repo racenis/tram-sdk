@@ -157,7 +157,10 @@ void SetCallback(const char* name, void (*callback)(const char* name)) {
 value_t Get(const char* name) {
     auto setting = lookup_setting(name);
     
-    if (!setting) return value_t();
+    if (!setting) {
+        Log(Severity::WARNING, System::CORE, "Setting::Get() called for '{}' setting, but it was not found!", name);
+        return value_t();
+    }
     
     switch (setting->type) {
         case TYPE_BOOL:
@@ -181,23 +184,28 @@ value_t Get(const char* name) {
 void Set(const char* name, value_t value) {
     auto setting = lookup_setting(name);
     
-    if (setting) {
-        if (value.GetType() != setting->type) {
-            Log(Severity::WARNING, System::CORE, "Trying to set a setting to {}, but it is a {}", TypeToString(value.GetType()), TypeToString(setting->type));
-            return;
-        }
-        
-        if (value.IsInt()) {
-            *setting->int32 = value.GetInt();
-        } else if (value.IsFloat()) {
-            *setting->int32 = value.GetFloat();
-        } else if (value.IsBool()) {
-            *setting->bool32 = value;
-        }
-        
-        if (setting->callback) {
-            setting->callback(setting->name);
-        }
+    if (!setting) {
+        Log(Severity::WARNING, System::CORE, "Setting::Set() called for '{}' setting, but it was not found!", name);
+        return;
+    }
+    
+    if (value.GetType() != setting->type) {
+        Log(Severity::WARNING, System::CORE, "Trying to set a setting to {}, but it is a {}", TypeToString(value.GetType()), TypeToString(setting->type));
+        return;
+    }
+    
+    if (value.IsInt()) {
+        *setting->int32 = value.GetInt();
+    } else if (value.IsFloat()) {
+        *setting->int32 = value.GetFloat();
+    } else if (value.IsBool()) {
+        *setting->bool32 = value;
+    } else {
+        Log(Severity::WARNING, System::CORE, "Setting::Set() called for '{}' setting, but set to value {}!", TypeToString(value.GetType()));
+    }
+    
+    if (setting->callback) {
+        setting->callback(setting->name);
     }
 }
 

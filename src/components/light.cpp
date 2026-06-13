@@ -5,6 +5,9 @@
 #include <render/scene.h>
 #include <render/api.h>
 
+#include <framework/settings.h>
+#include <framework/event.h>
+
 #include <config.h>
 
 /**
@@ -24,17 +27,42 @@ template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("LightComponent
 template <> void Component<LightComponent>::init() { ptr = PoolProxy<LightComponent>::New(); }
 template <> void Component<LightComponent>::yeet() { PoolProxy<LightComponent>::Delete(ptr); }
 
+static Settings::Property<bool> draw_light = {false, "light-draw-icon", Settings::NONE};
+
+static EventListener frame_event;
+
+static void check_event(const char*) {
+    if (draw_light) {
+        frame_event.make(Event::FRAME, [](Event&) {
+            for (auto& light : PoolProxy<LightComponent>::GetPool()) {
+                if (glm::distance(light.GetLocation(), Render::GetViewPosition()) < 15.0f) {
+                    Render::AddIcon(light.GetLocation(), 8);
+                }
+            }
+        });
+    } else {
+        frame_event.clear();
+    } 
+}
+
+static void make() {
+    Settings::SetCallback("light-draw-icon", check_event);
+    check_event(nullptr);
+}
+
+// TODO: put this in Start()
 void LightComponent::Init() {
     light = Render::API::MakeLight();
     
     Render::LightTree::AddLight(light, location, distance);
-    
-    SetupModel();
-    
+
     is_init = true;
     is_ready = true;
     
-    Update();    
+    Update();
+    
+    static bool made = false;
+    if (!made) made = true, make();
 }
 
 LightComponent::~LightComponent() {
@@ -50,11 +78,6 @@ void LightComponent::Update() {
         Render::API::SetLightParameters(light, location, color, distance, direction, exponent);
         Render::LightTree::RemoveLight(light);
         Render::LightTree::AddLight(light, location, distance);
-        
-        if (model) {
-            model->SetLocation(location);
-            model->SetColor(color);
-        }
     }
 }
 
@@ -95,41 +118,6 @@ Render::color_t LightComponent::GetColor() {
 /// Returns the distance of the light.
 float LightComponent::GetDistance() {
     return this->distance;
-}
-
-static bool draw_light = false;
-
-void LightComponent::SetupModel() {
-    if (draw_light) {
-        model.make();
-        model->SetModel("dev/light");
-        model->SetLocation(this->location);
-        model->SetParent(this->parent);
-        model->SetColor(this->color);
-        model->SetLightmap("fullbright");
-        model->SetRenderDebug(false);
-        model->Init();
-    } else {
-        model.clear();
-    }
-}
-
-/// Checks whether the lights are drawn.
-/// Check SetLightDraw() for more info.
-bool LightComponent::IsLightDraw() {
-    return draw_light;
-}
-
-/// Sets the drawing oflights.
-/// If set to true, each light component will initialize a 3D model, which will
-/// allow you to see the posiiton of the light sources. Useful for debugging.
-void LightComponent::SetLightDraw(bool draw) {
-    if (draw_light == draw) return;
-    draw_light = draw;
-    
-    for (auto& source : PoolProxy<LightComponent>::GetPool()) {
-        source.SetupModel();
-    }
 }
 
 }

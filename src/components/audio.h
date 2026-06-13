@@ -4,9 +4,6 @@
 #define TRAM_SDK_COMPONENTS_AUDIOCOMPONENT_H
 
 #include <framework/entitycomponent.h>
-#include <framework/resource.h>
-
-#include <components/render.h>
 
 #include <audio/sound.h>
 
@@ -28,13 +25,11 @@ public:
     void Pause();
     void Stop();
     
-    void EventHandler(Event &event){}
+    Audio::Sound* GetSound() { return sound.get(); }
+    bool IsRepeating() const { return repeat; }
+    vec3 GetLocation() const { return location; }
     
-    static bool IsSourceDraw();
-    static bool IsDebugInfoDraw();
-    
-    static void SetSourceDraw(bool);
-    static void SetDebugInfoDraw(bool);
+    void EventHandler(Event &event) {}
 protected:
     ResourceProxy<Audio::Sound> sound;
     Audio::audiosource_t source = {};
@@ -43,9 +38,6 @@ protected:
     bool play_on_start = false;
     
     void Start();
-    
-    void SetupModel();
-    Component<RenderComponent> model;
 };
 
 }

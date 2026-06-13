@@ -30,9 +30,6 @@ public:
     inline void SetLookDirection(quat direction) { look_direction = direction; }
     inline quat GetLookDirection() const { return look_direction; }
     
-    static bool IsDebugInfoDraw();
-    static void SetDebugInfoDraw(bool);
-    
     static void Update();
 protected:
     quat look_direction = {1.0f, 0.0f, 0.0f, 0.0f};

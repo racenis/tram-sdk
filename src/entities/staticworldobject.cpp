@@ -19,7 +19,7 @@
 
 namespace tram {
     
-static Settings::Property<bool> STATIC_WOBJ_WIREFRAME = {true, "staticwobj-wireframe", Settings::NONE};
+static Settings::Property<bool> STATIC_WOBJ_WIREFRAME = {false, "staticwobj-wireframe", Settings::NONE};
     
 using namespace tram::Physics;
 

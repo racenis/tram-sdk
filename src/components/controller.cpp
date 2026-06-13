@@ -117,15 +117,6 @@ void ControllerComponent::Update() {
     }
 }
 
-bool ControllerComponent::IsDebugInfoDraw() {
-    return draw_debug;
-}
-
-void ControllerComponent::SetDebugInfoDraw(bool draw) {
-    draw_debug = draw;
-}
-
-
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // |                              FPS CONTROLLER                               |

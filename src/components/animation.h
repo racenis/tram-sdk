@@ -44,8 +44,6 @@ public:
     static AnimationComponent* Make();
     static void Yeet(AnimationComponent* component);
     
-    static bool IsDebugInfoDraw();
-    static void SetDebugInfoDraw(bool draw);
     static void Update();
 protected:
     static const size_t ANIM_COUNT = 8;
