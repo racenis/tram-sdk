@@ -80,10 +80,10 @@ void main() {
 	
 	
 	// do the same, but with the normal vector
-	vec4 normal1 = BoneWeight.x * bone[BoneIndex.x] * vec4(Normal, 1.0);
-	vec4 normal2 = BoneWeight.y * bone[BoneIndex.y] * vec4(Normal, 1.0);
-	vec4 normal3 = BoneWeight.z * bone[BoneIndex.z] * vec4(Normal, 1.0);
-	vec4 normal4 = BoneWeight.w * bone[BoneIndex.w] * vec4(Normal, 1.0);
+	vec4 normal1 = BoneWeight.x * bone[BoneIndex.x] * vec4(Normal, 0.0);
+	vec4 normal2 = BoneWeight.y * bone[BoneIndex.y] * vec4(Normal, 0.0);
+	vec4 normal3 = BoneWeight.z * bone[BoneIndex.z] * vec4(Normal, 0.0);
+	vec4 normal4 = BoneWeight.w * bone[BoneIndex.w] * vec4(Normal, 0.0);
 	
 	// get posed normal in model space
 	vec4 normal = normal1 + normal2 + normal3 + normal4;

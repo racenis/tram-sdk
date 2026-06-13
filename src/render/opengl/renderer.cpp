@@ -297,9 +297,10 @@ void RenderFrame() {
     matrices.projection = layers[0].projection_matrix;
     matrices.view = layers[0].view_matrix;
     matrices.view_pos = layers[0].view_position;
-
-
-    GLLight* first_light = PoolProxy<GLLight>::GetPool().begin().ptr;
+    
+    // note that we use index zero instead of .begin() method, as that method
+    // can skip over the first or several first lights
+    GLLight* first_light = &PoolProxy<GLLight>::GetPool()[0];
     GLLight* last_light = PoolProxy<GLLight>::GetPool().end().ptr;
     
     UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight) * (last_light - first_light), first_light);
