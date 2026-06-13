@@ -66,6 +66,8 @@ void AddCylinder(vec3 pos, float height, float radius, color_t color);
 void AddCube(vec3 pos, float height, float radius, color_t color);
 void AddText(vec3 pos, const char* text, color_t color = COLOR_WHITE);
 void AddText(float x, float y, const char* text, color_t color = COLOR_WHITE);
+void AddIcon(vec3 pos, uint32_t index, color_t color = COLOR_WHITE);
+void AddIcon(float x, float y, uint32_t index, color_t color = COLOR_WHITE);
 
 enum VertexFormats : vertexformat_t {
     VERTEX_STATIC,

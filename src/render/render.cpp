@@ -61,7 +61,6 @@ drawlistentry_t colorlines_entry;
 
 vertexarray_t debugtext_vertex_array = {};
 drawlistentry_t debugtext_entry;
-Sprite* font_debug = nullptr;
 
 std::vector<LineVertex> colorlines;
 std::vector<SpriteVertex> textvertices;
@@ -145,10 +144,13 @@ void Init () {
     defaulttexture->LoadFromMemory();
     
     // this is for rendering debug text
-    Material::Make(UID("ui/font_debug"), MATERIAL_GLYPH)->Load();
-    font_debug = Sprite::Find(UID("font_debug"));
+    auto font_debug = Material::Make(UID("ui/font_debug"), MATERIAL_GLYPH);
     font_debug->AddReference();
     font_debug->Load();
+    
+    auto font_icon = Material::Make(UID("ui/font_icon"), MATERIAL_GLYPH);
+    font_icon->AddReference();
+    font_icon->Load();
     
     CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), debugtext_vertex_array);
     debugtext_entry = InsertDrawListEntry();
@@ -157,8 +159,10 @@ void Init () {
     SetFlags(debugtext_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
     SetLayer(debugtext_entry, LAYER_GUI);
     
-    material_t debugtext_texture = font_debug->GetMaterial()->GetMaterial();
-    SetDrawListMaterials(debugtext_entry, 1, &debugtext_texture);
+    material_t debugtext_textures[2];
+    debugtext_textures[0] = font_debug->GetMaterial();
+    debugtext_textures[1] = font_icon->GetMaterial();
+    SetDrawListMaterials(debugtext_entry, 2, debugtext_textures);
     
     System::SetInitialized(System::RENDER, true);
 }
@@ -373,12 +377,11 @@ void AddText(vec3 pos, const char* text, color_t color) {
             if (line > w) w = line;
             line = 0;
         } else {
-            //line += 16;
-            line += font_debug->GetFrames()[*c].width;
+            line += 8;
         }
     }
     
-    AddText(pos.x - w / 2.0f, pos.y - h / 2.0f, text, color);
+    AddText(pos.x - (w >> 1), pos.y - (h >> 1), text, color);
 }
 
 /// Draws text, on the screen, for a single frame.
@@ -386,27 +389,34 @@ void AddText(float x, float y, const char* text, color_t color) {
     float cur_x = x;
     float cur_y = y;
     
+    SpriteVertex tleft;
+    SpriteVertex tright;
+    SpriteVertex bleft;
+    SpriteVertex bright;
+    
+    tleft.color = color;
+    tleft.texture = 0;
+    tright.color = color;
+    tright.texture = 0;
+    bleft.color = color;
+    bleft.texture = 0;
+    bright.color = color;
+    bright.texture = 0;
+    
     for (const char* c = text; *c != '\0'; c++) {
-        if (*c=='\n'){ cur_y += 16.0f;
+        if (*c=='\n') {
+            cur_y += 16.0f;
             cur_x = x;
-            continue;}
-            
-        const auto& info = font_debug->GetFrames()[*c];
-        
+            continue;
+        }
+
         float x = cur_x;
         float y = cur_y;
-        float w = info.width;
-        float h = info.height;
-        float tex_x = info.offset_x;
-        float tex_y = info.offset_y;
-        float tex_w = info.width;
-        float tex_h = info.height;
+        float w = 8;
+        float h = 16;
+        float tex_x = (*c & 15) * 16;
+        float tex_y = (*c & ~15);
         
-        SpriteVertex tleft;
-        SpriteVertex tright;
-        SpriteVertex bleft;
-        SpriteVertex bright;
-
         tleft.co.x = x;
         tleft.co.y = y;
         tleft.co.z = 1;
@@ -416,30 +426,21 @@ void AddText(float x, float y, const char* text, color_t color) {
         tright.co.x = x + w;
         tright.co.y = y;
         tright.co.z = 1;
-        tright.texco.x = tex_x + tex_w;
+        tright.texco.x = tex_x + w;
         tright.texco.y = tex_y;
         
         bleft.co.x = x;
         bleft.co.y = y + h;
         bleft.co.z = 1;
         bleft.texco.x = tex_x;
-        bleft.texco.y = tex_y + tex_h;
+        bleft.texco.y = tex_y + h;
         
         bright.co.x = x + w;
         bright.co.y = y + h;
         bright.co.z = 1;
-        bright.texco.x = tex_x + tex_w;
-        bright.texco.y = tex_y + tex_h;
+        bright.texco.x = tex_x + w;
+        bright.texco.y = tex_y + h;
         
-        tleft.color = color;
-        tleft.texture = 0;
-        tright.color = color;
-        tright.texture = 0;
-        bleft.color = color;
-        bleft.texture = 0;
-        bright.color = color;
-        bright.texture = 0;
-
         textvertices.push_back(bleft);
         textvertices.push_back(bright);
         textvertices.push_back(tleft);
@@ -447,12 +448,66 @@ void AddText(float x, float y, const char* text, color_t color) {
         textvertices.push_back(tright);
         textvertices.push_back(tleft);
         
-        //DrawGlyph(font, (unsigned char)*c, cursor_x, cursor_y);
-        
-        
-        //cursor_x += GlyphWidth(font, (unsigned char)*c);]
-        cur_x += info.width;
+        cur_x += w;
     }
+}
+
+void AddIcon(vec3 pos, uint32_t index, color_t color) {
+    Project(pos, pos);
+    if (pos.z > 1.0f) return;
+    AddIcon(pos.x - 16.0f, pos.y - 16.0f, index, color);
+}
+
+void AddIcon(float x, float y, uint32_t index, color_t color) {
+    float w = 32;
+    float h = 32;
+    float tex_x = ((index & 7) << 5);
+    float tex_y = ((index & ~7) << 2);
+    
+    SpriteVertex tleft;
+    SpriteVertex tright;
+    SpriteVertex bleft;
+    SpriteVertex bright;
+
+    tleft.co.x = x;
+    tleft.co.y = y;
+    tleft.co.z = 1;
+    tleft.texco.x = tex_x;
+    tleft.texco.y = tex_y;
+    
+    tright.co.x = x + w;
+    tright.co.y = y;
+    tright.co.z = 1;
+    tright.texco.x = tex_x + w;
+    tright.texco.y = tex_y;
+    
+    bleft.co.x = x;
+    bleft.co.y = y + h;
+    bleft.co.z = 1;
+    bleft.texco.x = tex_x;
+    bleft.texco.y = tex_y + h;
+    
+    bright.co.x = x + w;
+    bright.co.y = y + h;
+    bright.co.z = 1;
+    bright.texco.x = tex_x + w;
+    bright.texco.y = tex_y + h;
+    
+    tleft.color = color;
+    tleft.texture = 1;
+    tright.color = color;
+    tright.texture = 1;
+    bleft.color = color;
+    bleft.texture = 1;
+    bright.color = color;
+    bright.texture = 1;
+
+    textvertices.push_back(bleft);
+    textvertices.push_back(bright);
+    textvertices.push_back(tleft);
+    textvertices.push_back(bright);
+    textvertices.push_back(tright);
+    textvertices.push_back(tleft);
 }
 
 /// Projects a point into screen coordinates.
