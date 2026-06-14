@@ -44,13 +44,21 @@ Sprite* Sprite::Find(name_t name){
 }
 
 void Sprite::LoadFromMemory() {
-    assert(status == LOADED);
+    if (status != LOADED) {
+        Log(Severity::WARNING, System::RENDER, "Sprite {} hasn't been loaded! Ignoring Lightmap::LoadFromMemory() call.", name);
+        return;
+    }
+    
     status = READY;
 }
 
 void Sprite::LoadFromDisk() {
-    std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, tram::System::RENDER, "Sprite {} already loaded! Ignoring Sprite::LoadFromDisk() call.", name);
+        return;
+    }
     
+    std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
     File file (filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
@@ -127,6 +135,11 @@ void Sprite::LoadFromDisk() {
 }
 
 void Sprite::Unload() {
+    if (status != READY) {
+        Log(Severity::WARNING, System::RENDER, "Sprite {} hasn't been loaded! Ignoring Sprite::Unload() call.", name);
+        return;
+    }
+    
     frames.clear();
     markers.clear();
     

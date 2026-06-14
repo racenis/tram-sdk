@@ -11,6 +11,7 @@
 #include <render/api.h>
 
 #include <platform/file.h>
+#include <platform/api.h>
 
 #include <templates/hashmap.h>
 
@@ -107,7 +108,10 @@ static uint32_t layer_count_for_type(LightmapType type) {
 }
 
 void Lightmap::LoadFromDisk() {
-    assert(status == UNLOADED);
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Lightmap {} already loaded! Ignoring LightGraph::LoadFromDisk() call.", name);
+        return;
+    }
     
     // ideally we would handle the `fullbright` lightmap using a shader flag,
     // but for now we'll just treat it as a special lightmap that gets generated
@@ -209,9 +213,15 @@ static size_t approx_memory(uint32_t width, uint32_t height, LightmapType type) 
 }
 
 void Lightmap::LoadFromMemory() {
-    assert(status == LOADED);
-
-    // TODO: add a check that this is being called from render thread
+    if (status != LOADED) {
+        Log(Severity::WARNING, System::RENDER, "Lightmap {} hasn't been loaded! Ignoring Lightmap::LoadFromMemory() call.", name);
+        return;
+    }
+    
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Lightmap::LoadFromMemory() not being called from render thread! Ignoring.");
+        return;
+    }
 
     texture = API::CreateTexture(COLORMODE_RGB, lightmap_nearest ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, layer_count_for_type(type), texture_data);
     
@@ -226,9 +236,15 @@ void Lightmap::LoadFromMemory() {
 }
 
 void Lightmap::Unload() {
-    assert(status == READY);
+    if (status != READY) {
+        Log(Severity::WARNING, System::RENDER, "Lightmap {} hasn't been loaded! Ignoring Lightmap::Unload() call.", name);
+        return;
+    }
     
-    // TODO: add a check that this is being called from render thread
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Lightmap::Unload() not being called from render thread! Ignoring.");
+        return;
+    }
     
     if (texture.generic) API::YeetTexture(texture);
     texture.generic = nullptr;

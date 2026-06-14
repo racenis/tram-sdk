@@ -87,6 +87,11 @@ namespace tram::Render {
 Hashmap<Animation*> animation_list("animation name list", 500);
 
 void Animation::LoadFromDisk() {
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Animation {} already loaded! Ignoring Animation::LoadFromDisk() call.", name);
+        return;
+    }
+    
     char filename [100] = "data/animations/";
     strcat (filename, name);
     strcat (filename, ".anim");

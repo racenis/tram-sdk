@@ -43,8 +43,12 @@ CollisionModel* CollisionModel::Find(name_t model_name) {
 /// If the collision model file can't be found, the model will be replaced with
 /// a 25cm wide cube.
 void CollisionModel::LoadFromDisk() {
-    char path[PATH_LIMIT] = "data/models/";
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::PHYSICS, "Collision model {} already loaded! Ignoring CollisionModel::LoadFromDisk() call.", name);
+        return;
+    }
     
+    char path[PATH_LIMIT] = "data/models/";
     strcat(path, name);
     strcat(path, ".collmdl");
 

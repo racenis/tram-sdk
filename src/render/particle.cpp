@@ -333,6 +333,11 @@ void Particle::ActuallyLoadFromDisk() {
 }
 
 void Particle::LoadFromDisk() {
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, tram::System::RENDER, "Particle {} already loaded! Ignoring Particle::LoadFromDisk() call.", name);
+        return;
+    }
+    
     if (!base && !systems.size()) {
         ActuallyLoadFromDisk();
     }
@@ -402,11 +407,21 @@ void Particle::LoadFromDisk() {
 }
 
 void Particle::LoadFromMemory() {
+    if (status != LOADED) {
+        Log(Severity::WARNING, tram::System::RENDER, "Particle {} hasn't been loaded! Ignoring Particle::LoadFromMemory() call.", name);
+        return;
+    }
+    
     status = Resource::READY;
 }
 
 
 void Particle::Unload() {
+    if (status != READY) {
+        Log(Severity::WARNING, tram::System::RENDER, "Particle {} hasn't been loaded! Ignoring Particle::Unload() call.", name);
+        return;
+    }
+
     for (auto system : systems) {
         if (auto sprite = system->GetSprite(); sprite) {
             sprite->RemoveReference();

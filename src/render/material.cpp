@@ -22,6 +22,7 @@
 #include <render/error.h>
 
 #include <platform/file.h>
+#include <platform/api.h>
 
 #include <templates/hashmap.h>
 
@@ -335,7 +336,10 @@ void Material::FlushToAPI() {
 }
 
 void Material::LoadFromDisk() {
-    assert(status == UNLOADED);
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Material {} already loaded! Ignoring LightGraph::LoadFromDisk() call.", name);
+        return;
+    }
 
     if (texture_type == TEXTURE_NONE) {
         MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
@@ -441,9 +445,15 @@ void Material::LoadFromDisk() {
 /// Except if software rendering is used, in which case the texures will merely
 /// be copied and converted.
 void Material::LoadFromMemory() {
-    assert(status == LOADED);
-
-    // TODO: add a check that this is being called from render thread
+    if (status != LOADED) {
+        Log(Severity::WARNING, System::RENDER, "Material {} hasn't been loaded! Ignoring Material::LoadFromMemory() call.", name);
+        return;
+    }
+    
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Material::LoadFromMemory() not being called from render thread! Ignoring.");
+        return;
+    }
 
     material = API::MakeMaterial();
     
@@ -485,9 +495,15 @@ void Material::LoadFromMemory() {
 }
 
 void Material::Unload() {
-    assert(status == READY);
+    if (status != READY) {
+        Log(Severity::WARNING, System::RENDER, "Material {} hasn't been loaded! Ignoring Material::Unload() call.", name);
+        return;
+    }
     
-    // TODO: add a check that this is being called from render thread
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Material::Unload() not being called from render thread! Ignoring.");
+        return;
+    }
     
     if (texture.generic) API::YeetTexture(texture);
     if (normal_map.generic) API::YeetTexture(normal_map);
@@ -509,7 +525,7 @@ size_t Material::ApproxMemoryUsage() {
     if (texture_type == TEXTURE_SAME_NORMAL) {
         approx_memory += normal_map_width * normal_map_height * 3;
     }
-    approx_memory = approx_memory * 1.3f;
+    return approx_memory * 1.3f;
 }
 
 }

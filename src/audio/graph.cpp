@@ -41,8 +41,12 @@ SoundGraph* SoundGraph::Find(name_t name) {
 }
 
 void SoundGraph::LoadFromDisk() {
-    std::string filename = std::string("data/worldcells/") + std::string(name) + ".sound";
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::AUDIO, "SoundGraph {} already loaded! Ignoring SoundGraph::LoadFromDisk() call.", name);
+        return;
+    }
     
+    std::string filename = std::string("data/worldcells/") + std::string(name) + ".sound";
     File file (filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {

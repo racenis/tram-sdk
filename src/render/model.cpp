@@ -4,13 +4,14 @@
 #include <framework/stats.h>
 #include <framework/file.h>
 #include <framework/logging.h>
+#include <framework/async.h>
 
 #include <render/model.h>
 #include <render/api.h>
 #include <render/vertices.h>
 #include <render/error.h>
 
-#include <framework/async.h>
+#include <platform/api.h>
 
 #include <cstring>
 
@@ -68,7 +69,15 @@ Model* Model::Find(name_t name) {
 }
 
 void Model::LoadFromMemory() {
-    assert(status == LOADED);
+    if (status != LOADED) {
+        Log(Severity::WARNING, System::RENDER, "Model {} hasn't been loaded! Ignoring Model::LoadFromMemory() call.", name);
+        return;
+    }
+    
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Model::LoadFromMemory() not being called from render thread! Ignoring.");
+        return;
+    }
     
     if (source) {
         this->vertex_format = source->vertex_format;
@@ -285,7 +294,11 @@ static uint32_t PutTriangleInBucket (
 }
 
 void Model::LoadFromDisk() {
-    assert(status == UNLOADED);
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Model {} already loaded! Ignoring Model::LoadFromDisk() call.", name);
+        return;
+    }
+    
     char path[PATH_LIMIT];
     
     std::vector<TriangleBucket> triangle_buckets;
@@ -786,6 +799,16 @@ void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pa
 }
 
 void Model::Unload() {
+    if (status != READY) {
+        Log(Severity::WARNING, System::RENDER, "Model {} hasn't been loaded! Ignoring Model::Unload() call.", name);
+        return;
+    }
+    
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Model::Unload() not being called from render thread! Ignoring.");
+        return;
+    }
+    
     if (!source) {
         API::RemoveVertexArray(vertex_array, index_array);
     } else {

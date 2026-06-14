@@ -152,8 +152,12 @@ LightGraph* LightGraph::Find(name_t name) {
 }
 
 void LightGraph::LoadFromDisk() {
-    std::string filename = std::string("data/worldcells/") + std::string(name) + ".light";
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Light graph {} already loaded! Ignoring LightGraph::LoadFromDisk() call.", name);
+        return;
+    }
     
+    std::string filename = std::string("data/worldcells/") + std::string(name) + ".light";
     File file (filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {

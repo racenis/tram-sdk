@@ -10,6 +10,7 @@
 #include <render/api.h>
 
 #include <platform/file.h>
+#include <platform/api.h>
 
 #include <templates/hashmap.h>
 
@@ -91,7 +92,10 @@ static uint32_t layer_count_for_type(EnvironmentType type) {
 }
 
 void Environment::LoadFromDisk() {
-    assert(status == UNLOADED);
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Environment {} already loaded! Ignoring Environment::LoadFromDisk() call.", name);
+        return;
+    }
     
     // ideally we would handle the `fulldark` environment map using a shader
     // flag, but for now we'll just treat it as a special environment map that
@@ -179,9 +183,15 @@ static size_t approx_memory(uint32_t width, uint32_t height, EnvironmentType typ
 }
 
 void Environment::LoadFromMemory() {
-    assert(status == LOADED);
-
-    // TODO: add a check that this is being called from render thread
+    if (status != LOADED) {
+        Log(Severity::WARNING, System::RENDER, "Environment {} hasn't been loaded! Ignoring Environment::LoadFromMemory() call.", name);
+        return;
+    }
+    
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Environment::LoadFromMemory() not being called from render thread! Ignoring.");
+        return;
+    }
 
     texture = API::CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, layer_count_for_type(type), texture_data);
     
@@ -195,9 +205,15 @@ void Environment::LoadFromMemory() {
 }
 
 void Environment::Unload() {
-    assert(status == READY);
+    if (status != READY) {
+        Log(Severity::WARNING, System::RENDER, "Environment {} hasn't been loaded! Ignoring Environment::Unload() call.", name);
+        return;
+    }
     
-    // TODO: add a check that this is being called from render thread
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Environment::Unload() not being called from render thread! Ignoring.");
+        return;
+    }
     
     if (texture.generic) API::YeetTexture(texture);
     texture.generic = nullptr;

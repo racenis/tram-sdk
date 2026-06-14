@@ -35,8 +35,12 @@ static Hashmap<Sound*> sound_map("Sound Resource hashmap", RESOURCE_LIMIT_SOUND)
 
 /// Loads the sound from the disk.
 void Sound::LoadFromDisk() {
-    char path[PATH_LIMIT];
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::AUDIO, "Sound {} already loaded! Ignoring Sound::LoadFromDisk() call.", name);
+        return;
+    }
     
+    char path[PATH_LIMIT];
     snprintf(path, PATH_LIMIT, "data/audio/%s.ogg", (const char*)name);
     
     Log(Severity::INFO, System::AUDIO, "Loading: {} ", path);
