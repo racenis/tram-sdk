@@ -30,13 +30,13 @@ public:
     static Lightmap* Find(name_t name);
 protected:
     Lightmap(name_t name) : Resource(name) {}
-    Lightmap(uint32_t index) : Resource(std::to_string(index)) {} // TODO: fix
+    Lightmap(id_t index) : Resource() { this->index = index; }
     
     texturearray_t texture = {};
 
     LightmapType type = LIGHTMAP_SINGLE;
     
-    uint32_t index = 0;
+    id_t index = 0;
     uint32_t width = 0;
     uint32_t height = 0;
     uint8_t* texture_data = nullptr;

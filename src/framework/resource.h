@@ -16,7 +16,8 @@ public:
         READY,      //< Resource is ready for sus.
     };
 
-    Resource (name_t name) : name(name) {}
+    Resource() {}
+    Resource(name_t name) : name(name) {}
     
     inline Resource::Status GetStatus() const { return status; }
     inline name_t GetName() const { return name; }
