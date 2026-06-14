@@ -114,6 +114,18 @@ static void update_fog(layer_t layer) {
                           layer);
 }
 
+static void flush_materials(const char*) {
+    for (auto& it : PoolProxy<Material>::GetPool()) {
+        it.SetMaterialFilter(it.GetMaterialFilter());
+    }
+}
+
+static void flush_lightmaps(const char*) {
+    for (auto& it : PoolProxy<Lightmap>::GetPool()) {
+        it.SetMaterialFilter(it.GetMaterialFilter());
+    }
+}
+
 /// Initializes the rendering system.
 /// @note Core and UI systems need to be initialized before initializing the render system.
 void Init () {
@@ -142,9 +154,8 @@ void Init () {
     fullbright->Load();
     
     // generating fulldark environmentmap
-    Material* fulldark = Material::Make("fulldark", MATERIAL_LIGHTMAP);
-    fulldark->MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
-    fulldark->LoadFromMemory();
+    Lightmap* fulldark = Lightmap::Find("fulldark");
+    fulldark->Load();
     
     // generating default texture
     Material* defaulttexture = Material::Make("defaulttexture", MATERIAL_TEXTURE);
@@ -171,6 +182,11 @@ void Init () {
     debugtext_textures[0] = font_debug->GetMaterial();
     debugtext_textures[1] = font_icon->GetMaterial();
     SetDrawListMaterials(debugtext_entry, 2, debugtext_textures);
+    
+    Settings::SetCallback("lightmap-nearest", flush_lightmaps);
+    Settings::SetCallback("material-mipmapping", flush_materials);
+    Settings::SetCallback("material-linear-surface", flush_materials);
+    Settings::SetCallback("material-linear-interface", flush_materials);
     
     System::SetInitialized(System::RENDER, true);
 }

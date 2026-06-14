@@ -37,6 +37,7 @@ public:
     inline uint32_t GetWidth() const { return width; }
     inline uint32_t GetHeight() const { return height; }
     inline materialtype_t GetType() const { return type; }
+    inline MaterialFilter GetMaterialFilter() const { return filter; }
     inline MaterialProperty GetProperty() const { return property; }
     inline vec3 GetColor() const { return color; }
     inline float GetSpecularWeight() const { return specular_weight; }

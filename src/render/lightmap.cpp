@@ -5,6 +5,7 @@
 
 #include <framework/stats.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 
 #include <render/lightmap.h>
 #include <render/api.h>
@@ -31,6 +32,8 @@ namespace tram::Render {
 
 static Hashmap<Lightmap*> lightmap_name_list("Lightmap name list", RESOURCE_LIMIT_LIGHTMAP);
 static Hashmap<Lightmap*> lightmap_index_list("Lightmap index list", RESOURCE_LIMIT_LIGHTMAP);
+
+static Settings::Property<bool> lightmap_nearest = {false, "lightmap-nearest", Settings::NONE};
 
 /// Finds a Lightmap.
 /// Finds a Lightmap by its associated name. If a lightmap with that name does
@@ -64,6 +67,28 @@ Lightmap* Lightmap::Find(id_t index) {
     return lightmap;
 }
 
+static TextureFilter GetFilterFromMaterialFilter(MaterialFilter filter) {
+    if (lightmap_nearest) {
+        return TEXTUREFILTER_NEAREST;
+    }
+    
+    switch (filter) {
+        case FILTER_SURFACE:
+        case FILTER_INTERFACE:
+        case FILTER_LINEAR:
+        default:
+            return TEXTUREFILTER_LINEAR;
+        case FILTER_NEAREST:
+            return TEXTUREFILTER_NEAREST;
+    }
+}
+
+void Lightmap::FlushToAPI() {
+    if (status != READY) return;
+    
+    API::SetTextureFilter(texture, GetFilterFromMaterialFilter(filter));
+}
+
 static uint32_t layer_count_for_type(LightmapType type) {
     switch (type) {
         case LIGHTMAP_SINGLE:   return 1;
@@ -79,13 +104,13 @@ void Lightmap::LoadFromDisk() {
     // but for now we'll just treat it as a special lightmap that gets generated
     // instead of being loaded.
     // this is kinda stinky and we *WILL* fix it.. later.. sometime..
-    if (name == "fullbright") {
+    if (name == "fullbright" || name == "fulldark") {
         type = LIGHTMAP_CHANNELS;
         width = 32;
         height = 32;
         size_t size = width * height * 3 * layer_count_for_type(type);
         texture_data = new uint8_t[size];
-        memset(texture_data, 255, size);
+        memset(texture_data, name == "fullbright" ? 255 : 0, size);
         status = LOADED;
         return;
     }
@@ -174,7 +199,7 @@ void Lightmap::LoadFromMemory() {
 
     // TODO: add a check that this is being called from render thread
 
-    texture = API::CreateTexture(COLORMODE_RGB, TEXTUREFILTER_LINEAR, width, height, layer_count_for_type(type), texture_data);
+    texture = API::CreateTexture(COLORMODE_RGB, lightmap_nearest ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, layer_count_for_type(type), texture_data);
     
     float approx_memory = 3.0f * width * height * layer_count_for_type(type);  // image size
     approx_memory = approx_memory * 1.3f;             // plus mipmaps
@@ -187,7 +212,8 @@ void Lightmap::LoadFromMemory() {
     texture_data = nullptr;
     
     status = READY;
-    return;
+    
+    FlushToAPI();
 }
 
 void Lightmap::Unload() {

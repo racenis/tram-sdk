@@ -18,8 +18,10 @@ public:
     inline uint32_t GetWidth() const { return width; }
     inline uint32_t GetHeight() const { return height; }
     inline LightmapType GetType() const { return type; }
-
     inline void SetType(LightmapType type) { this->type = type; }
+
+    inline MaterialFilter GetMaterialFilter() const { return filter; }
+    inline void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; FlushToAPI(); }
 
     void LoadFromDisk();
     void LoadFromMemory();
@@ -35,6 +37,9 @@ protected:
     texturearray_t texture = {};
 
     LightmapType type = LIGHTMAP_SINGLE;
+    MaterialFilter filter = FILTER_LINEAR;
+
+    void FlushToAPI();
     
     id_t index = 0;
     uint32_t width = 0;

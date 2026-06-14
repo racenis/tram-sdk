@@ -83,8 +83,6 @@ enum MaterialTypes : materialtype_t {
     MATERIAL_TEXTURE,
     MATERIAL_TEXTURE_ALPHA,
     MATERIAL_TEXTURE_BLEND,
-    MATERIAL_LIGHTMAP,
-    MATERIAL_ENVIRONMENTMAP,
     MATERIAL_MSDF,
     MATERIAL_GLYPH,
     MATERIAL_WATER,
@@ -94,7 +92,9 @@ enum MaterialTypes : materialtype_t {
 
 enum MaterialFilter {
     FILTER_NEAREST,
-    FILTER_LINEAR
+    FILTER_LINEAR,
+    FILTER_SURFACE,
+    FILTER_INTERFACE
 };
 
 struct SphericalHarmonic {

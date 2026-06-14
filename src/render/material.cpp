@@ -15,6 +15,7 @@
 
 #include <framework/file.h>
 #include <framework/logging.h>
+#include <framework/settings.h>
 
 #include <render/material.h>
 #include <render/api.h>
@@ -37,6 +38,10 @@
 using namespace tram;
 
 template <> Pool<Render::Material> PoolProxy<Render::Material>::pool("Material pool", RESOURCE_LIMIT_MATERIAL);
+
+static Settings::Property<bool> material_mipmapping = {false, "material-mipmapping", Settings::NONE};
+static Settings::Property<bool> material_linear_surface = {true, "material-linear-surface", Settings::NONE};
+static Settings::Property<bool> material_linear_interface = {true, "material-linear-interface", Settings::NONE};
 
 namespace tram::Render {
 
@@ -88,8 +93,6 @@ void Material::LoadMaterialInfo(const char* filename) {
             mat_type = MATERIAL_TEXTURE_ALPHA;
         } else if(mat_type_name == UID("blend")){
             mat_type = MATERIAL_TEXTURE_BLEND;
-        } else if(mat_type_name == UID("lightmap")){
-            mat_type = MATERIAL_LIGHTMAP;
         } else if(mat_type_name == UID("msdf")){
             mat_type = MATERIAL_MSDF;
         } else if(mat_type_name == UID("glyph")){
@@ -101,12 +104,19 @@ void Material::LoadMaterialInfo(const char* filename) {
             
             if (mat_type == (materialtype_t)-1) {
                 Log(Severity::WARNING, System::RENDER, "Unknown material type '{}' for material {} in: {}", mat_type_name, mat_name, path);
+                file.skip_linebreak();
                 continue;
             }
         }
         
         if (mat_filter_name == "linear") {
             mat_filter = FILTER_LINEAR;
+        } else if (mat_filter_name == "nearest") {
+            mat_filter = FILTER_NEAREST;
+        } else if (mat_filter_name == "surface") {
+            mat_filter = FILTER_SURFACE;
+        } else if (mat_filter_name == "interface") {
+            mat_filter = FILTER_INTERFACE;
         } else {
             mat_filter = FILTER_NEAREST;
         }
@@ -171,11 +181,7 @@ void Material::LoadMaterialInfo(const char* filename) {
     }
 }
 
-Material::Material(name_t name, materialtype_t type) : Resource(name), type(type) {
-    if (type == MATERIAL_LIGHTMAP || type == MATERIAL_ENVIRONMENTMAP) {
-        filter = FILTER_LINEAR;
-    }
-}
+Material::Material(name_t name, materialtype_t type) : Resource(name), type(type) {}
 
 /// Creates a material.
 /// If a Material already exists with that name, then the existing Material is returned.
@@ -285,6 +291,28 @@ void Material::SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, 
     status = LOADED;
 }
 
+static TextureFilter GetFilterFromMaterialFilter(MaterialFilter filter) {
+    switch (filter) {
+        case FILTER_SURFACE:
+            if (material_linear_surface) {
+                return material_mipmapping ? TEXTUREFILTER_LINEAR_MIPMAPPED : TEXTUREFILTER_LINEAR;
+            } else {
+                return TEXTUREFILTER_NEAREST;
+            }
+        case FILTER_INTERFACE:
+            if (material_linear_interface) {
+                return material_mipmapping ? TEXTUREFILTER_LINEAR_MIPMAPPED : TEXTUREFILTER_LINEAR;
+            } else {
+                return TEXTUREFILTER_NEAREST;
+            }
+        case FILTER_LINEAR:
+            return TEXTUREFILTER_LINEAR;
+        case FILTER_NEAREST:
+        default:
+            return TEXTUREFILTER_NEAREST;
+    }
+}
+
 void Material::FlushToAPI() {
     if (status != READY) return;
     
@@ -294,7 +322,7 @@ void Material::FlushToAPI() {
     API::SetMaterialSpecularTransparency(material, specular_transparency);
     API::SetMaterialReflectivity(material, reflectivity);
     
-    API::SetTextureFilter(texture, filter == FILTER_NEAREST ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR);
+    API::SetTextureFilter(texture, GetFilterFromMaterialFilter(filter));
 }
 
 void Material::LoadFromDisk() {
@@ -316,10 +344,6 @@ void Material::LoadFromDisk() {
     char path[PATH_LIMIT] = "data/textures/";
 
     switch (type) {
-        case MATERIAL_LIGHTMAP:
-            //filter = FILTER_LINEAR;
-            channels = 3;
-            break;
         case MATERIAL_TEXTURE_ALPHA:
         case MATERIAL_TEXTURE_BLEND:
             channels = 4;
@@ -329,7 +353,6 @@ void Material::LoadFromDisk() {
             channels = 4;
             break;
         case MATERIAL_GLYPH:
-            filter = FILTER_NEAREST;
             channels = 4;
             break;
         default:
