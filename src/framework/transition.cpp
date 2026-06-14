@@ -36,7 +36,8 @@ Transition* Transition::Find(name_t name) {
 /// @param cell_into    Pointer to the WorldCell into which the transition
 ///                     will be leading into.
 Transition* Transition::Make(name_t name, WorldCell* cell_into) {
-    Transition* transition = PoolProxy<Transition>::New(name, cell_into);
+    Transition* transition = PoolProxy<Transition>::GetPool().allocate();
+    new(transition) Transition(name, cell_into);
     
     if (name) {
         if (transition_list.Find(name)) {
@@ -49,6 +50,17 @@ Transition* Transition::Make(name_t name, WorldCell* cell_into) {
     return transition;
 }
 
+/// Removes a transition.
+/// @param transition   Pointer to transition which will be yeeted.
+void Transition::Yeet(Transition* transition) {
+    if (transition->name) {
+        transition_list.remove(transition->name);
+    }
+    
+    transition->~Transition();
+    PoolProxy<Transition>::GetPool().deallocate(transition);
+}
+
 Transition::Transition(name_t name, WorldCell* cell_into) {
     this->cell_into = cell_into;
     this->name = name;
@@ -56,6 +68,10 @@ Transition::Transition(name_t name, WorldCell* cell_into) {
     if (!cell_into) {
         Log(Severity::ERROR, System::CORE, "Transition '{}' not leading to anywhere", name);
     }
+}
+
+Transition::~Transition() {
+    
 }
 
 /// Adds a point to the transition volume.

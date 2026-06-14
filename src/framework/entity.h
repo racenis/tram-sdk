@@ -112,10 +112,6 @@ protected:
     name_t name;
     
     WorldCell* cell = nullptr;
-    
-    // don't really need this, since we can use the entity ID number to lookup
-    // the SignalTable for each entity
-    // TODO: fix
     SignalTable* signals = nullptr;
     
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
@@ -125,6 +121,7 @@ protected:
 
     void Register();
     void Unregister();
+    static void Obliterate(Entity* entity);
     inline void FireSignal(signal_t type) { if (signals) signals->Fire(type, this->id); }
     inline void FireSignal(signal_t type, Value value) { if (signals) signals->Fire(type, this->id, value); }
 

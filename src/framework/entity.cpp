@@ -219,6 +219,7 @@ Entity::Entity(const SharedEntityData& shared_data) {
 /// unregisters it.
 Entity::~Entity() {
     if (cell) cell->Remove(this);
+    if (signals) SignalTable::Yeet(signals);
     
     Unregister();
 }
@@ -331,10 +332,18 @@ void Entity::RegisterType(name_t name, entity_make constr_func, entity_clear des
 /// that it can be found using the Entity::Find(name_t) static method.
 void Entity::Register() {
     if (id) {
+        if (Entity* existing = entity_id_list.Find(id); existing) {
+            Entity::Obliterate(existing);
+        }
+        
         entity_id_list.Insert(id, this);
     }
 
     if (name) {
+        if (Entity* existing = entity_id_list.Find(name); existing) {
+            Entity::Obliterate(existing);
+        }
+        
         entity_name_list.Insert(name, this);
     }
 }
@@ -351,6 +360,19 @@ void Entity::Unregister() {
 
     if (name && entity_name_list.Find(name)) {
         entity_name_list.Remove(name);
+    }
+}
+
+/// Destructs an entity.
+/// Looks up the entity type's registered destructor and runs it. 
+void Entity::Obliterate(Entity* entity) {
+    auto type_info = registered_entity_types.Find(entity->GetType());
+
+    if (type_info.destructor) {
+        type_info.destructor(entity);
+    } else {
+        Log(Severity::WARNING, System::CORE, "No destructor for name {} id {} typed {} found, using default", entity->GetName(), entity->GetID(), entity->GetType());
+        delete entity;
     }
 }
 
@@ -387,14 +409,7 @@ void Entity::Update() {
     for (auto ent : safe_yeetery) {
         if (ent->IsLoadedFromDisk()) continue;
         
-        auto type_info = registered_entity_types.Find(ent->GetType());
-        
-        if (type_info.destructor) {
-            type_info.destructor(ent);
-        } else {
-            Log(Severity::WARNING, System::CORE, "No destructor for name {} id {} typed {} found, using default", ent->GetName(), ent->GetID(), ent->GetType());
-            delete ent;
-        }
+        Entity::Obliterate(ent);
     }
 }
 

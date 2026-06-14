@@ -37,7 +37,7 @@ struct Signal {
     signal_t type = NONE;
     
     name_t receiver;
-    void* data;
+    void* data = nullptr;
     
     float delay;
     int limit;
@@ -51,12 +51,20 @@ struct Signal {
 
 class SignalTable {
 public:
+    static SignalTable* Make();
+    static void Yeet(SignalTable* table);
+    
+    const Signal& GetSignal(size_t index) const { return signals[index]; }
+    size_t GetSignalCount() const { return signal_count; }
+    
+    void Add(const Signal& signal);
     void Fire(signal_t signal, id_t sender);
     void Fire(signal_t signal, id_t sender, Value value);
-    void Add(const Signal& signal);
-public:
+protected:
     Signal signals[SIGNAL_PER_ENTITY_LIMIT];
     size_t signal_count = 0;
+    SignalTable() = default;
+    ~SignalTable() = default;
 };
     
 }

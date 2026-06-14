@@ -41,6 +41,7 @@ public:
     size_t GetEntityCount() { return entities.size(); }
 
     void Add(Transition* transition);
+    void Remove(Transition* transition);
     
     void Link(WorldCell* other);
     

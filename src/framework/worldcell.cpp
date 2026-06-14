@@ -124,6 +124,22 @@ void WorldCell::Add(Transition* transition) {
     }
 }
 
+/// Removes a transition.
+/// Removes an outgoing transition to the worldcell.
+void WorldCell::Remove(Transition* transition) {
+    if (transition->cell_into == this) {
+        auto ptr = std::find(volume.begin(), volume.end(), transition);
+        if (ptr != volume.end()) {
+            volume.erase(ptr);
+        }
+    } else {
+        auto ptr = std::find(transitions.begin(), transitions.end(), transition);
+        if (ptr != transitions.end()) {
+            transitions.erase(ptr);
+        }
+    }
+}
+
 /// Finds a transition from a position.
 /// This is meant to be used by entities that are seeking a WorldCell into which
 /// they can transition into.
@@ -260,6 +276,18 @@ void WorldCell::LoadFromDisk() {
         return;
     }
     
+    if (flags & LOADED_FROM_DISK) {
+        std::vector<Transition*> transitions;
+        std::vector<Transition*> volume;
+        std::swap(transitions, this->transitions);
+        std::swap(volume, this->volume);
+        for (auto trans : transitions) {
+            Transition::Yeet(trans);
+        }
+        for (auto trans : volume) {
+            Transition::Yeet(trans);
+        }
+    }
     
     SetFlag(LOADED_FROM_DISK, true);
     
@@ -349,7 +377,7 @@ void WorldCell::LoadFromDisk() {
             }
             
             if (!owner->signals) {
-                owner->signals = new SignalTable;
+                owner->signals = SignalTable::Make();
             }
             
             owner->signals->Add(signal);

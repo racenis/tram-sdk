@@ -793,7 +793,7 @@ void SignalMenu::Display() {
     Entity* entity = Entity::Find(entity_id);
     SignalTable* signals = entity ? entity->GetSignalTable() : nullptr;
     
-    uint32_t signal_offset = signals ? 10 + 16 * signals->signal_count : 24;
+    uint32_t signal_offset = signals ? 10 + 16 * signals->GetSignalCount() : 24;
     
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34 * 2);
     GUI::PushFrameRelative(GUI::FRAME_LEFT, 500);
@@ -807,8 +807,8 @@ void SignalMenu::Display() {
         } else if (!signals) {
             GUI::Text("Entity has no signals.");
         } else {
-            for (uint32_t i = 0; i < signals->signal_count; i++) {
-                Signal& signal = signals->signals[i];
+            for (size_t i = 0; i < signals->GetSignalCount(); i++) {
+                const Signal& signal = signals->GetSignal(i);
                 
                 GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 24 * i);
                 

@@ -14,19 +14,20 @@ class WorldCell;
 
 class Transition {
 public:
-    Transition(name_t name, WorldCell* cell_into);
-    ~Transition() = delete;
-    void AddPoint (vec3 point);
-    void GeneratePlanes (bool disp = false);
-    bool IsInside (vec3 point);
+    void AddPoint(vec3 point);
+    void GeneratePlanes(bool disp = false);
+    bool IsInside(vec3 point);
     WorldCell* GetCell() { return cell_into; }
     static Transition* Find(name_t name);
     static Transition* Make(name_t name, WorldCell* cell_into);
 protected:
+    Transition(name_t name, WorldCell* cell_into);
+    ~Transition();
     name_t name;
     WorldCell* cell_into;
     std::vector<vec3> points;
     std::vector<vec4> planes;
+    static void Yeet(Transition* transition);
     friend class WorldCell;
 };
 

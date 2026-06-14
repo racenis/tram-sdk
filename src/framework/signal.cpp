@@ -1,6 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <templates/hashmap.h>
+#include <templates/pool.h>
 
 #include <framework/signal.h>
 #include <framework/entity.h>
@@ -30,6 +31,7 @@
 
 namespace tram {
 
+template <> Pool<SignalTable> PoolProxy<SignalTable>::pool("SignalTable pool", SIGNAL_TABLE_LIMIT);
 static Hashmap<signal_t> name_t_to_signal_t("name_t_to_signal_t", SIGNAL_TYPE_LIMIT);
 
 static const char* signal_names[SIGNAL_TYPE_LIMIT] = {
@@ -163,6 +165,19 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
 void SignalTable::Add(const Signal& signal) {
     if (signal_count >= SIGNAL_PER_ENTITY_LIMIT) return; // TODO: add errore message
     signals[signal_count++] = signal;
+}
+
+/// Creates a new SignalTable.
+SignalTable* SignalTable::Make() {
+    SignalTable* ptr = PoolProxy<SignalTable>::GetPool().allocate();
+    new(ptr) SignalTable();
+    return ptr;
+}
+
+/// Deletes an existing SignalTable.
+void SignalTable::Yeet(SignalTable* table) {
+    table->~SignalTable();
+    PoolProxy<SignalTable>::GetPool().deallocate(table);
 }
 
 }
