@@ -14,7 +14,7 @@ public:
 
     void LoadFromDisk();
     void LoadFromMemory() {}
-    void Unload() {}
+    void Unload();
     
     inline collisionshape_t GetShape() { return shape; }
 

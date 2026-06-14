@@ -235,6 +235,15 @@ void Material::MakePattern(vec3 color1, vec3 color2) {
     status = LOADED;
 }
 
+void Material::SetTextureType(TextureType texture_type) {
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Loaded Materials cannot change types! Ignoring Material::SetType() call.");
+        return;
+    }
+    
+    this->texture_type = texture_type; 
+}
+
 void Material::SetSource(Material* source) {
     this->source = source;
     
@@ -458,15 +467,7 @@ void Material::LoadFromMemory() {
         API::SetMaterialNormalMap(material, normal_map);
     }
     
-    float approx_memory = width * height * channels;  // image size
-    if (texture_type == TEXTURE_SAME_NORMAL) {
-        approx_memory += normal_map_width * normal_map_height * 3;
-    }
-    approx_memory = approx_memory * 1.3f;             // plus mipmaps
-    
-    approx_vram_usage = (size_t) approx_memory;
-    
-    Stats::Add(Stats::RESOURCE_VRAM, approx_vram_usage);
+    Stats::Add(Stats::RESOURCE_VRAM, ApproxMemoryUsage());
 
     delete[] texture_data;
     texture_data = nullptr;
@@ -496,7 +497,19 @@ void Material::Unload() {
     normal_map.generic = nullptr;
     material.generic = nullptr;
     
+    if (source) source->RemoveReference();
+    
+    Stats::Remove(Stats::RESOURCE_VRAM, ApproxMemoryUsage());
+    
     status = UNLOADED;
+}
+
+size_t Material::ApproxMemoryUsage() {
+    float approx_memory = width * height * channels;
+    if (texture_type == TEXTURE_SAME_NORMAL) {
+        approx_memory += normal_map_width * normal_map_height * 3;
+    }
+    approx_memory = approx_memory * 1.3f;
 }
 
 }

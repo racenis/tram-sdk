@@ -42,7 +42,7 @@ CollisionModel* CollisionModel::Find(name_t model_name) {
 /// Loads the collision model from disk.
 /// If the collision model file can't be found, the model will be replaced with
 /// a 25cm wide cube.
-void CollisionModel::LoadFromDisk () {
+void CollisionModel::LoadFromDisk() {
     char path[PATH_LIMIT] = "data/models/";
     
     strcat(path, name);
@@ -133,6 +133,13 @@ void CollisionModel::LoadFromDisk () {
 
     shape = Physics::API::MakeCollisionShape(&shapes[0], shapes.size());
     status = READY;
+}
+
+void CollisionModel::Unload() {
+    Physics::API::YeetCollisionShape(shape);
+    memset(&shape, 0, sizeof(shape));
+    
+    status = UNLOADED;
 }
 
 }

@@ -18,7 +18,7 @@ public:
     inline uint32_t GetWidth() const { return width; }
     inline uint32_t GetHeight() const { return height; }
     inline LightmapType GetType() const { return type; }
-    inline void SetType(LightmapType type) { this->type = type; }
+    void SetType(LightmapType type);
 
     inline MaterialFilter GetMaterialFilter() const { return filter; }
     inline void SetMaterialFilter(MaterialFilter filter) { this->filter = filter; FlushToAPI(); }

@@ -302,6 +302,8 @@ void MeshComponent::SetMaterial(Render::Material* material, uint32_t index) {
         material_type = material->GetType();
         material_type_set = true;
     }
+    
+    if (materials[index]) materials[index]->RemoveReference();
     materials[index] = material;
     material->AddReference();
     

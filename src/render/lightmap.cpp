@@ -89,6 +89,15 @@ void Lightmap::FlushToAPI() {
     API::SetTextureFilter(texture, GetFilterFromMaterialFilter(filter));
 }
 
+void Lightmap::SetType(LightmapType type) {
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Loaded Lightmaps cannot change types! Ignoring Lightmap::SetType() call.");
+        return;
+    }
+    
+    this->type = type;
+}
+
 static uint32_t layer_count_for_type(LightmapType type) {
     switch (type) {
         case LIGHTMAP_SINGLE:   return 1;
@@ -194,6 +203,11 @@ void Lightmap::LoadFromDisk() {
     status = LOADED;
 }
 
+static size_t approx_memory(uint32_t width, uint32_t height, LightmapType type) {
+    float approx_memory = 3.0f * width * height * layer_count_for_type(type);
+    return approx_memory * 1.3f;
+}
+
 void Lightmap::LoadFromMemory() {
     assert(status == LOADED);
 
@@ -201,12 +215,7 @@ void Lightmap::LoadFromMemory() {
 
     texture = API::CreateTexture(COLORMODE_RGB, lightmap_nearest ? TEXTUREFILTER_NEAREST : TEXTUREFILTER_LINEAR, width, height, layer_count_for_type(type), texture_data);
     
-    float approx_memory = 3.0f * width * height * layer_count_for_type(type);  // image size
-    approx_memory = approx_memory * 1.3f;             // plus mipmaps
-    
-    approx_vram_usage = (size_t) approx_memory;
-    
-    Stats::Add(Stats::RESOURCE_VRAM, approx_vram_usage);
+    Stats::Add(Stats::RESOURCE_VRAM, approx_memory(width, height, type));
 
     delete[] texture_data;
     texture_data = nullptr;
@@ -222,8 +231,9 @@ void Lightmap::Unload() {
     // TODO: add a check that this is being called from render thread
     
     if (texture.generic) API::YeetTexture(texture);
-    
     texture.generic = nullptr;
+
+    Stats::Remove(Stats::RESOURCE_VRAM, approx_memory(width, height, type));
 
     status = UNLOADED;
 }

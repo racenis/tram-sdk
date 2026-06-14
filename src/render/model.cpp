@@ -120,7 +120,6 @@ void Model::LoadFromMemory() {
 
         size_t approx_memory = (data->indices.size() * sizeof(Triangle)) + (data->vertices.size() * sizeof(DynamicModelVertex));
         approx_vram_usage += approx_memory;
-        //RESOURCE_VRAM_USAGE += approx_memory;
         Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
 
         delete model_data;
@@ -784,6 +783,32 @@ void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pa
     status = LOADED;
     
     return;
+}
+
+void Model::Unload() {
+    if (!source) {
+        API::RemoveVertexArray(vertex_array, index_array);
+    } else {
+        source->RemoveReference();
+    }
+    
+    for (size_t i = 0; i < materials.size(); i++) {
+        materials[i]->RemoveReference();
+    }
+    
+    index_ranges.clear();
+    materials.clear();
+    armature.clear();
+
+    if (model_data) delete model_data;
+    if (model_aabb) delete model_aabb;
+    
+    model_data = nullptr;
+    model_aabb = nullptr;
+    
+    Stats::Remove(Stats::RESOURCE_VRAM, approx_vram_usage);
+    
+    status = UNLOADED;
 }
 
 }

@@ -78,4 +78,27 @@ void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void RemoveVertexArray(vertexarray_t& vertex_array, indexarray_t& index_array) {
+    glBindVertexArray(0);
+    
+    glDeleteBuffers(1, &vertex_array.gl_vertex_buffer);
+    glDeleteBuffers(1, &index_array.gl_index_buffer);
+    
+    glDeleteVertexArrays(1, &vertex_array.gl_vertex_array);
+    
+    vertex_array.gl_vertex_buffer = 0;
+    index_array.gl_index_buffer = 0;
+    vertex_array.gl_vertex_array = 0;
+}
+
+void RemoveVertexArray(vertexarray_t& vertex_array) {
+    glBindVertexArray(0);
+
+    glDeleteBuffers(1, &vertex_array.gl_vertex_buffer);
+    glDeleteVertexArrays(1, &vertex_array.gl_vertex_array);
+    
+    vertex_array.gl_vertex_buffer = 0;
+    vertex_array.gl_vertex_array = 0;
+}
+
 }

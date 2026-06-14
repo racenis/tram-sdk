@@ -34,7 +34,7 @@ public:
     void LoadFromDisk();
     void LoadFromMemory();
     
-    void Unload() {}
+    void Unload();
     
     uint16_t FindMarker(name_t name);
 

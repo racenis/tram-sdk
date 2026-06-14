@@ -18,7 +18,7 @@ public:
     inline uint32_t GetHeight() const { return height; }
     inline EnvironmentType GetType() const { return type; }
 
-    inline void SetType(EnvironmentType type) { this->type = type; }
+    void SetType(EnvironmentType type);
 
     void LoadFromDisk();
     void LoadFromMemory();

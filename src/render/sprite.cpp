@@ -126,6 +126,15 @@ void Sprite::LoadFromDisk() {
     status = LOADED;
 }
 
+void Sprite::Unload() {
+    frames.clear();
+    markers.clear();
+    
+    material->RemoveReference();
+    
+    status = LOADED;
+}
+
 uint16_t Sprite::FindMarker(name_t name) {
     for (auto& marker : markers) {
         if (marker.name == name) return marker.frame;

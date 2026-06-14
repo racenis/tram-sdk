@@ -87,3 +87,9 @@ void SoundGraph::LoadFromDisk() {
     status = READY;
 }
 
+void SoundGraph::Unload() {
+    nodes.clear();
+    edges.clear();
+    
+    status = UNLOADED;
+}

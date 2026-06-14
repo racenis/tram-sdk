@@ -25,7 +25,7 @@ public:
     void LoadFromDisk();
     void LoadFromMemory();
     
-    void Unload() {}
+    void Unload();
     
     vertexformat_t GetVertexFormat() const { return vertex_format; } 
 

@@ -19,7 +19,7 @@ public:
     void LoadFromDisk();
     void LoadFromMemory() {}
     
-    void Unload() {}
+    void Unload();
     
     std::vector<std::pair<uint32_t, vec3>> GetEnvironmentProbes();
     

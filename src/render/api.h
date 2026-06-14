@@ -68,8 +68,9 @@ void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max);
 // vertex buffer functions
 void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data);
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array);
-void UpdateVertexArray(vertexarray_t& vertex_buffer, size_t data_size, void* data);
-// TODO: add deletion functions
+void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data);
+void RemoveVertexArray(vertexarray_t& vertex_array, indexarray_t& index_array);
+void RemoveVertexArray(vertexarray_t& vertex_array);
 
 // texture functions
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data);

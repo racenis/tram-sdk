@@ -2,6 +2,7 @@
 
 #include <render/light.h>
 
+#include <render/render.h>
 #include <render/environment.h>
 
 #include <framework/file.h>
@@ -10,13 +11,6 @@
 #include <templates/hashmap.h>
 
 #include <config.h>
-
-
-
-
-
-
-#include <render/render.h>
 
 /**
  * @class tram::Render::LightGraph render/light.h <render/light.h>
@@ -261,3 +255,15 @@ void LightGraph::LoadFromDisk() {
     status = READY;
 }
 
+void LightGraph::Unload() {
+     for (uint32_t i = 0; i < nodes.size(); i++) {
+        if (!nodes[i].environment_map) continue;
+        nodes[i].environment_map->RemoveReference();
+    }
+    
+    entities.clear();
+    nodes.clear();
+    edges.clear();
+    
+    status = UNLOADED;
+}

@@ -53,7 +53,7 @@ public:
     inline void SetColor(color_t color) { this->color = color; FlushToAPI(); }
     inline void SetSpecular(float weight, float exponent,  float transparency) { specular_weight = weight; specular_exponent = exponent; specular_transparency = transparency; FlushToAPI(); }
     inline void SetReflectivity(float reflectivity) { this->reflectivity = reflectivity; FlushToAPI(); }
-    inline void SetTextureType(TextureType texture_type) { this->texture_type = texture_type; FlushToAPI(); }
+    void SetTextureType(TextureType texture_type);
     void SetSource(Material* source);
     void SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, uint16_t height);
     
@@ -75,6 +75,7 @@ protected:
     Material(name_t name, materialtype_t type);
     
     void FlushToAPI();
+    size_t ApproxMemoryUsage();
     
     texturehandle_t texture = {};
     texturehandle_t normal_map = {};

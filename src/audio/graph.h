@@ -21,7 +21,7 @@ public:
     void LoadFromDisk();
     void LoadFromMemory() {}
     
-    void Unload() {}
+    void Unload();
     
     static FilterParameters LookupFilter(vec3 position);
     static SoundGraph* Find(name_t name);
