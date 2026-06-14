@@ -9,11 +9,14 @@ namespace tram {
 
 class TemplateComponent : public EntityComponent {
 public:
-    TemplateComponent();
-    ~TemplateComponent();
-    void Init();
+    static TemplateComponent* Make();
+    static void Yeet(TemplateComponent*);
+    
     void Start();
     void EventHandler(Event &event);
+protected:
+    TemplateComponent();
+    ~TemplateComponent();
 };
 
 }
