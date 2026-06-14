@@ -57,6 +57,75 @@ public:
         }
     }
     
+    ~Pool() {
+        lock();
+        
+        auto ptr = first;
+        if constexpr (std::is_destructible_v<T>) while (ptr < last && *((uint64_t*)ptr) == 0) (ptr++)->~T();
+        ::operator delete(first);
+        
+        print_name += " yeeted";
+        current_size = full_size = 0;
+        first = last = last_free = nullptr;
+        
+        unlock();
+    }
+
+    Pool(Pool&& other) noexcept {
+        lock(); other.lock();
+        
+        print_name = other.print_name;
+        current_size = other.current_size;
+        full_size = other.full_size;
+        first = other.first;
+        last = other.last;
+        last_free = other.last_free;
+        
+        other.print_name += " yeeted";
+        other.current_size = other.full_size = 0;
+        other.first = other.last = other.last_free = nullptr;
+        
+        unlock(); other.unlock();
+    }
+
+    Pool& operator=(Pool&& other) noexcept {
+        if (this == &other) return *this;
+        
+        lock(); other.lock();
+        
+        auto ptr = first;
+        while (ptr < last && *((uint64_t*)ptr) == 0) (ptr++)->~T();
+        ::operator delete(first);
+
+        print_name = other.print_name;
+        current_size = other.current_size;
+        full_size = other.full_size;
+        first = other.first;
+        last = other.last;
+        last_free = other.last_free;
+        
+        other.print_name += " yeeted";
+        other.current_size = other.full_size = 0;
+        other.first = other.last = other.last_free = nullptr;
+        
+        unlock(); other.unlock();
+        
+        return *this;
+    }
+
+    void swap(Pool& other) noexcept {
+        lock(); other.lock();
+
+        std::swap(print_name, other.print_name);
+        std::swap(current_size, other.current_size);
+        std::swap(full_size, other.full_size);
+        std::swap(first, other.first);
+        std::swap(last, other.last);
+        std::swap(last_free, other.last_free);
+        
+        lock(); other.lock();
+    }
+    
     template <typename... Args>
     T* make(Args&&... args) {
         T* new_obj = allocate();
