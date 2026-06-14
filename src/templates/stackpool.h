@@ -4,6 +4,7 @@
 #define TRAM_SDK_TEMPLATES_STACKPOOL_H
 
 #include <string>
+#include <atomic>
 #include <framework/logging.h>
 
 namespace tram {
@@ -58,6 +59,9 @@ public:
     T* begin() { return first; }
     T* end() { return last; }
 
+    void lock() { while (spinlock.exchange(true)); }
+    void unlock() { spinlock.store(false); }
+
     // aliases, do not use for new code
     T* AddNew(size_t units) { return allocate(units); }
     void Reset() { reset(); }
@@ -68,6 +72,8 @@ protected:
     size_t available_size;
     T* first;
     T* last;
+    
+    std::atomic<bool> spinlock = {false};
 };
 
 }

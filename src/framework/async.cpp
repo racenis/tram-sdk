@@ -16,6 +16,8 @@
 
 #include <thread>
 #include <vector>
+#include <mutex>
+#include <condition_variable>
 
 /*
  * currently with how everything is implemented, only EntityComponents can
@@ -51,6 +53,9 @@ namespace tram::Async {
 
 static std::vector<std::thread> resource_loaders;
 static bool loaders_should_stop = true;
+
+static std::condition_variable new_job_available;
+static std::mutex new_job_lock;
 
 enum RequestNotification {
     NONE,
@@ -93,6 +98,8 @@ void RequestResource(EntityComponent* requester, Resource* resource) {
         .resource = resource,
         .requester = requester
     }));
+    
+    new_job_available.notify_one();
 }
 
 /// Adds a resource to the loading queue.
@@ -112,6 +119,9 @@ void RequestResource(void(*callback)(void* data), void* data, Resource* resource
         .callback = callback,
         .callback_data = data
     }));
+    
+    new_job_lock.lock(); new_job_lock.unlock();
+    new_job_available.notify_one();
 }
 
 /// Cancels a resource load request.
@@ -188,7 +198,14 @@ static void ResourceLoader() {
          * 
          * TODO: fix
          */
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::unique_lock<std::mutex> lock(new_job_lock);
+        new_job_available.wait(lock, [](){
+            disk_loader_queue.lock();
+            auto len = disk_loader_queue.size();
+            disk_loader_queue.unlock();
+            return len > 0;
+        });
+        lock.unlock();
     }
 }
 
@@ -288,6 +305,8 @@ void Yeet() {
     }
     
     loaders_should_stop = true;
+    
+    new_job_available.notify_all();
     
     for (auto& loader : resource_loaders) {
         loader.join();

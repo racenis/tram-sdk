@@ -96,12 +96,16 @@ UID::UID(const char* value) {
     if (strcmp("none", value) == 0) return;
     
     // else add to string table
+    string_pool.lock();
     this->key = string_pool.size();
     
     char* new_value = string_pool.AddNew(strlen(value) + 1);
     strcpy(new_value, value);
+    string_pool.unlock();
     
+    string_list.lock();
     string_list.Insert(hash, *this);
+    string_list.unlock();
 }
 
 UID::operator std::string() const {

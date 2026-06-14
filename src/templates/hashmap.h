@@ -5,16 +5,8 @@
 
 #include <framework/uid.h>
 #include <framework/logging.h>
+#include <atomic>
 #include <cstring>  // memset
-
-/* instead of having two sets of each method, one with uint32_t and the other
- * with UID, maybe we could create some kind of a struct called Key and then we
- * could add a uint32_t converter to it and then we could add a constructor from
- * both uint32_t and UID and then we could just have only a single of each
- * method and all of the conversions would happen automatically
- * 
- * TODO: investigate
- */
 
 namespace tram {
 
@@ -263,7 +255,9 @@ public:
     
     iterator begin() { return iterator(first, this); }
     iterator end() { return iterator(last, this); }
-    
+
+    void lock() { while (spinlock.exchange(true)); }
+    void unlock() { spinlock.store(false); }
 protected:
     enum {
         FLAG_RECORD = 1,
@@ -276,6 +270,8 @@ protected:
     uint32_t hash_parameter = 0;
     Record* first = nullptr;
     Record* last = nullptr;
+    
+    std::atomic<bool> spinlock = {false};
 };
 
 }
