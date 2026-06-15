@@ -212,6 +212,11 @@ void Init() {
     
     using namespace tram::Render;
     
+    // in the future we might want to have two vertex arrays and drawlist entries,
+    // one would be for alpha tested and the other for transparent non-blended
+    // materials.
+    // from this arises the unfortunate problem of sorting the glyphs.
+    // also we should probably switch to using sprites here.
     CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), glyphvertices_vertex_array);
     glyphvertices_entry = InsertDrawListEntry();
     SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
@@ -231,10 +236,15 @@ void UpdateDrawListFonts() {
     Render::material_t glyphvertices_textures[16];
     font_t font_count = 0;
     
+    bool is_transparent = false;
     for (font_t i = 0; i < 16; i++) {
         if (!fonts[i]) {
             font_count = i;
             break;
+        }
+        
+        if (fonts[i]->GetMaterial()->GetType() == Render::MATERIAL_GLYPH_BLEND) {
+            is_transparent = true;
         }
         
         glyphvertices_textures[i] = fonts[i]->GetMaterial()->GetMaterial();
@@ -245,6 +255,10 @@ void UpdateDrawListFonts() {
     }
     
     using namespace tram::Render;
+    
+    uint32_t flags = FLAG_RENDER;
+    if (is_transparent) flags |= FLAG_TRANSPARENT;
+    SetFlags(glyphvertices_entry, flags);
     
     SetDrawListMaterials(glyphvertices_entry, font_count, glyphvertices_textures);
 }
@@ -305,7 +319,7 @@ void Update() {
 
 /// Registers a font.
 /// @return Font handle that can be used with all of the GUI widget functions.
-font_t RegisterFont (Render::Sprite* sprite) {
+font_t RegisterFont(Render::Sprite* sprite) {
     if (!System::IsInitialized (System::GUI)) {
         Log(Severity::ERROR, System::GUI, "GUI is not initialized, font {} was not registered!", sprite->GetName());
         return -1;
@@ -326,6 +340,32 @@ font_t RegisterFont (Render::Sprite* sprite) {
     }
     
     Log(Severity::ERROR, System::GUI, "Ran out of font slots, font {} was not registered!", sprite->GetName());
+    
+    return -1;
+}
+
+/// Registers a font by replacing existing.
+/// @param prev Font which will be replaced.
+/// @param next Font that will instead take `prev`s place.
+/// @return Font handle that can be used with all of the GUI widget functions.
+font_t RegisterFontReplace(Render::Sprite* prev, Render::Sprite* next) {
+    if (!System::IsInitialized (System::GUI)) {
+        Log(Severity::ERROR, System::GUI, "GUI is not initialized, font {} was not registered!", next->GetName());
+        return -1;
+    }
+    
+    for (font_t i = 0; i < 16; i++) {
+        if (fonts[i] == prev) {
+            fonts[i] = next;
+            next->AddReference();
+            prev->RemoveReference();
+            UpdateDrawListFonts();
+            
+            return i;
+        }
+    }
+    
+    Log(Severity::ERROR, System::GUI, "Replacable font {} was not found, font {} was not registered!", prev->GetName(), next->GetName());
     
     return -1;
 }
@@ -403,9 +443,11 @@ void DrawGlyph(font_t font, glyph_t glyph, const vec3& color, int32_t x, int32_t
 }
 
 /// Draws a glyph from a font.
-void Glyph(font_t font, glyph_t glyph) {
+void Glyph(glyph_t glyph) {
     int32_t cursor_x = frame_stack.top().cursor_x;
     int32_t cursor_y = frame_stack.top().cursor_y;
+    
+    font_t font  = text_font_stack.top();
     
     DrawGlyph(font, glyph, widget_color_stack.top(), cursor_x, cursor_y);
     
