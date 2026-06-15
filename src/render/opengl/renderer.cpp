@@ -385,7 +385,7 @@ void RenderFrame() {
 
         const uint64_t sort_key = robj.CalcSortKey(layers[robj.layer].view_position);
 
-        if (robj.flags & FLAG_TRANSPARENT) {
+        if (robj.flags & FLAG_TRANSPARENT || robj.color.w < 1.0f) {
             layers[robj.layer].transparency_bucket.push_back({sort_key, &robj});
         } else {
             layers[robj.layer].forward_bucket.push_back({sort_key, &robj});

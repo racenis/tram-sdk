@@ -324,14 +324,27 @@ void RenderComponent::SetLineDrawingMode(bool enabled) {
     }
 }
 
-/// Sets the scale of the model.
+/// Sets the color of the model.
 void RenderComponent::SetColor(vec3 color) {
     this->color = color;
     
     if (is_ready) {
         for (auto entry : draw_list_entries) {
             if (entry.generic) {
-                Render::API::SetDrawListColor(entry, vec4(color, 1.0f));
+                Render::API::SetDrawListColor(entry, vec4(color, opacity));
+            }
+        }
+    }
+}
+
+/// Sets the opacity of the model.
+void RenderComponent::SetOpacity(float opacity) {
+    this->opacity = opacity;
+    
+    if (is_ready) {
+        for (auto entry : draw_list_entries) {
+            if (entry.generic) {
+                Render::API::SetDrawListColor(entry, vec4(color, opacity));
             }
         }
     }
@@ -381,7 +394,7 @@ void RenderComponent::InsertDrawListEntries() {
         Render::API::SetDrawListVertexArray(entry, model->GetVertexArray());
         Render::API::SetDrawListIndexArray(entry, model->GetIndexArray());
         Render::API::SetDrawListMaterials(entry, index_ranges[i].material_count, materials);
-        Render::API::SetDrawListColor(entry, vec4(color, 1.0f));
+        Render::API::SetDrawListColor(entry, vec4(color, opacity));
         const bool found_shader = Render::API::SetDrawListShader(entry, model->GetVertexFormat(), index_ranges[i].material_type);
         Render::API::SetDrawListIndexRange(entry, index_ranges[i].index_offset, index_ranges[i].index_length);
 

@@ -30,6 +30,7 @@ layout (std140) uniform ModelMatrices {
 out vec2 vert_uv;
 out vec2 vert_light_uv;
 out vec3 vert_color;
+out float vert_opacity;
 flat out uint vert_tex_index;
 
 void main() {
@@ -44,6 +45,8 @@ void main() {
 	
 	// add material color
 	vert_color *= vec3(colors[TexIndex]);
+	
+	vert_opacity = colors[TexIndex].w;
 	
     vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;
