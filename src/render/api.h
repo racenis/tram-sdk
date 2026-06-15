@@ -34,7 +34,7 @@ void SetInteractiveMode(bool is_interactive);
 
 void GetScreen(char* buffer, int w, int h);
 
-void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader);
+void SetCullingTracking(bool enabled);
 
 // drawlist functions
 drawlistentry_t InsertDrawListEntry();

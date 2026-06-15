@@ -72,6 +72,8 @@ struct Layer {
     mat4 projection_matrix = mat4(1.0f);
     mat4 view_matrix = mat4(1.0f);
     vec3 view_position = {1.0f, 1.0f, 1.0f};
+    mat4 culling_matrix = mat4(1.0f);
+    vec3 culling_position = {1.0f, 1.0f, 1.0f};
     
     float view_distance = 1.0f;
     
@@ -80,25 +82,27 @@ struct Layer {
     vec3 ambient_color = {0.3f, 0.3f, 0.3f};
 };
 
-ShaderUniformMatrices matrices;
-ShaderUniformModelMatrices modelMatrices;
+static ShaderUniformMatrices matrices;
+static ShaderUniformModelMatrices modelMatrices;
 
 static Layer layers[7];
 
 class ShaderBuffer {};
 
-const uint32_t matrix_uniform_binding = 0;
-const uint32_t model_matrix_uniform_binding = 1;
-const uint32_t light_uniform_binding = 2;
-const uint32_t bone_uniform_binding = 3;
+static const uint32_t matrix_uniform_binding = 0;
+static const uint32_t model_matrix_uniform_binding = 1;
+static const uint32_t light_uniform_binding = 2;
+static const uint32_t bone_uniform_binding = 3;
 
-uint32_t matrix_uniform_buffer;
-uint32_t model_matrix_uniform_buffer;
-uint32_t light_uniform_buffer;
-uint32_t bone_uniform_buffer;
+static uint32_t matrix_uniform_buffer;
+static uint32_t model_matrix_uniform_buffer;
+static uint32_t light_uniform_buffer;
+static uint32_t bone_uniform_buffer;
 
-vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
-bool clear_screen = true;
+static vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
+static bool clear_screen = true;
+
+static bool culling_tracking = true;
 
 static float SCREEN_WIDTH = 800.0f;
 static float SCREEN_HEIGHT = 600.0f;
@@ -307,6 +311,13 @@ void RenderFrame() {
     
     UploadUniformBuffer(light_uniform_buffer, sizeof(GLLight) * (last_light - first_light), first_light);
 
+    // update culling matrices
+    if (culling_tracking) for (auto& layer : layers) {
+        layer.culling_matrix = layer.view_matrix;
+        layer.culling_position = layer.view_position;
+    }
+    
+    if (!culling_tracking) AddText(50, 50, "CULLING TRACKING DISABLED PRESS F10 TO RE-ENABLE");
 
     // clear out layer buckets
     for (auto& layer : layers) {
@@ -317,7 +328,7 @@ void RenderFrame() {
     // filter drawlistentries and bucket them
     for (auto& robj : PoolProxy<GLDrawListEntry>::GetPool()) {
         const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        const float dist = glm::distance(pos, layers[robj.layer].view_position);
+        const float dist = glm::distance(pos, layers[robj.layer].culling_position);
         const float mult = layers[robj.layer].view_distance;
         
         // distance culling
@@ -327,7 +338,7 @@ void RenderFrame() {
 
         // frustum culling
         if (robj.flags & FLAG_USE_AABB && frustum_culling) {
-            auto matrix = layers[robj.layer].projection_matrix * layers[robj.layer].view_matrix;
+            auto matrix = layers[robj.layer].projection_matrix * layers[robj.layer].culling_matrix;
 
             vec4 plane_l = {matrix[0][3] - matrix[0][0], 
                             matrix[1][3] - matrix[1][0],
@@ -477,6 +488,10 @@ void GetScreen(char* buffer, int w, int h) {
         buffer[i*3 + 2] = rgba[i*4 + 2];
     }
     free(rgba);
+}
+
+void SetCullingTracking(bool enabled) {
+    culling_tracking = enabled;
 }
 
 bool IsInteractiveMode() {

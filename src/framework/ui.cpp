@@ -84,6 +84,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
 
     {KEY_F1, KeyBinding {.special_option = [](){ if (enable_debug) exit = true; }}},
     {KEY_F9, KeyBinding {.special_option = [](){ if (enable_debug) SetInputState((input_state == STATE_FLYING) ? STATE_DEFAULT : STATE_FLYING); }}},
+    {KEY_F10, KeyBinding {.special_option = [](){ static bool track = true; if (enable_debug) track = !track, API::SetCullingTracking(track); }}},
     {KEY_F12, KeyBinding {.special_option = [](){
         if (!enable_debug) return;
         char* buffer = (char*)malloc(screen_width * screen_height * 3);
@@ -246,6 +247,8 @@ void Update() {
         camera_pitch = camera_pitch > 90.0f ? 90.0f : camera_pitch < -90.0f ? -90.0f : camera_pitch;
         
         camera_rotation = quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f));
+        
+        AddText(50, 70, "CAMERA DETACHED PRESS F9 TO REATTACH");
         
         SetViewPosition(camera_position, 0);
         SetViewRotation(camera_rotation, 0);

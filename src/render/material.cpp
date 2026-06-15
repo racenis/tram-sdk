@@ -98,6 +98,8 @@ void Material::LoadMaterialInfo(const char* filename) {
             mat_type = MATERIAL_MSDF;
         } else if(mat_type_name == UID("glyph")){
             mat_type = MATERIAL_GLYPH;
+        } else if(mat_type_name == UID("glyphblend")){
+            mat_type = MATERIAL_GLYPH_BLEND;
         } else if(mat_type_name == UID("water")){
             mat_type = MATERIAL_WATER;
         } else {
@@ -366,6 +368,7 @@ void Material::LoadFromDisk() {
             channels = 4;
             break;
         case MATERIAL_GLYPH:
+        case MATERIAL_GLYPH_BLEND:
             channels = 4;
             break;
         default:

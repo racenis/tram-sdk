@@ -21,9 +21,9 @@ void CompileShaders();
 
 uint32_t FindShader(vertexformat_t format, materialtype_t type, shaderflags_t mask);
 uint32_t GetAnyShader(shaderflags_t mask);
-void RegisterShader(vertexformat_t format, materialtype_t type, const char* vertex_shader, const char* fragment_shader);
+void RegisterShader(vertexformat_t format, materialtype_t type, shaderflags_t flags, const char* vertex_shader, const char* fragment_shader);
 
-void BindUniformBlock (const char* name, uint32_t binding);
+void BindUniformBlock(const char* name, uint32_t binding);
 
 }
 

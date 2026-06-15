@@ -434,7 +434,7 @@ void BindUniformBlock(const char* name, uint32_t binding) {
     LinkedShader::RegisterUniformBlock(name, binding);
 }
 
-void RegisterShader(vertexformat_t format, materialtype_t type, uint32_t flags, const char* vertex_shader, const char* fragment_shader) {
+void RegisterShader(vertexformat_t format, materialtype_t type, shaderflags_t flags, const char* vertex_shader, const char* fragment_shader) {
     LinkedShader::Register(format, type, flags, vertex_shader, fragment_shader);
 }
 
