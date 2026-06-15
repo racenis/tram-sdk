@@ -14,6 +14,7 @@ enum ShaderFlag : shaderflags_t {
     SHADER_NONE = 0,
     SHADER_SPECULAR = 1,
     SHADER_LIGHTMAP = 2,
+    SHADER_ALPHA_TEST = 4,
 };
 
 void CompileShaders();

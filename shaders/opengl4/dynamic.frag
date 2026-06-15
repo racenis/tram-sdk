@@ -1,7 +1,6 @@
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
-#version 400 core
 out vec4 fragment;
 
 in vec2 vert_uv;
@@ -16,8 +15,11 @@ uniform sampler2DArray samplerArray;
 
 void main() {
     fragment = texture(sampler[vert_tex_index], vert_uv) * vec4(vert_color, 1.0);
-    //fragment = vec4(0.0,  0.0, 0.0, 1.0);
-	fragment += vec4(vert_color_add, 1.0);
+	fragment += vec4(vert_color_add, 0.0);
+	
+#ifdef FLAG_ALPHA_TEST
+	if (fragment.a < 0.5) discard;
+#endif
 	
 	vec3 reflection_coords = vert_reflection;
 	if (reflection_coords.z > 0.0) {

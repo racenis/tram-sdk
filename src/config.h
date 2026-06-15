@@ -128,6 +128,7 @@ const uint32_t MESSAGE_DATA_LIMIT = 2000;
 const uint32_t MESSAGE_TYPE_LIMIT = 100;
 
 // Limit for signal types
+const uint32_t SIGNAL_TABLE_LIMIT = 250;
 const uint32_t SIGNAL_TYPE_LIMIT = 100;
 const uint32_t SIGNAL_PER_ENTITY_LIMIT = 16;
 
