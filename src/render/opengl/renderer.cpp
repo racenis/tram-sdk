@@ -14,6 +14,8 @@
 
 #include <templates/octree.h>
 
+#include <bit>
+
 #ifndef _WIN32
     #include <GL/gl.h>
 	#include <GLES3/gl3.h>
@@ -23,22 +25,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-/* what's up and what's down?
- * 
- * the original model for rendering, i.e. creating a big list and then sorting
- * it and then going through the list and rendering stuff is not working that
- * well anymore.
- * 
- * which means that we should probaly change it to something better.
- * TODO: investigate
- * 
- * Layer is a class, when you SetLayer you add a pointer to Layer??
- * each Layer would have a bucket for .. ? opaques and transparents!!
- */
-
 namespace tram::Render::API {
-
-//Pool<GLDrawListEntry> draw_list ("render list", 1000);
 
 struct ShaderUniformMatrices {
     mat4 projection;       /// Projection matrix.
@@ -189,7 +176,7 @@ static void Draw(GLDrawListEntry* robj) {
             tex_hash ^= robj->materials[tex]->gl_texture;
         }
         
-        sprintf(debug_text, "Layer: %i\nFlags: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nEnvironment: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
+        sprintf(debug_text, "Layer: %b\nFlags: %i\nVAO: %i, [%i:%i]\nTexture: %i (%i)\nLightmap: %i\nEnvironment: %i\nLights: %i %i %i %i\nPose: %i\nSize: %.2f\nFade: %.2f -> %.2f",
             robj->layer, robj->flags, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap, robj->environmentmap,
             robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max),
             robj->fade_near, robj->fade_far);
@@ -284,6 +271,10 @@ static void Draw(GLDrawListEntry* robj) {
 #endif
 }
 
+uint32_t layer_index(uint32_t bit) {
+    return std::countr_zero((uint32_t)bit);
+}
+
 void RenderFrame() {
     if (clear_screen) {
         glClearColor(screen_clear_color.x, screen_clear_color.y, screen_clear_color.z, 1.0f);
@@ -327,79 +318,83 @@ void RenderFrame() {
     
     // filter drawlistentries and bucket them
     for (auto& robj : PoolProxy<GLDrawListEntry>::GetPool()) {
-        const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        const float dist = glm::distance(pos, layers[robj.layer].culling_position);
-        const float mult = layers[robj.layer].view_distance;
-        
-        // distance culling
-        if (dist > mult * robj.fade_far || dist < mult * robj.fade_near) {
-            continue;
-        }
+        for (uint32_t mask = robj.layer; mask; mask &= mask - 1) {
+            uint32_t layer = std::countr_zero(mask);
 
-        // frustum culling
-        if (robj.flags & FLAG_USE_AABB && frustum_culling) {
-            auto matrix = layers[robj.layer].projection_matrix * layers[robj.layer].culling_matrix;
-
-            vec4 plane_l = {matrix[0][3] - matrix[0][0], 
-                            matrix[1][3] - matrix[1][0],
-                            matrix[2][3] - matrix[2][0],
-                            matrix[3][3] - matrix[3][0]};
+            const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            const float dist = glm::distance(pos, layers[layer].culling_position);
+            const float mult = layers[layer].view_distance;
             
-            vec4 plane_r = {matrix[0][3] + matrix[0][0],
-                            matrix[1][3] + matrix[1][0],
-                            matrix[2][3] + matrix[2][0],
-                            matrix[3][3] + matrix[3][0]};
-
-            vec4 plane_t = {matrix[0][3] - matrix[0][1],
-                            matrix[1][3] - matrix[1][1],
-                            matrix[2][3] - matrix[2][1],
-                            matrix[3][3] - matrix[3][1]};
-
-            vec4 plane_b = {matrix[0][3] + matrix[0][1],
-                            matrix[1][3] + matrix[1][1],
-                            matrix[2][3] + matrix[2][1],
-                            matrix[3][3] + matrix[3][1]};
-
-            vec4 plane_f = {matrix[0][2],
-                            matrix[1][2],
-                            matrix[2][2],
-                            matrix[3][2]};
-
-            vec4 plane_n = {matrix[0][3] - matrix[0][2],
-                            matrix[1][3] - matrix[1][2],
-                            matrix[2][3] - matrix[2][2],
-                            matrix[3][3] - matrix[3][2]};
-            
-            vec3 min = robj.aabb_min;
-            vec3 max = robj.aabb_max;
-            
-            vec3 mid = robj.matrix * vec4(glm::mix(min, max, 0.5f), 1.0f);
-            
-            float len1 = glm::length(min);
-            float len2 = glm::length(max);
-            
-            float len = len1 > len2 ? len1 : len2;
-            
-            // stupid hack
-            // TODO: fix
-            vec3 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            
-            if (glm::distance(origin, mid) > len) {
-                if (glm::dot(plane_l, vec4(mid, 1.0f)) < -len) continue;
-                if (glm::dot(plane_r, vec4(mid, 1.0f)) < -len) continue;
-                if (glm::dot(plane_t, vec4(mid, 1.0f)) < -len) continue;
-                if (glm::dot(plane_b, vec4(mid, 1.0f)) < -len) continue;
-                if (glm::dot(plane_f, vec4(mid, 1.0f)) < -len) continue;
-                if (glm::dot(plane_n, vec4(mid, 1.0f)) < -len) continue;
+            // distance culling
+            if (dist > mult * robj.fade_far || dist < mult * robj.fade_near) {
+                continue;
             }
-        }
 
-        const uint64_t sort_key = robj.CalcSortKey(layers[robj.layer].view_position);
+            // frustum culling
+            if (robj.flags & FLAG_USE_AABB && frustum_culling) {
+                auto matrix = layers[layer].projection_matrix * layers[layer].culling_matrix;
 
-        if (robj.flags & FLAG_TRANSPARENT || robj.color.w < 1.0f) {
-            layers[robj.layer].transparency_bucket.push_back({sort_key, &robj});
-        } else {
-            layers[robj.layer].forward_bucket.push_back({sort_key, &robj});
+                vec4 plane_l = {matrix[0][3] - matrix[0][0], 
+                                matrix[1][3] - matrix[1][0],
+                                matrix[2][3] - matrix[2][0],
+                                matrix[3][3] - matrix[3][0]};
+                
+                vec4 plane_r = {matrix[0][3] + matrix[0][0],
+                                matrix[1][3] + matrix[1][0],
+                                matrix[2][3] + matrix[2][0],
+                                matrix[3][3] + matrix[3][0]};
+
+                vec4 plane_t = {matrix[0][3] - matrix[0][1],
+                                matrix[1][3] - matrix[1][1],
+                                matrix[2][3] - matrix[2][1],
+                                matrix[3][3] - matrix[3][1]};
+
+                vec4 plane_b = {matrix[0][3] + matrix[0][1],
+                                matrix[1][3] + matrix[1][1],
+                                matrix[2][3] + matrix[2][1],
+                                matrix[3][3] + matrix[3][1]};
+
+                vec4 plane_f = {matrix[0][2],
+                                matrix[1][2],
+                                matrix[2][2],
+                                matrix[3][2]};
+
+                vec4 plane_n = {matrix[0][3] - matrix[0][2],
+                                matrix[1][3] - matrix[1][2],
+                                matrix[2][3] - matrix[2][2],
+                                matrix[3][3] - matrix[3][2]};
+                
+                vec3 min = robj.aabb_min;
+                vec3 max = robj.aabb_max;
+                
+                vec3 mid = robj.matrix * vec4(glm::mix(min, max, 0.5f), 1.0f);
+                
+                float len1 = glm::length(min);
+                float len2 = glm::length(max);
+                
+                float len = len1 > len2 ? len1 : len2;
+                
+                // stupid hack
+                // TODO: fix
+                vec3 origin = matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+                
+                if (glm::distance(origin, mid) > len) {
+                    if (glm::dot(plane_l, vec4(mid, 1.0f)) < -len) continue;
+                    if (glm::dot(plane_r, vec4(mid, 1.0f)) < -len) continue;
+                    if (glm::dot(plane_t, vec4(mid, 1.0f)) < -len) continue;
+                    if (glm::dot(plane_b, vec4(mid, 1.0f)) < -len) continue;
+                    if (glm::dot(plane_f, vec4(mid, 1.0f)) < -len) continue;
+                    if (glm::dot(plane_n, vec4(mid, 1.0f)) < -len) continue;
+                }
+            }
+
+            const uint64_t sort_key = robj.CalcSortKey(layers[layer].view_position);
+
+            if (robj.flags & FLAG_TRANSPARENT || robj.color.w < 1.0f) {
+                layers[layer].transparency_bucket.push_back({sort_key, &robj});
+            } else {
+                layers[layer].forward_bucket.push_back({sort_key, &robj});
+            }
         }
     }
 
@@ -416,30 +411,30 @@ void RenderFrame() {
 
 
     // the depth buffer was already cleared when we cleared the color buffer
-    SetupLayer(LAYER_DEFAULT);
-    for (auto [_, robj] : layers[LAYER_DEFAULT].forward_bucket) {
+    SetupLayer(layer_index(LAYER_DEFAULT));
+    for (auto [_, robj] : layers[layer_index(LAYER_DEFAULT)].forward_bucket) {
         Draw(robj);
     }
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
-    for (auto [_, robj] : layers[LAYER_DEFAULT].transparency_bucket) {
+    for (auto [_, robj] : layers[layer_index(LAYER_DEFAULT)].transparency_bucket) {
         Draw(robj);
     }
     glDisable(GL_BLEND); 
     
     // the overlay layer is drawn on top of the default layer
     glClear(GL_DEPTH_BUFFER_BIT);
-    SetupLayer(LAYER_OVERLAY);
+    SetupLayer(layer_index(LAYER_OVERLAY));
     
-    for (auto [_, robj] : layers[LAYER_OVERLAY].forward_bucket) {
+    for (auto [_, robj] : layers[layer_index(LAYER_OVERLAY)].forward_bucket) {
         Draw(robj);
     }
     
     // finally we draw the GUI widgets and debug text on top of everything
     glClear(GL_DEPTH_BUFFER_BIT);
-    SetupLayer(LAYER_GUI);
+    SetupLayer(layer_index(LAYER_GUI));
     
-    for (auto [_, robj] : layers[LAYER_GUI].forward_bucket) {
+    for (auto [_, robj] : layers[layer_index(LAYER_GUI)].forward_bucket) {
         Draw(robj);
     }
     

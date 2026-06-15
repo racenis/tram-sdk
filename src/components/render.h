@@ -33,7 +33,6 @@ public:
     void SetColor(vec3 color);
     void SetOpacity(float opacity);
     void SetLayer(uint32_t layer);
-    void SetLayers(uint32_t layers);
     void SetTextureOffset(name_t material, vec4 offset);
     
     inline vec3 GetLocation() const { return location; }
@@ -67,7 +66,7 @@ protected:
     vec3 scale = {1.0f, 1.0f, 1.0f};
     vec3 color = {1.0f, 1.0f, 1.0f};
     float opacity = 1.0f;
-    uint32_t layer = 0;
+    uint32_t layer = 1;
 
     void* aabb_tree_leaf = 0;
 

@@ -247,21 +247,15 @@ void RenderComponent::SetScale(vec3 scale) {
     }
 }
 
-/// Sets the render layer of the component.
-/// @deprecated Use SetLayers(uint32_t) instead.
-void RenderComponent::SetLayer(uint32_t layer) {
-    SetLayers(1 << layer);
-}
-
 /// Sets the render layers of the rendercomponent.
 /// The layers parameter is a bitmask, with the least significant bit
 /// representing layer zero and most significant bit representing layer 31.
 /// Default layer is zero.
 /// At least a single layer must be selected.
 /// @param layers Bitmask containing layers in which the model will be drawn.
-void RenderComponent::SetLayers(uint32_t layers) {
+void RenderComponent::SetLayer(uint32_t layers) {
     if (!layer) {
-        Log(Severity::WARNING, System::RENDER, "RenderComponents must belong to at least a single layer! Ignoring RenderComponent::SetLayers() call.");
+        Log(Severity::WARNING, System::RENDER, "RenderComponents must belong to at least a single layer! Ignoring RenderComponent::SetLayer() call.");
         return;
     }
     

@@ -107,11 +107,11 @@ void SetMaterialReflectivity(material_t material, float reflectivity);
 
 // default layers
 enum LayerType {
-    LAYER_DEFAULT =     0,
-    LAYER_DEBUG =       1,
-    LAYER_OVERLAY =     1,
-    LAYER_REFLECTION =  3,
-    LAYER_GUI =         2,
+    LAYER_DEFAULT =     1,
+    LAYER_DEBUG =       2,
+    LAYER_OVERLAY =     2,
+    LAYER_REFLECTION =  8,
+    LAYER_GUI =         4,
 };
 
 // rendering contexts

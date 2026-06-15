@@ -97,7 +97,7 @@ protected:
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 scale = {1.0f, 1.0f, 1.0f};
     vec3 color = {1.0f, 1.0f, 1.0f};
-    uint32_t layer = 0;
+    uint32_t layer = 1;
     
     vec3 aabb_min = {0.0f, 0.0f, 0.0f};
     vec3 aabb_max = {0.0f, 0.0f, 0.0f};
