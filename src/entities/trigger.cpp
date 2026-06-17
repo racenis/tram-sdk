@@ -99,14 +99,14 @@ void Trigger::Load(){
 void Trigger::Unload() {
     flags &= ~LOADED;
 
-    Serialize();
-
     rendercomponent.clear();
     triggercomponent.clear();
 }
 
-void Trigger::Serialize() {
-
+void Trigger::Serialize(ValueArray& field_array) {
+     field_array[FIELD_MODEL] = model;
+     field_array[FIELD_FLAGS] = trigger_flags;
+     field_array[FIELD_COLLISION_MASK] = collision_mask;
 }
 
 void Trigger::Activate() {

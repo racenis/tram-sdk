@@ -41,6 +41,14 @@ static const int PROTOCOL_LENGTH = 10;
 static std::vector<FileSource> search_list;
 static std::vector<int> search_list_index;
 
+struct FileAlias {
+    const char* alias;
+    const char* protocol;
+    const char* location;
+};
+
+static std::vector<FileAlias> alias_list;
+
 struct FileReaderProtocolInfo {
     const char* protocol;
     FileReader* (*constr)(const char* location, const char* path);
@@ -48,7 +56,7 @@ struct FileReaderProtocolInfo {
 
 struct FileWriterProtocolInfo {
     const char* protocol;
-    FileWriter* (*constr)(const char* path);
+    FileWriter* (*constr)(const char* location, const char* path);
 };
 
 static std::vector<FileReaderProtocolInfo> reader_infos;
@@ -56,13 +64,20 @@ static std::vector<FileWriterProtocolInfo> writer_infos;
 
 class DiskReader : public FileReader {
 public:
-    DiskReader(const char* path) {
-        FILE* file_handle = fopen(path, "rb");
+    DiskReader(const char* location, const char* path) {
+        char full_path[PATH_LIMIT + 10];
+        if (location) {
+            sprintf(full_path, "%s/%s", location, path);
+        } else {
+            strcpy(full_path, path);
+        }
+        
+        FILE* file_handle = fopen(full_path, "rb");
     
         if (file_handle != nullptr) {
-            Log (Severity::INFO, System::PLATFORM, "Opened file for reading: {}", path);
+            Log (Severity::INFO, System::PLATFORM, "Opened file for reading: {}", full_path);
         } else {
-            Log (Severity::INFO, System::PLATFORM, "Failed to open file for reading: {}", path);
+            Log (Severity::INFO, System::PLATFORM, "Failed to open file for reading: {}", full_path);
             return;
         }
         
@@ -73,12 +88,12 @@ public:
         char* file_data = new char[file_size + 1];
         
         if (!fread(file_data, file_size, 1, file_handle)) {
-            Log (Severity::WARNING, System::PLATFORM, "Failed to read whole file: {}", path);
+            Log (Severity::WARNING, System::PLATFORM, "Failed to read whole file: {}", full_path);
             delete[] file_data;
             return;
         }
         
-        Log (Severity::INFO, System::PLATFORM, "Read {} bytes from file: {}", file_size, path);
+        Log (Severity::INFO, System::PLATFORM, "Read {} bytes from file: {}", file_size, full_path);
 
         file_data[file_size] = '\0';
 
@@ -87,7 +102,7 @@ public:
         this->contents = file_data;
         this->length = file_size;
         
-        Log (Severity::INFO, System::PLATFORM, "Closed file: {}", path);
+        Log (Severity::INFO, System::PLATFORM, "Closed file: {}", full_path);
     }
     
     ~DiskReader() {
@@ -151,12 +166,16 @@ FileReader* FileReader::GetReader(const char* path) {
     char protocol[PROTOCOL_LENGTH];
     if (!ExtractProtocol(path, protocol)) {
         for (size_t i = 0; i < search_list.size(); i++) {
+            if (search_list_index[i] == -1) {
+                auto reader = new DiskReader(search_list[i].location, path);
+                if (reader->GetStatus() == FileStatus::READY) return reader;
+                
+                reader->Yeet();
+                continue;
+            }
+            
             const auto constr = reader_infos[search_list_index[i]].constr;
             if (!constr) continue;
-            
-            //const char* strip_path = path;
-            //char full_path[PATH_LIMIT + 50];
-            //snprintf(full_path, PATH_LIMIT + 50, "%s://%s/%s", protocol, search_list[i].location, strip_path);
             
             auto reader = constr(search_list[i].location, path);
             if (reader->GetStatus() == FileStatus::READY) return reader;
@@ -164,11 +183,11 @@ FileReader* FileReader::GetReader(const char* path) {
             reader->Yeet();
         }
         
-        return new DiskReader(path);
+        return new DiskReader(nullptr, path);
     }
     
     if (strcmp("file", protocol) == 0) {
-        return new DiskReader(StripProtocol(path));
+        return new DiskReader(nullptr, StripProtocol(path));
     }
     
     for (auto& p : reader_infos) {
@@ -195,7 +214,7 @@ void FileReader::SetSearchList(std::vector<FileSource> list) {
             index = i;
             break;
         }
-        if (index == -1) {
+        if (index == -1 && strcmp(source.protocol, "file") != 0) {
             Log(Severity::ERROR, System::PLATFORM, "FileReader search list protocol {} not found in registered protocols!", source.protocol);
             continue;
         }
@@ -221,14 +240,17 @@ void FileReader::Register(const char* protocol, FileReader* (*constr)(const char
 
 class DiskWriter : public FileWriter {
 public:
-    DiskWriter(const char* path) {
+    DiskWriter(const char* location, const char* path) {
         this->full_path = new char[PATH_LIMIT + 10];
         this->temp_path = new char[PATH_LIMIT + 10];
         
-        strcpy(full_path, path);
-        strcpy(temp_path, path);
-        
-        strcat(temp_path, ".tmp");
+        if (location) {
+            sprintf(full_path, "%s/%s", location, path);
+            sprintf(temp_path, "%s/%s.tmp", location, path);
+        } else {
+            sprintf(full_path, "%s", path);
+            sprintf(temp_path, "%s.tmp", path);
+        }
         
         this->file_handle = fopen(temp_path, "wb");
 
@@ -278,7 +300,6 @@ public:
             return FileStatus::READY;
         }
     }
-    
 private:
     FILE* file_handle = nullptr;
     char* full_path = nullptr;
@@ -290,19 +311,29 @@ private:
 FileWriter* FileWriter::GetWriter(const char* path) {
     char protocol[PROTOCOL_LENGTH];
     if (!ExtractProtocol(path, protocol)) {
-        return new DiskWriter(path);
+        return new DiskWriter(nullptr, path);
     }
     
     if (strcmp("file", protocol) == 0) {
-        return new DiskWriter(StripProtocol(path));
+        return new DiskWriter(nullptr, StripProtocol(path));
+    }
+    
+    const char* writer_protocol = protocol;
+    const char* writer_location = nullptr;
+    
+    for (auto& p : alias_list) {
+        if (strcmp(p.alias, protocol)) continue;
+        writer_protocol = p.protocol;
+        writer_location = p.location;
+        break;
     }
     
     for (auto& p : writer_infos) {
-        if (strcmp(p.protocol, protocol)) continue;
+        if (strcmp(p.protocol, writer_protocol)) continue;
 
         if (!p.constr) continue;
 
-        return p.constr(StripProtocol(path));
+        return p.constr(writer_location, StripProtocol(path));
     }
     
     Log(Severity::ERROR, System::PLATFORM, "FileWriter could not find protocol for {}!", path);
@@ -310,7 +341,37 @@ FileWriter* FileWriter::GetWriter(const char* path) {
     return nullptr;
 }
 
-void FileWriter::Register(const char* protocol, FileWriter* (*constr)(const char* path)) {
+/// Sets an alias for a protocol.
+/// Allows rerouting writes from a protocol to another protocol, with the
+/// optional addition of a location.
+/// It is possible to clear the alias by setting `protocol` to a `nullptr`.
+/// @param alias    Protocol that will serve as the alias.
+/// @param protocol Protocol to which the writes will be redirected to.
+/// @param location An optional location.
+void FileWriter::SetProtocolAlias(const char* alias, const char* protocol, const char* location) {
+    for (auto& p : alias_list) {
+        if (strcmp(p.alias, alias)) continue;
+        p.alias = alias;
+        p.protocol = protocol;
+        p.location = location;
+        return;
+    }
+    
+    bool found_protocol = false;
+    for (auto& p : writer_infos) {
+        if (strcmp(p.protocol, protocol)) continue;
+        found_protocol = true; break;
+    }
+    
+    if (!found_protocol) {
+        Log(Severity::ERROR, System::PLATFORM, "FileWriter could not alias {} as {} was not found!", alias, protocol);
+        return;
+    }
+    
+    alias_list.push_back({alias, protocol, location});
+}
+
+void FileWriter::Register(const char* protocol, FileWriter* (*constr)(const char* location, const char* path)) {
     for (auto& p : writer_infos) {
         if (strcmp(p.protocol, protocol)) continue;
         p.protocol = protocol;

@@ -18,7 +18,7 @@ class Button : public Entity {
 public:
     Button(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void EventHandler(Event &event); void MessageHandler(Message& msg);
     name_t GetType();
     static void Register();
@@ -54,7 +54,7 @@ class Breakable : public Entity {
 public:
     Breakable(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -69,7 +69,7 @@ class Water : public Entity {
 public:
     Water(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -84,7 +84,7 @@ class Train : public Entity {
 public:
     Train(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -99,7 +99,7 @@ class Pickup : public Entity {
 public:
     Pickup(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -114,7 +114,7 @@ class DebugText : public Entity {
 public:
     DebugText(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -129,7 +129,7 @@ class DebugShape : public Entity {
 public:
     DebugShape(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -144,7 +144,7 @@ class TriggerAutosave : public Entity {
 public:
     TriggerAutosave(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -159,7 +159,7 @@ class TriggerHurt : public Entity {
 public:
     TriggerHurt(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -174,7 +174,7 @@ class TriggerOnce : public Entity {
 public:
     TriggerOnce(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -189,7 +189,7 @@ class TriggerMultiple : public Entity {
 public:
     TriggerMultiple(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -204,7 +204,7 @@ class TriggerPush : public Entity {
 public:
     TriggerPush(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -219,7 +219,7 @@ class TriggerRemove : public Entity {
 public:
     TriggerRemove(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -234,7 +234,7 @@ class TriggerTeleport : public Entity {
 public:
     TriggerTeleport(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:
@@ -249,7 +249,7 @@ class TriggerPlayerMovement : public Entity {
 public:
     TriggerPlayerMovement(const SharedEntityData&, const ValueArray&);
     void UpdateParameters(); void SetParameters();
-    void Load(); void Unload(); void Serialize();
+    void Load(); void Unload(); void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     static void Register();
 protected:

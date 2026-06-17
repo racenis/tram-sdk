@@ -40,7 +40,7 @@ void Marker::UpdateParameters() {}
 void Marker::SetParameters() {}
 void Marker::Load() {}
 void Marker::Unload() {}
-void Marker::Serialize() {}
+void Marker::Serialize(ValueArray&) {}
 void Marker::MessageHandler(Message& msg) {}
 
 }

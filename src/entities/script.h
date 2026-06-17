@@ -50,7 +50,8 @@ public:
         }
     }
     
-    void Serialize() {
+    // TODO: implement
+    void Serialize(ValueArray&) {
         /*if (Script::CallFunction("__impl_entity_serialize_callback", {this->id})) {
             if (entity) entity->Serialize();
         }*/

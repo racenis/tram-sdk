@@ -107,15 +107,13 @@ void Crate::Load(){
 void Crate::Unload() {
     flags &= ~LOADED;
 
-    Serialize();
-
     rendercomponent.clear();
     physicscomponent.clear();
 }
 
-void Crate::Serialize() {
-    model = rendercomponent->GetModel()->GetName();
-    collmodel = physicscomponent->GetModel()->GetName();
+void Crate::Serialize(ValueArray& field_array) {
+    field_array[FIELD_MODEL] = model;
+    field_array[FIELD_COLLMODEL] = collmodel;
 }
 
 void Crate::MessageHandler(Message& msg){

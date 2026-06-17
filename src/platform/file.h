@@ -46,7 +46,8 @@ public:
     
     static FileWriter* GetWriter(const char* path);
     
-    static void Register(const char* protocol, FileWriter* (*constr)(const char* path));
+    static void SetProtocolAlias(const char* alias, const char* protocol, const char* location);
+    static void Register(const char* protocol, FileWriter* (*constr)(const char* location, const char* path));
 };
 
 }

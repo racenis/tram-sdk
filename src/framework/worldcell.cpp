@@ -267,46 +267,41 @@ void WorldCell::LoadFromDisk() {
     File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
-        Log(Severity::ERROR, System::CORE, "Worldcell file{} not found!", path);
+        Log(Severity::ERROR, System::CORE, "Worldcell file {} not found!", path);
         return;
     }
 
-    if (file.read_name() != "CELLv3") {
+    if (file.read_name() != "CELLv4") {
         Log(Severity::ERROR, System::CORE, "Cell format unrecognized in {}!", path);
         return;
     }
     
-    if (flags & LOADED_FROM_DISK) {
-        std::vector<Transition*> transitions;
-        std::vector<Transition*> volume;
-        std::swap(transitions, this->transitions);
-        std::swap(volume, this->volume);
-        for (auto trans : transitions) {
-            Transition::Yeet(trans);
-        }
-        for (auto trans : volume) {
-            Transition::Yeet(trans);
-        }
-    }
-    
     SetFlag(LOADED_FROM_DISK, true);
-    
-    file.read_name(); // skip over cell name in file
-    
-    // wait why does the cell need a name inside the file
-    // the file already has a name
-    // also what happens when it doens't match???
-    // TODO: fix
     
     SetFlag(INTERIOR, file.read_uint32());
     SetFlag(INTERIOR_LIGHTING, file.read_uint32());
     
     file.skip_linebreak();
     
+    bool loaded_transition = false;
     while (file.is_continue()) {
         name_t entry_type = file.read_name();
         
         if (entry_type == "transition") {
+            if (!loaded_transition) {
+                std::vector<Transition*> transitions;
+                std::vector<Transition*> volume;
+                std::swap(transitions, this->transitions);
+                std::swap(volume, this->volume);
+                for (auto trans : transitions) {
+                    Transition::Yeet(trans);
+                }
+                for (auto trans : volume) {
+                    Transition::Yeet(trans);
+                }
+                loaded_transition = true;
+            }
+            
             name_t transition_name = file.read_name();
             name_t transition_into = file.read_name();
             
@@ -402,6 +397,83 @@ void WorldCell::LoadFromDisk() {
         
         file.skip_linebreak();
     }
+}
+
+/// Loads worldcell data from disk.
+void WorldCell::SaveToDisk() {
+    char path[PATH_LIMIT] = "save://";
+    strcat(path, name);
+    strcat(path, ".cell");
+    
+    File file(path, File::READ | File::PAUSE_LINE);
+
+    if (!file.is_open()) {
+        Log(Severity::ERROR, System::CORE, "Worldcell file {} could not be opened!", path);
+        return;
+    }
+
+    file.write_name("CELLv4");
+
+    file.write_uint32(flags & INTERIOR ? 1 : 0);
+    file.write_uint32(flags & INTERIOR_LIGHTING ? 1 : 0);
+    
+    file.write_newline();
+    
+    for (auto entity : entities) {
+        Entity::Serialize(entity, &file);
+        file.write_newline();
+    }
+    
+    for (auto entity : entities) {
+        if (!entity->GetSignalTable()) continue;
+        
+        for (size_t i = 0; i < entity->GetSignalTable()->GetSignalCount(); i++) {
+            const auto& signal = entity->GetSignalTable()->GetSignal(i);
+            
+            file.write_name("signal");
+            file.write_uint32(entity->GetID());
+            
+            file.write_name(Signal::GetName(signal.type));
+            file.write_name(signal.receiver);
+            file.write_float32(signal.delay);
+            file.write_int32(signal.limit);
+            file.write_name(Message::GetName(signal.message_type));
+            
+            if (!signal.data) {
+                file.write_name("none");
+            } else switch (signal.data->GetType()) {
+                case TYPE_INT32:    file.write_int32(*signal.data);             break;
+                case TYPE_FLOAT32:  file.write_float32(*signal.data);           break;
+                case TYPE_NAME:     file.write_name(*signal.data);              break;
+                case TYPE_VEC3:     file.write_float32(((vec3)*signal.data).x);
+                                    file.write_float32(((vec3)*signal.data).y);
+                                    file.write_float32(((vec3)*signal.data).z); break;
+                default: file.write_name("none");
+            }
+            
+            file.write_newline();
+        }
+        
+    }
+}
+
+void WorldCell::Reset() {
+    std::vector<Transition*> transitions;
+    std::vector<Transition*> volume;
+    std::swap(transitions, this->transitions);
+    std::swap(volume, this->volume);
+    for (auto trans : transitions) {
+        Transition::Yeet(trans);
+    }
+    for (auto trans : volume) {
+        Transition::Yeet(trans);
+    }
+    
+    for (auto entity : entities) {
+        Entity::Obliterate(entity);
+    }
+    
+    flags &= ~LOADED_FROM_DISK;
 }
 
 }

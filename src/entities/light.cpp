@@ -49,23 +49,22 @@ Light::Light(const SharedEntityData& shared_data, const ValueArray& field_array)
     color = field_array[FIELD_COLOR];
     distance = field_array[FIELD_DISTANCE];
     exponent = field_array[FIELD_EXPONENT];
-    
-    color = color * (float)field_array[FIELD_BRIGHTNESS];
+    brightness = field_array[FIELD_BRIGHTNESS];
 }
 
-void Light::UpdateParameters () {
+void Light::UpdateParameters() {
     if (!light) return;
     light->SetLocation(location);
 }
 
-void Light::SetParameters () {
+void Light::SetParameters() {
     UpdateParameters();
 }
 
 void Light::Load () {
     if (!Render::LightGraph::ContainsEntity(id)) {
         light.make();
-        light->SetColor(color);
+        light->SetColor(color * brightness);
         light->SetDistance(distance);
         light->SetDirection(rotation * DIRECTION_UP);
         light->SetExponent(exponent);
@@ -78,26 +77,20 @@ void Light::Load () {
     UpdateParameters();
 }
 
-void Light::Unload () {
+void Light::Unload() {
     flags &= ~LOADED;
-
-    Serialize();
 
     light.clear();
 }
 
-void Light::Serialize () {
-    vec3 light_color;
-    float light_distance;
-    
-    light_color = light->GetColor(); // idk if this actually works
-    light_distance = light->GetDistance();
-    
-    color = light_color;
-    distance = light_distance;
+void Light::Serialize(ValueArray& field_array) {
+    field_array[FIELD_COLOR] = color;
+    field_array[FIELD_DISTANCE] = distance;
+    field_array[FIELD_EXPONENT] = exponent;
+    field_array[FIELD_BRIGHTNESS] = brightness;
 }
 
-void Light::MessageHandler (Message& msg) {
+void Light::MessageHandler(Message& msg) {
     return;
 }
 

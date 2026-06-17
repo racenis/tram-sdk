@@ -113,11 +113,11 @@ void SignalTable::Fire(signal_t signal, id_t sender) {
         msg.type = signals[i].message_type;
         msg.receiver = Entity::Find(signals[i].receiver)->GetID(); // this might crasherinoo
         // TODO: make Entity::Find not crash; erore message /// ahhh who cares
-        msg.data = signals[i].data;
+        msg.data = signals[i].data; // TODO: waht even ??
         msg.sender = sender;
         
         if (signals[i].data) {
-            *msg.data_value = *(Value*)signals[i].data;
+            *msg.data_value = *(Value*)signals[i].data; // TODO:WHAT IS THIS
         } else {
             msg.data_value = nullptr;
         }
@@ -140,7 +140,7 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
         
         msg.type = signals[i].message_type;
         msg.receiver = Entity::Find(signals[i].receiver)->GetID();
-        msg.data = signals[i].data;
+        msg.data = signals[i].data; // TODO: fix what the fuck
         msg.sender = sender;
         msg.data_value = (Value*)Message::AllocateData(sizeof(Value));
         

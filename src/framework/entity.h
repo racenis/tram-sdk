@@ -25,10 +25,9 @@ typedef void (*entity_clear)(Entity*);
 class Entity {
 public:
     virtual void Load() = 0;
-
     virtual void Unload() = 0;
 
-    virtual void Serialize() = 0;
+    virtual void Serialize(ValueArray&) = 0;
 
     Entity();
     Entity(name_t name);
@@ -42,7 +41,7 @@ public:
     inline bool IsLoaded() const { return flags & LOADED; }
     inline bool IsAutoLoad() const { return !(flags & DISABLE_AUTO_LOAD); }
     inline bool IsPersistent() const { return !(flags & NON_PERSISTENT); }
-    inline bool IsChanged() const { return flags & DIRTY; }
+    inline bool IsChanged() const { return flags & SERIALIZE_TO_DISK; }
     inline bool IsDeleted() const { return flags & DELETED; }
     inline bool IsLoadedFromDisk() const { return flags & LOADED_FROM_DISK; }
 
@@ -93,6 +92,8 @@ public:
     
     static std::vector<Entity*> GetAllOfType(name_t type);
     
+    static void Serialize(Entity* entity, File* file);
+    
     static Entity* Make(name_t type, File* file);
     static Entity* Make(name_t type, const SharedEntityData&, const ValueArray&);
     static Entity* Find(id_t entity_id);
@@ -102,8 +103,8 @@ protected:
         NON_PERSISTENT = 1,
         LOADED = 2,
         DISABLE_AUTO_LOAD = 4,
-        NON_SERIALIZABLE = 8,
-        DIRTY = 16,
+        NON_SERIALIZABLE = 8, // is this even used
+        SERIALIZE_TO_DISK = 16,
         DELETED = 32,
         LOADED_FROM_DISK = 64
     };

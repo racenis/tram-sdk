@@ -116,16 +116,16 @@ void Decoration::RequestAnimationComponent() {
 
 void Decoration::Unload() {
     flags &= ~LOADED;
-
-    Serialize();
-
+    
     rendercomponent.clear();
     animationcomponent.clear();
     physicscomponent.clear();
 }
 
-void Decoration::Serialize() {
-
+void Decoration::Serialize(ValueArray& field_array) {
+    field_array[FIELD_FLAGS] = decoration_flags;
+    field_array[FIELD_MODEL] = model;
+    field_array[FIELD_ANIMATION] = animation;
 }
 
 void Decoration::MessageHandler(Message& msg) {

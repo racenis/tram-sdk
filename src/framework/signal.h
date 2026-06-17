@@ -37,7 +37,7 @@ struct Signal {
     signal_t type = NONE;
     
     name_t receiver;
-    void* data = nullptr;
+    Value* data = nullptr;
     
     float delay;
     int limit;

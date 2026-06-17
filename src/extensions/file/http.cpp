@@ -132,9 +132,13 @@ private:
 
 class HTTPWriter : public FileWriter {
 public:
-    HTTPWriter(const char* protocol, const char* path) {
+    HTTPWriter(const char* protocol, const char* location, const char* path) {
         url = (char*)malloc(URL_LIMIT);
-        snprintf(url, URL_LIMIT, "%s://%s", protocol, path);
+        if (location) {
+            snprintf(url, URL_LIMIT, "%s://%s/%s", protocol, location, path);
+        } else {
+            snprintf(url, URL_LIMIT, "%s://%s", protocol, path);
+        }
         
         buffer = (char*)malloc(1024);
         
@@ -245,8 +249,8 @@ void RegisterHTTP() {
     FileReader::Register("http", [](const char* location, const char* path) -> FileReader* { return new HTTPReader("http", location, path); });
     FileReader::Register("https", [](const char* location, const char* path) -> FileReader* { return new HTTPReader("https", location, path); });
     
-    FileWriter::Register("http", [](const char* path) -> FileWriter* { return new HTTPWriter("http", path); });
-    FileWriter::Register("https", [](const char* path) -> FileWriter* { return new HTTPWriter("https", path); });
+    FileWriter::Register("http", [](const char* location, const char* path) -> FileWriter* { return new HTTPWriter("http", location, path); });
+    FileWriter::Register("https", [](const char* location, const char* path) -> FileWriter* { return new HTTPWriter("https", location, path); });
 }
 
 }

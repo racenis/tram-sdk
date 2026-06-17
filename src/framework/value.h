@@ -317,11 +317,12 @@ private:
 
 class ValueArray {
 public:
-    ValueArray(const Value* first, size_t count) : first_field(first), field_count(count) {}
+    ValueArray(Value* first, size_t count) : first_field(first), field_count(count) {}
     const Value& operator [](size_t n) const { assert(n < field_count); return first_field[n]; }
+    Value& operator [](size_t n) { assert(n < field_count); return first_field[n]; }
     const size_t size() const { return field_count; }
 private:
-    const Value* first_field;
+    Value* first_field;
     size_t field_count;
 };
 

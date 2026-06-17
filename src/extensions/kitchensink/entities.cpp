@@ -214,17 +214,22 @@ void Button::Load(){
 void Button::Unload() {
     Entity::flags &= ~LOADED;
 
-    Serialize();
-
     rendercomponent.clear();
     physicscomponent.clear();
 }
 
-void Button::Serialize() {
-
+void Button::Serialize(ValueArray& field_array) {
+    field_array[BUTTON_FIELD_FLAGS] = flags;
+    field_array[BUTTON_FIELD_MODEL] = model;
+    field_array[BUTTON_FIELD_LIGHTMAP] = lightmap;
+    field_array[BUTTON_FIELD_ORIGIN] = origin;
+    field_array[BUTTON_FIELD_DIRECTION] = direction;
+    field_array[BUTTON_FIELD_SPEED] = speed;
+    field_array[BUTTON_FIELD_PAUSE] = pause;
+    field_array[BUTTON_FIELD_DISTANCE] = distance;
+    field_array[BUTTON_FIELD_SOUND] = sound;
+    field_array[BUTTON_FIELD_PARENT] = parent;
 }
-
-
 
 void Button::EventHandler(Event &event) {
     if (event.type != Event::TICK) return;

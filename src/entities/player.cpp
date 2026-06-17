@@ -74,7 +74,7 @@ void Player::Unload() {
     SetFlag(LOADED, false);
 }
 
-void Player::Serialize() {
+void Player::Serialize(ValueArray&) {
     Log(Severity::WARNING, System::MISC, "Player not seriaziable");
 }
 

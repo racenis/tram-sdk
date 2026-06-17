@@ -437,6 +437,66 @@ std::vector<Entity*> Entity::GetAllOfType(name_t type) {
     return ents;
 }
 
+/// Writes an Entity to a file.
+void Entity::Serialize(Entity* entity, File* file) {
+    if (entity->flags & NON_PERSISTENT) return;
+    
+    const bool deleted = entity->flags & DELETED;
+    const bool serialize = entity->flags & SERIALIZE_TO_DISK;
+    
+    if (!deleted && !serialize) return;
+    
+    auto record = registered_entity_types.Find(entity->GetType());
+    
+    file->write_name(entity->GetType());
+    file->write_uint32(entity->id);
+    file->write_name(entity->name);
+    file->write_uint32(entity->flags & ~SERIALIZE_TO_DISK);
+    file->write_float32(entity->location.x);
+    file->write_float32(entity->location.y);
+    file->write_float32(entity->location.z);
+    vec3 rotation = glm::eulerAngles(entity->GetRotation());
+    file->write_float32(rotation.x);
+    file->write_float32(rotation.y);
+    file->write_float32(rotation.z);
+    
+    static thread_local std::vector<Value> fields;
+    if (fields.size() < record.fieldcount) fields.resize(record.fieldcount);
+    
+    ValueArray field_array(fields.data(), fields.size());
+    
+    entity->Serialize(field_array);
+    
+    for (size_t i = 0; i < record.fieldcount; i++) {
+        switch (record.fields[i].field_type) {
+            case TYPE_BOOL:     file->write_uint32((bool)fields[i]);        break;
+            case TYPE_NAME:     file->write_name(fields[i]);                break;
+            case TYPE_STRING:   file->write_string((const char*)fields[i]); break;
+            case TYPE_INT8:     file->write_int8(fields[i]);                break;
+            case TYPE_INT16:    file->write_int16(fields[i]);               break;
+            case TYPE_INT32:    file->write_int32(fields[i]);               break;
+            case TYPE_UINT8:    file->write_uint8(fields[i]);               break;
+            case TYPE_UINT16:   file->write_uint16(fields[i]);              break;
+            case TYPE_UINT32:   file->write_uint32(fields[i]);              break;
+            case TYPE_FLOAT32:  file->write_float32(fields[i]);             break;
+            case TYPE_VEC2:     file->write_float32(((vec2)fields[i]).x);
+                                file->write_float32(((vec2)fields[i]).y);   break;
+            case TYPE_VEC3:     file->write_float32(((vec3)fields[i]).x);
+                                file->write_float32(((vec3)fields[i]).y);
+                                file->write_float32(((vec3)fields[i]).z);   break;
+            case TYPE_VEC4:     file->write_float32(((vec4)fields[i]).x);
+                                file->write_float32(((vec4)fields[i]).y);
+                                file->write_float32(((vec4)fields[i]).z);
+                                file->write_float32(((vec4)fields[i]).w);   break;
+            case TYPE_QUAT:     file->write_float32(((quat)fields[i]).x);
+                                file->write_float32(((quat)fields[i]).y);
+                                file->write_float32(((quat)fields[i]).z);
+                                file->write_float32(((quat)fields[i]).w);   break;
+            default: assert(false);
+        }
+    }
+}
+
 /// Loads an Entity from a File.
 Entity* Entity::Make(name_t type, File* file) {
     auto record = registered_entity_types.Find(type);

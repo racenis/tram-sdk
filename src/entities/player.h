@@ -19,7 +19,7 @@ public:
     ~Player() {Log(Severity::WARNING, System::MISC, "Player destructor!"); Unload();}
     void Load();
     void Unload();
-    void Serialize();
+    void Serialize(ValueArray&);
     void SerializeString(std::string& str);
     void UpdateParameters();
     void SetParameters();

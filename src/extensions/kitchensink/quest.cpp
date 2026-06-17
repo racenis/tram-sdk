@@ -365,7 +365,7 @@ public:
     void SetParameters() {}
     void Load() {}
     void Unload() {}
-    void Serialize() {}
+    void Serialize(ValueArray&) {}
     name_t GetType() { return "none"; }
     void MessageHandler(Message& msg) {
         name_t trigger = *(Value*)msg.data;

@@ -86,16 +86,16 @@ Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
     Load();
 }
 
-void Sound::UpdateParameters () {
+void Sound::UpdateParameters() {
     if (!IsLoaded()) return;
     audio->SetLocation(location);
 }
 
-void Sound::SetParameters () {
+void Sound::SetParameters() {
     UpdateParameters();
 }
 
-void Sound::Load () {
+void Sound::Load() {
     audio.make();
     
     audio->SetParent(this);
@@ -112,19 +112,19 @@ void Sound::Load () {
     flags |= LOADED;
 }
 
-void Sound::Unload () {
+void Sound::Unload() {
     flags &= ~LOADED;
-
-    Serialize();
 
     audio.clear();
 }
 
-void Sound::Serialize () {
-
+void Sound::Serialize(ValueArray& field_array) {
+    field_array[FIELD_SOUND] = sound;
+    field_array[FIELD_VOLUME] = volume;
+    field_array[FIELD_FLAGS] = sound_flags;
 }
 
-void Sound::MessageHandler (Message& msg) {
+void Sound::MessageHandler(Message& msg) {
     switch (msg.type) {
         case Message::TOGGLE:
             if (audio->IsPlaying()) {

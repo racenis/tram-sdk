@@ -21,7 +21,7 @@ public:
     void SetParameters();
     void Load();
     void Unload();
-    void Serialize();
+    void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     name_t GetType();
     static void Register();

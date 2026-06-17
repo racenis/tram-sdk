@@ -107,15 +107,13 @@ void StaticWorldObject::Load(){
 void StaticWorldObject::Unload(){
     SetFlag(LOADED, false);
     
-    Serialize();
-
     rendercomponent.clear();
     physicscomponent.clear();
 };
 
-void StaticWorldObject::Serialize() {
-    model = rendercomponent->GetModel()->GetName();
-    lightmap = rendercomponent->GetLightmap()->GetName();
+void StaticWorldObject::Serialize(ValueArray& field_array) {
+    field_array[FIELD_MODEL] = model;
+    field_array[FIELD_LIGHTMAP] = lightmap;
 };
 
 void StaticWorldObject::MessageHandler(Message& msg) {

@@ -19,7 +19,7 @@ public:
     void SetParameters();
     void Load();
     void Unload();
-    void Serialize();
+    void Serialize(ValueArray&);
     void MessageHandler(Message& msg);
     void Activate();
     name_t GetType();
