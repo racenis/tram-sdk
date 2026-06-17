@@ -164,6 +164,10 @@ static void SetupLayer(layer_t layer) {
     UploadUniformBuffer(matrix_uniform_buffer, sizeof(ShaderUniformMatrices), &matrices);
 }
 
+uint32_t layer_index(uint32_t bit) {
+    return std::countr_zero((uint32_t)bit);
+}
+
 static void Draw(GLDrawListEntry* robj) {
     if (render_debug && !(robj->flags & FLAG_NO_DEBUG)) {
         char debug_text[250];
@@ -229,11 +233,17 @@ static void Draw(GLDrawListEntry* robj) {
         modelMatrices.sunWeight = 1.0f;
     }
 
-    //modelMatrices.model = model;
     modelMatrices.model = robj->matrix;
+    
+    if (robj->flags & FLAG_DECAL) {
+        vec3 pos = robj->matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        vec3 pushdir = glm::normalize(layers[layer_index(robj->layer)].view_position - pos);
+        mat4 pushmat(1.0f);
+        pushmat = glm::translate(pushmat, pushdir * 0.1f);
+        modelMatrices.model = pushmat * robj->matrix;
+    }
+    
     UploadUniformBuffer(model_matrix_uniform_buffer, sizeof(ShaderUniformModelMatrices), &modelMatrices);
-
-
 
     for (unsigned int j = 0; j < robj->texCount; j++){
         if (!robj->materials[j]) continue;
@@ -269,10 +279,6 @@ static void Draw(GLDrawListEntry* robj) {
 #ifndef __EMSCRIPTEN__
     if (robj->flags & (FLAG_LINE_FILL_POLY | FLAG_POINT_FILL_POLY)) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #endif
-}
-
-uint32_t layer_index(uint32_t bit) {
-    return std::countr_zero((uint32_t)bit);
 }
 
 void RenderFrame() {

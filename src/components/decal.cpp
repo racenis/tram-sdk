@@ -21,6 +21,18 @@
  * @see https://racenis.github.io/tram-sdk/documentation/components/decal.html
  */
 
+/*
+ * FUTURE IMPROVEMENTS
+ * 
+ * Currently the decal uses flat normals, so it looks weird on curved surfaces.
+ * The problem is that Models still don't store the actual normals for vertices.
+ * 
+ * We should also add in proper lightmap UVs and projections to posed models.
+ * 
+ * But for this we need to modify our model storage format.
+ * 
+ * */
+
 namespace tram {
 using namespace tram::Render;
 
@@ -48,7 +60,7 @@ void DecalComponent::InitAsStatic() {
     draw_list_entry = InsertDrawListEntry();
     SetDrawListVertexArray(draw_list_entry, vertex_array);
     SetDrawListIndexRange(draw_list_entry, 0, 0);
-    SetFlags(draw_list_entry, FLAG_RENDER);
+    SetFlags(draw_list_entry, FLAG_RENDER | FLAG_DECAL);
     SetLayer(draw_list_entry, LAYER_DEFAULT);
     SetDrawListMaterials(draw_list_entry, 1, &texture_handle);
     SetLightmap(draw_list_entry, Lightmap::Find("fullbright")->GetTexture());
@@ -68,7 +80,7 @@ void DecalComponent::InitAsDynamic() {
     draw_list_entry = InsertDrawListEntry();
     SetDrawListVertexArray(draw_list_entry, vertex_array);
     SetDrawListIndexRange(draw_list_entry, 0, 0);
-    SetFlags(draw_list_entry, FLAG_RENDER);
+    SetFlags(draw_list_entry, FLAG_RENDER | FLAG_DECAL);
     SetLayer(draw_list_entry, LAYER_DEFAULT);
     SetDrawListMaterials(draw_list_entry, 1, &texture_handle);
     SetEnvironmentMap(draw_list_entry, Environment::Find("fulldark")->GetTexture());
@@ -99,6 +111,8 @@ void DecalComponent::Update() {
     if (!is_ready) return;
 }
 
+// note that aabb boxes and clipping planes are calculated in world space.
+// this is a bit ineffiecient, but whatevs.
 struct DecalProjectInfo {
     vec3 aabb_min;
     vec3 aabb_max;
@@ -123,17 +137,24 @@ void DecalComponent::ResetVertices() {
 }
 
 void DecalComponent::ProjectOnWorld(bool reset) {
+    ProjectOnWorld(location, rotation, reset);
+}
+
+void DecalComponent::ProjectOnWorld(vec3 pos, quat rot, bool reset) {
     if (!is_ready) return;
     if (reset) ResetVertices();
 
     DecalProjectInfo info;
-    MakeProjectInfo(info);
-
+    MakeProjectInfo(info, pos, rot);
+    
+    // decal info is already in worldspace, so we can just pass everything in as is
     AABB::FindAllIntersectionsFromAABB(info.aabb_min, info.aabb_max, [&](AABB::ReferenceType type, EntityComponent* component) {
         if (type != Render::AABB::REFERENCE_RENDERCOMPONENT) return;
         RenderComponent* rcomp = (RenderComponent*)component;
         
-        ProjectOnModel(info, rcomp, nullptr, {0, 0, 0}, {1, 0, 0, 0});
+        // TODO: skip posed rendercomps
+        
+        ProjectOnModel(info, rcomp, nullptr, pos, rot);
     });
 }
 
@@ -147,6 +168,11 @@ void DecalComponent::ProjectOnModel(RenderComponent* comp, AnimationComponent* a
     
     if (anim && is_static) assert(false);
     if (!anim && is_dynamic) assert(false);
+    
+    DecalProjectInfo info;
+    MakeProjectInfo(info, pos, rot);
+    
+    ProjectOnModel(info, comp, anim, pos, rot);
 }
 
 static vec4 GetPlaneEquation(vec3 a, vec3 b, vec3 c) {
@@ -163,8 +189,6 @@ static float PlaneIntersection(vec4 plane, vec3 a, vec3 b) {
     float t = -(plane.x * a.x + plane.y * a.y + plane.z * a.z + plane.w) / denom;
     return t;
 }
-
-
 
 static void ClipAABBTriangle(AABBTriangle triangle, vec4 plane, auto callback) {
     bool keep_p1 = glm::dot(vec4(triangle.point1, 1.0f), plane) < 0.0f;
@@ -269,7 +293,7 @@ static void ClipAABBTriangle(AABBTriangle triangle, vec4 plane, auto callback) {
     }
 }
 
-void DecalComponent::MakeProjectInfo(DecalProjectInfo& info) {
+void DecalComponent::MakeProjectInfo(DecalProjectInfo& info, vec3 pos, quat rot) {
     const float frame_width = sprite->GetFrames()[frame].width;
     const float frame_height = sprite->GetFrames()[frame].height;
 
@@ -285,17 +309,17 @@ void DecalComponent::MakeProjectInfo(DecalProjectInfo& info) {
     const float half_width = info.decal_width / 2.0f;
     const float half_height = info.decal_height / 2.0f;
     
-    vec3 normal = rotation * DIRECTION_FORWARD;
+    vec3 normal = rot * DIRECTION_FORWARD;
 
     vec3 top_left_front = {-half_width, half_height, 0.0f};
     vec3 top_right_front = {half_width, half_height, 0.0f};
     vec3 bottom_left_front = {-half_width, -half_height, 0.0f};
     vec3 bottom_right_front = {half_width, -half_height, 0.0f};
     
-    top_left_front = location + rotation * top_left_front;
-    top_right_front = location + rotation * top_right_front;
-    bottom_left_front = location + rotation * bottom_left_front;
-    bottom_right_front = location + rotation * bottom_right_front;
+    top_left_front = pos + rot * top_left_front;
+    top_right_front = pos + rot * top_right_front;
+    bottom_left_front = pos + rot * bottom_left_front;
+    bottom_right_front = pos + rot * bottom_right_front;
     
     vec3 top_left_back = top_left_front + normal * depth;
     vec3 top_right_back = top_right_front + normal * depth;
@@ -337,13 +361,14 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
     if (anim) InitAsDynamic();
     if (!anim) InitAsStatic();
     
+    mat4 worldspace_to_decalspace = glm::inverse(PositionRotationToMatrix(location, rotation));
+    
     vec3 local_min = (info.aabb_min - comp->GetLocation()) / comp->GetScale();
     vec3 local_max = (info.aabb_max - comp->GetLocation()) / comp->GetScale();
     
     RotateAABB(local_min, local_max, -comp->GetRotation());
     
     std::vector<AABBTriangle> tris;
-    
     comp->GetModel()->FindAllFromAABB(local_min, local_max, tris);
     
     for (auto& tri : tris) {
@@ -364,17 +389,18 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
             Render::StaticModelVertex vert2;
             Render::StaticModelVertex vert3;
             
-            vec3 local1 = glm::inverse(rotation) * (tri.point1 - location);
-            vec3 local2 = glm::inverse(rotation) * (tri.point2 - location);
-            vec3 local3 = glm::inverse(rotation) * (tri.point3 - location);
+            // position of vertices in projecion space
+            vec3 local1 = glm::inverse(rot) * (tri.point1 - pos);
+            vec3 local2 = glm::inverse(rot) * (tri.point2 - pos);
+            vec3 local3 = glm::inverse(rot) * (tri.point3 - pos);
             
-            vert1.co = tri.point1 + tri.normal * 0.01f;
-            vert2.co = tri.point2 + tri.normal * 0.01f;
-            vert3.co = tri.point3 + tri.normal * 0.01f;
+            vert1.co = worldspace_to_decalspace * vec4(tri.point1, 1.0f);
+            vert2.co = worldspace_to_decalspace * vec4(tri.point2, 1.0f);
+            vert3.co = worldspace_to_decalspace * vec4(tri.point3, 1.0f);
             
-            vert1.normal = tri.normal;
-            vert2.normal = tri.normal;
-            vert3.normal = tri.normal;
+            vert1.normal = glm::normalize(worldspace_to_decalspace * vec4(tri.normal, 0.0f));
+            vert2.normal = glm::normalize(worldspace_to_decalspace * vec4(tri.normal, 0.0f));
+            vert3.normal = glm::normalize(worldspace_to_decalspace * vec4(tri.normal, 0.0f));
             
             vert1.tex = {local1.x / info.decal_width + 0.5f, local1.y / info.decal_height + 0.5f};
             vert2.tex = {local2.x / info.decal_width + 0.5f, local2.y / info.decal_height + 0.5f};
@@ -396,6 +422,7 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
             vert2.tex.y += info.tex_h_off + 1.0f;
             vert3.tex.y += info.tex_h_off + 1.0f;
             
+            // TODO: implement lightmap calculation
             vert1.lighttex = {0.0f, 0.0f};
             vert2.lighttex = {0.0f, 1.0f};
             vert3.lighttex = {1.0f, 1.0f};
@@ -429,7 +456,7 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
 void DecalComponent::UpdateRenderListObject() {
     if (!is_ready) return;
     
-    Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(vec3(0.0f, 0.0f, 0.0f), quat(1.0f, 0.0f, 0.0f, 0.0f)));
+    Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, rotation));
 }
 
 /// Creates a new DecalComponent.

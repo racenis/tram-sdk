@@ -49,6 +49,7 @@ public:
     }
     
     void ProjectOnWorld(bool reset = false);
+    void ProjectOnWorld(vec3 pos, quat rot, bool reset = false);
     void ProjectOnModel(RenderComponent* comp, vec3 pos, quat rot, bool reset = false);
     void ProjectOnModel(RenderComponent* comp, AnimationComponent* anim, vec3 pos, quat rot, bool reset = false);
 
@@ -73,7 +74,7 @@ protected:
     void InitAsDynamic();
     void ResetVertices();
     
-    void MakeProjectInfo(DecalProjectInfo& info);
+    void MakeProjectInfo(DecalProjectInfo& info, vec3 pos, quat rot);
     void ProjectOnModel(DecalProjectInfo& info, RenderComponent* comp, AnimationComponent* anim, vec3 pos, quat rot);
     
     bool is_static = false;

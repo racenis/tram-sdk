@@ -23,6 +23,7 @@ enum renderflags: uint32_t {
     FLAG_USE_AABB = 1024,           //< Object has an AABB that can be used for filtering.
     FLAG_LINE_FILL_POLY = 2048,     //< Triangle meshes are rendered as lines
     FLAG_POINT_FILL_POLY = 4096,    //< Triangle meshes are rendered as points
+    FLAG_DECAL = 8192,              //< Adds decal offset to rendered object.
 };
 
 /// Texture color mode.
