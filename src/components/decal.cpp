@@ -20,30 +20,6 @@
  * Projects decals onto the scene.
  * @see https://racenis.github.io/tram-sdk/documentation/components/decal.html
  */
- 
- /*
-  * IDEAS! for optimizations, alternate modes, etc. !!!
-  * 
-  * 1. CURRENT MODE
-  * - as soon as decal loads, it projects itself onto whatever is in the scene.
-  * - fine for static objects
-  * - maybe need to add a scene flag for static objects
-  * - flag should be optional
-  * 
-  * 2. SPLAT MODE
-  * - decal retains all of its vertices
-  * - can splat multiple times
-  * - would have a method like splat(pos, rot)
-  * 
-  * 3. TARGET MODE
-  * - can target a specific rendercomponent
-  * - maybe can even apply an armature deformation
-  * 
-  * yeah that's it
-  *
-  * 
-  * 
-  */
 
 namespace tram {
 using namespace tram::Render;
@@ -54,19 +30,17 @@ template <> void Component<DecalComponent>::yeet() { DecalComponent::Yeet(ptr); 
 
 using namespace API;
 
-DecalComponent::~DecalComponent() {
-    is_ready = false;
-
-    Render::API::RemoveDrawListEntry(draw_list_entry);
+struct DecalVertices {
+    std::vector<Render::StaticModelVertex> static_verts;
+    std::vector<Render::StaticModelVertex> dynamic_verts;
 };
 
-void DecalComponent::Start() {
-    if (!sprite) {
-        Log(Severity::CRITICAL_ERROR, System::RENDER, "Decal component doesn't have its sprite set!");
-    }
+void DecalComponent::InitAsStatic() {
+    if (is_static) return;
     
-    assert(!is_ready);
-
+    is_static = true;
+    vertices = new DecalVertices;
+    
     CreateVertexArray(GetVertexDefinition(VERTEX_STATIC), vertex_array);
 
     auto texture_handle = sprite->GetMaterial()->GetMaterial();
@@ -75,16 +49,104 @@ void DecalComponent::Start() {
     SetDrawListVertexArray(draw_list_entry, vertex_array);
     SetDrawListIndexRange(draw_list_entry, 0, 0);
     SetFlags(draw_list_entry, FLAG_RENDER);
+    SetLayer(draw_list_entry, LAYER_DEFAULT);
     SetDrawListMaterials(draw_list_entry, 1, &texture_handle);
     SetLightmap(draw_list_entry, Lightmap::Find("fullbright")->GetTexture());
     SetDrawListShader(draw_list_entry, VERTEX_STATIC, MATERIAL_TEXTURE_ALPHA);
+}
 
+void DecalComponent::InitAsDynamic() {
+    if (is_dynamic) return;
+    
+    is_dynamic = true;
+    vertices = new DecalVertices;
+    
+    CreateVertexArray(GetVertexDefinition(VERTEX_DYNAMIC), vertex_array);
+
+    auto texture_handle = sprite->GetMaterial()->GetMaterial();
+
+    draw_list_entry = InsertDrawListEntry();
+    SetDrawListVertexArray(draw_list_entry, vertex_array);
+    SetDrawListIndexRange(draw_list_entry, 0, 0);
+    SetFlags(draw_list_entry, FLAG_RENDER);
+    SetLayer(draw_list_entry, LAYER_DEFAULT);
+    SetDrawListMaterials(draw_list_entry, 1, &texture_handle);
+    SetEnvironmentMap(draw_list_entry, Environment::Find("fulldark")->GetTexture());
+    SetDrawListShader(draw_list_entry, VERTEX_DYNAMIC, MATERIAL_TEXTURE_ALPHA);
+}
+
+DecalComponent::~DecalComponent() {
+    is_ready = false;
+    
+    if (vertices) delete vertices;
+    vertices = nullptr;
+    
+    Render::API::RemoveDrawListEntry(draw_list_entry);
+};
+
+void DecalComponent::Start() {
+    if (!sprite) {
+        Log(Severity::CRITICAL_ERROR, System::RENDER, "Decal component doesn't have its sprite set!");
+    }
+    
+    InitAsStatic();
+    
     is_ready = true;
     UpdateRenderListObject();
 }
 
 void DecalComponent::Update() {
     if (!is_ready) return;
+}
+
+struct DecalProjectInfo {
+    vec3 aabb_min;
+    vec3 aabb_max;
+    float decal_width;
+    float decal_height;
+    float tex_width;
+    float tex_height;
+    float tex_w_off;
+    float tex_h_off;
+    
+    vec4 front_plane;
+    vec4 back_plane;
+    vec4 top_plane;
+    vec4 bottom_plane;
+    vec4 left_plane;
+    vec4 right_plane;
+};
+
+void DecalComponent::ResetVertices() {
+    if (vertices && is_dynamic) vertices->dynamic_verts.clear();
+    if (vertices && is_static) vertices->static_verts.clear();
+}
+
+void DecalComponent::ProjectOnWorld(bool reset) {
+    if (!is_ready) return;
+    if (reset) ResetVertices();
+
+    DecalProjectInfo info;
+    MakeProjectInfo(info);
+
+    AABB::FindAllIntersectionsFromAABB(info.aabb_min, info.aabb_max, [&](AABB::ReferenceType type, EntityComponent* component) {
+        if (type != Render::AABB::REFERENCE_RENDERCOMPONENT) return;
+        RenderComponent* rcomp = (RenderComponent*)component;
+        
+        ProjectOnModel(info, rcomp, nullptr, {0, 0, 0}, {1, 0, 0, 0});
+    });
+}
+
+void DecalComponent::ProjectOnModel(RenderComponent* comp, vec3 pos, quat rot, bool reset) {
+    ProjectOnModel(comp, nullptr, pos, rot, reset);
+}
+
+void DecalComponent::ProjectOnModel(RenderComponent* comp, AnimationComponent* anim, vec3 pos, quat rot, bool reset) {
+    if (!is_ready) return;
+    if (reset) ResetVertices();
+    
+    if (anim && is_static) assert(false);
+    if (!anim && is_dynamic) assert(false);
 }
 
 static vec4 GetPlaneEquation(vec3 a, vec3 b, vec3 c) {
@@ -207,29 +269,22 @@ static void ClipAABBTriangle(AABBTriangle triangle, vec4 plane, auto callback) {
     }
 }
 
-void DecalComponent::UpdateRenderListObject() {
-    if (!is_ready) return;
-
+void DecalComponent::MakeProjectInfo(DecalProjectInfo& info) {
     const float frame_width = sprite->GetFrames()[frame].width;
     const float frame_height = sprite->GetFrames()[frame].height;
 
-    float tex_width = frame_width / (float)sprite->GetMaterial()->GetWidth();
-    float tex_height = frame_height / (float)sprite->GetMaterial()->GetHeight();
-    float tex_w_off = (float)sprite->GetFrames()[frame].offset_x / (float)sprite->GetMaterial()->GetWidth();
-    float tex_h_off = (float)sprite->GetFrames()[frame].offset_y / (float)sprite->GetMaterial()->GetHeight();
-    tex_h_off = 1.0f - tex_h_off - tex_height;
+    info.tex_width = frame_width / (float)sprite->GetMaterial()->GetWidth();
+    info.tex_height = frame_height / (float)sprite->GetMaterial()->GetHeight();
+    info.tex_w_off = (float)sprite->GetFrames()[frame].offset_x / (float)sprite->GetMaterial()->GetWidth();
+    info.tex_h_off = (float)sprite->GetFrames()[frame].offset_y / (float)sprite->GetMaterial()->GetHeight();
+    info.tex_h_off = 1.0f - info.tex_h_off - info.tex_height;
 
-    const float decal_width = frame_width / 32.0f * scale;
-    const float decal_height = frame_height / 32.0f * scale;
+    info.decal_width = frame_width / 32.0f * scale;
+    info.decal_height = frame_height / 32.0f * scale;
 
-    const float half_width = decal_width / 2.0f;
-    const float half_height = decal_height / 2.0f;
-
-    (void)tex_width;
-    (void)tex_height;
-    (void)tex_w_off;
-    (void)tex_h_off;
-
+    const float half_width = info.decal_width / 2.0f;
+    const float half_height = info.decal_height / 2.0f;
+    
     vec3 normal = rotation * DIRECTION_FORWARD;
 
     vec3 top_left_front = {-half_width, half_height, 0.0f};
@@ -242,130 +297,137 @@ void DecalComponent::UpdateRenderListObject() {
     bottom_left_front = location + rotation * bottom_left_front;
     bottom_right_front = location + rotation * bottom_right_front;
     
-    vec3 top_left_back = top_left_front + normal;
-    vec3 top_right_back = top_right_front + normal;
-    vec3 bottom_left_back = bottom_left_front + normal;
-    vec3 bottom_right_back = bottom_right_front + normal;
+    vec3 top_left_back = top_left_front + normal * depth;
+    vec3 top_right_back = top_right_front + normal * depth;
+    vec3 bottom_left_back = bottom_left_front + normal * depth;
+    vec3 bottom_right_back = bottom_right_front + normal * depth;
 
-    vec3 aabb_min = top_left_front;
-    vec3 aabb_max = top_left_front;
+    info.aabb_min = top_left_front;
+    info.aabb_max = top_left_front;
     
-    aabb_min = MergeAABBMin(aabb_min, top_right_front);
-    aabb_min = MergeAABBMin(aabb_min, bottom_left_front);
-    aabb_min = MergeAABBMin(aabb_min, bottom_right_front);
+    info.aabb_min = MergeAABBMin(info.aabb_min, top_right_front);
+    info.aabb_min = MergeAABBMin(info.aabb_min, bottom_left_front);
+    info.aabb_min = MergeAABBMin(info.aabb_min, bottom_right_front);
     
-    aabb_min = MergeAABBMin(aabb_min, top_left_back);
-    aabb_min = MergeAABBMin(aabb_min, top_right_back);
-    aabb_min = MergeAABBMin(aabb_min, bottom_left_back);
-    aabb_min = MergeAABBMin(aabb_min, bottom_right_back);
+    info.aabb_min = MergeAABBMin(info.aabb_min, top_left_back);
+    info.aabb_min = MergeAABBMin(info.aabb_min, top_right_back);
+    info.aabb_min = MergeAABBMin(info.aabb_min, bottom_left_back);
+    info.aabb_min = MergeAABBMin(info.aabb_min, bottom_right_back);
     
-    aabb_max = MergeAABBMax(aabb_max, top_right_front);
-    aabb_max = MergeAABBMax(aabb_max, bottom_left_front);
-    aabb_max = MergeAABBMax(aabb_max, bottom_right_front);
+    info.aabb_max = MergeAABBMax(info.aabb_max, top_right_front);
+    info.aabb_max = MergeAABBMax(info.aabb_max, bottom_left_front);
+    info.aabb_max = MergeAABBMax(info.aabb_max, bottom_right_front);
     
-    aabb_max = MergeAABBMax(aabb_max, top_left_back);
-    aabb_max = MergeAABBMax(aabb_max, top_right_back);
-    aabb_max = MergeAABBMax(aabb_max, bottom_left_back);
-    aabb_max = MergeAABBMax(aabb_max, bottom_right_back);
+    info.aabb_max = MergeAABBMax(info.aabb_max, top_left_back);
+    info.aabb_max = MergeAABBMax(info.aabb_max, top_right_back);
+    info.aabb_max = MergeAABBMax(info.aabb_max, bottom_left_back);
+    info.aabb_max = MergeAABBMax(info.aabb_max, bottom_right_back);
 
-
-    vec4 top_plane = GetPlaneEquation(top_left_front, top_right_front, top_left_back);
-    vec4 bottom_plane = GetPlaneEquation(bottom_left_front, bottom_left_back, bottom_right_front);
+    info.top_plane = GetPlaneEquation(top_left_front, top_right_front, top_left_back);
+    info.bottom_plane = GetPlaneEquation(bottom_left_front, bottom_left_back, bottom_right_front);
     
-    vec4 left_plane = GetPlaneEquation(top_left_front, bottom_left_back, bottom_left_front);
-    vec4 right_plane = GetPlaneEquation(top_right_front, bottom_right_front, bottom_right_back);
+    info.left_plane = GetPlaneEquation(top_left_front, bottom_left_back, bottom_left_front);
+    info.right_plane = GetPlaneEquation(top_right_front, bottom_right_front, bottom_right_back);
  
-    vec4 front_plane = GetPlaneEquation(top_left_front, bottom_left_front, bottom_right_front);
-    vec4 back_plane = GetPlaneEquation(top_left_back, bottom_right_back, bottom_left_back);
+    info.front_plane = GetPlaneEquation(top_left_front, bottom_left_front, bottom_right_front);
+    info.back_plane = GetPlaneEquation(top_left_back, bottom_right_back, bottom_left_back);
+}
 
-    std::vector<Render::StaticModelVertex> verts;
-
-    AABB::FindAllIntersectionsFromAABB(aabb_min, aabb_max, [&](AABB::ReferenceType type, EntityComponent* component) {
-        if (type != Render::AABB::REFERENCE_RENDERCOMPONENT) return;
-        RenderComponent* rcomp = (RenderComponent*)component;
+void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* comp, AnimationComponent* anim, vec3 pos, quat rot) {
+    if (anim) InitAsDynamic();
+    if (!anim) InitAsStatic();
+    
+    vec3 local_min = (info.aabb_min - comp->GetLocation()) / comp->GetScale();
+    vec3 local_max = (info.aabb_max - comp->GetLocation()) / comp->GetScale();
+    
+    RotateAABB(local_min, local_max, -comp->GetRotation());
+    
+    std::vector<AABBTriangle> tris;
+    
+    comp->GetModel()->FindAllFromAABB(local_min, local_max, tris);
+    
+    for (auto& tri : tris) {
+        tri.point1 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point1);
+        tri.point2 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point2);
+        tri.point3 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point3);
         
-        vec3 local_min = aabb_min - rcomp->GetLocation();
-        vec3 local_max = aabb_max - rcomp->GetLocation();
+        tri.normal = tri.normal * comp->GetRotation();
         
-        RotateAABB(local_min, local_max, -rcomp->GetRotation());
-        
-        std::vector<AABBTriangle> tris;
-        
-        rcomp->GetModel()->FindAllFromAABB(local_min, local_max, tris);
-        
-        for (auto& tri : tris) {
-            tri.point1 = rcomp->GetLocation() + rcomp->GetRotation() * tri.point1;
-            tri.point2 = rcomp->GetLocation() + rcomp->GetRotation() * tri.point2;
-            tri.point3 = rcomp->GetLocation() + rcomp->GetRotation() * tri.point3;
+        ClipAABBTriangle(tri, info.front_plane, [&](AABBTriangle tri) {
+        ClipAABBTriangle(tri, info.back_plane, [&](AABBTriangle tri) {
+        ClipAABBTriangle(tri, info.top_plane, [&](AABBTriangle tri) {
+        ClipAABBTriangle(tri, info.bottom_plane, [&](AABBTriangle tri) {
+        ClipAABBTriangle(tri, info.left_plane, [&](AABBTriangle tri) {
+        ClipAABBTriangle(tri, info.right_plane, [&](AABBTriangle tri) {
             
-            tri.normal = tri.normal * rcomp->GetRotation();
+            Render::StaticModelVertex vert1;
+            Render::StaticModelVertex vert2;
+            Render::StaticModelVertex vert3;
             
-            ClipAABBTriangle(tri, front_plane, [&](AABBTriangle tri) {
-            ClipAABBTriangle(tri, back_plane, [&](AABBTriangle tri) {
-            ClipAABBTriangle(tri, top_plane, [&](AABBTriangle tri) {
-            ClipAABBTriangle(tri, bottom_plane, [&](AABBTriangle tri) {
-            ClipAABBTriangle(tri, left_plane, [&](AABBTriangle tri) {
-            ClipAABBTriangle(tri, right_plane, [&](AABBTriangle tri) {
-                
-                Render::StaticModelVertex vert1;
-                Render::StaticModelVertex vert2;
-                Render::StaticModelVertex vert3;
-                
-                vec3 local1 = glm::inverse(rotation) * (tri.point1 - location);
-                vec3 local2 = glm::inverse(rotation) * (tri.point2 - location);
-                vec3 local3 = glm::inverse(rotation) * (tri.point3 - location);
-                
-                vert1.co = tri.point1 + tri.normal * 0.01f;
-                vert2.co = tri.point2 + tri.normal * 0.01f;
-                vert3.co = tri.point3 + tri.normal * 0.01f;
-                
-                vert1.normal = tri.normal;
-                vert2.normal = tri.normal;
-                vert3.normal = tri.normal;
-                
-                vert1.tex = {local1.x / decal_width + 0.5f, local1.y / decal_height + 0.5f};
-                vert2.tex = {local2.x / decal_width + 0.5f, local2.y / decal_height + 0.5f};
-                vert3.tex = {local3.x / decal_width + 0.5f, local3.y / decal_height + 0.5f};
-                
-                vert1.tex.x *= tex_width;
-                vert2.tex.x *= tex_width;
-                vert3.tex.x *= tex_width;
-                
-                vert1.tex.y *= tex_height;
-                vert2.tex.y *= tex_height;
-                vert3.tex.y *= tex_height;
-                
-                vert1.tex.x += tex_w_off;
-                vert2.tex.x += tex_w_off;
-                vert3.tex.x += tex_w_off;
-                
-                vert1.tex.y += tex_h_off + 1.0f;
-                vert2.tex.y += tex_h_off + 1.0f;
-                vert3.tex.y += tex_h_off + 1.0f;
-                
-                vert1.lighttex = {0.0f, 0.0f};
-                vert2.lighttex = {0.0f, 1.0f};
-                vert3.lighttex = {1.0f, 1.0f};
-                
-                vert1.texture = 0;
-                vert2.texture = 0;
-                vert3.texture = 0;
-                
-                verts.push_back(vert1);
-                verts.push_back(vert2);
-                verts.push_back(vert3);
-            });
-            });
-            });
-            });
-            });
-            });
-        }
+            vec3 local1 = glm::inverse(rotation) * (tri.point1 - location);
+            vec3 local2 = glm::inverse(rotation) * (tri.point2 - location);
+            vec3 local3 = glm::inverse(rotation) * (tri.point3 - location);
+            
+            vert1.co = tri.point1 + tri.normal * 0.01f;
+            vert2.co = tri.point2 + tri.normal * 0.01f;
+            vert3.co = tri.point3 + tri.normal * 0.01f;
+            
+            vert1.normal = tri.normal;
+            vert2.normal = tri.normal;
+            vert3.normal = tri.normal;
+            
+            vert1.tex = {local1.x / info.decal_width + 0.5f, local1.y / info.decal_height + 0.5f};
+            vert2.tex = {local2.x / info.decal_width + 0.5f, local2.y / info.decal_height + 0.5f};
+            vert3.tex = {local3.x / info.decal_width + 0.5f, local3.y / info.decal_height + 0.5f};
+            
+            vert1.tex.x *= info.tex_width;
+            vert2.tex.x *= info.tex_width;
+            vert3.tex.x *= info.tex_width;
+            
+            vert1.tex.y *= info.tex_height;
+            vert2.tex.y *= info.tex_height;
+            vert3.tex.y *= info.tex_height;
+            
+            vert1.tex.x += info.tex_w_off;
+            vert2.tex.x += info.tex_w_off;
+            vert3.tex.x += info.tex_w_off;
+            
+            vert1.tex.y += info.tex_h_off + 1.0f;
+            vert2.tex.y += info.tex_h_off + 1.0f;
+            vert3.tex.y += info.tex_h_off + 1.0f;
+            
+            vert1.lighttex = {0.0f, 0.0f};
+            vert2.lighttex = {0.0f, 1.0f};
+            vert3.lighttex = {1.0f, 1.0f};
+            
+            vert1.texture = 0;
+            vert2.texture = 0;
+            vert3.texture = 0;
+            
+            vertices->static_verts.push_back(vert1);
+            vertices->static_verts.push_back(vert2);
+            vertices->static_verts.push_back(vert3);
+        });
+        });
+        });
+        });
+        });
+        });
+    }
+    
+    if (is_static) {
+        Render::API::UpdateVertexArray(vertex_array, sizeof(Render::StaticModelVertex) * vertices->static_verts.size(), vertices->static_verts.data());
+        Render::API::SetDrawListIndexRange(draw_list_entry, 0, vertices->static_verts.size());
+    }
+    
+    if (is_dynamic) {
+        Render::API::UpdateVertexArray(vertex_array, sizeof(Render::DynamicModelVertex) * vertices->dynamic_verts.size(), vertices->dynamic_verts.data());
+        Render::API::SetDrawListIndexRange(draw_list_entry, 0, vertices->dynamic_verts.size());
+    }
+}
 
-    });
-
-    Render::API::UpdateVertexArray(vertex_array, sizeof(Render::StaticModelVertex) * verts.size(), verts.data());
-    Render::API::SetDrawListIndexRange(draw_list_entry, 0, verts.size());
+void DecalComponent::UpdateRenderListObject() {
+    if (!is_ready) return;
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(vec3(0.0f, 0.0f, 0.0f), quat(1.0f, 0.0f, 0.0f, 0.0f)));
 }

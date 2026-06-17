@@ -8,6 +8,11 @@
 
 namespace tram {
 
+class RenderComponent;
+class AnimationComponent;
+struct DecalVertices;
+struct DecalProjectInfo;
+
 class DecalComponent : public EntityComponent {
 public:
     static DecalComponent* Make();
@@ -38,6 +43,14 @@ public:
         this->rotation = rotation;
         UpdateRenderListObject();
     }
+    
+    void ProjectOnStart(bool project) {
+        project_on_start = project;
+    }
+    
+    void ProjectOnWorld(bool reset = false);
+    void ProjectOnModel(RenderComponent* comp, vec3 pos, quat rot, bool reset = false);
+    void ProjectOnModel(RenderComponent* comp, AnimationComponent* anim, vec3 pos, quat rot, bool reset = false);
 
     void EventHandler(Event &event){return;}
 protected:
@@ -47,11 +60,26 @@ protected:
     quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     
     float scale = 1.0f;
+    float depth = 3.0f;
+    
+    bool project_on_start = false;
     
     uint32_t frame = 0;
 
     void Start();
     void UpdateRenderListObject();
+    
+    void InitAsStatic();
+    void InitAsDynamic();
+    void ResetVertices();
+    
+    void MakeProjectInfo(DecalProjectInfo& info);
+    void ProjectOnModel(DecalProjectInfo& info, RenderComponent* comp, AnimationComponent* anim, vec3 pos, quat rot);
+    
+    bool is_static = false;
+    bool is_dynamic = false;
+
+    DecalVertices* vertices = nullptr;
 
     DecalComponent() : sprite(this) {}
     ~DecalComponent();
