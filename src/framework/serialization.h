@@ -3,30 +3,19 @@
 #ifndef TRAM_SDK_FRAMEWORK_SERIALIZATION_H
 #define TRAM_SDK_FRAMEWORK_SERIALIZATION_H
 
-#include <cassert>
+namespace tram::Serialization {
 
-#include <framework/uid.h>
-#include <framework/value.h>
+void Register(const char*, void (*)(const char*), void (*)(const char*), void (*)(const char*));
 
-#include <framework/math.h>
+void AppendPluginsToLoadList();
+void RemovePluginsFromLoadList();
 
-/**
- * Serialization, i.e. saving application state is not implemented yet.
- * 
- * I will probably get around to it sometime.
- */
-
-namespace tram {
-
-/// Wrapper for serialized field values.
-/*class SerializedFieldArray {
-public:
-    SerializedFieldArray(const Value* first, size_t count) : first_field(first), field_count(count) {}
-    const Value& operator [](size_t n) const { assert(n < field_count); return first_field[n]; }
-private:
-    const Value* first_field;
-    size_t field_count;
-};*/
+void LoadDataManifest();
+void LoadPluginManifest();
+void LoadInitial();
+void LoadDelayed();
+void Save();
+void Reload();
 
 }
 
