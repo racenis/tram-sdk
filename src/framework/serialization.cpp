@@ -238,4 +238,17 @@ void Reload() {
     });
 }
 
+void LoadFlat() {
+    for (auto& plugin : plugins) {
+        for (auto& item : plugin.items) {
+            if (~item.flags & ITEM_SAVEABLE) continue;
+            for (auto& type : data_types) {
+                if (type.name != item.type) continue;
+                type.load(item.name.c_str());
+                break;
+            }
+        }
+    }
+}
+
 }

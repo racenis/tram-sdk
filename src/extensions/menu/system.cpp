@@ -3,8 +3,14 @@
 #include <extensions/menu/system.h>
 
 #include <framework/settings.h>
+#include <framework/serialization.h>
 #include <audio/audio.h>
 #include <platform/api.h>
+#include <platform/file.h>
+
+#include <filesystem>
+
+#include <config.h>
 
 namespace tram::Ext::Menu {
 
@@ -26,18 +32,24 @@ void SystemMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_LEFT, menu_width);
     GUI::FillFrame(GUI::WIDGET_WINDOW);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
-        GUI::Button("New", false, 90);
+        if (GUI::Button("New", true, 90)) {
+            Menu::Push(new SaveMenu(false, false, false));
+        }
         GUI::NewLine();
-        GUI::Button("Load", false, 90);
+        if (GUI::Button("Save", true, 90)) {
+            Menu::Push(new SaveMenu(true, false, false));
+        }
         GUI::NewLine();
-        GUI::Button("Save", false, 90);
+        if (GUI::Button("Load", true, 90)) {
+            Menu::Push(new SaveMenu(false, true, false));
+        }
         GUI::NewLine();
         if (GUI::Button("Settings", true, 90)) {
             Menu::Push(new SettingsMenu);
         }
         GUI::NewLine();
         if (GUI::Button("Exit", true, 90)) {
-            
+            Menu::Push(new SaveMenu(false, false, true));
         }
     
     GUI::PopFrame();
@@ -320,6 +332,200 @@ void SettingsMenu::Display() {
             }
         GUI::PopFrame();
         GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+    GUI::PopFrame();
+}
+
+static bool format_save_dir(char* path) {
+#ifdef _WIN32
+    char* app_data = getenv("APPDATA");
+    const char* default_dir = "TramwaySDKShared";
+    
+    if (!app_data) {
+        Log(Severity::ERROR, System::INVALID, "%APPDATA% env var not set!");
+        return false;
+    }
+#else
+    char* app_data = getenv("HOME");
+    const char* default_dir = ".TramwaySDKShared";
+    
+    if (!app_data) {
+        Log(Severity::ERROR, System::INVALID, "HOME env var not set!");
+        return false;
+    }
+#endif
+    snprintf(path, PATH_LIMIT, "%s/%s/saves", app_data, Core::GetApplicationShortName() ? Core::GetApplicationShortName() : default_dir);
+    return true;
+}
+
+SaveMenu::SaveMenu(bool saving, bool loading, bool exiting) {
+    this->saving = saving;
+    this->loading = loading;
+    this->exiting = exiting;
+    
+    if (!saving && !loading) return;
+    
+    char path[PATH_LIMIT];
+    format_save_dir(path);
+    
+    if (!std::filesystem::exists(path)) {
+        Log(Severity::WARNING, System::INVALID, "Save directory not found: {}", path);
+        return;
+    }
+
+    if (!std::filesystem::is_directory(path)) {
+        Log(Severity::WARNING, System::INVALID, "Save directory not directory: {}", path);
+        return;
+    }
+    
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (!entry.is_directory()) {
+            Log(Severity::WARNING, System::INVALID, "Stray file in saves: {}", entry.path().c_str());
+        }
+        saves.push_back(entry.path().filename().string());
+    }
+}
+
+void SaveMenu::Display() {
+    uint32_t menu_height = loading && loading_index == -1 ? 240 : 90;
+    uint32_t menu_width = 320;
+    uint32_t menu_offset = (UI::GetScreenHeight() / GUI::GetScaling() - menu_height) / 2;
+    uint32_t menu_offset2 = (UI::GetScreenWidth() / GUI::GetScaling() - menu_width) / 2;
+    
+    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, menu_offset);
+    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, menu_offset2);
+    GUI::PushFrameRelative(GUI::FRAME_TOP, menu_height);
+    GUI::PushFrameRelative(GUI::FRAME_LEFT, menu_width);
+    GUI::FillFrame(GUI::WIDGET_WINDOW);
+    GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        if (loading && loading_index == -1) {
+            GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 8);
+                if (saves.size()) {
+                    GUI::Text("Select a save:", GUI::TEXT_CENTER);
+                } else {
+                    GUI::Text("No saves found.", GUI::TEXT_CENTER);
+                }
+            GUI::PopFrame();
+            
+            GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 32);
+                int lines_lined = 0;
+                for (int i = (int)saves.size() - 1; i >= 0 && i >= (int)saves.size() - 21; i--) {
+                    if (GUI::Button(saves[i].c_str(), true, 100)) {
+                        loading_index = i;
+                    }
+                    if (lines_lined++ == 2) lines_lined = 0, GUI::NewLine();
+                }
+            GUI::PopFrame();
+            
+            GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 28);
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, (menu_width - 70) / 2);
+                if (GUI::Button("Cancel", true, 70)) {
+                    Menu::Pop();
+                }
+            GUI::PopFrame();
+            GUI::PopFrame();
+        } else if (loading) {
+            GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 8);
+                GUI::Text("All unsaved progress will be lost.", GUI::TEXT_CENTER); GUI::NewLine();
+                GUI::Text("Load selected save?", GUI::TEXT_CENTER);
+            GUI::PopFrame();
+            
+            GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 28);
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, (menu_width - 152) / 2);
+                if (GUI::Button("Yes", true, 70)) {
+                    char path[PATH_LIMIT];
+                    format_save_dir(path);
+                    strncat(path, "/", PATH_LIMIT - strlen(path));
+                    strncat(path, saves[loading_index].c_str(), PATH_LIMIT - strlen(path));
+                    
+                    auto search_list = FileReader::GetSearchList();
+                    auto backup = search_list;
+                    
+                    search_list.push_back({"file", path});
+                    
+                    Serialization::Reload();
+                    FileReader::SetSearchList(search_list);
+                    Serialization::LoadFlat();
+                    FileReader::SetSearchList(backup);
+                    
+                    Menu::Clear();
+                }
+                GUI::Text(" ");
+                if (GUI::Button("No", true, 70)) {
+                    Menu::Pop();
+                }
+            GUI::PopFrame();
+            GUI::PopFrame();
+        } else if (saving) {
+            GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 8);
+                GUI::Text("Create a new save?", GUI::TEXT_CENTER);
+            GUI::PopFrame();
+
+            GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 28);
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, (menu_width - 152) / 2);
+                if (GUI::Button("Yes", true, 70)) {
+                    char path[PATH_LIMIT];
+                    format_save_dir(path);
+                    char savename[20];
+                    snprintf(savename, 20, "/%03llu", saves.size());
+                    strncat(path, savename, PATH_LIMIT - strlen(path));
+                    
+                    FileWriter::SetProtocolAlias("save", "file", path);
+                    Serialization::Save();
+                    FileWriter::SetProtocolAlias("save", nullptr, nullptr);
+                    
+                    Menu::Clear();
+                }
+                GUI::Text(" ");
+                if (GUI::Button("No", true, 70)) {
+                    Menu::Pop();
+                }
+            GUI::PopFrame();
+            GUI::PopFrame();
+        } else if (exiting) {
+            GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 8);
+                GUI::Text("All unsaved progress will be lost.", GUI::TEXT_CENTER); GUI::NewLine();
+                GUI::Text("Save before exiting?", GUI::TEXT_CENTER);
+            GUI::PopFrame();
+            
+            GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 28);
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, (menu_width - 230) / 2);
+                if (GUI::Button("Yes", true, 70)) {
+                    UI::SetShouldExit(true);
+                }
+                GUI::Text(" ");
+                if (GUI::Button("No", true, 70)) {
+                    UI::SetShouldExit(true);
+                }
+                GUI::Text(" ");
+                if (GUI::Button("Cancel", true, 70)) {
+                    Menu::Pop();
+                }
+            GUI::PopFrame();
+            GUI::PopFrame();
+        } else {
+            GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 8);
+                GUI::Text("All unsaved progress will be lost.", GUI::TEXT_CENTER); GUI::NewLine();
+                GUI::Text("Reset everything?", GUI::TEXT_CENTER); GUI::NewLine();
+            GUI::PopFrame();
+            
+            GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 28);
+            GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, (menu_width - 152) / 2);
+                if (GUI::Button("Yes", true, 70)) {
+                    Serialization::Reload();
+                    
+                    Menu::Clear();
+                }
+                GUI::Text(" ");
+                if (GUI::Button("No", true, 70)) {
+                    Menu::Pop();
+                }
+            GUI::PopFrame();
+            GUI::PopFrame();
+        }
     GUI::PopFrame();
     GUI::PopFrame();
     GUI::PopFrame();

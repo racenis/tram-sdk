@@ -11,6 +11,8 @@
 #include <config.h>
 
 #include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 /**
  * @file framework/core.cpp
@@ -174,6 +176,33 @@ void Core::AddTime(double add_time) {
     frame_time += add_time;
 }
 
+static char* app_name_short = nullptr;
+static char* app_name_long = nullptr;
+
+/// Sets the name of the application.
+/// The long name will be used for display and can contain punctuation and
+/// spaces, wheras the short name will be used to name directories, so it should
+/// contain only alphanumeric characters.
+/// @param short_name Short name of the application.
+/// @param long_name  Long name of the application.
+void Core::SetApplicationName(const char* short_name, const char* long_name) {
+    if (app_name_short) free(app_name_short);
+    if (app_name_long) free(app_name_long);
+    app_name_short = short_name ? strdup(short_name) : nullptr;
+    app_name_long = long_name ? strdup(long_name) : nullptr;
+}
+
+/// Returns the name of the application.
+/// @return Application name or a `nullptr` if it hasn't been set.
+const char* Core::GetApplicationName() {
+    return app_name_long;
+}
+
+/// Returns the short name of the application.
+/// @return Application name or a `nullptr` if it hasn't been set.
+const char* Core::GetApplicationShortName() {
+    return app_name_short;
+}
 
 /// Returns the version identifier of the runtime.
 const char* GetVersion() {

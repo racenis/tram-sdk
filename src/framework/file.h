@@ -37,6 +37,7 @@ public:
     void write_float64(double value);
     
     void write_name(name_t value);
+    void write_token(const char* value);
     void write_string(const char* value, char delimiter = '"');
     void write_newline();
     

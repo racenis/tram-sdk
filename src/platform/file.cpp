@@ -1,12 +1,13 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-#include <cassert>
-
-#include <cstring>
-
 #include <platform/file.h>
 #include <framework/logging.h>
 #include <templates/hashmap.h>
+
+#include <filesystem>
+
+#include <cassert>
+#include <cstring>
 
 #include <config.h>
 
@@ -252,8 +253,10 @@ public:
             sprintf(temp_path, "%s.tmp", path);
         }
         
+        std::filesystem::create_directories(std::filesystem::path(full_path).parent_path());
+        
         this->file_handle = fopen(temp_path, "wb");
-
+        
         if (file_handle != nullptr) {
             Log (Severity::INFO, System::PLATFORM, "Opened file for writing: {}", path);
         } else {
@@ -354,6 +357,11 @@ void FileWriter::SetProtocolAlias(const char* alias, const char* protocol, const
         p.alias = alias;
         p.protocol = protocol;
         p.location = location;
+        return;
+    }
+    
+    if (strcmp(protocol, "file") == 0) {
+        alias_list.push_back({alias, protocol, location});
         return;
     }
     

@@ -149,16 +149,12 @@ void Update() {
         menu->Display();
     }
     
-    // TODO: cop[y menu_stack
     bool displayed[3] = {false, false, false};
-    auto menu_stack_copy = menu_stack;
-    for (auto menu = menu_stack_copy.rbegin(); menu != menu_stack_copy.rend(); menu++) {
-        
-        if (uint32_t layer = (*menu)->Layer(); !displayed[layer]) {
+    for (int i = (int)menu_stack.size() - 1; i >= 0 && i < (int)menu_stack.size(); i++) {
+        if (uint32_t layer = menu_stack[i]->Layer(); !displayed[layer]) {
             displayed[layer] = true;
-            (*menu)->Display();
+            menu_stack[i]->Display();
         }
-        
     }
 
     UpdateCallbacks();

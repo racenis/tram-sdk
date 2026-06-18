@@ -745,6 +745,7 @@ void File::write_float32(float value) { writer_parser->write_float32(value);}
 void File::write_float64(double value) { writer_parser->write_float64(value); }
 
 void File::write_name(name_t value) { writer_parser->write_name(value); }
+void File::write_token(const char* value) { writer_parser->write_string(value, '\0'); }
 void File::write_string(const char* value, char delimiter) { writer_parser->write_string(value, delimiter); }
 
 /// Writes a newline to the file.

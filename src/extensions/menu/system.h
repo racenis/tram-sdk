@@ -36,6 +36,20 @@ protected:
     bool binding_state_ready = false;
 };
 
+class SaveMenu : public Menu {
+public:
+    SaveMenu(bool saving, bool loading, bool exiting);
+    void Display();
+    uint32_t Layer() { return 0; }
+    ~SaveMenu() = default;
+protected:
+    bool saving = false;
+    bool loading = false;
+    bool exiting = false;
+    int loading_index = -1;
+    std::vector<std::string> saves;
+};
+
 }
 
 #endif

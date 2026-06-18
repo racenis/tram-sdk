@@ -195,6 +195,10 @@ bool ShouldExit() {
     return exit;
 }
 
+void SetShouldExit(bool should_exit) {
+    exit = should_exit;
+}
+
 /// Initializes the UI system.
 /// This will open the window.
 void Init() {

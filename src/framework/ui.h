@@ -147,6 +147,7 @@ std::vector<std::pair<keyboardaction_t, std::vector<KeyboardKey>>> GetAllKeyboar
 const char* GetKeyboardKeyName(KeyboardKey key);
 
 bool ShouldExit();
+void SetShouldExit(bool exit);
 
 }
 

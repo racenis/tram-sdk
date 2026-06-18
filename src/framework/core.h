@@ -30,6 +30,10 @@ namespace Core {
     void SetTime(double);
     void AddTime(double);
     
+    void SetApplicationName(const char*, const char*);
+    const char* GetApplicationName();
+    const char* GetApplicationShortName();
+    
     // TODO: maybe put GenerateID() and GetVersion() in here too
 }
 

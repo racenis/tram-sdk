@@ -14,6 +14,7 @@ void LoadDataManifest();
 void LoadPluginManifest();
 void LoadInitial();
 void LoadDelayed();
+void LoadFlat();
 void Save();
 void Reload();
 
