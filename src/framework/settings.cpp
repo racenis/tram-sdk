@@ -3,6 +3,8 @@
 #include <framework/settings.h>
 
 #include <framework/logging.h>
+#include <framework/file.h>
+#include <framework/ui.h>
 #include <templates/hashmap.h>
 #include <templates/pool.h>
 
@@ -197,7 +199,7 @@ void Set(const char* name, value_t value) {
     if (value.IsInt()) {
         *setting->int32 = value.GetInt();
     } else if (value.IsFloat()) {
-        *setting->int32 = value.GetFloat();
+        *setting->float32 = value.GetFloat();
     } else if (value.IsBool()) {
         *setting->bool32 = value;
     } else {
@@ -289,13 +291,123 @@ std::vector<name_t> GetSettings(uint32_t filter) {
     return filtered;
 }
 
-void Save(const char* file) {
-    // TODO: implement
+static const char* setting_path(const char* path) {
+    return path ? path : "app://settings.cfg";
 }
 
-void Load(const char* file) {
-    // TODO: implement
+static const char* keybind_path(const char* path) {
+    return path ? path : "app://keybinds.cfg";
 }
 
+void Save(const char* path) {
+    File file(setting_path(path), File::WRITE);
+    if (!file.is_open()) {
+        Log(Severity::WARNING, System::CORE, "Can't open {} for saving settings!", setting_path(path));
+        return;
+    }
+    
+    file.write_token("SETTINGSv1");
+    file.write_newline();
+    
+    for (size_t i = 0; i < last_setting; i++) {
+        const auto& setting = settings[i];
+        
+        file.write_token(setting.name);
+        
+        switch (setting.type) {
+            case TYPE_BOOL:
+                file.write_int32(*setting.bool32);
+                break;
+            case TYPE_FLOAT32:
+                file.write_float32(*setting.float32);
+                break;
+            case TYPE_INT32:
+                file.write_int32(*setting.int32);
+                break;
+            case TYPE_UINT32:
+                file.write_uint32(*setting.uint32);
+                break;
+            default: break;
+        }
+    }
+}
+
+void Load(const char* path) {
+    File file(setting_path(path), File::READ | File::PAUSE_LINE);
+    if (!file.is_open()) {
+        Log(Severity::WARNING, System::CORE, "Can't open {} for loading settings!", setting_path(path));
+        return;
+    }
+    
+    auto header = file.read_token();
+    file.skip_linebreak();
+    if (header != "SETTINGSv1") {
+        Log(Severity::WARNING, System::CORE, "Invalid settings header {} in file {}", header, setting_path(path));
+        return;
+    }
+    
+    while (file.is_continue()) {
+        auto name = file.read_token();
+        auto value = file.read_token();
+        
+        RawSetting setting;
+        
+        // this will cause a little memory leak, but in the name of expediency
+        // we will overlook such a trivial matter
+        setting.key = (new std::string(name))->c_str();
+        setting.value = (new std::string(value))->c_str();
+        setting.maybe_flag = false;
+        
+        raw_settings.push_back(setting);
+        
+        file.skip_linebreak();
+    }
+    
+    for (size_t i = 0; i < last_setting; i++) SetFromRaw(settings[i]);
+}
+
+void SaveKeybinds(const char* path) {
+    File file(keybind_path(path), File::WRITE);
+    if (!file.is_open()) {
+        Log(Severity::WARNING, System::CORE, "Can't open {} for saving keybinds!", keybind_path(path));
+        return;
+    }
+    
+    file.write_token("KEYBINDSv1");
+    file.write_newline();
+
+    for (auto& binding : UI::GetAllKeyboardKeyBindings()) {
+        for (auto& key : binding.second) {
+            file.write_token(UI::GetKeyboardActionName(binding.first));
+            file.write_int32(key);
+            file.write_string(" # code for ", '\0');
+            file.write_string(GetKeyboardKeyName(key), '\0');
+        }
+    }
+}
+
+void LoadKeybinds(const char* path) {
+    File file(setting_path(path), File::READ | File::PAUSE_LINE);
+    if (!file.is_open()) {
+        Log(Severity::WARNING, System::CORE, "Can't open {} for loading keybinds!", keybind_path(path));
+        return;
+    }
+    
+    auto header = file.read_token();
+    file.skip_linebreak();
+    if (header != "KEYBINDSv1") {
+        Log(Severity::WARNING, System::CORE, "Invalid keybinds header {} in file {}", header, keybind_path(path));
+        return;
+    }
+    
+    while (file.is_continue()) {
+        UI::keyboardaction_t action = UI::GetKeyboardAction(file.read_name());
+        UI::KeyboardKey key = (UI::KeyboardKey)file.read_int32();
+        
+        UI::BindKeyboardKey(key, action);
+        
+        file.skip_linebreak();
+    }
+}
 
 }

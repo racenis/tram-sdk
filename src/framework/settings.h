@@ -34,8 +34,11 @@ void Set(const char* name, value_t value);
 
 void Parse(const char** argv, int argc);
 
-void Save(const char* file);
-void Load(const char* file);
+void Save(const char* path);
+void Load(const char* path);
+
+void SaveKeybinds(const char* path);
+void LoadKeybinds(const char* path);
 
 uint32_t Flags(const char* name);
 void SetFlag(const char* name, uint32_t flag, bool enabled);
