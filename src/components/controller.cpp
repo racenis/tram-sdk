@@ -282,6 +282,12 @@ void FPSControllerComponent::RecoverFromCollisions() {
         velocity += slope * 0.15f;
     }
     
+    if (floor_collision.collider && floor_collision.collider->GetParent()) {
+        standing_on = floor_collision.collider->GetParent()->GetID();
+    } else {
+        standing_on = 0;
+    }
+    
     // check if new position is on the ground
     auto ground_collisions = Physics::Shapecast(
         Physics::CollisionShape::Cylinder(width * 0.9f, half_height),
@@ -301,10 +307,6 @@ void FPSControllerComponent::RecoverFromCollisions() {
             if (coll.point.y > character_bottom_height && coll.point.y < lowest_collision.y) {
                 lowest_collision = coll.point;
                 lowest_collision_normal = coll.normal;
-                
-                if (coll.collider && coll.collider->GetParent()) {
-                    standing_on = coll.collider->GetParent()->GetID();
-                }
             }
         }
         
@@ -350,7 +352,6 @@ void FPSControllerComponent::RecoverFromCollisions() {
             }
         }
     } else {
-        standing_on = 0;
         is_in_air = true;
     }
     

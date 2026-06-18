@@ -291,18 +291,10 @@ std::vector<name_t> GetSettings(uint32_t filter) {
     return filtered;
 }
 
-static const char* setting_path(const char* path) {
-    return path ? path : "app://settings.cfg";
-}
-
-static const char* keybind_path(const char* path) {
-    return path ? path : "app://keybinds.cfg";
-}
-
-void Save(const char* path) {
-    File file(setting_path(path), File::WRITE);
+static void save_settings(const char* path, uint32_t filter) {
+    File file(path, File::WRITE);
     if (!file.is_open()) {
-        Log(Severity::WARNING, System::CORE, "Can't open {} for saving settings!", setting_path(path));
+        Log(Severity::WARNING, System::CORE, "Can't open {} for saving settings!", path);
         return;
     }
     
@@ -311,6 +303,8 @@ void Save(const char* path) {
     
     for (size_t i = 0; i < last_setting; i++) {
         const auto& setting = settings[i];
+        if (~setting.flags & MODIFIED) continue;
+        if (~setting.flags & filter) continue;
         
         file.write_token(setting.name);
         
@@ -332,17 +326,27 @@ void Save(const char* path) {
     }
 }
 
-void Load(const char* path) {
-    File file(setting_path(path), File::READ | File::PAUSE_LINE);
+void Save(const char* path) {
+    if (path) {
+        save_settings(path, USER | APPLICATION);
+        return;
+    }
+    
+    save_settings("user://settings.cfg", USER);
+    save_settings("app://settings.cfg", APPLICATION);
+}
+
+static void load_settings(const char* path) {
+    File file(path, File::READ | File::PAUSE_LINE);
     if (!file.is_open()) {
-        Log(Severity::WARNING, System::CORE, "Can't open {} for loading settings!", setting_path(path));
+        Log(Severity::WARNING, System::CORE, "Can't open {} for loading settings!", path);
         return;
     }
     
     auto header = file.read_token();
     file.skip_linebreak();
     if (header != "SETTINGSv1") {
-        Log(Severity::WARNING, System::CORE, "Invalid settings header {} in file {}", header, setting_path(path));
+        Log(Severity::WARNING, System::CORE, "Invalid settings header {} in file {}", header, path);
         return;
     }
     
@@ -362,8 +366,21 @@ void Load(const char* path) {
         
         file.skip_linebreak();
     }
+}
+
+void Load(const char* path) {
+    if (path) {
+        load_settings(path);
+    } else {
+        load_settings("app://settings.cfg");
+        load_settings("user://settings.cfg");
+    }
     
     for (size_t i = 0; i < last_setting; i++) SetFromRaw(settings[i]);
+}
+
+static const char* keybind_path(const char* path) {
+    return path ? path : "app://keybinds.cfg";
 }
 
 void SaveKeybinds(const char* path) {
@@ -387,7 +404,7 @@ void SaveKeybinds(const char* path) {
 }
 
 void LoadKeybinds(const char* path) {
-    File file(setting_path(path), File::READ | File::PAUSE_LINE);
+    File file(keybind_path(path), File::READ | File::PAUSE_LINE);
     if (!file.is_open()) {
         Log(Severity::WARNING, System::CORE, "Can't open {} for loading keybinds!", keybind_path(path));
         return;

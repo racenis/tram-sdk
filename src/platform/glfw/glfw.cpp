@@ -70,7 +70,8 @@ void Window::Init() {
 
     glfwWindowHint(GLFW_FOCUSED, GL_FALSE);
     
-    WINDOW = glfwCreateWindow(window_width, window_height, (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", nullptr, nullptr);
+    const char* app = Core::GetApplicationName();
+    WINDOW = glfwCreateWindow(window_width, window_height, app ? app : (const char*)u8"Tramvaju Drifta un Pagrabu Pētīšanas Simulatoru Izstrādes Rīkkopa Versija 0.1.1", nullptr, nullptr);
     if (WINDOW == nullptr) {
         glfwTerminate();
         Log(Severity::CRITICAL_ERROR, System::UI, "GLFW window didn't open!");
