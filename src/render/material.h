@@ -57,9 +57,6 @@ public:
     void SetSource(Material* source);
     void SetTextureImage(uint8_t* data, uint8_t channels, uint16_t width, uint16_t height);
     
-    // TODO: yeet this
-    void MakePattern(vec3 color1, vec3 color2);
-    
     void LoadFromDisk();
     void LoadFromMemory();
     

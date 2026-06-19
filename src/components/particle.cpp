@@ -453,8 +453,6 @@ void ParticleComponent::UpdateRenderListObject() {
             point.texture_offset = {tex_w_off, tex_h_off};
             point.texture_size = {tex_width, tex_height};
             point.texture = s;
-
-            AddLineMarker(position, COLOR_GREEN);
             
             points.push_back(point);
     }
@@ -463,8 +461,6 @@ void ParticleComponent::UpdateRenderListObject() {
     SetDrawListIndexRange(draw_list_entry, 0, points.size() * 6);
     
     Render::API::SetMatrix(draw_list_entry, PositionRotationToMatrix(location, quat(1.0f, 0.0f, 0.0f, 0.0f)));
-    
-    AddLineMarker(location, COLOR_WHITE);
 }
 
 /// Creates a new ParticleComponent.

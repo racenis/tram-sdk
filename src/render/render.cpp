@@ -8,6 +8,7 @@
 #include <render/renderer.h>
 #include <render/vertices.h>
 #include <render/lightmap.h>
+#include <render/error.h>
 #include <components/render.h>
 #include <components/sprite.h>
 #include <components/particle.h>
@@ -159,17 +160,25 @@ void Init () {
     
     // generating default texture
     Material* defaulttexture = Material::Make("defaulttexture", MATERIAL_TEXTURE);
-    defaulttexture->MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
+    defaulttexture->SetTextureImage(MakeNewErrorTexture(COLOR_WHITE, COLOR_CYAN), 3, 64, 64);
+    defaulttexture->AddReference();
     defaulttexture->LoadFromMemory();
     
     // this is for rendering debug text
     auto font_debug = Material::Make(UID("ui/font_debug"), MATERIAL_GLYPH);
+    auto font_pixels = GetDebugFont();
+    font_debug->SetTextureImage(font_pixels, 4, 256, 256);
     font_debug->AddReference();
     font_debug->Load();
     
     auto font_icon = Material::Make(UID("ui/font_icon"), MATERIAL_GLYPH);
+    auto icon_pixels = GetDebugIcon();
+    font_icon->SetTextureImage(icon_pixels, 4, 256, 256);
     font_icon->AddReference();
     font_icon->Load();
+    
+    delete [] font_pixels;
+    delete [] icon_pixels;
     
     CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), debugtext_vertex_array);
     debugtext_entry = InsertDrawListEntry();

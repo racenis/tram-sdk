@@ -222,22 +222,6 @@ Material* Material::Find(name_t name){
     return material;
 }
 
-/// Makes Material a pattern.
-/// This method does the same thing as LoadFromDisk(), but instead of loading
-/// the texture from disk, it will generate a 64x64 pixel checkerboard
-/// pattern, like the one used for errored materials.
-void Material::MakePattern(vec3 color1, vec3 color2) {
-    assert(status == UNLOADED);
-    
-    width = 64;
-    height = 64;
-    channels = 3;
-
-    texture_data = MakeNewErrorTexture(color1, color2);
-
-    status = LOADED;
-}
-
 void Material::SetTextureType(TextureType texture_type) {
     if (status != UNLOADED) {
         Log(Severity::WARNING, System::RENDER, "Loaded Materials cannot change types! Ignoring Material::SetType() call.");
@@ -344,8 +328,7 @@ void Material::LoadFromDisk() {
     }
 
     if (texture_type == TEXTURE_NONE) {
-        MakePattern({1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f});
-        status = LOADED;
+        SetTextureImage(MakeNewErrorTexture(COLOR_WHITE, COLOR_WHITE), 3, 64, 64);
         return;
     } else if (texture_type == TEXTURE_SOURCE) {
         source->AddReference();
@@ -405,8 +388,7 @@ void Material::LoadFromDisk() {
     } else {
         Log(Severity::NOTE, System::RENDER, "Texture {} ({}) couldn't be loaded!", name, path);
 
-        MakePattern({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f});
-        
+        SetTextureImage(MakeNewErrorTexture(COLOR_BLACK, COLOR_PINK), 3, 64, 64);
         load_fail = true;
     }
 
@@ -436,8 +418,9 @@ void Material::LoadFromDisk() {
             normal_map_width = 64;
             normal_map_height = 64;
 
-            normal_map_data = MakeNewErrorTexture(glm::normalize(vec3(0.25f, 0.75f, 1.0f)), glm::normalize(vec3(0.75f, 0.25f, 1.0f)));
-
+            normal_map_data = new uint8_t[64 * 64 * 3];
+            memcpy(normal_map_data, MakeNewErrorTexture(glm::normalize(vec3(0.25f, 0.75f, 1.0f)), glm::normalize(vec3(0.75f, 0.25f, 1.0f))), 64 * 64 * 3);
+            
             Log(Severity::NOTE, System::RENDER, "Normal map {} ({}) couldn't be loaded!", name, path);
         }
     }

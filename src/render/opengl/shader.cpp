@@ -29,6 +29,8 @@ namespace tram::Render::API {
     const char* shader_version = "#version 400 core";
 #endif
 
+static const char* get_fallback_shader(vertexformat_t format, uint32_t shader_type);
+
 static const char* shader_flag_to_string(uint32_t flag) {
     switch (flag) {
         case SHADER_SPECULAR:
@@ -123,12 +125,17 @@ public:
         FileReader* file = FileReader::GetReader(path);
         
         if (file->GetStatus() != FileStatus::READY) {
-            Log(Severity::ERROR, System::RENDER, "Can't find vertex shader source file {}!", UID(path));
+            Log(Severity::ERROR, System::RENDER, "Can't find {} shader source file {}!", GetShaderTypeName(), UID(path));
+            
+            // load in shader fallback
+            shader_len = strlen(get_fallback_shader(format, GetGLShaderCode()));
+            shader_code = (char*)malloc(shader_len + 1);
+            strncpy(shader_code, get_fallback_shader(format, GetGLShaderCode()), shader_len + 1);
+        } else {
+            shader_len = file->GetSize();
+            shader_code = (char*)malloc(shader_len + 1);
+            strncpy(shader_code, file->GetContents(), shader_len + 1);
         }
-        
-        shader_len = file->GetSize();
-        shader_code = (char*)malloc(shader_len + 1);
-        strncpy(shader_code, file->GetContents(), shader_len + 1);
         
         flags_in_shader = find_flags_in_shader(shader_code, shader_len);
         
@@ -149,7 +156,7 @@ public:
             if (shader_flags == flags) return shader;
         }
         
-        Log(Severity::INFO, System::RENDER, "Compiling vertex shader {} with {} flags", name, flags);
+        Log(Severity::INFO, System::RENDER, "Compiling {} shader {} with {} flags", GetShaderTypeName(), name, flags);
         
         // otherwise compile the shader again
         strcpy(shader_proc, shader_version);
@@ -187,7 +194,7 @@ public:
     }
     
 protected:
-    Shader(name_t name) : name(name) {}
+    Shader(name_t name, vertexformat_t format) : name(name), format(format) {}
     
     name_t name;
     std::vector<std::pair<shaderflags_t, uint32_t>> compiled_shaders;
@@ -197,6 +204,8 @@ protected:
     uint32_t flags_in_shader = 0;
     
     uint32_t initial_flags = 0;
+    
+    vertexformat_t format = 0;
     
     char* shader_proc = nullptr;
 };
@@ -211,18 +220,18 @@ public:
         return GL_VERTEX_SHADER;
     }
     
-    static VertexShader* Find(name_t name) {
+    static VertexShader* Find(name_t name, vertexformat_t format) {
         for (auto shader : all_shaders) {
             if (shader->GetName() == name) return shader;
         }
         
-        auto new_shader = new VertexShader(name);
+        auto new_shader = new VertexShader(name, format);
         all_shaders.push_back(new_shader);
         
         return new_shader;
     }
 private:
-    VertexShader(name_t name) : Shader(name) {}
+    VertexShader(name_t name, vertexformat_t format) : Shader(name, format) {}
     static std::vector<VertexShader*> all_shaders;
 };
 
@@ -236,18 +245,18 @@ public:
         return GL_FRAGMENT_SHADER;
     }
     
-    static FragmentShader* Find(name_t name) {
+    static FragmentShader* Find(name_t name, vertexformat_t format) {
         for (auto shader : all_shaders) {
             if (shader->GetName() == name) return shader;
         }
         
-        auto new_shader = new FragmentShader(name);
+        auto new_shader = new FragmentShader(name, format);
         all_shaders.push_back(new_shader);
         
         return new_shader;
     }
 private:
-    FragmentShader(name_t name) : Shader(name) {}
+    FragmentShader(name_t name, vertexformat_t format) : Shader(name, format) {}
     static std::vector<FragmentShader*> all_shaders;
 };
 
@@ -409,8 +418,8 @@ public:
     }
 private:
     LinkedShader(vertexformat_t format, materialtype_t type, uint32_t additional_flags, name_t vertex, name_t fragment) : format(format), type(type), additional_flags(additional_flags) {
-        vertex_shader = VertexShader::Find(vertex);
-        fragment_shader = FragmentShader::Find(fragment);
+        vertex_shader = VertexShader::Find(vertex, format);
+        fragment_shader = FragmentShader::Find(fragment, format);
     }
     
     vertexformat_t format;
@@ -458,6 +467,191 @@ void CompileShaders() {
     RegisterShader(VERTEX_LINE,     MATERIAL_FLAT_COLOR,    SHADER_NONE,        "line",     "line");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_MSDF,          SHADER_NONE,        "text",     "text");
     RegisterShader(VERTEX_SPRITE,   MATERIAL_GLYPH,         SHADER_NONE,        "glyph",    "glyph");
+}
+
+static const char* get_fallback_shader(vertexformat_t format, uint32_t shader_type) {
+    if (shader_type == GL_VERTEX_SHADER) switch (format) {
+        case VERTEX_STATIC:
+            return  "layout (location = 0) in vec3 Position;"
+                    "layout (location = 1) in vec3 Normal;"
+                    "layout (location = 2) in vec2 VertUV;"
+                    "layout (location = 3) in vec2 VertLightUV;"
+                    "layout (location = 4) in uint TexIndex;"
+                    ""
+                    "layout (std140) uniform Matrices {"
+                    "    mat4 projection;"
+                    "    mat4 view;"
+                    "};"
+                    ""
+                    "layout (std140) uniform ModelMatrices {"
+                    "    mat4 model; uvec4 model_lights; vec3 sun_direction; vec3 sun_color;"
+                    "    vec4 ambient_color; float time; float sun_weight; float screen_width;"
+                    "    float screen_height; vec4 colors[15]; vec4 specular[15];"
+                    "    vec4 texture_transforms[15];"
+                    "};"
+                    ""
+                    "out vec2 vert_uv;"
+                    "out vec2 vert_light_uv;"
+                    "out vec3 vert_color;"
+                    "out float vert_opacity;"
+                    "flat out uint vert_tex_index;"
+                    ""
+                    "void main() {"
+                    "    gl_Position = projection * view * model * vec4(Position, 1.0);"
+                    ""
+                    "    /* simple warnock lighting */"
+                    "    vec3 n = normalize(vec3(projection * view * model * vec4(Normal, 0.0)));"
+                    "    vert_color = vec3(ambient_color);"
+                    "    vert_color += clamp(dot(n, vec3(0.0, 0.0, -1.0)), 0.0, 1.0);"
+                    "    vert_color *= vec3(colors[TexIndex]);"
+                    ""
+                    "    vert_opacity = colors[TexIndex].w;"
+                    "    vert_uv = VertUV + vec2(texture_transforms[TexIndex]);"
+                    "    vert_tex_index = TexIndex;"
+                    "    vert_light_uv = VertLightUV;"
+                    "}";
+        case VERTEX_DYNAMIC:
+            return  "layout (location = 0) in vec3 Position;"
+                    "layout (location = 1) in vec3 Normal;"
+                    "layout (location = 2) in vec2 VertUV;"
+                    "layout (location = 3) in ivec4 BoneIndex;"
+                    "layout (location = 4) in vec4 BoneWeight;"
+                    "layout (location = 5) in uint TexIndex;"
+                    ""
+                    "layout (std140) uniform Matrices {"
+                    "    mat4 projection; mat4 view; vec3 view_pos;"
+                    "};"
+                    ""
+                    "layout (std140) uniform ModelMatrices {"
+                    "    mat4 model; uvec4 model_lights; vec3 sun_direction; vec3 sun_color;"
+                    "    vec4 ambient_color; float time; float sun_weight; float screen_width;"
+                    "    float screen_height; vec4 colors[15]; vec4 specular[15];"
+                    "    vec4 texture_transforms[15]; vec3 l00; vec3 l1m1; vec3 l10; vec3 l11;"
+                    "    vec3 l2m2; vec3 l2m1; vec3 l20; vec3 l21; vec3 l22;"
+                    "};"
+                    ""
+                    "out vec3 vert_color;"
+                    "out vec2 vert_uv;"
+                    "out float vert_opacity;"
+                    "flat out uint vert_tex_index;"
+                    ""
+                    "void main() {"
+                    "    gl_Position = projection * view * model * vec4(Position, 1.0);"
+                    ""
+                    "    /* simple warnock illumination + ambient color term */"
+                    "    vec3 n = normalize(vec3(projection * view * model * vec4(Normal, 0.0)));"
+                    "    vert_color = vec3(ambient_color);"
+                    "    vert_color += clamp(dot(vec3(0.0, 0.0, -1.0), n), 0.0, 1.0);"
+                    "    vert_color *= vec3(colors[TexIndex]);"
+                    ""
+                    "    vert_opacity = colors[TexIndex].w;"
+                    "    vert_uv = VertUV;"
+                    "}";
+        case VERTEX_SPRITE:
+            return  "layout (location = 0) in vec3 Position;"
+                    "layout (location = 1) in vec2 TexCoord;"
+                    "layout (location = 2) in vec3 VertColor;"
+                    "layout (location = 5) in uint Texture;"
+                    ""
+                    "out vec2 vert_uv;"
+                    "out vec3 vert_color;"
+                    "flat out uint vert_tex_index;"
+                    ""
+                    "uniform sampler2D sampler[15];"
+                    "uniform sampler2DArray samplerArray;"
+                    ""
+                    "layout (std140) uniform ModelMatrices {"
+                    "    mat4 model; uvec4 model_lights; vec3 sun_direction; vec3 sun_color;"
+                    "    vec4 ambient_color; float time; float sun_weight; float screen_width;"
+                    "    float screen_height; vec4 colors[15]; vec4 specular[15]; "
+                    "    vec4 texture_transforms[15];"
+                    "};"
+                    ""
+                    "void main() {"
+                    "    float pos_x = (round(Position.x) / (screen_width / 2.0)) - 1.0;"
+                    "    float pos_y = (round(Position.y) / (screen_height / -2.0)) + 1.0;"
+                    "    float depth = -0.5 - (Position.z / 128.0);"
+                    "    gl_Position = vec4(pos_x, pos_y, depth, 1.0);"
+                    "    vec2 tex_size = textureSize(sampler[Texture], 0);"
+                    "    vert_uv = vec2(TexCoord.x/tex_size.x, TexCoord.y/-tex_size.y);"
+                    "    vert_color = VertColor;"
+                    "    vert_tex_index = Texture;"
+                    "}";
+        case VERTEX_LINE:
+        default:
+            return  "layout (location = 0) in vec3 Position;"
+                    "layout (location = 1) in vec3 VertColor;"
+                    ""
+                    "layout (std140) uniform Matrices {"
+                    "    mat4 projection;"
+                    "    mat4 view;"
+                    "    vec3 view_pos;"
+                    "};"
+                    ""
+                    "out vec3 vert_color;"
+                    ""
+                    "void main() {"
+                    "    gl_Position = projection * view * vec4(Position, 1.0);"
+                    "    vert_color = VertColor;"
+                    "}";
+    }
+    
+    if (shader_type == GL_FRAGMENT_SHADER) switch (format) {
+        case VERTEX_STATIC:
+            return  "out vec4 fragment;"
+                    ""
+                    "in vec2 vert_uv;"
+                    "in vec2 vert_light_uv;"
+                    "in vec3 vert_color;"
+                    "in float vert_opacity;"
+                    "flat in uint vert_tex_index;"
+                    ""
+                    "uniform sampler2D sampler[15];"
+                    "uniform sampler2DArray samplerArray;"
+                    ""
+                    "void main() {"
+                    "    fragment = texture(sampler[vert_tex_index], vert_uv) * texture(samplerArray, vec3(vert_light_uv, 0.0)) * vec4(vert_color, vert_opacity);"
+                    "}";
+        case VERTEX_DYNAMIC:
+            return  "out vec4 fragment;"
+                    ""
+                    "in vec2 vert_uv;"
+                    "in vec3 vert_color;"
+                    "in float vert_opacity;"
+                    "flat in uint vert_tex_index;"
+                    ""
+                    "uniform sampler2D sampler[15];"
+                    "uniform sampler2DArray samplerArray;"
+                    ""
+                    "void main() {"
+                    "    fragment = texture(sampler[vert_tex_index], vert_uv) * vec4(vert_color, vert_opacity);"
+                    "}";
+        case VERTEX_SPRITE:
+            return  "out vec4 fragment;"
+                    ""
+                    "in vec2 vert_uv;"
+                    "in vec3 vert_color;"
+                    "flat in uint vert_tex_index;"
+                    ""
+                    "uniform sampler2D sampler[15];"
+                    "uniform sampler2DArray samplerArray;"
+                    ""
+                    "void main() {"
+                    "    vec4 sampled_color = texture(sampler[vert_tex_index], vert_uv);"
+                    "    if (sampled_color.w < 1.0) discard;"
+                    "    fragment = sampled_color * vec4(vert_color, 1.0);"
+                    "}";
+
+        case VERTEX_LINE:
+        default:
+            return  "out vec4 fragment;"
+                    "in vec3 vert_color;"
+                    "void main() {"
+                    "    fragment = vec4(vert_color, 1.0);"
+                    "}";
+    }
+    
+    return nullptr;
 }
 
 }

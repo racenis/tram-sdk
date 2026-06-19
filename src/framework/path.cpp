@@ -121,6 +121,14 @@ void Path::Draw() {
 
 /// Creates a new PathFollower for a path.
 PathFollower::PathFollower(Path* path, vec3 initial_pos, PathType type) {
+    if (!path) {
+        Log(Severity::ERROR, System::CORE, "Assigned null path to follower!");
+    }
+    
+    if (!path->nodes.size()) {
+        Log(Severity::WARNING, System::CORE, "Path {} assigned to follower, but has no nodes!", path->name);
+    }
+    
     this->prev = 0;
     this->next = 0;
     this->progress = 0.0f;
@@ -134,6 +142,8 @@ PathFollower::PathFollower(Path* path, vec3 initial_pos, PathType type) {
 /// Advances the follower along the path.
 /// @param distance Distance along the path, in meters.
 void PathFollower::Advance(float distance) {
+    if (!path->nodes.size()) return;
+    
     float segment = glm::distance(path->nodes[prev].position, path->nodes[next].position);
     float dist_left = (1.0f - progress) * segment;
     
@@ -195,6 +205,8 @@ void PathFollower::Project(vec3 projectable) {
             nearest_edge = i;
         }
     }
+    
+    if (nearest_dist == INFINITY) return;
     
     this->prev = path->edges[nearest_edge].from;
     this->next = path->edges[nearest_edge].to;

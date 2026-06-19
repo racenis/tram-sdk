@@ -8,6 +8,8 @@
 namespace tram::Render {
 
 uint8_t* MakeNewErrorTexture(vec3 color, vec3 color2);
+uint8_t* GetDebugFont();
+uint8_t* GetDebugIcon();
 
 StaticModelData* MakeNewErrorModel();
     

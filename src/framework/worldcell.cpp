@@ -267,7 +267,7 @@ void WorldCell::LoadFromDisk() {
     File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
-        Log(Severity::ERROR, System::CORE, "Worldcell file {} not found!", path);
+        Log(Severity::WARNING, System::CORE, "Worldcell file {} not found!", path);
         return;
     }
 

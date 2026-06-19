@@ -150,7 +150,7 @@ void Update() {
     }
     
     bool displayed[3] = {false, false, false};
-    for (int i = (int)menu_stack.size() - 1; i >= 0 && i < (int)menu_stack.size(); i++) {
+    for (int i = (int)menu_stack.size() - 1; i >= 0 && i < (int)menu_stack.size(); i--) {
         if (uint32_t layer = menu_stack[i]->Layer(); !displayed[layer]) {
             displayed[layer] = true;
             menu_stack[i]->Display();
