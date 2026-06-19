@@ -4,6 +4,19 @@
 #include <framework/logging.h>
 #include <framework/file.h>
 
+#include <framework/path.h>
+#include <framework/navmesh.h>
+#include <framework/worldcell.h>
+#include <audio/sound.h>
+#include <physics/collisionmodel.h>
+#include <render/animation.h>
+#include <render/environment.h>
+#include <render/lightmap.h>
+#include <render/material.h>
+#include <render/model.h>
+#include <render/particle.h>
+#include <render/sprite.h>
+
 #include <platform/file.h>
 
 #include <vector>
@@ -41,8 +54,34 @@ struct Plugin {
     std::vector<ManifestItem> items;
 };
 
-std::vector<DataType> data_types;
 std::vector<Plugin> plugins;
+std::vector<DataType> data_types = {
+    {"path",            [](const char* name) { Path::Find(name)->LoadFromDisk(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"navmesh",         [](const char* name) { Navmesh::Find(name)->LoadFromDisk(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"worldcell",       [](const char* name) { WorldCell::Find(name)->LoadFromDisk(); },
+                        [](const char* name) { WorldCell::Find(name)->SaveToDisk(); },
+                        [](const char* name) { auto cell = WorldCell::Find(name); cell->Reset(); cell->LoadFromDisk(); }},
+    {"sound",           [](const char* name) { Audio::Sound::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"collisionmodel",  [](const char* name) { Physics::CollisionModel::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"animation",       [](const char* name) { Render::Animation::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"environment",     [](const char* name) { Render::Environment::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"lightmap",        [](const char* name) { Render::Lightmap::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"material",        [](const char* name) { Render::Material::LoadMaterialInfo(name); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"model",           [](const char* name) { Render::Model::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"particle",        [](const char* name) { Render::Particle::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+    {"sprite",          [](const char* name) { Render::Sprite::Find(name)->Load(); },
+                        [](const char* name) {}, [](const char* name) {}},
+};
 
 void Register(const char* name, void (*load)(const char*), void (*save)(const char*), void (*reload)(const char*)) {
     data_types.push_back({name, load, save, reload});
