@@ -470,7 +470,7 @@ void SaveMenu::Display() {
                     char path[PATH_LIMIT];
                     format_save_dir(path);
                     char savename[20];
-                    snprintf(savename, 20, "/%03llu", saves.size());
+                    snprintf(savename, 20, "/%03zu", saves.size());
                     strncat(path, savename, PATH_LIMIT - strlen(path));
                     
                     FileWriter::SetProtocolAlias("save", "file", path);

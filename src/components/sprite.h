@@ -40,8 +40,8 @@ public:
 protected:
     ResourceProxy<Render::Sprite> sprite;
 
-    vec3 location;
-    float rotation;
+    vec3 location = {0.0f, 0.0f, 0.0f};
+    float rotation = 0.0f;
     
     size_t anim_frame = 0;
     size_t anim_speed = 0;

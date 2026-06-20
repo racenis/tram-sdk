@@ -120,11 +120,14 @@ static std::vector<FileSource> plugin_sources_yeet() {
 
 void AppendPluginsToLoadList() {
     std::vector<FileSource> sources = FileReader::GetSearchList();
+    
+    std::vector<std::string> protocols;
+    std::vector<std::string> locations;
     for (auto& plugin : plugins) {
-        std::string location = plugin_protocol(plugin);
-        std::string protocol = plugin_location(plugin);
+        protocols.push_back(plugin_protocol(plugin));
+        locations.push_back(plugin_location(plugin));
         
-        sources.push_back({location.c_str(), protocol.c_str()});
+        sources.push_back({locations.back().c_str(), protocols.back().c_str()});
     }
     FileReader::SetSearchList(sources);
 }

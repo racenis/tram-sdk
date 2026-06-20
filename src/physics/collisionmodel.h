@@ -20,7 +20,7 @@ public:
 
     static CollisionModel* Find(name_t model_name);
 protected:
-    collisionshape_t shape;
+    collisionshape_t shape = {nullptr};
 };
 
 }

@@ -38,8 +38,7 @@ public:
         T* ptr;
     };
 
-    constexpr Pool(const char* name, uint64_t initial_size) {
-        print_name = name;
+    constexpr Pool(const char* name, uint64_t initial_size) : print_name(name) {
         full_size = initial_size;
         current_size = 0;
 

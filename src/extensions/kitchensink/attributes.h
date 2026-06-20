@@ -22,19 +22,19 @@ enum : int {
 
 struct Attribute {
     name_t name;
-    float base_value;
-    float affected_value;
-    float effective_value;
+    float base_value = 0.0f;
+    float affected_value = 0.0f;
+    float effective_value = 0.0f;
 };
 
 struct Effect {
     name_t attribute;
     name_t name;
     name_t tag;
-    float value;
-    int type;
-    int flags;
-    float time;
+    float value = 0.0f;
+    int type = 0;
+    int flags = 0;
+    float time = 0.0f;
 };
 
 struct AttributeContainer;

@@ -120,9 +120,9 @@ void Environment::LoadFromDisk() {
   
     for (uint32_t layer = 0; layer < layer_count; layer++) {
         if (name) {
-            snprintf(path, PATH_LIMIT, "data/environments/%s.%i.png", (const char*)name, layer);
+            snprintf(path, PATH_LIMIT, "data/environments/%s.%u.png", (const char*)name, layer);
         } else {
-            snprintf(path, PATH_LIMIT, "data/environments/%s.%i.%i.png", (const char*)graph, index, layer);
+            snprintf(path, PATH_LIMIT, "data/environments/%s.%u.%u.png", (const char*)graph, index, layer);
         }
         
         FileReader* file = FileReader::GetReader(path);

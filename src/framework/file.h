@@ -81,8 +81,6 @@ protected:
     std::string path;
     uint32_t mode;
     
-    bool pause_next;
-    
     // cursors for writing
     char* buffer = nullptr;
     char* buffer_cursor = nullptr;
