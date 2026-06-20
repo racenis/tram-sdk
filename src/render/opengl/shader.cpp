@@ -379,8 +379,6 @@ public:
         return 0;
     }
     
-    // we could hard-code a default shader to use when no other shaders are available
-    // TODO: fix
     static uint32_t GetAnyShader(shaderflags_t flags) {
         return all_shaders.front()->GetShader(flags);
     }
@@ -401,10 +399,7 @@ public:
                 return;
             }
         }
-        
-        // we could check if vertex_shader and fragment_shader files actually
-        // exist on disk and not register the shader if it they aren't found
-        // TODO: fix
+
         auto new_shader = new LinkedShader(format, type, flags, vertex_shader, fragment_shader);
         all_shaders.push_back(new_shader);;
     }

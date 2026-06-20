@@ -409,7 +409,7 @@ static std::pair<name_t, value_t> LoadVariableSecond(File& file) {
     } else if (type == "name") {
         value = file.read_name();
     } else {
-        Log(Severity::WARNING, Kitchensink::System(), "Unknown variable comparison '{}' in file:", type, file.path);
+        Log(Severity::WARNING, Kitchensink::System(), "Unknown variable comparison '{}' in file:", type, file.get_path());
         value = false;
     }
     

@@ -63,14 +63,14 @@ void SystemMenu::Display() {
     
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 24);
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 5);
-    GUI::Text(GetVersion());
+    GUI::Text(Core::GetVersion());
     GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
     
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 1);
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 1);
     GUI::SetColor(Render::COLOR_WHITE);
     
-    GUI::Text(GetVersion());
+    GUI::Text(Core::GetVersion());
     GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
     
     GUI::SetColor(Render::COLOR_BLACK);

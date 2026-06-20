@@ -120,7 +120,6 @@ public:
         return from_chars<double>();
     }
     
-    // TODO: add support for double quotes
     name_t read_name() {
         char buffer[200];
         char* buf_it = buffer;
@@ -141,8 +140,7 @@ public:
         // this only happens if read_name() is called while the cursor is
         // pointing to whitespace, which should not happen, since we always skip
         // whitespace before calling this method. alas, it does seem to happen
-        // anyway
-        // TODO: figure out where the bug is
+        // anyway (or at least seemed to happen)
         if (*buffer == '\0') {
             return UID();
         }
@@ -369,7 +367,6 @@ public:
         return UID(buffer);
     }
     
-    // TODO: figure out what this should do
     std::string_view read_token() {
         const char* begin = cur;
         size_t length = 0;
@@ -394,7 +391,6 @@ public:
         return {begin, length};
     }
     
-    // TODO: figure out what this should do
     std::string_view read_line() {
         const char* first_char = cur;
         const char* last_char = cur;
@@ -409,7 +405,7 @@ public:
             cur = last_char;
         }
         
-        return std::string_view (first_char, line_length);
+        return std::string_view(first_char, line_length);
     }
     
     size_t get_line() {
@@ -803,6 +799,11 @@ bool File::was_error() {
     if (reader_parser) return reader_parser->is_error();
     if (writer_parser) return writer_parser->is_error();
     return false;
+}
+
+// Returns the path of the file.
+const char* File::get_path() {
+    return path.c_str();
 }
 
 }

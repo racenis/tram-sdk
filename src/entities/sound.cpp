@@ -64,7 +64,11 @@ Sound::Sound(const SharedEntityData& shared_data, const ValueArray& field_array)
 }
 
 /// PLays a sound, then removes itself.
-Sound::Sound(name_t sound, float volume, vec3 position) : Entity("none") {
+void Sound::Spawn(name_t sound, float volume, vec3 position) {
+    new Sound(sound, volume, position);
+}
+
+Sound::Sound(name_t sound, float volume, vec3 position) : Entity() {
     Audio::Sound* s = Audio::Sound::Find(sound);
     
     this->sound = sound;

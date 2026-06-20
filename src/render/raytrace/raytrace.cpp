@@ -766,6 +766,10 @@ void SetInteractiveMode(bool is_interactive) {
                     
                     tree_triangle.material = entry->material;
                     tree_triangle.color = entry->color;
+                    
+                    // actually we have a render flag for this now, so we
+                    // could just use that I guess
+                    // TODO: rectify
                     tree_triangle.translucent = entry->translucent;
                     
                     tree->InsertLeaf(tree_triangles.size(),

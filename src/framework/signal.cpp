@@ -108,16 +108,17 @@ void SignalTable::Fire(signal_t signal, id_t sender) {
     for (size_t i = 0; i < signal_count; i++) {
         if (signals[i].type != signal || signals[i].limit == 0) continue;
         
+        Entity* receiver = Entity::Find(signals[i].receiver);
+        if (!receiver) continue;
+        
         Message msg;
         
         msg.type = signals[i].message_type;
-        msg.receiver = Entity::Find(signals[i].receiver)->GetID(); // this might crasherinoo
-        // TODO: make Entity::Find not crash; erore message /// ahhh who cares
-        msg.data = signals[i].data; // TODO: waht even ??
+        msg.receiver = receiver->GetID();
         msg.sender = sender;
         
         if (signals[i].data) {
-            *msg.data_value = *(Value*)signals[i].data; // TODO:WHAT IS THIS
+            *msg.data_value = signals[i].data;
         } else {
             msg.data_value = nullptr;
         }
@@ -140,13 +141,12 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
         
         msg.type = signals[i].message_type;
         msg.receiver = Entity::Find(signals[i].receiver)->GetID();
-        msg.data = signals[i].data; // TODO: fix what the fuck
         msg.sender = sender;
         msg.data_value = (Value*)Message::AllocateData(sizeof(Value));
         
         // send override if set, otherwise pass on provided data
         if (signals[i].data) {
-            *msg.data_value = *(Value*)signals[i].data;
+            *msg.data_value = signals[i].data;
         } else {
             *msg.data_value = value;
         }
@@ -163,7 +163,10 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
 }
 
 void SignalTable::Add(const Signal& signal) {
-    if (signal_count >= SIGNAL_PER_ENTITY_LIMIT) return; // TODO: add errore message
+    if (signal_count >= SIGNAL_PER_ENTITY_LIMIT) {
+        Log(Severity::WARNING, System::CORE, "Signal count for entity exceeded! Signal not added.");
+        return;
+    }
     signals[signal_count++] = signal;
 }
 

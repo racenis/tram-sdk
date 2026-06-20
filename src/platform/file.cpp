@@ -253,7 +253,8 @@ public:
             sprintf(temp_path, "%s.tmp", path);
         }
         
-        std::filesystem::create_directories(std::filesystem::path(full_path).parent_path());
+        auto directory = std::filesystem::path(full_path).parent_path();
+        if (directory != "") std::filesystem::create_directories(directory);
         
         this->file_handle = fopen(temp_path, "wb");
         

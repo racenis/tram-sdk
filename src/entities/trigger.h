@@ -23,8 +23,6 @@ public:
     void MessageHandler(Message& msg);
     void Activate();
     name_t GetType();
-    static bool IsDrawTrigger();
-    static void SetDrawTrigger(bool);
     static void Register();
 protected:
     Component<RenderComponent> rendercomponent;

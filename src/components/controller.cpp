@@ -588,12 +588,11 @@ void RaycastControllerComponent::RecoverFromCollisions() {
     }
 
     // snap controller to ground
-    // TODO: make this respect step_height property
     if (ground_collision.collider && air_velocity.y <= 0.0f && !slipping) {
         float actual_ground = glm::distance(parent->GetLocation(), ground_collision.point);
-        new_pos.y += distance_to_ground - actual_ground;
+        float step = distance_to_ground - actual_ground;
+        if (step < step_height) new_pos.y += step;
     }
-    
     
     bool fired_callback = false;
     for (auto& col : wall_collision->GetStoredCollisions()) {

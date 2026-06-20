@@ -11,12 +11,6 @@
 
 #include <framework/logging.h>
 
-// this is for holding
-// re: for holding what??
-// TODO: find out
-#include <render/render.h>
-#include <framework/message.h>
-
 namespace tram {
 
 class PlayerComponent : public EntityComponent {

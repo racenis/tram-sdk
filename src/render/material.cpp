@@ -208,9 +208,6 @@ Material* Material::Make(name_t name, materialtype_t type) {
 /// Make() or Find() methods.
 /// @return Always returns a pointer to a Material.
 Material* Material::Find(name_t name){
-    // APPARENTLY:
-    // "something goes fucky-wucky and this thing doesn't work if you don't LoadFromDisk()"
-    // TODO: check if it still happens
     Material* material = material_list.Find(name);
     
     if (!material) {

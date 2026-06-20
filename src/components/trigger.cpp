@@ -25,7 +25,7 @@ void TriggerComponent::Start() {
         Log(Severity::CRITICAL_ERROR, System::RENDER, "Trigger component doesn't have either a shape or a model set!");
     }
 
-    trigger = API::MakeTrigger(model ? model->GetShape() : shape, collisionMask, collisionGroup, location, rotation);
+    trigger = API::MakeTrigger(model ? model->GetShape() : shape, collision_mask, collision_group, location, rotation);
     
     API::SetTriggerCollisionCallback(trigger, [](void* obj_a, void* obj_b, API::ObjectCollision collision) {
         TriggerComponent* trigger_component = (TriggerComponent*)obj_a;
@@ -90,7 +90,7 @@ void TriggerComponent::SetShape(Physics::CollisionShape shape) {
 /// This method works the same as in PhysicsComponent, see
 /// PhysicsComponent::SetCollsionMask() for more information.
 void TriggerComponent::SetCollisionMask(uint32_t flags){
-    collisionMask = flags;
+    collision_mask = flags;
     
     if (is_ready) {
         API::SetTriggerCollisionMask(trigger, flags);
@@ -101,7 +101,7 @@ void TriggerComponent::SetCollisionMask(uint32_t flags){
 /// This method works the same as in PhysicsComponent, see
 /// PhysicsComponent::SetCollisionGroup() for more information.
 void TriggerComponent::SetCollisionGroup(uint32_t flags){
-    collisionGroup = flags;
+    collision_group = flags;
     
     if (is_ready) {
         API::SetTriggerCollisionGroup(trigger, flags);
@@ -172,17 +172,6 @@ void TriggerComponent::ResetCollisions() {
     if (store_collisions) {
         stored_collisions.clear();
     }
-}
-
-/// Checks for collisions with the trigger.
-std::vector<Physics::Collision> TriggerComponent::Poll() {
-    std::vector<Physics::Collision> collisions;
-    
-    // TODO: move this into -> Physics::API?
-    //TriggerPollCallback callback (collisions);
-    //DYNAMICS_WORLD->contactTest(trigger.bt_collisionshape, callback);
-    
-    return collisions;
 }
 
 /// Creates a new TriggerComponent.

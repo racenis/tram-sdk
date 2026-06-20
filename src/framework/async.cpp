@@ -187,17 +187,6 @@ static void ResourceLoader() {
             continue;
         }
         
-        /* this will make the thread go to sleep when all requested resources
-         * have been loaded.
-         * 
-         * this will prevent the thread from wasting CPU cycles, but it will
-         * also make it slow to respond to new requests.
-         * 
-         * we could use a mutex or something to wake it up, instead of using a
-         * timout
-         * 
-         * TODO: fix
-         */
         std::unique_lock<std::mutex> lock(new_job_lock);
         new_job_available.wait(lock, [](){
             disk_loader_queue.lock();

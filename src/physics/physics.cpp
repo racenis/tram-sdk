@@ -3,6 +3,8 @@
 #include <physics/physics.h>
 #include <physics/api.h>
 
+#include <components/trigger.h>
+
 #include <framework/system.h>
 #include <framework/stats.h>
 
@@ -47,6 +49,9 @@ void Init() {
 /// Should only be called once in the update cycle.
 void Update() {
     Stats::Start(System::PHYSICS);
+    
+    // process the triggers
+    for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
     
     API::StepPhysics();
     

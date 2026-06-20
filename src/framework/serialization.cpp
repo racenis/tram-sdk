@@ -4,6 +4,7 @@
 #include <framework/logging.h>
 #include <framework/file.h>
 
+#include <framework/language.h>
 #include <framework/path.h>
 #include <framework/navmesh.h>
 #include <framework/worldcell.h>
@@ -56,6 +57,8 @@ struct Plugin {
 
 std::vector<Plugin> plugins;
 std::vector<DataType> data_types = {
+    {"language",        [](const char* name) { Language::Load(name); },
+                        [](const char* name) {}, [](const char* name) {}},
     {"path",            [](const char* name) { Path::Find(name)->LoadFromDisk(); },
                         [](const char* name) {}, [](const char* name) {}},
     {"navmesh",         [](const char* name) { Navmesh::Find(name)->LoadFromDisk(); },

@@ -17,6 +17,8 @@ const uint32_t MAX_VERTEX_SHADERS = 20;
 const uint32_t MAX_FRAGMENT_SHADERS = 20;
 const uint32_t MAX_LINKED_SHADERS = 40;
 
+const uint32_t MAX_VERTEX_TYPES = 10;
+
 // Rate of fixed updates
 const float TICK_RATE = 1.0f / 60.0f;
 

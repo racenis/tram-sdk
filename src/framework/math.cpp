@@ -14,11 +14,10 @@
 
 namespace tram {
 
-// TODO: create QuatLookAt that returns the quaternion as return instead of reference param 
 /// Rotates a quaternion to face a point.
 /// Useful for pointing objects at things.
-void QuatLookAt(quat& quaternion, const vec3& from, const vec3& to) {
-    quaternion = glm::quatLookAt(glm::normalize(to - from), DIRECTION_UP);
+quat QuatLookAt(const vec3& from, const vec3& to) {
+    return glm::quatLookAt(glm::normalize(to - from), DIRECTION_UP);
 }
 
 /// Projects a point on a line.
@@ -77,9 +76,6 @@ vec3 RayTriangleIntersection(vec3 ray_pos, vec3 ray_dir, vec3 point1, vec3 point
 
 }
 
-// TODO: create an AABB struct and use that instead of the min/max
-// this kind of signature: AABB RotateAABB(AABB box, quat rotation)
-
 /// Rotates an AABB box by the given rotation.
 void RotateAABB(vec3& min, vec3& max, quat rotation) {
     vec3 extents[8] = {
@@ -130,8 +126,6 @@ void RotateAABB(vec3& min, vec3& max, mat4 rotation) {
         max = MergeAABBMax(max, extent);
     }
 }
-
-// TODO: switch these to pass by value, not reference?
 
 /// Generates a transform matrix.
 mat4 PositionRotationToMatrix(const vec3& position, const quat& rotation) {

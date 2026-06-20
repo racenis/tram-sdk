@@ -9,8 +9,6 @@
 
 namespace tram {
 
-class RenderComponent;
-
 class AudioComponent : public EntityComponent {
 public:
     static AudioComponent* Make();

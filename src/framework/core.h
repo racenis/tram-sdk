@@ -9,8 +9,6 @@ namespace tram {
 
 typedef uint32_t id_t;
 
-id_t GenerateID();
-
 uint32_t GetTick();
 uint32_t GetFrame();
 
@@ -19,8 +17,6 @@ double GetFrameTime();
 
 uint32_t GetDeltaTick();
 float GetDeltaTime();
-
-const char* GetVersion();
 
 namespace Core {
     void Init();
@@ -33,8 +29,9 @@ namespace Core {
     void SetApplicationName(const char*, const char*);
     const char* GetApplicationName();
     const char* GetApplicationShortName();
-    
-    // TODO: maybe put GenerateID() and GetVersion() in here too
+
+    id_t GenerateID();
+    const char* GetVersion();
 }
 
 }

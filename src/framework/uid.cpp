@@ -43,16 +43,6 @@ UID::UID(const std::string& value) {
     *this = UID(str);
 }
 
-// TODO: make this THREAD SAFE!!
-/* in order to make this thread-safe, we would need to do the following:
- * 1. make sure that Hashmap lookups are thread safe
- * 2. add a lock to the string pool
- * 3. just before the string gets added to the string pool, lock it
- * 4. double-check that string hasn't been added
- * 6. add the string as before
- * 7. the string pool, unlock it
- */
-
 /// Interns a string.
 /// This will intern the string and return a little UID that you can put in your
 /// little pockets and take away with you.

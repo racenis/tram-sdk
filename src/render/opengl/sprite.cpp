@@ -28,7 +28,6 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
         // I guess that we could probably offload this computation to the GPU.
         // but that would mean that we have to change the vertex definition.
         // whatevs
-        // TODO: fix this
         mat2 matrix;
         ((float*)(&matrix))[0] = cosf(sprite.rotation);
         ((float*)(&matrix))[1] = -sinf(sprite.rotation);

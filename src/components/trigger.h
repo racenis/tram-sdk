@@ -34,32 +34,23 @@ public:
     
     void SetStoreCollisions(bool store_collisions) { this->store_collisions = store_collisions; }
     
-    uint32_t GetCollisionMask() { return collisionMask; }
-    uint32_t GetCollisionGroup() { return collisionGroup; }
+    uint32_t GetCollisionMask() { return collision_mask; }
+    uint32_t GetCollisionGroup() { return collision_group; }
     
     void SetLocation(vec3 location);
     void SetRotation(quat rotation);
     
     const std::vector<Physics::Collision>& GetStoredCollisions() { return stored_collisions; }
-    
-    // why are these not private/protected?
-    // TODO: fix
-    void Collision(const Physics::Collision& collision);
-    void ResetCollisions();
-    
+
     void EventHandler(Event &event) {}
-    
-    std::vector<Physics::Collision> Poll();
 private:
     ResourceProxy<Physics::CollisionModel> model;
     
-    // TODO: why camelCase?
-    uint32_t collisionMask = -1;
-    uint32_t collisionGroup = -1;
+    uint32_t collision_mask = -1;
+    uint32_t collision_group = -1;
     
-    // TODO: change to {} initialization?
-    vec3 location = vec3(0.0f, 0.0f, 0.0f);
-    quat rotation = vec3(0.0f, 0.0f, 0.0f);
+    vec3 location = {0.0f, 0.0f, 0.0f};
+    quat rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     
     Physics::collisionshape_t shape = {nullptr};
     Physics::trigger_t trigger = {nullptr};
@@ -72,8 +63,13 @@ private:
     
     void Start();
     
+    void Collision(const Physics::Collision& collision);
+    void ResetCollisions();
+    
     TriggerComponent() : model(this){}
     ~TriggerComponent();
+    
+    friend void Physics::Update();
     
     std::vector<std::pair<uint32_t, Physics::Collision>> active_collisions;
     std::vector<Physics::Collision> stored_collisions;

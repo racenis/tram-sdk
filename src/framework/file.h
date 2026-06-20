@@ -68,6 +68,8 @@ public:
     
     bool was_error();
     
+    const char* get_path();
+    
     enum AccessMode : uint32_t {
         READ = 1,       //< Opens the file for reading.
         WRITE = 2,      //< Opens the file for writing.
@@ -75,9 +77,7 @@ public:
         TEXT = 8,       //< Opens file for reading/writing in whitespace seperated text format.
         BINARY = 16     //< Opens file for reading/writing in binary format.
     };
-    
-    // TODO: check whichever of these can be private and private them
-    
+protected:
     std::string path;
     uint32_t mode;
     
@@ -87,8 +87,6 @@ public:
     char* buffer = nullptr;
     char* buffer_cursor = nullptr;
     char* buffer_end = nullptr;
-    
-
     
     FileReader* reader = nullptr;
     FileWriter* writer = nullptr;

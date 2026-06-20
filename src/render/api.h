@@ -91,8 +91,10 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data);
 // light functions
 light_t MakeLight();
 void YeetLight(light_t light);
-void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent);
-// TODO: decompose big function?
+void SetLightLocation(light_t light, vec3 location);
+void SetLightColor(light_t light, vec3 color);
+void SetLightDistance(light_t light, float distance);
+void SetLightDirection(light_t light, vec3 direction, float exponent);
 
 // material functions
 material_t MakeMaterial();

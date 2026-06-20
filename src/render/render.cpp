@@ -58,16 +58,14 @@ static float screen_height = 600.0f;
 static Settings::Property<float> render_fov = {60.0f, "render-fov", Settings::NONE};
 static Settings::Property<float> render_dist = {1.0f, "render-dist", Settings::NONE};
 
-// TODO: make these static???
+static vertexarray_t colorlines_vertex_array = {};
+static drawlistentry_t colorlines_entry;
 
-vertexarray_t colorlines_vertex_array = {};
-drawlistentry_t colorlines_entry;
+static vertexarray_t debugtext_vertex_array = {};
+static drawlistentry_t debugtext_entry;
 
-vertexarray_t debugtext_vertex_array = {};
-drawlistentry_t debugtext_entry;
-
-std::vector<LineVertex> colorlines;
-std::vector<SpriteVertex> textvertices;
+static std::vector<LineVertex> colorlines;
+static std::vector<SpriteVertex> textvertices;
 
 using namespace API;
 

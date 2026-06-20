@@ -71,12 +71,60 @@ void SwitchBackground(TerminalColor color) {
 
 #else
 
+static void print_escape(const char* sequence) {
+    printf("\033[%sm", sequence);
+}
+
 void SwitchForeground(TerminalColor color) {
-    // TODO: implement
+    switch (color) {
+        case TerminalColor::BLACK:          print_escape("30"); return;
+        case TerminalColor::BLUE:           print_escape("34"); return;
+        case TerminalColor::GREEN:          print_escape("32"); return;
+        case TerminalColor::CYAN:           print_escape("36"); return;
+        case TerminalColor::RED:            print_escape("31"); return;
+        case TerminalColor::MAGENTA:        print_escape("35"); return;
+        case TerminalColor::YELLOW:         print_escape("33"); return;
+        case TerminalColor::WHITE:          print_escape("37"); return;
+
+        case TerminalColor::GRAY:           print_escape("90"); return;
+        case TerminalColor::LIGHT_BLUE:     print_escape("94"); return;
+        case TerminalColor::LIGHT_GREEN:    print_escape("92"); return;
+        case TerminalColor::LIGHT_CYAN:     print_escape("96"); return;
+        case TerminalColor::LIGHT_RED:      print_escape("91"); return;
+        case TerminalColor::LIGHT_MAGENTA:  print_escape("95"); return;
+        case TerminalColor::LIGHT_YELLOW:   print_escape("93"); return;
+        case TerminalColor::LIGHT_WHITE:    print_escape("97"); return;
+        
+        case TerminalColor::DEFAULT:        print_escape("39"); return;
+        
+        default:                            print_escape("39"); return;
+    }
 }
 
 void SwitchBackground(TerminalColor color) {
-    // TODO: implement
+    switch (color) {
+        case TerminalColor::BLACK:          print_escape("40"); return;
+        case TerminalColor::BLUE:           print_escape("44"); return;
+        case TerminalColor::GREEN:          print_escape("42"); return;
+        case TerminalColor::CYAN:           print_escape("46"); return;
+        case TerminalColor::RED:            print_escape("41"); return;
+        case TerminalColor::MAGENTA:        print_escape("45"); return;
+        case TerminalColor::YELLOW:         print_escape("43"); return;
+        case TerminalColor::WHITE:          print_escape("47"); return;
+
+        case TerminalColor::GRAY:           print_escape("100"); return;
+        case TerminalColor::LIGHT_BLUE:     print_escape("104"); return;
+        case TerminalColor::LIGHT_GREEN:    print_escape("102"); return;
+        case TerminalColor::LIGHT_CYAN:     print_escape("106"); return;
+        case TerminalColor::LIGHT_RED:      print_escape("101"); return;
+        case TerminalColor::LIGHT_MAGENTA:  print_escape("105"); return;
+        case TerminalColor::LIGHT_YELLOW:   print_escape("103"); return;
+        case TerminalColor::LIGHT_WHITE:    print_escape("107"); return;
+        
+        case TerminalColor::DEFAULT:        print_escape("49"); return;
+        
+        default:                            print_escape("49"); return;
+    }
 }
 
 #endif

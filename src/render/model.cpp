@@ -427,8 +427,7 @@ void Model::LoadFromDisk() {
             vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
             vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
-            // TODO: implement a better solution
-            if (tcount < 10000) model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             data->vertices[index.indices.x].texture = bucket_index;
             data->vertices[index.indices.y].texture = bucket_index;
@@ -590,8 +589,7 @@ void Model::LoadFromDisk() {
             vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
             vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
-            // TODO: implement a better solution
-            if (tcount < 10000) model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             data->vertices[index.indices.x].texture = bucket_index;
             data->vertices[index.indices.y].texture = bucket_index;

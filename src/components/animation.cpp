@@ -139,8 +139,10 @@ void AnimationComponent::SetKeyframe(name_t bone_name, const Render::Keyframe& k
 void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float weight, float speed, bool interpolate, bool pause_on_last_frame) {
     if (!animation_name) return;
     
-    // TODO: guard for negative weight? speed?
-    // maybe negative speed could make the animation play in reverse
+    if (speed < 0.0f) {
+        Log(Severity::WARNING, System::RENDER, "Animation {} can't be played with negative speed!", animation_name);
+        return;
+    }
     
     // find an empty slot for the animation
     size_t slot;

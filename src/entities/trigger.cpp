@@ -8,6 +8,7 @@
 #include <components/trigger.h>
 
 #include <framework/serialization.h>
+#include <framework/settings.h>
 #include <framework/message.h>
 
 /**
@@ -38,7 +39,7 @@ static const Type fields[3] = {
     TYPE_NAME
 }; 
 
-static bool draw_trigger = false;
+static Settings::Property<bool> draw_trigger = {false, "trigger-draw", Settings::NONE};
 
 void Trigger::Register() {
     Entity::RegisterType(
@@ -48,6 +49,13 @@ void Trigger::Register() {
         fields,
         3
     );
+    Settings::SetCallback("trigger-draw", [](const char*) {
+        auto trigs = Entity::GetAllOfType("trigger");
+        for (auto trig : trigs) {
+            Trigger* trigger = (Trigger*)trig;
+            trigger->SetupModel();
+        }
+    });
 }
 
 name_t Trigger::GetType() {
@@ -129,24 +137,17 @@ void Trigger::MessageHandler(Message& msg) {
 }
 
 void Trigger::SetupModel() {
-    if (!draw_trigger) return;
+    if (!draw_trigger) {
+        rendercomponent.clear();
+        return;
+    }
     
     rendercomponent.make();
     rendercomponent->SetParent(this);
     rendercomponent->SetModel(model);
     rendercomponent->SetLightmap("fullbright");
+    rendercomponent->SetOpacity(0.5f);
     rendercomponent->Init();
-}
-
-
-bool Trigger::Trigger::IsDrawTrigger() {
-    return draw_trigger;
-}
-
-void Trigger::SetDrawTrigger(bool draw) {
-    draw_trigger = draw;
-    
-    // TODO: add code to notify every trigger about this
 }
 
 }

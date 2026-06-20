@@ -158,8 +158,6 @@ void Decoration::MessageHandler(Message& msg) {
             if (animation) {
                 RequestAnimationComponent();
                 if (animationcomponent->IsPlaying(animation)) {
-                    //animationcomponent->StopAnimation(animation);
-                    //animationcomponent->FadeAnimation(animation, false, 0.05f);
                     animationcomponent->FadeOut(animation, 1.0f);
                 } else {
                     animationcomponent->Play(animation, -1, 1.0f, 1.0f);

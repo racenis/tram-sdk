@@ -32,8 +32,6 @@ static Settings::Property<float> volume = {1.0f, "volume", Settings::NONE};
 void Init() {
     System::SetState(System::AUDIO, System::INIT);
     System::AssertDependency(System::CORE);
-    System::AssertDependency(System::UI);
-    // TODO: check if we actually need UI for this
     
     API::Init();
     

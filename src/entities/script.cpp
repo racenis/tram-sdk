@@ -36,8 +36,8 @@ struct ScriptableTypeInfo {
 
 static Hashmap<ScriptableTypeInfo> infos("Scriptable entity type pool", SCRIPTABLE_ENTITY_TYPE_LIMIT);
 
-void Register(name_t base_type,  Entity* (*constr_func)(name_t new_type, const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*)) {
-    infos.Insert(base_type, {base_type, constr_func, destr_func});
+void Register(name_t base_type, scriptable_make_t constr, scriptable_yeet_t destr) {
+    infos.Insert(base_type, {base_type, constr, destr});
 }
 
 Entity* Make(name_t base_type, name_t new_type, const SharedEntityData& data, const ValueArray& array) {

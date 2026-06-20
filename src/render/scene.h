@@ -32,7 +32,7 @@ struct QueryResponse {
     AABBTriangle triangle;
 };
     
-aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale);    
+aabbleaf_t InsertLeaf(RenderComponent* component);    
 aabbleaf_t InsertLeaf(MeshComponent* component);    
 void RemoveLeaf(aabbleaf_t leaf);
 

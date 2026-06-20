@@ -259,7 +259,6 @@ void RenderComponent::SetLayer(uint32_t layers) {
         return;
     }
     
-    // TODO: finish implementation
     this->layer = layers;
     
     if (is_ready) {
@@ -360,7 +359,7 @@ void RenderComponent::RefreshAABB() {
         AABB::RemoveLeaf(aabb_tree_leaf);
     }
     
-    aabb_tree_leaf = AABB::InsertLeaf(this, location, rotation, scale);
+    aabb_tree_leaf = AABB::InsertLeaf(this);
 }
 
 void RenderComponent::InsertDrawListEntries() {

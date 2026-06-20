@@ -35,7 +35,7 @@ static float time_since_tick = 0.0f;
 static bool automatic_time = true;
 
 /// Generates a unique ID number.
-id_t GenerateID() {
+id_t Core::GenerateID() {
     static std::atomic<id_t> num = 0;
     return ++num;
 }
@@ -205,7 +205,7 @@ const char* Core::GetApplicationShortName() {
 }
 
 /// Returns the version identifier of the runtime.
-const char* GetVersion() {
+const char* Core::GetVersion() {
     return "Tramway SDK v0.1.1";
 }
 

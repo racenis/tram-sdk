@@ -151,8 +151,7 @@ void DecalComponent::ProjectOnWorld(vec3 pos, quat rot, bool reset) {
     AABB::FindAllIntersectionsFromAABB(info.aabb_min, info.aabb_max, [&](AABB::ReferenceType type, EntityComponent* component) {
         if (type != Render::AABB::REFERENCE_RENDERCOMPONENT) return;
         RenderComponent* rcomp = (RenderComponent*)component;
-        
-        // TODO: skip posed rendercomps
+        if (rcomp->GetPose()) return;
         
         ProjectOnModel(info, rcomp, nullptr, pos, rot);
     });

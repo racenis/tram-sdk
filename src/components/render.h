@@ -26,6 +26,7 @@ public:
 
     inline Render::Model* GetModel() { return model.get(); }
     inline Render::Lightmap* GetLightmap() { return lightmap.get(); }
+    inline Render::Pose* GetPose() { return pose; }
 
     void SetLocation(vec3 location);
     void SetRotation(quat rotation);

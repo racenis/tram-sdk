@@ -17,10 +17,6 @@
  * @see https://racenis.github.io/tram-sdk/documentation/components/light.html
  */
 
-/* 
- * TODO: Same as with AudioComponents -- don't like how the 3D models are set up.
- */
-
 namespace tram {
 
 template <> Pool<LightComponent> PoolProxy<LightComponent>::pool("LightComponent pool", COMPONENT_LIMIT_LIGHT);   
@@ -66,7 +62,10 @@ LightComponent::~LightComponent() {
 
 void LightComponent::Update() {
     if (is_ready) {
-        Render::API::SetLightParameters(light, location, color, distance, direction, exponent);
+        Render::API::SetLightLocation(light, location);
+        Render::API::SetLightColor(light, color);
+        Render::API::SetLightDistance(light, distance);
+        Render::API::SetLightDirection(light, direction, exponent);
         Render::LightTree::RemoveLight(light);
         Render::LightTree::AddLight(light, location, distance);
     }

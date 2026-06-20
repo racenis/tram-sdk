@@ -894,13 +894,17 @@ void Options::Display() {
         bool anim_debug = Settings::Get("animation-draw-info");
         bool light_debug = Settings::Get("light-draw-icon");
         bool controller_debug = Settings::Get("controller-draw");
+        bool trigger_debug = Settings::Get("trigger-draw");
         
-        if (GUI::CheckBox(renderer_debug, "Renderer Debug "))       Settings::Set("renderer-debug", renderer_debug);
-        if (GUI::CheckBox(sound_debug, "Audio Debug "))             Settings::Set("audio-draw-info", sound_debug);
-        if (GUI::CheckBox(audio_debug, "Draw AudioComponent "))     Settings::Set("audio-draw-icon", audio_debug);
-        if (GUI::CheckBox(anim_debug, "Animation Debug "))          Settings::Set("animation-draw-info", anim_debug);
-        if (GUI::CheckBox(light_debug, "Light Debug "))             Settings::Set("light-draw-icon", light_debug);
-        if (GUI::CheckBox(controller_debug, "Controller Debug "))   Settings::Set("controller-draw", controller_debug);
+        GUI::Text("Draw debug info:");
+        
+        if (GUI::CheckBox(renderer_debug, "Renderer "))     Settings::Set("renderer-debug", renderer_debug);
+        if (GUI::CheckBox(sound_debug, "Audio "))           Settings::Set("audio-draw-info", sound_debug);
+        if (GUI::CheckBox(audio_debug, "AudioComponent "))  Settings::Set("audio-draw-icon", audio_debug);
+        if (GUI::CheckBox(anim_debug, "Animation "))        Settings::Set("animation-draw-info", anim_debug);
+        if (GUI::CheckBox(light_debug, "LightComponent "))  Settings::Set("light-draw-icon", light_debug);
+        if (GUI::CheckBox(controller_debug, "Controller ")) Settings::Set("controller-draw", controller_debug);
+        if (GUI::CheckBox(trigger_debug, "Trigger "))       Settings::Set("trigger-draw", trigger_debug);
         
     GUI::PopFrame();
     GUI::PopFrame();

@@ -52,34 +52,18 @@ using namespace tram::Render;
 
 namespace tram::Ext::Menu {
 
-// TODO: switch to invalid font initialization (zero is valid)
-font_t FONT_WIDGETS = 0;    //< Font that contains sprites for GUI widgets.
-font_t FONT_TEXT = 0;       //< Basic sans-serif font.
-font_t FONT_TEXT_BOLD = 0;  //< Basic bold sans-serif font.
-font_t FONT_HEADER = 0;     //< Font that contains some image headers.
-font_t FONT_PIXELART = 0;   //< Large pixel-art font.
+font_t FONT_WIDGETS = ~0;   //< Font that contains sprites for GUI widgets.
+font_t FONT_TEXT = ~0;      //< Basic sans-serif font.
+font_t FONT_TEXT_BOLD = ~0; //< Basic bold sans-serif font.
+font_t FONT_HEADER = ~0;    //< Font that contains some image headers.
+font_t FONT_PIXELART = ~0;  //< Large pixel-art font.
 
 uint32_t MENU_SYSTEM = -1;
 
 DebugMenu* debug_menu = nullptr;
 
-// replace menu stack with just menu list
-// and make menu list act like menu stack
-// ALSO make sure that menu list is copied before iterating
-// TODO: fix pls
 std::vector<Menu*> menu_stack;
 std::vector<Menu*> menu_list;
-
-// is this even used??
-void ToggleMenuState() { UI::SetInputState((UI::GetInputState() == UI::STATE_DEFAULT) ? UI::STATE_MENU_OPEN : UI::STATE_DEFAULT); }
-
-// is this used either?
-// TODO: fix
-void CloseAll() {
-    if (debug_menu) Menu::Remove(debug_menu);
-    
-    debug_menu = nullptr;
-}
 
 static void EscapeMenuKeyboard () {
     if (Menu::Empty()) {
@@ -203,19 +187,21 @@ void Menu::Clear() {
     }
 }
 
-// tbh idk what this even does and if it is even used
-// TODO: look up what it does and what uses it 
+/// Adds a menu to be displayed.
 void Menu::Add(Menu* menu) {
     menu_list.push_back(menu);
 }
 
-// same as previours
-// TODO: fix
+
+/// Removes a menu.
+/// Remove a menu that was added with `Menu::Add()` and deletes it if it was
+/// found.
 void Menu::Remove(Menu* menu) {
     auto thing = std::find(menu_list.begin(), menu_list.end(), menu);
-    
-    // TODO:  fix memory leak
-    //delete *thing;
+
+    if (thing == menu_list.end()) return;
+
+    delete *thing;
     menu_list.erase(thing);
 }
 

@@ -3,8 +3,9 @@
 #include <render/renderer.h>
 
 #include <render/vertices.h>
-
 #include <framework/logging.h>
+
+#include <config.h>
 
 /*
  * PROBLEM: vertex attribute stride/offset might be difficult to understand for
@@ -47,8 +48,6 @@ const static VertexAttribute vertex_line_definition[2] = {
     {VertexAttribute::FLOAT32,  VertexAttribute::FFP_POSITION,   3, sizeof(LineVertex), 0},
     {VertexAttribute::FLOAT32,  VertexAttribute::FFP_COLOR,      3, sizeof(LineVertex), offsetof(LineVertex, color)}
 };
-    
-static const uint32_t MAX_VERTEX_TYPES = 10; // TODO: put this in config?
 
 struct RegisteredVertexDefinition {
     bool registered = false;
@@ -71,8 +70,7 @@ void RegisterVertexDefinition (vertexformat_t format, VertexDefinition definitio
     assert(format < MAX_VERTEX_TYPES);
     
     if (all_vertex_definitions[format].registered) {
-        Log(Severity::WARNING, System::RENDER, "VertexDefinition for format {} already registered, overwriting.", format);
-        // TODO: replace raw format int with a name
+        Log(Severity::WARNING, System::RENDER, "VertexDefinition for format {} already registered, overwriting.", GetVertexFormatName(format));
     }
     
     // TODO: we should validate the FFP here (there should not be more than one of each type
@@ -86,9 +84,7 @@ VertexDefinition GetVertexDefinition(vertexformat_t format) {
     assert(format < MAX_VERTEX_TYPES);
     
     if (!all_vertex_definitions[format].registered) {
-        Log(Severity::ERROR, System::RENDER, "VertexDefinition for format {} not registered!", format);
-        // TODO: replace raw format int with a name
-        
+        Log(Severity::ERROR, System::RENDER, "VertexDefinition for format {} not registered!", GetVertexFormatName(format));
         format = 0; // we do need to return something.
     }
     

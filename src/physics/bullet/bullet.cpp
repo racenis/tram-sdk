@@ -467,6 +467,11 @@ struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
 };
 
 std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, vec3 from, vec3 to, uint32_t collision_mask) {
+    if (shape.type == SHAPE_MESH) {
+        Log(Severity::WARNING, System::PHYSICS, "Physics::Shapecast() doesn't support mesh shapes!");
+        return std::vector<std::pair<ObjectCollision, void*>>();
+    }
+    
     auto shape_ptr = API::MakeBulletShape(shape);
     btTransform bto, bfrom;
     std::vector<std::pair<ObjectCollision, void*>> collisions;
@@ -478,9 +483,6 @@ std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, v
     bfrom.setIdentity();
     bfrom.setOrigin({from.x, from.y, from.z});
 
-    // that btConvexShape* cast will probably segfault if MakeBulletShape() 
-    // didn't return a btConvexShape (of which there is only a mesh)
-    // TODO: fix
     dynamics_world->convexSweepTest((btConvexShape*)shape_ptr, bfrom, bto, callback);
     
     delete shape_ptr;
@@ -525,11 +527,7 @@ void StepPhysics() {
     dynamics_world->stepSimulation(1.0f/60.0f, 0);
     
     if (draw_debug) dynamics_world->debugDrawWorld();
-    
-    // process the triggers
-    // TODO: move this ?? to physics.cpp?
-    for (auto& trigger : PoolProxy<TriggerComponent>::GetPool()) trigger.ResetCollisions();
-    
+        
     // BulletPhysics API is trash and I hate it
     int numManifolds = dynamics_world->getDispatcher()->getNumManifolds();
     for (int i = 0; i < numManifolds; i++) {

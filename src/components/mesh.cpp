@@ -414,23 +414,28 @@ void MeshComponent::SetLineDrawingMode(bool enabled) {
     }
 }
 
-/// Sets the scale of the model.
+/// Sets the scale of the mesh.
 void MeshComponent::SetColor(vec3 color) {
     this->color = color;
     
     if (is_ready) {
-        
-        // TODO: fix hardcodings
-        vec4 colors[15];
+        Render::API::SetDrawListColor(draw_list_entry, vec4(color, opacity));
+    }
+}
+
+/// Sets the opacity of the mesh.
+void MeshComponent::SetOpacity(float opacity) {
+    this->opacity = opacity;
     
-        // hold on... why the fuck are we mixing in material colors
-        // the material API already has colors.. FUCK
-        // TODO: figure this shit out
-        for (uint32_t i = 0; i < API::GetMaxIndexRangeLength(); i++) {
-            colors[i] = vec4(this->materials[i]->GetColor() * color, 1.0f);
-        }
+    if (opacity != 1.0f) {
+        render_flags |= FLAG_TRANSPARENT;
+    } else {
+        render_flags &= ~FLAG_TRANSPARENT;
+    }
     
-        Render::API::SetDrawListColor(draw_list_entry, vec4(color, 1.0f));
+    if (is_ready) {
+        Render::API::SetDrawListColor(draw_list_entry, vec4(color, opacity));
+        Render::API::SetFlags(draw_list_entry, render_flags);
     }
 }
 
@@ -456,7 +461,7 @@ void MeshComponent::Start() {
 
     Render::API::SetDrawListVertexArray(draw_list_entry, vertex_array);
     Render::API::SetDrawListMaterials(draw_list_entry, material_count, materials);
-    Render::API::SetDrawListColor(draw_list_entry, vec4(color, 1.0f));
+    Render::API::SetDrawListColor(draw_list_entry, vec4(color, opacity));
     Render::API::SetDrawListTextureOffsets(draw_list_entry, API::GetMaxIndexRangeLength(), offsets);
     const bool found_shader = Render::API::SetDrawListShader(draw_list_entry, vertex_format, material_type);
     Render::API::SetDrawListIndexRange(draw_list_entry, 0, vertices);

@@ -1,5 +1,4 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
-
 #ifndef TRAM_SDK_PHYSICS_COLLISIONSHAPE_H
 #define TRAM_SDK_PHYSICS_COLLISIONSHAPE_H
 

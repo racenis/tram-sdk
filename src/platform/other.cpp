@@ -20,9 +20,10 @@ void TryDebugging() {
     if (IsDebuggerPresent()) {
         DebugBreak();
     }
+#else
+    raise(SIGTRAP);
 #endif
-    
-    // TODO: look up what do here on other platforms
+
 }
 
 void ShowErrorDialog(const char* message, const char* title) {

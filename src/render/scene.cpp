@@ -67,11 +67,12 @@ static Pool<AABBLeaf> scene_tree_leaves("Scene AABB tree leaf pool", 1000);
 // TODO: fix
 
 /// Inserts a RenderComponent leaf into the scene tree.
-/// This is done automatically by the RenderComponent itself, so
+/// This is done automatically by the RenderComponent itself, so there is no
+/// need to call this manually.
 /// @return Handle to the inserted leaf.
-aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, vec3 scale) {
-    vec3 min = component->GetModel()->GetAABBMin() * scale;
-    vec3 max = component->GetModel()->GetAABBMax() * scale;
+aabbleaf_t InsertLeaf(RenderComponent* component) {
+    vec3 min = component->GetModel()->GetAABBMin() * component->GetScale();
+    vec3 max = component->GetModel()->GetAABBMax() * component->GetScale();
     
     vec3 extents[8] = {
         {min.x, min.y, min.z},
@@ -85,7 +86,7 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
     };
     
     for (auto& extent : extents) {
-        extent = rotation * extent;
+        extent = component->GetRotation() * extent;
     }
     
     min = extents[0];
@@ -96,8 +97,8 @@ aabbleaf_t InsertLeaf(RenderComponent* component, vec3 position, quat rotation, 
         max = MergeAABBMax(max, extent);
     }
 
-    min += position;
-    max += position;
+    min += component->GetLocation();
+    max += component->GetLocation();
     
     AABBLeaf* leaf = scene_tree_leaves.AddNew();
 

@@ -57,7 +57,7 @@ void SoundTable::PlaySound(SoundAction type) {
 void SoundTable::PlaySound(SoundAction type, vec3 position, float volume) {
     name_t sound = GetSound(type);
     if (!sound) return;
-    new Sound(sound, volume, position);
+    Sound::Spawn(sound, volume, position);
 }
 
 SoundTable* SoundTable::Find(name_t name) {

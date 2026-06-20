@@ -52,15 +52,21 @@ void Sound::LoadFromDisk() {
         load_fail = true;
         Log(Severity::WARNING, System::AUDIO, "Failed to load: {}", path);
         
-        // TODO: generate an error audio
+        sample_rate = 11025;
+        sound_length = 11025;
+        sound_data = (int16_t*)malloc(sizeof(int16_t) * 11025);
+        channels = 1;
         
-        // sort of how we use the pink checkerboard pattern when textures fail
-        // to load, we could generate some kind of an error sound also
-        
-    } else {
-        sound_buffer = API::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels);
+        // generate some noise as a placeholder
+        for (int i = 0; i < 11025; i++) {
+            float signal = sinf((float)i / 11.025f * 2.0f * 3.14159f);
+            float amplitude = sinf((float)i / 1378.125f * 2.0f * 3.14159f);
+            sound_data[i] = 32000.0f * signal * amplitude;
+        }
     }
-    
+
+    sound_buffer = API::MakeAudioBuffer(sound_data, sound_length, sample_rate, channels);
+
     free(sound_data);
     sound_data = nullptr;
     

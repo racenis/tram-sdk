@@ -10,9 +10,11 @@
 
 namespace tram {
 
-// TODO: make constr_func etc. into typedefs??
+typedef Entity* (*scriptable_make_t)(name_t new_type, const SharedEntityData&, const ValueArray&);
+typedef void (*scriptable_yeet_t)(Entity*);
+
 namespace ScriptableType {
-    void Register(name_t base_type, Entity* (*constr_func)(name_t new_type, const SharedEntityData&, const ValueArray&), void (*destr_func)(Entity*));
+    void Register(name_t base_type, scriptable_make_t, scriptable_yeet_t);
     Entity* Make(name_t base_type, name_t type, const SharedEntityData&, const ValueArray&);
     void Yeet(Entity* yeetable);
 }

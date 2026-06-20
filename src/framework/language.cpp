@@ -40,10 +40,14 @@ void Load(const char* filename){
     
     if (!file.is_open()) {
         Log(Severity::WARNING, System::CORE, "Can't find language file: {}", path);
+        return;
     }
     
-    // wait don't we have headers
-    // TODO: investigate
+    auto header = file.read_token();
+    if (header != "LANGv1") {
+        Log(Severity::ERROR, System::CORE, "Unrecognized language file header {} in file: {}", header, path);
+        return;
+    }
     
     while (file.is_continue()) {
         name_t string_name = file.read_name();

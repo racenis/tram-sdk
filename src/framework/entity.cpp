@@ -185,13 +185,13 @@ static Hashmap<EntityTypeInfo> registered_entity_types("Entity type hashmap", EN
 
 /// Creates an unnamed entity with a random ID.
 Entity::Entity() {
-    this->id = GenerateID();
+    this->id = Core::GenerateID();
     Register();
 }
 
 /// Creates a named entity with a random ID.
 Entity::Entity(name_t name) {
-    this->id = GenerateID();
+    this->id = Core::GenerateID();
     this->name = name;
     Register();
 }
@@ -206,7 +206,7 @@ Entity::Entity(const SharedEntityData& shared_data) {
     
     if (!id) {
         flags |= NON_SERIALIZABLE;
-        id = GenerateID();
+        id = Core::GenerateID();
     }
     
     flags |= LOADED_FROM_DISK;
@@ -513,13 +513,16 @@ Entity* Entity::Make(name_t type, File* file) {
     };
     
     static thread_local std::vector<Value> fields;
+    static thread_local std::vector<std::string> string_fields;
     fields.clear();
+    string_fields.clear();
     
     for (size_t i = 0; i < record.fieldcount; i++) {
         switch (record.fields[i].field_type) {
             case TYPE_BOOL:     fields.push_back((bool) file->read_uint32()); break; // hehe
             case TYPE_NAME:     fields.push_back(file->read_name());    break;
-            case TYPE_STRING:   fields.push_back(nullptr);              break; // TODO: fix
+            case TYPE_STRING:   string_fields.push_back((std::string)file->read_string());
+                                fields.push_back(string_fields.back().c_str()); break;
             case TYPE_INT8:     fields.push_back(file->read_int8());    break;
             case TYPE_INT16:    fields.push_back(file->read_int16());   break;
             case TYPE_INT32:    fields.push_back(file->read_int32());   break;

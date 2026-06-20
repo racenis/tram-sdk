@@ -4,7 +4,6 @@
 #define TRAM_SDK_COMPONENTS_LIGHTCOMPONENT_H
 
 #include <framework/entitycomponent.h>
-#include <components/render.h>
 #include <render/render.h>
 
 namespace tram {

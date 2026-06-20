@@ -19,14 +19,6 @@
  * @see https://racenis.github.io/tram-sdk/documentation/components/audio.html
  */
 
-/* TODO:
- * I don't really like how the AudioComponent references the RenderComponent for
- * the component's visualization.
- * I feel like a better alternative would be to set up some kind of a
- * Component<RenderComponent> array in this file and then reference them based
- * Pool indices.
- */
-
 namespace tram {
 
 using namespace tram::Audio;
