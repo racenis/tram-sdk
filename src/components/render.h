@@ -16,12 +16,12 @@ public:
     static RenderComponent* Make();
     static void Yeet(RenderComponent* component);
     
-    void SetModel(name_t name);
+    [[deprecated]] void SetModel(name_t name);
     void SetModel(Render::Model* model) { this->model = model; }
-    void SetLightmap(name_t name);
+    [[deprecated]] void SetLightmap(name_t name);
     void SetLightmap(Render::Lightmap* lightmap);
     void SetEnvironmentMap(Render::Environment* environment);
-    void SetArmature(AnimationComponent* armature);
+    [[deprecated]] void SetArmature(AnimationComponent* armature);
     void SetPose(AnimationComponent* armature);
 
     inline Render::Model* GetModel() const { return model.get(); }

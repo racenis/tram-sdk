@@ -78,12 +78,12 @@ void Decoration::Load() {
     physicscomponent.make();
     
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(model);
+    rendercomponent->SetModel(Render::Model::Find(model));
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_STATICOBJ);
     physicscomponent->SetCollisionMask(-1 ^ (COLL_WORLDOBJ | COLL_STATICOBJ));
-    physicscomponent->SetModel(model);
+    physicscomponent->SetModel(Physics::CollisionModel::Find(model));
     physicscomponent->SetMass(0.0f);
     
     rendercomponent->Init();
@@ -105,10 +105,10 @@ void Decoration::RequestAnimationComponent() {
     
     animationcomponent.make();
     animationcomponent->SetParent(this);
-    animationcomponent->SetModel(model);
+    animationcomponent->SetModel(Render::Model::Find(model));
     animationcomponent->Init();
     
-    rendercomponent->SetArmature(animationcomponent);
+    rendercomponent->SetPose(animationcomponent);
 }
 
 void Decoration::Unload() {

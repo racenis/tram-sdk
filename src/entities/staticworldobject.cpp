@@ -84,12 +84,12 @@ void StaticWorldObject::SetParameters() {
 void StaticWorldObject::Load(){
     rendercomponent.make();
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(model);
+    rendercomponent->SetModel(Render::Model::Find(model));
     rendercomponent->SetLightmap(lightmap ? Render::Lightmap::Find(lightmap) : Render::Lightmap::Find(id));
     rendercomponent->SetDirectionaLight(!cell->HasInteriorLighting());
 
     physicscomponent.make();
-    physicscomponent->SetModel(model);
+    physicscomponent->SetModel(Physics::CollisionModel::Find(model));
     physicscomponent->SetMass(0.0f);
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_WORLDOBJ);

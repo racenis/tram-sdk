@@ -103,7 +103,7 @@ void Sound::Load() {
     audio.make();
     
     audio->SetParent(this);
-    audio->SetSound(sound);
+    audio->SetSound(Audio::Sound::Find(sound));
     audio->SetRepeating(sound_flags & SOUND_LOOPING);
     audio->SetLocation(location);
     

@@ -899,19 +899,19 @@ void Init() {
 
     SetFunction("__impl_components_render_set_model", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
         Model* model = &PoolProxy<Model>::GetPool()[(uint32_t)array[1]];
-        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetModel(model->GetName());
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetModel(model);
         return true;
     });
     
     SetFunction("__impl_components_render_set_lightmap", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
-        Material* material = &PoolProxy<Material>::GetPool()[(uint32_t)array[1]];
-        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetLightmap(material->GetName());
+        Lightmap* lightmap = &PoolProxy<Lightmap>::GetPool()[(uint32_t)array[1]];
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetLightmap(lightmap);
         return true;
     });
     
     SetFunction("__impl_components_set_armature", {TYPE_UINT32, TYPE_UINT32}, [](valuearray_t array) -> value_t {
         AnimationComponent* armature = &PoolProxy<AnimationComponent>::GetPool()[(uint32_t)array[1]];
-        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetArmature(armature);
+        PoolProxy<RenderComponent>::GetPool()[(uint32_t)array[0]].SetPose(armature);
         return true;
     });
 

@@ -91,7 +91,7 @@ void Trigger::Load(){
     triggercomponent->SetParent(this);
     triggercomponent->SetCollisionMask(collision_mask);
     triggercomponent->SetCollisionGroup(COLL_TRIGGER);
-    triggercomponent->SetModel(model);
+    triggercomponent->SetModel(Physics::CollisionModel::Find(model));
     triggercomponent->SetActivationCallback([](TriggerComponent* comp, auto col) {
         dynamic_cast<Trigger*>(comp->GetParent())->Activate();
     });
@@ -144,8 +144,8 @@ void Trigger::SetupModel() {
     
     rendercomponent.make();
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(model);
-    rendercomponent->SetLightmap("fullbright");
+    rendercomponent->SetModel(Render::Model::Find(model));
+    rendercomponent->SetLightmap(Render::Lightmap::Find("fullbright"));
     rendercomponent->SetOpacity(0.5f);
     rendercomponent->Init();
 }

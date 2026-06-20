@@ -193,13 +193,13 @@ void Button::Load(){
     physicscomponent.make();
     
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(model);
-    rendercomponent->SetLightmap(lightmap);
+    rendercomponent->SetModel(Render::Model::Find(model));
+    rendercomponent->SetLightmap(Render::Lightmap::Find(lightmap));
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(Physics::COLL_STATICOBJ);
     physicscomponent->SetCollisionMask(-1 ^ (Physics::COLL_WORLDOBJ | Physics::COLL_STATICOBJ));
-    physicscomponent->SetModel(model);
+    physicscomponent->SetModel(Physics::CollisionModel::Find(model));
     physicscomponent->SetMass(0.0f);
     physicscomponent->SetUpdateParentTransform(false);
     

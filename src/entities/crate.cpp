@@ -88,11 +88,11 @@ void Crate::Load(){
     physicscomponent.make();
     
     rendercomponent->SetParent(this);
-    rendercomponent->SetModel(model);
+    rendercomponent->SetModel(Render::Model::Find(model));
 
     physicscomponent->SetParent(this);
     physicscomponent->SetCollisionGroup(COLL_DYNAMICOBJ);
-    physicscomponent->SetModel(collmodel);
+    physicscomponent->SetModel(Physics::CollisionModel::Find(collmodel));
     physicscomponent->SetMass(68.9f);
     physicscomponent->Sleep();
     

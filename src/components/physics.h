@@ -15,7 +15,7 @@ public:
     static void Yeet(PhysicsComponent* component);
 
     Physics::CollisionModel* GetModel() const;
-    void SetModel(name_t model);
+    [[deprecated]] void SetModel(name_t model);
     void SetModel(Physics::CollisionModel* model);
 
     void SetMass(float mass);

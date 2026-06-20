@@ -13,7 +13,7 @@ namespace tram {
 class AnimationComponent : public EntityComponent {
 public:
     void SetModel(Render::Model* model);
-    void SetModel(name_t model);
+    [[deprecated]] void SetModel(name_t model);
     Render::Model* GetModel() const { return model.get(); }
     Render::Pose* GetPose() const { return pose; }
     

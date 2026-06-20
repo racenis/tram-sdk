@@ -21,7 +21,7 @@ public:
     static void Yeet(TriggerComponent* component);
     
     Physics::CollisionModel* GetModel() const { return model.get(); }
-    void SetModel(name_t model);
+    [[deprecated]] void SetModel(name_t model);
     void SetModel(Physics::CollisionModel* model);
     void SetShape(Physics::CollisionShape shape);
 
