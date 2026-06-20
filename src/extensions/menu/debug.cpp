@@ -863,7 +863,7 @@ void Console::Display() {
                 history_cursor--;
             }
             
-            if (history_cursor != -1) strcpy(text, console_history[history_cursor].data());
+            if (history_cursor != -1) strncpy_s(text, 250, console_history[history_cursor].data(), -1);
         }
         
         if (this_down) {
@@ -876,7 +876,7 @@ void Console::Display() {
                 }
             }
             
-            if (history_cursor != -1) strcpy(text, console_history[history_cursor].data());
+            if (history_cursor != -1) strncpy_s(text, 250, console_history[history_cursor].data(), -1);
         }
             
     GUI::PopFrame();

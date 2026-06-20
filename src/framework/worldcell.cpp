@@ -260,9 +260,8 @@ void WorldCell::Remove(Entity* entity) {
 
 /// Loads worldcell data from disk.
 void WorldCell::LoadFromDisk() {
-    char path[PATH_LIMIT] = "data/worldcells/";
-    strcat(path, name);
-    strcat(path, ".cell");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/worldcells/%s.cell", (const char*)name);
     
     File file(path, File::READ | File::PAUSE_LINE);
 
@@ -401,9 +400,8 @@ void WorldCell::LoadFromDisk() {
 
 /// Loads worldcell data from disk.
 void WorldCell::SaveToDisk() {
-    char path[PATH_LIMIT] = "save://";
-    strcat(path, name);
-    strcat(path, ".cell");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "save://%s.cell", (const char*)name);
     
     File file(path, File::READ | File::PAUSE_LINE);
 

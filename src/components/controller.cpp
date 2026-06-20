@@ -94,7 +94,7 @@ void ControllerComponent::Update() {
     if (!draw_debug) return;
     for (auto& component : PoolProxy<FPSControllerComponent>::GetPool()) {
         char str[100];
-        sprintf(str, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nFlying: %s\nStanding: %s",
+        snprintf(str, 100, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nFlying: %s\nStanding: %s",
                 component.velocity.x, component.velocity.y, component.velocity.z,
                 component.is_in_air ? "yes" : "no",
                 component.running ? "yes" : "no",
@@ -106,7 +106,7 @@ void ControllerComponent::Update() {
     
     for (auto& component : PoolProxy<RaycastControllerComponent>::GetPool()) {
         char str[100];
-        sprintf(str, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nFlying: %s\nStanding: %s",
+        snprintf(str, 100, "Velocity: %.2f %.2f %.2f\nIn air: %s\nRunning: %s\nCrouching: %s\nFlying: %s\nStanding: %s",
                 component.air_velocity.x, component.air_velocity.y, component.air_velocity.z,
                 component.is_in_air ? "yes" : "no",
                 component.running ? "yes" : "no",

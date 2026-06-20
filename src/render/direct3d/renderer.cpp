@@ -312,7 +312,7 @@ light_t MakeLight() {
     uint32_t light_id = light - light_list.GetFirst();
     uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
     
-    light_tree_ids [light_id] = leaf_id;
+    light_tree_ids[light_id] = leaf_id;
         
     return light_t{ .d3d = light };
 }
@@ -320,7 +320,7 @@ light_t MakeLight() {
 void YeetLight(light_t light) {
     D3DLight* light_ptr = light.d3d;
     uint32_t light_id = light_ptr - light_list.GetFirst();
-    uint32_t leaf_id = light_tree_ids [light_id];
+    uint32_t leaf_id = light_tree_ids[light_id];
 
     light_list.Remove(light_ptr);
     light_tree.RemoveLeaf(leaf_id);
@@ -329,7 +329,7 @@ void YeetLight(light_t light) {
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
     D3DLight* light_ptr = light.d3d;
     uint32_t light_id = light_ptr - light_list.GetFirst();
-    uint32_t leaf_id = light_tree_ids [light_id];
+    uint32_t leaf_id = light_tree_ids[light_id];
     
     light_ptr->location = location;
     light_ptr->color = color;
@@ -339,7 +339,7 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
     
     light_tree.RemoveLeaf(leaf_id);
     leaf_id = light_tree.AddLeaf(light_id, light_ptr->location.x, light_ptr->location.y, light_ptr->location.z);
-    light_tree_ids [light_id] = leaf_id;
+    light_tree_ids[light_id] = leaf_id;
 }
 
 

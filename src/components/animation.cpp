@@ -354,12 +354,12 @@ void AnimationComponent::Update() {
         char buf[100];
         for (size_t i = 0; i < ANIM_COUNT; i++) {
             if (!comp.anim_playing[i]) continue;
-            sprintf(buf, "[%i] %.2f | %i | %s\n",
+            snprintf(buf, 100, "[%i] %.2f | %i | %s\n",
                 (int)i,
                 comp.anim_info[i].weight,
                 comp.anim_info[i].repeats,
                 (const char*)comp.anim_playing[i]);
-            strcat(str, buf);
+            strncat_s(str, 200, buf, -1);
         }
         
         Render::AddText(comp.GetParent()->GetLocation(), str);

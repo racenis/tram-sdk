@@ -30,9 +30,8 @@ static Hashmap<const char*> language_string_map("Language string hashmap", LANGU
 
 /// Loads a language file.
 void Load(const char* filename){
-    char path[PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".lang");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.lang", filename);
     
     Log(Severity::INFO, System::CORE, "Loading: {}", path);
     
@@ -55,7 +54,7 @@ void Load(const char* filename){
         
         char* string_ptr = language_string_pool.AddNew(string_content.length() + 1);
 
-        strncpy(string_ptr, string_content.data(), string_content.length());
+        strncpy_s(string_ptr, string_content.length() + 1, string_content.data(), string_content.length());
         string_ptr[string_content.length()] = '\0';
 
         language_string_map.Insert(string_name, string_ptr);

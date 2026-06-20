@@ -51,7 +51,7 @@ public:
         if (!archive) {
             size_t seperator = strcspn(path, "/");
             
-            strncpy(archive_copy, path, seperator);
+            strncpy_s(archive_copy, 50, path, seperator);
             archive_copy[seperator] = '\0';
             
             archive = archive_copy;

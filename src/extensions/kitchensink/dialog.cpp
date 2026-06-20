@@ -89,9 +89,8 @@ DialogTopic* DialogTopic::Find(name_t name) {
 }
 
 void DialogTopic::LoadFromDisk(const char* filename) {
-    char path [PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".dialog");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.dialog", filename);
 
     File file(path, File::READ | File::PAUSE_LINE);
 

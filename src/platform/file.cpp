@@ -68,9 +68,9 @@ public:
     DiskReader(const char* location, const char* path) {
         char full_path[PATH_LIMIT + 10];
         if (location) {
-            sprintf(full_path, "%s/%s", location, path);
+            snprintf(full_path, PATH_LIMIT + 10, "%s/%s", location, path);
         } else {
-            strcpy(full_path, path);
+            strncpy_s(full_path, PATH_LIMIT + 10, path, -1);
         }
         
         FILE* file_handle = fopen(full_path, "rb");
@@ -246,11 +246,11 @@ public:
         this->temp_path = new char[PATH_LIMIT + 10];
         
         if (location) {
-            sprintf(full_path, "%s/%s", location, path);
-            sprintf(temp_path, "%s/%s.tmp", location, path);
+            snprintf(full_path, PATH_LIMIT + 10, "%s/%s", location, path);
+            snprintf(temp_path, PATH_LIMIT + 10, "%s/%s.tmp", location, path);
         } else {
-            sprintf(full_path, "%s", path);
-            sprintf(temp_path, "%s.tmp", path);
+            snprintf(full_path, PATH_LIMIT + 10, "%s", path);
+            snprintf(temp_path, PATH_LIMIT + 10, "%s.tmp", path);
         }
         
         auto directory = std::filesystem::path(full_path).parent_path();

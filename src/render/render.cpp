@@ -175,8 +175,8 @@ void Init() {
     font_icon->AddReference();
     font_icon->Load();
     
-    delete [] font_pixels;
-    delete [] icon_pixels;
+    delete[] font_pixels;
+    delete[] icon_pixels;
     
     CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), debugtext_vertex_array);
     debugtext_entry = InsertDrawListEntry();

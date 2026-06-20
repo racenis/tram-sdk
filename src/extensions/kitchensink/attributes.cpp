@@ -130,10 +130,9 @@ AttributeContainer* AttributeContainer::Find(id_t entity_id) {
 }
 
 void AttributeContainer::LoadFromDisk(const char* filename) {
-    char path [PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".attrib");
-
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.attrib", filename);
+    
     File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {

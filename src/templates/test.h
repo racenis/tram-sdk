@@ -87,7 +87,7 @@ struct _test_case {
             auto print_time = std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
             char pad[80] = "";
             int pads = 32 - strlen(times_names[i]);
-            for (int j = 0; j < pads; j++) strcat(pad, " ");
+            for (int j = 0; j < pads; j++) strncat_s(pad, 80, " ", -1);
             
             printf("- %s%s%ims\n", times_names[i], pad, print_time);
         }

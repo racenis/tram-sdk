@@ -409,9 +409,8 @@ static std::pair<name_t, value_t> LoadVariableSecond(File& file) {
 }
 
 void Quest::LoadFromDisk(const char* filename) {
-    char path [PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".quest");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.quest", filename);
 
     File file(path, File::READ | File::PAUSE_LINE);
 

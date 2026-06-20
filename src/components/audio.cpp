@@ -39,7 +39,7 @@ static void check_event(const char*) {
             for (auto& source : PoolProxy<AudioComponent>::GetPool()) {
                 if(draw_info) {
                     char str[100];
-                    sprintf(str, "Playing: %s\nRepeats: %s\nSound: %s",
+                    snprintf(str, 100, "Playing: %s\nRepeats: %s\nSound: %s",
                             source.IsPlaying() ? "yes" : "no",
                             source.IsRepeating() ? "yes" : " no",
                             source.GetSound() ? (const char*)source.GetSound()->GetName() : "none");

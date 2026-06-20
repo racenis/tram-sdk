@@ -54,9 +54,9 @@ void SetFileLogging(bool enabled) {
     std::strftime(time_str, 100, "--%Y-%b-%d--%H-%M-%S", &date_time);
     
     char file_name[200];
-    strcpy(file_name, "application-log");
-    strcat(file_name, time_str);
-    strcat(file_name, ".txt");
+    strncpy_s(file_name, 200, "application-log", -1);
+    strncat_s(file_name, 200, time_str, -1);
+    strncat_s(file_name, 200, ".txt", -1);
     
     log_file = fopen(file_name, "w");
     setvbuf(log_file, NULL, _IOFBF, 8192);
@@ -92,7 +92,7 @@ void concat_fmt(std::string_view& str) {
     // no options for specifying what's inside the bracket
     // ... for now.
     
-    strncat(buffer, str.data(), open_bracket);
+    strncat_s(buffer, 500, str.data(), open_bracket);
     
     str.remove_prefix(close_bracket + 1);
 }
@@ -144,7 +144,7 @@ void flush_console(Severity severity, System::system_t system) {
         if (chars >= 15) chars = 15;
         padding[chars] = '\0';
         
-        sprintf(flush_buffer, "%s [%s]%s ", severity_text, system_text, padding);
+        snprintf(flush_buffer, 489, "%s [%s]%s ", severity_text, system_text, padding);
     }
     
     if (console_log_callback) {
@@ -156,15 +156,17 @@ void flush_console(Severity severity, System::system_t system) {
     int last_space = 0;
     for (int i = 0;; i++) {
         if (isspace(buffer[i])) last_space = i;
-        if (++segment_length < 64 && buffer[i] != '\0') continue;
+        if (++segment_length < 64 && buffer[i] != '\n' && buffer[i] != '\0') continue;
         
-        if (segment_start != 0) strcat(flush_buffer, "                ");
+        const char current_char = buffer[i];
+        
+        if (segment_start != 0) strncat_s(flush_buffer, 489, "                ", -1);
         
         if (buffer[i] != '\0') buffer[last_space] = '\0';
-        strcat(flush_buffer, &buffer[segment_start]);
-        strcat(flush_buffer, "\n");
+        strncat_s(flush_buffer, 489, &buffer[segment_start], -1);
+        strncat_s(flush_buffer, 489, "\n", -1);
         
-        if (buffer[i] == '\0') {
+        if (current_char == '\0') {
             break;
         }
         
@@ -172,6 +174,8 @@ void flush_console(Severity severity, System::system_t system) {
         segment_start = last_space + 1;
         i = last_space;
     }
+    
+    flush_buffer[488] = '\0';
     
     std::cout << flush_buffer << std::flush;
     
@@ -219,19 +223,19 @@ void flush_display(int time, int system) {
 }
 
 template <> void concat(const std::string_view& value) {
-    strncat(buffer, value.data(), value.size());
+    strncat_s(buffer, 500, value.data(), value.size());
 }
 
 template <> void concat(const std::string& value) {
-    strncat(buffer, value.data(), value.size());
+    strncat_s(buffer, 500, value.data(), value.size());
 }
 
 template <> void concat(const char* const& value) {
-    strcat(buffer, value);
+    strncat_s(buffer, 500, value, -1);
 }
 
 void concat(const char* value) {
-    strcat(buffer, value);
+    strncat_s(buffer, 500, value, -1);
 }
 
 

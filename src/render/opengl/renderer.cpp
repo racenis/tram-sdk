@@ -170,7 +170,7 @@ static void Draw(GLDrawListEntry* robj) {
             tex_hash ^= robj->materials[tex]->gl_texture;
         }
         
-        sprintf(debug_text, "Layer: %b\nFlags: %u\nVAO: %u, [%u:%u]\nTexture: %u (%u)\nLightmap: %u\nEnvironment: %i\nLights: %u %u %u %u\nPose: %u\nSize: %.2f\nFade: %.2f -> %.2f",
+        snprintf(debug_text, 250, "Layer: %b\nFlags: %u\nVAO: %u, [%u:%u]\nTexture: %u (%u)\nLightmap: %u\nEnvironment: %i\nLights: %u %u %u %u\nPose: %u\nSize: %.2f\nFade: %.2f -> %.2f",
             robj->layer, robj->flags, robj->vao, robj->eboOff, robj->eboLen, robj->texCount, tex_hash, robj->lightmap, robj->environmentmap,
             robj->lights[0], robj->lights[1], robj->lights[2], robj->lights[3], robj->pose ? (int)PoolProxy<Pose>::GetPool().index(robj->pose) : 0, glm::distance(robj->aabb_min, robj->aabb_max),
             robj->fade_near, robj->fade_far);
@@ -438,7 +438,7 @@ void RenderFrame() {
         for (auto& light : PoolProxy<GLLight>::GetPool()) {
             char debug_text[250];
             
-            sprintf(debug_text, "Index: %i\nDistance: %.2f\nColor: %.2f %.2f %.2f\nDirection: %.2f %.2f %.2f\nExponent: %.2f",
+            snprintf(debug_text, 250, "Index: %i\nDistance: %.2f\nColor: %.2f %.2f %.2f\nDirection: %.2f %.2f %.2f\nExponent: %.2f",
                 (int)PoolProxy<GLLight>::GetPool().index(&light),
                 light.distance,
                 light.color.r, light.color.g, light.color.b,

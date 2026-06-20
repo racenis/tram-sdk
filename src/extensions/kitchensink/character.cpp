@@ -303,9 +303,8 @@ Character* Character::Find(id_t entity_id) {
 }
 
 void Character::LoadFromDisk(const char* filename) {
-    char path [PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".char");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.char", filename);
 
     File file(path, File::READ | File::PAUSE_LINE);
 

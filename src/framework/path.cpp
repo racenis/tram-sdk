@@ -59,9 +59,8 @@ Path* Path::Find(name_t name) {
 }
 
 void Path::LoadFromDisk() {
-    char path[PATH_LIMIT] = "data/paths/";
-    strcat(path, name);
-    strcat(path, ".path");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/paths/%s.path", (const char*)name);
     
     File file(path, File::READ | File::PAUSE_LINE);
     

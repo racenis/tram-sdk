@@ -48,9 +48,8 @@ void CollisionModel::LoadFromDisk() {
         return;
     }
     
-    char path[PATH_LIMIT] = "data/models/";
-    strcat(path, name);
-    strcat(path, ".collmdl");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/models/%s.collmdl", (const char*)name);
 
     File file(path, File::READ);
 

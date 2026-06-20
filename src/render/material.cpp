@@ -52,9 +52,8 @@ static Hashmap<Material*> material_list("Material name list", RESOURCE_LIMIT_MAT
 void Material::LoadMaterialInfo(const char* filename) {
     using namespace tram::Render;
     
-    char path [PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".list");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.list", filename);
 
     File file(path, File::READ | File::PAUSE_LINE);
     
@@ -336,7 +335,8 @@ void Material::LoadFromDisk() {
 
     int loadwidth, loadheight, loadchannels;
     unsigned char* loadtexture = nullptr;
-    char path[PATH_LIMIT] = "data/textures/";
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/textures/%s.png", (const char*)name);
 
     switch (type) {
         case MATERIAL_TEXTURE_ALPHA:
@@ -354,9 +354,8 @@ void Material::LoadFromDisk() {
         default:
             channels = 3;
     }
-
-    strcat(path, name);
-    strcat(path, ".png");
+    
+    
 
     FileReader* file = FileReader::GetReader(path);
         
@@ -391,9 +390,7 @@ void Material::LoadFromDisk() {
 
 
     if (texture_type == TEXTURE_SAME_NORMAL) {
-        strcpy(path, "data/textures/");
-        strcat(path, name);
-        strcat(path, ".normal.png");
+        snprintf(path, PATH_LIMIT, "data/textures/%s.normal.png", (const char*)name);
         
         loadtexture = stbi_load(path, &loadwidth, &loadheight, &loadchannels, 3);
         

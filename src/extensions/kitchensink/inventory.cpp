@@ -328,9 +328,8 @@ Inventory* Inventory::Find(Entity* entity) {
 
 
 void Inventory::LoadFromDisk(const char* filename) {
-    char path [PATH_LIMIT] = "data/";
-    strcat(path, filename);
-    strcat(path, ".item");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/%s.item", filename);
 
     File file(path, File::READ | File::PAUSE_LINE);
 

@@ -45,7 +45,7 @@ static node_id_t GetNavmeshNodeFromRawId(uint32_t raw_id) {
 }
 
 NavmeshNode Navmesh::GetNavmeshNode(node_id_t node_id) {
-    return navmesh_nodes [node_id];
+    return navmesh_nodes[node_id];
 }
 
 Navmesh* Navmesh::Find(name_t name) {
@@ -59,9 +59,8 @@ Navmesh* Navmesh::Find(name_t name) {
 }
 
 void Navmesh::LoadFromDisk() {
-    char path[PATH_LIMIT] = "data/navmeshes/";
-    strcat(path, name);
-    strcat(path, ".navmesh");
+    char path[PATH_LIMIT];
+    snprintf(path, PATH_LIMIT, "data/navmeshes/%s.navmesh", (const char*)name);
     
     File file(path, File::READ);
     
@@ -82,7 +81,7 @@ void Navmesh::LoadFromDisk() {
         
         nodes.push_back(node_id);
         
-        navmesh_nodes [node_id] = {
+        navmesh_nodes[node_id] = {
             GetNavmeshNodeFromRawId(file.read_uint32()),
             GetNavmeshNodeFromRawId(file.read_uint32()),
             GetNavmeshNodeFromRawId(file.read_uint32()),

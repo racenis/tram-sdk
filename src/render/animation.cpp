@@ -92,9 +92,8 @@ void Animation::LoadFromDisk() {
         return;
     }
     
-    char filename [100] = "data/animations/";
-    strcat(filename, name);
-    strcat(filename, ".anim");
+    char filename[100];
+    snprintf(filename, PATH_LIMIT, "data/animations/%s.anim", (const char*)name);
 
     File file(filename, File::READ);
 

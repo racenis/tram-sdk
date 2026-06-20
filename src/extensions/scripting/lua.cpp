@@ -286,9 +286,9 @@ static int lua_logger(lua_State* L) {
 
     for (int i = 1; i <= args; i++) {
         const char* str = luaL_tolstring(L, i, NULL);
-        strcat(buffer, str);
+        strncat_s(buffer, 420, str, -1);
         lua_pop(L, 1);
-        strcat(buffer, " ");
+        strncat_s(buffer, 420, " ", -1);
     }
 
     Log(Severity::DEFAULT, lua_system, buffer);

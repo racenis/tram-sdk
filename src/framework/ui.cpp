@@ -97,9 +97,7 @@ static std::unordered_map<KeyboardKey, KeyBinding> key_action_bindings = {
         std::strftime(time_str, 100, "--%Y-%b-%d--%H-%M-%S", &date_time);
         
         char file_name[200];
-        strcpy(file_name, "screenshot");
-        strcat(file_name, time_str);
-        strcat(file_name, ".png");
+        snprintf(file_name, 200, "screenshot%s.png", time_str);
         
         Render::API::GetScreen(buffer, screen_width, screen_height);
         Platform::SaveImageToDisk(file_name, screen_width, screen_height, buffer);

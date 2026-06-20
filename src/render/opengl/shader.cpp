@@ -118,9 +118,7 @@ public:
         if (shader_code) return;
         
         char path[PATH_LIMIT];
-        strcpy(path, shader_path);
-        strcat(path, name);
-        strcat(path, GetExtension());
+        snprintf(path, PATH_LIMIT, "%s%s%s", shader_path, (const char*)name, GetExtension());
         
         FileReader* file = FileReader::GetReader(path);
         
@@ -130,17 +128,18 @@ public:
             // load in shader fallback
             shader_len = strlen(get_fallback_shader(format, GetGLShaderCode()));
             shader_code = (char*)malloc(shader_len + 1);
-            strncpy(shader_code, get_fallback_shader(format, GetGLShaderCode()), shader_len + 1);
+            strncpy_s(shader_code, shader_len + 1, get_fallback_shader(format, GetGLShaderCode()), -1);
         } else {
             shader_len = file->GetSize();
             shader_code = (char*)malloc(shader_len + 1);
-            strncpy(shader_code, file->GetContents(), shader_len + 1);
+            strncpy_s(shader_code, shader_len + 1, file->GetContents(), -1);
         }
         
         flags_in_shader = find_flags_in_shader(shader_code, shader_len);
         
         // conservative allocation
-        shader_proc = (char*)malloc(shader_len + SHADER_FLAG_LEN_LIMIT * 34 + 1);
+        shader_proc_size = shader_len + SHADER_FLAG_LEN_LIMIT * 34 + 1;
+        shader_proc = (char*)malloc(shader_proc_size);
         
         file->Yeet();
     }
@@ -159,21 +158,22 @@ public:
         Log(Severity::INFO, System::RENDER, "Compiling {} shader {} with {} flags", GetShaderTypeName(), name, flags);
         
         // otherwise compile the shader again
-        strcpy(shader_proc, shader_version);
-        strcat(shader_proc, "\n");
+        snprintf(shader_proc, shader_proc_size, "%s\n", shader_version);
         uint32_t line = 1;
         for (uint32_t i = 0; i < 32; i++) {
             if (!(flags & (1 << i))) continue;
-            strcat(shader_proc, "#define ");
-            strcat(shader_proc, shader_flag_to_string(1 << i));
-            strcat(shader_proc, "\n");
+            strncat_s(shader_proc, shader_proc_size, "#define ", -1);
+            strncat_s(shader_proc, shader_proc_size, shader_flag_to_string(1 << i), -1);
+            strncat_s(shader_proc, shader_proc_size, "\n", -1);
             line++;
         }
         
         char line_directive[16];
         snprintf(line_directive, 16, "#line %u\n", line);
-        strcat(shader_proc, line_directive);
-        strcat(shader_proc, shader_code);
+        strncat_s(shader_proc, shader_proc_size, line_directive, -1);
+        strncat_s(shader_proc, shader_proc_size, shader_code, -1);
+        
+        shader_proc[shader_proc_size - 1] = '\0';
         
         uint32_t compiled_program = glCreateShader(GetGLShaderCode());
         glShaderSource(compiled_program, 1, &shader_proc, NULL);
@@ -207,6 +207,7 @@ protected:
     
     vertexformat_t format = 0;
     
+    uint32_t shader_proc_size = 0;
     char* shader_proc = nullptr;
 };
 

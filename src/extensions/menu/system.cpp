@@ -433,8 +433,8 @@ void SaveMenu::Display() {
                 if (GUI::Button("Yes", true, 70)) {
                     char path[PATH_LIMIT];
                     format_save_dir(path);
-                    strncat(path, "/", PATH_LIMIT - strlen(path));
-                    strncat(path, saves[loading_index].c_str(), PATH_LIMIT - strlen(path));
+                    strncat_s(path, PATH_LIMIT, "/", -1);
+                    strncat_s(path, PATH_LIMIT, saves[loading_index].c_str(), -1);
                     
                     auto search_list = FileReader::GetSearchList();
                     auto backup = search_list;
@@ -466,7 +466,7 @@ void SaveMenu::Display() {
                     format_save_dir(path);
                     char savename[20];
                     snprintf(savename, 20, "/%03zu", saves.size());
-                    strncat(path, savename, PATH_LIMIT - strlen(path));
+                    strncat_s(path, PATH_LIMIT, savename, -1);
                     
                     FileWriter::SetProtocolAlias("save", "file", path);
                     Serialization::Save();

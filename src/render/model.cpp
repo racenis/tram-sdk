@@ -295,9 +295,7 @@ void Model::LoadFromDisk() {
     std::vector<BucketMapping> bucket_mappings;
 
     // trying to load model as a static model, text mode
-    strcpy(path, "data/models/");
-    strcat(path, name);
-    strcat(path, ".stmdl");
+    snprintf(path, PATH_LIMIT, "data/models/%s.stmdl", (const char*)name);
 
     if (File file(path, File::READ); file.is_open()) {
         vertex_format = VERTEX_STATIC;
@@ -464,10 +462,8 @@ void Model::LoadFromDisk() {
 
     // ok, the model isn't static
     // try opening it as a dynamic model
-
-    strcpy(path, "data/models/");
-    strcat(path, name);
-    strcat(path, ".dymdl");
+    
+    snprintf(path, PATH_LIMIT, "data/models/%s.dymdl", (const char*)name);
 
     if (File file(path, File::READ); file.is_open()) {
         vertex_format = VERTEX_DYNAMIC;
@@ -644,9 +640,7 @@ void Model::LoadFromDisk() {
 
     // try opening it as a mod model
 
-    strcpy(path, "data/models/");
-    strcat(path, name);
-    strcat(path, ".mdmdl");
+    snprintf(path, PATH_LIMIT, "data/models/%s.mdmdl", (const char*)name);
 
     if (File file(path, File::READ); file.is_open()) {
         name_t file_version = file.read_name();
