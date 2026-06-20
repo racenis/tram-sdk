@@ -102,7 +102,6 @@ public:
 
     void lock() { while (spinlock.exchange(true)); }
     void unlock() { spinlock.store(false); }
-    
 protected:
     const char* name;   // name of queue for log messages etc.
     size_t csize;       // how many elements are in queue right now

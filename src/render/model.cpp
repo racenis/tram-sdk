@@ -58,11 +58,11 @@ namespace tram::Render {
 static Hashmap<Model*> model_list("model name list", 500);
 
 Model* Model::Find(name_t name) {
-    Model* model = model_list.Find(name);
+    Model* model = model_list.find(name);
     
     if (!model) {
-        model = PoolProxy<Model>::New(name);
-        model_list.Insert(name, model);
+        model = PoolProxy<Model>::make(name);
+        model_list.insert(name, model);
     }
     
     return model;
@@ -152,7 +152,7 @@ void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>
     std::vector<uint32_t> results;
     results.reserve(10);
     
-    model_aabb->tree.FindIntersection(ray_pos, ray_dir, results);
+    model_aabb->tree.find(ray_pos, ray_dir, results);
     
     for (auto res : results) {
         result.push_back(model_aabb->triangles[res]);
@@ -160,7 +160,7 @@ void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>
 }
 
 void Model::FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result) {
-    model_aabb->tree.FindAABBIntersection(min, max, [&](uint32_t key) {
+    model_aabb->tree.find(min, max, [&](uint32_t key) {
         result.push_back(model_aabb->triangles[key]);
     });
 }
@@ -208,7 +208,7 @@ void Model::DrawAABB(vec3 position, quat rotation) {
     node_counter = 0;
     leaf_counter = 0;
 
-    DrawAABBNodeChildren(model_aabb->tree, model_aabb->tree.GetRoot(), model_aabb->triangles, position, rotation);
+    DrawAABBNodeChildren(model_aabb->tree, model_aabb->tree.get_root(), model_aabb->triangles, position, rotation);
 }
 
 static vec3 TriangleAABBMin(vec3 point1, vec3 point2, vec3 point3) {
@@ -414,7 +414,7 @@ void Model::LoadFromDisk() {
             vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
             vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
-            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+            model_aabb->tree.insert(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             data->vertices[index.indices.x].texture = bucket_index;
             data->vertices[index.indices.y].texture = bucket_index;
@@ -571,7 +571,7 @@ void Model::LoadFromDisk() {
             vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
             vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
             
-            model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+            model_aabb->tree.insert(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
             
             data->vertices[index.indices.x].texture = bucket_index;
             data->vertices[index.indices.y].texture = bucket_index;
@@ -735,7 +735,7 @@ load_failure:
         vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
         vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
         
-        model_aabb->tree.InsertLeaf(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+        model_aabb->tree.insert(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
     }
     
     aabb_min = model_aabb->tree.GetAABBMin();

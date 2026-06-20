@@ -49,10 +49,10 @@ NavmeshNode Navmesh::GetNavmeshNode(node_id_t node_id) {
 }
 
 Navmesh* Navmesh::Find(name_t name) {
-    Navmesh* navmesh = navmesh_list.Find(name);
+    Navmesh* navmesh = navmesh_list.find(name);
     
     if (!navmesh) {
-        navmesh =  PoolProxy<Navmesh>::New(name);
+        navmesh =  PoolProxy<Navmesh>::make(name);
     }
     
     return navmesh;

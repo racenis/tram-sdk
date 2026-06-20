@@ -10,11 +10,11 @@ static Pool<RTTexture> texture_list("texture list", RESOURCE_LIMIT_MATERIAL);
 static Pool<RTMaterial> material_list("material list", RESOURCE_LIMIT_MATERIAL);
 
 material_t MakeMaterial() {
-    return material_t{.rt = material_list.AddNew()};
+    return material_t{.rt = material_list.make()};
 }
 
 void YeetMaterial(material_t material) {
-    material_list.Remove(material.rt);
+    material_list.yeet(material.rt);
 }
 
 void SetMaterialTexture(material_t material, texturehandle_t texture) {
@@ -46,7 +46,7 @@ void SetMaterialReflectivity(material_t material, float reflectivity) {
 }
 
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
-    RTTexture* texture = texture_list.AddNew();
+    RTTexture* texture = texture_list.make();
     
     texture->width = width;
     texture->height = height;

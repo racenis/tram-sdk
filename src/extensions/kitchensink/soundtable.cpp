@@ -61,11 +61,11 @@ void SoundTable::PlaySound(SoundAction type, vec3 position, float volume) {
 }
 
 SoundTable* SoundTable::Find(name_t name) {
-    SoundTable* sound_table = sound_table_list.Find(name);
+    SoundTable* sound_table = sound_table_list.find(name);
     
     if (!sound_table) {
-        sound_table = PoolProxy<SoundTable>::New();
-        sound_table_list.Insert(name, sound_table);
+        sound_table = PoolProxy<SoundTable>::make();
+        sound_table_list.insert(name, sound_table);
     }
     
     return sound_table;

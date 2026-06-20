@@ -27,7 +27,7 @@ static Hashmap<Transition*> transition_list("transition list", WORLDCELL_TRANSIT
 /// Finds a transition with the given name.
 /// Pointer to the transition or a nullptr if wasn't found.
 Transition* Transition::Find(name_t name) {
-    return transition_list.Find(name);
+    return transition_list.find(name);
 }
 
 /// Creates a new transition.
@@ -40,11 +40,11 @@ Transition* Transition::Make(name_t name, WorldCell* cell_into) {
     new(transition) Transition(name, cell_into);
     
     if (name) {
-        if (transition_list.Find(name)) {
+        if (transition_list.find(name)) {
             Log(Severity::WARNING, System::CORE, "Transition named {} already exists!", name);
         }
         
-        transition_list.Insert(name, transition);
+        transition_list.insert(name, transition);
     }
     
     return transition;

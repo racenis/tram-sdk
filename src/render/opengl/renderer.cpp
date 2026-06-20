@@ -543,7 +543,7 @@ void Init() {
     bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
 
     // initialize the default pose
-    null_pose = PoolProxy<Render::Pose>::New();
+    null_pose = PoolProxy<Render::Pose>::make();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         null_pose->pose[i] = mat4(1.0f);
     }

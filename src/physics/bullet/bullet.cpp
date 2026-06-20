@@ -188,7 +188,7 @@ void YeetCollisionShape(collisionshape_t shape) {
 
 
 rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, quat rotation, uint32_t mask, uint32_t group, get_trf_callback get_callback, set_trf_callback set_callback, void* data) {
-    RigidbodyMetadata* metadata = rigidbody_metadata_pool.AddNew();
+    RigidbodyMetadata* metadata = rigidbody_metadata_pool.make();
     
     if (mass == 0.0f) {
         metadata->collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
@@ -219,7 +219,7 @@ void YeetRigidbody(rigidbody_t rigidbody) {
     dynamics_world->removeRigidBody(rigidbody.bt_rigidbody);
     delete rigidbody.bt_rigidbody;
     delete rigidbody.bt_metadata->motion_state;
-    rigidbody_metadata_pool.Remove(rigidbody.bt_metadata);
+    rigidbody_metadata_pool.yeet(rigidbody.bt_metadata);
 }
 
 void SetRigidbodyTransformCallback(rigidbody_t rigidbody, std::pair<vec3, quat>(*get_transform_callback)(void*), void(*set_transform_callback)(void*, std::pair<vec3, quat>), void* data) {
@@ -341,7 +341,7 @@ void DisableRigidbodyDeactivation(rigidbody_t rigidbody) {
 }
 
 trigger_t MakeTrigger(collisionshape_t shape, uint32_t mask, uint32_t group, vec3 position, quat rotation) {
-    RigidbodyMetadata* metadata = rigidbody_metadata_pool.AddNew();
+    RigidbodyMetadata* metadata = rigidbody_metadata_pool.make();
    
     metadata->type = METADATA_TRIGGER;
     metadata->collision_mask = mask;

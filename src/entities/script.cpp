@@ -37,11 +37,11 @@ struct ScriptableTypeInfo {
 static Hashmap<ScriptableTypeInfo> infos("Scriptable entity type pool", SCRIPTABLE_ENTITY_TYPE_LIMIT);
 
 void Register(name_t base_type, scriptable_make_t constr, scriptable_yeet_t destr) {
-    infos.Insert(base_type, {base_type, constr, destr});
+    infos.insert(base_type, {base_type, constr, destr});
 }
 
 Entity* Make(name_t base_type, name_t new_type, const SharedEntityData& data, const ValueArray& array) {
-    const auto& info = infos.Find(base_type);
+    const auto& info = infos.find(base_type);
     
     if (!info.constr_func) return nullptr;
     
@@ -49,7 +49,7 @@ Entity* Make(name_t base_type, name_t new_type, const SharedEntityData& data, co
 }
 
 void Yeet(Entity* yeetable) {
-    const auto& info = infos.Find(yeetable->GetType());
+    const auto& info = infos.find(yeetable->GetType());
     
     assert(info.destr_func);
     

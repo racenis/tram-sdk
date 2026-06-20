@@ -118,8 +118,8 @@ bool mouse_click_not_handled_late = true;
 /// @param type  The type of the glyph that this color will be applied to.
 void SetColor(Render::color_t color, GlyphType type) {
     switch (type) {
-        case TEXT:      *text_color_stack.AddNew() = color;     break;
-        case WIDGET:    *widget_color_stack.AddNew() = color;   break;
+        case TEXT:      text_color_stack.push(color);     break;
+        case WIDGET:    widget_color_stack.push(color);   break;
     }
 }
 
@@ -129,8 +129,8 @@ void SetColor(Render::color_t color, GlyphType type) {
 /// font layout to be displayed properly.
 void SetFont(font_t font, GlyphType type) {
     switch (type) {
-        case TEXT:      *text_font_stack.AddNew() = font;   break;
-        case WIDGET:    *widget_font_stack.AddNew() = font; break;
+        case TEXT:      text_font_stack.push(font);   break;
+        case WIDGET:    widget_font_stack.push(font); break;
     }
 }
 
@@ -138,8 +138,8 @@ void SetFont(font_t font, GlyphType type) {
 /// See SetColor().
 void RestoreColor(GlyphType type) {
     switch (type) {
-        case TEXT:      text_color_stack.Remove();     break;
-        case WIDGET:    widget_color_stack.Remove();   break;
+        case TEXT:      text_color_stack.pop();     break;
+        case WIDGET:    widget_color_stack.pop();   break;
     }
 }
 
@@ -147,8 +147,8 @@ void RestoreColor(GlyphType type) {
 /// See SetFont().
 void RestoreFont(GlyphType type) {
     switch (type) {
-        case TEXT:      text_font_stack.Remove();   break;
-        case WIDGET:    widget_font_stack.Remove(); break;
+        case TEXT:      text_font_stack.pop();   break;
+        case WIDGET:    widget_font_stack.pop(); break;
     }
 }
 
@@ -565,15 +565,16 @@ void DrawBoxHorizontal(font_t font, glyph_t glyph,  int32_t x, int32_t y, uint32
 void PushFrame(int32_t x, int32_t y, uint32_t w, uint32_t h) {
     uint32_t stack_height = frame_stack.top().stack_height;
     
-    FrameObject* new_frame = frame_stack.AddNew();
+    FrameObject new_frame;
+    new_frame.x = x;
+    new_frame.y = y;
+    new_frame.w = w;
+    new_frame.h = h;
+    new_frame.cursor_x = x;
+    new_frame.cursor_y = y;
+    new_frame.stack_height = stack_height + 1;
     
-    new_frame->x = x;
-    new_frame->y = y;
-    new_frame->w = w;
-    new_frame->h = h;
-    new_frame->cursor_x = x;
-    new_frame->cursor_y = y;
-    new_frame->stack_height = stack_height + 1;
+    frame_stack.push(new_frame);
 }
 
 /// Pushes a frame releative to the previous.
@@ -642,7 +643,7 @@ void PushFrameRelative(uint32_t orientation, uint32_t offset) {
 
 /// Removes a frame from the frame stack.
 void PopFrame() {
-    frame_stack.Remove();
+    frame_stack.pop();
 }
 
 /// Pushes a frame, but keeps the cursor in place.
@@ -659,7 +660,7 @@ void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool kee
 void PopFrameKeepCursor(bool keep_x, bool keep_y) {
     int32_t x = frame_stack.top().cursor_x;
     int32_t y = frame_stack.top().cursor_y;
-    frame_stack.Remove();
+    frame_stack.pop();
     if (keep_x) frame_stack.top().cursor_x = x;
     if (keep_y) frame_stack.top().cursor_y = y;
 }
@@ -995,22 +996,22 @@ void Begin() {
     // The first frame takes up the whole screen.
     // After the first frame is created, the user will be able to split it into
     // smaller frames and use them to position the widgets on the screen.
-    FrameObject* first_frame = frame_stack.AddNew();
+    FrameObject first_frame;
+    first_frame.x = 0;
+    first_frame.y = 0;
+    first_frame.w = UI::GetScreenWidth() / scaling;
+    first_frame.h = UI::GetScreenHeight() / scaling;
+    first_frame.cursor_x = 0;
+    first_frame.cursor_y = 0;
+    first_frame.stack_height = 0;
     
-    first_frame->x = 0;
-    first_frame->y = 0;
-    first_frame->w = UI::GetScreenWidth() / scaling;
-    first_frame->h = UI::GetScreenHeight() / scaling;
-    first_frame->cursor_x = 0;
-    first_frame->cursor_y = 0;
-    first_frame->stack_height = 0;
-    
+    frame_stack.push(first_frame);
     
     // pushing in the default colors
-    *widget_color_stack.AddNew() = default_widget_color;
-    *text_color_stack.AddNew() = default_text_color;
-    *text_font_stack.AddNew() = default_text_font;
-    *widget_font_stack.AddNew() = default_widget_font;
+    widget_color_stack.push(default_widget_color);
+    text_color_stack.push(default_text_color);
+    text_font_stack.push(default_text_font);
+    widget_font_stack.push(default_widget_font);
 }
 
 /// Ends the GUI commands for the frame.
@@ -1022,19 +1023,19 @@ void End() {
     
     beginned = false;
     
-    if (frame_stack.GetLength() < 1) {
+    if (frame_stack.size() < 1) {
         Log(Severity::WARNING, System::GUI, "No frames in the framestack, called GUI::PopFrame() too much");
     }
     
-    if (frame_stack.GetLength() > 1) {
-        Log(Severity::WARNING, System::GUI, "Thera are {} too many frames in the framestack", frame_stack.GetLength() - 1);
+    if (frame_stack.size() > 1) {
+        Log(Severity::WARNING, System::GUI, "Thera are {} too many frames in the framestack", frame_stack.size() - 1);
     }
     
-    frame_stack.Reset();
-    widget_color_stack.Reset();
-    text_color_stack.Reset();
-    text_font_stack.Reset();
-    widget_font_stack.Reset();
+    frame_stack.reset();
+    widget_color_stack.reset();
+    text_color_stack.reset();
+    text_font_stack.reset();
+    widget_font_stack.reset();
 }
 
 }

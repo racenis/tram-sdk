@@ -83,11 +83,11 @@ void Sound::Unload() {
 /// If a sound by that name doesn't exist, it will be created.
 /// @return Always returns a pointer to a Sound.
 Sound* Sound::Find(name_t name) {
-    auto sound = sound_map.Find(name);
+    auto sound = sound_map.find(name);
     
     if (!sound) {
-        sound = PoolProxy<Sound>::New(name);
-        sound_map.Insert(name, sound);
+        sound = PoolProxy<Sound>::make(name);
+        sound_map.insert(name, sound);
     }
     
     return sound;

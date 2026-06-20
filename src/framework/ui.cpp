@@ -426,12 +426,12 @@ keyboardaction_t RegisterKeyboardAction(const char* name) {
 }
 
 keyboardaction_t GetKeyboardAction(name_t name) {
-    keyboardaction_t type = name_t_to_keyboardaction_t.Find(name);
+    keyboardaction_t type = name_t_to_keyboardaction_t.find(name);
     
     if (!type && name) {
         for (keyboardaction_t i = 0; i < last_type; i++) {
             if (keyboardaction_names[i] == name) {
-                name_t_to_keyboardaction_t.Insert(name, i);
+                name_t_to_keyboardaction_t.insert(name, i);
                 return i;
             }
         }

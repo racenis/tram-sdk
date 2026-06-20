@@ -21,13 +21,13 @@ Hashmap<EntityChildren> hierarchy_map("hierarchy_map", 200);
 
 void AddChild(name_t parent, id_t child) {
     auto parent_id = Entity::Find(parent)->GetID();
-    auto hierarchy = hierarchy_map.Find(parent_id);
+    auto hierarchy = hierarchy_map.find(parent_id);
     hierarchy.children.push_back(child);
-    hierarchy_map.Insert(parent_id, hierarchy);
+    hierarchy_map.insert(parent_id, hierarchy);
 }
 
 void UpdateHierarchy(id_t parent_id) {
-    auto hierarchy = hierarchy_map.Find(parent_id);
+    auto hierarchy = hierarchy_map.find(parent_id);
     for (id_t child : hierarchy.children) {
         Entity::Find(child)->UpdateParameters();
     }

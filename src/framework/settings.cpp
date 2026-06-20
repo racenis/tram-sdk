@@ -51,7 +51,7 @@ static Hashmap<SettingInfo*> all_settings("settings map", SETTING_LIMIT);
 static bool parsed = false;
 
 static SettingInfo* lookup_setting(const char* name) {
-    auto setting = parsed ? all_settings.Find(name) : nullptr;
+    auto setting = parsed ? all_settings.find(name) : nullptr;
     
     if (!setting) {
         for (size_t i = 0; i < last_setting; i++) {
@@ -59,7 +59,7 @@ static SettingInfo* lookup_setting(const char* name) {
             
             setting = &settings[i];
             
-            all_settings.Insert(name, setting);
+            all_settings.insert(name, setting);
         }
     }
     

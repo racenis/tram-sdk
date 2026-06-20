@@ -17,11 +17,11 @@ namespace tram::Render {
 static Hashmap<Particle*> model_list("particle name list", 500);
 
 Particle* Particle::Find(name_t name) {
-    Particle* model = model_list.Find(name);
+    Particle* model = model_list.find(name);
     
     if (!model) {
-        model = PoolProxy<Particle>::New(name);
-        model_list.Insert(name, model);
+        model = PoolProxy<Particle>::make(name);
+        model_list.insert(name, model);
     }
     
     return model;

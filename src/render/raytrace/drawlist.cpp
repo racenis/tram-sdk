@@ -7,11 +7,11 @@ template<> tram::Pool<tram::Render::API::RTDrawListEntry> tram::PoolProxy<tram::
 namespace tram::Render::API {
 
 drawlistentry_t InsertDrawListEntry() {
-    return drawlistentry_t {.rt = PoolProxy<RTDrawListEntry>::New()};
+    return drawlistentry_t {.rt = PoolProxy<RTDrawListEntry>::make()};
 }
 
 void RemoveDrawListEntry(drawlistentry_t entry) {
-    PoolProxy<RTDrawListEntry>::Delete(entry.rt);
+    PoolProxy<RTDrawListEntry>::yeet(entry.rt);
 }
 
 uint32_t GetFlags(drawlistentry_t entry) {

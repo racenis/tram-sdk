@@ -30,12 +30,12 @@ public:
     
     constexpr Hashmap(const char* name, size_t max_size, std::initializer_list<std::pair<uint32_t, T>> list) : Hashmap(name, max_size) {
         for (const auto& entry : list) {
-            Insert(entry.first, entry.second);
+            insert(entry.first, entry.second);
         }
     }
     
     T find(UID key) {
-        return Find(key.key);
+        return find(key.key);
     }
     
     T find(uint32_t key) {
@@ -63,7 +63,7 @@ public:
     }
     
     bool exists(UID key) {
-        return Exists(key.key);
+        return exists(key.key);
     }
     
     bool exists(uint32_t key) {
@@ -207,15 +207,14 @@ public:
     }
     
     // previous aliases, do not use for new code
-    void Remove(UID key) { remove(key.key); }
-    void Remove(uint32_t key) {remove(key); }
-    void Insert(UID key, T value) {insert(key.key, value); }
-    void Insert(uint32_t key, T value) {insert(key, value); }
-    bool Exists(uint32_t key) {return exists(key); }
-    bool Exists(UID key) {return Exists(key.key); }
-    T Find(uint32_t key) {return find(key); }
-    T Find(UID key) { return Find(key.key); }
-    
+    [[deprecated]] void Remove(UID key) { remove(key.key); }
+    [[deprecated]] void Remove(uint32_t key) {remove(key); }
+    [[deprecated]] void Insert(UID key, T value) {insert(key.key, value); }
+    [[deprecated]] void Insert(uint32_t key, T value) {insert(key, value); }
+    [[deprecated]] bool Exists(uint32_t key) {return exists(key); }
+    [[deprecated]] bool Exists(UID key) {return Exists(key.key); }
+    [[deprecated]] T Find(uint32_t key) {return find(key); }
+    [[deprecated]] T Find(UID key) { return Find(key.key); }
 protected:
     struct Record {
         uint32_t key = 0;

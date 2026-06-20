@@ -30,11 +30,11 @@ FilterParameters SoundGraph::LookupFilter(vec3 position) {
 }
 
 SoundGraph* SoundGraph::Find(name_t name) {
-    auto graph = soundgraph_list.Find(name);
+    auto graph = soundgraph_list.find(name);
     
     if (!graph) {
-        graph = PoolProxy<SoundGraph>::New(name);
-        soundgraph_list.Insert(name, graph);
+        graph = PoolProxy<SoundGraph>::make(name);
+        soundgraph_list.insert(name, graph);
     }
 
     return graph;

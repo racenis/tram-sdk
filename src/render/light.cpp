@@ -126,11 +126,11 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
 }
 
 LightGraph* LightGraph::Find(name_t name) {
-    auto graph = lightgraph_list.Find(name);
+    auto graph = lightgraph_list.find(name);
     
     if (!graph) {
-        graph = PoolProxy<LightGraph>::New(name);
-        lightgraph_list.Insert(name, graph);
+        graph = PoolProxy<LightGraph>::make(name);
+        lightgraph_list.insert(name, graph);
     }
 
     return graph;

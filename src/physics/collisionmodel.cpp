@@ -29,11 +29,11 @@ static Hashmap<CollisionModel*> collision_models("CollisionModel list", RESOURCE
 /// or will create a new one.
 /// @return Always will return a pointer to a CollisionModel.
 CollisionModel* CollisionModel::Find(name_t model_name) {
-    auto model = collision_models.Find(model_name);
+    auto model = collision_models.find(model_name);
     
     if (!model) {
         model = new CollisionModel(model_name);
-        collision_models.Insert(model_name, model);
+        collision_models.insert(model_name, model);
     }
     
     return model;

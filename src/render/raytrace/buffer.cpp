@@ -130,18 +130,18 @@ void PackVertices(vertexarray_t& vertex_array, void* data, size_t count) {
 }
 
 void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
-    vertex_array.rt_vertex_array = vertex_arrays.AddNew();
+    vertex_array.rt_vertex_array = vertex_arrays.make();
     ParseFormat(vertex_array, vertex_format);
     PackVertices(vertex_array, vertex_data, vertex_size / vertex_format.attributes[0].stride);
     
-    index_array.rt_index_array = index_arrays.AddNew();
+    index_array.rt_index_array = index_arrays.make();
     index_array.rt_index_array->indices = (uint32_t*)malloc(index_size);
     index_array.rt_index_array->index_count = index_size / sizeof(uint32_t);
     memcpy(index_array.rt_index_array->indices, index_data, index_size);
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
-    vertex_array.rt_vertex_array = vertex_arrays.AddNew();
+    vertex_array.rt_vertex_array = vertex_arrays.make();
     ParseFormat(vertex_array, vertex_format);
 }
 

@@ -139,7 +139,7 @@ vec3 InverseProject(vec3 point) {
 }
 
 int FindNearestTriangle(vec3 pos, vec3 dir) {
-    uint32_t nearest = tree->FindIntersection(pos, dir, 32.0f, [&](vec3 pos, vec3 dir, uint32_t index) {
+    uint32_t nearest = tree->find(pos, dir, 32.0f, [&](vec3 pos, vec3 dir, uint32_t index) {
         vec3 intersection = RayTriangleIntersection(pos,
                                                     dir,
                                                     tree_triangles[index].p0.pos,
@@ -164,7 +164,7 @@ int FindNearestTriangle(vec3 pos, vec3 dir) {
 bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
     float target_distance = glm::distance(pos, target);
     
-    uint32_t nearest = tree->FindIntersection(pos, dir, target_distance, [&](vec3 pos, vec3 dir, uint32_t index) {
+    uint32_t nearest = tree->find(pos, dir, target_distance, [&](vec3 pos, vec3 dir, uint32_t index) {
         if (tree_triangles[index].translucent) return INFINITY;
         
         vec3 intersection = RayTriangleIntersection(pos,
@@ -661,7 +661,7 @@ void SetInteractiveMode(bool is_interactive) {
                     tree_triangle.color = entry->color;
                     tree_triangle.translucent = entry->translucent;
                     
-                    tree->InsertLeaf(tree_triangles.size(),
+                    tree->insert(tree_triangles.size(),
                                      MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
                                      MergeAABBMax(MergeAABBMax(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos));
                     tree_triangles.push_back(tree_triangle);
@@ -772,7 +772,7 @@ void SetInteractiveMode(bool is_interactive) {
                     // TODO: rectify
                     tree_triangle.translucent = entry->translucent;
                     
-                    tree->InsertLeaf(tree_triangles.size(),
+                    tree->insert(tree_triangles.size(),
                                      MergeAABBMin(MergeAABBMin(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos),
                                      MergeAABBMax(MergeAABBMax(tree_triangle.p0.pos, tree_triangle.p1.pos), tree_triangle.p2.pos));
                     tree_triangles.push_back(tree_triangle);
@@ -849,12 +849,7 @@ void GetScreen(char* buffer, int w, int h) {
 
 void Init() {
     // initialize the default pose
-    /*BLANK_POSE = PoolProxy<Render::Pose>::New();
-    for (size_t i = 0; i < BONE_COUNT; i++) {
-        BLANK_POSE->pose[i] = mat4(1.0f);
-    }*/
-    
-    null_pose = PoolProxy<Render::Pose>::New();
+    null_pose = PoolProxy<Render::Pose>::make();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         null_pose->pose[i] = mat4(1.0f);
     }

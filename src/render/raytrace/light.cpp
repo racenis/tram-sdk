@@ -7,11 +7,11 @@ template<> tram::Pool<tram::Render::API::RTLight> tram::PoolProxy<tram::Render::
 namespace tram::Render::API {
 
 light_t MakeLight() {
-    return light_t {.rt = PoolProxy<RTLight>::New()};
+    return light_t {.rt = PoolProxy<RTLight>::make()};
 }
 
 void YeetLight(light_t light) {
-    PoolProxy<RTLight>::Delete(light.rt);
+    PoolProxy<RTLight>::yeet(light.rt);
 }
 
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {

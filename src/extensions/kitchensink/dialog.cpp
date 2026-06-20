@@ -73,19 +73,19 @@ void DialogTopic::Gather(std::vector<name_t>& topics) {
 }
 
 DialogTopic* DialogTopic::Make(name_t name) {
-    DialogTopic* topic = item_class_list.Find(name);
+    DialogTopic* topic = item_class_list.find(name);
     
     if (!topic) {
-        topic = PoolProxy<DialogTopic>::New();
+        topic = PoolProxy<DialogTopic>::make();
         topic->name = name;
-        item_class_list.Insert(name, topic);
+        item_class_list.insert(name, topic);
     }
     
     return topic;
 }
 
 DialogTopic* DialogTopic::Find(name_t name) {
-    return item_class_list.Find(name);
+    return item_class_list.find(name);
 }
 
 void DialogTopic::LoadFromDisk(const char* filename) {

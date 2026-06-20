@@ -100,11 +100,11 @@ aabbleaf_t InsertLeaf(RenderComponent* component) {
     min += component->GetLocation();
     max += component->GetLocation();
     
-    AABBLeaf* leaf = scene_tree_leaves.AddNew();
+    AABBLeaf* leaf = scene_tree_leaves.make();
 
     leaf->ref_type = REFERENCE_RENDERCOMPONENT;
     leaf->rendercomponent = component;
-    leaf->leaf = scene_tree.InsertLeaf(scene_tree_leaves.index(leaf), min, max);
+    leaf->leaf = scene_tree.insert(scene_tree_leaves.index(leaf), min, max);
     
     return leaf;
 }
@@ -141,11 +141,11 @@ aabbleaf_t InsertLeaf(MeshComponent* component) {
     min += component->GetLocation();
     max += component->GetLocation();
     
-    AABBLeaf* leaf = scene_tree_leaves.AddNew();
+    AABBLeaf* leaf = scene_tree_leaves.make();
 
     leaf->ref_type = REFERENCE_RENDERCOMPONENT;
     leaf->meshcomponent = component;
-    leaf->leaf = scene_tree.InsertLeaf(scene_tree_leaves.index(leaf), min, max);
+    leaf->leaf = scene_tree.insert(scene_tree_leaves.index(leaf), min, max);
     
     return leaf;
 }
@@ -165,8 +165,8 @@ void RemoveLeaf(aabbleaf_t leaf_id) {
         return;
     }
     
-    scene_tree.RemoveLeaf(leaf->leaf);
-    scene_tree_leaves.Remove(leaf);
+    scene_tree.remove(leaf->leaf);
+    scene_tree_leaves.yeet(leaf);
 }
 
 // btw the mask is unused.. why tho??
@@ -178,7 +178,7 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
     std::vector<uint32_t> results;
     results.reserve(10);
     
-    scene_tree.FindIntersection(ray_pos, ray_dir, results);
+    scene_tree.find(ray_pos, ray_dir, results);
     
     float nearest = INFINITY;
     QueryResponse nearest_result;
@@ -229,7 +229,7 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
 }
 
 void FindAllIntersectionsFromAABB(vec3 min, vec3 max, std::function<void(ReferenceType, EntityComponent*)> callback) {
-    scene_tree.FindAABBIntersection(min, max, [&](uint32_t key) {
+    scene_tree.find(min, max, [&](uint32_t key) {
         auto reference_type = scene_tree_leaves[key].ref_type;
         auto reference = scene_tree_leaves[key].rendercomponent;
         
@@ -255,7 +255,7 @@ static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node) {
 
 /// Draws the scene tree for a single frame.
 void DebugDrawTree() {
-    DrawAABBNodeChildren(scene_tree, scene_tree.GetRoot());
+    DrawAABBNodeChildren(scene_tree, scene_tree.get_root());
 }
 
 }
@@ -274,13 +274,13 @@ Octree<Light*> light_tree({0.0f, 0.0f, 0.0f}, 1000.0f);;
 
 /// Adds a light to the light tree.
 void AddLight(light_t light, vec3 pos, float dist) {
-    Light* new_light = light_list.AddNew();
+    Light* new_light = light_list.make();
     
     new_light->handle = light;
     new_light->position = pos;
     new_light->distance = dist;
     
-    new_light->tree_handle = light_tree.Insert(pos, new_light);
+    new_light->tree_handle = light_tree.insert(pos, new_light);
 }
 
 /// Finds the 4 nearest lights to a given position.
@@ -288,7 +288,7 @@ void AddLight(light_t light, vec3 pos, float dist) {
 /// @param dest     Pointer to an array of 4 light_t.
 void FindLights(vec3 position, light_t* dest) {
     Light* lights[4] = {nullptr, nullptr, nullptr, nullptr};
-    light_tree.Find(lights, position);
+    light_tree.find(lights, position);
     
     for (int i = 0; i < 4; i++) {
         if (lights[i]) {
@@ -311,8 +311,8 @@ void RemoveLight(light_t light) {
     
     if (!remove_light) return;
     
-    light_tree.Remove(remove_light->tree_handle);
-    light_list.Remove(remove_light);
+    light_tree.remove(remove_light->tree_handle);
+    light_list.yeet(remove_light);
 }
 
 }

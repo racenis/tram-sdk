@@ -203,11 +203,11 @@ public:
     
     // aliases to not break old code. do not use for new code
     template <typename... Args>
-    T* AddNew(Args&&... args) { return make(std::forward<Args>(args)...); }
-    void Remove(T* ptr) { yeet(ptr); }
-    size_t GetSize() const { return current_size; }
-    T* GetFirst() { return first; }
-    T* GetLast() { return last; }
+    [[deprecated]] T* AddNew(Args&&... args) { return make(std::forward<Args>(args)...); }
+    [[deprecated]] void Remove(T* ptr) { yeet(ptr); }
+    [[deprecated]] size_t GetSize() const { return current_size; }
+    [[deprecated]] T* GetFirst() { return first; }
+    [[deprecated]] T* GetLast() { return last; }
     
 protected:
     std::string print_name;
@@ -227,13 +227,13 @@ template <typename T>
 class PoolProxy {
 public:
     template <typename... Args>
-    static T* make(Args&&... args){ return pool.AddNew(std::forward<Args>(args)...); }
-    static void yeet(T* obj){ pool.Remove(obj); }
+    static T* make(Args&&... args){ return pool.make(std::forward<Args>(args)...); }
+    static void yeet(T* obj){ pool.yeet(obj); }
     
     // compatibility aliases
     template <typename... Args>
-    static T* New(Args&&... args){ return make(std::forward<Args>(args)...); }
-    static void Delete(T* obj){ yeet(obj); }
+    [[deprecated]] static T* New(Args&&... args){ return make(std::forward<Args>(args)...); }
+    [[deprecated]] static void Delete(T* obj){ yeet(obj); }
     
     static Pool<T>& GetPool(){return pool;}
 protected:
@@ -245,8 +245,8 @@ template <typename T> using PoopProxy = PoolProxy<T>;
 template <typename T>
 class PoolPtr {
 public:
-    PoolPtr() { ptr = PoolProxy<T>::New(); }
-    ~PoolPtr() { PoolProxy<T>::Delete(ptr); }
+    PoolPtr() { ptr = PoolProxy<T>::make(); }
+    ~PoolPtr() { PoolProxy<T>::yeet(ptr); }
     T* GetResource() { return ptr; }
     T* operator->() { return ptr; }
     T& operator*() { return *ptr; }

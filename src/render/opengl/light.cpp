@@ -11,11 +11,11 @@ template<> tram::Pool<tram::Render::API::GLLight> tram::PoolProxy<tram::Render::
 namespace tram::Render::API {
 
 light_t MakeLight() {
-    return {PoolProxy<GLLight>::New()};
+    return {PoolProxy<GLLight>::make()};
 }
 
 void YeetLight(light_t light) {
-    PoolProxy<GLLight>::Delete(light.gl);
+    PoolProxy<GLLight>::yeet(light.gl);
 }
 
 void SetLightLocation(light_t light, vec3 location) {

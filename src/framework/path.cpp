@@ -48,11 +48,11 @@ static Hashmap<Path*> path_list("Path list", RESOURCE_LIMIT_PATH);
 /// Finds a path by its name, or creates a new path by that name if not found.
 /// @return Always returns a pointer to a Path.
 Path* Path::Find(name_t name) {
-    Path* path = path_list.Find(name);
+    Path* path = path_list.find(name);
     
     if (!path) {
-        path = PoolProxy<Path>::New(name);
-        path_list.Insert(name, path);
+        path = PoolProxy<Path>::make(name);
+        path_list.insert(name, path);
     }
     
     return path;

@@ -27,12 +27,11 @@ public:
     
     vec3 GetAABBMin() const { return GetMin(root); }
     vec3 GetAABBMax() const { return GetMax(root); }
-    
 private:
     struct Node;
 public:
     
-    node_t InsertLeaf(uint32_t value, vec3 min, vec3 max) {
+    node_t insert(uint32_t value, vec3 min, vec3 max) {
         node_t new_node = MakeNode();
         
         SetValue(new_node, value);
@@ -95,7 +94,7 @@ public:
         return new_node;
     }
     
-    void RemoveLeaf(node_t node) {
+    void remove(node_t node) {
         assert(node != INVALID);
         assert(node != root);
         
@@ -148,11 +147,11 @@ public:
         YeetNode(parent);
     }
     
-    void FindIntersection(vec3 ray_pos, vec3 ray_dir, std::vector<uint32_t>& result) const {
+    void find(vec3 ray_pos, vec3 ray_dir, std::vector<uint32_t>& result) const {
         FindIntersection(ray_pos, ray_dir, root, result);
     }
     
-    uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) const {
+    uint32_t find(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) const {
         bool root_intersects = AABBIntersect(ray_pos, ray_dir, GetMin(root), GetMax(root));
 
         if (!root_intersects) {
@@ -167,20 +166,27 @@ public:
         return nearest_index;
     }
     
-    void FindAABBIntersection(vec3 min, vec3 max, auto callback) const {
+    void find(vec3 min, vec3 max, auto callback) const {
         FindAABBIntersection(root, min, max, callback);
     }
     
-    int FindDepth() const {
+    int depth() const {
         int depth = 0;
         FindDepthRecursive(root, 1, depth);
         return depth;
     }
     
-    const node_t GetRoot() const {
+    const node_t get_root() const {
         return root;
     }
     
+    [[deprecated]] node_t InsertLeaf(uint32_t value, vec3 min, vec3 max) { return insert(value, min, max); }
+    [[deprecated]] void RemoveLeaf(node_t node) { remove(node); }
+    [[deprecated]] void FindIntersection(vec3 ray_pos, vec3 ray_dir, std::vector<uint32_t>& result) const { find(ray_pos, ray_dir, result); }
+    [[deprecated]] uint32_t FindIntersection(vec3 ray_pos, vec3 ray_dir, float distance_limit, auto filter) const { return find(ray_pos, ray_dir, distance_limit, filter); }
+    [[deprecated]] void FindAABBIntersection(vec3 min, vec3 max, auto callback) const { find(min, max, callback); }
+    [[deprecated]] int FindDepth() const { return depth(); }
+    [[deprecated]] const node_t GetRoot() const { return get_root(); }
 private:
     void RemoveHierarchy(node_t node) {
         if (IsLeaf(node)) {
@@ -668,7 +674,7 @@ public:
         values.reserve(items);
     }
 
-    private:
+private:
 
     static constexpr uint64_t BLANK_NODE_MASK = ~0 ^ (1ULL << 63);
 

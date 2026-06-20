@@ -52,18 +52,18 @@ void Load(const char* filename){
         name_t string_name = file.read_name();
         std::string_view string_content = file.read_line();
         
-        char* string_ptr = language_string_pool.AddNew(string_content.length() + 1);
+        char* string_ptr = language_string_pool.allocate(string_content.length() + 1);
 
         strncpy_s(string_ptr, string_content.length() + 1, string_content.data(), string_content.length());
         string_ptr[string_content.length()] = '\0';
 
-        language_string_map.Insert(string_name, string_ptr);
+        language_string_map.insert(string_name, string_ptr);
     }
 }
 
 /// Retrieves a string from the loaded language files.
 const char* Get(name_t name) {
-    const char* string = language_string_map.Find(name);
+    const char* string = language_string_map.find(name);
     
     if (!string) {
         return name;

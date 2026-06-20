@@ -47,10 +47,9 @@ public:
     }
     
     // aliases, do not use for new code
-    leaf_t Insert(vec3 point, const T& data) { return insert(point, data); }
-    void Remove(leaf_t leaf) { remove(leaf); }
-    size_t Find(T* array, vec3 point) { return find(array, point); }
-
+    [[deprecated]] leaf_t Insert(vec3 point, const T& data) { return insert(point, data); }
+    [[deprecated]] void Remove(leaf_t leaf) { remove(leaf); }
+    [[deprecated]] size_t Find(T* array, vec3 point) { return find(array, point); }
 protected:
     enum Octant {
         OCTANT_TOP_LEFT_BACK,

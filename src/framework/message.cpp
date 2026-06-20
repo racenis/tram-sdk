@@ -118,12 +118,12 @@ message_t Message::Register(const char* name) {
 
 /// Finds a message type from a name.
 message_t Message::GetType(name_t name) {
-    message_t type = name_t_to_message_t.Find(name);
+    message_t type = name_t_to_message_t.find(name);
     
     if (!type && name) {
         for (message_t i = 0; i < last_type; i++) {
             if (message_names[i] == name) {
-                name_t_to_message_t.Insert(name, i);
+                name_t_to_message_t.insert(name, i);
                 return i;
             }
         }
@@ -158,7 +158,7 @@ void Message::Dispatch() {
         auto receiver = Entity::Find(message->receiver);
         if (receiver) receiver->MessageHandler(*message);
         
-        message_pool.Remove(message);
+        message_pool.yeet(message);
         future_messages.pop();
     }
     
@@ -171,7 +171,7 @@ void Message::Dispatch() {
         message_queue.pop();
     }
     
-    data_pool.Reset();
+    data_pool.reset();
 }
 
 /// Sends a message.
@@ -193,7 +193,7 @@ void Message::Send(const Message& message) {
 ///                 out, i.e. if you want to send a message out in 1 secons,
 ///                 set this parameter to 60.
 void Message::Send(const Message& message, float delay) {
-    auto message_copy = message_pool.AddNew(message);
+    auto message_copy = message_pool.make(message);
     auto abs_when = GetTickTime() + delay;
     
     if (!message.type || message.type >= last_type) {
@@ -211,7 +211,7 @@ void Message::Send(const Message& message, float delay) {
 /// their data yourself.
 /// @note Remember to only use POD data types.
 void* Message::AllocateData(size_t ammount) {
-    return data_pool.AddNew(ammount);
+    return data_pool.allocate(ammount);
 }
 
 void Message::SetInterceptCallback(void(*callback)(const Message&)) {

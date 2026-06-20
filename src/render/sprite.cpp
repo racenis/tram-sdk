@@ -32,11 +32,11 @@ Hashmap<Sprite*> sprite_list("Sprite name list", RESOURCE_LIMIT_SPRITE);
 template <> Pool<Render::Sprite> PoolProxy<Render::Sprite>::pool("Sprite pool", RESOURCE_LIMIT_SPRITE);
 
 Sprite* Sprite::Find(name_t name){
-    auto sprite = sprite_list.Find(name);
+    auto sprite = sprite_list.find(name);
     
     if (!sprite) {
-        sprite = PoolProxy<Sprite>::New(name);
-        sprite_list.Insert(name, sprite);
+        sprite = PoolProxy<Sprite>::make(name);
+        sprite_list.insert(name, sprite);
     }
 
     return sprite;

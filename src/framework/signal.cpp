@@ -80,12 +80,12 @@ signal_t Signal::Register(const char* name) {
 
 /// Finds a message type from a name.
 signal_t Signal::GetType(name_t name) {
-    signal_t type = name_t_to_signal_t.Find(name);
+    signal_t type = name_t_to_signal_t.find(name);
     
     if (!type && name) {
         for (signal_t i = 0; i < last_type; i++) {
             if (signal_names[i] == name) {
-                name_t_to_signal_t.Insert(name, i);
+                name_t_to_signal_t.insert(name, i);
                 return i;
             }
         }

@@ -138,11 +138,11 @@ float Faction::GetDisposition(Character* character) {
 }
 
 Faction* Faction::Find(name_t name) {
-    Faction* faction = factions.Find(name);
+    Faction* faction = factions.find(name);
     
     if (!faction) {
-        faction = PoolProxy<Faction>::New();
-        factions.Insert(name, faction);
+        faction = PoolProxy<Faction>::make();
+        factions.insert(name, faction);
     }
     
     return faction;
@@ -228,11 +228,11 @@ void CharacterClass::GatherBaseAttributes(AttributeContainer& container) {
 }
 
 CharacterClass* CharacterClass::Find(name_t name) {
-    CharacterClass* character_class = character_classes.Find(name);
+    CharacterClass* character_class = character_classes.find(name);
     
     if (!character_class) {
-        character_class = PoolProxy<CharacterClass>::New();
-        character_classes.Insert(name, character_class);
+        character_class = PoolProxy<CharacterClass>::make();
+        character_classes.insert(name, character_class);
     }
     
     return character_class;
@@ -291,11 +291,11 @@ Character* Character::Find(Entity* entity) {
 }
 
 Character* Character::Find(id_t entity_id) {
-    Character* character = characters.Find(entity_id);
+    Character* character = characters.find(entity_id);
     
     if (!character) {
-        character = PoolProxy<Character>::New();
-        characters.Insert(entity_id, character);
+        character = PoolProxy<Character>::make();
+        characters.insert(entity_id, character);
         character->entity_id = entity_id;
     }
     

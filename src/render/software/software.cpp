@@ -1505,11 +1505,11 @@ void RenderFrame() {
 }
 
 drawlistentry_t InsertDrawListEntry() {
-    return drawlistentry_t {.sw = draw_list.AddNew()};
+    return drawlistentry_t {.sw = draw_list.make()};
 }
 
 void RemoveDrawListEntry(drawlistentry_t entry) {
-    draw_list.Remove(entry.sw);
+    draw_list.yeet(entry.sw);
 }
 
 uint32_t GetFlags(drawlistentry_t entry) {
@@ -1608,11 +1608,11 @@ void SetDrawListMaterials(drawlistentry_t entry, size_t texture_count, material_
 }
 
 material_t MakeMaterial() {
-    return material_t{.sw = material_list.AddNew()};
+    return material_t{.sw = material_list.make()};
 }
 
 void YeetMaterial(material_t material) {
-    material_list.Remove(material.sw);
+    material_list.remove(material.sw);
 }
 
 void SetMaterialTexture(material_t material, texturehandle_t texture) {
@@ -1640,11 +1640,11 @@ void SetMaterialReflectivity(material_t material, float reflectivity) {
 }
 
 light_t MakeLight() {
-    return light_t {.sw = light_list.AddNew()};
+    return light_t {.sw = light_list.make()};
 }
 
 void YeetLight(light_t light) {
-    light_list.Remove(light.sw);
+    light_list.yeet(light.sw);
 }
 
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
@@ -1659,7 +1659,7 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
 
 
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
-    SWTexture* texture = texture_list.AddNew();
+    SWTexture* texture = texture_list.make();
     
     texture->width = width;
     texture->height = height;
@@ -1807,18 +1807,18 @@ void PackVertices(vertexarray_t& vertex_array, void* data, size_t count) {
 }
 
 void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array, indexarray_t& index_array, size_t vertex_size, void* vertex_data, size_t index_size, void* index_data) {
-    vertex_array.sw_vertex_array = vertex_arrays.AddNew();
+    vertex_array.sw_vertex_array = vertex_arrays.make();
     ParseFormat(vertex_array, vertex_format);
     PackVertices(vertex_array, vertex_data, vertex_size / vertex_format.attributes[0].stride);
     
-    index_array.sw_index_array = index_arrays.AddNew();
+    index_array.sw_index_array = index_arrays.make();
     index_array.sw_index_array->indices = (uint32_t*)malloc(index_size);
     index_array.sw_index_array->index_count = index_size / sizeof(uint32_t);
     memcpy(index_array.sw_index_array->indices, index_data, index_size);
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
-    vertex_array.sw_vertex_array = vertex_arrays.AddNew();
+    vertex_array.sw_vertex_array = vertex_arrays.make();
     ParseFormat(vertex_array, vertex_format);
 }
 
@@ -1875,7 +1875,7 @@ void Init() {
         BLANK_POSE->pose[i] = mat4(1.0f);
     }*/
     
-    null_pose = PoolProxy<Render::Pose>::New();
+    null_pose = PoolProxy<Render::Pose>::make();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         null_pose->pose[i] = mat4(1.0f);
     }

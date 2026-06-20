@@ -376,7 +376,7 @@ Quest* Quest::Find(name_t quest) {
     
     new QuestEntity(quest);
 
-    return PoolProxy<Quest>::New(quest);
+    return PoolProxy<Quest>::make(quest);
 }
 
 void Quest::Init() {

@@ -253,7 +253,7 @@ void MeshComponent::Add(const MeshVertex& v1, const MeshVertex& v2, const MeshVe
     
     uint32_t index = aabb_triangles.size();
     aabb_triangles.push_back({.point1 = p1, .point2 = p2, .point3 = p3, .normal = normal, .material = material});
-    aabb_leaves.push_back(aabb_tree.InsertLeaf(index, min, max));
+    aabb_leaves.push_back(aabb_tree.insert(index, min, max));
 }
 
 void MeshComponent::Clear() {
@@ -261,7 +261,7 @@ void MeshComponent::Clear() {
     
     // empty aabb tree
     for (auto leaf : aabb_leaves) {
-        aabb_tree.RemoveLeaf(leaf);
+        aabb_tree.remove(leaf);
     }
     aabb_leaves.clear();
     aabb_triangles.clear();

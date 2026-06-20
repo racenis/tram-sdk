@@ -28,7 +28,7 @@ public:
     
     constexpr StackPool(const char* name, size_t max_size, std::initializer_list<T> list) : StackPool(name, max_size) {
         for (const auto& entry : list) {
-            *AddNew(1) = entry; // not good, but works
+            *allocate(1) = entry; // not good, but works
         }
     }
 
@@ -63,8 +63,8 @@ public:
     void unlock() { spinlock.store(false); }
 
     // aliases, do not use for new code
-    T* AddNew(size_t units) { return allocate(units); }
-    void Reset() { reset(); }
+    [[deprecated]] T* AddNew(size_t units) { return allocate(units); }
+    [[deprecated]] void Reset() { reset(); }
 
 protected:
     std::string name;

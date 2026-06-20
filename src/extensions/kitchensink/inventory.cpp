@@ -25,16 +25,16 @@ struct InventoryFactoryInfo {
 static Hashmap<InventoryFactoryInfo*> inv_factory("inventoru_factory_info", 100);
 
 void ItemClass::Register(ItemClass* item) {
-    item_class_list.Insert(item->name, item);
+    item_class_list.insert(item->name, item);
 }
 
 ItemClass* ItemClass::Find(name_t name) {
-    ItemClass* item_class = item_class_list.Find(name);
+    ItemClass* item_class = item_class_list.find(name);
     
     if (!item_class) {
-        item_class = PoolProxy<ItemClass>::New();
+        item_class = PoolProxy<ItemClass>::make();
         item_class->name = name;
-        item_class_list.Insert(name, item_class);
+        item_class_list.insert(name, item_class);
     }
     
     return item_class;
@@ -91,7 +91,7 @@ void ItemClass::FireIdle(Inventory* inventory) {
 
 
 InventoryManager* InventoryManager::New(name_t compartment) {
-    auto info = inv_factory.Find(compartment);
+    auto info = inv_factory.find(compartment);
     
     if (!info) {        
         Log(Severity::WARNING, Kitchensink::System(), "No InventoryManager found for {}!", compartment);
@@ -103,7 +103,7 @@ InventoryManager* InventoryManager::New(name_t compartment) {
 }
 
 void InventoryManager::Delete(name_t compartment, InventoryManager* manager) {
-    auto info = inv_factory.Find(compartment);
+    auto info = inv_factory.find(compartment);
     
     if (!info) {
         delete manager;
@@ -113,7 +113,7 @@ void InventoryManager::Delete(name_t compartment, InventoryManager* manager) {
 }
 
 void InventoryManager::Register(name_t compartment, InventoryManager*(*make)(void), void (*clear)(InventoryManager*)) {
-    inv_factory.Insert(compartment, new InventoryFactoryInfo {.make = make,
+    inv_factory.insert(compartment, new InventoryFactoryInfo {.make = make,
                                                               .clear = clear});
 }
 
@@ -316,11 +316,11 @@ name_t Inventory::GetEquippedItem(name_t slot) {
 }
 
 Inventory* Inventory::Find(Entity* entity) {
-    Inventory* inventory = inventory_list.Find(entity->GetID());
+    Inventory* inventory = inventory_list.find(entity->GetID());
     
     if (!inventory) {
-        inventory = PoolProxy<Inventory>::New(entity->GetID());
-        inventory_list.Insert(entity->GetID(), inventory);
+        inventory = PoolProxy<Inventory>::make(entity->GetID());
+        inventory_list.insert(entity->GetID(), inventory);
     }
     
     return inventory;

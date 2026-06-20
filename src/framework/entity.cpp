@@ -244,11 +244,11 @@ void Entity::CheckTransition() {
 }
 
 static void CheckEntityTypeDuplicate(name_t name, const Entity::FieldInfo* fields, size_t count) {
-    if (!registered_entity_types.Exists(name)) return;
+    if (!registered_entity_types.exists(name)) return;
     
     Log(Severity::WARNING, System::CORE, "Entity type named {} already exists, overriding", name);
     
-    const auto existing = registered_entity_types.Find(name);
+    const auto existing = registered_entity_types.find(name);
     
     if (existing.fieldcount != count) {
         Log(Severity::CRITICAL_ERROR, System::CORE, "Entity type {} override {} -> {} field count", name, existing.fieldcount, count);
@@ -278,7 +278,7 @@ void Entity::RegisterType(name_t name, entity_make constr_func, entity_clear des
     
     CheckEntityTypeDuplicate(name, field_copy, fieldcount);
     
-    registered_entity_types.Insert(name, {constr_func, destr_func, field_copy, fieldcount});
+    registered_entity_types.insert(name, {constr_func, destr_func, field_copy, fieldcount});
 }
 
 /// Registers a new entity type.
@@ -302,7 +302,7 @@ void Entity::RegisterType(name_t name, entity_make constr_func, entity_clear des
     
     CheckEntityTypeDuplicate(name, field_copy, fieldcount);
     
-    registered_entity_types.Insert(name, {constr_func, destr_func, field_copy, fieldcount});
+    registered_entity_types.insert(name, {constr_func, destr_func, field_copy, fieldcount});
 }
 
 /// Registers a new entity type.
@@ -322,7 +322,7 @@ void Entity::RegisterType(name_t name, entity_make constr_func, entity_clear des
     
     CheckEntityTypeDuplicate(name, field_copy, fields.size());
     
-    registered_entity_types.Insert(name, {constr_func, destr_func, field_copy, fields.size()});
+    registered_entity_types.insert(name, {constr_func, destr_func, field_copy, fields.size()});
 }
 
 /// Registers the entity.
@@ -332,19 +332,19 @@ void Entity::RegisterType(name_t name, entity_make constr_func, entity_clear des
 /// that it can be found using the Entity::Find(name_t) static method.
 void Entity::Register() {
     if (id) {
-        if (Entity* existing = entity_id_list.Find(id); existing) {
+        if (Entity* existing = entity_id_list.find(id); existing) {
             Entity::Obliterate(existing);
         }
         
-        entity_id_list.Insert(id, this);
+        entity_id_list.insert(id, this);
     }
 
     if (name) {
-        if (Entity* existing = entity_id_list.Find(name); existing) {
+        if (Entity* existing = entity_id_list.find(name); existing) {
             Entity::Obliterate(existing);
         }
         
-        entity_name_list.Insert(name, this);
+        entity_name_list.insert(name, this);
     }
 }
 
@@ -354,19 +354,19 @@ void Entity::Register() {
 /// name list, if it has a name. It will no longer be possible to find the
 /// entity by using the Entity::Find() method and its overloads.
 void Entity::Unregister() {
-    if (id && entity_id_list.Find(id)) {
-        entity_id_list.Remove(id);
+    if (id && entity_id_list.find(id)) {
+        entity_id_list.remove(id);
     }
 
-    if (name && entity_name_list.Find(name)) {
-        entity_name_list.Remove(name);
+    if (name && entity_name_list.find(name)) {
+        entity_name_list.remove(name);
     }
 }
 
 /// Destructs an entity.
 /// Looks up the entity type's registered destructor and runs it. 
 void Entity::Obliterate(Entity* entity) {
-    auto type_info = registered_entity_types.Find(entity->GetType());
+    auto type_info = registered_entity_types.find(entity->GetType());
 
     if (type_info.destructor) {
         type_info.destructor(entity);
@@ -380,14 +380,14 @@ void Entity::Obliterate(Entity* entity) {
 /// @return If an entity with the given ID number has been found, a pointer to
 ///         it will be returned. Otherwise a `nullptr` will be returned.
 Entity* Entity::Find(id_t entityID) {
-    return entity_id_list.Find(entityID);
+    return entity_id_list.find(entityID);
 }
 
 /// Finds the entity by its name.
 /// @return If an entity with the given name has been found, a pointer to it
 ///         will be returned. Otherwise a `nullptr` will be returned.
 Entity* Entity::Find(name_t entityName) {
-    return entity_name_list.Find(entityName);
+    return entity_name_list.find(entityName);
 }
 
 // here we keep the entities that have been unregistered and unloaded, but
@@ -446,7 +446,7 @@ void Entity::Serialize(Entity* entity, File* file) {
     
     if (!deleted && !serialize) return;
     
-    auto record = registered_entity_types.Find(entity->GetType());
+    auto record = registered_entity_types.find(entity->GetType());
     
     file->write_name(entity->GetType());
     file->write_uint32(entity->id);
@@ -499,7 +499,7 @@ void Entity::Serialize(Entity* entity, File* file) {
 
 /// Loads an Entity from a File.
 Entity* Entity::Make(name_t type, File* file) {
-    auto record = registered_entity_types.Find(type);
+    auto record = registered_entity_types.find(type);
     
     if (!record.constructor) return nullptr;
     
@@ -559,7 +559,7 @@ Entity* Entity::Make(name_t type, File* file) {
 /// @param  field_array Values to be filled in the entity's fields.
 /// @return Pointer to an entity if successful, otherwise a `nullptr`.
 Entity* Entity::Make(name_t type, const SharedEntityData& shared_data, const ValueArray& field_array) {
-    auto record = registered_entity_types.Find(type);
+    auto record = registered_entity_types.find(type);
     
     if (!record.constructor) return nullptr;
     

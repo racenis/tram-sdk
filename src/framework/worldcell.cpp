@@ -37,7 +37,7 @@ static Hashmap<WorldCell*> worldcell_list("Worldcell list hashmap", WORLDCELL_LI
 /// Finds a WorldCell by its name.
 /// @return Pointer to the cell if found, nullptr otherwise.
 WorldCell* WorldCell::Find(name_t name) {
-    return worldcell_list.Find(name);
+    return worldcell_list.find(name);
 }
 
 /// Creates a WorldCell by name.
@@ -45,11 +45,11 @@ WorldCell* WorldCell::Find(name_t name) {
 /// same cell, otherwise a new cell will be created.
 /// @return Always returns the pointer to the created WorldCell.
 WorldCell* WorldCell::Make(name_t name) {
-    auto cell = worldcell_list.Find(name);
+    auto cell = worldcell_list.find(name);
     
     if (!cell) {
-        cell = PoolProxy<WorldCell>::New(name);
-        worldcell_list.Insert(name, cell);
+        cell = PoolProxy<WorldCell>::make(name);
+        worldcell_list.insert(name, cell);
     }
     
     return cell;

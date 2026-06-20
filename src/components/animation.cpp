@@ -54,7 +54,7 @@ template <> void Component<AnimationComponent>::yeet() { AnimationComponent::Yee
 static Settings::Property<bool> draw_info = {false, "animation-draw-info", Settings::NONE};
 
 AnimationComponent::AnimationComponent() : model(this) {
-    pose = PoolProxy<Render::Pose>::New();
+    pose = PoolProxy<Render::Pose>::make();
 
     // initialize animation matrices to identity matrix
     for (size_t i = 0; i < Render::BONE_COUNT; i++) {
@@ -63,7 +63,7 @@ AnimationComponent::AnimationComponent() : model(this) {
 }
 
 AnimationComponent::~AnimationComponent() {
-    PoolProxy<Render::Pose>::Delete(pose);
+    PoolProxy<Render::Pose>::yeet(pose);
     
     pose = nullptr;
     is_ready = false;

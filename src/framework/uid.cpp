@@ -60,7 +60,7 @@ UID::UID(const char* value) {
     uint64_t hash = MurmurHash2(value, strlen(value) + 1);
     
     // check if value is already added
-    UID existing = string_list.Find(hash);
+    UID existing = string_list.find(hash);
     
     if (existing) {
         if (strcmp(existing, value) != 0) {
@@ -89,12 +89,12 @@ UID::UID(const char* value) {
     string_pool.lock();
     this->key = string_pool.size();
     
-    char* new_value = string_pool.AddNew(strlen(value) + 1);
+    char* new_value = string_pool.allocate(strlen(value) + 1);
     strcpy(new_value, value);
     string_pool.unlock();
     
     string_list.lock();
-    string_list.Insert(hash, *this);
+    string_list.insert(hash, *this);
     string_list.unlock();
 }
 

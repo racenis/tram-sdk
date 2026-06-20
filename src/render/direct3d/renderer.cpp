@@ -232,11 +232,11 @@ void RenderFrame() {
 }
 
 drawlistentry_t InsertDrawListEntry() {
-    return drawlistentry_t{.d3d = draw_list.AddNew()};
+    return drawlistentry_t{.d3d = draw_list.make()};
 }
 
 void RemoveDrawListEntry(drawlistentry_t entry) {
-    draw_list.Remove(entry.d3d);
+    draw_list.yeet(entry.d3d);
 }
 
 uint32_t GetFlags(drawlistentry_t entry) {
@@ -308,9 +308,9 @@ void SetDrawListTextures(drawlistentry_t entry, size_t texture_count, texturehan
 }
 
 light_t MakeLight() {
-    D3DLight* light = light_list.AddNew();
-    uint32_t light_id = light - light_list.GetFirst();
-    uint32_t leaf_id = light_tree.AddLeaf(light_id, 0.0f, 0.0f, 0.0f);
+    D3DLight* light = light_list.make();
+    uint32_t light_id = light_list.index(light);
+    uint32_t leaf_id = light_tree.insert({0.0f, 0.0f, 0.0f}, light_id);
     
     light_tree_ids[light_id] = leaf_id;
         
@@ -319,16 +319,16 @@ light_t MakeLight() {
 
 void YeetLight(light_t light) {
     D3DLight* light_ptr = light.d3d;
-    uint32_t light_id = light_ptr - light_list.GetFirst();
+    uint32_t light_id = light_list.index(light_ptr);
     uint32_t leaf_id = light_tree_ids[light_id];
 
-    light_list.Remove(light_ptr);
-    light_tree.RemoveLeaf(leaf_id);
+    light_list.yeet(light_ptr);
+    light_tree.remove(leaf_id);
 }
 
 void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
     D3DLight* light_ptr = light.d3d;
-    uint32_t light_id = light_ptr - light_list.GetFirst();
+    uint32_t light_id = light_list.index(light_ptr);
     uint32_t leaf_id = light_tree_ids[light_id];
     
     light_ptr->location = location;
@@ -337,8 +337,8 @@ void SetLightParameters(light_t light, vec3 location, vec3 color, float distance
     light_ptr->direction = direction;
     light_ptr->exponent = exponent;
     
-    light_tree.RemoveLeaf(leaf_id);
-    leaf_id = light_tree.AddLeaf(light_id, light_ptr->location.x, light_ptr->location.y, light_ptr->location.z);
+    light_tree.remove(leaf_id);
+    leaf_id = light_tree.insert(light_ptr->location, light_id);
     light_tree_ids[light_id] = leaf_id;
 }
 
@@ -614,7 +614,7 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
     
     const size_t vertex_count = vertex_size / vertex_format.attributes->stride;
     
-    VertexBufferMetadata* metadata = vertex_buffer_metadata.AddNew();
+    VertexBufferMetadata* metadata = vertex_buffer_metadata.make();
     
     metadata->vertex_format = vertex_format;
     metadata->current_vertex_count = vertex_count;
@@ -652,7 +652,7 @@ void CreateIndexedVertexArray(VertexDefinition vertex_format, vertexarray_t& ver
 }
 
 void CreateVertexArray(VertexDefinition vertex_format, vertexarray_t& vertex_array) {
-    VertexBufferMetadata* metadata = vertex_buffer_metadata.AddNew();
+    VertexBufferMetadata* metadata = vertex_buffer_metadata.make();
     
     metadata->vertex_format = vertex_format;
     metadata->current_vertex_count = 0;
@@ -796,7 +796,7 @@ void Init() {
     //}
     
     // initialize the default light
-    light_list.AddNew();
+    light_list.make();
 }
 
 ContextType GetContext() {

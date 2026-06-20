@@ -93,7 +93,7 @@ void RequestResource(EntityComponent* requester, Resource* resource) {
         Log(Severity::CRITICAL_ERROR, System::ASYNC, "Can not request '{}' load, Async is not initialized", resource->GetName());
     }
     
-    disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
+    disk_loader_queue.push(request_pool.make(ResourceRequest {
         .notification_type = requester ? RequestNotification::COMPONENT : RequestNotification::NONE,
         .resource = resource,
         .requester = requester
@@ -113,7 +113,7 @@ void RequestResource(void(*callback)(void* data), void* data, Resource* resource
         Log(Severity::CRITICAL_ERROR, System::ASYNC, "Can not request '{}' load, Async is not initialized", resource->GetName());
     }
     
-    disk_loader_queue.push(request_pool.AddNew(ResourceRequest {
+    disk_loader_queue.push(request_pool.make(ResourceRequest {
         .notification_type = RequestNotification::CALLBACK,
         .resource = resource,
         .callback = callback,
@@ -161,7 +161,7 @@ void LoadDependency(Resource* resource) {
         return;
     }
 
-    ResourceRequest* request = request_pool.AddNew(ResourceRequest {
+    ResourceRequest* request = request_pool.make(ResourceRequest {
         .notification_type = RequestNotification::NONE,
         .resource = resource
     });
@@ -260,7 +260,7 @@ void FinishResources() {
                 break;
         }
         
-        request_pool.Remove(request);
+        request_pool.yeet(request);
     }
 }
 

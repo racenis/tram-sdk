@@ -38,12 +38,12 @@ static Hashmap<std::vector<Environment*>*> environment_index_list("Environment m
 /// that name does not exist, it will be created.
 /// @return Always returns a pointer to a Environment map.
 Environment* Environment::Find(name_t name) {
-    Environment* environment = environment_name_list.Find(name);
+    Environment* environment = environment_name_list.find(name);
     
     if (!environment) {
         environment = PoolProxy<Environment>::GetPool().allocate();
         new(environment) Environment(name);
-        environment_name_list.Insert(name, environment);
+        environment_name_list.insert(name, environment);
     }
     
     return environment;
@@ -54,10 +54,10 @@ Environment* Environment::Find(name_t name) {
 /// map with that index does not exist, it will be created.
 /// @return Always returns a pointer to a Environment map.
 Environment* Environment::Find(name_t graph, uint32_t index) {
-    std::vector<Environment*>* graphmaps = environment_index_list.Find(graph);
+    std::vector<Environment*>* graphmaps = environment_index_list.find(graph);
     if (!graphmaps) {
         graphmaps = new std::vector<Environment*>;
-        environment_index_list.Insert(graph, graphmaps);
+        environment_index_list.insert(graph, graphmaps);
     }
     
     if (index >= graphmaps->size()) {

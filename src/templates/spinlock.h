@@ -17,8 +17,8 @@ public:
         lock_atomic.store(false);
     }
     
-    void Lock() { lock(); }
-    void Unlock() { unlock(); }
+    [[deprecated]] void Lock() { lock(); }
+    [[deprecated]] void Unlock() { unlock(); }
 private:
     std::atomic<bool> lock_atomic = {false};
 };

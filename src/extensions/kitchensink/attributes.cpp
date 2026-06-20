@@ -31,16 +31,16 @@ void AttributeInfo::Recalculate(Attribute& attribute, const AttributeContainer&)
 }
 
 void AttributeInfo::Register(AttributeInfo* info) {
-    infos.Insert(info->GetName(), info);
+    infos.insert(info->GetName(), info);
 }
 
 AttributeInfo* AttributeInfo::Find(name_t name) {
-    AttributeInfo* info = infos.Find(name);
+    AttributeInfo* info = infos.find(name);
     
     if (!info) {
         info = new AttributeInfo;
         info->name = name;
-        infos.Insert(name, info);
+        infos.insert(name, info);
     }
     
     return info;
@@ -119,11 +119,11 @@ AttributeContainer* AttributeContainer::Find(Entity* entity) {
 }
 
 AttributeContainer* AttributeContainer::Find(id_t entity_id) {
-    AttributeContainer* container = containers.Find(entity_id);
+    AttributeContainer* container = containers.find(entity_id);
     
     if (!container) {
-        container = PoolProxy<AttributeContainer>::New();
-        containers.Insert(entity_id, container);
+        container = PoolProxy<AttributeContainer>::make();
+        containers.insert(entity_id, container);
     }
     
     return container;

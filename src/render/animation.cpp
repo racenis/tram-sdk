@@ -188,11 +188,11 @@ uint32_t Animation::GetKeyframeCount(name_t bone) const {
 }
 
 Animation* Animation::Find(name_t name) {
-    Animation* animation = animation_list.Find(name);
+    Animation* animation = animation_list.find(name);
     
     if (!animation) {
-        animation = PoolProxy<Animation>::New(name);
-        animation_list.Insert(name, animation);
+        animation = PoolProxy<Animation>::make(name);
+        animation_list.insert(name, animation);
     }
     
     return animation;

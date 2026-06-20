@@ -14,11 +14,11 @@ template<> tram::Pool<tram::Render::API::GLDrawListEntry> tram::PoolProxy<tram::
 namespace tram::Render::API {
     
 drawlistentry_t InsertDrawListEntry() {
-    return {.generic = PoolProxy<GLDrawListEntry>::New()};
+    return {.generic = PoolProxy<GLDrawListEntry>::make()};
 }
 
 void RemoveDrawListEntry(drawlistentry_t entry) {
-    PoolProxy<GLDrawListEntry>::Delete(entry.gl);
+    PoolProxy<GLDrawListEntry>::yeet(entry.gl);
 }
 
 uint32_t GetFlags(drawlistentry_t entry) {

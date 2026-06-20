@@ -39,16 +39,16 @@ namespace tram {
         }
         
         T& top() const {
-            return *GetLastPtr();
+            return *GetTop();
         }
         
         void push(const T& value) {
-            *AddNew() = value;
+            *AllocateTop() = value;
         }
         
         T pop() {
             T value = top();
-            Remove();
+            RemoveTop();
             return value;
         }
         
@@ -62,11 +62,11 @@ namespace tram {
         }
         
         // aliases, don't use for new code
-        T* AddNew() { return AllocateTop(); }
-        void Remove() { RemoveTop(); }
-        T* GetLastPtr() const { return GetTop(); }
-        uint64_t GetLength() { return size(); }
-        void Reset() { reset(); }
+        [[deprecated]] T* AddNew() { return AllocateTop(); }
+        [[deprecated]] void Remove() { RemoveTop(); }
+        [[deprecated]] T* GetLastPtr() const { return GetTop(); }
+        [[deprecated]] uint64_t GetLength() { return size(); }
+        [[deprecated]] void Reset() { reset(); }
         
     protected:
         T* AllocateTop() {

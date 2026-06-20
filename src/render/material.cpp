@@ -162,12 +162,12 @@ void Material::LoadMaterialInfo(const char* filename) {
             mat_source = Material::Find(mat_tex_type_name);
         }
 
-        Material* material = material_list.Find(mat_name);
+        Material* material = material_list.find(mat_name);
     
         if (!material) {
             material = PoolProxy<Material>::GetPool().allocate();
             new(material) Material(mat_name);
-            material_list.Insert(mat_name, material);
+            material_list.insert(mat_name, material);
         }
 
         material->SetMaterialType(mat_type);
@@ -189,12 +189,12 @@ Material::Material(name_t name, materialtype_t type) : Resource(name), type(type
 /// If a Material already exists with that name, then the existing Material is returned.
 /// @return Always returns a pointer to a Material.
 Material* Material::Make(name_t name, materialtype_t type) {
-    Material* material = material_list.Find(name);
+    Material* material = material_list.find(name);
     
     if (!material) {
         material = PoolProxy<Material>::GetPool().allocate();
         new(material) Material(name, type);
-        material_list.Insert(name, material);
+        material_list.insert(name, material);
     }
     
     return material;
@@ -207,12 +207,12 @@ Material* Material::Make(name_t name, materialtype_t type) {
 /// Make() or Find() methods.
 /// @return Always returns a pointer to a Material.
 Material* Material::Find(name_t name){
-    Material* material = material_list.Find(name);
+    Material* material = material_list.find(name);
     
     if (!material) {
         material = PoolProxy<Material>::GetPool().allocate();
         new(material) Material(name);
-        material_list.Insert(name, material);
+        material_list.insert(name, material);
     }
     
     return material;

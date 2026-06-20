@@ -156,12 +156,12 @@ event_t Event::Register(const char* name) {
 
 /// Returns the event_t associated with a given name.
 event_t Event::GetType(name_t name) {
-    event_t type = name_t_to_event_t.Find(name);
+    event_t type = name_t_to_event_t.find(name);
     
     if (!type && name) {
         for (event_t i = 0; i < last_type; i++) {
             if (event_names[i] == name) {
-                name_t_to_event_t.Insert(name, i);
+                name_t_to_event_t.insert(name, i);
                 return i;
             }
         }
@@ -334,7 +334,7 @@ void Event::Dispatch() {
         event_queue.pop();
     }
     
-    data_pool.Reset();
+    data_pool.reset();
     
     // the reason why we mark listeners for deletion and peform the deletions
     // later is because we are using std::vectors for the listener tables.
@@ -379,7 +379,7 @@ void Event::Post(const Event &event) {
 ///       is not POD, you can ignore the warning. Overwriting a value_t
 ///       shouldn't cause memory leaks.
 void* Event::AllocateData(size_t ammount) {
-    return data_pool.AddNew(ammount);
+    return data_pool.allocate(ammount);
 }
 
 EventListener::~EventListener() {

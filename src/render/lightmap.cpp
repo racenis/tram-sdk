@@ -41,12 +41,12 @@ static Settings::Property<bool> lightmap_nearest = {false, "lightmap-nearest", S
 /// not exist, it will be created.
 /// @return Always returns a pointer to a Lightmap.
 Lightmap* Lightmap::Find(name_t name) {
-    Lightmap* lightmap = lightmap_name_list.Find(name);
+    Lightmap* lightmap = lightmap_name_list.find(name);
     
     if (!lightmap) {
         lightmap = PoolProxy<Lightmap>::GetPool().allocate();
         new(lightmap) Lightmap(name);
-        lightmap_name_list.Insert(name, lightmap);
+        lightmap_name_list.insert(name, lightmap);
     }
     
     return lightmap;
@@ -57,12 +57,12 @@ Lightmap* Lightmap::Find(name_t name) {
 /// not exist, it will be created.
 /// @return Always returns a pointer to a Lightmap.
 Lightmap* Lightmap::Find(id_t index) {
-    Lightmap* lightmap = lightmap_index_list.Find(index);
+    Lightmap* lightmap = lightmap_index_list.find(index);
     
     if (!lightmap) {
         lightmap = PoolProxy<Lightmap>::GetPool().allocate();
         new(lightmap) Lightmap(index);
-        lightmap_index_list.Insert(index, lightmap);
+        lightmap_index_list.insert(index, lightmap);
     }
     
     return lightmap;

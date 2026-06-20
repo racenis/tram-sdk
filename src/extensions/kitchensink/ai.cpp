@@ -32,11 +32,11 @@ void UpdateAI() {
 }
 
 void AIPackage::Register(name_t name, ai_package_constr constr) {
-    return ai_package_list.Insert(name, constr);
+    return ai_package_list.insert(name, constr);
 }
 
 AIPackage* AIPackage::Make(name_t name, valuearray_t params) {
-    ai_package_constr constr = ai_package_list.Find(name);
+    ai_package_constr constr = ai_package_list.find(name);
     
     if (!constr) {
         Log(Severity::NOTE, Kitchensink::System(), "AIPackage {} not found!", name);
@@ -63,11 +63,11 @@ void AIAgent::Update() {
 }
     
 AIAgent* AIAgent::Find(id_t id) {
-    AIAgent* ai_agent = ai_agent_list.Find(id);
+    AIAgent* ai_agent = ai_agent_list.find(id);
     
     if (!ai_agent) {
-        ai_agent = PoolProxy<AIAgent>::New();
-        ai_agent_list.Insert(id, ai_agent);
+        ai_agent = PoolProxy<AIAgent>::make();
+        ai_agent_list.insert(id, ai_agent);
     }
     
     return ai_agent;

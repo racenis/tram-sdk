@@ -39,11 +39,11 @@ namespace tram::Ext::Kitchensink {
 static Hashmap<AnimationTable*> sound_table_list("AnimationTable name list", EXT_KITCHENSINK_ANIMATIONTABLE_LIMIT);
 
 AnimationTable* AnimationTable::Find(name_t name) {
-    AnimationTable* sound_table = sound_table_list.Find(name);
+    AnimationTable* sound_table = sound_table_list.find(name);
     
     if (!sound_table) {
-        sound_table = PoolProxy<AnimationTable>::New(name);
-        sound_table_list.Insert(name, sound_table);
+        sound_table = PoolProxy<AnimationTable>::make(name);
+        sound_table_list.insert(name, sound_table);
     }
     
     return sound_table;

@@ -11,11 +11,11 @@ template<> tram::Pool<tram::Render::API::GLMaterial> tram::PoolProxy<tram::Rende
 namespace tram::Render::API {
     
 material_t MakeMaterial() {
-    return {PoolProxy<GLMaterial>::New()};
+    return {PoolProxy<GLMaterial>::make()};
 }
 
 void YeetMaterial(material_t material) {
-    PoolProxy<GLMaterial>::Delete(material.gl);
+    PoolProxy<GLMaterial>::yeet(material.gl);
 }
 
 void SetMaterialTexture(material_t material, texturehandle_t texture) {
