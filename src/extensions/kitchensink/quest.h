@@ -99,7 +99,6 @@ struct QuestVariable {
     
     QuestVariable(const QuestVariable&);
     QuestVariable& operator=(const QuestVariable&);
-    //QuestVariable& operator=(QuestVariable& a, const QuestVariable& b);
     
     value_t Evaluate();
 };

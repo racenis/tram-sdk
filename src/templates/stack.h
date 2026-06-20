@@ -38,7 +38,7 @@ namespace tram {
             last_end = (T*)newmemory + (initial_size * sizeof(T));
         }
         
-        T& top() {
+        T& top() const {
             return *GetLastPtr();
         }
         
@@ -57,14 +57,14 @@ namespace tram {
             last = first;
         }
         
-        size_t size() {
+        size_t size() const {
             return current_size;
         }
         
         // aliases, don't use for new code
         T* AddNew() { return AllocateTop(); }
         void Remove() { RemoveTop(); }
-        T* GetLastPtr() { return GetTop(); }
+        T* GetLastPtr() const { return GetTop(); }
         uint64_t GetLength() { return size(); }
         void Reset() { reset(); }
         
@@ -82,7 +82,7 @@ namespace tram {
             return newobj;
         }
         
-        void RemoveTop()  {
+        void RemoveTop() {
             if (last == first_end) {
                 Log(Severity::CRITICAL_ERROR, System::CORE, "Stack {} already empty!", print_name);
             };
@@ -90,7 +90,7 @@ namespace tram {
             current_size--;
         }
         
-        T* GetTop() {
+        T* GetTop() const {
             if (current_size == 0) {
                 return nullptr;
             } else {

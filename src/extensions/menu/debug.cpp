@@ -67,7 +67,6 @@ struct EventIntercept : Intercept {
     std::string value;
     
     void Display() {
-        
         GUI::Text("EVT");
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
         
@@ -77,7 +76,6 @@ struct EventIntercept : Intercept {
         GUI::Text(emitter.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
-        //GUI::Text(receiver.c_str());
         GUI::Text(subtype.c_str());
         GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 80);
         
@@ -294,7 +292,7 @@ void DebugMenu::Display() {
             msg.sender = 0;
             msg.receiver = Entity::Find("player")->GetID();
             msg.type = noclip ? Message::SET_FLAG_ON : Message::SET_FLAG_OFF;
-            msg.data_value = Message::AllocateData<Value>(UID("noclip"));
+            msg.data_value = Message::AllocateData<Value>("noclip");
             Message::Send(msg);
         }
         

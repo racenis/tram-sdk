@@ -19,8 +19,8 @@ public:
     void SetDirection(vec3 direction);
     void SetExponent(float exponent);
     
-    vec3 GetColor();
-    float GetDistance();
+    vec3 GetColor() const;
+    float GetDistance() const;
     vec3 GetLocation() const { return location; }
 
     void EventHandler(Event &event) { return; }

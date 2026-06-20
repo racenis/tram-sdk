@@ -139,16 +139,16 @@ public:
         deallocate(obj);
     }
     
-    T& operator[](size_t index) { return *(first + index); } // note that there is no checking for whether the index is valid
+    T& operator[](size_t index) const{ return *(first + index); } // note that there is no checking for whether the index is valid
     
-    iterator begin()  {auto ptr = first; while (ptr < last && *((uint64_t*)ptr) == 0) ptr++; return ptr; }
-    iterator end() { return last; }
+    iterator begin() const {auto ptr = first; while (ptr < last && *((uint64_t*)ptr) == 0) ptr++; return ptr; }
+    iterator end() const { return last; }
     
     size_t size() const {return current_size;}
     size_t index(const T* ptr) const {return ptr - first;}
     
     /// Checks if an object can be accessed through iteration.
-    bool validate (const T* ptr) const {
+    bool validate(const T* ptr) const {
         return ptr >= first && ptr < last && *((uint64_t*)ptr) != 0;
     }
     
@@ -245,8 +245,8 @@ template <typename T> using PoopProxy = PoolProxy<T>;
 template <typename T>
 class PoolPtr {
 public:
-    PoolPtr () { ptr = PoolProxy<T>::New(); }
-    ~PoolPtr () { PoolProxy<T>::Delete(ptr); }
+    PoolPtr() { ptr = PoolProxy<T>::New(); }
+    ~PoolPtr() { PoolProxy<T>::Delete(ptr); }
     T* GetResource() { return ptr; }
     T* operator->() { return ptr; }
     T& operator*() { return *ptr; }

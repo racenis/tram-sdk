@@ -27,9 +27,9 @@ struct SpriteMarker {
 
 class Sprite : public Resource {
 public:
-    Sprite (UID name) : Resource(name) {}
-    inline Material* GetMaterial () const { return material; }
-    inline void SetMaterial (Material* mat) { material = mat; }
+    Sprite(UID name) : Resource(name) {}
+    inline Material* GetMaterial() const { return material; }
+    inline void SetMaterial(Material* mat) { material = mat; }
     
     void LoadFromDisk();
     void LoadFromMemory();
@@ -38,8 +38,8 @@ public:
     
     uint16_t FindMarker(name_t name);
 
-    const std::vector<SpriteFrame>& GetFrames() { return frames; };
-    const std::vector<SpriteMarker>& GetMarkers() { return markers; };
+    const std::vector<SpriteFrame>& GetFrames() const { return frames; };
+    const std::vector<SpriteMarker>& GetMarkers() const { return markers; };
 
     static Sprite* Find(name_t name);
 protected:

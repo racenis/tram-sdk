@@ -50,15 +50,15 @@ void SetViewRotation(quat rotation, layer_t layer = 0);
 vec3 GetViewPosition(layer_t layer = 0);
 quat GetViewRotation(layer_t layer = 0);
 
-const color_t COLOR_WHITE  (1.0f, 1.0f, 1.0f);
-const color_t COLOR_RED    (1.0f, 0.0f, 0.0f);
-const color_t COLOR_GREEN  (0.0f, 1.0f, 0.0f);
-const color_t COLOR_BLUE   (0.0f, 0.0f, 1.0f);
-const color_t COLOR_YELLOW (1.0f, 1.0f, 0.0f);
-const color_t COLOR_PINK   (1.0f, 0.0f, 1.0f);
-const color_t COLOR_CYAN   (0.0f, 1.0f, 1.0f);
-const color_t COLOR_BLACK  (0.0f, 0.0f, 0.0f);
-const color_t COLOR_GRAY   (0.3f, 0.3f, 0.3f);
+const color_t COLOR_WHITE  = {1.0f, 1.0f, 1.0f};
+const color_t COLOR_RED    = {1.0f, 0.0f, 0.0f};
+const color_t COLOR_GREEN  = {0.0f, 1.0f, 0.0f};
+const color_t COLOR_BLUE   = {0.0f, 0.0f, 1.0f};
+const color_t COLOR_YELLOW = {1.0f, 1.0f, 0.0f};
+const color_t COLOR_PINK   = {1.0f, 0.0f, 1.0f};
+const color_t COLOR_CYAN   = {0.0f, 1.0f, 1.0f};
+const color_t COLOR_BLACK  = {0.0f, 0.0f, 0.0f};
+const color_t COLOR_GRAY   = {0.3f, 0.3f, 0.3f};
 
 void AddLine(vec3 from, vec3 to, color_t color);
 void AddLineMarker(vec3 location, color_t color);

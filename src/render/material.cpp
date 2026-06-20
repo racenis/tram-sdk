@@ -53,10 +53,10 @@ void Material::LoadMaterialInfo(const char* filename) {
     using namespace tram::Render;
     
     char path [PATH_LIMIT] = "data/";
-    strcat (path, filename);
-    strcat (path, ".list");
+    strcat(path, filename);
+    strcat(path, ".list");
 
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::WARNING, System::RENDER, "Can't open material info file: ", path);
@@ -88,19 +88,19 @@ void Material::LoadMaterialInfo(const char* filename) {
         name_t mat_tex_type_name = file.read_name();
         Material* mat_source = nullptr;
 
-        if(mat_type_name == UID("flat")){
+        if(mat_type_name == "flat") {
             mat_type = MATERIAL_TEXTURE;
-        } else if(mat_type_name == UID("alpha")){
+        } else if(mat_type_name == "alpha") {
             mat_type = MATERIAL_TEXTURE_ALPHA;
-        } else if(mat_type_name == UID("blend")){
+        } else if(mat_type_name == "blend") {
             mat_type = MATERIAL_TEXTURE_BLEND;
-        } else if(mat_type_name == UID("msdf")){
+        } else if(mat_type_name == "msdf") {
             mat_type = MATERIAL_MSDF;
-        } else if(mat_type_name == UID("glyph")){
+        } else if(mat_type_name == "glyph") {
             mat_type = MATERIAL_GLYPH;
-        } else if(mat_type_name == UID("glyphblend")){
+        } else if(mat_type_name == "glyphblend") {
             mat_type = MATERIAL_GLYPH_BLEND;
-        } else if(mat_type_name == UID("water")){
+        } else if(mat_type_name == "water") {
             mat_type = MATERIAL_WATER;
         } else {
             mat_type = FindMaterialType(mat_type_name);
@@ -168,7 +168,7 @@ void Material::LoadMaterialInfo(const char* filename) {
         if (!material) {
             material = PoolProxy<Material>::GetPool().allocate();
             new(material) Material(mat_name);
-            material_list.Insert(UID(mat_name), material);
+            material_list.Insert(mat_name, material);
         }
 
         material->SetMaterialType(mat_type);
@@ -195,7 +195,7 @@ Material* Material::Make(name_t name, materialtype_t type) {
     if (!material) {
         material = PoolProxy<Material>::GetPool().allocate();
         new(material) Material(name, type);
-        material_list.Insert(UID(name), material);
+        material_list.Insert(name, material);
     }
     
     return material;

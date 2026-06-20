@@ -30,7 +30,7 @@ public:
     }
     virtual ~CallbackMotionState() {}
 
-    virtual void getWorldTransform (btTransform& world_transform) const {
+    virtual void getWorldTransform(btTransform& world_transform) const {
         vec3 position = this->position;
         quat rotation = this->rotation;
         
@@ -58,7 +58,7 @@ public:
         world_transform = transform;
     }
 
-    virtual void setWorldTransform (const btTransform& world_transform) {
+    virtual void setWorldTransform(const btTransform& world_transform) {
         btQuaternion transform_rotation = world_transform.getRotation();
         btVector3 transform_translation = world_transform.getOrigin();
 
@@ -200,7 +200,7 @@ rigidbody_t MakeRigidbody(collisionshape_t shape, float mass, vec3 position, qua
     metadata->motion_state = new CallbackMotionState(position, rotation, get_callback, set_callback, data);
     
     btScalar rigidbody_mass = mass;
-    btVector3 rigidbody_inertia (0.0f, 0.0f, 0.0f);
+    btVector3 rigidbody_inertia(0.0f, 0.0f, 0.0f);
     shape.bt_shape->calculateLocalInertia(rigidbody_mass, rigidbody_inertia);
     
     btRigidBody::btRigidBodyConstructionInfo bullet_construction_info(rigidbody_mass, metadata->motion_state, shape.bt_shape, rigidbody_inertia);
@@ -245,13 +245,13 @@ void SetRigidbodyCollisionGroup(rigidbody_t rigidbody, uint32_t group) {
 
 void SetRigidbodyLocation(rigidbody_t rigidbody, vec3 position) {
     btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
-    trans.setOrigin(btVector3 (position.x, position.y, position.z));
+    trans.setOrigin(btVector3(position.x, position.y, position.z));
     rigidbody.bt_rigidbody->setWorldTransform(trans);
 }
 
 void SetRigidbodyRotation(rigidbody_t rigidbody, quat rotation) {
     btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
-    trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+    trans.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
     rigidbody.bt_rigidbody->setWorldTransform(trans);
 }
 
@@ -264,7 +264,7 @@ void SetRigidbodyMass(rigidbody_t rigidbody, float mass) {
     
     rigidbody.bt_rigidbody->setCollisionFlags(rigidbody.bt_metadata->collision_flags);
     btScalar rigidbody_mass = mass;
-    btVector3 rigidbody_inertia (0.0f, 0.0f, 0.0f);
+    btVector3 rigidbody_inertia(0.0f, 0.0f, 0.0f);
     rigidbody.bt_rigidbody->getCollisionShape()->calculateLocalInertia(rigidbody_mass, rigidbody_inertia);
     rigidbody.bt_rigidbody->setMassProps(mass, rigidbody_inertia);
 }
@@ -399,13 +399,13 @@ void SetTriggerCollisionGroup(trigger_t trigger, uint32_t group) {
 
 void SetTriggerLocation(trigger_t trigger, vec3 location) {
     btTransform trans = trigger.bt_collisionshape->getWorldTransform();
-    trans.setOrigin(btVector3 (location.x, location.y, location.z));
+    trans.setOrigin(btVector3(location.x, location.y, location.z));
     trigger.bt_collisionshape->setWorldTransform(trans);
 }
 
 void SetTriggerRotation(trigger_t trigger, quat rotation) {
     btTransform trans = trigger.bt_collisionshape->getWorldTransform();
-    trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
+    trans.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
     trigger.bt_collisionshape->setWorldTransform(trans);
 }
 
@@ -415,7 +415,7 @@ std::pair<ObjectCollision, void*> Raycast(vec3 from, vec3 to, uint32_t collision
     bto.setValue(to.x, to.y, to.z);
     bfrom.setValue(from.x, from.y, from.z);
 
-    btCollisionWorld::ClosestRayResultCallback callback (bfrom, bto);
+    btCollisionWorld::ClosestRayResultCallback callback(bfrom, bto);
 
     callback.m_collisionFilterMask = collision_mask;
     
@@ -432,14 +432,14 @@ std::pair<ObjectCollision, void*> Raycast(vec3 from, vec3 to, uint32_t collision
                  0.0f},
                  metadata->collision_data};
     } else {
-        return {{vec3 (0.0f, 0.0f, 0.0f), vec3 (0.0f, 0.0f, 0.0f), 0.0f}, nullptr};
+        return {{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 0.0f}, nullptr};
     }
 }
 
 struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
     ShapecastCallback(std::vector<std::pair<ObjectCollision, void*>>& collisions, uint32_t collision_mask)
         : collisions(collisions), collision_mask(collision_mask) {}
-    btScalar addSingleResult (btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace) {
+    btScalar addSingleResult(btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace) {
         const btCollisionObject* ob = convexResult.m_hitCollisionObject;
         
         // ignore triggers
@@ -517,7 +517,7 @@ void Init() {
     // maybe we should check if PHYSICS_GROUND_PLANE is not inf or whatever? if it is then we not make plane??
     btCollisionShape* shape = new btStaticPlaneShape(btVector3(0.0f, 1.0f, 0.0f), PHYSICS_GROUND_PLANE);
     btDefaultMotionState* motionstate = new btDefaultMotionState(trans);
-    btRigidBody::btRigidBodyConstructionInfo constructioninfo (0.0f, motionstate, shape, btVector3(0.0f, 0.0f, 0.0f));
+    btRigidBody::btRigidBodyConstructionInfo constructioninfo(0.0f, motionstate, shape, btVector3(0.0f, 0.0f, 0.0f));
     btRigidBody* rigidbody = new btRigidBody(constructioninfo);
 
     dynamics_world->addRigidBody(rigidbody);

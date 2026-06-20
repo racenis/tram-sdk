@@ -14,8 +14,8 @@ class AnimationComponent : public EntityComponent {
 public:
     void SetModel(Render::Model* model);
     void SetModel(name_t model);
-    Render::Model* GetModel() { return model.get(); }
-    Render::Pose* GetPose() { return pose; }
+    Render::Model* GetModel() const { return model.get(); }
+    Render::Pose* GetPose() const { return pose; }
     
     void SetKeyframe(name_t bone_name, const Render::Keyframe& keyframe);
     void SetOnAnimationFinishCallback(void (*callback) (AnimationComponent*, name_t)) { anim_finish_callback = callback; }

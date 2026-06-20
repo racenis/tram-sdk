@@ -20,7 +20,7 @@ public:
     static TriggerComponent* Make();
     static void Yeet(TriggerComponent* component);
     
-    Physics::CollisionModel* GetModel() { return model.get(); }
+    Physics::CollisionModel* GetModel() const { return model.get(); }
     void SetModel(name_t model);
     void SetModel(Physics::CollisionModel* model);
     void SetShape(Physics::CollisionShape shape);
@@ -34,13 +34,13 @@ public:
     
     void SetStoreCollisions(bool store_collisions) { this->store_collisions = store_collisions; }
     
-    uint32_t GetCollisionMask() { return collision_mask; }
-    uint32_t GetCollisionGroup() { return collision_group; }
+    uint32_t GetCollisionMask() const { return collision_mask; }
+    uint32_t GetCollisionGroup() const { return collision_group; }
     
     void SetLocation(vec3 location);
     void SetRotation(quat rotation);
     
-    const std::vector<Physics::Collision>& GetStoredCollisions() { return stored_collisions; }
+    const std::vector<Physics::Collision>& GetStoredCollisions() const { return stored_collisions; }
 
     void EventHandler(Event &event) {}
 private:

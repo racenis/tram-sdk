@@ -70,31 +70,31 @@ audiosource_t MakeAudioSource() {
 /// @param pitch    1.0f is the regular pitch. Halving the value decreases the
 ///                 pitch by an octave. Doubling the value increases the pitch
 ///                 by an octave.
-void SetAudioSourcePitch (audiosource_t source, float pitch) {
+void SetAudioSourcePitch(audiosource_t source, float pitch) {
     
 }
 
 /// Sets the gain of an audio source.
 /// @param gain     1.0f is the regular gain. Halving the value decreases the
 ///                 gain by 6dB.
-void SetAudioSourceGain (audiosource_t source, float gain) {
+void SetAudioSourceGain(audiosource_t source, float gain) {
     
 }
 
 /// Sets the position of an audio source.
-void SetAudioSourcePosition (audiosource_t source, vec3 position) {
+void SetAudioSourcePosition(audiosource_t source, vec3 position) {
     
 }
 
 /// Sets the velocity of an audio source.
-void SetAudioSourceVelocity (audiosource_t source, vec3 velocity) {
+void SetAudioSourceVelocity(audiosource_t source, vec3 velocity) {
     
 }
 
 /// Sets the repetition of an audio source.
 /// @param repeating    True if the sound repeats after playing, false if
 ///                     it just stops.
-void SetAudioSourceRepeating (audiosource_t source, bool repeating) {
+void SetAudioSourceRepeating(audiosource_t source, bool repeating) {
     
 }
 
@@ -104,30 +104,30 @@ void SetAudioSourceBuffer(audiosource_t source, audiobuffer_t buffer) {
 }
 
 /// Plays an audio source.
-void PlayAudioSource (audiosource_t source) {
+void PlayAudioSource(audiosource_t source) {
     
 }
 
 /// Pauses the audio source.
-void PauseAudioSource (audiosource_t source) {
+void PauseAudioSource(audiosource_t source) {
     
 }
 
 /// Stops the audio source.
-void StopAudioSource (audiosource_t source) {
+void StopAudioSource(audiosource_t source) {
     
 }
 
 /// Checks if an audio source is playing.
 /// @return True if the audio source is playing a sound, false otherwise.
-bool IsAudioSourcePlaying (audiosource_t source) {
+bool IsAudioSourcePlaying(audiosource_t source) {
     return false;
 }
 
 /// Deletes an audio source.
 /// If you do this, then the audio source handle will become invalid.
 /// Call MakeAudioSource() to get a new one.
-void RemoveAudioSource (audiosource_t source) {
+void RemoveAudioSource(audiosource_t source) {
     
 }
 

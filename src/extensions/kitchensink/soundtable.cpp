@@ -38,7 +38,7 @@ void SoundTable::AddSound(SoundAction type, name_t sound) {
     this->sounds.push_back({type, sound});
 }
 
-name_t SoundTable::GetSound(SoundAction type) {
+name_t SoundTable::GetSound(SoundAction type) const {
     std::vector<name_t> candidates;
     
     for (const auto& entry : this->sounds) {

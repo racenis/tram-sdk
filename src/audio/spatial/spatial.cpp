@@ -292,23 +292,23 @@ audiosource_t MakeAudioSource() {
     return source_index;
 }
 
-void SetAudioSourcePitch (audiosource_t source, float pitch) {
+void SetAudioSourcePitch(audiosource_t source, float pitch) {
     // not implemented
 }
 
-void SetAudioSourceGain (audiosource_t source, float gain) {
+void SetAudioSourceGain(audiosource_t source, float gain) {
     // not implemented
 }
 
-void SetAudioSourcePosition (audiosource_t source, vec3 position) {
+void SetAudioSourcePosition(audiosource_t source, vec3 position) {
     audiosources[source].position = position;
 }
 
-void SetAudioSourceVelocity (audiosource_t source, vec3 velocity) {
+void SetAudioSourceVelocity(audiosource_t source, vec3 velocity) {
     // not implemented
 }
 
-void SetAudioSourceRepeating (audiosource_t source, bool repeating) {
+void SetAudioSourceRepeating(audiosource_t source, bool repeating) {
     if (repeating) {
         audiorenders[source].flags |= SOURCE_REPEATING;
     } else {
@@ -320,24 +320,24 @@ void SetAudioSourceBuffer(audiosource_t source, const audiobuffer_t* buffers, in
     audiorenders[source].buffer = &audiobuffers[(uint32_t) ((uint64_t) buffers)];
 }
 
-void PlayAudioSource (audiosource_t source) {
+void PlayAudioSource(audiosource_t source) {
     audiorenders[source].flags |= SOURCE_PLAYING;
 }
 
-void PauseAudioSource (audiosource_t source) {
+void PauseAudioSource(audiosource_t source) {
     audiorenders[source].flags &= ~SOURCE_PLAYING;
 }
 
-void StopAudioSource (audiosource_t source) {
+void StopAudioSource(audiosource_t source) {
     audiorenders[source].flags &= ~SOURCE_PLAYING;
     audiorenders[source].sample = 0;
 }
 
-bool IsAudioSourcePlaying (audiosource_t source) {
+bool IsAudioSourcePlaying(audiosource_t source) {
     return audiorenders[source].flags & SOURCE_PLAYING;
 }
 
-void RemoveAudioSource (audiosource_t source) {
+void RemoveAudioSource(audiosource_t source) {
     delete[] audiosources[source].paths;
     delete[] audiosources[source].result_paths;
     delete[] audiorenders[source].paths;

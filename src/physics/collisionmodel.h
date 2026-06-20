@@ -16,7 +16,7 @@ public:
     void LoadFromMemory() {}
     void Unload();
     
-    inline collisionshape_t GetShape() { return shape; }
+    inline collisionshape_t GetShape() const { return shape; }
 
     static CollisionModel* Find(name_t model_name);
 protected:

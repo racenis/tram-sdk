@@ -160,7 +160,7 @@ void StopAudioSource(audiosource_t source) {
 
 bool IsAudioSourcePlaying(audiosource_t source) {
     int32_t state;
-    alGetSourcei (source.al_source, AL_SOURCE_STATE, &state);
+    alGetSourcei(source.al_source, AL_SOURCE_STATE, &state);
     return state == AL_PLAYING;
 }
 

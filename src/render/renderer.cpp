@@ -66,7 +66,7 @@ static RegisteredVertexDefinition all_vertex_definitions[MAX_VERTEX_TYPES] = {
 /// @note For the VertexDefinition's 'attributes' only the pointer will be copied,
 ///       the underlying memory will not be copied -- make sure that it doesn't
 ///       point to stack memory, or other memory that could be overwritten.
-void RegisterVertexDefinition (vertexformat_t format, VertexDefinition definition) {
+void RegisterVertexDefinition(vertexformat_t format, VertexDefinition definition) {
     assert(format < MAX_VERTEX_TYPES);
     
     if (all_vertex_definitions[format].registered) {

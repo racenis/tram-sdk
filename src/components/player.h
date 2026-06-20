@@ -18,15 +18,15 @@ public:
     static PlayerComponent* Make();
     static void Yeet(PlayerComponent* component);
     
-    void SetControllerComponent (ControllerComponent* comp) { controller = comp; }
+    void SetControllerComponent(ControllerComponent* comp) { controller = comp; }
     void Start();
     void SetNoclip(bool value);
     void SetKeyboardLook(bool value);
     
     void EventHandler(Event &event);
     
-    inline quat GetLookRotation() { return look_rotation; }
-    inline vec3 GetDirectionFacing() { return direction_facing; }
+    inline quat GetLookRotation() const { return look_rotation; }
+    inline vec3 GetDirectionFacing() const { return direction_facing; }
 private:
     EventListener keydown;
     EventListener keypress;

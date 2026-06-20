@@ -78,7 +78,7 @@ DialogTopic* DialogTopic::Make(name_t name) {
     if (!topic) {
         topic = PoolProxy<DialogTopic>::New();
         topic->name = name;
-        item_class_list.Insert(UID(name), topic);
+        item_class_list.Insert(name, topic);
     }
     
     return topic;
@@ -93,7 +93,7 @@ void DialogTopic::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".dialog");
 
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open dialog file: {}", path);

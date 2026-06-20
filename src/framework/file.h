@@ -17,7 +17,7 @@ class FileWriterParser;
 
 class File {
 public:
-    File (char const* path, uint32_t mode);
+    File(char const* path, uint32_t mode);
     ~File();
     
     bool is_open();

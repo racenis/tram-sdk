@@ -22,7 +22,7 @@
 
 namespace tram::Physics {
 
-static Hashmap<CollisionModel*> collision_models ("CollisionModel list", RESOURCE_LIMIT_COLLISION_MODEL);
+static Hashmap<CollisionModel*> collision_models("CollisionModel list", RESOURCE_LIMIT_COLLISION_MODEL);
 
 /// Finds a model.
 /// Will either return a pointer to a model that already exists with that name,

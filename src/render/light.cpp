@@ -36,7 +36,7 @@ bool LightGraph::ContainsEntity(id_t entity) {
     return false;
 }
 
-std::vector<std::pair<uint32_t, vec3>> LightGraph::GetEnvironmentProbes() {
+std::vector<std::pair<uint32_t, vec3>> LightGraph::GetEnvironmentProbes() const {
     std::vector<std::pair<uint32_t, vec3>> probes;
     for (uint32_t i = 0; i < nodes.size(); i++) if (nodes[i].has_reflection) probes.push_back({i, nodes[i].position});
     return probes;
@@ -143,7 +143,7 @@ void LightGraph::LoadFromDisk() {
     }
     
     std::string filename = std::string("data/worldcells/") + std::string(name) + ".light";
-    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
+    File file(filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::NOTE, System::RENDER, "Light graph not found: {}", filename);

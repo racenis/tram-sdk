@@ -82,7 +82,7 @@ void Sound::Unload() {
 /// Finds a sound by a name.
 /// If a sound by that name doesn't exist, it will be created.
 /// @return Always returns a pointer to a Sound.
-Sound* Sound::Find (name_t name) {
+Sound* Sound::Find(name_t name) {
     auto sound = sound_map.Find(name);
     
     if (!sound) {

@@ -93,10 +93,10 @@ void Animation::LoadFromDisk() {
     }
     
     char filename [100] = "data/animations/";
-    strcat (filename, name);
-    strcat (filename, ".anim");
+    strcat(filename, name);
+    strcat(filename, ".anim");
 
-    File file (filename, File::READ);
+    File file(filename, File::READ);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, System::RENDER, "Can't open {}!", filename);
@@ -168,7 +168,7 @@ void Animation::Unload() {
     status = UNLOADED;
 }
 
-Keyframe* Animation::GetKeyframes(name_t bone) {
+Keyframe* Animation::GetKeyframes(name_t bone) const {
     for (uint32_t i = 0; i < header_count; i++) {
         if (headers[i].bone != bone) continue;
         
@@ -178,7 +178,7 @@ Keyframe* Animation::GetKeyframes(name_t bone) {
     return nullptr;
 }
 
-uint32_t Animation::GetKeyframeCount(name_t bone) {
+uint32_t Animation::GetKeyframeCount(name_t bone) const {
     for (uint32_t i = 0; i < header_count; i++) {
         if (headers[i].bone != bone) continue;
         
@@ -188,12 +188,12 @@ uint32_t Animation::GetKeyframeCount(name_t bone) {
     return 0;
 }
 
-Animation* Animation::Find (name_t name) {
+Animation* Animation::Find(name_t name) {
     Animation* animation = animation_list.Find(name);
     
     if (!animation) {
         animation = PoolProxy<Animation>::New(name);
-        animation_list.Insert(UID(name), animation);
+        animation_list.Insert(name, animation);
     }
     
     return animation;

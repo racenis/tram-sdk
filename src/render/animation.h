@@ -45,11 +45,11 @@ class Animation : public Resource {
 public:
     Animation(name_t name) : Resource(name) {}
 
-    Keyframe* GetKeyframes(name_t bone);
-    uint32_t GetKeyframeCount(name_t bone);
+    Keyframe* GetKeyframes(name_t bone) const;
+    uint32_t GetKeyframeCount(name_t bone) const;
     
-    inline KeyframeHeader* GetHeader(uint32_t index) { return &headers[index]; }
-    inline uint32_t GetHeaderCount() { return header_count; }
+    inline KeyframeHeader* GetHeader(uint32_t index) const { return &headers[index]; }
+    inline uint32_t GetHeaderCount() const { return header_count; }
     
     void LoadFromDisk();
     void LoadFromMemory() {}

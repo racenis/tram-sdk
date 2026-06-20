@@ -56,13 +56,12 @@ Crate::Crate(const SharedEntityData& shared_data, const ValueArray& field_array)
     collmodel = field_array[FIELD_COLLMODEL];
 }
 
-Crate::Crate (const char* nname, const char* modelname, const char* collisionmodelname, vec3 pos, vec3 rot) : Entity(nname) {
-    name = UID(nname);
-    location = pos;
-    rotation = quat(rot);
+Crate::Crate(const char* name, const char* model, const char* collmodel, vec3 pos, vec3 rot) : Entity(name) {
+    this->location = pos;
+    this->rotation = rot;
 
-    model = UID(modelname);
-    collmodel = UID(collisionmodelname);
+    this->model = model;
+    this->collmodel = collmodel;
 }
 
 void Crate::UpdateParameters() {

@@ -65,7 +65,7 @@ DebugMenu* debug_menu = nullptr;
 std::vector<Menu*> menu_stack;
 std::vector<Menu*> menu_list;
 
-static void EscapeMenuKeyboard () {
+static void EscapeMenuKeyboard() {
     if (Menu::Empty()) {
         SystemMenu* system_menu = new SystemMenu();
         Menu::Push(system_menu);
@@ -74,7 +74,7 @@ static void EscapeMenuKeyboard () {
     }
 }
 
-static void DebugMenuKeyboard () {
+static void DebugMenuKeyboard() {
     if (Menu::Empty() && Settings::Get("enable-debug")) {
         debug_menu = new DebugMenu();
         Menu::Push(debug_menu);
@@ -90,17 +90,17 @@ void Init() {
     
     System::AssertDependency(System::GUI);
 
-    Material::Make(UID("ui/font_widgets"),     MATERIAL_GLYPH)->Load();
-    Material::Make(UID("ui/font_text"),        MATERIAL_GLYPH)->Load();
-    Material::Make(UID("ui/font_text_bold"),   MATERIAL_GLYPH)->Load();
-    Material::Make(UID("ui/font_headers"),     MATERIAL_GLYPH)->Load();
-    Material::Make(UID("ui/font_pixelart"),    MATERIAL_GLYPH)->Load();
+    Material::Make("ui/font_widgets",   MATERIAL_GLYPH)->Load();
+    Material::Make("ui/font_text",      MATERIAL_GLYPH)->Load();
+    Material::Make("ui/font_text_bold", MATERIAL_GLYPH)->Load();
+    Material::Make("ui/font_headers",   MATERIAL_GLYPH)->Load();
+    Material::Make("ui/font_pixelart",  MATERIAL_GLYPH)->Load();
 
-    Sprite* font_widgets =      Sprite::Find(UID("font_widgets"));
-    Sprite* font_text =         Sprite::Find(UID("font_text"));
-    Sprite* font_text_bold =    Sprite::Find(UID("font_text_bold"));
-    Sprite* font_headers =      Sprite::Find(UID("font_headers"));
-    Sprite* font_pixelart =     Sprite::Find(UID("font_pixelart"));
+    Sprite* font_widgets =      Sprite::Find("font_widgets");
+    Sprite* font_text =         Sprite::Find("font_text");
+    Sprite* font_text_bold =    Sprite::Find("font_text_bold");
+    Sprite* font_headers =      Sprite::Find("font_headers");
+    Sprite* font_pixelart =     Sprite::Find("font_pixelart");
 
     font_widgets->Load();
     font_text->Load();

@@ -18,7 +18,7 @@ public:
     static DecalComponent* Make();
     static void Yeet(DecalComponent* component);
     
-    inline Render::Sprite* GetSprite() { return sprite.get(); }
+    inline Render::Sprite* GetSprite() const { return sprite.get(); }
 
     void SetSprite(Render::Sprite* sprite) {
         this->sprite = sprite;

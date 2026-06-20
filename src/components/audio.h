@@ -23,7 +23,7 @@ public:
     void Pause();
     void Stop();
     
-    Audio::Sound* GetSound() { return sound.get(); }
+    Audio::Sound* GetSound() const { return sound.get(); }
     bool IsRepeating() const { return repeat; }
     vec3 GetLocation() const { return location; }
     

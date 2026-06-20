@@ -20,7 +20,7 @@ public:
     };
 
     void draw3dText(const btVector3& location, const char* textString) {
-        //GUI::DebugText(textString, {location.getX(), location.getY(), location.getZ()}, Render::COLOR_WHITE);
+        Render::AddText({location.getX(), location.getY(), location.getZ()}, textString, Render::COLOR_WHITE);
     };
 
     void setDebugMode(int debugMode) {};

@@ -122,8 +122,8 @@ public:
 
     void SetControllerComponent(ControllerComponent* c) { controllercomponent = c; }
     void SetAnimationStateComponent(AnimationStateComponent* c) { animationstate = c; }
-    ControllerComponent* GetControllerComponent() { return controllercomponent; }
-    AnimationStateComponent* GetAnimationStateComponent() { return animationstate; }
+    ControllerComponent* GetControllerComponent() const { return controllercomponent; }
+    AnimationStateComponent* GetAnimationStateComponent() const { return animationstate; }
 
     static AIAgent* Find(id_t id);
 private:

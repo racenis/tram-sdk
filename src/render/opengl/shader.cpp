@@ -7,7 +7,7 @@
 
 #ifndef _WIN32
     #include <GL/gl.h>
-	#include <GLES3/gl3.h>
+    #include <GLES3/gl3.h>
 #else
     #include <glad.h>
 #endif
@@ -125,7 +125,7 @@ public:
         FileReader* file = FileReader::GetReader(path);
         
         if (file->GetStatus() != FileStatus::READY) {
-            Log(Severity::ERROR, System::RENDER, "Can't find {} shader source file {}!", GetShaderTypeName(), UID(path));
+            Log(Severity::ERROR, System::RENDER, "Can't find {} shader source file {}!", GetShaderTypeName(), path);
             
             // load in shader fallback
             shader_len = strlen(get_fallback_shader(format, GetGLShaderCode()));
@@ -186,7 +186,7 @@ public:
             char compile_error[420];
             glGetShaderInfoLog(compiled_program, 420, NULL, compile_error);
             
-            Log(Severity::CRITICAL_ERROR, System::RENDER, "{} shader {} compile error:\n{}", GetShaderTypeName(), UID(name), UID(compile_error));
+            Log(Severity::CRITICAL_ERROR, System::RENDER, "{} shader {} compile error:\n{}", GetShaderTypeName(), name, compile_error);
         }
         
         compiled_shaders.push_back({flags, compiled_program});
@@ -309,7 +309,7 @@ public:
             char link_error[420];
             glGetShaderInfoLog(linked_shader, 420, NULL, link_error);
             
-            Log(Severity::ERROR, System::RENDER, "Shader link error between {} and {}:\n{}", vertex_shader->GetName(), fragment_shader->GetName(), UID(link_error));
+            Log(Severity::ERROR, System::RENDER, "Shader link error between {} and {}:\n{}", vertex_shader->GetName(), fragment_shader->GetName(), link_error);
             
             return 0;
         }

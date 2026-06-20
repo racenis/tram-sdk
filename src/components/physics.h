@@ -14,7 +14,7 @@ public:
     static PhysicsComponent* Make();
     static void Yeet(PhysicsComponent* component);
 
-    Physics::CollisionModel* GetModel();
+    Physics::CollisionModel* GetModel() const;
     void SetModel(name_t model);
     void SetModel(Physics::CollisionModel* model);
 
@@ -28,8 +28,8 @@ public:
     void SetCollisionMask(uint32_t flags);
     void SetCollisionGroup(uint32_t flags);
     
-    uint32_t GetCollisionMask();
-    uint32_t GetCollisionGroup();
+    uint32_t GetCollisionMask() const;
+    uint32_t GetCollisionGroup() const;
 
     void SetDebugDrawing(bool drawing);
     void SetKinematic(bool kinematic);
@@ -47,7 +47,7 @@ public:
     void SetLinearFactor(vec3 factor);
 
     void SetVelocity(const vec3& velocity);
-    vec3 GetVelocity();
+    vec3 GetVelocity() const;
     
     void EventHandler(Event &event) {}
 private:

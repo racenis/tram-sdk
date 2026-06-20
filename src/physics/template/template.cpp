@@ -129,7 +129,7 @@ void SetTriggerRotation(trigger_t rigidbody, quat location) {
 }
 
 std::pair<ObjectCollision, void*> Raycast(vec3 from, vec3 to, uint32_t collision_mask) {
-    return {{vec3 (0.0f, 0.0f, 0.0f), vec3 (0.0f, 0.0f, 0.0f), 0.0f}, nullptr};
+    return {{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 0.0f}, nullptr};
 }
 
 std::vector<std::pair<ObjectCollision, void*>> Shapecast(CollisionShape shape, vec3 from, vec3 to, uint32_t collision_mask) {

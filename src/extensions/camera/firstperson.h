@@ -12,7 +12,7 @@ public:
     FirstPersonCamera() {}
     ~FirstPersonCamera() {}
     
-    void Update ();
+    void Update();
     
     void SetTilt(float tilt);
     void SetMouselook(bool mouselook);
@@ -23,8 +23,8 @@ public:
     void SetBobbingCallback(void (*bob_callback)(FirstPersonCamera*));
     void SetBobSpeed(float speed);
     
-    float GetBob();
-    float GetWeight();
+    float GetBob() const;
+    float GetWeight() const;
     
     inline void SetFollowingInterpolation(float following_interpolation) { this->following_interpolation = following_interpolation; }
     inline void SetFollowingOffset(vec3 offset) { this->following_offset = offset; }

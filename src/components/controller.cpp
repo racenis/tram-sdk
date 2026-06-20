@@ -317,7 +317,7 @@ void FPSControllerComponent::RecoverFromCollisions() {
             float step_height = lowest_collision.y - character_bottom_height;
             
             // check if stepping up is allowed and then step up
-            if (lowest_collision_normal.y > 0.70f && step_height > 0.0f /*&& step_height < 0.35f*/) {
+            if (lowest_collision_normal.y > 0.70f && step_height > 0.0f) {
                 vec3 step_up = new_pos;
                 step_up.y = lowest_collision.y + half_height + 0.01f;
             
@@ -488,9 +488,7 @@ void RaycastControllerComponent::Fly() {
 
 void RaycastControllerComponent::Jump() {
     if (!is_in_air) {
-        //velocity.y += 0.119f;
         move_magnitude.y += 0.119f;
-        //air_velocity.y += 1.119f;
         
         jump_frames = 60;
         

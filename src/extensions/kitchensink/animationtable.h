@@ -96,7 +96,7 @@ public:
     
     void SetAnimationTable(name_t name) { this->table = AnimationTable::Find(name); }
     void SetAnimationComponent(AnimationComponent* component) { this->component = component; }
-    AnimationComponent* GetAnimationComponent() { return this->component; }
+    AnimationComponent* GetAnimationComponent() const { return this->component; }
 protected:
     AnimationTable* table = nullptr;
     AnimationComponent* component = nullptr;

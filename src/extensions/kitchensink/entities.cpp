@@ -315,7 +315,7 @@ void Button::MessageHandler(Message& msg) {
     }
     
     // button is pressed and it is not momentary
-    if (msg.type == Message::ACTIVATE_ONCE /*&& !(flags & BUTTON_FLAG_MOMENTARY)*/ && !(flags & BUTTON_FLAG_LOCKED)) {
+    if (msg.type == Message::ACTIVATE_ONCE && !(flags & BUTTON_FLAG_LOCKED)) {
         switch (state) {
             case BUTTON_STATE_NADIR_READY:  tick.make(Event::TICK, this); state = BUTTON_STATE_RISING;   PlaySound(SOUND_OPEN)   FireSignal(Signal::OPEN);   break;
             case BUTTON_STATE_ZENITH_READY: tick.make(Event::TICK, this); state = BUTTON_STATE_LOWERING; PlaySound(SOUND_CLOSE)  FireSignal(Signal::CLOSE);  break;

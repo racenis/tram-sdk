@@ -307,7 +307,7 @@ void Character::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".char");
 
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open character file: {}", path);

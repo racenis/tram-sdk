@@ -61,7 +61,7 @@ void Light::SetParameters() {
     UpdateParameters();
 }
 
-void Light::Load () {
+void Light::Load() {
     if (!Render::LightGraph::ContainsEntity(id)) {
         light.make();
         light->SetColor(color * brightness);

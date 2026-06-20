@@ -70,15 +70,15 @@ void FirstPersonCamera::SetBobbingCallback(void (*bob_callback)(FirstPersonCamer
     this->bob_callback = bob_callback;
 }
 
-float FirstPersonCamera::GetBob() {
+float FirstPersonCamera::GetBob() const {
     return this->bob;
 }
 
-float FirstPersonCamera::GetWeight() {
+float FirstPersonCamera::GetWeight() const {
     return this->bobbing_weight;
 }
 
-void FirstPersonCamera::Update () {
+void FirstPersonCamera::Update() {
     if (UI::GetInputState() == UI::STATE_FLYING) return;
     
     // move tilt towards tilt goal

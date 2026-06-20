@@ -63,7 +63,7 @@ void Path::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".path");
     
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::NOTE, System::CORE, "Can't find path file: {}", path);
@@ -168,7 +168,6 @@ void PathFollower::Advance(float distance) {
         progress = 0.0f;
         
         Advance(distance);
-        //if (distance > 0.01f) Advance(distance);
     } else {
         dist_left -= distance;
         progress = (segment - dist_left) / segment;
@@ -224,13 +223,13 @@ void PathFollower::SetOrientation(vec3 orientation) {
     }
 }
 
-vec3 PathFollower::GetPosition() {
+vec3 PathFollower::GetPosition() const {
     return glm::mix(path->nodes[prev].position,
                     path->nodes[next].position,
                     progress);
 }
 
-vec3 PathFollower::GetTangent() {
+vec3 PathFollower::GetTangent() const {
     return glm::normalize(path->nodes[next].position - path->nodes[prev].position);
 }
 

@@ -100,7 +100,7 @@ void SetScreenSize(float width, float height) {
     screen_height = height;
 }
 
-void SetScreenClear (vec3 clear_color, bool clear) {
+void SetScreenClear(vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
 }

@@ -127,7 +127,7 @@ static void flush_lightmaps(const char*) {
 
 /// Initializes the rendering system.
 /// @note Core and UI systems need to be initialized before initializing the render system.
-void Init () {
+void Init() {
     assert(System::IsInitialized(System::CORE));
     assert(System::IsInitialized(System::UI));
     
@@ -141,11 +141,11 @@ void Init () {
     Render::SetScreenSize(screen_width, screen_height);
     
     // this is for rendering lines
-    CreateVertexArray (GetVertexDefinition(VERTEX_LINE), colorlines_vertex_array);
-    colorlines_entry = InsertDrawListEntry ();
+    CreateVertexArray(GetVertexDefinition(VERTEX_LINE), colorlines_vertex_array);
+    colorlines_entry = InsertDrawListEntry();
     SetDrawListVertexArray(colorlines_entry, colorlines_vertex_array);
     SetDrawListShader(colorlines_entry, VERTEX_LINE, MATERIAL_FLAT_COLOR);
-    SetFlags(colorlines_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/ | FLAG_DRAW_LINES | FLAG_DISABLE_LIGHTING);
+    SetFlags(colorlines_entry, FLAG_RENDER | FLAG_DRAW_LINES | FLAG_DISABLE_LIGHTING);
     SetLayer(colorlines_entry, LAYER_DEBUG);
     
     // loading fullbright lightmap
@@ -163,13 +163,13 @@ void Init () {
     defaulttexture->LoadFromMemory();
     
     // this is for rendering debug text
-    auto font_debug = Material::Make(UID("ui/font_debug"), MATERIAL_GLYPH);
+    auto font_debug = Material::Make("ui/font_debug", MATERIAL_GLYPH);
     auto font_pixels = GetDebugFont();
     font_debug->SetTextureImage(font_pixels, 4, 256, 256);
     font_debug->AddReference();
     font_debug->Load();
     
-    auto font_icon = Material::Make(UID("ui/font_icon"), MATERIAL_GLYPH);
+    auto font_icon = Material::Make("ui/font_icon", MATERIAL_GLYPH);
     auto icon_pixels = GetDebugIcon();
     font_icon->SetTextureImage(icon_pixels, 4, 256, 256);
     font_icon->AddReference();
@@ -182,7 +182,7 @@ void Init () {
     debugtext_entry = InsertDrawListEntry();
     SetDrawListVertexArray(debugtext_entry, debugtext_vertex_array);
     SetDrawListShader(debugtext_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
-    SetFlags(debugtext_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
+    SetFlags(debugtext_entry, FLAG_RENDER);
     SetLayer(debugtext_entry, LAYER_GUI);
     
     material_t debugtext_textures[2];
@@ -199,7 +199,7 @@ void Init () {
 }
 
 /// Renders a single frame.
-void Render () {
+void Render() {
     Stats::Start(System::RENDER);
 #ifndef ENGINE_EDITOR_MODE
     // idk if these need to be here -> after all, the armatures aren't updated in here?
@@ -225,7 +225,7 @@ void Render () {
 /// Sets the sun direction.
 /// @param direction    Normal vector pointing towards the sun.
 /// @param layer        Rendering layer to which the sun direction will be applied.
-void SetSunDirection (vec3 direction, layer_t layer) {
+void SetSunDirection(vec3 direction, layer_t layer) {
     view_properties[layer].sun_direction = direction;
     update_light(layer);
 }
@@ -233,7 +233,7 @@ void SetSunDirection (vec3 direction, layer_t layer) {
 /// Sets the sun color.
 /// @param color    Color of the sun.
 /// @param layer    Rendering layer to which the sun color will be applied.
-void SetSunColor (color_t color, layer_t layer) {
+void SetSunColor(color_t color, layer_t layer) {
     view_properties[layer].sun_color = color;
     update_light(layer);
 }
@@ -241,7 +241,7 @@ void SetSunColor (color_t color, layer_t layer) {
 /// Sets the ambient color.
 /// @param color    Ambient color.
 /// @param layer    Rendering layer to which the ambient color will be applied.
-void SetAmbientColor (color_t color, layer_t layer) {
+void SetAmbientColor(color_t color, layer_t layer) {
     view_properties[layer].ambient_color = color;
     update_light(layer);
 }
@@ -303,7 +303,7 @@ float GetClipDistance(layer_t layer) {
 /// Sets the view position.
 /// @param position View position.
 /// @param layer    Rendering layer to which the view position will be applied.
-void SetViewPosition (vec3 position, layer_t layer) {
+void SetViewPosition(vec3 position, layer_t layer) {
     view_properties[layer].view_position = position;
     update_view(layer);
 }
@@ -311,18 +311,18 @@ void SetViewPosition (vec3 position, layer_t layer) {
 /// Sets the view rotation.
 /// @param rotation View rotation.
 /// @param layer    Rendering layer to which the view rotation will be applied.
-void SetViewRotation (quat rotation, layer_t layer) {
+void SetViewRotation(quat rotation, layer_t layer) {
     view_properties[layer].view_rotation = rotation;
     update_view(layer);
 }
 
 /// Returns the view position for a given layer.
-vec3 GetViewPosition (layer_t layer) {
+vec3 GetViewPosition(layer_t layer) {
     return view_properties[layer].view_position;
 }
 
 /// Returns the view rotation for a given layer.
-quat GetViewRotation (layer_t layer) {
+quat GetViewRotation(layer_t layer) {
     return view_properties[layer].view_rotation;
 }
 

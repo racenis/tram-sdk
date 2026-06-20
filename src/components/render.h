@@ -24,9 +24,9 @@ public:
     void SetArmature(AnimationComponent* armature);
     void SetPose(AnimationComponent* armature);
 
-    inline Render::Model* GetModel() { return model.get(); }
-    inline Render::Lightmap* GetLightmap() { return lightmap.get(); }
-    inline Render::Pose* GetPose() { return pose; }
+    inline Render::Model* GetModel() const { return model.get(); }
+    inline Render::Lightmap* GetLightmap() const { return lightmap.get(); }
+    inline Render::Pose* GetPose() const { return pose; }
 
     void SetLocation(vec3 location);
     void SetRotation(quat rotation);

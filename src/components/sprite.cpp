@@ -18,7 +18,7 @@
 namespace tram {
 using namespace tram::Render;
 
-template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool ("SpriteComponent pool", COMPONENT_LIMIT_SPRITE);
+template <> Pool<SpriteComponent> PoolProxy<SpriteComponent>::pool("SpriteComponent pool", COMPONENT_LIMIT_SPRITE);
 template <> void Component<SpriteComponent>::init() { ptr = SpriteComponent::Make(); }
 template <> void Component<SpriteComponent>::yeet() { SpriteComponent::Yeet(ptr); }
 
@@ -104,7 +104,7 @@ void SpriteComponent::Pause() {
     anim_isplaying = true;
 }
 
-void SpriteComponent::SetPlaySpeed (size_t speed) {
+void SpriteComponent::SetPlaySpeed(size_t speed) {
     anim_speed = speed;
 }
 

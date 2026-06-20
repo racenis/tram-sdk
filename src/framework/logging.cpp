@@ -129,7 +129,7 @@ void flush_console(Severity severity, System::system_t system) {
         default:                        color = TerminalColor::DEFAULT;      break;     
     }
     
-    const char* system_text = /*system == 6 ? nullptr :*/ System::GetShortName(system);
+    const char* system_text = System::GetShortName(system);
     
     if (color != TerminalColor::DEFAULT) {
         SwitchForeground(color);

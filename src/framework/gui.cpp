@@ -221,7 +221,7 @@ void Init() {
     glyphvertices_entry = InsertDrawListEntry();
     SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
     SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
-    SetFlags(glyphvertices_entry, FLAG_RENDER /*| FLAG_NO_DEPTH_TEST*/);
+    SetFlags(glyphvertices_entry, FLAG_RENDER);
     SetLayer(glyphvertices_entry, LAYER_GUI);
     
     Event::AddListener(Event::KEYCHAR, [](Event& evt) {
@@ -320,7 +320,7 @@ void Update() {
 /// Registers a font.
 /// @return Font handle that can be used with all of the GUI widget functions.
 font_t RegisterFont(Render::Sprite* sprite) {
-    if (!System::IsInitialized (System::GUI)) {
+    if (!System::IsInitialized(System::GUI)) {
         Log(Severity::ERROR, System::GUI, "GUI is not initialized, font {} was not registered!", sprite->GetName());
         return -1;
     }
@@ -349,7 +349,7 @@ font_t RegisterFont(Render::Sprite* sprite) {
 /// @param next Font that will instead take `prev`s place.
 /// @return Font handle that can be used with all of the GUI widget functions.
 font_t RegisterFontReplace(Render::Sprite* prev, Render::Sprite* next) {
-    if (!System::IsInitialized (System::GUI)) {
+    if (!System::IsInitialized(System::GUI)) {
         Log(Severity::ERROR, System::GUI, "GUI is not initialized, font {} was not registered!", next->GetName());
         return -1;
     }

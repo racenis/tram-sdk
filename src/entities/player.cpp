@@ -93,7 +93,7 @@ void Player::SetParameters() {
 
 void Player::MessageHandler(Message& msg) {
     if (msg.type == Message::PING) {
-        Log (Severity::DEFAULT, System::MISC, "Player was pinged with {}!", (long long) msg.data);
+        Log(Severity::DEFAULT, System::MISC, "Player was pinged with {}!", (long long) msg.data);
     }
     
     if (msg.type == Message::SET_FLAG_ON && msg.data_value) {

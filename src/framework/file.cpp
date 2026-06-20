@@ -145,7 +145,7 @@ public:
             return UID();
         }
         
-        return UID(buffer);
+        return buffer;
     }
     
     std::string_view read_token() {
@@ -193,7 +193,7 @@ public:
             cur = last_char;
         }
         
-        return std::string_view (first_char, line_length);
+        return std::string_view(first_char, line_length);
     }
     
     size_t get_line() {
@@ -209,10 +209,6 @@ public:
     }
     
     void skip_whitespace() {
-        //char f[2] = "e";
-        //f[0] = *cur;
-        //Log("skip: '{}' flag: {}", f, skip_newline_flag);
-        
         while (cur < end) {
             if (*cur == '\n' && !skip_newline_flag) {
                 return;
@@ -364,7 +360,7 @@ public:
         
         if (strlen(buffer) == 0 ) Log(Severity::WARNING, System::CORE, "NOT GOOD ZERO NAME");
         
-        return UID(buffer);
+        return buffer;
     }
     
     std::string_view read_token() {

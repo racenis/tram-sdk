@@ -9,7 +9,7 @@
 #define TRAM_SDK_REGISTER_EVENT_DATATYPE(EVENT_ID, TYPE) template <> struct tram::EventDataType<EVENT_ID> { TYPE type; };
 
 /// Implements a pool.
-#define TRAM_SDK_IMPLEMENT_POOL(TYPE, NAME, SIZE) template <> Pool<TYPE> PoolProxy<TYPE>::pool (NAME, SIZE);
+#define TRAM_SDK_IMPLEMENT_POOL(TYPE, NAME, SIZE) template <> Pool<TYPE> PoolProxy<TYPE>::pool(NAME, SIZE);
 
 // Asserts
 #ifndef NDEBUG

@@ -170,7 +170,7 @@ void Window::Uninit() {
 
 void Window::SetTitle(const char* title) {
     assert(WINDOW);
-    glfwSetWindowTitle (WINDOW, title);
+    glfwSetWindowTitle(WINDOW, title);
 }
 
 void Window::SetSize(int w, int h) {
@@ -287,7 +287,7 @@ void Input::Uninit() {
 }
 
 /// Maps a glfw keycode to a KeyboardKey.
-static KeyboardKey GLFWKeyToKeyboardKey (int keycode) {
+static KeyboardKey GLFWKeyToKeyboardKey(int keycode) {
     switch (keycode) {
         case GLFW_MOUSE_BUTTON_LEFT:    return KEY_LEFTMOUSE;
         case GLFW_MOUSE_BUTTON_RIGHT:   return KEY_RIGHTMOUSE;

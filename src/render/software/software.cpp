@@ -60,7 +60,7 @@ struct ScanlineBuffer {
 
 ScanlineBuffer* scanlines = new ScanlineBuffer;
 
-void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
+void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
     layers[layer].sun_color = sun_color;
     layers[layer].ambient_color = ambient_color;
@@ -73,7 +73,7 @@ void SetScreenSize(float width, float height) {
     screen_height = height;
 }
 
-void SetScreenClear (vec3 clear_color, bool clear) {
+void SetScreenClear(vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
 }
@@ -362,8 +362,8 @@ void ScanlineConvertTriangle(ScanlineBuffer* scanlines, Point2D* vertices) {
         }
     }
 
-    /*int32_t*/ scanlines->scanline_length = max_point_y - min_point_y - 1 + top_is_flat;
-    /*int32_t*/ scanlines->start_y = min_point_y + 1 - top_is_flat;
+    scanlines->scanline_length = max_point_y - min_point_y - 1 + top_is_flat;
+    scanlines->start_y = min_point_y + 1 - top_is_flat;
 
     if (scanlines->scanline_length <= 0) return;
 

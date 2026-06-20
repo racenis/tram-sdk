@@ -22,13 +22,13 @@ typedef glm::uvec2 uvec2;
 typedef glm::uvec3 uvec3;
 typedef glm::uvec4 uvec4;
 
-const vec3 DIRECTION_FORWARD    (0.0f,  0.0f, -1.0f);
-const vec3 DIRECTION_SIDE       (1.0f,  0.0f,  0.0f);
-const vec3 DIRECTION_UP         (0.0f,  1.0f,  0.0f);
+const vec3 DIRECTION_FORWARD  = {0.0f,  0.0f, -1.0f};
+const vec3 DIRECTION_SIDE     = {1.0f,  0.0f,  0.0f};
+const vec3 DIRECTION_UP       = {0.0f,  1.0f,  0.0f};
 
-const vec3 IDENTITY_POSITION    (0.0f, 0.0f, 0.0f);
-const quat IDENTITY_ROTATION    (1.0f, 0.0f, 0.0f, 0.0f);
-const vec3 IDENTITY_SCALE       (1.0f, 1.0f, 1.0f);
+const vec3 IDENTITY_POSITION  = {0.0f, 0.0f, 0.0f};
+const quat IDENTITY_ROTATION  = {1.0f, 0.0f, 0.0f, 0.0f};
+const vec3 IDENTITY_SCALE     = {1.0f, 1.0f, 1.0f};
 
 quat QuatLookAt(const vec3& from, const vec3& to);
 void ProjectLine(vec3& point, const vec3& from, const vec3& to);
@@ -43,7 +43,7 @@ mat4 PositionRotationScaleToMatrix(const vec3& position, const quat& rotation, c
 
 vec3 EulerFromQuat(quat rotation, vec3 previous = {NAN, NAN, NAN});
 
-inline vec3 MergeAABBMin (vec3 a, vec3 b) {
+inline vec3 MergeAABBMin(vec3 a, vec3 b) {
     return vec3 {
         a.x < b.x ? a.x : b.x,
         a.y < b.y ? a.y : b.y,
@@ -51,7 +51,7 @@ inline vec3 MergeAABBMin (vec3 a, vec3 b) {
     };
 }
 
-inline vec3 MergeAABBMax (vec3 a, vec3 b) {
+inline vec3 MergeAABBMax(vec3 a, vec3 b) {
     return vec3 {
         a.x > b.x ? a.x : b.x,
         a.y > b.y ? a.y : b.y,

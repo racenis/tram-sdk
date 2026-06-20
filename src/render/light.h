@@ -21,7 +21,7 @@ public:
     
     void Unload();
     
-    std::vector<std::pair<uint32_t, vec3>> GetEnvironmentProbes();
+    std::vector<std::pair<uint32_t, vec3>> GetEnvironmentProbes() const;
     
     static bool ContainsEntity(id_t entity);
     static SphericalHarmonic LookupHarmonic(vec3 position, uint32_t layers);

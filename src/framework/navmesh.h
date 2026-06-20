@@ -20,7 +20,7 @@ struct NavmeshNode {
 
 class Navmesh {
 public:
-    Navmesh (name_t name) : name(name) {}
+    Navmesh(name_t name) : name(name) {}
     ~Navmesh() = delete;
 
     inline name_t GetName() { return name; }
@@ -28,8 +28,8 @@ public:
     
     void LoadFromDisk();
     
-    static NavmeshNode GetNavmeshNode (node_id_t node_id);
-    static Navmesh* Find (name_t name);
+    static NavmeshNode GetNavmeshNode(node_id_t node_id);
+    static Navmesh* Find(name_t name);
 protected:
     name_t name;
     std::vector<node_id_t> nodes;

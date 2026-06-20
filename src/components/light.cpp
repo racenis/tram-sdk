@@ -101,12 +101,12 @@ void LightComponent::SetExponent(float exponent) {
 }
 
 /// Returns the color of the light.
-Render::color_t LightComponent::GetColor() {
+Render::color_t LightComponent::GetColor() const {
     return this->color;
 }
 
 /// Returns the distance of the light.
-float LightComponent::GetDistance() {
+float LightComponent::GetDistance() const {
     return this->distance;
 }
 

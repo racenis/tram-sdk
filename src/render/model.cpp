@@ -55,14 +55,14 @@ template <> Pool<Render::Model> PoolProxy<Render::Model>::pool("model pool", 500
 
 namespace tram::Render {
 
-static Hashmap<Model*> model_list ("model name list", 500);
+static Hashmap<Model*> model_list("model name list", 500);
 
 Model* Model::Find(name_t name) {
-    Model* model = model_list.Find (name);
+    Model* model = model_list.Find(name);
     
     if (!model) {
-        model = PoolProxy<Model>::New (name);
-        model_list.Insert (UID(name), model);
+        model = PoolProxy<Model>::New(name);
+        model_list.Insert(name, model);
     }
     
     return model;
@@ -211,7 +211,7 @@ void Model::DrawAABB(vec3 position, quat rotation) {
     DrawAABBNodeChildren(model_aabb->tree, model_aabb->tree.GetRoot(), model_aabb->triangles, position, rotation);
 }
 
-static vec3 TriangleAABBMin (vec3 point1, vec3 point2, vec3 point3) {
+static vec3 TriangleAABBMin(vec3 point1, vec3 point2, vec3 point3) {
     return {
         point1.x < point2.x ? (point1.x < point3.x ? point1.x : point3.x) : (point2.x < point3.x ? point2.x : point3.x),
         point1.y < point2.y ? (point1.y < point3.y ? point1.y : point3.y) : (point2.y < point3.y ? point2.y : point3.y),
@@ -219,7 +219,7 @@ static vec3 TriangleAABBMin (vec3 point1, vec3 point2, vec3 point3) {
     };
 }
 
-static vec3 TriangleAABBMax (vec3 point1, vec3 point2, vec3 point3) {
+static vec3 TriangleAABBMax(vec3 point1, vec3 point2, vec3 point3) {
     return {
         point1.x > point2.x ? (point1.x > point3.x ? point1.x : point3.x) : (point2.x > point3.x ? point2.x : point3.x),
         point1.y > point2.y ? (point1.y > point3.y ? point1.y : point3.y) : (point2.y > point3.y ? point2.y : point3.y),
@@ -238,7 +238,7 @@ struct BucketMapping {
     int32_t index_in_bucket = -1;
 };
 
-static uint32_t PutTriangleInBucket (
+static uint32_t PutTriangleInBucket(
     std::vector<TriangleBucket>& buckets,
     std::vector<BucketMapping>& bucket_mappings,
     const std::vector<Material*>& materials,
@@ -299,7 +299,7 @@ void Model::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".stmdl");
 
-    if (File file (path, File::READ); file.is_open()) {
+    if (File file(path, File::READ); file.is_open()) {
         vertex_format = VERTEX_STATIC;
         StaticModelData* data = new StaticModelData;
         model_data = data;
@@ -355,7 +355,6 @@ void Model::LoadFromDisk() {
         assert(bucket_mappings.size() == mcount);
 
         model_aabb->triangles.reserve(tcount);
-        //model_aabb->tree.nodes.reserve(tcount);
 
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
@@ -441,7 +440,7 @@ void Model::LoadFromDisk() {
         }
 
         Bone rootbone {
-            .name = UID("Root"),
+            .name = "Root",
             .parent = -1,
             .head = {0.0f, 0.0f, 0.0f},
             .tail = {0.0f, 1.0f, 0.0f},
@@ -470,7 +469,7 @@ void Model::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".dymdl");
 
-    if (File file (path, File::READ); file.is_open()) {
+    if (File file(path, File::READ); file.is_open()) {
         vertex_format = VERTEX_DYNAMIC;
         DynamicModelData* data = new DynamicModelData;
         model_data = data;
@@ -482,7 +481,7 @@ void Model::LoadFromDisk() {
         
         name_t file_version = file.read_name();
         
-        if (file_version != UID("DYMDLv1")) {
+        if (file_version != "DYMDLv1") {
             Log(Severity::WARNING, System::RENDER, "Model {} is not using right DYMDLv1 version!", path);
             Log(Severity::WARNING, System::RENDER, "Add \"DYMDLv1\" to file and also add bone roll to the bone definitions (0.0 to the end of lines), or reexport.");
             goto load_failure;
@@ -649,7 +648,7 @@ void Model::LoadFromDisk() {
     strcat(path, name);
     strcat(path, ".mdmdl");
 
-    if (File file (path, File::READ); file.is_open()) {
+    if (File file(path, File::READ); file.is_open()) {
         name_t file_version = file.read_name();
         
         if (file_version != "MDMDLv1") {
@@ -719,7 +718,7 @@ load_failure:
     });
     
     armature.push_back(Bone {
-        .name = UID("Root"),
+        .name = "Root",
         .parent = -1,
         .head = {0.0f, 0.0f, 0.0f},
         .tail = {0.0f, 1.0f, 0.0f},

@@ -105,9 +105,8 @@ struct ListenerInfo {
     ListenerType type = LISTENER_COMPONENT;
 };
 
-static Queue<Event> event_queue ("event queue", 500);
-static StackPool<char> data_pool ("event data pool", 2000);
-//static std::vector<Pool<ListenerInfo>> listener_table(Event::LAST_EVENT, {"EVENTListnerPoo", 50});
+static Queue<Event> event_queue("event queue", 500);
+static StackPool<char> data_pool("event data pool", 2000);
 static std::vector<std::vector<ListenerInfo>> listener_table(Event::LAST_EVENT, std::vector<ListenerInfo>());
 static std::vector<std::vector<ListenerInfo>> new_listeners(Event::LAST_EVENT, std::vector<ListenerInfo>());
 
@@ -362,7 +361,7 @@ void Event::Dispatch() {
 }
 
 /// Adds an event to the event queue.
-void Event::Post (const Event &event) {
+void Event::Post(const Event &event) {
     if (!event.type || event.type >= last_type) {
         Log(Severity::WARNING, System::CORE, "Attempting to post an unregistered event type with {} index", event.type);
         return;

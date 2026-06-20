@@ -18,7 +18,7 @@
 
 #ifndef _WIN32
     #include <GL/gl.h>
-	#include <GLES3/gl3.h>
+    #include <GLES3/gl3.h>
 #else
     #include <glad.h>
 #endif
@@ -99,7 +99,7 @@ static Render::Pose* null_pose = nullptr;
 static Settings::Property<bool> render_debug = {false, "renderer-debug", Settings::NONE};
 static Settings::Property<bool> frustum_culling = {true, "frustum-culling", Settings::NONE};
 
-uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial_size) {
+uint32_t MakeUniformBuffer(const char* name, uint32_t binding, uint32_t initial_size) {
     uint32_t handle;
     
     glGenBuffers(1, &handle);
@@ -108,19 +108,19 @@ uint32_t MakeUniformBuffer (const char* name, uint32_t binding, uint32_t initial
 
     glBindBufferBase(GL_UNIFORM_BUFFER, binding, handle);
 
-    BindUniformBlock (name, binding);
+    BindUniformBlock(name, binding);
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     return handle;
 }
 
-void UploadUniformBuffer (uint32_t handle, uint32_t data_size, void* data) {
+void UploadUniformBuffer(uint32_t handle, uint32_t data_size, void* data) {
     glBindBuffer(GL_UNIFORM_BUFFER, handle);
     glBufferSubData(GL_UNIFORM_BUFFER, 0, data_size, data);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
+void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
     layers[layer].sun_color = sun_color;
     layers[layer].ambient_color = ambient_color;
@@ -137,7 +137,7 @@ void SetScreenSize(float width, float height) {
     glViewport(0, 0, width, height);
 }
 
-void SetScreenClear (vec3 clear_color, bool clear) {
+void SetScreenClear(vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
 }

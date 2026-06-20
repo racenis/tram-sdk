@@ -34,7 +34,7 @@ ItemClass* ItemClass::Find(name_t name) {
     if (!item_class) {
         item_class = PoolProxy<ItemClass>::New();
         item_class->name = name;
-        item_class_list.Insert(UID(name), item_class);
+        item_class_list.Insert(name, item_class);
     }
     
     return item_class;

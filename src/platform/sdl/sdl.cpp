@@ -171,7 +171,7 @@ void Window::Init() {
 #endif
     
     if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
-        renderer = SDL_CreateRenderer(window, -1, 0 /*SDL_RENDERER_SOFTWARE*/);
+        renderer = SDL_CreateRenderer(window, -1, 0);
         
         if (!renderer) {
             Log(Severity::CRITICAL_ERROR, System::PLATFORM, "SDL_Renderer didn't open!");
@@ -203,7 +203,7 @@ void Window::Update() {
 #endif
     
     if (Render::API::GetContext() == Render::API::CONTEXT_SOFTWARE) {
-        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, (screen_width/screen_scale) * sizeof(uint16_t) /*sizeof(uint32_t)*/);
+        SDL_UpdateTexture(frame_texture, nullptr, frame_buffer, (screen_width/screen_scale) * sizeof(uint16_t));
         
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, frame_texture, NULL, NULL);

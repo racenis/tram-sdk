@@ -46,14 +46,14 @@ AttributeInfo* AttributeInfo::Find(name_t name) {
     return info;
 }
 
-float AttributeContainer::GetAttribute(name_t name) {
+float AttributeContainer::GetAttribute(name_t name) const {
     for (auto& attribute : attributes) {
         if (attribute.name == name) return attribute.effective_value;
     }
     return 0.0f;
 }
 
-float AttributeContainer::GetAttributeBase(name_t name) {
+float AttributeContainer::GetAttributeBase(name_t name) const {
     for (auto& attribute : attributes) {
         if (attribute.name == name) return attribute.base_value;
     }
@@ -134,7 +134,7 @@ void AttributeContainer::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".attrib");
 
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open attribute file: {}", path);

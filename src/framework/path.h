@@ -54,8 +54,8 @@ public:
     void TurnRight();
     void TurnStraight();
     
-    vec3 GetPosition();
-    vec3 GetTangent();
+    vec3 GetPosition() const;
+    vec3 GetTangent() const;
     
     void SetOrientation(vec3);
     

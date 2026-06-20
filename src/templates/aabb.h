@@ -25,14 +25,14 @@ public:
     
     static constexpr node_t INVALID = ~0;
     
-    vec3 GetAABBMin() { return GetMin(root); }
-    vec3 GetAABBMax() { return GetMax(root); }
+    vec3 GetAABBMin() const { return GetMin(root); }
+    vec3 GetAABBMax() const { return GetMax(root); }
     
 private:
     struct Node;
 public:
     
-    node_t InsertLeaf (uint32_t value, vec3 min, vec3 max) {
+    node_t InsertLeaf(uint32_t value, vec3 min, vec3 max) {
         node_t new_node = MakeNode();
         
         SetValue(new_node, value);
@@ -167,11 +167,11 @@ public:
         return nearest_index;
     }
     
-    void FindAABBIntersection(vec3 min, vec3 max, auto callback) {
+    void FindAABBIntersection(vec3 min, vec3 max, auto callback) const {
         FindAABBIntersection(root, min, max, callback);
     }
     
-    int FindDepth() {
+    int FindDepth() const {
         int depth = 0;
         FindDepthRecursive(root, 1, depth);
         return depth;
@@ -245,7 +245,7 @@ private:
         }
     }
     
-    void FindAABBIntersection(node_t node, vec3 min, vec3 max, auto callback) {
+    void FindAABBIntersection(node_t node, vec3 min, vec3 max, auto callback) const {
         if (IsLeaf(node) && node != root) {
             if (AABBOverlap(min, max, GetMin(node), GetMax(node))) {
                 callback(GetValue(node));
@@ -263,7 +263,7 @@ private:
         }
     }
     
-    void UpdateParentAABB (node_t node) {
+    void UpdateParentAABB(node_t node) {
         if (IsLeaf(node)) return;
         
         int best_rotation = 0;
@@ -454,7 +454,7 @@ private:
     }
     
     // searches the children of search_node to find a sibling for target_node
-    node_t FindSibling (vec3 min, vec3 max, node_t node) {
+    node_t FindSibling(vec3 min, vec3 max, node_t node) const {
         assert(node != INVALID);
 
         if (IsLeaf(node)) {
@@ -486,11 +486,11 @@ private:
                min.z <= other_max.z && max.z >= other_min.z;
     }
     
-    static float AABBVolume (vec3 min, vec3 max) {
+    static float AABBVolume(vec3 min, vec3 max) {
         return (max.x - min.x) * (max.y - min.y) * (max.z - min.z);
     }
     
-    static float AABBSurface (vec3 min, vec3 max) {
+    static float AABBSurface(vec3 min, vec3 max) {
         float x = max.x - min.x;
         float y = max.y - min.y;
         float z = max.z - min.z;
@@ -502,7 +502,7 @@ private:
         return 2 * ((x * y) + (x * z) + (y * z));
     }
     
-    static bool AABBIntersect (vec3 ray_pos, vec3 ray_dir, vec3 min, vec3 max) {
+    static bool AABBIntersect(vec3 ray_pos, vec3 ray_dir, vec3 min, vec3 max) {
         vec3 t1 = (min - ray_pos) / ray_dir;
         vec3 t2 = (max - ray_pos) / ray_dir;
         
@@ -528,7 +528,7 @@ private:
         return tfar >= tnear ? tnear : INFINITY;
     }
     
-    void FindDepthRecursive(node_t node, int current, int& largest) {
+    void FindDepthRecursive(node_t node, int current, int& largest) const {
         if (current > largest) largest = current;
         
         if (IsLeaf(node)) return;

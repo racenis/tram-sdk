@@ -17,11 +17,11 @@ namespace tram::Render {
 static Hashmap<Particle*> model_list("particle name list", 500);
 
 Particle* Particle::Find(name_t name) {
-    Particle* model = model_list.Find (name);
+    Particle* model = model_list.Find(name);
     
     if (!model) {
-        model = PoolProxy<Particle>::New (name);
-        model_list.Insert(UID(name), model);
+        model = PoolProxy<Particle>::New(name);
+        model_list.Insert(name, model);
     }
     
     return model;
@@ -274,8 +274,7 @@ static void parse_system(File& file, Particle::System* sys) {
 void Particle::ActuallyLoadFromDisk() {
     std::string filename = std::string("data/particles/") + std::string(name) + ".prt";
 
-    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
-    
+    File file(filename.c_str(), File::READ | File::PAUSE_LINE);
     
     bool failed = !file.is_open();
     if (failed) {
@@ -482,39 +481,39 @@ void Particle::System::AddEmitter(Parameter rate, Parameter delay) {
     emits.push_back({rate, delay});
 }
 
-Sprite* Particle::System::GetSprite() {
+Sprite* Particle::System::GetSprite() const {
     return sprite;
 }
 
-Material* Particle::System::GetWire() {
+Material* Particle::System::GetWire() const {
     return wire;
 }
 
-Model* Particle::System::GetModel() {
+Model* Particle::System::GetModel() const {
     return model;
 }
 
-const Particle::Data* Particle::System::GetValue(int index) {
+const Particle::Data* Particle::System::GetValue(int index) const {
     if (index >= (int)vals.size()) return nullptr;
     return &vals[index];
 }
 
-const Particle::Operation* Particle::System::GetOperation(int index) {
+const Particle::Operation* Particle::System::GetOperation(int index) const {
     if (index >= (int)ops.size()) return nullptr;
     return &ops[index];
 }
 
-const Particle::Operation* Particle::System::GetInitializer(int index) {
+const Particle::Operation* Particle::System::GetInitializer(int index) const {
     if (index >= (int)inits.size()) return nullptr;
     return &inits[index];
 }
 
-const Particle::Constraint* Particle::System::GetConstraint(int index) {
+const Particle::Constraint* Particle::System::GetConstraint(int index) const {
     if (index >= (int)constrs.size()) return nullptr;
     return &constrs[index];
 }
 
-const Particle::Emitter* Particle::System::GetEmitter(int index) {
+const Particle::Emitter* Particle::System::GetEmitter(int index) const {
     if (index >= (int)emits.size()) return nullptr;
     return &emits[index];
 }
@@ -525,7 +524,7 @@ Particle::System* Particle::CreateSystem() {
      return nusys;
 }
 
-int Particle::GetSystems(Particle::System** array, int array_size) {
+int Particle::GetSystems(Particle::System** array, int array_size) const {
     int retrieve = array_size > (int)systems.size() ? (int)systems.size() : array_size;
     for (int i = 0; i < retrieve; i++) array[i] = systems[i];
     return retrieve;
@@ -540,17 +539,17 @@ void Particle::AddControl(name_t name, DataType type) {
     controls.push_back({name, type});
 }
 
-name_t Particle::GetControlName(int index) {
+name_t Particle::GetControlName(int index) const {
     if (index >= (int)controls.size()) return name_t();
     return controls[index].name;
 }
 
-Particle::DataType Particle::GetControlType(int index) {
+Particle::DataType Particle::GetControlType(int index) const {
     if (index >= (int)controls.size()) return Particle::DataType {};
     return controls[index].type;
 }
 
-int Particle::GetControlOffset(int index) {
+int Particle::GetControlOffset(int index) const {
     if (index >= (int)controls.size()) return 0;
     return control_offsets[index];
 }

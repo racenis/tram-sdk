@@ -47,7 +47,7 @@ void SoundGraph::LoadFromDisk() {
     }
     
     std::string filename = std::string("data/worldcells/") + std::string(name) + ".sound";
-    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
+    File file(filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::NOTE, System::AUDIO, "Sound graph not found: {}", filename);

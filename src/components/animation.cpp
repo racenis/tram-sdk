@@ -149,7 +149,7 @@ void AnimationComponent::Play(name_t animation_name, uint32_t repeats, float wei
     for (slot = 0; slot < ANIM_COUNT; slot++) {
         // maybe reset the animation if its already playing, instead of just returning?
         if (anim_playing[slot] == animation_name) return;
-        if (anim_playing[slot] == UID()) break;
+        if (!anim_playing[slot]) break;
     }
     
     // maybe log an error if all animation slots taken?
@@ -390,7 +390,7 @@ void AnimationComponent::Refresh() {
     
     // increment animations' frames and check if they have stopped/repeated
     for (size_t i = 0; i < ANIM_COUNT; i++) {
-        if(anim_playing[i] == UID()) continue;
+        if(!anim_playing[i]) continue;
         
         // increase the frames of the animation
         auto& anim = anim_info[i];
@@ -431,7 +431,6 @@ void AnimationComponent::Refresh() {
                     anim.frame = 0.0f;
                     
                     if (anim.repeats == 0) {
-                        //Stop(anim.animation_header->first);
                         Stop(anim_playing[i]);
                         continue;
                     }

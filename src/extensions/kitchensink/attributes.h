@@ -43,7 +43,7 @@ class AttributeInfo {
 public:
     virtual void Recalculate(Attribute&, const AttributeContainer&);
     
-    name_t GetName() { return name; }
+    name_t GetName() const { return name; }
     static void Register(AttributeInfo*);
     static AttributeInfo* Find(name_t);
 protected:
@@ -51,8 +51,8 @@ protected:
 };
 
 struct AttributeContainer {
-    float GetAttribute(name_t attribute);
-    float GetAttributeBase(name_t attribute);
+    float GetAttribute(name_t attribute) const;
+    float GetAttributeBase(name_t attribute) const;
     
     void SetAttribute(name_t attribute, float base_value);
     

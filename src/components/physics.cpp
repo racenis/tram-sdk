@@ -76,7 +76,7 @@ PhysicsComponent::~PhysicsComponent(){
 }
 
 /// Returns the name of the collision model.
-Physics::CollisionModel* PhysicsComponent::GetModel () {
+Physics::CollisionModel* PhysicsComponent::GetModel() const {
     return model.get();
 }
 
@@ -103,13 +103,13 @@ void PhysicsComponent::SetModel(Physics::CollisionModel* model) {
 
 /// Returns the collision mask.
 /// See SetCollisionMask() for more information.
-uint32_t PhysicsComponent::GetCollisionMask() {
+uint32_t PhysicsComponent::GetCollisionMask() const {
     return rigidbody_collision_mask;
 }
 
 /// Returns the collision group.
 /// See SetCollisionGroup() for more information.
-uint32_t PhysicsComponent::GetCollisionGroup() {
+uint32_t PhysicsComponent::GetCollisionGroup() const {
     return rigidbody_collision_group;
 }
 
@@ -118,7 +118,7 @@ uint32_t PhysicsComponent::GetCollisionGroup() {
 /// an another object if their collision group and collision mask bitmasks
 /// have at least one bit in common, i.e. they will be bitwise and'ed
 /// together.
-void PhysicsComponent::SetCollisionMask (uint32_t flags) {
+void PhysicsComponent::SetCollisionMask(uint32_t flags) {
     rigidbody_collision_mask = flags;
     
     if (is_ready) {
@@ -131,7 +131,7 @@ void PhysicsComponent::SetCollisionMask (uint32_t flags) {
 /// an another object if their collision group and collision mask bitmasks
 /// have at least one bit in common, i.e. they will be bitwise and'ed
 /// together.
-void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
+void PhysicsComponent::SetCollisionGroup(uint32_t flags) {
     rigidbody_collision_group = flags;
     
     if (is_ready) {
@@ -209,7 +209,7 @@ void PhysicsComponent::Sleep() {
 /// Sets the debug drawing of a physics object.
 /// Set to false, if you don't want the physics object to show up when
 /// drawing physics debug.
-void PhysicsComponent::SetDebugDrawing (bool drawing) {
+void PhysicsComponent::SetDebugDrawing(bool drawing) {
     rigidbody_debug_draw = drawing;
     
     if (is_ready) {
@@ -222,7 +222,7 @@ void PhysicsComponent::SetDebugDrawing (bool drawing) {
 /// for its position, instead of simulated and pushing its position into its
 /// parent entity.
 /// @note Use DisableDeactivation() if you don't want to constantly wake the object up.
-void PhysicsComponent::SetKinematic (bool kinematic) {
+void PhysicsComponent::SetKinematic(bool kinematic) {
     rigidbody_kinematic = kinematic;
 
     if (is_ready) {
@@ -249,7 +249,7 @@ void PhysicsComponent::SetLocation(vec3 position) {
 }
 
 /// Sets the rotation of the physics object.
-void PhysicsComponent::SetRotation (quat rotation) {
+void PhysicsComponent::SetRotation(quat rotation) {
     if (rigidbody.bt_rigidbody) {
         API::SetRigidbodyRotation(rigidbody, rotation);
     }
@@ -291,7 +291,7 @@ void PhysicsComponent::DisableDeactivation() {
 
 /// Sets the velocity of the physics object.
 /// Only works if is component is loaded.
-void PhysicsComponent::SetVelocity (const vec3& velocity){
+void PhysicsComponent::SetVelocity(const vec3& velocity){
     if (!is_ready) return;
     
     API::SetRigidbodyVelocity(rigidbody, velocity);
@@ -299,7 +299,7 @@ void PhysicsComponent::SetVelocity (const vec3& velocity){
 
 /// Returns the velocity of the physics object.
 /// Always returns zero velocity if component is not loaded.
-vec3 PhysicsComponent::GetVelocity () {
+vec3 PhysicsComponent::GetVelocity() const {
     if (is_ready) {
         return API::GetRigidbodyVelocity(rigidbody);
     } else {

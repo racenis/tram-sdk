@@ -34,7 +34,7 @@ public:
         YeetLeaf(leaf);
     }
 
-    size_t find(T* array, vec3 point) {
+    size_t find(T* array, vec3 point) const {
         NearestSearch search = {.point = point};
 
         Find(search, root);
@@ -81,7 +81,7 @@ protected:
         return MakeLeaf(node, point, data);
     }
     
-    void Find(NearestSearch& search, node_t node) {
+    void Find(NearestSearch& search, node_t node) const {
         // find deepest node in which the search point is in
         node_t priority = GetChild(node, GetOctant(GetMidPoint(node), search.point));
         if (priority != INVALID) {
@@ -220,7 +220,7 @@ protected:
         assert(false);
     }
     
-    inline float Distance2(vec3 a, vec3 b) {
+    inline float Distance2(vec3 a, vec3 b) const {
         vec3 d = a - b;
         return d.x * d.x + d.y * d.y + d.z * d.z;
     }
@@ -382,15 +382,19 @@ protected:
         return nodes[node].leaves;
     }
     
-    inline vec3 GetMidPoint(node_t node) {
+    inline const std::vector<leaf_t>& GetLeaves(node_t node) const {
+        return nodes[node].leaves;
+    }
+    
+    inline vec3 GetMidPoint(node_t node) const {
         return nodes[node].mid_point;
     }
     
-    inline float GetHalfExtent(node_t node) {
+    inline float GetHalfExtent(node_t node) const {
         return nodes[node].half_extent;
     }
     
-    inline node_t GetChild(node_t node, Octant octant) {
+    inline node_t GetChild(node_t node, Octant octant) const {
         return nodes[node].octants[octant];
     }
     
@@ -446,11 +450,11 @@ protected:
         GetLeaves(node).clear();
     }
 
-    inline vec3 GetPoint(leaf_t leaf) {
+    inline vec3 GetPoint(leaf_t leaf) const {
         return leaves[leaf].point;
     }
     
-    inline T GetValue(leaf_t leaf) {
+    inline T GetValue(leaf_t leaf) const {
         return leaves[leaf].value;
     }
     

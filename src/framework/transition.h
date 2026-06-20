@@ -16,8 +16,8 @@ class Transition {
 public:
     void AddPoint(vec3 point);
     void GeneratePlanes(bool disp = false);
-    bool IsInside(vec3 point);
-    WorldCell* GetCell() { return cell_into; }
+    bool IsInside(vec3 point) const;
+    WorldCell* GetCell() const { return cell_into; }
     static Transition* Find(name_t name);
     static Transition* Make(name_t name, WorldCell* cell_into);
 protected:

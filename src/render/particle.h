@@ -118,25 +118,25 @@ public:
         void AddConstraint(Constraint constraint);
         void AddEmitter(Parameter rate, Parameter delay);
         
-        Sprite* GetSprite();
-        Material* GetWire();
-        Model* GetModel();
+        Sprite* GetSprite() const;
+        Material* GetWire() const;
+        Model* GetModel() const;
         
-        const Data* GetValue(int index);
-        const Operation* GetOperation(int index);
-        const Operation* GetInitializer(int index);
-        const Constraint* GetConstraint(int index);
-        const Emitter* GetEmitter(int index);
+        const Data* GetValue(int index) const;
+        const Operation* GetOperation(int index) const;
+        const Operation* GetInitializer(int index) const;
+        const Constraint* GetConstraint(int index) const;
+        const Emitter* GetEmitter(int index) const;
         
-        int GetPositionOffset() {return position_offset;}
-        int GetRotationOffset() {return rotation_offset;}
-        int GetColorOffset() {return color_offset;}
-        int GetWidthOffset() {return width_offset;}
-        int GetHeightOffset() {return height_offset;}
-        int GetFrameOffset() {return frame_offset;}
+        int GetPositionOffset() const { return position_offset; }
+        int GetRotationOffset() const { return rotation_offset; }
+        int GetColorOffset() const { return color_offset; }
+        int GetWidthOffset() const { return width_offset; }
+        int GetHeightOffset() const { return height_offset; }
+        int GetFrameOffset() const { return frame_offset; }
         
-        void SetParticleLimit(int limit) {particle_limit = limit;}
-        int GetParticleLimit() {return particle_limit;}
+        void SetParticleLimit(int limit) { particle_limit = limit; }
+        int GetParticleLimit() const { return particle_limit; }
     protected:
         std::vector<Data> vals;
         std::vector<Operation> ops;
@@ -164,15 +164,15 @@ public:
     
     System* CreateSystem();
     
-    int GetSystems(System** array, int array_size);
+    int GetSystems(System** array, int array_size) const;
     System* GetBaseSystem();
     
     void AddControl(name_t name, DataType type);
-    name_t GetControlName(int index);
-    DataType GetControlType(int index);
-    int GetControlOffset(int index);
+    name_t GetControlName(int index) const;
+    DataType GetControlType(int index) const;
+    int GetControlOffset(int index) const;
     
-    int GetDataSize() {return data_size;}
+    int GetDataSize() const {return data_size;}
     
     static Particle* Find(name_t name);
 protected:

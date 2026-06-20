@@ -16,7 +16,7 @@ static IDirect3DDevice9* device = nullptr;
 Pool<D3DDrawListEntry> draw_list("render list", 500, false);
 Pool<D3DLight> light_list("light list", 200, false);
 Octree<uint32_t> light_tree;
-std::vector<uint32_t> light_tree_ids (200);
+std::vector<uint32_t> light_tree_ids(200);
 
 struct VertexBufferMetadata {
     VertexDefinition vertex_format;
@@ -41,7 +41,7 @@ static LayerParameters layers[7];
 vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
 bool clear_screen = true;
 
-void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
+void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
     layers[layer].sun_direction = sun_direction;
     layers[layer].sun_color = sun_color;
     layers[layer].ambient_color = ambient_color;
@@ -51,10 +51,10 @@ void SetScreenSize(float width, float height) {
     // TODO: implement
 }
 
-void SetScreenClear (vec3 clear_color, bool clear) {
+void SetScreenClear(vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
-	screen_clear_color = COLOR_WHITE * 0.8f;
+    screen_clear_color = COLOR_WHITE * 0.8f;
 }
 
 static UINT FVFToStride(DWORD fvf);
@@ -93,8 +93,8 @@ void RenderFrame() {
     light.Direction = D3DXVECTOR3(d.x, d.y, d.z);
     device->SetLight(4, &light);
     device->LightEnable(4, true);
-	
-	
+
+
     D3DMATRIX view_matrix = *(D3DMATRIX*)&layers[0].view_matrix;
     D3DMATRIX proj_matrix = *(D3DMATRIX*)&layers[0].projection_matrix;
     
@@ -184,17 +184,17 @@ void RenderFrame() {
         if (!entry->pose) {
             device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, false);
             device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&entry->matrix);
-			device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_DISABLE);
+            device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_DISABLE);
         } else {
             device->SetRenderState(D3DRS_INDEXEDVERTEXBLENDENABLE, true);
             device->SetRenderState(D3DRS_VERTEXBLEND, D3DVBF_3WEIGHTS);
             for (int i = 0; i < 30; i++) {
                 mat4 matrix = entry->matrix * entry->pose->pose[i];
                 device->SetTransform(D3DTS_WORLDMATRIX(i), (D3DMATRIX*)&matrix);
-				D3DXMATRIX  Worlds;
-				//D3DXMatrixTranslation(&Worlds , 0.0f,  0.0f, 0.0f);
-				//device->SetTransform(D3DTS_WORLD, &Worlds);
-				//device->SetTransform(D3DTS_WORLDMATRIX(i), &Worlds);
+                D3DXMATRIX  Worlds;
+                //D3DXMatrixTranslation(&Worlds , 0.0f,  0.0f, 0.0f);
+                //device->SetTransform(D3DTS_WORLD, &Worlds);
+                //device->SetTransform(D3DTS_WORLDMATRIX(i), &Worlds);
             }
         }
         
@@ -225,9 +225,9 @@ void RenderFrame() {
         
     }
 
-		device->EndScene();
-    
-    
+    device->EndScene();
+
+
 
 }
 
@@ -734,9 +734,9 @@ void SetViewMatrix(const mat4& matrix, layer_t layer) {
 }
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
-	mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, 0.5f));
-	//mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, -0.5f));
-	mat4 transl = glm::translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.5f));
+    mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, 0.5f));
+    //mat4 squish = glm::scale(mat4(1.0f), vec3(1.0f, 1.0f, -0.5f));
+    mat4 transl = glm::translate(mat4(1.0f), vec3(0.0f, 0.0f, 0.5f));
     layers[layer].projection_matrix = transl * squish * matrix;
 }
 

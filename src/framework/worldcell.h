@@ -17,13 +17,13 @@ class WorldCell {
 public:
     WorldCell(name_t name) { this->name = name; }
 
-    inline name_t GetName() { return name; }
+    inline name_t GetName() const { return name; }
 
-    inline bool IsLoaded() { return flags & LOADED; }
-    inline bool IsInterior() { return flags & INTERIOR; }
-    inline bool HasInteriorLighting() { return flags & INTERIOR_LIGHTING; }
-    inline bool IsDebugDraw() { return flags & DEBUG_DRAW; }
-    inline bool HasAutomaticLoading() { return flags & AUTOMATIC_LOADING; }
+    inline bool IsLoaded() const { return flags & LOADED; }
+    inline bool IsInterior() const { return flags & INTERIOR; }
+    inline bool HasInteriorLighting() const { return flags & INTERIOR_LIGHTING; }
+    inline bool IsDebugDraw() const { return flags & DEBUG_DRAW; }
+    inline bool HasAutomaticLoading() const { return flags & AUTOMATIC_LOADING; }
     
     inline void SetInterior(bool is) { SetFlag(INTERIOR, is); }
     inline void SetInteriorLights(bool is) { SetFlag(INTERIOR_LIGHTING, is); }
@@ -41,7 +41,7 @@ public:
     void Add(Entity* entity);
     void Remove(Entity* entity);
     
-    size_t GetEntityCount() { return entities.size(); }
+    size_t GetEntityCount() const { return entities.size(); }
 
     void Add(Transition* transition);
     void Remove(Transition* transition);
@@ -50,9 +50,9 @@ public:
     
     WorldCell* FindTransition(vec3 point);
     
-    inline const std::vector<Entity*>& GetEntities() { return entities; }
-    inline const std::vector<Transition*>& GetTransitions() { return transitions; }
-    inline const std::vector<Transition*>& GetVolume() { return volume; }
+    inline const std::vector<Entity*>& GetEntities() const { return entities; }
+    inline const std::vector<Transition*>& GetTransitions() const { return transitions; }
+    inline const std::vector<Transition*>& GetVolume() const { return volume; }
     
     bool IsInside(vec3 point);
 

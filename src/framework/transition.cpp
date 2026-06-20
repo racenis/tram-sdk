@@ -81,7 +81,7 @@ void Transition::AddPoint(vec3 point) {
 }
 
 /// Checks whether a point is inside the transition volume.
-bool Transition::IsInside(vec3 point) {
+bool Transition::IsInside(vec3 point) const {
     for(size_t i = 0; i < planes.size(); i++)
         if(glm::dot(planes[i], vec4(point, 1.0f)) < 0.0f) return false;    
     return true;

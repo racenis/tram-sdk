@@ -41,7 +41,7 @@ protected:
 };
 
 
-namespace Async { void RequestResource (EntityComponent* requester, Resource* requested_resource); }
+namespace Async { void RequestResource(EntityComponent* requester, Resource* requested_resource); }
 
 template <typename T>
 class ResourceProxy {
@@ -68,6 +68,7 @@ public:
         }
     }
     T* get() { return resource; }
+    T* get() const { return resource; }
     T* operator= (T* res) { set(res); return get(); }
     T* operator->() { return resource; }
     T& operator*() { return *resource; }

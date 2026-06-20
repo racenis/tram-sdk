@@ -35,7 +35,6 @@ Sprite* Sprite::Find(name_t name){
     auto sprite = sprite_list.Find(name);
     
     if (!sprite) {
-        //sprite = new Sprite (name);
         sprite = PoolProxy<Sprite>::New(name);
         sprite_list.Insert(name, sprite);
     }
@@ -59,7 +58,7 @@ void Sprite::LoadFromDisk() {
     }
     
     std::string filename = std::string("data/sprites/") + std::string(name) + ".spr";
-    File file (filename.c_str(), File::READ | File::PAUSE_LINE);
+    File file(filename.c_str(), File::READ | File::PAUSE_LINE);
     
     if (!file.is_open()) {
         Log(Severity::WARNING, System::RENDER, "Sprite not found: {}", filename);
@@ -89,7 +88,7 @@ void Sprite::LoadFromDisk() {
     }
     
     if (header == "SPRv2") while (file.is_continue()) {
-        frames.push_back ({
+        frames.push_back({
             .offset_x = file.read_uint16(),
             .offset_y = file.read_uint16(),
             .width = file.read_uint16(),
@@ -105,7 +104,7 @@ void Sprite::LoadFromDisk() {
     if (header == "SPRv3") while (file.is_continue()) {
         name_t record_type = file.read_name();
         
-        if (record_type == "frame") frames.push_back ({
+        if (record_type == "frame") frames.push_back({
             .offset_x = file.read_uint16(),
             .offset_y = file.read_uint16(),
             .width = file.read_uint16(),
@@ -125,7 +124,7 @@ void Sprite::LoadFromDisk() {
     }
     
     if (!material) {
-        material = Material::Find(UID(material_name));
+        material = Material::Find(material_name);
     }
     
     material->AddReference();

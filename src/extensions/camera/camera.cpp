@@ -93,7 +93,7 @@ void Camera::SetFollowing(Entity* entity) {
     });
 }
 
-id_t Camera::GetFollowing() {
+id_t Camera::GetFollowing() const {
     return following;
 }
 

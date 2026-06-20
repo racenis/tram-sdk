@@ -13,13 +13,13 @@ class Camera {
 public:
     void SetActive();
     void SetFollowing(Entity*);
-    id_t GetFollowing();
+    id_t GetFollowing() const;
     
     inline void SetPosition(vec3 position) { this->position = position; }
     inline void SetRotation(quat rotation) { this->rotation = rotation; }
     
-    inline vec3 GetPosition() { return position; }
-    inline quat GetRotation() { return rotation; }
+    inline vec3 GetPosition() const { return position; }
+    inline quat GetRotation() const { return rotation; }
     
     void SetViewTransform();
     void SetListenerTransform();

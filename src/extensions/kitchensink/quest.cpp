@@ -313,7 +313,7 @@ void Quest::FireTrigger(name_t name) {
         if (trigger.name != name) continue;
         
         // TODO: implement GetBool()
-        if (trigger.condition && !GetVariable(trigger.condition)/*.GetBool()*/) continue;
+        if (trigger.condition && !GetVariable(trigger.condition)) continue;
         
         switch (trigger.type) {
             case QUEST_TGR_SET_VARIABLE:
@@ -393,7 +393,6 @@ static std::pair<name_t, value_t> LoadVariableSecond(File& file) {
         quest = file.read_name();
         value = file.read_name();
     } else if (type == "bool") {
-        //value = (bool)file.read_int32();
         value = file.read_name() == "true";
     } else if (type == "int") {
         value = file.read_int32();
@@ -414,7 +413,7 @@ void Quest::LoadFromDisk(const char* filename) {
     strcat(path, filename);
     strcat(path, ".quest");
 
-    File file (path, File::READ | File::PAUSE_LINE);
+    File file(path, File::READ | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::NOTE, Kitchensink::System(), "Can't open quest file: {}", path);

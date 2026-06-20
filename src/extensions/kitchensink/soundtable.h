@@ -24,7 +24,7 @@ enum SoundAction {
 class SoundTable {
 public:
     void AddSound(SoundAction type, name_t sound);
-    name_t GetSound(SoundAction type);
+    name_t GetSound(SoundAction type) const;
     void PlaySound(SoundAction type);
     void PlaySound(SoundAction type, vec3 position, float volume);
     

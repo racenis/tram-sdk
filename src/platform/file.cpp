@@ -76,9 +76,9 @@ public:
         FILE* file_handle = fopen(full_path, "rb");
     
         if (file_handle != nullptr) {
-            Log (Severity::INFO, System::PLATFORM, "Opened file for reading: {}", full_path);
+            Log(Severity::INFO, System::PLATFORM, "Opened file for reading: {}", full_path);
         } else {
-            Log (Severity::INFO, System::PLATFORM, "Failed to open file for reading: {}", full_path);
+            Log(Severity::INFO, System::PLATFORM, "Failed to open file for reading: {}", full_path);
             return;
         }
         
@@ -89,12 +89,12 @@ public:
         char* file_data = new char[file_size + 1];
         
         if (!fread(file_data, file_size, 1, file_handle)) {
-            Log (Severity::WARNING, System::PLATFORM, "Failed to read whole file: {}", full_path);
+            Log(Severity::WARNING, System::PLATFORM, "Failed to read whole file: {}", full_path);
             delete[] file_data;
             return;
         }
         
-        Log (Severity::INFO, System::PLATFORM, "Read {} bytes from file: {}", file_size, full_path);
+        Log(Severity::INFO, System::PLATFORM, "Read {} bytes from file: {}", file_size, full_path);
 
         file_data[file_size] = '\0';
 
@@ -103,7 +103,7 @@ public:
         this->contents = file_data;
         this->length = file_size;
         
-        Log (Severity::INFO, System::PLATFORM, "Closed file: {}", full_path);
+        Log(Severity::INFO, System::PLATFORM, "Closed file: {}", full_path);
     }
     
     ~DiskReader() {
@@ -259,9 +259,9 @@ public:
         this->file_handle = fopen(temp_path, "wb");
         
         if (file_handle != nullptr) {
-            Log (Severity::INFO, System::PLATFORM, "Opened file for writing: {}", path);
+            Log(Severity::INFO, System::PLATFORM, "Opened file for writing: {}", path);
         } else {
-            Log (Severity::ERROR, System::PLATFORM, "Failed to open file for writing: {}", path);
+            Log(Severity::ERROR, System::PLATFORM, "Failed to open file for writing: {}", path);
             return;
         }
     }

@@ -62,8 +62,8 @@ public:
     void SetDirectionaLight(bool enabled);
     void SetRenderDebug(bool enabled);
     
-    inline vec3 GetAABBMin() { return aabb_min; }
-    inline vec3 GetAABBMax() { return aabb_max; }
+    inline vec3 GetAABBMin() const { return aabb_min; }
+    inline vec3 GetAABBMax() const { return aabb_max; }
     
     void DrawAABB();
     void FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<Render::AABBTriangle>& result);

@@ -66,7 +66,7 @@ static std::pair<vec3, bool> RayIntersectsTriangle(vec3 ray_pos, vec3 ray_dir, v
 }
 
 
-static std::tuple<AABBTriangle, vec3, bool> NearestTriangleFromRay (vec3 ray_pos, vec3 ray_dir) {
+static std::tuple<AABBTriangle, vec3, bool> NearestTriangleFromRay(vec3 ray_pos, vec3 ray_dir) {
     std::vector<RenderComponent*> intersected_render_components;
     std::vector<AABBTriangle> intersected_triangles;
     intersected_render_components.reserve(10);
