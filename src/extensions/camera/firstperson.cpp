@@ -20,7 +20,6 @@
 namespace tram::Ext::Camera {
     
 const float TILT_SPEED = 0.01f;
-//const float BOB_SPEED = 0.2f;
 const float BOB_CHANGE_SPEED = 0.05f;
 
 extern float shake_multiplier;
@@ -128,12 +127,8 @@ void FirstPersonCamera::Update () {
     
     // update position to entity that is being followed
     if (following) {
-        //location = following->GetLocation();
         position = Entity::Find(following)->GetLocation();
-        //rotation = following->Query(QUERY_LOOK_DIRECTION);
-        //rotation = look_at_direction;
         rotation = this->following_lookat;
-        //look_at_entity = following->GetID();
     }
     
     // putting everything together
@@ -164,12 +159,6 @@ void FirstPersonCamera::Update () {
     
     SetViewTransform();
     SetListenerTransform();
-    
-    //Render::SetViewPosition(term_loc, 0);
-    //Render::SetViewRotation(term_rot, 0);
-    
-    //Audio::SetListenerPosition(term_loc);
-    //Audio::SetListenerOrientation(term_rot);
 }
     
 }

@@ -127,14 +127,7 @@ void SetLightingParameters (vec3 sun_direction, vec3 sun_color, vec3 ambient_col
 }
 
 void SetFogParameters(vec3 color, float near, float far, uint32_t layer) {
-    /*layers[layer].fog_color = color;
-    layers[layer].fog_near = near;
-    layers[layer].fog_far = far;*/
-}
-
-void SetViewParameters (vec3 position, quat rotation, uint32_t layer) {
-    //LAYER[layer].camera_position = position;
-    //LAYER[layer].camera_rotation = rotation;
+    // TODO: implement
 }
 
 void SetScreenSize(float width, float height) {
@@ -142,15 +135,12 @@ void SetScreenSize(float width, float height) {
     SCREEN_HEIGHT = height;
     
     glViewport(0, 0, width, height);
-    
-    //matrices.projection = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 1000.0f);
 }
 
 void SetScreenClear (vec3 clear_color, bool clear) {
     clear_screen = clear;
     screen_clear_color = clear_color;
 }
-
 
 static void SetupLayer(layer_t layer) {
     modelMatrices.sunDirection =    vec4(layers[layer].sun_direction, 1.0f);
@@ -444,7 +434,6 @@ void RenderFrame() {
         Draw(robj);
     }
     
-    
     if (render_debug) {
         for (auto& light : PoolProxy<GLLight>::GetPool()) {
             char debug_text[250];
@@ -460,12 +449,6 @@ void RenderFrame() {
         }
     }
 }
-
-
-
-
-
-
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
     layers[layer].view_matrix = matrix;
@@ -529,9 +512,7 @@ void APIENTRY RenderErrorCallback(uint32_t source, uint32_t type, uint32_t id, u
         case GL_DEBUG_TYPE_PERFORMANCE_ARB:         type_str = "PERFORMANCE";           break;
         case GL_DEBUG_TYPE_OTHER_ARB:               type_str = "OTHER";                 break;
     }
-
     
-
     switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH_ARB:            severity_str = "HIGH";              break;
         case GL_DEBUG_SEVERITY_MEDIUM_ARB:          severity_str = "MEDIUM";            break;
@@ -551,7 +532,6 @@ void Init() {
     
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     
@@ -561,20 +541,12 @@ void Init() {
     matrix_uniform_buffer = MakeUniformBuffer("Matrices", matrix_uniform_binding, sizeof(ShaderUniformMatrices));
     model_matrix_uniform_buffer = MakeUniformBuffer("ModelMatrices", model_matrix_uniform_binding, sizeof(ShaderUniformModelMatrices));
     bone_uniform_buffer = MakeUniformBuffer("Bones", bone_uniform_binding, sizeof(Pose));
-    
-    //matrices.projection = glm::perspective(glm::radians(60.0f), SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 1000.0f);
-
-    //Settings::Register(render_debug, "renderer-debug", Settings::SERIALIZE_NONE);
 
     // initialize the default pose
     null_pose = PoolProxy<Render::Pose>::New();
     for (size_t i = 0; i < BONE_COUNT; i++) {
         null_pose->pose[i] = mat4(1.0f);
     }
-    
-    // initialize the default light
-    //new (light_list.begin().ptr) LightListEntry;
-    //light_list.AddNew();
 }
 
 ContextType GetContext() {

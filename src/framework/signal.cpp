@@ -103,7 +103,6 @@ name_t Signal::GetName(signal_t type) {
     return signal_names[type];
 }
 
-
 void SignalTable::Fire(signal_t signal, id_t sender) {
     for (size_t i = 0; i < signal_count; i++) {
         if (signals[i].type != signal || signals[i].limit == 0) continue;
@@ -150,7 +149,6 @@ void SignalTable::Fire(signal_t signal, id_t sender, Value value) {
         } else {
             *msg.data_value = value;
         }
-        
         
         if (signals[i].delay != 0.0f) {
             Message::Send(msg, signals[i].delay);

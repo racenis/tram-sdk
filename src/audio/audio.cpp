@@ -75,4 +75,3 @@ void SetListenerOrientation(quat orientation) {
 }
 
 }
-

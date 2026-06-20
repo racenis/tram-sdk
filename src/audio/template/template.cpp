@@ -13,7 +13,6 @@
  * to be played and the system won't be used.
  */
 
-
 namespace tram::Audio::API {
 
 void Init() {
@@ -132,5 +131,4 @@ void RemoveAudioSource (audiosource_t source) {
     
 }
 
-    
 }

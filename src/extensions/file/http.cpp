@@ -11,7 +11,6 @@
 #define CURL_STATICLIB
 #include <curl/curl.h>
 
-
 #undef ERROR
 
 namespace tram::Ext::File  {

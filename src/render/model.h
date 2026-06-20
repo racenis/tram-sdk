@@ -82,5 +82,4 @@ protected:
 
 }
 
-
 #endif // TRAM_SDK_RENDER_MODEL_H

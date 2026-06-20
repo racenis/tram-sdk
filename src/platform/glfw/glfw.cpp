@@ -150,13 +150,10 @@ void Window::Init() {
     glfwSetCharCallback(WINDOW, [](GLFWwindow* window, unsigned int codepoint) {
         callbacks.key_code(codepoint);
     });
-
-
-    //glfwSetWindowSizeLimits(WINDOW, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
+    
     glfwSetWindowSizeLimits(WINDOW, 160, 120, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
     glfwSetInputMode(WINDOW, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    //glfwSetInputMode(WINDOW, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
     cursors[CURSOR_DEFAULT] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     cursors[CURSOR_TEXT] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);

@@ -18,10 +18,6 @@
     #include <glad.c>
 #endif
 
-//#include <SDL.h>
-//#include <SDL_syswm.h>
-//#include <glad.c>
-
 #ifdef _WIN32
 #include <d3dx9.h>
 #endif
@@ -54,12 +50,7 @@ static IDirect3DDevice9* d3d_device = nullptr;
 #endif
 
 static void SoftwareRenderContextUpdate() {
-    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-    //SDL_RenderSetLogicalSize(renderer, screen_width/screen_scale, screen_height/screen_scale);
-    
     frame_texture = SDL_CreateTexture(renderer,
-                           //SDL_PIXELFORMAT_ARGB8888,
                            SDL_PIXELFORMAT_RGB565,
                            SDL_TEXTUREACCESS_STREAMING,
                            screen_width/screen_scale, screen_height/screen_scale);
@@ -148,10 +139,8 @@ void Window::Init() {
         d3dpp.AutoDepthStencilFormat        = D3DFMT_D24S8;
         d3dpp.Flags                         = 0;
         d3dpp.FullScreen_RefreshRateInHz    = D3DPRESENT_RATE_DEFAULT;
-        //d3dpp.PresentationInterval          = D3DPRESENT_INTERVAL_IMMEDIATE; // no vsync
-        d3dpp.PresentationInterval          = D3DPRESENT_INTERVAL_ONE; // vsync
+        d3dpp.PresentationInterval          = D3DPRESENT_INTERVAL_ONE;
    
-
         HRESULT hr = d3d9->CreateDevice(D3DADAPTER_DEFAULT,
                                         D3DDEVTYPE_HAL,
                                         wm_info.info.win.window,
@@ -190,7 +179,6 @@ void Window::Init() {
 
         int ww = screen_width/screen_scale;
         int hh = screen_height/screen_scale;
-        //Render::API::SetScreenSize(ww, hh);
         Render::SetScreenSize(ww, hh);
 
         callbacks.screen_resize(screen_width/screen_scale, screen_height/screen_scale);

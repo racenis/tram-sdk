@@ -300,8 +300,6 @@ float GetClipDistance(layer_t layer) {
     return view_properties[layer].far_plane;
 }
 
-
-
 /// Sets the view position.
 /// @param position View position.
 /// @param layer    Rendering layer to which the view position will be applied.
@@ -641,6 +639,5 @@ const char* GetMaterialTypeName(materialtype_t type) {
     
     return material_type_names[type];
 }
-
 
 }

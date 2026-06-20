@@ -303,7 +303,6 @@ float GetScreenHeight() {
     return screen_height;
 }
 
-
 void SetWindowTitle(const char* title) {
     Platform::Window::SetTitle(title);
 }

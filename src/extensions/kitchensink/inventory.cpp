@@ -117,8 +117,6 @@ void InventoryManager::Register(name_t compartment, InventoryManager*(*make)(voi
                                                               .clear = clear});
 }
 
-
-
 int ListInventoryManager::AddItem(name_t item_class, int count) {
     int max_stack = ItemClass::Find(item_class)->stack;
     

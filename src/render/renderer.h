@@ -71,7 +71,6 @@ struct VertexDefinition {
 void RegisterVertexDefinition(vertexformat_t format, VertexDefinition definition);
 VertexDefinition GetVertexDefinition(vertexformat_t format);
 
-
 }
 
 #endif // TRAM_SDK_RENDER_RENDERER_H

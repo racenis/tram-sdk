@@ -126,4 +126,3 @@ void MakeCubeSphere(MeshComponent& mesh, size_t subdivisions, float radius) {
 
 
 }
-

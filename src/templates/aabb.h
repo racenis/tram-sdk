@@ -229,9 +229,7 @@ private:
             if (left_distance < nearest_dist && left_distance < distance_limit) {
                 FindIntersectionRecursive(ray_pos, ray_dir, nearest_dist, nearest_index, distance_limit, GetLeft(node), filter);
             }
-            
         }
-        
     }
     
     void FindIntersection(vec3 ray_pos, vec3 ray_dir, node_t node, std::vector<uint32_t>& result) const {
@@ -263,7 +261,6 @@ private:
         if (GetRight(node) != INVALID && AABBOverlap(min, max, GetMin(GetRight(node)), GetMax(GetRight(node)))) {
             FindAABBIntersection(GetRight(node), min, max, callback);
         }
-        
     }
     
     void UpdateParentAABB (node_t node) {
@@ -304,7 +301,6 @@ private:
             }
         }
         
-        
         if (has_children && !IsLeaf(GetLeft(node)) && GetLeft(GetLeft(node)) != INVALID) {
             vec3 min = GetMin(GetRight(node));
             vec3 max = GetMax(GetRight(node));
@@ -334,8 +330,6 @@ private:
                 best_rotation = 4;
             }
         }
-        
-        
         
         if (best_rotation == 1) {
             node_t parent1 = GetParent(GetLeft(node));
@@ -383,7 +377,6 @@ private:
             SetMax(GetRight(node), max);
         }
         
-        
         if (best_rotation == 3) {
             node_t parent1 = GetParent(GetRight(node));
             node_t parent2 = GetParent(GetLeft(GetLeft(node)));
@@ -430,7 +423,6 @@ private:
             SetMax(GetLeft(node), max);
         }
         
-        
         node_t left_child = GetLeft(node);
         node_t right_child = GetRight(node);
         
@@ -450,7 +442,6 @@ private:
             
             return;
         }
-        
         
         SetMin(node, MergeAABBMin(GetMin(left_child), GetMin(right_child)));
         SetMax(node, MergeAABBMax(GetMax(left_child), GetMax(right_child)));

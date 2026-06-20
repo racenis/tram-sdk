@@ -162,7 +162,6 @@ static void IntoBuffer(char*& buffer, int& buffer_size, const void* data, int of
     mempcpy(buffer + offset, data, size);
 }
 
-
 void MeshComponent::InsertVertex(const MeshVertex& vertex, vec3& point, uint32_t& material) {
     auto [format, attributes] = vertex.GetData();
     VertexDefinition definition = GetVertexDefinition(format);

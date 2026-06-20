@@ -139,11 +139,6 @@ void StaticWorldObject::MessageHandler(Message& msg) {
         default:
             Log(Severity::DEFAULT, System::MISC, "StaticWorldObject doesn't know how to handle {} message!", Message::GetName(msg.type));
     }
-    
-    
-    
 };
-
-
 
 }

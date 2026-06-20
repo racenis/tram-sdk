@@ -79,11 +79,6 @@ void SystemMenu::Display() {
     
     GUI::PopFrame();
     GUI::PopFrame();
-    
-    
-    
-    
-    
 }
 
 void SettingsMenu::Display() {

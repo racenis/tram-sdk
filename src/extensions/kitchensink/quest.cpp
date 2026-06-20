@@ -259,11 +259,6 @@ value_t QuestVariable::Evaluate() {
             return false;
     }
 }
-    
-    
-
-
-
 
 void QuestTrigger::SetValue(name_t variable, Value value) {
     this->value = value;
@@ -281,9 +276,7 @@ void QuestTrigger::SetIncrement(name_t name) {
     this->variable = name;
     this->type = QUEST_TGR_INCREMENT;
 }
-    
-    
-    
+
 Value Quest::GetVariable(name_t name) {
     for (auto& variable : variables) {
         if (variable.name == name) {

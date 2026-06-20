@@ -68,7 +68,6 @@ void SwitchBackground(TerminalColor color) {
     SetConsoleTextAttribute(console, attribute);
 }
 
-
 #else
 
 static void print_escape(const char* sequence) {
@@ -128,9 +127,5 @@ void SwitchBackground(TerminalColor color) {
 }
 
 #endif
-
-
-
-
 
 }

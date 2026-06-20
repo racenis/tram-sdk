@@ -70,13 +70,8 @@ void PhysicsComponent::Start() {
 }
 
 PhysicsComponent::~PhysicsComponent(){
-    //RemoveAllConstraints();
-    
     if (rigidbody.bt_rigidbody) {
-        //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
         API::YeetRigidbody(rigidbody);
-        //delete rigidbody.bt_rigidbody;
-        //delete motion_state;
     }
 }
 
@@ -127,8 +122,6 @@ void PhysicsComponent::SetCollisionMask (uint32_t flags) {
     rigidbody_collision_mask = flags;
     
     if (is_ready) {
-        //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
-        //DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
         API::SetRigidbodyCollisionMask(rigidbody, rigidbody_collision_mask);
     }
 }
@@ -143,8 +136,6 @@ void PhysicsComponent::SetCollisionGroup (uint32_t flags) {
     
     if (is_ready) {
         API::SetRigidbodyCollisionGroup(rigidbody, rigidbody_collision_group);
-        //DYNAMICS_WORLD->removeRigidBody(rigidbody.bt_rigidbody);
-        //DYNAMICS_WORLD->addRigidBody(rigidbody.bt_rigidbody, rigidbody_collision_group, rigidbody_collision_mask);
     }
 }
 
@@ -172,10 +163,6 @@ void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
 /// to be infinite, and the object will become static and immovable.
 /// @note Has no effect after the PhysicsComponent is loaded.
 void PhysicsComponent::SetMass(float mass) {
-    /*if (mass == 0) {
-        rigidbody_collision_flags |= btCollisionObject::CF_STATIC_OBJECT;
-    }*/
-    
     rigidbody_mass = mass;
 }
 
@@ -187,33 +174,24 @@ void PhysicsComponent::Push(vec3 direction) {
     if (!is_ready) return;
     
     API::PushRigidbody(rigidbody, direction);
-    
-    //rigidbody.bt_rigidbody->activate(); // force awake, sleeping objects won't move
-    //rigidbody.bt_rigidbody->applyCentralImpulse(btVector3(direction.x, direction.y, direction.z));
 }
 
 void PhysicsComponent::Push(vec3 direction, vec3 local) {
     if (!is_ready) return;
     
     API::PushRigidbody(rigidbody, direction, local);
-    //rigidbody.bt_rigidbody->activate();
-    //rigidbody.bt_rigidbody->applyImpulse(btVector3(direction.x, direction.y, direction.z), btVector3(local.x, local.y, local.z));
 }
 
 void PhysicsComponent::Spin(vec3 direction) {
     if (!is_ready) return;
     
     API::SpinRigidbody(rigidbody, direction);
-    
-    //rigidbody.bt_rigidbody->activate();
-    //rigidbody.bt_rigidbody->applyTorqueImpulse(btVector3(direction.x, direction.y, direction.z));
 }
 
 /// Awakens the object.
 void PhysicsComponent::Awaken() {
     if (is_ready) {
         API::AwakenRigidbody(rigidbody);
-        //rigidbody.bt_rigidbody->activate();
     }
     
     rigidbody_should_sleep = false;
@@ -222,7 +200,6 @@ void PhysicsComponent::Awaken() {
 /// Puts the object to sleep.
 void PhysicsComponent::Sleep() {
     if (is_ready) {
-        //rigidbody.bt_rigidbody->setActivationState(0);
         API::SleepRigidbody(rigidbody);
     }
     
@@ -233,17 +210,10 @@ void PhysicsComponent::Sleep() {
 /// Set to false, if you don't want the physics object to show up when
 /// drawing physics debug.
 void PhysicsComponent::SetDebugDrawing (bool drawing) {
-    /*if (drawing) {
-        rigidbody_collision_flags &= ~btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-    } else {
-        rigidbody_collision_flags |= btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
-    }*/
-    
     rigidbody_debug_draw = drawing;
     
     if (is_ready) {
         API::SetRigidbodyDebugDrawing(rigidbody, drawing);
-        //rigidbody.bt_rigidbody->setCollisionFlags(rigidbody_collision_flags);
     }
 }
 
@@ -254,16 +224,9 @@ void PhysicsComponent::SetDebugDrawing (bool drawing) {
 /// @note Use DisableDeactivation() if you don't want to constantly wake the object up.
 void PhysicsComponent::SetKinematic (bool kinematic) {
     rigidbody_kinematic = kinematic;
-    
-    /*if (kinematic) {
-        rigidbody_collision_flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
-    } else {
-        rigidbody_collision_flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
-    }*/
-    
+
     if (is_ready) {
         API::SetRigidbodyKinematic(rigidbody, kinematic);
-        //rigidbody.bt_rigidbody->setCollisionFlags(rigidbody_collision_flags);
     }
 }
 
@@ -280,9 +243,6 @@ void PhysicsComponent::SetUpdateParentTransform(bool update) {
 void PhysicsComponent::SetLocation(vec3 position) {
     if (rigidbody.bt_rigidbody) {
         API::SetRigidbodyLocation(rigidbody, position);
-        //btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
-        //trans.setOrigin(btVector3 (position.x, position.y, position.z));
-        //rigidbody.bt_rigidbody->setWorldTransform(trans);
     }
     
     rigidbody_position = position;
@@ -292,9 +252,6 @@ void PhysicsComponent::SetLocation(vec3 position) {
 void PhysicsComponent::SetRotation (quat rotation) {
     if (rigidbody.bt_rigidbody) {
         API::SetRigidbodyRotation(rigidbody, rotation);
-        //btTransform trans = rigidbody.bt_rigidbody->getWorldTransform();
-        //trans.setRotation(btQuaternion (rotation.x, rotation.y, rotation.z, rotation.w));
-        //rigidbody.bt_rigidbody->setWorldTransform(trans);
     }
     
     rigidbody_rotation = rotation;
@@ -308,7 +265,6 @@ void PhysicsComponent::SetAngularFactor(vec3 factor) {
     
     if (is_ready) {
         API::SetRigidbodyAngularFactor(rigidbody, factor);
-        //rigidbody.bt_rigidbody->setAngularFactor({factor.x, factor.y, factor.z});
     }
 }
 
@@ -320,7 +276,6 @@ void PhysicsComponent::SetLinearFactor(vec3 factor) {
     
     if (is_ready) {
         API::SetRigidbodyLinearFactor(rigidbody, factor);
-        //rigidbody.bt_rigidbody->setLinearFactor({factor.x, factor.y, factor.z});
     }
 }
 
@@ -329,7 +284,6 @@ void PhysicsComponent::SetLinearFactor(vec3 factor) {
 void PhysicsComponent::DisableDeactivation() {
     if (is_ready) {
         API::DisableRigidbodyDeactivation(rigidbody);
-        //rigidbody.bt_rigidbody->setActivationState(DISABLE_DEACTIVATION);
     }
     
     rigidbody_should_awake = true;
@@ -340,14 +294,6 @@ void PhysicsComponent::DisableDeactivation() {
 void PhysicsComponent::SetVelocity (const vec3& velocity){
     if (!is_ready) return;
     
-    /*if (velocity.x != 0.0f &&
-        velocity.y != 0.0f &&
-        velocity.z != 0.0f
-    ) {
-        rigidbody.bt_rigidbody->activate();
-    }
-    
-    rigidbody.bt_rigidbody->setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));*/
     API::SetRigidbodyVelocity(rigidbody, velocity);
 }
 
@@ -356,8 +302,6 @@ void PhysicsComponent::SetVelocity (const vec3& velocity){
 vec3 PhysicsComponent::GetVelocity () {
     if (is_ready) {
         return API::GetRigidbodyVelocity(rigidbody);
-        //auto velocity = rigidbody.bt_rigidbody->getLinearVelocity();
-        //return {velocity.getX(), velocity.getY(), velocity.getZ()};
     } else {
         return {0.0f, 0.0f, 0.0f};
     }

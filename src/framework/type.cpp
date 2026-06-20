@@ -26,5 +26,4 @@ const char* TypeToString(Type type) {
     }
 }
 
-
 }

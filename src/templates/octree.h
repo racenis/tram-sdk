@@ -72,7 +72,6 @@ protected:
         int found = 0;
     };
     
-    
     leaf_t Insert(vec3 point, const T& data, node_t node) {
         node_t better_node = GetChild(node, GetOctant(GetMidPoint(node), point));
         if (better_node != INVALID) {
@@ -279,8 +278,6 @@ protected:
             //AddLineMarker(node->point, COLOR_GREEN);
         }
     }*/
-    
-    
     
     struct Node {
         std::vector<leaf_t> leaves;

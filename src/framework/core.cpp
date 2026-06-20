@@ -210,5 +210,3 @@ const char* Core::GetVersion() {
 }
 
 }
-
-

@@ -81,9 +81,6 @@ void PushFrameRelativeKeepCursor(uint32_t orientation, uint32_t offset, bool = f
 void PushFrame(int32_t x, int32_t y, uint32_t w, uint32_t h);
 void PopFrame();
 
-
-
-
 void SetSelectedText(char* text);
 
 enum widget : glyph_t {

@@ -244,5 +244,4 @@ void PathFollower::TurnStraight() {
     this->direction = PATH_STRAIGHT;
 }
 
-
 }

@@ -57,23 +57,6 @@ struct MessageIntercept : Intercept {
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
-
-        /*GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
-        
-        GUI::Text(type.c_str());
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 90);
-        
-        GUI::Text(sender.c_str());
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 50);
-        
-        GUI::Text(receiver.c_str());
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 50);
-        
-        GUI::Text(value.c_str());
-        GUI::PopFrame();
-        GUI::PopFrame();
-        GUI::PopFrame();
-        GUI::PopFrame();*/
     }
 };
 
@@ -104,28 +87,6 @@ struct EventIntercept : Intercept {
         GUI::PopFrame();
         GUI::PopFrame();
         GUI::PopFrame();
-        
-        //GUI::Text((std::string("event ") + std::to_string(time)).c_str());
-        
-        /*GUI::Text("EVT");
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
-        
-        GUI::Text(type.c_str());
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 90);
-        
-        GUI::Text(subtype.c_str());
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 40);
-        
-        GUI::Text(emitter.c_str());
-        GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 70);
-        
-        GUI::Text(value.c_str());
-        GUI::PopFrame();
-        GUI::PopFrame();
-        GUI::PopFrame();
-        GUI::PopFrame();*/
-        
-        
     }
 };
 
@@ -140,8 +101,6 @@ struct LogIntercept : Intercept {
         GUI::PopFrame();
     }
 };
-
-
 
 void InitCallbacks() {
     Message::SetInterceptCallback([](const Message& msg) {
@@ -391,8 +350,6 @@ void EntityProperties::Display() {
                 auto send = new MessageSend;
                 send->SetEntity(ptr->GetID());
                 Menu::Push(send);
-                //auto props = new MessageTypeSelection([](auto){});
-                //Menu::Push(props);
             }
         }
     GUI::PopFrame();
@@ -640,35 +597,6 @@ void WorldCellProperties::Display() {
                 cell->SetDebugDraw(debug_draw);
             }
         }
-        /*if (Entity* ptr = Entity::Find(entity); !ptr) {
-            GUI::Text("No entity available.");
-        } else {
-            GUI::Text("Entity ID ");
-            GUI::TextBox(std::to_string(ptr->GetID()).c_str(), 50);
-            GUI::Text(" Name ");
-            GUI::TextBox(ptr->GetName(), 100);
-            GUI::Text(" Distance ");
-            float dist = glm::distance(Render::GetViewPosition(), ptr->GetLocation());
-            int dist0 = dist;
-            int dist1 = dist*10 - dist0*10;
-            GUI::TextBox((std::to_string(dist0) + "." + std::to_string(dist1)).c_str(), 50);
-            
-            if (GUI::Button("Load")) {
-                ptr->Load();
-            }
-            
-            if (GUI::Button("Unload")) {
-                ptr->Unload();
-            }
-                        
-            if (GUI::Button("Message")) {
-                auto send = new MessageSend;
-                send->SetEntity(ptr->GetID());
-                Menu::Push(send);
-                //auto props = new MessageTypeSelection([](auto){});
-                //Menu::Push(props);
-            }
-        }*/
     GUI::PopFrame();
     GUI::PopFrame();
     GUI::PopFrame();
@@ -811,9 +739,6 @@ void SignalMenu::Display() {
                 const Signal& signal = signals->GetSignal(i);
                 
                 GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 24 * i);
-                
-                    
-                
                     GUI::Text(Signal::GetName(signal.type));
                     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 100);
                     
@@ -849,27 +774,7 @@ void SignalMenu::Display() {
                     GUI::PopFrame();
                     GUI::PopFrame();
                     GUI::PopFrame();
-                    GUI::PopFrame();
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+                    GUI::PopFrame();                
                 GUI::PopFrame();
             }
         }
@@ -879,8 +784,6 @@ void SignalMenu::Display() {
     GUI::PopFrame();
     GUI::PopFrame();
 }
-
-
 
 void Options::Display() {
     GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 34);
@@ -950,7 +853,6 @@ void Console::Display() {
             
             value_t value = Script::Evaluate(text);
             
-            //std::cout << TypeToString(value.GetType()) << " : " << value.ToString() <<std::endl;
             Log(Severity::DEFAULT, System::INVALID, "{} : {}", TypeToString(value.GetType()), value.ToString());
             
             *text = '\0';
@@ -979,7 +881,6 @@ void Console::Display() {
             if (history_cursor != -1) strcpy(text, console_history[history_cursor].data());
         }
             
-        
     GUI::PopFrame();
     GUI::PopFrame();
     GUI::PopFrame();

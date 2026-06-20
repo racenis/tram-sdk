@@ -200,4 +200,3 @@ Animation* Animation::Find (name_t name) {
 }
     
 }
-

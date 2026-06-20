@@ -255,6 +255,3 @@ void Lightmap::Unload() {
 }
 
 }
-
-
-

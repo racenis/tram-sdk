@@ -512,6 +512,3 @@ size_t Material::ApproxMemoryUsage() {
 }
 
 }
-
-
-

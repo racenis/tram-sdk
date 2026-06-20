@@ -75,7 +75,6 @@ void AnimationTable::SwitchState(name_t state, AnimationStateComponent* state_co
     
     // do outro transitions for yeetable state animations
     
-    
     // go through all states in the component
     // - find the space of the state
     //   - check if space is in cancel spaces

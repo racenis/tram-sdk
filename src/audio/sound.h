@@ -39,4 +39,3 @@ protected:
 }
 
 #endif // TRAM_SDK_AUDIO_SOUND_H
-    

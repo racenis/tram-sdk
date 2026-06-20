@@ -177,17 +177,11 @@ static int function_call_from_lua(lua_State* L) {
         }
     }
     
-    
     push_value_to_stack(func.function({params.data(), params.size()}));
     
     return 1;
 }
 }
-
-
-
-
-
 
 static void set_global(name_t name, value_t value) {
     push_value_to_stack(value);

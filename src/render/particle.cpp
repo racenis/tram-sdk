@@ -301,7 +301,6 @@ void Particle::ActuallyLoadFromDisk() {
         return;
     }
     
-    
     while (file.is_continue()) {
         name_t record_type = file.read_name(); file.skip_linebreak();
         
@@ -329,7 +328,6 @@ void Particle::ActuallyLoadFromDisk() {
         Log(Severity::WARNING, tram::System::RENDER, "Unrecognized .prt section: {}", record_type);
         file.skip_linebreak();
     }
-    
 }
 
 void Particle::LoadFromDisk() {
@@ -385,7 +383,6 @@ void Particle::LoadFromDisk() {
         }
     }
     
-    
     for (auto system : systems) {
         if (auto sprite = system->GetSprite(); sprite) {
             sprite->AddReference();
@@ -414,7 +411,6 @@ void Particle::LoadFromMemory() {
     
     status = Resource::READY;
 }
-
 
 void Particle::Unload() {
     if (status != READY) {
@@ -558,6 +554,5 @@ int Particle::GetControlOffset(int index) {
     if (index >= (int)controls.size()) return 0;
     return control_offsets[index];
 }
-
 
 }

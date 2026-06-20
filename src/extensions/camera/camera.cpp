@@ -29,7 +29,7 @@ System::system_t CAMERA_SYSTEM = -1u;
 // cameras can use a limited set of layers.
 // which means that we could have a camera for layer 0 and a different active
 // camera for layer 1. this current setup does not support it, and frankly, I
-// find is completely unacceptable!!
+// find this completely unacceptable!!
 // this must be remedied at the earliest convenience..
 Camera* selected_camera = nullptr;
 

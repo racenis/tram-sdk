@@ -8,8 +8,6 @@
 
 namespace tram::Render::API {
     
-
-
 }
 
 #endif // TRAM_SDK_RENDER_OPENGL_RENDERER_H

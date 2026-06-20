@@ -168,5 +168,4 @@ void RemoveAudioSource(audiosource_t source) {
     alDeleteSources(1, &source.al_source);
 }
 
-    
 }

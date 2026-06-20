@@ -187,7 +187,6 @@ event_t Event::GetLast() {
     return last_type;
 }
 
-
 static listener_t NewListenerHandle(event_t type) {
     static listener_t last_id = 0;
     

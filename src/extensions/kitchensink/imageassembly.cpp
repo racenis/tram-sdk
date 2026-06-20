@@ -342,12 +342,6 @@ private:
     std::vector<Frame> frames;
 };
 
-
-    
-
-    
-
-
 Image* image = nullptr;
 
 void Add(Render::API::AssemblyLayers layers) {

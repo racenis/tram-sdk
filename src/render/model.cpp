@@ -145,7 +145,6 @@ struct ModelAABB {
     std::vector<AABBTriangle> triangles;
 };
 
-
 /// Finds triangles that intersect ray.
 /// Finds the triangles that intersect the given ray. The ray's origin and
 /// direction must be provided in the local model coordinates.
@@ -161,28 +160,19 @@ void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>
 }
 
 void Model::FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result) {
-    //result = model_aabb->triangles;
     model_aabb->tree.FindAABBIntersection(min, max, [&](uint32_t key) {
         result.push_back(model_aabb->triangles[key]);
     });
 }
 
-
-
 static int total_counter = 0;
 static int node_counter = 0;
 static int leaf_counter = 0;
 
-//static std::set<uint32_t> lookedat_nodes;
-
 static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation) {
-    //lookedat_nodes.emplace(node_id);
-    
     total_counter++;
     
     if (tree.IsLeaf(node)) {
-        //AddLineAABB(node.min, node.max, position, rotation, COLOR_CYAN);
-        
         vec3 point1 = position + (rotation * triangles[tree.GetValue(node)].point1);
         vec3 point2 = position + (rotation * triangles[tree.GetValue(node)].point2);
         vec3 point3 = position + (rotation * triangles[tree.GetValue(node)].point3);
@@ -473,8 +463,6 @@ void Model::LoadFromDisk() {
         return;
     }
 
-
-
     // ok, the model isn't static
     // try opening it as a dynamic model
 
@@ -515,8 +503,7 @@ void Model::LoadFromDisk() {
         bucket_mappings.resize(mcount);
 
         model_aabb->triangles.reserve(tcount);
-        //model_aabb->tree.nodes.reserve(tcount);
-
+        
         for (uint32_t i = 0; i < mcount; i++) {
             materials.push_back(Material::Find(file.read_name()));
         }

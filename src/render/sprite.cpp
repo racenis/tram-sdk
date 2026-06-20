@@ -154,4 +154,3 @@ uint16_t Sprite::FindMarker(name_t name) {
     }
     return -1;
 }
-

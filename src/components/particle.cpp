@@ -39,7 +39,6 @@ ParticleComponent::~ParticleComponent() {
     data = nullptr;
 };
 
-
 void ParticleComponent::PerformOperation(const Render::Particle::Operation* op, int offset, int count) {
     switch (op->type) {
         case Render::Particle::OperationType::COPY:

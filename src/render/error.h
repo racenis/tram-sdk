@@ -12,7 +12,7 @@ uint8_t* GetDebugFont();
 uint8_t* GetDebugIcon();
 
 StaticModelData* MakeNewErrorModel();
-    
+
 }
 
 #endif // TRAM_SDK_RENDER_ERROR_H

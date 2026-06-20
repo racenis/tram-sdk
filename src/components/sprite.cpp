@@ -35,13 +35,11 @@ void SpriteComponent::Start() {
         Log(Severity::CRITICAL_ERROR, System::RENDER, "Sprite component doesn't have its model set!");
     }
 
-    //CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), vertex_array);
     sprite_array = CreateSpriteArray();
     
     auto texture_handle = sprite->GetMaterial()->GetMaterial();
     
     draw_list_entry = InsertDrawListEntry();
-    //SetDrawListVertexArray(draw_list_entry, vertex_array);
     SetDrawListSpriteArray(draw_list_entry, sprite_array);
     SetDrawListIndexRange(draw_list_entry, 0, 6);
     SetFlags(draw_list_entry, FLAG_RENDER);

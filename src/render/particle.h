@@ -192,5 +192,4 @@ protected:
 
 }
 
-
 #endif // TRAM_SDK_RENDER_PARTICLE_H

@@ -420,7 +420,6 @@ void SetGlyph(float x, float y, float z, float w, float h, float tex_x, float te
     glyphvertices.push_back(tleft);
 }
 
-
 uint32_t GlyphWidth(font_t font, glyph_t glyph) {
     return fonts[font]->GetFrames()[glyph].width;
 }
@@ -1036,8 +1035,6 @@ void End() {
     text_color_stack.Reset();
     text_font_stack.Reset();
     widget_font_stack.Reset();
-
 }
-
 
 }

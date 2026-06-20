@@ -87,10 +87,7 @@ void Decoration::Load() {
     physicscomponent->SetMass(0.0f);
     
     rendercomponent->Init();
-    
     physicscomponent->Init();
-    
-    
     
     if (animation) {
         RequestAnimationComponent();

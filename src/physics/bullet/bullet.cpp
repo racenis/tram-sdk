@@ -447,7 +447,7 @@ struct ShapecastCallback : public btCollisionWorld::ConvexResultCallback {
             return 1;
         }
         
-        /*const*/ RigidbodyMetadata* metadata = (RigidbodyMetadata*)ob->getUserPointer();
+        RigidbodyMetadata* metadata = (RigidbodyMetadata*)ob->getUserPointer();
         
         if (assert(metadata); metadata->collision_group & collision_mask) {
             auto& contact = convexResult.m_hitPointLocal;

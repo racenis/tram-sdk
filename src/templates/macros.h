@@ -1,6 +1,5 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
-
 // This file contains some macros. All of them are completely optional.
 
 #ifndef TRAM_SDK_TEMPLATES_MACROS_H
@@ -12,9 +11,7 @@
 /// Implements a pool.
 #define TRAM_SDK_IMPLEMENT_POOL(TYPE, NAME, SIZE) template <> Pool<TYPE> PoolProxy<TYPE>::pool (NAME, SIZE);
 
-
 // Asserts
-
 #ifndef NDEBUG
 #define TRAM_SDK_ASSERT(EXPRESSION) if (!(EXPRESSION)) { Log("{}\nAssert at line {} in {}", #EXPRESSION, __LINE__, __FILE__); abort(); }
 #define TRAM_SDK_ASSERT_MESSAGE(EXPRESSION, MESSAGE) if (!(EXPRESSION)) { Log("{}\n{}\nAssert at line {} in {}", MESSAGE, #EXPRESSION, __LINE__, __FILE__); abort(); }
@@ -22,8 +19,6 @@
 #define TRAM_SDK_ASSERT(EXPRESSION) ;
 #define TRAM_SDK_ASSERT_MESSAGE(EXPRESSION, MESSAGE) ;
 #endif
-
-
 
 // Code generation macros
 #define TRAM_SDK_ENTITY_NAME(Name)

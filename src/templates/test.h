@@ -107,10 +107,6 @@ static _test_case* _last_test_case = nullptr;
 
 #define ASSERT(X) if (!(X)) { printf("Assert %s fail on line %i\n", #X, __LINE__); _last_test_case->fail(); } else { _last_test_case->succ(); }
 
-
-
-
-
 #define TIME_START(NAME) \
     _last_test_case->timestart(NAME);
     
@@ -146,6 +142,5 @@ static _test_case* _last_test_case = nullptr;
         \
         return fail ? -1 : 0;\
     }
-
 
 #endif  // TRAM_SDK_TEMPLATES_TEST_H

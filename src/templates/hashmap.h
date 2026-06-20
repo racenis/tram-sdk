@@ -54,7 +54,6 @@ public:
                 } else {
                     return candidate->value;
                 }
-                
             }
             
             candidate++;
@@ -83,7 +82,6 @@ public:
                 } else {
                     return true;
                 }
-                
             }
             
             candidate++;

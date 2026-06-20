@@ -87,7 +87,6 @@ void YeetTexture(texturearray_t texture);
 spritearray_t CreateSpriteArray();
 void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data);
 
-
 // light functions
 light_t MakeLight();
 void YeetLight(light_t light);

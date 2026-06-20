@@ -5,9 +5,6 @@
 
 #include <atomic>
 
-/* I have no idea how useful this is.
- */
-
 namespace tram {
 
 class Spinlock {

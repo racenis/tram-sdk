@@ -7,9 +7,7 @@
 #include <render/renderer.h>
 
 namespace tram::Render::API {
-
-
-
+    
 }
 
 #endif // TRAM_SDK_RENDER_OPENGL_SPRITE_H

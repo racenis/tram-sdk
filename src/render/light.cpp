@@ -76,12 +76,6 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
                 nearest = node;
                 nearest_parent = &graph;
             }
-            
-            //vec3 cco = graph.nodes[node].constants[0].l00;
-            //vec3 cco = COLOR_WHITE;
-            /*Render::AddText(graph.nodes[node].position, (std::to_string(graph.nodes[node].constants[0].l00.x) + "\n"
-                                                       + std::to_string(graph.nodes[node].constants[0].l00.y) + "\n"
-                                                       + std::to_string(graph.nodes[node].constants[0].l00.z)).c_str(), cco);*/
         }
     }
     
@@ -91,10 +85,7 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
     if (!nearest_parent) return harmonic;
     
     connected.push_back({&nearest_parent->nodes[nearest], 0.0f});
-    //Render::AddLineMarker(nearest_parent->nodes[nearest].position, Render::COLOR_CYAN);
-    
-    //return nearest_parent->nodes[nearest].constants[0];
-    
+
     for (auto& edge : nearest_parent->edges) {
         if (edge.first == nearest) {
             connected.push_back({&nearest_parent->nodes[edge.second], 0.0f});
@@ -109,21 +100,15 @@ SphericalHarmonic LightGraph::LookupHarmonic(vec3 position, uint32_t layers) {
         const float dist = 1.0f / glm::distance(pair.first->position, position);
         pair.second = dist;
         total_distance += dist;
-        
-        //Render::AddLine(nearest_parent->nodes[nearest].position, pair.first->position, Render::COLOR_GREEN);
     }
     
     for (auto& pair : connected) {
         // TODO: implement layer interpolation!!
         
-        
-        
         SphericalHarmonic& this_harmonic = pair.first->constants[0];
         
         const float weight = pair.second / total_distance;
-        
-        //Render::AddText(pair.first->position + vec3(0, 1, 0), (std::to_string(weight).c_str()));
-        
+
         harmonic.l00 += weight * this_harmonic.l00;
         
         harmonic.l1m1 += weight * this_harmonic.l1m1;

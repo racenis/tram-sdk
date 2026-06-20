@@ -13,9 +13,6 @@ namespace tram {
 
 namespace tram::Ext::Menu {
 
-//void InitCallbacks();
-//void UpdateCallbacks();
-
 class SystemMenu : public Menu {
 public:
     void Display();

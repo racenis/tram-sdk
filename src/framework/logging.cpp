@@ -188,7 +188,6 @@ void flush_console(Severity severity, System::system_t system) {
         
     }
     
-    
     // some people might say "loggers shouldn't act as asserts" but they are wrong!
     // consider this:
     // purpose of logger:       catching bugs
