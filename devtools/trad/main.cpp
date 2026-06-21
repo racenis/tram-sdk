@@ -339,7 +339,7 @@ vec3 FindNearestIntersection(const AABBTree& tree,
 							 bool backface = true,
 							 uint32_t* index = nullptr)
 {
-	uint32_t nearest = tree.FindIntersection(pos, dir, distance_limit, [&](vec3 pos, vec3 dir, uint32_t index) {
+	uint32_t nearest = tree.find(pos, dir, distance_limit, [&](vec3 pos, vec3 dir, uint32_t index) {
 		if (!backface || !frontface) {
 			vec3 v1v2 = glm::normalize(tris[index].triangle.v2.pos - tris[index].triangle.v1.pos);
 			vec3 v1v3 = glm::normalize(tris[index].triangle.v3.pos - tris[index].triangle.v1.pos);
@@ -515,7 +515,22 @@ bool IsTexelInShadow(const AABBTree& tree,
 
 vec3 FindTexelColorFromLight(const Light& light, const vec3& pos, const vec3& normal) {
 	const float light_dist = glm::distance(light.pos, pos);
-	return light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * light_dist + 0.032f * (light_dist * light_dist)));
+	const float cutoff_dist = light.radius - light_dist;
+	float inv_fade = 1.0f;
+	if (light.radius > 0.0f) {
+		if (cutoff_dist < 0.0f) return {0, 0, 0};
+		const float fade_length = light.radius / 5.0f;
+		if (cutoff_dist < fade_length) {
+			inv_fade = cutoff_dist / fade_length;
+		}
+	}
+	if (light.exp != 0.0f) {
+		const vec3 to_light = glm::normalize(vec3(light.pos) - pos);
+		const float alignment = glm::max(glm::dot(light.dir, -to_light), 0.0f);
+		
+		inv_fade *= glm::clamp(powf(alignment, light.exp), 0.0f, 1.0f);
+	}
+	return light.color * glm::max(glm::dot(normal, glm::normalize(light.pos - pos)), 0.0f) * (1.0f / (1.0f + 0.09f * light_dist + 0.032f * (light_dist * light_dist))) * inv_fade;
 }
 
 struct RasterParams {
@@ -659,8 +674,7 @@ int main(int argc, const char** argv) {
 		std::cout << "\nThis program should be run from project root, e.g. the ";
 		std::cout << "worldcell file should be\naccessible through data/worldcells.cell relative path.";
 		
-		
-		return 0;
+		return 1;
 	}
 	
 	const char* worldcell = argv[1];
@@ -751,14 +765,14 @@ int main(int argc, const char** argv) {
 	
 	if (!cell.is_open()) {
 		std::cout << "\nError opening file: " << worldcell_path << "!" <<std::endl;
-		return 0;
+		return 1;
 	}
 	
 	name_t file_version = cell.read_name(); cell.skip_linebreak();
 	
-	if (file_version != "CELLv3") {
+	if (file_version != "CELLv4") {
 		std::cout << "\nUnrecognized worldcell file version: " << file_version << "!" << std::endl;
-		return 0;
+		return 1;
 	}
 	
 	while (cell.is_continue()) {
@@ -960,7 +974,7 @@ int main(int argc, const char** argv) {
 			new_tri.entity = &entity;
 			
 			if (entity.cast_shadows)
-			scene_tree.InsertLeaf(scene_triangles.size(),
+			scene_tree.insert(scene_triangles.size(),
 								  TriangleAABBMin(new_tri.triangle),
 								  TriangleAABBMax(new_tri.triangle));
 			scene_triangles.push_back(new_tri);
@@ -1239,7 +1253,7 @@ int main(int argc, const char** argv) {
 		
 		if (!stbi_write_png(output_path.c_str(), l.w, l.h, 3, img, 0)) {
 			std::cout << "failed! Couldn't write file to disk." << std::endl;
-			return 0;
+			return 1;
 		}
 	}
 	
