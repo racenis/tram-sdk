@@ -60,7 +60,7 @@ int main(int argc, const char** argv) {
 		std::cout << "\n\nOptions:";
 		std::cout << "\n  -pad <pixels> Padding of lightmap segments, in pixels";
 		std::cout << "\n  -density <integer> Number of texels per meter";
-		return 0;
+		return 1;
 	}
 	
 	const char* model_name = argv[1];
@@ -70,7 +70,7 @@ int main(int argc, const char** argv) {
 	
 	if ((lightmap_size & (lightmap_size - 1)) != 0 || lightmap_size < 1) {
 		std::cout << "Lightmap size has to be a power of two." << std::endl;
-		return 0;
+		return 1;
 	}
 	
 	for (int i = 3; i < argc; i++) {
@@ -240,7 +240,7 @@ int main(int argc, const char** argv) {
 	if (error != xatlas::AddMeshError::Success) {
 		xatlas::Destroy(atlas);
 		std::cout << "Error packing: " << xatlas::StringForEnum(error) << std::endl;
-		return 0;
+		return 1;
 	}
 
 	xatlas::AddMeshJoin(atlas);
@@ -278,7 +278,7 @@ int main(int argc, const char** argv) {
 	
 	if (!output.is_open()) {
 		std::cout << "Error writing to model file " << model_path << std::endl;
-		return 0;
+		return 1;
 	}
 
 	std::cout << "Lightmap packed! Writing to disk..." << std::flush;

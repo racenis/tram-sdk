@@ -184,7 +184,7 @@ int main(int argc, const char** argv) {
 		std::cout << "\n\t\t-nonodraw to skip nodraw surface removal";
 		std::cout << "\n\t\t-only entity to output only entity";
 		std::cout << "\n\t\t-worldspawn name to override worldspawn name";
-		return 0;
+		return 1;
 	}
 	
 	const char* map_name = argv[1];
