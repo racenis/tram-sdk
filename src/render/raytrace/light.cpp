@@ -14,14 +14,21 @@ void YeetLight(light_t light) {
     PoolProxy<RTLight>::yeet(light.rt);
 }
 
-void SetLightParameters(light_t light, vec3 location, vec3 color, float distance, vec3 direction, float exponent) {
-    RTLight* light_ptr = light.rt;
-    
-    light_ptr->location = location;
-    light_ptr->color = color;
-    light_ptr->distance = distance;
-    light_ptr->direction = direction;
-    light_ptr->exponent = exponent;
+void SetLightLocation(light_t light, vec3 location) {
+    light.rt->location = location;
+}
+
+void SetLightColor(light_t light, vec3 color) {
+    light.rt->color = color;
+}
+
+void SetLightDistance(light_t light, float distance) {
+    light.rt->distance = distance;
+}
+
+void SetLightDirection(light_t light, vec3 direction, float exponent) {
+    light.rt->direction = direction;
+    light.rt->exponent = exponent;
 }
 
 }

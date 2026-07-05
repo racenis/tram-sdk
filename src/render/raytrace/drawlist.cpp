@@ -30,11 +30,11 @@ void SetPose(drawlistentry_t entry, Pose* pose) {
     entry.rt->pose = pose;
 }
 
-void SetLightmap(drawlistentry_t entry, texturehandle_t lightmap) {
+void SetLightmap(drawlistentry_t entry, texturearray_t lightmap) {
     entry.rt->lightmap = lightmap.rt_texture;
 }
 
-void SetEnvironmentMap(drawlistentry_t entry, texturehandle_t environmentmap) {
+void SetEnvironmentMap(drawlistentry_t entry, texturearray_t environmentmap) {
     entry.rt->environmentmap = environmentmap.rt_texture;
 }
 
@@ -47,8 +47,8 @@ void SetDrawListAABB(drawlistentry_t entry, vec3 min, vec3 max) {
     //entry.sw->aabb_max = max;
 }
 
-void SetDrawListColors(drawlistentry_t entry, size_t count, vec4* color) {
-    entry.rt->color = *color;
+void SetDrawListColor(drawlistentry_t entry, vec4 color) {
+    entry.rt->color = color;
 }
 
 void SetDrawListTextureOffsets(drawlistentry_t entry, size_t count, vec4* offset) {

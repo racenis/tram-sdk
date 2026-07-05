@@ -13,7 +13,7 @@
 
 namespace tram::Render {
     
-typedef std::pair<name_t, uint64_t> NameCount; // animation header
+typedef std::pair<name_t, uint32_t> NameCount; // animation header
 const size_t BONE_COUNT = 30; // bone count in a pose
 
 struct Bone {

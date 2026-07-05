@@ -68,7 +68,7 @@ Lightmap* Lightmap::Find(id_t index) {
     return lightmap;
 }
 
-static TextureFilter GetFilterFromMaterialFilter(MaterialFilter filter) {
+static TextureFilter GetLightmapFilterFromMaterialFilter(MaterialFilter filter) {
     if (lightmap_nearest) {
         return TEXTUREFILTER_NEAREST;
     }
@@ -87,7 +87,7 @@ static TextureFilter GetFilterFromMaterialFilter(MaterialFilter filter) {
 void Lightmap::FlushToAPI() {
     if (status != READY) return;
     
-    API::SetTextureFilter(texture, GetFilterFromMaterialFilter(filter));
+    API::SetTextureFilter(texture, GetLightmapFilterFromMaterialFilter(filter));
 }
 
 void Lightmap::SetType(LightmapType type) {

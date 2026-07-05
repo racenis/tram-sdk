@@ -154,4 +154,18 @@ void UpdateVertexArray(vertexarray_t& vertex_array, size_t data_size, void* data
     PackVertices(vertex_array, data, data_size / vertex_array.rt_vertex_array->format.attributes[0].stride);
 }
 
+void RemoveVertexArray(vertexarray_t& vertex_array, indexarray_t& index_array) {
+    free(vertex_array.rt_vertex_array->vertices);
+    free(index_array.rt_index_array->indices);
+    
+    vertex_arrays.yeet(vertex_array.rt_vertex_array);
+    index_arrays.yeet(index_array.rt_index_array);
+}
+
+void RemoveVertexArray(vertexarray_t& vertex_array) {
+    free(vertex_array.rt_vertex_array->vertices);
+    
+    vertex_arrays.yeet(vertex_array.rt_vertex_array);
+}
+
 }

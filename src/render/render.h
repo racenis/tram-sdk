@@ -192,6 +192,7 @@ struct texturehandle_t {
 struct texturearray_t {
     union {
         uint32_t gl_texture_handle;
+        API::RTTexture* rt_texture;
         void* generic;
     };
 };

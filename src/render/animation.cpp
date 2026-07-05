@@ -137,7 +137,7 @@ void Animation::LoadFromDisk() {
         
         keyframes = (Keyframe*)realloc(keyframes, keyframe_count * sizeof(Keyframe));
         
-        for (uint64_t k = 0; k < headers[j].keyframe_count; k++){
+        for (uint32_t k = 0; k < headers[j].keyframe_count; k++){
             Keyframe* kframe = &keyframes[k + keyframe_offset];
             
             kframe->frame = file.read_float32() * time_scale;

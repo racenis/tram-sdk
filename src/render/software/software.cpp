@@ -1612,7 +1612,7 @@ material_t MakeMaterial() {
 }
 
 void YeetMaterial(material_t material) {
-    material_list.remove(material.sw);
+    material_list.yeet(material.sw);
 }
 
 void SetMaterialTexture(material_t material, texturehandle_t texture) {

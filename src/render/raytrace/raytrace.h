@@ -35,6 +35,7 @@ AssemblyLayers GetAssemblyLayers();
 
 bool IsFinishedRendering();
 
+void SetQuality(int32_t, int32_t, bool);
 
 }
 

@@ -14,6 +14,8 @@
 
 #include <config.h>
 
+#include <random>
+
 #include <cstdlib>
 #include <cstring>
 
@@ -33,7 +35,17 @@ struct LayerParameters {
     float fog_far = INFINITY;
 };
 
-static LayerParameters layers[7];
+// note that the raytracing renderer has only a single layers. this is due to
+// the fact that the notion of layers is only useful for rasterization
+// renderers, as most things that the rasterization renderers need layers to
+// accomplish can be done in a single render pass with ray tracing
+static LayerParameters world;
+
+static int32_t rays_per_pixel = 0;
+static int32_t rays_per_shadow = 0;
+static float depth_of_field = 0.0f;
+static float aperture_size = 0.1f;
+static float light_size = 0.25f;
 
 static vec3 screen_clear_color = {0.2f, 0.3f, 0.3f};
 static bool clear_screen = true;
@@ -48,6 +60,14 @@ static Render::Pose* null_pose = nullptr;
 static RTTexture* texture_indices[16] = {nullptr};
 
 const float epsilon = 1.0f/255.0f;
+
+static std::vector<std::pair<uint16_t, uint16_t>> interlace16;
+static std::vector<std::pair<uint16_t, uint16_t>> interlace8;
+static std::vector<std::pair<uint16_t, uint16_t>> interlace4;
+static std::vector<std::pair<uint16_t, uint16_t>> interlace2;
+static std::vector<std::pair<uint16_t, uint16_t>> interlace1;
+
+static bool scanline_progress = false;
 
 struct TreeVertex {
     vec3 pos;
@@ -84,20 +104,90 @@ std::vector<AssemblyLayer>& GetAssembly(int x, int y) {
 }
 
 void SetLightingParameters(vec3 sun_direction, vec3 sun_color, vec3 ambient_color, uint32_t layer) {
-    layers[layer].sun_direction = sun_direction;
-    layers[layer].sun_color = sun_color;
-    layers[layer].ambient_color = ambient_color;
+    if ((1 << layer) != LAYER_DEFAULT) return;
+    world.sun_direction = sun_direction;
+    world.sun_color = sun_color;
+    world.ambient_color = ambient_color;
 }
 
 void SetFogParameters(vec3 color, float near, float far, uint32_t layer) {
-    layers[layer].fog_color = color;
-    layers[layer].fog_near = near;
-    layers[layer].fog_far = far;
+    if ((1 << layer) != LAYER_DEFAULT) return;
+    world.fog_color = color;
+    world.fog_near = near;
+    world.fog_far = far;
 }
 
 void SetScreenSize(float width, float height) {
     screen_width = width;
     screen_height = height;
+    
+    int horizontal_tiles = screen_width / 16;
+    int vertical_tiles = screen_height / 16;
+    
+    interlace16.clear();
+    interlace8.clear();
+    interlace4.clear();
+    interlace2.clear();
+    interlace1.clear();
+    
+    for (int y = 0; y < vertical_tiles; y++) {
+    for (int x = 0; x < horizontal_tiles; x++) {
+        interlace16.push_back({x * 16, y * 16});
+    }}
+    
+    for (auto [x, y] : interlace16) {
+        interlace8.push_back({x + 8, y});
+        interlace8.push_back({x, y + 8});
+        interlace8.push_back({x + 8, y + 8});
+    }
+    
+    for (auto [x, y] : interlace16) interlace4.push_back({x + 4, y});
+    for (auto [x, y] : interlace16) interlace4.push_back({x, y + 4});
+    for (auto [x, y] : interlace16) interlace4.push_back({x + 4, y + 4});
+    
+    for (auto [x, y] : interlace8) interlace4.push_back({x + 4, y});
+    for (auto [x, y] : interlace8) interlace4.push_back({x, y + 4});
+    for (auto [x, y] : interlace8) interlace4.push_back({x + 4, y + 4});
+    
+    
+    for (auto [x, y] : interlace16) interlace2.push_back({x + 2, y});
+    for (auto [x, y] : interlace16) interlace2.push_back({x, y + 2});
+    for (auto [x, y] : interlace16) interlace2.push_back({x + 2, y + 2});
+    
+    for (auto [x, y] : interlace8) interlace2.push_back({x + 2, y});
+    for (auto [x, y] : interlace8) interlace2.push_back({x, y + 2});
+    for (auto [x, y] : interlace8) interlace2.push_back({x + 2, y + 2});
+    
+    for (auto [x, y] : interlace4) interlace2.push_back({x + 2, y});
+    for (auto [x, y] : interlace4) interlace2.push_back({x, y + 2});
+    for (auto [x, y] : interlace4) interlace2.push_back({x + 2, y + 2});
+    
+    
+    for (auto [x, y] : interlace16) interlace1.push_back({x + 1, y});
+    for (auto [x, y] : interlace16) interlace1.push_back({x, y + 1});
+    for (auto [x, y] : interlace16) interlace1.push_back({x + 1, y + 1});
+    
+    for (auto [x, y] : interlace8) interlace1.push_back({x + 1, y});
+    for (auto [x, y] : interlace8) interlace1.push_back({x, y + 1});
+    for (auto [x, y] : interlace8) interlace1.push_back({x + 1, y + 1});
+    
+    for (auto [x, y] : interlace4) interlace1.push_back({x + 1, y});
+    for (auto [x, y] : interlace4) interlace1.push_back({x, y + 1});
+    for (auto [x, y] : interlace4) interlace1.push_back({x + 1, y + 1});
+    
+    for (auto [x, y] : interlace2) interlace1.push_back({x + 1, y});
+    for (auto [x, y] : interlace2) interlace1.push_back({x, y + 1});
+    for (auto [x, y] : interlace2) interlace1.push_back({x + 1, y + 1});
+    
+    for (int y = 0; y < vertical_tiles * 16; y++) {
+    for (int x = horizontal_tiles * 16; x < screen_width; x++) {
+        interlace1.push_back({x, y});
+    }}
+    
+    for (int y = vertical_tiles * 16; y < screen_height; y++) {
+    for (int x = 0; x < screen_width; x++) {
+        interlace1.push_back({x, y});
+    }}
 }
 
 void SetScreenClear(vec3 clear_color, bool clear) {
@@ -132,8 +222,8 @@ void ClipRenderLine(vec4 p0, vec4 p1, auto blit_func) {
 vec3 InverseProject(vec3 point) {
     point.y =  screen_height - point.y;
     vec3 result = glm::unProject(point,
-                                 layers[0].view_matrix,
-                                 layers[0].projection_matrix,
+                                 world.view_matrix,
+                                 world.projection_matrix,
                                  vec4(0.0f, 0.0f, screen_width, screen_height));
     return result;    
 }
@@ -185,23 +275,85 @@ bool FindIfObstacle(vec3 pos, vec3 dir, vec3 target) {
     return true;
 }
 
+// Translated from boomer C into C++, algorithm stolen from Listing 5.3 of
+// A. Watt, M. Watt, Advanced animation and rendering techniques, 1992.
+static const glm::vec2 HEXAGON_POINTS[19] = {
+    { 0.750f,  0.433f},
+    { 0.000f,  0.866f},
+    {-0.750f,  0.433f},
+    {-0.750f, -0.433f},
+    { 0.000f, -0.866f},
+    { 0.750f, -0.433f},
+
+    { 0.000f,  0.000f},
+
+    { 0.750f,  0.000f},
+    { 0.375f,  0.650f},
+    {-0.375f,  0.650f},
+    {-0.750f,  0.000f},
+    {-0.375f, -0.650f},
+    { 0.375f, -0.650f},
+
+    { 0.375f,  0.216f},
+    { 0.000f,  0.433f},
+    {-0.375f,  0.217f},
+    {-0.375f, -0.216f},
+    { 0.000f, -0.433f},
+    { 0.375f, -0.217f}
+};
+
+constexpr float JITTER_AMPLITUDE = 0.075f;
+
+static vec3 jitter_ray(int32_t index, vec3 direction, float distance, float light_radius) {
+    static thread_local std::mt19937 rng(std::random_device{}());
+    static thread_local std::uniform_real_distribution<float> jitter(-JITTER_AMPLITUDE, JITTER_AMPLITUDE);
+
+    const float theta = asinf(light_radius / distance);
+    const float projectedRadius = light_radius * cosf(theta);
+    const float projectedDistance = distance - light_radius * sinf(theta);
+
+    vec2 sample = HEXAGON_POINTS[index];
+
+    sample += vec2(jitter(rng), jitter(rng));
+
+    vec3 ray = {
+        projectedRadius * sample.x,
+        projectedRadius * sample.y,
+        projectedDistance
+    };
+
+    quat rotation = glm::rotation(-DIRECTION_FORWARD, glm::normalize(direction));
+
+    return rotation * ray;
+}
+
+float FindLightOcclusion(vec3 light_location, vec3 point, float dist, float light_size) {
+    vec3 light_vec = glm::normalize(light_location - point);
+    if (!rays_per_shadow) return FindIfObstacle(point, light_vec, light_location);
+    int32_t reachable = 0;
+    for (int32_t ray = 0; ray < rays_per_shadow; ray++) {
+        vec3 ray_dir = jitter_ray(ray, light_vec, dist, light_size);
+        reachable += !FindIfObstacle(point, ray_dir, light_location);
+    }
+    return 1.0f - (float)reachable / (float)rays_per_shadow;    
+}
+
 std::pair<vec3, vec3> GetLightContribution(RTMaterial* material, vec3 view_dir, vec3 point, vec3 normal) {
     vec3 diffuse_color = {0.0f, 0.0f, 0.0f};
     vec3 specular_color = {0.0f, 0.0f, 0.0f};
     
-    diffuse_color += layers[0].ambient_color;
+    diffuse_color += world.ambient_color;
     
     const vec3 away_pos = point + 0.01f * normal;
-    const vec3 sun_dir = layers[0].sun_direction;
+    const vec3 sun_dir = world.sun_direction;
     
-    if (!FindIfObstacle(away_pos, sun_dir, sun_dir * 100.0f)) {
+    float sun_visibility = 1.0f - FindLightOcclusion(sun_dir * 100.0f, away_pos, 100.0f, 10.0f);
+    if (sun_visibility > 0.02f) {
         float drct = glm::clamp(glm::dot(normal, sun_dir), 0.0f, 1.0f);
         float spec = glm::pow(glm::max(glm::dot(view_dir, glm::reflect(-sun_dir, normal)), 0.0f), material->specular_exponent);
         
-        //std::cout << sun_dir.x << " "<< sun_dir.y << " "<< sun_dir.z << " " << std::endl;
-
-        diffuse_color += layers[0].sun_color * drct;
-        specular_color += material->specular_weight * spec * layers[0].sun_color * drct;
+        diffuse_color += world.sun_color * drct * sun_visibility;
+        specular_color += material->specular_weight * spec * world.sun_color * drct * sun_visibility;
     }
     
     for (const auto& light : PoolProxy<RTLight>::GetPool()) {
@@ -217,14 +369,13 @@ std::pair<vec3, vec3> GetLightContribution(RTMaterial* material, vec3 view_dir, 
 
         if (drct < epsilon) continue;
 
-        if (FindIfObstacle(away_pos, glm::normalize(light_vec), light.location)) {
-            continue;
-        }
-
+        float visibility = 1.0f - FindLightOcclusion(light.location, away_pos, dist, light_size);
+        if (visibility < 0.02f) continue;
+        
         float spec = glm::pow(glm::max(glm::dot(view_dir, glm::reflect(-glm::normalize(light_vec), normal)), 0.0f), material->specular_exponent);
 
-        diffuse_color += light.color * attn * drct;
-        specular_color += material->specular_weight * spec * light.color * drct;
+        diffuse_color += light.color * attn * drct * visibility;
+        specular_color += material->specular_weight * spec * light.color * drct * visibility;
     }
     
     diffuse_color += (1.0f - material->specular_transparency) * specular_color;
@@ -288,15 +439,15 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap, float dist) {
     }
 
     float fog = 0.0f;
-    if (ray_dist > layers[0].fog_near) {
-        float dist_in_fog = ray_dist - layers[0].fog_near;
-        float total_fog = layers[0].fog_far - layers[0].fog_near;
+    if (ray_dist > world.fog_near) {
+        float dist_in_fog = ray_dist - world.fog_near;
+        float total_fog = world.fog_far - world.fog_near;
         
         fog = dist_in_fog / total_fog;
         if (fog > 1.0f) fog = 1.0f;
     }
     
-    return glm::mix(glm::mix(translucent_color, vec3(texture_color) * diffuse_color, texture_color.w) + specular_color + tri.material->reflectivity * reflection_color, layers[0].fog_color, fog);
+    return glm::mix(glm::mix(translucent_color, vec3(texture_color) * diffuse_color, texture_color.w) + specular_color + tri.material->reflectivity * reflection_color, world.fog_color, fog);
 }
 
 std::vector<AssemblyLayer> FindAssemblyFromRay(vec3 pos, vec3 dir, int cap) {
@@ -393,34 +544,149 @@ vec3 GetColorFromAssembly(std::vector<AssemblyLayer>& layers) {
     return color;
 }
 
+static std::pair<int, int> get_pos_from_progress(uint32_t progress) {
+    if (scanline_progress) {
+        return {progress % screen_width, progress / screen_width};
+    }
+    
+    // this is some of the hackiest code I have ever written.
+    // very much not proud of it.
+    if (progress < interlace16.size()) return interlace16[progress];
+    progress -= interlace16.size();
+    if (progress < interlace8.size()) return interlace8[progress];
+    progress -= interlace8.size();
+    if (progress < interlace4.size()) return interlace4[progress];
+    progress -= interlace4.size();
+    if (progress < interlace2.size()) return interlace2[progress];
+    progress -= interlace2.size();
+    return interlace1[progress];
+}
+
+
+static void set_color_from_progress(uint32_t progress, vec3 color) {
+    if (scanline_progress) {
+        int x = progress % screen_width;
+        int y = progress / screen_width;
+
+        BlitDot(x, y, IntColor(glm::clamp(color, 0.0f, 1.0f)));
+
+        return;
+    }
+    
+    uint16_t coded_color = IntColor(glm::clamp(color, 0.0f, 1.0f));
+
+    if (progress < interlace16.size()) {
+        auto [x, y] = interlace16[progress];
+        for (int fy = 0; fy < 16; fy++) {
+        for (int fx = 0; fx < 16; fx++) {
+            BlitDot(x + fx, y + fy, coded_color);
+        }}
+        return;
+    }
+    progress -= interlace16.size();
+    if (progress < interlace8.size()) {
+        auto [x, y] = interlace8[progress];
+        for (int fy = 0; fy < 8; fy++) {
+        for (int fx = 0; fx < 8; fx++) {
+            BlitDot(x + fx, y + fy, coded_color);
+        }}
+        return;
+    }
+    progress -= interlace8.size();
+    if (progress < interlace4.size()) {
+        auto [x, y] = interlace4[progress];
+        for (int fy = 0; fy < 4; fy++) {
+        for (int fx = 0; fx < 4; fx++) {
+            BlitDot(x + fx, y + fy, coded_color);
+        }}
+        return;
+    }
+    progress -= interlace4.size();
+    if (progress < interlace2.size()) {
+        auto [x, y] = interlace2[progress];
+        for (int fy = 0; fy < 2; fy++) {
+        for (int fx = 0; fx < 2; fx++) {
+            BlitDot(x + fx, y + fy, coded_color);
+        }}
+        return;
+    }
+    progress -= interlace2.size();
+    
+    auto [x, y] = interlace1[progress];
+    
+    BlitDot(x, y, coded_color);
+}
+
 void RenderFrame() {
     if (!is_rendering) goto interactive;
     {
-        
-    const int y = rendering_progress;
+    static std::mt19937 generator;
+    static std::uniform_real_distribution<float> midway_dist(-0.25f, 0.25f);
+    static std::uniform_real_distribution<float> depth_of_field_dist(-aperture_size, aperture_size);
+
+    const vec3 view_side = glm::inverse(world.view_matrix) * vec4(DIRECTION_SIDE, 0.0f);
+    const vec3 view_up = glm::inverse(world.view_matrix) * vec4(DIRECTION_UP, 0.0f);
     
-    if (rendering_progress++ < screen_height)
-    for (int x = 0; x < screen_width; x++) {
-        vec3 far_point = InverseProject({x, y, 0.0f});
-        vec3 near_point = InverseProject({x, y, 1000.0f});
+    int progressed = 0;
+    while (progressed++, rendering_progress++ < screen_width * screen_height && progressed < 128) {
+        auto [x, y] = get_pos_from_progress(rendering_progress-1);
+        
+        vec3 far_point = InverseProject({x, y, 1.0f});
+        vec3 near_point = InverseProject({x, y, -1.0f});
         
         vec3 look_direction = glm::normalize(far_point - near_point);
         vec3 look_position = near_point;
-
-        if (!use_assembly_rendering) {
-            vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1, 0.0f);
-            //vec3 pixel_color = FindColorFromRay(look_position, look_direction, 0);
-            
-            BlitDot(x, y, IntColor(glm::clamp(pixel_color, 0.0f, 1.0f)));
-        } else {
+        
+        if (use_assembly_rendering) {
             auto layers = FindAssemblyFromRay(look_position, look_direction, 1);
-            
             BlitDot(x, y, IntColor(glm::clamp(GetColorFromAssembly(layers), 0.0f, 1.0f)));
-            
             GetAssembly(x, y) = layers;
+            continue;
         }
         
+        if (!rays_per_pixel) {
+            vec3 pixel_color = FindColorFromRay(look_position, look_direction, 1, 0.0f);
+            set_color_from_progress(rendering_progress-1, pixel_color);
+            continue;
+        }
+        
+        vec3 color_accumulated = {0.0f, 0.0f, 0.0f};
+        for (int32_t i = 0; i < rays_per_pixel; i++) {
+            vec2 coords = {x, y};
+            
+            // disperse the samples a little for improved anti-aliasing
+            if (i & 1) coords.x += 0.5f;
+            if (i & 2) coords.y += 0.5f;
+            
+            if (i >= 4) {
+                coords.x += midway_dist(generator);
+                coords.y += midway_dist(generator);
+            }
+            
+            vec3 far_point = InverseProject({coords.x, coords.y, 1.0f});
+            vec3 near_point = InverseProject({coords.x, coords.y, -1.0f});
+            
+            vec3 look_direction = glm::normalize(far_point - near_point);
+            vec3 look_position = near_point;
+            
+            if (depth_of_field) {
+                vec3 focus_point = look_position + look_direction * depth_of_field;
+                vec3 offset_side = view_side * depth_of_field_dist(generator);
+                vec3 offset_up = view_up * depth_of_field_dist(generator);
+                
+                look_position = near_point + offset_side + offset_up;
+                look_direction = normalize(focus_point - look_position);
+            }
+            
+            color_accumulated += FindColorFromRay(look_position, look_direction, 1, 0.0f);
+        }
+        
+        color_accumulated /= rays_per_pixel;
+        
+        set_color_from_progress(rendering_progress-1, color_accumulated);
     }
+    
+    rendering_progress--;
     
     }
     
@@ -466,9 +732,9 @@ interactive:
                     StaticVertex& p1 = ((StaticVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 1]];
                     StaticVertex& p2 = ((StaticVertex*)entry->vertex_array->vertices)[entry->index_array->indices[triangle + 2]];
                     
-                    vec4 pr0 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
-                    vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
-                    vec4 pr2 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p2.pos, 1.0f);
+                    vec4 pr0 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
+                    vec4 pr1 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
+                    vec4 pr2 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p2.pos, 1.0f);
                     
                     const vec3 color = entry->color;
                     
@@ -517,9 +783,9 @@ interactive:
                     const vec4 world_pos1 = entry->matrix * local_pos1;
                     const vec4 world_pos2 = entry->matrix * local_pos2;
                     
-                    vec4 pos0 = layers[0].projection_matrix * layers[0].view_matrix * world_pos0;
-                    vec4 pos1 = layers[0].projection_matrix * layers[0].view_matrix * world_pos1;
-                    vec4 pos2 = layers[0].projection_matrix * layers[0].view_matrix * world_pos2;
+                    vec4 pos0 = world.projection_matrix * world.view_matrix * world_pos0;
+                    vec4 pos1 = world.projection_matrix * world.view_matrix * world_pos1;
+                    vec4 pos2 = world.projection_matrix * world.view_matrix * world_pos2;
                     
                     const vec3 color = entry->color;
                     
@@ -538,8 +804,8 @@ interactive:
                     ColorVertex& p0 = ((ColorVertex*)entry->vertex_array->vertices)[i * 2 + 0];
                     ColorVertex& p1 = ((ColorVertex*)entry->vertex_array->vertices)[i * 2 + 1];
                     
-                    vec4 pr0 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
-                    vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
+                    vec4 pr0 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
+                    vec4 pr1 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
                     
                     ClipRenderLine(pr0, pr1, [=](uint32_t x, uint32_t y) {BlitDot(x, y, IntColor(p0.col));});
                 }
@@ -553,7 +819,7 @@ interactive:
 }
 
 bool IsFinishedRendering() {
-    return is_rendering && rendering_progress > screen_height;
+    return is_rendering && rendering_progress > screen_width * screen_height;
 }
 
 bool IsInteractiveMode() {
@@ -788,8 +1054,8 @@ void SetInteractiveMode(bool is_interactive) {
                     ColorVertex& p0 = ((ColorVertex*)entry->vertex_array->vertices)[i * 2 + 0];
                     ColorVertex& p1 = ((ColorVertex*)entry->vertex_array->vertices)[i * 2 + 1];
                     
-                    vec4 pr0 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
-                    vec4 pr1 = layers[0].projection_matrix * layers[0].view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
+                    vec4 pr0 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p0.pos, 1.0f);
+                    vec4 pr1 = world.projection_matrix * world.view_matrix * entry->matrix * vec4(p1.pos, 1.0f);
                     
                     ClipRenderLine(pr0, pr1, IntColor(p0.col));
                 }*/
@@ -821,12 +1087,36 @@ AssemblyLayers GetAssemblyLayers() {
 }
 
 void SetViewMatrix(const mat4& matrix, layer_t layer) {
-    layers[layer].view_matrix = matrix;
-    layers[layer].view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    if ((1 << layer) != LAYER_DEFAULT) return;
+    if (is_rendering) return;
+    world.view_matrix = matrix;
+    world.view_position = glm::inverse(matrix) * vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void SetProjectionMatrix(const mat4& matrix, layer_t layer) {
-    layers[layer].projection_matrix = matrix;
+    if ((1 << layer) != LAYER_DEFAULT) return;
+    world.projection_matrix = matrix;
+}
+
+void SetCullingTracking(bool enabled) {
+    
+}
+
+void SetViewDistance(float dist, layer_t layer) {
+    
+}
+
+void SetViewFocus(float dist, float blur, layer_t layer) {
+    if ((1 << layer) != LAYER_DEFAULT) return;
+    if (is_rendering) return;
+    depth_of_field = dist;
+    aperture_size = blur;
+}
+
+void SetQuality(int32_t pixel, int32_t shadow, bool scanline) {
+    rays_per_pixel = pixel;
+    rays_per_shadow = shadow;
+    scanline_progress = scanline;
 }
 
 void GetScreen(char* buffer, int w, int h) {

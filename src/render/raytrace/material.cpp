@@ -1,6 +1,7 @@
 // Tramway Drifting and Dungeon Exploration Simulator SDK Runtime
 
 #include <render/raytrace/material.h>
+#include <render/api.h>
 
 #include <config.h>
 
@@ -46,32 +47,39 @@ void SetMaterialReflectivity(material_t material, float reflectivity) {
 }
 
 texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, void* data) {
-    RTTexture* texture = texture_list.make();
-    
-    texture->width = width;
-    texture->height = height;
+    texturehandle_t texture = {.rt_texture = texture_list.make()};
+    SetTextureImage(texture, color_mode, width, height, data);
+    SetTextureFilter(texture, texture_filter);
+    return texture;
+}
+
+void SetTextureFilter(texturehandle_t texture, TextureFilter texture_filter) {
+    switch (texture_filter) {
+        case TEXTUREFILTER_NEAREST:             texture.rt_texture->mode = RT_NEAREST;  break;
+        case TEXTUREFILTER_LINEAR:              texture.rt_texture->mode = RT_BLENDED;  break;
+        case TEXTUREFILTER_LINEAR_MIPMAPPED:    texture.rt_texture->mode = RT_BLENDED;  break;
+    }
+}
+
+void SetTextureImage(texturehandle_t texture, ColorMode color_mode, uint32_t width, uint32_t height, void* data) {
+    texture.rt_texture->width = width;
+    texture.rt_texture->height = height;
     
     switch (color_mode) {
-        case COLORMODE_R:       texture->channels = 1;  break;
-        case COLORMODE_RG:      texture->channels = 2;  break;
-        case COLORMODE_RGB:     texture->channels = 3;  break;
-        case COLORMODE_RGBA:    texture->channels = 4;  break;
+        case COLORMODE_R:       texture.rt_texture->channels = 1;   break;
+        case COLORMODE_RG:      texture.rt_texture->channels = 2;   break;
+        case COLORMODE_RGB:     texture.rt_texture->channels = 3;   break;
+        case COLORMODE_RGBA:    texture.rt_texture->channels = 4;   break;
     }
     
-    switch (texture_filter) {
-        case TEXTUREFILTER_NEAREST:             texture->mode = RT_NEAREST; break;
-        case TEXTUREFILTER_LINEAR:              texture->mode = RT_BLENDED; break;
-        case TEXTUREFILTER_LINEAR_MIPMAPPED:    texture->mode = RT_BLENDED; break;
-    }
-    
-    int texture_size = texture->width * texture->height * sizeof(vec4);
-    texture->pixels = (vec4*)malloc(texture_size);
+    if (texture.rt_texture->pixels) free(texture.rt_texture->pixels);
+    int texture_size = width * height * sizeof(vec4);
+    texture.rt_texture->pixels = (vec4*)malloc(texture_size);
     uint8_t* pix = (uint8_t*)data;
-    //memcpy(texture->pixels, data, texture_size);
-    for (int i = 0; i < texture->width * texture->height; i++) {
+    for (unsigned i = 0; i < width * height; i++) {
         vec4 color = {0.0f, 0.0f, 0.0f, 255.0f};
         
-        int offset = i * texture->channels;
+        int offset = i * texture.rt_texture->channels;
         
         switch (color_mode) {
             case COLORMODE_R:       color.x = pix[offset + 0];      break;
@@ -81,10 +89,29 @@ texturehandle_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter
         }
         
         
-        texture->pixels[i] = color / 255.0f;
+        texture.rt_texture->pixels[i] = color / 255.0f;
     }
-    
-    return texturehandle_t {.rt_texture = texture};
+}
+
+void YeetTexture(texturehandle_t texture) {
+    free(texture.rt_texture->pixels);
+    texture_list.yeet(texture.rt_texture);
+}
+
+texturearray_t CreateTexture(ColorMode color_mode, TextureFilter texture_filter, uint32_t width, uint32_t height, uint32_t layers, void* data) {
+    return texturearray_t {.rt_texture = CreateTexture(color_mode, texture_filter, width, height, data).rt_texture};
+}
+
+void SetTextureFilter(texturearray_t texture, TextureFilter texture_filter) {
+    SetTextureFilter(texturehandle_t {.rt_texture = texture.rt_texture}, texture_filter);
+}
+
+void SetTextureImage(texturearray_t texture, ColorMode color_mode, uint32_t width, uint32_t height, uint32_t layers, void* data) {
+    SetTextureImage(texturehandle_t {.rt_texture = texture.rt_texture}, color_mode, width, height, data);
+}
+
+void YeetTexture(texturearray_t texture) {
+    YeetTexture(texturehandle_t {.rt_texture = texture.rt_texture});
 }
 
 }
