@@ -8,6 +8,7 @@
 #include <framework/path.h>
 #include <framework/navmesh.h>
 #include <framework/worldcell.h>
+#include <framework/script.h>
 #include <audio/sound.h>
 #include <physics/collisionmodel.h>
 #include <render/animation.h>
@@ -84,6 +85,8 @@ std::vector<DataType> data_types = {
                         [](const char* name) {}, [](const char* name) {}},
     {"sprite",          [](const char* name) { Render::Sprite::Find(name)->Load(); },
                         [](const char* name) {}, [](const char* name) {}},
+    {"script",          [](const char* name) { Script::LoadScript(name); },
+                        [](const char* name) {}, [](const char* name) {}},
 };
 
 void Register(const char* name, void (*load)(const char*), void (*save)(const char*), void (*reload)(const char*)) {
@@ -94,7 +97,7 @@ static std::string plugin_protocol(const Plugin& plugin) {
     switch (plugin.type) {
         case PLUGIN_DIRECTORY:  return "file";
         case PLUGIN_ARCHIVE:    return "archive";
-        default:                return "";
+        default:                return "file";
     }
 }
 
@@ -143,7 +146,7 @@ void LoadDataManifest() {
         
         FileReader::SetSearchList({{location.c_str(), protocol.c_str()}});
         
-        File file("plugin.manifest", File::READ | File::PAUSE_LINE);
+        File file("resource.manifest", File::READ | File::PAUSE_LINE);
         
         if (!file.is_open()) {
             Log(Severity::ERROR, System::CORE, "Plugin {} missing manifest!", plugin.name);
