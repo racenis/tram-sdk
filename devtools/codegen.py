@@ -429,7 +429,7 @@ end
 	"""
 	
 	open(path + ".inl", "w").write(generated)
-	open(find_project_root(path) + f"/data/{entity_name}.{version_num}.entdef", "w").write(entity_definition)
+	open(find_project_root(path) + f"/{entity_name}.{version_num}.entdef", "w").write(entity_definition)
 	
 	#
 	

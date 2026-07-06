@@ -36,6 +36,7 @@ build
 tram-sdk-cppcheck-build-dir
 cppcheck
 Makefile
+editor_settings.ini
 
 # Codelite IDE files
 compile_flags.txt
