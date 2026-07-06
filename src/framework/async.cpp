@@ -192,7 +192,7 @@ static void ResourceLoader() {
             disk_loader_queue.lock();
             auto len = disk_loader_queue.size();
             disk_loader_queue.unlock();
-            return len > 0;
+            return len > 0 || loaders_should_stop;
         });
         lock.unlock();
     }
