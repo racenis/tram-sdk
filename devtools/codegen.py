@@ -76,7 +76,7 @@ public:
 	void SetParameters();
 	void Load();
 	void Unload();
-	void Serialize();
+	void Serialize(ValueArray& field_array);
 	void EventHandler(Event& evt);
 	void MessageHandler(Message& msg);
 	name_t GetType();
@@ -123,8 +123,8 @@ void {class_name}::Unload() {{
 	SetFlag(LOADED, false);
 }}
 
-void {class_name}::Serialize() {{
-
+void {class_name}::Serialize(ValueArray& field_array) {{
+	ENTITY_IMPLEMENTATION_SERIALIZE
 }}
 
 void {class_name}::EventHandler(Event& evt) {{
@@ -311,6 +311,7 @@ def refresh_file(name):
 	
 	property_enum = ""
 	initializer = ""
+	serializer = ""
 	register = ""
 	
 	# use regex to find stuff
@@ -369,6 +370,16 @@ def refresh_file(name):
 			initializer += " \\\n"
 		
 		initializer += "\t" + property["variable"] + " = field_array[" + enumify(property["name"]) + "];" 
+		
+	# generate serialier
+	for property in property_list:
+		if property["variable"] is None:
+			continue
+			
+		if serializer != "":
+			serializer += " \\\n"
+		
+		serializer += "\tfield_array[" + enumify(property["name"]) + "] = " + property["variable"] + ";" 
 	
 	# generate register
 	for property in property_list:
@@ -387,6 +398,9 @@ enum {{
 
 #define ENTITY_IMPLEMENTATION_INITIALIZE \\
 {initializer}
+
+#define ENTITY_IMPLEMENTATION_SERIALIZE \\
+{serializer}
 
 #define ENTITY_IMPLEMENTATION_REGISTER	\\
 Entity::RegisterType( \\
