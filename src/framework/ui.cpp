@@ -234,18 +234,19 @@ void Update() {
         quat camera_rotation = GetViewRotation();
         
         const float acc = CAMERA_SPEED * ((keyboard_keys_values[KEY_LEFT_SHIFT]) ? 4.0f : 1.0f);
+        const float delta = Core::IsPlatformTime() ? GetDeltaTime() : 1.0f / 60.0f;
         
         if (keyboard_keys_values[KEY_W])
-            camera_position += camera_rotation * DIRECTION_FORWARD * acc * GetDeltaTime();
+            camera_position += camera_rotation * DIRECTION_FORWARD * acc * delta;
         if (keyboard_keys_values[KEY_S])
-            camera_position -= camera_rotation * DIRECTION_FORWARD * acc * GetDeltaTime();
+            camera_position -= camera_rotation * DIRECTION_FORWARD * acc * delta;
         if (keyboard_keys_values[KEY_A])
-            camera_position -= camera_rotation * DIRECTION_SIDE * acc * GetDeltaTime();
+            camera_position -= camera_rotation * DIRECTION_SIDE * acc * delta;
         if (keyboard_keys_values[KEY_D])
-            camera_position += camera_rotation * DIRECTION_SIDE * acc * GetDeltaTime();
+            camera_position += camera_rotation * DIRECTION_SIDE * acc * delta;
             
-        camera_yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_SENSITIVITY * GetDeltaTime();
-        camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY * GetDeltaTime();
+        camera_yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_SENSITIVITY * delta;
+        camera_pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_SENSITIVITY * delta;
         camera_pitch = camera_pitch > 90.0f ? 90.0f : camera_pitch < -90.0f ? -90.0f : camera_pitch;
         
         camera_rotation = quat(vec3(-glm::radians(camera_pitch), -glm::radians(camera_yaw), 0.0f));

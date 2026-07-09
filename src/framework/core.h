@@ -23,8 +23,12 @@ namespace Core {
     void Update();
     
     void SetPlatformTime(bool);
+    bool IsPlatformTime();
     void SetTime(double);
     void AddTime(double);
+    
+    void SetDeltaTimeLimit(float limit);
+    void SetDeltaTickLimit(uint32_t limit);
     
     void SetApplicationName(const char*, const char*);
     const char* GetApplicationName();
