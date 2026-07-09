@@ -31,6 +31,8 @@ public:
     uint32_t GetCollisionMask() const;
     uint32_t GetCollisionGroup() const;
 
+    void SetStoreCollisions(bool store_collisions);
+
     void SetDebugDrawing(bool drawing);
     void SetKinematic(bool kinematic);
     void SetUpdateParentTransform(bool update);
@@ -48,6 +50,8 @@ public:
 
     void SetVelocity(const vec3& velocity);
     vec3 GetVelocity() const;
+    
+    const std::vector<Physics::Collision>& GetStoredCollisions() const { return stored_collisions; }
     
     void EventHandler(Event &event) {}
 private:
@@ -73,10 +77,19 @@ private:
     uint32_t rigidbody_collision_mask = -1;
     uint32_t rigidbody_collision_group = -1;
     
+    bool store_collisions = false;
+    
     void Start();
+    
+    void Collision(const Physics::Collision& collision);
+    void ResetCollisions();
+    
+    friend void Physics::Update();
     
     PhysicsComponent() : model(this) {}
     ~PhysicsComponent();
+    
+    std::vector<Physics::Collision> stored_collisions;
 };
 
 }

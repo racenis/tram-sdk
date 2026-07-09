@@ -28,6 +28,9 @@ static uint32_t frames = 0;
 static uint32_t delta_tick = 0;
 static float delta_time = 0.0f;
 
+static uint32_t delta_tick_limit = 16;        // seems like a legit number
+static float delta_time_limit = 1.0f / 12.0f; // 12 hz, aka minimum interactive framerate
+
 static double frame_time = 0.0f;
 
 static float time_since_tick = 0.0f;
@@ -80,13 +83,12 @@ void Core::Update() {
         delta_time = 0.0f;
     }
     
-    // avoid overflowing event buffer on severe (1000ms+) lag
-    if (time_since_tick > 1.0f) {
-        time_since_tick = 0.0f;
+    if (automatic_time && delta_time > delta_time_limit) {
+        delta_time = delta_time_limit;
     }
     
     delta_tick = 0;
-    while (time_since_tick > TICK_RATE) {
+    while (time_since_tick > TICK_RATE && delta_tick < delta_tick_limit) {
         time_since_tick -= TICK_RATE;
         
         delta_tick++;
@@ -153,6 +155,12 @@ void Core::SetPlatformTime(bool platform_time) {
     automatic_time = platform_time;
 }
 
+/// Returns the platform time value.
+/// @see `SetPlatformTime()` for more info.
+bool Core::IsPlatformTime() {
+    return automatic_time;
+}
+
 /// Sets the time to a new value.
 /// This function should be called once per frame, just after calling
 /// Core::Update().
@@ -174,6 +182,21 @@ void Core::AddTime(double add_time) {
     
     delta_time = add_time;
     frame_time += add_time;
+}
+
+/// Sets the maximum value for GetDeltaTime().
+/// If the program is minimized or the window is being resized, the main loop
+/// may pause. When it resumes, the calculated delta time value might exceed
+/// several seconds, causing some calculations to result in unexpected values.
+/// This function allows setting a limit to calculated delta time.
+void SetDeltaTimeLimit(float limit) {
+    delta_time_limit = limit;
+}
+
+/// Sets the maximum value for GetDeltaTick().
+/// @see `SetDeltaTimeLimit()` for more details.
+void SetDeltaTickLimit(uint32_t limit) {
+    delta_tick_limit = limit;
 }
 
 static char* app_name_short = nullptr;

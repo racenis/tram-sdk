@@ -578,6 +578,49 @@ void StepPhysics() {
             }
         }
     }
+    
+    // idk but I guess we're doing another pass for rigidbody collisions
+    for (int i = 0; i < numManifolds; i++) {
+        btPersistentManifold* contactManifold = dynamics_world->getDispatcher()->getManifoldByIndexInternal(i);
+        const btCollisionObject* obj_a = contactManifold->getBody0();
+        const btCollisionObject* obj_b = contactManifold->getBody1();
+        
+        // skip if no contacts
+        if (!contactManifold->getNumContacts()) continue;
+        
+        // if not collision between physicscomponents, skip it
+        if (obj_a->getUserIndex() != USERINDEX_RIGIDBODY ||
+            obj_b->getUserIndex() != USERINDEX_RIGIDBODY) {
+            continue;
+        }
+        
+        assert(obj_a->getUserPointer());
+        assert(obj_b->getUserPointer());
+        
+        for (int i = 0; i < contactManifold->getNumContacts(); i++) {
+            auto& contact = contactManifold->getContactPoint(i);
+            auto& posB = contact.getPositionWorldOnB();
+            vec3 point = {posB.getX(), posB.getY(), posB.getZ()};
+            vec3 normal = {contact.m_normalWorldOnB.getX(),
+                           contact.m_normalWorldOnB.getY(),
+                           contact.m_normalWorldOnB.getZ()};
+            
+            API::RigidbodyMetadata* metadata_a = (API::RigidbodyMetadata*)obj_a->getUserPointer();
+            API::RigidbodyMetadata* metadata_b = (API::RigidbodyMetadata*)obj_b->getUserPointer();
+            
+            if (metadata_a->collision_callback) {
+                metadata_a->collision_callback(metadata_a->collision_data,
+                                               metadata_b->collision_data,
+                                               {point, normal, contact.getDistance()});
+            }
+            
+            if (metadata_b->collision_callback) {
+                metadata_b->collision_callback(metadata_b->collision_data,
+                                               metadata_a->collision_data,
+                                               {point, -normal, contact.getDistance()});
+            }
+        }
+    }
 }
 
 void DrawDebug() {

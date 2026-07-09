@@ -139,6 +139,27 @@ void PhysicsComponent::SetCollisionGroup(uint32_t flags) {
     }
 }
 
+/// Sets the collision storage for the physics object.
+/// If enabled, the physics object will store all collisions that have occured
+/// between it and other physics objects. These stored collisions can be
+/// retrieced by using the `GetStoredCollisions()` method.
+void PhysicsComponent::SetStoreCollisions(bool store_collisions) {
+    this->store_collisions = store_collisions;
+    if (store_collisions) {
+        API::SetRigidbodyCollisionCallback(rigidbody, [](void* obj_a, void* obj_b, API::ObjectCollision collision) {
+            PhysicsComponent* collidee = (PhysicsComponent*)obj_a;
+            PhysicsComponent* collider = (PhysicsComponent*)obj_b;
+            
+            collidee->Collision({collider,
+                                 collision.point,
+                                 collision.normal, 
+                                 collision.distance});
+            }, this);
+    } else {
+        API::SetRigidbodyCollisionCallback(rigidbody, nullptr, nullptr);
+    }
+}
+
 /// Sets the collision shape of the physics object.
 void PhysicsComponent::SetShape(Physics::CollisionShape shape) {
     if (is_ready) {
@@ -304,6 +325,22 @@ vec3 PhysicsComponent::GetVelocity() const {
         return API::GetRigidbodyVelocity(rigidbody);
     } else {
         return {0.0f, 0.0f, 0.0f};
+    }
+}
+
+/// Registers a collision.
+/// This method is called from Physics::Update().
+void PhysicsComponent::Collision(const Physics::Collision& collision) {
+    if (store_collisions) {
+        stored_collisions.push_back(collision);
+    }
+}
+
+/// Resets registered collisions.
+/// This method is called from Phyics::Update().
+void PhysicsComponent::ResetCollisions() {
+    if (store_collisions) {
+        stored_collisions.clear();
     }
 }
 
