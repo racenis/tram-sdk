@@ -122,7 +122,7 @@ void TriggerComponent::SetRotation(quat rotation) {
     this->rotation = rotation;
     
     if (is_ready) {
-        API::SetTriggerRotation(trigger, location);
+        API::SetTriggerRotation(trigger, rotation);
     }
 }
 
