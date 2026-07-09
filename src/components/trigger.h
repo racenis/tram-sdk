@@ -32,7 +32,7 @@ public:
     void SetCollisionMask(uint32_t flags);
     void SetCollisionGroup(uint32_t flags);
     
-    void SetStoreCollisions(bool store_collisions) { this->store_collisions = store_collisions; }
+    void SetStoreCollisions(bool store_collisions) { assert(store_collisions); this->store_collisions = store_collisions; }
     
     uint32_t GetCollisionMask() const { return collision_mask; }
     uint32_t GetCollisionGroup() const { return collision_group; }

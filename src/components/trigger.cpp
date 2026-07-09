@@ -127,7 +127,7 @@ void TriggerComponent::SetRotation(quat rotation) {
 }
 
 /// Registers a collision.
-/// This method is called from Phyics::Update().
+/// This method is called from Physics::Update().
 void TriggerComponent::Collision(const Physics::Collision& collision) {
     if (!filter || filter(this, collision.collider)) {
         
