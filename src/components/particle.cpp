@@ -438,8 +438,11 @@ void ParticleComponent::UpdateRenderListObject() {
             float tex_w_off = (float)sprite->GetFrames()[frame].offset_x / (float)sprite->GetMaterial()->GetWidth();
             float tex_h_off = (float)sprite->GetFrames()[frame].offset_y / (float)sprite->GetMaterial()->GetHeight();
             
-            float tex_x_mid = (float)sprite->GetFrames()[frame].midpoint_x / (float)sprite->GetMaterial()->GetWidth();
-            float tex_y_mid = (float)sprite->GetFrames()[frame].midpoint_y / (float)sprite->GetMaterial()->GetHeight();
+            float wrld_x_mid = (float)sprite->GetFrames()[frame].midpoint_x / 32.0f;
+            float wrld_y_mid = (float)sprite->GetFrames()[frame].midpoint_y / 32.0f;
+            
+            float wrld_width = (float)sprite->GetFrames()[frame].width / 32.0f;
+            float wrld_height = (float)sprite->GetFrames()[frame].height / 32.0f;
 
             tex_h_off = 1.0f - tex_h_off - tex_height;
 
@@ -447,8 +450,8 @@ void ParticleComponent::UpdateRenderListObject() {
             point.position = position;
             point.color = color;
             point.rotation = rotation;
-            point.dimensions = {tex_width * width * 10.0f, tex_height * height * 10.0f}; 
-            point.midpoint = {tex_x_mid * 10.0f, tex_y_mid * 10.0f};
+            point.dimensions = {wrld_width * width, wrld_height * height}; 
+            point.midpoint = {wrld_x_mid * width, wrld_y_mid * height};
             point.texture_offset = {tex_w_off, tex_h_off};
             point.texture_size = {tex_width, tex_height};
             point.texture = s;
