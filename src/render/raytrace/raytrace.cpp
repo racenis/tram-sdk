@@ -819,7 +819,7 @@ interactive:
 }
 
 bool IsFinishedRendering() {
-    return is_rendering && rendering_progress > screen_width * screen_height;
+    return is_rendering && rendering_progress >= screen_width * screen_height;
 }
 
 bool IsInteractiveMode() {
