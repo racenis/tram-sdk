@@ -19,7 +19,7 @@ struct GLDrawListEntry {
 
     uint32_t lights[4] = {0};
     
-    uint32_t layer = 0;
+    uint32_t layer = 1;
     uint32_t lightmap = 0;
     uint32_t environmentmap = 0;
     uint32_t vao = 0;
