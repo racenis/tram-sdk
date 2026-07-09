@@ -2,6 +2,8 @@ import bpy
 
 import sys
 import traceback
+import os
+from pathlib import Path
 
 from tram_static_obj_export import write_tram_static_model
 from tram_dynamic_obj_export import write_tram_dynamic_model
@@ -9,6 +11,16 @@ from tram_collision_export import write_tram_collision_model
 from tram_anim_export import write_tram_animation
 
 def main():
+    file_path = Path(bpy.data.filepath).resolve()
+    working_directory = Path.cwd().resolve()
+    file_prefix = Path(os.path.relpath(file_path.parent, working_directory)).as_posix()
+    if file_prefix.startswith("assets/"):
+        file_prefix = file_prefix[len("assets/"):] 
+    if file_prefix == "." or file_prefix == "assets":
+        file_prefix = ""
+    else:
+        file_prefix = file_prefix + "/"
+
     path_prefix = "./"
 
     print("Autoexport script begin")
@@ -52,22 +64,25 @@ def main():
             
             # export the mesh
             if export_type == 'STMDL' or export_type == 'STMDL_COL':
-                file_path = path_prefix + "data/models/" + export_name + '.stmdl'
+                file_path = path_prefix + "data/models/" + file_prefix + export_name + '.stmdl'
                 print("Exporting", object.name, "as", file_path)
                 
+                Path(file_path).parent.mkdir(parents=True, exist_ok=True)
                 write_tram_static_model(bpy.context, object, file_path)
             else:
-                file_path = path_prefix + "data/models/" + export_name + '.dymdl'
+                file_path = path_prefix + "data/models/" + file_prefix + export_name + '.dymdl'
                 print("Exporting", object.name, "as", file_path)
                 
+                Path(file_path).parent.mkdir(parents=True, exist_ok=True)
                 write_tram_dynamic_model(bpy.context, object, file_path)
                 
                 
             # check if could be treated as collmdl
             if len(object.children) > 0 or export_type == 'STMDL_COL':
-                file_path = path_prefix + "data/models/" + export_name + '.collmdl'
+                file_path = path_prefix + "data/models/" + file_prefix + export_name + '.collmdl'
                 print("Exporting", object.name, "as", file_path)
                 
+                Path(file_path).parent.mkdir(parents=True, exist_ok=True)
                 write_tram_collision_model(bpy.context, object, file_path)
         
         
@@ -79,16 +94,18 @@ def main():
                     continue
                 
                 # export as dymdl since has an armature
-                file_path = path_prefix + "data/models/" + subobj.name + '.dymdl'
+                file_path = path_prefix + "data/models/" + file_prefix + subobj.name + '.dymdl'
                 print("Exporting", subobj.name, "as", file_path)
                 
+                Path(file_path).parent.mkdir(parents=True, exist_ok=True)
                 write_tram_dynamic_model(bpy.context, subobj, file_path)
                 
                 # check if could be treated as collmdl
                 if len(subobj.children) > 0:
-                    file_path = path_prefix + "data/models/" + subobj.name + '.collmdl'
+                    file_path = path_prefix + "data/models/" + file_prefix + subobj.name + '.collmdl'
                     print("Exporting", subobj.name, "as", file_path)
                     
+                    Path(file_path).parent.mkdir(parents=True, exist_ok=True)
                     write_tram_collision_model(bpy.context, subobj, file_path)
                 
                 
