@@ -4,6 +4,7 @@
 layout (location = 0) in vec3 Position;		// vertex position
 layout (location = 3) in vec2 VOffset;		// screen space transform
 layout (location = 1) in vec2 VertUV;		// texture coordinates
+layout (location = 2) in vec3 VertColor;	// vertex color
 layout (location = 4) in float Verticality; // how vertical should a sprite be
 layout (location = 5) in uint TexIndex;		// texture index
 
@@ -28,6 +29,7 @@ layout (std140) uniform ModelMatrices {
 };
 
 out vec2 vert_uv;
+out vec3 vert_color;
 flat out uint vert_tex_index;
 
 void main() {
@@ -37,5 +39,6 @@ void main() {
     gl_Position = projection * offset_pos;
 
     vert_uv = VertUV;
+	vert_color = VertColor;
 	vert_tex_index = TexIndex;
 }

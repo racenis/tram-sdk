@@ -14,4 +14,7 @@ uniform sampler2DArray samplerArray;
 
 void main() {
     fragment = texture(sampler[vert_tex_index], vert_uv) * texture(samplerArray, vec3(vert_light_uv, 0.0)) * vec4(vert_color, vert_opacity);
+#ifdef FLAG_ALPHA_TEST
+	if (fragment.a < 0.5) discard;
+#endif
 }
