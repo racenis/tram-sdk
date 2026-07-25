@@ -43,7 +43,7 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
             .co =           sprite.position,
             .voffset =      top_left_voffset,
             .texco =        {sprite.texture_offset.x, sprite.texture_offset.y + sprite.texture_size.y},
-            .color =        {1.0f, 1.0f, 1.0f},
+            .color =        sprite.color,
             .verticality =  1.0f,
             .texture =      sprite.texture  
         };
@@ -52,7 +52,7 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
             .co =           sprite.position,
             .voffset =      top_right_voffset,
             .texco =        {sprite.texture_offset.x + sprite.texture_size.x, sprite.texture_offset.y + sprite.texture_size.y},
-            .color =        {1.0f, 1.0f, 1.0f},
+            .color =        sprite.color,
             .verticality =  1.0f,
             .texture =      sprite.texture
         };
@@ -61,7 +61,7 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
             .co =           sprite.position,
             .voffset =      bottom_left_voffset,
             .texco =        {sprite.texture_offset.x, sprite.texture_offset.y},
-            .color =        {1.0f, 1.0f, 1.0f},
+            .color =        sprite.color,
             .verticality =  1.0f,
             .texture =      sprite.texture
         };
@@ -70,7 +70,7 @@ void UpdateSpriteArray(spritearray_t array, size_t data_size, void* data) {
             .co =           sprite.position,
             .voffset =      bottom_right_voffset,
             .texco =        {sprite.texture_offset.x + sprite.texture_size.x, sprite.texture_offset.y},
-            .color =        {1.0f, 1.0f, 1.0f},
+            .color =        sprite.color,
             .verticality =  1.0f,
             .texture =      sprite.texture
         };
