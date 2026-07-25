@@ -412,6 +412,11 @@ vec3 FindColorFromRay(vec3 pos, vec3 dir, int cap, float dist) {
         mat3 normal_matrix = mat3(tri.tangent, tri.bitangent, normal);
         
         vec3 normal_sample = SampleTexture(tri.material->normal_map, tex_coords);
+        // we're flipping the y component here as the texture loader flips the
+        // texture image when loading and that causes the normals to flip as
+        // well, so we're basically flipping the normal back around
+        normal_sample.y = 1.0f - normal_sample.y;
+        normal_sample = glm::normalize(normal_sample);
         normal = glm::normalize(normal_matrix * (normal_sample * 2.0f - 1.0f)); 
     }
     
