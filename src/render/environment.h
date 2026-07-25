@@ -29,7 +29,7 @@ public:
     static Environment* Find(name_t name);
 protected:
     Environment(name_t name) : Resource(name) {}
-    Environment(name_t graph, uint32_t index) : Resource() {}
+    Environment(name_t graph, uint32_t index) : Resource(), graph(graph) {}
     
     texturearray_t texture = {};
 
