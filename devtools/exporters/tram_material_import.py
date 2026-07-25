@@ -23,11 +23,13 @@ def import_tram_material(context, path_prefix):
             if extension != '.png':
                 continue
             
-            if name.endswith('.nrm') or name.endswith('.normal')
+            if name.endswith('.nrm') or name.endswith('.normal'):
                 continue
             
-            name = os.path.relpath(name, texture_prefix)
+            name = os.path.relpath(name, texture_prefix).replace('\\', '/')
             
+            if name.startswith('ui/'):
+                continue
             
             new_material = {
                 "name" : name,
