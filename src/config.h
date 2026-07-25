@@ -134,6 +134,10 @@ const uint32_t SIGNAL_TABLE_LIMIT = 250;
 const uint32_t SIGNAL_TYPE_LIMIT = 100;
 const uint32_t SIGNAL_PER_ENTITY_LIMIT = 16;
 
+// Limits for settings
+const uint32_t SETTING_LIMIT = 200;
+const uint32_t SETTING_STRING_LENGTH = 50;
+
 // Limit for total sum of characters that can be stored in all names
 const uint32_t UID_CHARACTER_LIMIT = 20000;
 
