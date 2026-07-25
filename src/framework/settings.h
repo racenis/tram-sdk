@@ -8,6 +8,8 @@
 #include <initializer_list>
 #include <vector>
 
+#include <config.h>
+
 namespace tram::Settings {
 
 enum : uint32_t {
@@ -26,6 +28,7 @@ void Register(bool& value, const char* name, uint32_t flags);
 void Register(float& value, const char* name, uint32_t flags);
 void Register(int32_t& value, const char* name, uint32_t flags);
 void Register(uint32_t& value, const char* name, uint32_t flags);
+void Register(char* value, const char* name, uint32_t flags);
 
 void SetCallback(const char* name, void (*callback)(const char* name));
 
@@ -65,6 +68,28 @@ struct Property {
     }
     
     T value;
+};
+
+template<>
+struct Property<char*> {
+    Property(std::initializer_list<value_t> values) {
+        strncpy_s(value, SETTING_STRING_LENGTH, (const char*)values.begin()[0], -1);
+        
+        const char* name = values.begin()[1];
+        uint32_t flags = values.begin()[2];
+
+        Register(value, name, flags);
+    }
+    
+    Property(const char*& value) {
+        strncpy_s(this->value, SETTING_STRING_LENGTH, value, -1);
+    }
+    
+    operator const char*() {
+        return value;
+    }
+    
+    char value[SETTING_STRING_LENGTH];
 };
 
 }

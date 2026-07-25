@@ -18,14 +18,13 @@
 
 namespace tram::Settings {
 
-const int SETTING_LIMIT = 200;
-
 struct SettingInfo {
     union {
         int32_t* int32;
         uint32_t* uint32;
         float* float32;
         bool* bool32;
+        char* string;
     };
     Type type;
     
@@ -114,6 +113,12 @@ void SetFromRaw(SettingInfo& info) {
                 }
                 *info.uint32 = atoi(setting.value);
                 break;
+            case TYPE_STRING:
+                if (!setting.value) {
+                    Log(Severity::WARNING, System::CORE, "cannot set {} since ther eisno value", info.name);
+                }
+                strncpy_s(info.string, SETTING_STRING_LENGTH, setting.value, -1);
+                break;
             default:
                 Log(Severity::WARNING, System::CORE, "hello setting invalid");
             
@@ -149,6 +154,10 @@ void Register(uint32_t& value, const char* name, uint32_t flags) {
     SetAndStore(SettingInfo{.uint32 = &value, .type = TYPE_UINT32, .name = name, .flags = flags});
 }
 
+void Register(char* value, const char* name, uint32_t flags) {
+    SetAndStore(SettingInfo{.string = value, .type = TYPE_UINT32, .name = name, .flags = flags});
+}
+
 void SetCallback(const char* name, void (*callback)(const char* name)) {
     auto setting = lookup_setting(name);
     if (setting) {
@@ -167,16 +176,14 @@ value_t Get(const char* name) {
     switch (setting->type) {
         case TYPE_BOOL:
             return *setting->bool32;
-            break;
         case TYPE_FLOAT32:
             return *setting->float32;
-            break;
         case TYPE_INT32:
             return *setting->int32;
-            break;
         case TYPE_UINT32:
-            return *setting->uint32;;
-            break;
+            return *setting->uint32;
+        case TYPE_STRING:
+            return setting->string;
         default:
             return false;
         
@@ -202,6 +209,8 @@ void Set(const char* name, value_t value) {
         *setting->float32 = value.GetFloat();
     } else if (value.IsBool()) {
         *setting->bool32 = value;
+    } else if (value.IsString()) {
+        strncpy_s(setting->string, SETTING_STRING_LENGTH, (const char*)value, -1);
     } else {
         Log(Severity::WARNING, System::CORE, "Setting::Set() called for '{}' setting, but set to value {}!", TypeToString(value.GetType()));
     }
@@ -321,8 +330,12 @@ static void save_settings(const char* path, uint32_t filter) {
             case TYPE_UINT32:
                 file.write_uint32(*setting.uint32);
                 break;
+            case TYPE_STRING:
+                file.write_string(setting.string, '\0');
             default: break;
         }
+        
+        file.write_newline();
     }
 }
 
@@ -352,7 +365,7 @@ static void load_settings(const char* path) {
     
     while (file.is_continue()) {
         auto name = file.read_token();
-        auto value = file.read_token();
+        auto value = file.read_line();
         
         RawSetting setting;
         
