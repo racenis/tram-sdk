@@ -55,6 +55,7 @@ void SpriteComponent::Resize(int32_t frame, bool downside) {
         sprite_count = want_count;
         for (int32_t i = 0; i < want_count; i++) {
             infos[i].scale = {1.0f, 1.0f};
+            points[i].color = {1.0f, 1.0f, 1.0f};
         }
         return;
     }
@@ -74,6 +75,7 @@ void SpriteComponent::Resize(int32_t frame, bool downside) {
         memset(infos + sprite_count, 0, (want_count - sprite_count) * sizeof(SpriteInfo));
         for (int32_t i = sprite_count; i < want_count; i++) {
             infos[i].scale = {1.0f, 1.0f};
+            points[i].color = {1.0f, 1.0f, 1.0f};
         }
     }
     
