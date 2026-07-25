@@ -157,9 +157,9 @@ void main() {
 	vert_opacity = colors[TexIndex].w;
 	
 	// calculate reflections
-	vec3 reflection = reflect(-view_dir, n);
-	vert_reflection = vec3(reflection.x /2.0 + 0.5, reflection.y /2.0 + 0.5, reflection.z);
+	vert_reflection = reflect(-view_dir, n);
 	vert_reflectivity = specular[TexIndex].w;
+	
     vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;
 }

@@ -22,10 +22,12 @@ void main() {
 	if (fragment.a < 0.5) discard;
 #endif
 	
-	vec3 reflection_coords = vert_reflection;
-	if (reflection_coords.z > 0.0) {
+	vec3 reflection_coords;
+	if (vert_reflection.z > 0.0) {
+		reflection_coords.xy = 0.5 + 0.5 * (vert_reflection.xy / (1.0 + vert_reflection.z));
 		reflection_coords.z = 1.0;
 	} else {
+		reflection_coords.xy = 0.5 + 0.5 * (vert_reflection.xy / (1.0 - vert_reflection.z));
 		reflection_coords.z = 0.0;
 	}
 	

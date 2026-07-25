@@ -188,14 +188,15 @@ void RenderEnvironmentMaps(WorldCell* cell) {
         // convert cubemap into double sphere maps
         for (float u = 0.0f; u < 1.0f; u += 1.0f / (float)map_size) {
             for (float v = 0.0f; v < 1.0f; v += 1.0f / (float)map_size) {            
-                float x = u * 2.0f - 1.0f;
-                float y = v * 2.0f - 1.0f;
-
-                //float z = 1.0f / sqrtf(1 + x * x + y * y);
-                float z = sqrtf(1 - x * x - y * y);
-
-                auto color_front = sample_cubemap({x, y, z});
-                auto color_back = sample_cubemap({x, y, -z});
+                float s = u * 2.0f - 1.0f;
+                float t = v * 2.0f - 1.0f;
+            
+                float x = 2.0f * s / (s * s + t * t + 1);
+                float y = 2.0f * t / (s * s + t * t + 1);
+                float z = (-1 + s * s + t * t) / (s * s + t * t + 1);
+                
+                auto color_front = sample_cubemap({x, y, -z});
+                auto color_back = sample_cubemap({x, y, z});
                 
                 set_pixel(sphere_front, {u, v}, color_front);
                 set_pixel(sphere_back, {u, v}, color_back);
