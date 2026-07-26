@@ -317,6 +317,11 @@ void RenderFrame() {
         for (uint32_t mask = robj.layer; mask; mask &= mask - 1) {
             uint32_t layer = std::countr_zero(mask);
 
+            // discard fully transparent objects
+            if (robj.color.a <= 0.0f) {
+                continue;
+            }
+
             const vec3 pos = robj.matrix * vec4(0.0f, 0.0f, 0.0f, 1.0f);
             const float dist = glm::distance(pos, layers[layer].culling_position);
             const float mult = layers[layer].view_distance;
@@ -386,7 +391,7 @@ void RenderFrame() {
 
             const uint64_t sort_key = robj.CalcSortKey(layers[layer].view_position);
 
-            if (robj.flags & FLAG_TRANSPARENT || robj.color.w < 1.0f) {
+            if (robj.flags & FLAG_TRANSPARENT || robj.color.a < 1.0f) {
                 layers[layer].transparency_bucket.push_back({sort_key, &robj});
             } else {
                 layers[layer].forward_bucket.push_back({sort_key, &robj});
