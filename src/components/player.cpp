@@ -30,6 +30,7 @@ void PlayerComponent::Start() {
     keydown.make(Event::KEYDOWN, this);
     keypress.make(Event::KEYPRESS, this);
     mouseposition.make(Event::CURSORPOS, this);
+    controlleraxis.make(Event::CONTROLLER, this);
 }
 
 PlayerComponent::~PlayerComponent() {
@@ -69,9 +70,15 @@ void PlayerComponent::EventHandler(Event &event) {
     using namespace tram::UI;
     
     // Map cursor position into camera and entity orientation.
-    if (event.type == Event::CURSORPOS && !keyboard_look) {
-        yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_MULTIPLIER;
-        pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_MULTIPLIER;
+    if ((event.type == Event::CURSORPOS && !keyboard_look) || event.type == Event::CONTROLLER) {
+        if (event.type == Event::CURSORPOS) {
+            yaw += PollKeyboardAxisDelta(KEY_MOUSE_X) * CAMERA_MULTIPLIER;
+            pitch += PollKeyboardAxisDelta(KEY_MOUSE_Y) * CAMERA_MULTIPLIER;
+        } else {
+            yaw += GetAxisSensitivity(KEY_CONTROLLER_RIGHT_X) * PollKeyboardAxis(KEY_CONTROLLER_RIGHT_X) * 2.5f;
+            pitch += GetAxisSensitivity(KEY_CONTROLLER_RIGHT_Y) * PollKeyboardAxis(KEY_CONTROLLER_RIGHT_Y) * 2.5f;
+        }
+        
         pitch = pitch > 89.0f ? 89.0f : pitch < -89.0f ? -89.0f : pitch;
         this->look_rotation = quat(vec3(-glm::radians(pitch), -glm::radians(yaw), 0.0f));
         quat parent_rotation = quat(vec3(0.0f, -glm::radians(yaw), 0.0f));
@@ -103,7 +110,7 @@ void PlayerComponent::EventHandler(Event &event) {
         
         UpdateLook();
     }
-
+    
     if (event.type == Event::KEYDOWN && event.subtype == KEY_ACTION_JUMP) {
         controller->Jump();
     }
@@ -121,10 +128,19 @@ void PlayerComponent::EventHandler(Event &event) {
             if (event.subtype == KEY_ACTION_STRAFE_RIGHT)   controller->Move(DIRECTION_SIDE);
         }
         
-        
         if (event.subtype == KEY_ACTION_CROUCH)         controller->Crouch();
         if (event.subtype == KEY_ACTION_SPRINT)         controller->Run();
         if (event.subtype == KEY_ACTION_FLY)            controller->Fly();
+    }
+    
+    if (event.type == Event::CONTROLLER) {
+        if (noclipping) {
+            controller->Move({PollKeyboardAxis(KEY_CONTROLLER_LEFT_X), 0.0f, 0.0f});
+            controller->Move(glm::inverse(parent->GetRotation()) * direction_facing * PollKeyboardAxis(KEY_CONTROLLER_LEFT_Y));
+        } else {
+            controller->Move({PollKeyboardAxis(KEY_CONTROLLER_LEFT_X), 0.0f, PollKeyboardAxis(KEY_CONTROLLER_LEFT_Y)});
+        }
+
     }
 }
 

@@ -45,7 +45,7 @@ enum KeyboardKey : uint16_t {
     KEY_KP_0,   KEY_KP_1,   KEY_KP_2,   KEY_KP_3,   KEY_KP_4,   KEY_KP_5,
     KEY_KP_6,   KEY_KP_7,   KEY_KP_8,   KEY_KP_9,
     
-    // keyoad keys
+    // keypad keys
     KEY_KP_DECIMAL, KEY_KP_DIVIDE, KEY_KP_MULTIPLY, KEY_KP_SUBTRACT, KEY_KP_ADD,
     KEY_KP_ENTER,  KEY_KP_EQUAL,
     
@@ -61,6 +61,17 @@ enum KeyboardKey : uint16_t {
     KEY_LEFTMOUSE,
     KEY_MIDDLEMOUSE,
     
+    // controller keys
+    KEY_CONTROLLER_A, KEY_CONTROLLER_B, KEY_CONTROLLER_X, KEY_CONTROLLER_Y,
+    
+    KEY_CONTROLLER_LEFT_BUMPER, KEY_CONTROLLER_RIGHT_BUMPER,
+    KEY_CONTROLLER_START, KEY_CONTROLLER_SELECT, KEY_CONTROLLER_GUIDE,
+    
+    KEY_CONTROLLER_LEFT_STICK, KEY_CONTROLLER_RIGHT_STICK,
+    
+    KEY_CONTROLLER_DPAD_UP, KEY_CONTROLLER_DPAD_DOWN,
+    KEY_CONTROLLER_DPAD_LEFT, KEY_CONTROLLER_DPAD_RIGHT,
+    
     KEY_LASTKEY
 };
 
@@ -68,6 +79,12 @@ enum KeyboardAxis : uint16_t {
     KEY_MOUSE_X,
     KEY_MOUSE_Y,
     KEY_MOUSE_SCROLL,
+    KEY_CONTROLLER_LEFT_X,
+    KEY_CONTROLLER_LEFT_Y,
+    KEY_CONTROLLER_RIGHT_X,
+    KEY_CONTROLLER_RIGHT_Y,
+    KEY_CONTROLLER_LEFT_TRIGGER,
+    KEY_CONTROLLER_RIGHT_TRIGGER,
     KEY_LASTAXIS
 };
 
@@ -77,6 +94,11 @@ enum InputState {
     STATE_FLYING,       //< Events are skipped, inputs directly move view.
     STATE_MENU_OPEN,    //< Input gets registered, but no events are generated, cursor enabled.
     STATE_CURSOR        //< Normal input, events get generated, but cursor enabled.
+};
+
+enum InputMethod {
+    METHOD_KEYBOARD,
+    METHOD_CONTROLLER
 };
 
 typedef uint16_t keyboardaction_t;
@@ -135,6 +157,8 @@ float PollKeyboardAxisDelta(KeyboardAxis key);
 
 void SetInputState(InputState state);
 InputState GetInputState();
+
+InputMethod GetLastInputMethod();
 
 float GetAxisSensitivity(KeyboardAxis axis);
 void SetAxisSensitivity(KeyboardAxis axis, float value);

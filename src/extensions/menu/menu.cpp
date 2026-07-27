@@ -117,6 +117,9 @@ void Init() {
     UI::BindKeyboardKey(UI::KEY_ESCAPE, EscapeMenuKeyboard);
     UI::BindKeyboardKey(UI::KEY_GRAVE_ACCENT, DebugMenuKeyboard);
     
+    UI::BindKeyboardKey(UI::KEY_CONTROLLER_START, EscapeMenuKeyboard);
+    UI::BindKeyboardKey(UI::KEY_CONTROLLER_SELECT, EscapeMenuKeyboard);
+    
     InitCallbacks();
     
     GUI::SetGlyphDefaults(COLOR_WHITE, FONT_WIDGETS, GUI::WIDGET);

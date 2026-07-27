@@ -29,6 +29,7 @@ struct Event {
         KEYUP,          //< Keyboard key released
         KEYCHAR,        //< Keyboard input registered
         CURSORPOS,      //< Cursor moved
+        CONTROLLER,     //< Controller axis changed
         FRAME,          //< Emitted every frame
         TICK,           //< Emitted every tick
         SELECTED,       //< Cursor on top of an interactable object

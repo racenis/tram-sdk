@@ -86,6 +86,7 @@ static Stack<Render::color_t> text_color_stack("GUI Text Color stack", 100);
 static Stack<Render::color_t> widget_color_stack("GUI Widget Color stack", 100);
 static Stack<font_t> text_font_stack("GUI Text Font stack", 100);
 static Stack<font_t> widget_font_stack("GUI Widget Font stack", 100);
+static Stack<GlyphEffect> effect_stack("GUI Effect stack", 100);
 static Render::color_t default_text_color = Render::COLOR_BLACK;
 static Render::color_t default_widget_color = Render::COLOR_WHITE;
 static font_t default_text_font = 1;
@@ -101,6 +102,20 @@ bool beginned = false;
 // lots of very bad errors in the user code
 bool mouse_click_not_handled = true;
 bool mouse_click_not_handled_late = true;
+
+// true if last input method was keyboard/controller, false if pointer
+static bool is_keyboard = false;
+static bool allow_keyboard = true;
+
+// variables for tracking keyboard/controller navigation
+static int32_t switch_tab_direction = 0;
+static int32_t switch_tab_absolute = 0;
+static int32_t selected_group = 0;
+static int32_t selected_index = 0;
+static int32_t processing_group = 0;
+static int32_t processing_index = 0;
+static int32_t selection_group_last_index = 0;
+static int32_t selected_group_last_index = 0;
 
 /// Sets the color.
 /// Pushes color to color stack. Each glyph type gets its own color stack.
@@ -134,6 +149,11 @@ void SetFont(font_t font, GlyphType type) {
     }
 }
 
+/// Sets the font effect.
+void SetEffect(GlyphEffect effect) {
+    effect_stack.push(effect);
+}
+
 /// Restores previous glyph color.
 /// See SetColor().
 void RestoreColor(GlyphType type) {
@@ -150,6 +170,10 @@ void RestoreFont(GlyphType type) {
         case TEXT:      text_font_stack.pop();   break;
         case WIDGET:    widget_font_stack.pop(); break;
     }
+}
+
+void RestoreEffect() {
+    effect_stack.pop();
 }
 
 /// Overrides glyph default colors and fonts.
@@ -263,6 +287,34 @@ void UpdateDrawListFonts() {
     SetDrawListMaterials(glyphvertices_entry, font_count, glyphvertices_textures);
 }
 
+// checks for keyboard/controller navigation keys, switches between keyboard
+// and pointer modes
+static bool IsKey(UI::KeyboardKey key) {
+    static uint32_t tick_pressed = 0;
+    static float curx = 0.0f;
+    
+    // switch out of keyboard mode when cursor moves
+    if (curx != UI::PollKeyboardAxis(UI::KEY_MOUSE_X)) {
+        is_keyboard = false;
+    }
+    
+    if (!UI::PollKeyboardKey(key)) return false;
+    
+    // we'll ignore the first keyboard input, instead using it to switch into
+    // keyboard mode
+    if (!is_keyboard) {
+        curx = UI::PollKeyboardAxis(UI::KEY_MOUSE_X);
+        is_keyboard = true;
+        tick_pressed = GetTick();
+        return false;
+    }
+    
+    const bool can_key = tick_pressed + 1 < GetTick();
+    tick_pressed = GetTick();
+    
+    return can_key;
+}
+
 /// Submits all of the glyphs for rendering.
 /// Also updates cursor, if needed by SetCursorDelayed().
 void Update() {
@@ -300,8 +352,9 @@ void Update() {
     
     // this is set up so that only a single button or other widget can handle
     // the mouse click for the duration of it.
+    const bool virtual_click = !is_keyboard ? UI::PollKeyboardKey(UI::KEY_LEFTMOUSE) : UI::PollKeyboardKey(UI::KEY_ENTER) || UI::PollKeyboardKey(UI::KEY_CONTROLLER_A);
     static bool prev_mouse = false;
-    if (UI::PollKeyboardKey(UI::KEY_LEFTMOUSE) && !prev_mouse) {
+    if (virtual_click && !prev_mouse) {
         mouse_click_not_handled = true;
         
         // clicking outside of textbox cancels editing
@@ -309,12 +362,80 @@ void Update() {
     } else {
         mouse_click_not_handled = false;
     }
-    if (!UI::PollKeyboardKey(UI::KEY_LEFTMOUSE) && prev_mouse) {
+    if (!virtual_click && prev_mouse) {
         mouse_click_not_handled_late = true;
     } else {
         mouse_click_not_handled_late = false;
     }
-    prev_mouse = UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
+    prev_mouse = virtual_click;
+    
+    // switching selection via keyboard/controller
+    
+    if (selected_index > selected_group_last_index) {
+        selected_index = selected_group_last_index;
+    }
+    
+    if (IsKey(UI::KEY_UP) || IsKey(UI::KEY_CONTROLLER_DPAD_UP)) {
+        selected_index--;
+    }
+    if (IsKey(UI::KEY_DOWN) || IsKey(UI::KEY_CONTROLLER_DPAD_DOWN)) {
+        selected_index++;
+    }
+    
+    if (selected_index > selected_group_last_index) {
+        selected_group++;
+        selected_index = 0;
+        selected_text_string = nullptr;
+    }
+    if (selected_index < 0) {
+        selected_group--;
+        selected_index = 4000; // this will get brought down on the next frame
+        selected_text_string = nullptr;
+    }
+    
+    if (IsKey(UI::KEY_LEFT) || IsKey(UI::KEY_CONTROLLER_DPAD_LEFT)) {
+        selected_group--;
+    }
+    if (IsKey(UI::KEY_RIGHT) || IsKey(UI::KEY_CONTROLLER_DPAD_RIGHT)) {
+        selected_group++;
+    }
+    
+    if (selected_group < 0) {
+        selected_group = selection_group_last_index;
+        selected_index = 4000;
+        selected_text_string = nullptr;
+    }
+    
+    if (selected_group > selection_group_last_index) {
+        selected_group = 0;
+        selected_index = 0;
+        selected_text_string = nullptr;
+    }
+    
+    // tab switching
+    if (IsKey(UI::KEY_TAB) || IsKey(UI::KEY_CONTROLLER_RIGHT_BUMPER)) {
+        switch_tab_direction = 1;
+    } else if (IsKey(UI::KEY_CONTROLLER_LEFT_BUMPER)) {
+        switch_tab_direction = -1;
+    } else {
+        switch_tab_direction = 0;
+    }
+    
+    switch_tab_absolute = 0;
+    if (IsKey(UI::KEY_1)) switch_tab_absolute = 1;
+    if (IsKey(UI::KEY_2)) switch_tab_absolute = 2;
+    if (IsKey(UI::KEY_3)) switch_tab_absolute = 3;
+    if (IsKey(UI::KEY_4)) switch_tab_absolute = 4;
+    if (IsKey(UI::KEY_5)) switch_tab_absolute = 5;
+    if (IsKey(UI::KEY_6)) switch_tab_absolute = 6;
+    if (IsKey(UI::KEY_7)) switch_tab_absolute = 7;
+    if (IsKey(UI::KEY_8)) switch_tab_absolute = 8;
+    if (IsKey(UI::KEY_9)) switch_tab_absolute = 9;
+    
+    processing_group = 0;
+    processing_index = -1; // all widgets increment
+    selection_group_last_index = 0;
+    selected_group_last_index = 0;
 }
 
 /// Registers a font.
@@ -432,13 +553,13 @@ uint32_t GlyphBorderV(font_t font, glyph_t glyph) {
     return fonts[font]->GetFrames()[glyph].border_v;
 }
 
-void DrawGlyph(font_t font, glyph_t glyph, const vec3& color, int32_t x, int32_t y, uint32_t w = 0, uint32_t h = 0) {
+void DrawGlyph(font_t font, glyph_t glyph, const vec3& color, int32_t x, int32_t y, uint32_t w = 0, uint32_t h = 0, int32_t rel_h = 0) {
     const auto& info = fonts[font]->GetFrames()[glyph];
     
     if (!w) w = info.width;
     if (!h) h = info.height;
     
-    SetGlyph(x*scaling, y*scaling, frame_stack.top().stack_height, w*scaling, h*scaling, info.offset_x, info.offset_y, info.width, info.height, color, font);
+    SetGlyph(x*scaling, y*scaling, (int32_t)frame_stack.top().stack_height + rel_h, w*scaling, h*scaling, info.offset_x, info.offset_y, info.width, info.height, color, font);
 }
 
 /// Draws a glyph from a font.
@@ -517,7 +638,9 @@ void Text(const char* text, uint32_t orientation) {
     // depending on alignment we could also choose other cursor_x and cursor_y
     
     font_t font  = text_font_stack.top();
-    
+    uint32_t effect = 0;
+    if (effect_stack.size()) effect = effect_stack.top();
+
     switch (orientation) {
         case TEXT_LEFT:
         default: 
@@ -534,11 +657,20 @@ void Text(const char* text, uint32_t orientation) {
     }
     
     for (const char* c = text; *c != '\0'; c++) {
-        if (*c=='\n'){ NewLine(LINE_LOW);
+        if (*c=='\n') {
+            NewLine(LINE_LOW);
             cursor_x = frame_stack.top().cursor_x;
-        cursor_y = frame_stack.top().cursor_y;
-            continue;}
+            cursor_y = frame_stack.top().cursor_y;
+            continue;
+        }
         DrawGlyph(font, (unsigned char)*c, text_color_stack.top(), cursor_x, cursor_y);
+        if (effect & UNDERLINE) {
+            DrawGlyph(font, '_', text_color_stack.top(), cursor_x, cursor_y, GlyphWidth(font, (unsigned char)*c) + 2, 0, -1);
+        }
+        if (effect & SHADOW) {
+            DrawGlyph(font, (unsigned char)*c, Render::COLOR_BLACK, cursor_x + 1, cursor_y + 1, 0, 0, -1);
+        }
+        
         cursor_x += GlyphWidth(font, (unsigned char)*c);
     }
     
@@ -572,7 +704,7 @@ void PushFrame(int32_t x, int32_t y, uint32_t w, uint32_t h) {
     new_frame.h = h;
     new_frame.cursor_x = x;
     new_frame.cursor_y = y;
-    new_frame.stack_height = stack_height + 1;
+    new_frame.stack_height = stack_height + 2;
     
     frame_stack.push(new_frame);
 }
@@ -666,10 +798,14 @@ void PopFrameKeepCursor(bool keep_x, bool keep_y) {
 }
 
 bool CursorOver(int32_t x, int32_t y, uint32_t w, uint32_t h) {
-    int32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
-    int32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y) / scaling;
+    if (!is_keyboard) {
+        int32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
+        int32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y) / scaling;
+        
+        return cur_x > x && cur_y > y && cur_x < x + (int32_t)w && cur_y < y + (int32_t)h;
+    }
     
-    return cur_x > x && cur_y > y && cur_x < x + (int32_t)w && cur_y < y + (int32_t)h;
+    return allow_keyboard && processing_group == selected_group && processing_index == selected_index; 
 }
 
 // call this to check if user just pressed click
@@ -694,7 +830,11 @@ bool ClickHandledLate() {
 
 // call this to check if user is holding click
 bool Clicked() {
-    return UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
+    if (is_keyboard) {
+        return UI::PollKeyboardKey(UI::KEY_ENTER) || UI::PollKeyboardKey(UI::KEY_CONTROLLER_A);
+    } else {
+        return UI::PollKeyboardKey(UI::KEY_LEFTMOUSE);
+    }
 }
 
 /// Draws a button.
@@ -712,14 +852,16 @@ bool Button(const char* text, bool enabled, uint32_t width) {
     
     if (!enabled) {
         style = WIDGET_BUTTON_DISABLED;
-    } else if (CursorOver(x, y, w, h)) {
+    } else if (SelectionIndex(-1), CursorOver(x, y, w, h)) {
         if (Clicked()) {
             style = WIDGET_BUTTON_PRESSED;
         } else {
             style = WIDGET_BUTTON_SELECTED_ENABLED;
         }
         
-        SetCursorDelayed(UI::CURSOR_CLICK);
+        if (!is_keyboard) {
+            SetCursorDelayed(UI::CURSOR_CLICK);
+        }
     }
     
     DrawBox(0, style, x, y, w, h);
@@ -757,15 +899,29 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
     
     frame_stack.top().cursor_x += GlyphWidth(0, style);
     
+    bool underline = false;
+    int32_t text_start = frame_stack.top().cursor_x;
+    
     if (text) Text(text, TEXT_LEFT);
     
-    if (enabled && CursorOver(x, y, frame_stack.top().cursor_x - x, 24)) {
+    if (enabled && (SelectionIndex(-1), CursorOver(x, y, frame_stack.top().cursor_x - x, 24))) {
         if (ClickHandledLate()) {
             selected = index;
             return true;
         }
         
-        SetCursorDelayed(UI::CURSOR_CLICK);
+        if (is_keyboard) {
+            underline = true;
+        } else {
+            SetCursorDelayed(UI::CURSOR_CLICK);
+        }
+    }
+    
+    if (underline && text) {
+        frame_stack.top().cursor_x = text_start;
+        SetEffect(UNDERLINE);
+        Text(text, TEXT_LEFT);
+        RestoreEffect();
     }
     
     return false;
@@ -791,15 +947,29 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     
     frame_stack.top().cursor_x += GlyphWidth(0, style);
     
+    bool underline = false;
+    int32_t text_start = frame_stack.top().cursor_x;
+    
     if (text) Text(text, TEXT_LEFT);
     
-    if (enabled && CursorOver(x, y, frame_stack.top().cursor_x - x, 24)) {
+    if (enabled && (SelectionIndex(-1), CursorOver(x, y, frame_stack.top().cursor_x - x, 24))) {
         if (ClickHandledLate()) {
             selected = !selected;
             return true;
         }
         
-        SetCursorDelayed(UI::CURSOR_CLICK);
+        if (is_keyboard) {
+            underline = true;
+        } else {
+            SetCursorDelayed(UI::CURSOR_CLICK);
+        }
+    }
+    
+    if (underline && text) {
+        frame_stack.top().cursor_x = text_start;
+        SetEffect(UNDERLINE);
+        Text(text, TEXT_LEFT);
+        RestoreEffect();
     }
     
     return false;
@@ -821,14 +991,16 @@ bool Slider(float& value, bool enabled, uint32_t width) {
     
     if (!enabled) {
         style += 4;
-    } else if (CursorOver(x, y, w, h)) {
+    } else if (SelectionIndex(-1), CursorOver(x, y, w, h)) {
         if (Clicked()) {
             style += 3;
         } else {
             style += 2;
         }
         
-        SetCursorDelayed(UI::CURSOR_CLICK);
+        if (!is_keyboard) {
+            SetCursorDelayed(UI::CURSOR_CLICK);
+        }
     }
     
     DrawBoxHorizontal(0, WIDGET_SLIDER_TRACK_HORIZONTAL, x, y + 8, w);
@@ -839,12 +1011,23 @@ bool Slider(float& value, bool enabled, uint32_t width) {
     
     frame_stack.top().cursor_x += w;
     
-    if (enabled && CursorOver(x, y, w, h) && Clicked()) {
-        
+    if (enabled && !is_keyboard && CursorOver(x, y, w, h) && Clicked()) {
         uint32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
         uint32_t progress = cur_x - x;
         value = (float)progress / (float)w;
         return true;
+    } else if (enabled && is_keyboard && CursorOver(x, y, w, h)) {
+        float delta = 0.0f;
+        if (IsKey(UI::KEY_LEFT) || IsKey(UI::KEY_CONTROLLER_DPAD_LEFT)) {
+            delta -= 10.0f / (float)w;
+        }
+        if (IsKey(UI::KEY_RIGHT) || IsKey(UI::KEY_CONTROLLER_DPAD_RIGHT)) {
+            delta += 10.0f / (float)w;
+        }
+        value += delta;
+        if (value < 0.0f) value = 0.0f;
+        if (value > 1.0f) value = 1.0f;
+        return delta != 0.0f;
     } else {
         return false;
     }
@@ -978,6 +1161,79 @@ void TextBox(const char* text, uint32_t w, uint32_t h) {
     PopFrame();
     
     frame_stack.top().cursor_x += w;
+}
+
+/// Sets the selection group of the following widgets.
+/// The index can be an absolute value, or it can be set to `-1` to increment
+/// the existing value. The indices should begin at zero and have no gaps
+/// between them.
+/// Additionally, calling this function also resets the selection index to zero.
+/// If interlacing widgets of different groups, make sure to restore the
+/// previous selection indices by calling the `SelectionIndex()` function.
+/// After calling `GUI::Begin()`, the selection group is automatically reset to
+/// zero for all of that frame's widgets.
+void SelectionGroup(int32_t index) {
+    if (index == processing_group) {
+        return;
+    }
+    
+    if (index < 0) {
+        processing_group++;
+    } else {
+        processing_group = index;
+    }
+    
+    if (processing_group >= selection_group_last_index) {
+        selection_group_last_index = processing_group;
+    }
+    
+    processing_index = -1;
+}
+
+/// Sets the selection index of the following widget.
+/// The indices for each group should begin at zero and have no gaps between
+/// them. The selection index is automatically incremented for each widget, e.g.
+/// if you set a widget to have an index of 5, the following widgets two will
+/// have the indices of 6 and 7 respectively.
+void SelectionIndex(int32_t index) {
+    if (index < 0 && allow_keyboard) {
+        processing_index++;
+    } else {
+        processing_index = index;
+    }
+    
+    if (processing_group == selected_group) {
+        if (processing_index >= selected_group_last_index) {
+            selected_group_last_index = processing_index;
+        }
+    }
+}
+
+/// Changes selected tab.
+/// The `selected` index is handled in the same way as for radio buttons.
+/// @param selected  Index that tracks the selected tab.
+/// @param tab_count Total number of tabs.
+void TabSelection(uint32_t& selected, uint32_t tab_count) {
+    if (switch_tab_absolute) {
+        selected = switch_tab_absolute - 1;
+        ResetSelection();
+    }
+    
+    selected += switch_tab_direction;
+    
+    if (selected < 0) selected = tab_count - 1, ResetSelection();
+    if (selected >= tab_count) selected = 0, ResetSelection();
+}
+
+/// Resets the keyboard/controller selection.
+void ResetSelection() {
+    selected_group = 0;
+    selected_index = 0;
+}
+
+/// Toggles keyboard/controller selection.
+void AllowKeyboard(bool allow) {
+    allow_keyboard = allow;
 }
 
 /// Begins the GUI commands for the frame.

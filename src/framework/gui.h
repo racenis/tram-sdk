@@ -42,9 +42,16 @@ enum GlyphType {
     WIDGET
 };
 
+enum GlyphEffect {
+    UNDERLINE = 1,
+    SHADOW = 2
+};
+
 void Init();
 void Update();
+
 font_t RegisterFont(Render::Sprite* sprite);
+font_t RegisterFontReplace(Render::Sprite* prev, Render::Sprite* next);
 
 void SetScaling(int32_t);
 int32_t GetScaling();
@@ -68,10 +75,18 @@ void Text(const char* text, uint32_t orientation = TEXT_LEFT);
 bool TextBox(char* text, uint32_t length, bool enabled = true, uint32_t w = 0, uint32_t h = 0);
 void TextBox(const char* text, uint32_t w = 0, uint32_t h = 0);
 
+void SelectionGroup(int32_t index);
+void SelectionIndex(int32_t index);
+void TabSelection(uint32_t& selected, uint32_t tab_count);
+void ResetSelection();
+void AllowKeyboard(bool);
+
 void SetColor(Render::color_t, GlyphType = TEXT);
 void SetFont(font_t, GlyphType = TEXT);
+void SetEffect(GlyphEffect);
 void RestoreColor(GlyphType = TEXT);
 void RestoreFont(GlyphType = TEXT);
+void RestoreEffect();
 
 void SetGlyphDefaults(Render::color_t, font_t, GlyphType);
 

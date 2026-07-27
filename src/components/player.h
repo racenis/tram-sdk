@@ -31,6 +31,7 @@ private:
     EventListener keydown;
     EventListener keypress;
     EventListener mouseposition;
+    EventListener controlleraxis;
     
     quat look_rotation = {1.0f, 0.0f, 0.0f, 0.0f};
     vec3 direction_facing = {0.0f, 0.0f, -1.0f};

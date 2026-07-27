@@ -61,6 +61,7 @@ struct callbacks_t {
     void (*key_release)(UI::KeyboardKey key) = nullptr;
     void (*key_code)(uint16_t code) = nullptr;
     void (*key_mouse)(float x_value, float y_value) = nullptr;
+    void (*key_controller)(float x_l, float y_l, float x_r, float y_r, float lt, float rt) = nullptr;
     void (*key_scroll)(float value) = nullptr;
     void (*screen_resize)(int w, int h) = nullptr;
     void (*screen_close)() = nullptr;

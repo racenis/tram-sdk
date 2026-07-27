@@ -34,22 +34,27 @@ void SystemMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
         if (GUI::Button("New", true, 90)) {
             Menu::Push(new SaveMenu(false, false, false));
+            GUI::ResetSelection();
         }
         GUI::NewLine();
         if (GUI::Button("Save", true, 90)) {
             Menu::Push(new SaveMenu(true, false, false));
+            GUI::ResetSelection();
         }
         GUI::NewLine();
         if (GUI::Button("Load", true, 90)) {
             Menu::Push(new SaveMenu(false, true, false));
+            GUI::ResetSelection();
         }
         GUI::NewLine();
         if (GUI::Button("Settings", true, 90)) {
             Menu::Push(new SettingsMenu);
+            GUI::ResetSelection();
         }
         GUI::NewLine();
         if (GUI::Button("Exit", true, 90)) {
             Menu::Push(new SaveMenu(false, false, true));
+            GUI::ResetSelection();
         }
     
     GUI::PopFrame();
@@ -63,20 +68,12 @@ void SystemMenu::Display() {
     
     GUI::PushFrameRelative(GUI::FRAME_BOTTOM, 24);
     GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 5);
-    GUI::Text(Core::GetVersion());
-    GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
-    
-    GUI::PushFrameRelative(GUI::FRAME_LEFT_INV, 1);
-    GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 1);
-    GUI::SetColor(Render::COLOR_WHITE);
-    
-    GUI::Text(Core::GetVersion());
-    GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
-    
-    GUI::SetColor(Render::COLOR_BLACK);
-    GUI::PopFrame();
-    GUI::PopFrame();
-    
+        GUI::SetEffect(GUI::SHADOW);
+        GUI::SetColor(Render::COLOR_WHITE);
+        GUI::Text(Core::GetVersion());
+        GUI::Text(" open-source graphics package. To get help, visit http://github.com/racenis/tram-sdk/");
+        GUI::RestoreEffect();
+        GUI::RestoreColor();
     GUI::PopFrame();
     GUI::PopFrame();
 }
@@ -93,11 +90,15 @@ void SettingsMenu::Display() {
     GUI::PushFrameRelative(GUI::FRAME_LEFT, menu_width);
     GUI::FillFrame(GUI::WIDGET_WINDOW);
     GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
+        GUI::AllowKeyboard(false);
         GUI::RadioButton(0, tab, "Engine ");
         GUI::RadioButton(1, tab, "Input ");
         GUI::RadioButton(2, tab, "Video ");
         GUI::RadioButton(3, tab, "Audio ");
-    
+        GUI::AllowKeyboard(true);
+        
+        GUI::TabSelection(tab, 4);
+        
         GUI::PushFrameRelative(GUI::FRAME_TOP_INV, 22);
         GUI::FillFrame(GUI::WIDGET_REVERSE_WINDOW);
         GUI::PushFrameRelative(GUI::FRAME_INSET, 5);
@@ -148,6 +149,8 @@ void SettingsMenu::Display() {
                 if (changed_sensitivity) {
                     UI::SetAxisSensitivity(UI::KEY_MOUSE_X, sensitivity * (inverse_x ? -1.0f : 1.0f));
                     UI::SetAxisSensitivity(UI::KEY_MOUSE_Y, sensitivity * (inverse_y ? -1.0f : 1.0f));
+                    UI::SetAxisSensitivity(UI::KEY_CONTROLLER_RIGHT_X, sensitivity * (inverse_x ? -1.0f : 1.0f));
+                    UI::SetAxisSensitivity(UI::KEY_CONTROLLER_RIGHT_Y, sensitivity * (inverse_y ? -1.0f : 1.0f));
                 }
                 GUI::Text(binding_action ? "Key bindings ... press any key to bind ..." : "Key bindings"); GUI::NewLine(GUI::LINE_LOW);
                 
@@ -179,6 +182,7 @@ void SettingsMenu::Display() {
                         GUI::NewLine();
                     }
                     
+                    GUI::SelectionGroup(1);
                     GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
                     for (auto& binding : bindings_in_page) {
                         std::string button_text = binding.second.size() ? "" : "none";
@@ -217,6 +221,7 @@ void SettingsMenu::Display() {
                         }
                     }
                     
+                    GUI::SelectionGroup(2);
                     GUI::PushFrameRelative(GUI::FRAME_RIGHT, 25);
                     for (uint32_t i = 0; i < pages; i++) {
                         char str[2] = "1";
@@ -235,6 +240,30 @@ void SettingsMenu::Display() {
                 
                 GUI::Text("Field of view"); GUI::NewLine();
                 GUI::Text("Render distance"); GUI::NewLine();
+                
+                GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
+                    bool fovch = GUI::Slider(fov, true, 150);
+                    fov *= 180.0f;
+                    if (fovch) {
+                        Render::SetViewFov(fov, 0);
+                        Render::SetViewFov(fov, 1);
+                        Settings::Set("render-fov", fov);
+                        Settings::SetFlag("render-fov", Settings::MODIFIED, true);
+                    }
+                    GUI::TextBox((string_float(fov) + "\xb0").c_str(), 50);
+                    
+                    GUI::NewLine();
+                    bool clpch = GUI::Slider(clp, true, 150);
+                    clp *= 2.0f;
+                    if (clpch) {
+                        Render::SetViewDistance(clp, 0);
+                        Render::SetViewDistance(clp, 1);
+                        Settings::Set("render-dist", clp);
+                        Settings::SetFlag("render-dist", Settings::MODIFIED, true);
+                    }
+                    GUI::TextBox((string_float(clp) + "x").c_str(), 50);
+                GUI::PopFrame();
+                
                 bool vsync = Platform::Window::IsVsync();
                 bool fullscreen = Platform::Window::IsFullscreen();
                 if (GUI::CheckBox(vsync, "VSync")) {
@@ -283,29 +312,6 @@ void SettingsMenu::Display() {
                     Settings::SetFlag("window-width", Settings::MODIFIED, true);
                     Settings::SetFlag("window-height", Settings::MODIFIED, true);
                 }
-                
-                GUI::PushFrameRelative(GUI::FRAME_RIGHT, 200);
-                    bool fovch = GUI::Slider(fov, true, 150);
-                    fov *= 180.0f;
-                    if (fovch) {
-                        Render::SetViewFov(fov, 0);
-                        Render::SetViewFov(fov, 1);
-                        Settings::Set("render-fov", fov);
-                        Settings::SetFlag("render-fov", Settings::MODIFIED, true);
-                    }
-                    GUI::TextBox((string_float(fov) + "\xb0").c_str(), 50);
-                    
-                    GUI::NewLine();
-                    bool clpch = GUI::Slider(clp, true, 150);
-                    clp *= 2.0f;
-                    if (clpch) {
-                        Render::SetViewDistance(clp, 0);
-                        Render::SetViewDistance(clp, 1);
-                        Settings::Set("render-dist", clp);
-                        Settings::SetFlag("render-dist", Settings::MODIFIED, true);
-                    }
-                    GUI::TextBox((string_float(clp) + "x").c_str(), 50);
-                GUI::PopFrame();
             } break;
             case 3: {
                 GUI::Text("Audio volume"); GUI::NewLine();

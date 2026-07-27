@@ -34,6 +34,7 @@ static GLFWwindow* WINDOW;
 static GLFWcursor* cursors[4] = {nullptr};
 
 static KeyboardKey GLFWKeyToKeyboardKey(int keycode);
+static KeyboardKey GLFWButtonToKeyboardKey(int button);
 
 static std::thread::id render_context_thread = std::this_thread::get_id();
 
@@ -280,10 +281,75 @@ void Input::Init() {
 
 void Input::Update() {
     glfwPollEvents();
+    if (!glfwJoystickPresent(GLFW_JOYSTICK_1)) return;
+    
+    static bool prev_initialized = false;
+    static GLFWgamepadstate prev;
+    static GLFWgamepadstate next;
+    
+    if (!prev_initialized) {
+        prev_initialized = true;
+        glfwGetGamepadState(GLFW_JOYSTICK_1, &prev);
+        for (int i = 0; i < 6; i++) if (fabsf(prev.axes[i]) < 0.07f) prev.axes[i] = 0.0f;
+    }
+    
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &next);
+    for (int i = 0; i < 6; i++) if (fabsf(next.axes[i]) < 0.07f) next.axes[i] = 0.0f;
+    
+    for (int i = 0; i < 15; i++) {
+        if (prev.buttons[i] == GLFW_PRESS && next.buttons[i] == GLFW_RELEASE) {
+            callbacks.key_release(GLFWButtonToKeyboardKey(i));
+        }
+        
+        if (prev.buttons[i] == GLFW_RELEASE && next.buttons[i] == GLFW_PRESS) {
+            callbacks.key_press(GLFWButtonToKeyboardKey(i));
+        }
+    }
+    
+    bool axis_changed = false;
+    for (int i = 0; i < 6; i++) {
+        if (prev.axes[i] != next.axes[i]) axis_changed = true;
+        if (next.axes[i]) axis_changed = true;
+    }
+    
+    glfwGetGamepadState(GLFW_JOYSTICK_1, &prev);
+    for (int i = 0; i < 6; i++) if (fabsf(prev.axes[i]) < 0.07f) prev.axes[i] = 0.0f;
+    
+    if (!axis_changed) return;
+    
+    callbacks.key_controller(next.axes[GLFW_GAMEPAD_AXIS_LEFT_X],
+                             next.axes[GLFW_GAMEPAD_AXIS_LEFT_Y],
+                             next.axes[GLFW_GAMEPAD_AXIS_RIGHT_X],
+                             next.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y],
+                             next.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER],
+                             next.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);   
 }
 
 void Input::Uninit() {
 
+}
+
+static KeyboardKey GLFWButtonToKeyboardKey(int button) {
+    switch (button) {
+        case GLFW_GAMEPAD_BUTTON_A:             return KEY_CONTROLLER_A;
+        case GLFW_GAMEPAD_BUTTON_B:             return KEY_CONTROLLER_B;
+        case GLFW_GAMEPAD_BUTTON_X:             return KEY_CONTROLLER_X;
+        case GLFW_GAMEPAD_BUTTON_Y:             return KEY_CONTROLLER_Y;
+        case GLFW_GAMEPAD_BUTTON_LEFT_BUMPER:   return KEY_CONTROLLER_LEFT_BUMPER;
+        case GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER:  return KEY_CONTROLLER_RIGHT_BUMPER;
+        case GLFW_GAMEPAD_BUTTON_BACK:          return KEY_CONTROLLER_SELECT;
+        case GLFW_GAMEPAD_BUTTON_START:         return KEY_CONTROLLER_START;
+        case GLFW_GAMEPAD_BUTTON_GUIDE:         return KEY_CONTROLLER_GUIDE;
+        case GLFW_GAMEPAD_BUTTON_LEFT_THUMB:    return KEY_CONTROLLER_LEFT_STICK;
+        case GLFW_GAMEPAD_BUTTON_RIGHT_THUMB:   return KEY_CONTROLLER_RIGHT_STICK;
+        case GLFW_GAMEPAD_BUTTON_DPAD_UP:       return KEY_CONTROLLER_DPAD_UP;
+        case GLFW_GAMEPAD_BUTTON_DPAD_RIGHT:    return KEY_CONTROLLER_DPAD_RIGHT;
+        case GLFW_GAMEPAD_BUTTON_DPAD_DOWN:     return KEY_CONTROLLER_DPAD_DOWN;
+        case GLFW_GAMEPAD_BUTTON_DPAD_LEFT:     return KEY_CONTROLLER_DPAD_LEFT;
+        default:
+            Log(Severity::WARNING, System::UI, "UNRECOGNIZED BUTTON: {}", button);
+            return KEY_SPACE;
+    }
 }
 
 /// Maps a glfw keycode to a KeyboardKey.

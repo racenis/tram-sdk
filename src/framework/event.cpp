@@ -117,6 +117,7 @@ static const char* event_names[MAX_EVENT_TYPES] = {
     "keyup",
     "keychar",
     "cursorpos",
+    "controller",
     "frame",
     "tick",
     "selected",
