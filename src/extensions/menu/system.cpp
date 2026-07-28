@@ -455,6 +455,7 @@ void SaveMenu::Display() {
                     Menu::Clear();
                 }
                 GUI::Text(" ");
+                GUI::SelectionGroup(1);
                 if (GUI::Button("No", true, 70)) {
                     Menu::Pop();
                 }
@@ -481,6 +482,7 @@ void SaveMenu::Display() {
                     Menu::Clear();
                 }
                 GUI::Text(" ");
+                GUI::SelectionGroup(1);
                 if (GUI::Button("No", true, 70)) {
                     Menu::Pop();
                 }
@@ -498,10 +500,12 @@ void SaveMenu::Display() {
                     UI::SetShouldExit(true);
                 }
                 GUI::Text(" ");
+                GUI::SelectionGroup(1);
                 if (GUI::Button("No", true, 70)) {
                     UI::SetShouldExit(true);
                 }
                 GUI::Text(" ");
+                GUI::SelectionGroup(2);
                 if (GUI::Button("Cancel", true, 70)) {
                     Menu::Pop();
                 }
@@ -521,6 +525,7 @@ void SaveMenu::Display() {
                     Menu::Clear();
                 }
                 GUI::Text(" ");
+                GUI::SelectionGroup(1);
                 if (GUI::Button("No", true, 70)) {
                     Menu::Pop();
                 }
