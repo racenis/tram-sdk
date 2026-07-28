@@ -55,19 +55,6 @@ struct SpritePoint {
     uint32_t texture;
 };
 
-struct ModelData {};
-
-struct StaticModelData : public ModelData {
-    std::vector<StaticModelVertex> vertices;
-    std::vector<Triangle> indices;
-};
-
-struct DynamicModelData : public ModelData {
-    std::vector<DynamicModelVertex> vertices;
-    std::vector<Triangle> indices;
-    std::vector<UID> groups;
-};
-
 }
 
 #endif // TRAM_SDK_RENDER_VERTICES_H

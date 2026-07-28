@@ -199,7 +199,7 @@ QueryResponse FindNearestFromRay(vec3 ray_pos, vec3 ray_dir, uint32_t mask) {
         vec3 ray_pos_local = vec3(inv_matrix * vec4(ray_pos, 1.0f));
         vec3 ray_dir_local = glm::normalize(vec3(inv_matrix * vec4(ray_dir, 0.0f)));
 
-        leaf->rendercomponent->GetModel()->FindAllFromRay(ray_pos_local, ray_dir_local, intersected_triangles);
+        leaf->rendercomponent->GetModel()->GetData()->FindAllFromRay(ray_pos_local, ray_dir_local, intersected_triangles);
         
         for (auto& tri : intersected_triangles) {
             vec3 intersection = RayTriangleIntersection(ray_pos_local, ray_dir_local, tri.point1, tri.point2, tri.point3);

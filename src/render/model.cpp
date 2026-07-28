@@ -22,33 +22,6 @@
 
 #include <charconv>
 
-/* it would be a good idea to yeet ModelData struct.
- * 
- * at first it seemed like we might need to upload some additional data to the
- * GPU that would be different for each model type, but in the end it turned out
- * that the only thing that is different between various 3D model format is just
- * the layout of the vertex data
- * 
- * so it would probably be better to replace the ModelData with a union of the
- * different vertex type pointers
- * 
- * we could also allow users to load in their own model formats that have their
- * own custom vertex formats. to do this we could create a base ModelParser
- * class as an interface that can be injected into the Model and would do the
- * loading of the model data
- * 
- * another way to do this could be to have a Model::RegisterParser() static
- * method that would take in a file extension and a function pointer. then when
- * the model needs to be loaded, we would iterate through the list of all
- * registered functions and try opening a file with the extension specified. if
- * the file is opened successfully with that extension, the opened file will get
- * passed into the callback. it will then write some data into the Model through
- * reference parameters. the callback signature could be something like:
- * ModelParser(File&, void*& vertex, AABBTriangle*&, size_t& size)
- * 
- * TODO: fix
- */
- 
 using namespace tram;
 
 template <> Pool<Render::Model> PoolProxy<Render::Model>::pool("model pool", 500);
@@ -68,100 +41,47 @@ Model* Model::Find(name_t name) {
     return model;
 }
 
-void Model::LoadFromMemory() {
-    if (status != LOADED) {
-        Log(Severity::WARNING, System::RENDER, "Model {} hasn't been loaded! Ignoring Model::LoadFromMemory() call.", name);
-        return;
-    }
-    
-    if (!Platform::Window::IsRenderContextThread()) {
-        Log(Severity::WARNING, System::RENDER, "Model::LoadFromMemory() not being called from render thread! Ignoring.");
-        return;
-    }
-    
-    if (source) {
-        this->vertex_format = source->vertex_format;
-        this->vertex_array = source->vertex_array;
-        this->index_array = source->index_array;
-        this->index_ranges = source->index_ranges;
-        this->aabb_min = source->aabb_min;
-        this->aabb_max = source->aabb_max;
-        this->armature = source->armature;
-        this->model_data = source->model_data;
-        this->model_aabb = source->model_aabb;
-        
-        status = READY;
-    } else if (vertex_format == VERTEX_STATIC) {
-        StaticModelData* data = (StaticModelData*) model_data;
-
-        API::CreateIndexedVertexArray(
-            GetVertexDefinition(VERTEX_STATIC),
-            vertex_array,
-            index_array,
-            data->vertices.size() * sizeof(StaticModelVertex),
-            &data->vertices[0],
-            data->indices.size() * sizeof(Triangle),
-            &data->indices[0]
-        );
-        
-        size_t approx_memory = (data->indices.size() * sizeof(Triangle)) + (data->vertices.size() * sizeof(StaticModelVertex));
-        approx_vram_usage += approx_memory;
-        Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
-
-        delete model_data;
-        model_data = nullptr;
-
-        status = READY;
-
-        return;
-    } else if (vertex_format == VERTEX_DYNAMIC){
-        DynamicModelData* data = (DynamicModelData*) model_data;
-
-        API::CreateIndexedVertexArray(
-            GetVertexDefinition(VERTEX_DYNAMIC),
-            vertex_array,
-            index_array, 
-            data->vertices.size() * sizeof(DynamicModelVertex),
-            &data->vertices[0],
-            data->indices.size() * sizeof(Triangle),
-            &data->indices[0]
-        );
-
-        size_t approx_memory = (data->indices.size() * sizeof(Triangle)) + (data->vertices.size() * sizeof(DynamicModelVertex));
-        approx_vram_usage += approx_memory;
-        Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
-
-        delete model_data;
-        model_data = nullptr;
-
-        status = READY;
-
-        return;
-    }
-}
-
-struct ModelAABB {
-    AABBTree tree;
-    std::vector<AABBTriangle> triangles;
-};
-
 /// Finds triangles that intersect ray.
 /// Finds the triangles that intersect the given ray. The ray's origin and
 /// direction must be provided in the local model coordinates.
-void Model::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result) {
+void ModelData::FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result) {
     std::vector<uint32_t> results;
     results.reserve(10);
     
-    model_aabb->tree.find(ray_pos, ray_dir, results);
+    tree->find(ray_pos, ray_dir, results);
     
-    for (auto res : results) {
-        result.push_back(model_aabb->triangles[res]);
+    for (auto key : results) {
+        AABBTriangle triangle;
+        triangle.point1 = GetPosition(key, 0);
+        triangle.point2 = GetPosition(key, 1);
+        triangle.point3 = GetPosition(key, 2);
+        triangle.material = GetMaterial(key);
+        
+        triangle.normal = {0.0f, 0.0f, 0.0f};
+        triangle.normal += GetNormal(key, 0);
+        triangle.normal += GetNormal(key, 1);
+        triangle.normal += GetNormal(key, 2);
+        triangle.normal = glm::normalize(triangle.normal / 3.0f);
+        
+        result.push_back(triangle);
     }
 }
 
-void Model::FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result) {
-    model_aabb->tree.find(min, max, [&](uint32_t key) {
-        result.push_back(model_aabb->triangles[key]);
+void ModelData::FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result) {
+    tree->find(min, max, [&](uint32_t key) {
+        AABBTriangle triangle;
+        triangle.point1 = GetPosition(key, 0);
+        triangle.point2 = GetPosition(key, 1);
+        triangle.point3 = GetPosition(key, 2);
+        triangle.material = GetMaterial(key);
+        
+        triangle.normal = {0.0f, 0.0f, 0.0f};
+        triangle.normal += GetNormal(key, 0);
+        triangle.normal += GetNormal(key, 1);
+        triangle.normal += GetNormal(key, 2);
+        triangle.normal = glm::normalize(triangle.normal / 3.0f);
+        
+        result.push_back(triangle);
     });
 }
 
@@ -169,13 +89,13 @@ static int total_counter = 0;
 static int node_counter = 0;
 static int leaf_counter = 0;
 
-static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node, const std::vector<AABBTriangle>& triangles, vec3 position, quat rotation) {
+static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node, ModelData* data, vec3 position, quat rotation) {
     total_counter++;
     
     if (tree.IsLeaf(node)) {
-        vec3 point1 = position + (rotation * triangles[tree.GetValue(node)].point1);
-        vec3 point2 = position + (rotation * triangles[tree.GetValue(node)].point2);
-        vec3 point3 = position + (rotation * triangles[tree.GetValue(node)].point3);
+        vec3 point1 = position + (rotation * data->GetPosition(tree.GetValue(node), 0));
+        vec3 point2 = position + (rotation * data->GetPosition(tree.GetValue(node), 1));
+        vec3 point3 = position + (rotation * data->GetPosition(tree.GetValue(node), 2));
         
         AddLine(point1, point2, COLOR_WHITE);
         AddLine(point2, point3, COLOR_WHITE);
@@ -183,8 +103,8 @@ static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node, co
         
         leaf_counter++;
     } else {
-        DrawAABBNodeChildren(tree, tree.GetLeft(node), triangles, position, rotation);
-        DrawAABBNodeChildren(tree, tree.GetRight(node), triangles, position, rotation);
+        DrawAABBNodeChildren(tree, tree.GetLeft(node), data, position, rotation);
+        DrawAABBNodeChildren(tree, tree.GetRight(node), data, position, rotation);
         
         if (tree.GetParent(node) == AABBTree::INVALID) {
             AddLineAABB(tree.GetMin(node), tree.GetMax(node), position, rotation, COLOR_RED);
@@ -201,14 +121,14 @@ static void DrawAABBNodeChildren(const AABBTree& tree, AABBTree::node_t node, co
 /// for debugging if raycasts or some other lookups fail on the 3D model.
 /// @param position Position of the 3D model in the scene.
 /// @param rotation Rotation of the 3D model in the scene.
-void Model::DrawAABB(vec3 position, quat rotation) {
-    if (!model_aabb) return;
+void ModelData::DrawAABB(vec3 position, quat rotation) {
+    if (!tree) return;
     
     total_counter = 0;
     node_counter = 0;
     leaf_counter = 0;
 
-    DrawAABBNodeChildren(model_aabb->tree, model_aabb->tree.get_root(), model_aabb->triangles, position, rotation);
+    DrawAABBNodeChildren(*tree, tree->get_root(), this, position, rotation);
 }
 
 static vec3 TriangleAABBMin(vec3 point1, vec3 point2, vec3 point3) {
@@ -225,6 +145,32 @@ static vec3 TriangleAABBMax(vec3 point1, vec3 point2, vec3 point3) {
         point1.y > point2.y ? (point1.y > point3.y ? point1.y : point3.y) : (point2.y > point3.y ? point2.y : point3.y),
         point1.z > point2.z ? (point1.z > point3.z ? point1.z : point3.z) : (point2.z > point3.z ? point2.z : point3.z)
     };
+}
+
+void ModelData::BuildAABB(vec3& aabb_min, vec3& aabb_max) {
+    if (tree) {
+        return;
+    } else {
+        tree = new AABBTree;
+    }
+    
+    for (uint32_t i = 0; i < GetTriangleCount(); i++) {
+        const auto point1 = GetPosition(i, 0);
+        const auto point2 = GetPosition(i, 1);
+        const auto point3 = GetPosition(i, 2);
+   
+        vec3 triangle_aabb_min = TriangleAABBMin(point1, point2, point3);
+        vec3 triangle_aabb_max = TriangleAABBMax(point1, point2, point3);
+    
+        tree->insert(i, triangle_aabb_min, triangle_aabb_max);
+    }
+    
+    aabb_min = tree->GetAABBMin();
+    aabb_max = tree->GetAABBMax();
+}
+
+ModelData::~ModelData() {
+    if (tree) delete tree;
 }
 
 struct TriangleBucket {
@@ -283,26 +229,48 @@ static uint32_t PutTriangleInBucket(
     return 0;
 }
 
-void Model::LoadFromDisk() {
-    if (status != UNLOADED) {
-        Log(Severity::WARNING, System::RENDER, "Model {} already loaded! Ignoring Model::LoadFromDisk() call.", name);
-        return;
+class StaticModel : public ModelData {
+public:
+    vec3 GetPosition(int32_t index, int32_t vertex) override {
+        switch (vertex) {
+            default:
+            case 0: return vertices[indices[index].indices.x].co;
+            case 1: return vertices[indices[index].indices.y].co;
+            case 2: return vertices[indices[index].indices.z].co;
+        }
     }
     
-    char path[PATH_LIMIT];
+    vec3 GetNormal(int32_t index, int32_t vertex) override {
+        switch (vertex) {
+            default:
+            case 0: return vertices[indices[index].indices.x].normal;
+            case 1: return vertices[indices[index].indices.y].normal;
+            case 2: return vertices[indices[index].indices.z].normal;
+        }
+    }
     
-    std::vector<TriangleBucket> triangle_buckets;
-    std::vector<BucketMapping> bucket_mappings;
-
-    // trying to load model as a static model, text mode
-    snprintf(path, PATH_LIMIT, "data/models/%s.stmdl", (const char*)name);
-
-    if (File file(path, File::READ); file.is_open()) {
-        vertex_format = VERTEX_STATIC;
-        StaticModelData* data = new StaticModelData;
-        model_data = data;
-        model_aabb = new ModelAABB;
-
+    int32_t GetMaterial(int32_t index) override {
+        return materials[index];
+    }
+    
+    uint32_t GetTriangleCount() override {
+        return indices.size();
+    }
+    
+    bool LoadFromDisk(LoadInfo info) override {
+        char path[PATH_LIMIT];
+    
+        // trying to load model as a static model, text mode
+        snprintf(path, PATH_LIMIT, "data/models/%s.stmdl", (const char*)info.name);
+        
+        File file(path, File::READ);
+        if (!file.is_open()) return false;
+        
+        std::vector<TriangleBucket> triangle_buckets;
+        std::vector<BucketMapping> bucket_mappings;
+        
+        info.vertex_format = VERTEX_STATIC;
+        
         Log(Severity::INFO, System::RENDER, "Loading file: {}", path);
 
         // doing some extra work, so that we can load the old .stmdl that didn't
@@ -324,7 +292,7 @@ void Model::LoadFromDisk() {
 
         if (mcount == 0) {
             Log(Severity::ERROR, System::RENDER, "Model {} has zero materials!", path);
-            goto load_failure;
+            return false;
         }
 
         if (has_header) {
@@ -337,11 +305,11 @@ void Model::LoadFromDisk() {
                     file.read_int32();
                     file.read_int32();
                 } else if (field == "near") {
-                    fade_near = file.read_float32();
+                    info.fade_near = file.read_float32();
                 } else if (field == "far") {
-                    fade_far = file.read_float32();
+                    info.fade_far = file.read_float32();
                 } else if (field == "origin") {
-                    origin = {file.read_float32(), file.read_float32(), file.read_float32()};
+                    info.origin = {file.read_float32(), file.read_float32(), file.read_float32()};
                 } else {
                     Log(Severity::WARNING, System::RENDER, "File {} has unrecognized metadata {}, skipping entry", path, field);
                     file.skip_linebreak();
@@ -351,15 +319,13 @@ void Model::LoadFromDisk() {
         
         bucket_mappings.resize(mcount);
         assert(bucket_mappings.size() == mcount);
-
-        model_aabb->triangles.reserve(tcount);
-
+        
         for (uint32_t i = 0; i < mcount; i++) {
-            materials.push_back(Material::Find(file.read_name()));
+            info.materials.push_back(Material::Find(file.read_name()));
         }
         
         for (uint32_t i = 0; i < vcount; i++) {
-            data->vertices.push_back(StaticModelVertex {
+            vertices.push_back(StaticModelVertex {
                 .co = {
                     file.read_float32(),
                     file.read_float32(),
@@ -399,31 +365,18 @@ void Model::LoadFromDisk() {
             assert(material_index < mcount);
             assert(triangle_buckets.size() <= mcount);
             
-            uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
+            materials.push_back(material_index);
             
-            const auto& point1 = data->vertices[index.indices.x];
-            const auto& point2 = data->vertices[index.indices.y];
-            const auto& point3 = data->vertices[index.indices.z];
+            uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, info.materials, material_index, index);
             
-            vec3 triangle_normal = glm::normalize(point1.normal + point2.normal + point3.normal);
-            
-            uint32_t aabb_triangle_index = model_aabb->triangles.size();
-            
-            model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, material_index});
-            
-            vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
-            vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
-            
-            model_aabb->tree.insert(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
-            
-            data->vertices[index.indices.x].texture = bucket_index;
-            data->vertices[index.indices.y].texture = bucket_index;
-            data->vertices[index.indices.z].texture = bucket_index;
+            vertices[index.indices.x].texture = bucket_index;
+            vertices[index.indices.y].texture = bucket_index;
+            vertices[index.indices.z].texture = bucket_index;
         }
 
         for (auto& bucket : triangle_buckets) {
             IndexRange range {
-                .index_offset = (uint32_t) data->indices.size(),
+                .index_offset = (uint32_t) indices.size(),
                 .index_length = (uint32_t) bucket.triangles.size(),
                 .material_count = (uint32_t) bucket.materials.size(),
                 .material_type = bucket.material_type,
@@ -433,8 +386,8 @@ void Model::LoadFromDisk() {
                 range.materials[i] = bucket.materials[i];
             }
             
-            index_ranges.push_back(range);
-            data->indices.insert(data->indices.end(), bucket.triangles.begin(), bucket.triangles.end());
+            info.index_ranges.push_back(range);
+            indices.insert(indices.end(), bucket.triangles.begin(), bucket.triangles.end());
         }
 
         Bone rootbone {
@@ -445,44 +398,86 @@ void Model::LoadFromDisk() {
             .roll = 0.0f
         };
 
-        armature.push_back(rootbone);
-
-        status = LOADED;
-
-        for (size_t i = 0; i < materials.size(); i++){
-            materials[i]->AddReference();
-            Async::LoadDependency(materials[i]);
-        }
-
-        aabb_min = model_aabb->tree.GetAABBMin();
-        aabb_max = model_aabb->tree.GetAABBMax();
-
-        return;
+        info.armature.push_back(rootbone);
+        
+        return true;
     }
-
-    // ok, the model isn't static
-    // try opening it as a dynamic model
     
-    snprintf(path, PATH_LIMIT, "data/models/%s.dymdl", (const char*)name);
+    void LoadFromMemory(LoadInfo info) override {
+        API::CreateIndexedVertexArray(
+            GetVertexDefinition(VERTEX_STATIC),
+            info.vertex_array,
+            info.index_array,
+            vertices.size() * sizeof(StaticModelVertex),
+            &vertices[0],
+            indices.size() * sizeof(Triangle),
+            &indices[0]
+        );
+        
+        size_t approx_memory = (indices.size() * sizeof(Triangle)) + (vertices.size() * sizeof(StaticModelVertex));
+        info.approx_vram_usage += approx_memory;
+        Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
+    }
+    
+    ~StaticModel() override {
+        
+    }
+    
+    std::vector<StaticModelVertex> vertices;
+    std::vector<Triangle> indices;
+    std::vector<uint32_t> materials;
+};
 
-    if (File file(path, File::READ); file.is_open()) {
-        vertex_format = VERTEX_DYNAMIC;
-        DynamicModelData* data = new DynamicModelData;
-        model_data = data;
-        model_aabb = new ModelAABB;
+class DynamicModel : public ModelData {
+public:
+    vec3 GetPosition(int32_t index, int32_t vertex) override {
+        switch (vertex) {
+            default:
+            case 0: return vertices[indices[index].indices.x].co;
+            case 1: return vertices[indices[index].indices.y].co;
+            case 2: return vertices[indices[index].indices.z].co;
+        }
+    }
+    
+    vec3 GetNormal(int32_t index, int32_t vertex) override {
+        switch (vertex) {
+            default:
+            case 0: return vertices[indices[index].indices.x].normal;
+            case 1: return vertices[indices[index].indices.y].normal;
+            case 2: return vertices[indices[index].indices.z].normal;
+        }
+    }
+    
+    int32_t GetMaterial(int32_t index) override {
+        return materials[index];
+    }
+    
+    uint32_t GetTriangleCount() override {
+        return indices.size();
+    }
+    
+    bool LoadFromDisk(LoadInfo info) override {
+        char path[PATH_LIMIT];
+        
+        snprintf(path, PATH_LIMIT, "data/models/%s.dymdl", info.name);
+
+        File file(path, File::READ);
+        if (!file.is_open()) return false;
+        
+        std::vector<TriangleBucket> triangle_buckets;
+        std::vector<BucketMapping> bucket_mappings;
+        
+        info.vertex_format = VERTEX_DYNAMIC;
 
         Log(Severity::INFO, System::RENDER, "Loading file: {}", path);
 
-        assert(data);
-        
         name_t file_version = file.read_name();
         
         if (file_version != "DYMDLv1") {
             Log(Severity::WARNING, System::RENDER, "Model {} is not using right DYMDLv1 version!", path);
             Log(Severity::WARNING, System::RENDER, "Add \"DYMDLv1\" to file and also add bone roll to the bone definitions (0.0 to the end of lines), or reexport.");
-            goto load_failure;
+            return false;
         }
-        
         
         uint32_t vcount = file.read_uint32();   // number of vertices
         uint32_t tcount = file.read_uint32();   // number of triangles
@@ -492,15 +487,13 @@ void Model::LoadFromDisk() {
 
         if (mcount == 0) {
             Log(Severity::WARNING, System::RENDER, "Model {} has zero materials!", path);
-            goto load_failure;
+            return false;
         }
 
         bucket_mappings.resize(mcount);
 
-        model_aabb->triangles.reserve(tcount);
-        
         for (uint32_t i = 0; i < mcount; i++) {
-            materials.push_back(Material::Find(file.read_name()));
+            info.materials.push_back(Material::Find(file.read_name()));
         }
         
         for (uint32_t i = 0; i < vcount; i++) {
@@ -540,7 +533,7 @@ void Model::LoadFromDisk() {
             vertex.bone.w = file.read_uint32();
             vertex.boneweight.w = file.read_float32();
 
-            data->vertices.push_back(vertex);
+            vertices.push_back(vertex);
         }
         
         // this is basically a repetion of the same code as for static model
@@ -555,31 +548,17 @@ void Model::LoadFromDisk() {
             };
             
             uint32_t material_index = file.read_uint32();
+            materials.push_back(material_index);
             
-            uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, materials, material_index, index);
+            uint32_t bucket_index = PutTriangleInBucket(triangle_buckets, bucket_mappings, info.materials, material_index, index);
             
-            const auto& point1 = data->vertices[index.indices.x];
-            const auto& point2 = data->vertices[index.indices.y];
-            const auto& point3 = data->vertices[index.indices.z];
-            
-            vec3 triangle_normal = glm::normalize(point1.normal + point2.normal + point3.normal);
-            
-            uint32_t aabb_triangle_index = model_aabb->triangles.size();
-            
-            model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, material_index});
-            
-            vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
-            vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
-            
-            model_aabb->tree.insert(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
-            
-            data->vertices[index.indices.x].texture = bucket_index;
-            data->vertices[index.indices.y].texture = bucket_index;
-            data->vertices[index.indices.z].texture = bucket_index;
+            vertices[index.indices.x].texture = bucket_index;
+            vertices[index.indices.y].texture = bucket_index;
+            vertices[index.indices.z].texture = bucket_index;
         }
         
         for (uint32_t i = 0; i < bcount; i++) {
-            armature.push_back(Bone {
+            info.armature.push_back(Bone {
                 .name = file.read_name(),
                 .parent = file.read_int32(),
                 
@@ -602,16 +581,16 @@ void Model::LoadFromDisk() {
         for (uint32_t i = 0; i < gcount; i++) {
             name_t group = file.read_name();
             
-            if (armature[i].name != group) {
-                Log(Severity::WARNING, System::RENDER, "Model {} group {} is not matching bone {}!", name, group, armature[i].name);
+            if (info.armature[i].name != group) {
+                Log(Severity::WARNING, System::RENDER, "Model {} group {} is not matching bone {}!", info.name, group, info.armature[i].name);
             }
             
-            data->groups.push_back(group);
+            groups.push_back(group);
         }
         
         for (auto& bucket : triangle_buckets) {
             IndexRange range {
-                .index_offset = (uint32_t) data->indices.size(),
+                .index_offset = (uint32_t) indices.size(),
                 .index_length = (uint32_t) bucket.triangles.size(),
                 .material_count = (uint32_t) bucket.materials.size(),
                 .material_type = bucket.material_type,
@@ -621,28 +600,66 @@ void Model::LoadFromDisk() {
                 range.materials[i] = bucket.materials[i];
             }
             
-            index_ranges.push_back(range);
-            data->indices.insert(data->indices.end(), bucket.triangles.begin(), bucket.triangles.end());
-        }
-
-        // push references into material
-        status = LOADED;
-        for (size_t i = 0; i < materials.size(); i++){
-            materials[i]->AddReference();
-            Async::LoadDependency(materials[i]);
+            info.index_ranges.push_back(range);
+            indices.insert(indices.end(), bucket.triangles.begin(), bucket.triangles.end());
         }
         
-        aabb_min = model_aabb->tree.GetAABBMin();
-        aabb_max = model_aabb->tree.GetAABBMax();
-
-        return;
+        return true;
     }
+    
+    void LoadFromMemory(LoadInfo info) override {
+        API::CreateIndexedVertexArray(
+            GetVertexDefinition(VERTEX_DYNAMIC),
+            info.vertex_array,
+            info.index_array, 
+            vertices.size() * sizeof(DynamicModelVertex),
+            &vertices[0],
+            indices.size() * sizeof(Triangle),
+            &indices[0]
+        );
 
-    // try opening it as a mod model
+        size_t approx_memory = (indices.size() * sizeof(Triangle)) + (vertices.size() * sizeof(DynamicModelVertex));
+        info.approx_vram_usage += approx_memory;
+        Stats::Add(Stats::RESOURCE_VRAM, approx_memory);
+    }
+    
+    ~DynamicModel() override {
+        
+    }
+    
+    std::vector<DynamicModelVertex> vertices;
+    std::vector<Triangle> indices;
+    std::vector<UID> groups;
+    std::vector<uint32_t> materials;
+};
 
-    snprintf(path, PATH_LIMIT, "data/models/%s.mdmdl", (const char*)name);
 
-    if (File file(path, File::READ); file.is_open()) {
+class ModificationModel : public ModelData {
+public:
+    vec3 GetPosition(int32_t index, int32_t vertex) override {
+        return source->GetData()->GetPosition(index, vertex);
+    }
+    
+    vec3 GetNormal(int32_t index, int32_t vertex) override {
+        return source->GetData()->GetNormal(index, vertex);
+    }
+    
+    int32_t GetMaterial(int32_t index) override {
+        return source->GetData()->GetMaterial(index);
+    }
+    
+    uint32_t GetTriangleCount() override {
+        return source->GetData()->GetTriangleCount();
+    }
+    
+    bool LoadFromDisk(LoadInfo info) override {
+        char path[PATH_LIMIT];
+        
+        snprintf(path, PATH_LIMIT, "data/models/%s.mdmdl", info.name);
+        
+        File file(path, File::READ);
+        if (!file.is_open()) return false;
+        
         name_t file_version = file.read_name();
         
         if (file_version != "MDMDLv1") {
@@ -653,10 +670,11 @@ void Model::LoadFromDisk() {
         
         name_t source_model = file.read_name();
         
-        this->source = Model::Find(source_model);
+        info.source = Model::Find(source_model);
+        this->source = info.source;
         
-        this->source->AddReference();
-        Async::LoadDependency(this->source);
+        info.source->AddReference();
+        Async::LoadDependency(info.source);
         
         std::vector<std::pair<name_t, name_t>> mappings;
         
@@ -664,88 +682,164 @@ void Model::LoadFromDisk() {
             mappings.push_back({file.read_name(), file.read_name()});
         }
         
-        for (Material* mat : this->source->materials) {
+        for (Material* mat : info.source->GetMaterials()) {
             for (auto mapping : mappings) {
                 if (mapping.first == mat->GetName()) {
-                    materials.push_back(Material::Find(mapping.second));
+                    info.materials.push_back(Material::Find(mapping.second));
                     goto next;
                 }
             }
-            materials.push_back(mat);
+            info.materials.push_back(mat);
             next:;
         }
         
-        for (Material* mat : this->materials) {
-            mat->AddReference();
-            Async::LoadDependency(mat);
-        }
+        return true;
+    }
+    
+    void LoadFromMemory(LoadInfo info) override {
         
-        status = LOADED;
+    }
+    
+    ~ModificationModel() override {
         
+    }
+    
+    Model* source = nullptr;
+};
+
+
+void Model::LoadFromMemory() {
+    if (status != LOADED) {
+        Log(Severity::WARNING, System::RENDER, "Model {} hasn't been loaded! Ignoring Model::LoadFromMemory() call.", name);
         return;
     }
-
-    // ok, so the model isn't static or dynamic
-    // we have no other model types, so it means that there actually isn't any usable model
-
-    Log(Severity::NOTE, System::RENDER, "Model file for {} couldn't be accessed!", name);
-
-load_failure:
     
-    vertex_format = VERTEX_STATIC;
-
-    auto data = MakeNewErrorModel();
-    model_data = data;
-
-    Material* error_material = Material::Find("defaulttexture");
-    error_material->AddReference();
-    Async::LoadDependency(error_material);
-    
-    materials.push_back(error_material);
-
-    index_ranges.push_back(IndexRange {
-        .index_offset = 0,
-        .index_length = (uint32_t) data->indices.size(),
-        .material_count = 1,
-        .material_type = MATERIAL_TEXTURE,
-        .materials = {0}
-    });
-    
-    armature.push_back(Bone {
-        .name = "Root",
-        .parent = -1,
-        .head = {0.0f, 0.0f, 0.0f},
-        .tail = {0.0f, 1.0f, 0.0f},
-        .roll = 0.0f
-    });
-    
-    model_aabb = new ModelAABB;
-
-    for (auto index : data->indices) {
-        const auto& point1 = data->vertices[index.indices.x];
-        const auto& point2 = data->vertices[index.indices.y];
-        const auto& point3 = data->vertices[index.indices.z];
-        
-        vec3 triangle_normal = glm::normalize(point1.normal + point2.normal + point3.normal);
-        
-        uint32_t aabb_triangle_index = model_aabb->triangles.size();
-        
-        model_aabb->triangles.push_back({point1.co, point2.co, point3.co, triangle_normal, 0});
-        
-        vec3 triangle_aabb_min = TriangleAABBMin(point1.co, point2.co, point3.co);
-        vec3 triangle_aabb_max = TriangleAABBMax(point1.co, point2.co, point3.co);
-        
-        model_aabb->tree.insert(aabb_triangle_index, triangle_aabb_min, triangle_aabb_max);
+    if (!Platform::Window::IsRenderContextThread()) {
+        Log(Severity::WARNING, System::RENDER, "Model::LoadFromMemory() not being called from render thread! Ignoring.");
+        return;
     }
     
-    aabb_min = model_aabb->tree.GetAABBMin();
-    aabb_max = model_aabb->tree.GetAABBMax();
+    ModelData::LoadInfo info {
+        .name = name,
+        .vertex_format = vertex_format,
+        .vertex_array = vertex_array,
+        .index_array = index_array,
+        .index_ranges = index_ranges,
+        .fade_near = fade_near,
+        .fade_far = fade_far,
+        .origin = origin,
+        .materials = materials,
+        .source = source,
+        .model_data = model_data,
+        .armature = armature,
+        .approx_vram_usage = approx_vram_usage,
+    };
+    
+    model_data->LoadFromMemory(info);
+    
+    if (source) {
+        this->vertex_format = source->vertex_format;
+        this->vertex_array = source->vertex_array;
+        this->index_array = source->index_array;
+        this->index_ranges = source->index_ranges;
+        this->aabb_min = source->aabb_min;
+        this->aabb_max = source->aabb_max;
+        this->armature = source->armature;
+        this->model_data = source->model_data;
+    }
     
     status = LOADED;
-    
-    load_fail = true;
 }
 
+void Model::LoadFromDisk() {
+    if (status != UNLOADED) {
+        Log(Severity::WARNING, System::RENDER, "Model {} already loaded! Ignoring Model::LoadFromDisk() call.", name);
+        return;
+    }
+    
+    ModelData::LoadInfo info {
+        .name = name,
+        .vertex_format = vertex_format,
+        .vertex_array = vertex_array,
+        .index_array = index_array,
+        .index_ranges = index_ranges,
+        .fade_near = fade_near,
+        .fade_far = fade_far,
+        .origin = origin,
+        .materials = materials,
+        .source = source,
+        .model_data = model_data,
+        .armature = armature,
+        .approx_vram_usage = approx_vram_usage,
+    };
+    
+    model_data = new StaticModel;
+    if (model_data->LoadFromDisk(info)) {
+        model_data->BuildAABB(aabb_min, aabb_max);
+        goto finish;
+    }
+    delete model_data;
+    
+    model_data = new DynamicModel;
+    if (model_data->LoadFromDisk(info)) {
+        model_data->BuildAABB(aabb_min, aabb_max);
+        goto finish;
+    }
+    delete model_data;
+    
+    model_data = new ModificationModel;
+    if (model_data->LoadFromDisk(info)) {
+        delete model_data;
+        model_data = source->GetData();
+        goto finish;
+    }
+    delete model_data;
+    
+    
+    
+    Log(Severity::NOTE, System::RENDER, "Model file for {} couldn't be accessed!", name);
+
+    {
+        vertex_format = VERTEX_STATIC;
+
+        StaticModel* static_data = new StaticModel;
+        model_data = static_data;
+        MakeNewErrorModel(static_data->vertices, static_data->indices);
+        
+        Material* error_material = Material::Find("defaulttexture");
+        materials.push_back(error_material);
+
+        index_ranges.push_back(IndexRange {
+            .index_offset = 0,
+            .index_length = (uint32_t) static_data->indices.size(),
+            .material_count = 1,
+            .material_type = MATERIAL_TEXTURE,
+            .materials = {0}
+        });
+        
+        armature.push_back(Bone {
+            .name = "Root",
+            .parent = -1,
+            .head = {0.0f, 0.0f, 0.0f},
+            .tail = {0.0f, 1.0f, 0.0f},
+            .roll = 0.0f
+        });
+        
+        load_fail = true;
+    }
+    
+    model_data->BuildAABB(aabb_min, aabb_max);
+    
+finish:
+    for (Material* mat : this->materials) {
+        mat->AddReference();
+        Async::LoadDependency(mat);
+    }
+    
+    
+    
+    status = LOADED;
+}
 
 void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pair<Material*, Material*>> mappings) {
     assert(status == Resource::UNLOADED);
@@ -801,11 +895,9 @@ void Model::Unload() {
     materials.clear();
     armature.clear();
 
-    if (model_data) delete model_data;
-    if (model_aabb) delete model_aabb;
+    if (!source && model_data) delete model_data;
     
     model_data = nullptr;
-    model_aabb = nullptr;
     
     Stats::Remove(Stats::RESOURCE_VRAM, approx_vram_usage);
     

@@ -92,9 +92,9 @@ uint8_t* GetDebugIcon() {
 }
 
 /// Generates a new error model.
-StaticModelData* MakeNewErrorModel() {
-    return new StaticModelData {
-        .vertices = {
+void MakeNewErrorModel(std::vector<StaticModelVertex>& vertices, std::vector<Triangle>& indices) {
+
+        vertices = {
             {{0.51f, -0.25f, 0.2f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.46f}, {1.0f, 0.46f}, 0},
             {{0.5f, -0.16f, 0.2f}, {0.0f, 0.0f, 1.0f}, {0.83f, 0.49f}, {0.83f, 0.49f}, 0},
             {{0.42f, -0.16f, 0.2f}, {0.0f, 0.0f, 1.0f}, {0.83f, 0.64f}, {0.83f, 0.64f}, 0},
@@ -1067,9 +1067,9 @@ StaticModelData* MakeNewErrorModel() {
             {{0.1f, -0.02f, -0.2f}, {-1.0f, 0.02f, -0.0f}, {0.25f, 0.85f}, {0.25f, 0.85f}, 0},
             {{0.1f, -0.11f, -0.2f}, {-0.96f, 0.29f, -0.0f}, {0.25f, 0.7f}, {0.25f, 0.7f}, 0},
             {{0.1f, -0.11f, 0.2f}, {-0.96f, 0.29f, -0.0f}, {-0.08f, 0.7f}, {-0.08f, 0.7f}, 0}
-        }, 
+        };
         
-        .indices = {
+        indices = {
             {{0, 1, 2}},
             {{3, 4, 5}},
             {{6, 7, 8}},
@@ -1394,9 +1394,7 @@ StaticModelData* MakeNewErrorModel() {
             {{963, 964, 965}},
             {{966, 967, 968}},
             {{969, 970, 971}}
-        }
-        
-    };
+        };
 }
 
 namespace {

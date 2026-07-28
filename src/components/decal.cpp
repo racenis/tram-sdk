@@ -368,7 +368,7 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
     RotateAABB(local_min, local_max, -comp->GetRotation());
     
     std::vector<AABBTriangle> tris;
-    comp->GetModel()->FindAllFromAABB(local_min, local_max, tris);
+    comp->GetModel()->GetData()->FindAllFromAABB(local_min, local_max, tris);
     
     for (auto& tri : tris) {
         tri.point1 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point1);
