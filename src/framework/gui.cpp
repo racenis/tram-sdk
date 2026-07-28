@@ -117,6 +117,12 @@ static int32_t processing_index = 0;
 static int32_t selection_group_last_index = 0;
 static int32_t selected_group_last_index = 0;
 
+// variables for tracking thing related to events
+static bool selected_something_now = false;
+static bool selected_something_still = false;
+static bool highlighted_something = false;
+static bool activated_something = false;
+
 /// Sets the color.
 /// Pushes color to color stack. Each glyph type gets its own color stack.
 /// The previously set color can be restored using RestoreColor().
@@ -436,6 +442,42 @@ void Update() {
     processing_index = -1; // all widgets increment
     selection_group_last_index = 0;
     selected_group_last_index = 0;
+    
+    static bool selected_something_still_last = false;
+    static bool activated_something_last = false;
+    
+    Event event;
+    event.poster = 0;
+    event.type = Event::GUI;
+    event.subtype = 0;
+    
+    if (selected_something_now) {
+        event.subtype |= SELECTED;
+    }
+    
+    if (selected_something_still_last && !selected_something_still) {
+        event.subtype |= DESELECTED;
+    }
+    
+    if (event.subtype && highlighted_something) {
+        event.subtype |= HIGHLIGHTED;
+    }
+    
+    if (activated_something_last && !activated_something) {
+        event.subtype |= ACTIVATED;
+    }
+    
+    if (event.subtype) {
+        Event::Post(event);
+    }
+    
+    selected_something_still_last = selected_something_still;
+    activated_something_last = activated_something;
+    
+    selected_something_now = false;
+    selected_something_still = false;
+    highlighted_something = false;
+    activated_something = false;
 }
 
 /// Registers a font.
@@ -798,14 +840,47 @@ void PopFrameKeepCursor(bool keep_x, bool keep_y) {
 }
 
 bool CursorOver(int32_t x, int32_t y, uint32_t w, uint32_t h) {
+    bool is_over = false;
     if (!is_keyboard) {
         int32_t cur_x = UI::PollKeyboardAxis(UI::KEY_MOUSE_X) / scaling;
         int32_t cur_y = UI::PollKeyboardAxis(UI::KEY_MOUSE_Y) / scaling;
         
-        return cur_x > x && cur_y > y && cur_x < x + (int32_t)w && cur_y < y + (int32_t)h;
+        is_over = cur_x > x && cur_y > y && cur_x < x + (int32_t)w && cur_y < y + (int32_t)h;
+    } else {
+        is_over = allow_keyboard && processing_group == selected_group && processing_index == selected_index;
     }
     
-    return allow_keyboard && processing_group == selected_group && processing_index == selected_index; 
+    // this will flip `selected_something_now` to true on the frame that a widget
+    // is selected, or the selection changes.
+    // we use the x and y of the widget as a proxy for identity.
+    if (is_over) {
+        static uint32_t tick_selected = 0;
+        static int32_t x_selected = -1, y_selected = -1;
+        
+        // ignore overlapping selections
+        if (tick_selected == GetTick()) {
+            return is_over;
+        }
+        
+        // widget already selected and selection didn't change
+        if (tick_selected == GetTick() - 1 && x == x_selected && y == y_selected) {
+            selected_something_still = true;
+            tick_selected = GetTick();
+            
+            return is_over;
+        }
+        
+        // selection changed
+        selected_something_now = true;
+        selected_something_still = true;
+        
+        x_selected = x;
+        y_selected = y;
+        
+        tick_selected = GetTick();
+    }
+    
+    return is_over;
 }
 
 // call this to check if user just pressed click
@@ -855,8 +930,10 @@ bool Button(const char* text, bool enabled, uint32_t width) {
     } else if (SelectionIndex(-1), CursorOver(x, y, w, h)) {
         if (Clicked()) {
             style = WIDGET_BUTTON_PRESSED;
+            activated_something = true;
         } else {
             style = WIDGET_BUTTON_SELECTED_ENABLED;
+            highlighted_something = true;
         }
         
         if (!is_keyboard) {
@@ -906,12 +983,14 @@ bool RadioButton(uint32_t index, uint32_t& selected, const char* text, bool enab
     
     if (enabled && (SelectionIndex(-1), CursorOver(x, y, frame_stack.top().cursor_x - x, 24))) {
         if (ClickHandledLate()) {
+            activated_something = true;
             selected = index;
             return true;
         }
         
         if (is_keyboard) {
             underline = true;
+            highlighted_something = true;
         } else {
             SetCursorDelayed(UI::CURSOR_CLICK);
         }
@@ -954,12 +1033,14 @@ bool CheckBox(bool& selected, const char* text, bool enabled) {
     
     if (enabled && (SelectionIndex(-1), CursorOver(x, y, frame_stack.top().cursor_x - x, 24))) {
         if (ClickHandledLate()) {
+            activated_something = true;
             selected = !selected;
             return true;
         }
         
         if (is_keyboard) {
             underline = true;
+            highlighted_something = true;
         } else {
             SetCursorDelayed(UI::CURSOR_CLICK);
         }
@@ -994,8 +1075,10 @@ bool Slider(float& value, bool enabled, uint32_t width) {
     } else if (SelectionIndex(-1), CursorOver(x, y, w, h)) {
         if (Clicked()) {
             style += 3;
+            activated_something = true;
         } else {
             style += 2;
+            highlighted_something = true;
         }
         
         if (!is_keyboard) {
@@ -1123,6 +1206,7 @@ bool TextBox(char* text, uint32_t length, bool enabled, uint32_t w, uint32_t h) 
     if (CursorOver(x, y, w, h)) {
         if (ClickHandled()) {
             selected_text_string = text;
+            activated_something = true;
         }
         
         SetCursorDelayed(UI::CURSOR_TEXT);

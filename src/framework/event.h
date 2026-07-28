@@ -32,6 +32,7 @@ struct Event {
         CONTROLLER,     //< Controller axis changed
         FRAME,          //< Emitted every frame
         TICK,           //< Emitted every tick
+        GUI,            //< GUI widget state updates
         SELECTED,       //< Cursor on top of an interactable object
         LOOK_AT,        //< Entity is looking in a direction
         LAST_EVENT

@@ -120,6 +120,7 @@ static const char* event_names[MAX_EVENT_TYPES] = {
     "controller",
     "frame",
     "tick",
+    "gui",
     "selected",
     "look-at"
 };

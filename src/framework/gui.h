@@ -47,6 +47,13 @@ enum GlyphEffect {
     SHADOW = 2
 };
 
+enum EventSubtype : uint16_t {
+    SELECTED = 1,
+    DESELECTED = 2,
+    HIGHLIGHTED = 4,
+    ACTIVATED = 8,
+};
+
 void Init();
 void Update();
 
