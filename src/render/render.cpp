@@ -442,6 +442,11 @@ void AddText(float x, float y, const char* text, color_t color) {
     bright.color = color;
     bright.texture = 0;
     
+    tleft.voffset = {0.0f, 0.0f};
+    tright.voffset = {0.0f, 0.0f};
+    bleft.voffset = {0.0f, 0.0f};
+    bright.voffset = {0.0f, 0.0f};
+    
     for (const char* c = text; *c != '\0'; c++) {
         if (*c=='\n') {
             cur_y += 16.0f;

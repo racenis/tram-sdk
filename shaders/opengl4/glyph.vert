@@ -4,6 +4,7 @@
 layout (location = 0) in vec3 Position;		// vertex position
 layout (location = 1) in vec2 TexCoord;		// texture coordinate
 layout (location = 2) in vec3 VertColor;	// vertex color
+layout (location = 3) in vec2 VOffset;		// screen space transform
 layout (location = 5) in uint Texture;		// texture index
 
 out vec2 vert_uv;
@@ -34,8 +35,8 @@ void main() {
 	// upper left corner.
 
 	// we first need to convert these coordinates to OpenGL coordinates
-	float pos_x = (round(Position.x) / (screen_width / 2.0)) - 1.0;
-	float pos_y = (round(Position.y) / (screen_height / -2.0)) + 1.0;
+	float pos_x = (round(Position.x + VOffset.x) / (screen_width / 2.0)) - 1.0;
+	float pos_y = (round(Position.y + VOffset.y) / (screen_height / -2.0)) + 1.0;
 
 	// then we compute the depth for correct ordering
 	float depth = -0.5 - (Position.z / 128.0);

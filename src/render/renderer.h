@@ -24,6 +24,7 @@ enum renderflags: uint32_t {
     FLAG_LINE_FILL_POLY = 2048,     //< Triangle meshes are rendered as lines
     FLAG_POINT_FILL_POLY = 4096,    //< Triangle meshes are rendered as points
     FLAG_DECAL = 8192,              //< Adds decal offset to rendered object.
+    FLAG_REVERSE_WINDING = 16384,   //< Reverses the winding of faces.
 };
 
 /// Texture color mode.

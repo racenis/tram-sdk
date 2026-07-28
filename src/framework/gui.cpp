@@ -50,10 +50,10 @@ static Render::Sprite* fonts[16] = {nullptr};
 
 // glyphvertices are where we put all of the GUI triangle vertices in
 // we upload them to the GPU each frame for drawing
-static Render::vertexarray_t glyphvertices_vertex_array = {};
+static Render::spritearray_t glyphvertices_sprite_array = {};
 static Render::drawlistentry_t glyphvertices_entry;
 
-static std::vector<Render::SpriteVertex> glyphvertices;
+static std::vector<Render::SpritePoint> glyphvertices;
 
 // instead of using these, use the SetCursorDelayed() to change the pointer
 static UI::CursorType current_cursor = UI::CURSOR_DEFAULT;
@@ -247,11 +247,11 @@ void Init() {
     // materials.
     // from this arises the unfortunate problem of sorting the glyphs.
     // also we should probably switch to using sprites here.
-    CreateVertexArray(GetVertexDefinition(VERTEX_SPRITE), glyphvertices_vertex_array);
+    glyphvertices_sprite_array = CreateSpriteArray();
     glyphvertices_entry = InsertDrawListEntry();
-    SetDrawListVertexArray(glyphvertices_entry, glyphvertices_vertex_array);
+    SetDrawListSpriteArray(glyphvertices_entry, glyphvertices_sprite_array);
     SetDrawListShader(glyphvertices_entry, VERTEX_SPRITE, MATERIAL_GLYPH);
-    SetFlags(glyphvertices_entry, FLAG_RENDER);
+    SetFlags(glyphvertices_entry, FLAG_RENDER | FLAG_REVERSE_WINDING);
     SetLayer(glyphvertices_entry, LAYER_GUI);
     
     Event::AddListener(Event::KEYCHAR, [](Event& evt) {
@@ -286,7 +286,7 @@ void UpdateDrawListFonts() {
     
     using namespace tram::Render;
     
-    uint32_t flags = FLAG_RENDER;
+    uint32_t flags = FLAG_RENDER | FLAG_REVERSE_WINDING;
     if (is_transparent) flags |= FLAG_TRANSPARENT;
     SetFlags(glyphvertices_entry, flags);
     
@@ -339,8 +339,8 @@ void Update() {
 
     
     // upload the generated glyph vertex triangles to the GPU
-    UpdateVertexArray(glyphvertices_vertex_array, glyphvertices.size() * sizeof(SpriteVertex), glyphvertices.data());
-    SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size());
+    UpdateSpriteArray(glyphvertices_sprite_array, glyphvertices.size(), &glyphvertices[0]);
+    SetDrawListIndexRange(glyphvertices_entry, 0, glyphvertices.size() * 6);
     glyphvertices.clear();
     keycode_queue.clear();
     
@@ -537,50 +537,18 @@ font_t RegisterFontReplace(Render::Sprite* prev, Render::Sprite* next) {
 /// Triangularizes a glyph from its params and then it get sent off to
 /// rendering via the glyph rendering list.
 void SetGlyph(float x, float y, float z, float w, float h, float tex_x, float tex_y, float tex_w, float tex_h, const vec3& color, font_t font) {
-    Render::SpriteVertex tleft;   // top left
-    Render::SpriteVertex tright;  // top right
-    Render::SpriteVertex bleft;   // bottom left
-    Render::SpriteVertex bright;  // bottom right
-
-    tleft.co.x = x;
-    tleft.co.y = y;
-    tleft.co.z = z;
-    tleft.texco.x = tex_x;
-    tleft.texco.y = tex_y;
+    Render::SpritePoint sprite;
     
-    tright.co.x = x + w;
-    tright.co.y = y;
-    tright.co.z = z;
-    tright.texco.x = tex_x + tex_w;
-    tright.texco.y = tex_y;
+    sprite.position = {x, y, z};
+    sprite.color = color;
+    sprite.rotation = 0.0f;
+    sprite.dimensions = {w, h};
+    sprite.midpoint = {0.0f, 0.0f};
+    sprite.texture_offset = {tex_x, tex_y};
+    sprite.texture_size = {tex_w, tex_h};
+    sprite.texture = font;
     
-    bleft.co.x = x;
-    bleft.co.y = y + h;
-    bleft.co.z = z;
-    bleft.texco.x = tex_x;
-    bleft.texco.y = tex_y + tex_h;
-    
-    bright.co.x = x + w;
-    bright.co.y = y + h;
-    bright.co.z = z;
-    bright.texco.x = tex_x + tex_w;
-    bright.texco.y = tex_y + tex_h;
-    
-    tleft.color = color;
-    tleft.texture = font;
-    tright.color = color;
-    tright.texture = font;
-    bleft.color = color;
-    bleft.texture = font;
-    bright.color = color;
-    bright.texture = font;
-
-    glyphvertices.push_back(bleft);
-    glyphvertices.push_back(bright);
-    glyphvertices.push_back(tleft);
-    glyphvertices.push_back(bright);
-    glyphvertices.push_back(tright);
-    glyphvertices.push_back(tleft);
+    glyphvertices.push_back(sprite);
 }
 
 uint32_t GlyphWidth(font_t font, glyph_t glyph) {

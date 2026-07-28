@@ -256,6 +256,7 @@ static void Draw(GLDrawListEntry* robj) {
     if (robj->flags & FLAG_POINT_FILL_POLY) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 #endif
 
+    if (robj->flags & FLAG_REVERSE_WINDING) glFrontFace(GL_CW);
     if (robj->flags & FLAG_NO_DEPTH_TEST) glDisable(GL_DEPTH_TEST);
     if (robj->flags & FLAG_DRAW_INDEXED) {
         glBindVertexArray(robj->vao);
@@ -265,6 +266,7 @@ static void Draw(GLDrawListEntry* robj) {
         glDrawArrays(robj->flags & FLAG_DRAW_LINES ? GL_LINES : GL_TRIANGLES, 0, robj->eboLen);
     }
     if (robj->flags & FLAG_NO_DEPTH_TEST) glEnable(GL_DEPTH_TEST);
+    if (robj->flags & FLAG_REVERSE_WINDING) glFrontFace(GL_CCW);
     
 #ifndef __EMSCRIPTEN__
     if (robj->flags & (FLAG_LINE_FILL_POLY | FLAG_POINT_FILL_POLY)) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
