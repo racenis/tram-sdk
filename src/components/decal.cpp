@@ -21,18 +21,6 @@
  * @see https://racenis.github.io/tram-sdk/documentation/components/decal.html
  */
 
-/*
- * FUTURE IMPROVEMENTS
- * 
- * Currently the decal uses flat normals, so it looks weird on curved surfaces.
- * The problem is that Models still don't store the actual normals for vertices.
- * 
- * We should also add in proper lightmap UVs and projections to posed models.
- * 
- * But for this we need to modify our model storage format.
- * 
- * */
-
 namespace tram {
 using namespace tram::Render;
 
@@ -367,15 +355,19 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
     
     RotateAABB(local_min, local_max, -comp->GetRotation());
     
-    std::vector<AABBTriangle> tris;
+    std::vector<uint32_t> tris;
     comp->GetModel()->GetData()->FindAllFromAABB(local_min, local_max, tris);
     
-    for (auto& tri : tris) {
-        tri.point1 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point1);
-        tri.point2 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point2);
-        tri.point3 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * tri.point3);
+    for (auto& key : tris) {
+        AABBTriangle tri;
         
-        tri.normal = tri.normal * comp->GetRotation();
+        tri.point1 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * comp->GetModel()->GetData()->GetPosition(key, 0));
+        tri.point2 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * comp->GetModel()->GetData()->GetPosition(key, 1));
+        tri.point3 = comp->GetLocation() + comp->GetRotation() * (comp->GetScale() * comp->GetModel()->GetData()->GetPosition(key, 2));
+        
+        vec3 normal1 = comp->GetRotation() * comp->GetModel()->GetData()->GetNormal(key, 0);
+        vec3 normal2 = comp->GetRotation() * comp->GetModel()->GetData()->GetNormal(key, 1);
+        vec3 normal3 = comp->GetRotation() * comp->GetModel()->GetData()->GetNormal(key, 2);
         
         ClipAABBTriangle(tri, info.front_plane, [&](AABBTriangle tri) {
         ClipAABBTriangle(tri, info.back_plane, [&](AABBTriangle tri) {
@@ -397,9 +389,9 @@ void DecalComponent::ProjectOnModel(DecalProjectInfo& info, RenderComponent* com
             vert2.co = worldspace_to_decalspace * vec4(tri.point2, 1.0f);
             vert3.co = worldspace_to_decalspace * vec4(tri.point3, 1.0f);
             
-            vert1.normal = glm::normalize(worldspace_to_decalspace * vec4(tri.normal, 0.0f));
-            vert2.normal = glm::normalize(worldspace_to_decalspace * vec4(tri.normal, 0.0f));
-            vert3.normal = glm::normalize(worldspace_to_decalspace * vec4(tri.normal, 0.0f));
+            vert1.normal = glm::normalize(worldspace_to_decalspace * vec4(normal1, 0.0f));
+            vert2.normal = glm::normalize(worldspace_to_decalspace * vec4(normal2, 0.0f));
+            vert3.normal = glm::normalize(worldspace_to_decalspace * vec4(normal3, 0.0f));
             
             vert1.tex = {local1.x / info.decal_width + 0.5f, local1.y / info.decal_height + 0.5f};
             vert2.tex = {local2.x / info.decal_width + 0.5f, local2.y / info.decal_height + 0.5f};

@@ -36,6 +36,15 @@
  * @see https://racenis.github.io/tram-sdk/documentation/framework/gui.html
  */
 
+/*
+ * TODO: add option to changing font midway through text rendering
+ * 
+ * we could have special commands. like \bold or \underline or something like
+ * that. we should also allow registering additional commands for e.g. copying
+ * in data into the text stream, like variables.
+ * 
+ * */
+
 namespace tram::GUI {
 
 struct FrameObject {

@@ -84,6 +84,7 @@ public:
     void DrawAABB(vec3 position, quat rotation);
     void FindAllFromRay(vec3 ray_pos, vec3 ray_dir, std::vector<AABBTriangle>& result);
     void FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& result);
+    void FindAllFromAABB(vec3 min, vec3 max, std::vector<uint32_t>& result);
     
     virtual vec3 GetPosition(int32_t index, int32_t vertex) = 0;
     virtual vec3 GetNormal(int32_t index, int32_t vertex) = 0;

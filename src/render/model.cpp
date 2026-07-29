@@ -85,6 +85,13 @@ void ModelData::FindAllFromAABB(vec3 min, vec3 max, std::vector<AABBTriangle>& r
     });
 }
 
+void ModelData::FindAllFromAABB(vec3 min, vec3 max, std::vector<uint32_t>& result) {
+    tree->find(min, max, [&](uint32_t key) {
+        result.push_back(key);
+    });
+}
+
+
 static int total_counter = 0;
 static int node_counter = 0;
 static int leaf_counter = 0;
