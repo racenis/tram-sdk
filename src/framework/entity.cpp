@@ -340,7 +340,7 @@ void Entity::Register() {
     }
 
     if (name) {
-        if (Entity* existing = entity_id_list.find(name); existing) {
+        if (Entity* existing = entity_name_list.find(name); existing) {
             Entity::Obliterate(existing);
         }
         
@@ -451,7 +451,7 @@ void Entity::Serialize(Entity* entity, File* file) {
     file->write_name(entity->GetType());
     file->write_uint32(entity->id);
     file->write_name(entity->name);
-    file->write_uint32(entity->flags & ~SERIALIZE_TO_DISK);
+    file->write_uint32(entity->flags & ~(SERIALIZE_TO_DISK | LOADED));
     file->write_float32(entity->location.x);
     file->write_float32(entity->location.y);
     file->write_float32(entity->location.z);

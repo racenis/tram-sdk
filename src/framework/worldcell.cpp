@@ -401,9 +401,9 @@ void WorldCell::LoadFromDisk() {
 /// Loads worldcell data from disk.
 void WorldCell::SaveToDisk() {
     char path[PATH_LIMIT];
-    snprintf(path, PATH_LIMIT, "save://%s.cell", (const char*)name);
+    snprintf(path, PATH_LIMIT, "save://data/worldcells/%s.cell", (const char*)name);
     
-    File file(path, File::READ | File::PAUSE_LINE);
+    File file(path, File::WRITE | File::PAUSE_LINE);
 
     if (!file.is_open()) {
         Log(Severity::ERROR, System::CORE, "Worldcell file {} could not be opened!", path);
@@ -440,12 +440,13 @@ void WorldCell::SaveToDisk() {
             if (!signal.data) {
                 file.write_name("none");
             } else switch (signal.data->GetType()) {
-                case TYPE_INT32:    file.write_int32(*signal.data);             break;
-                case TYPE_FLOAT32:  file.write_float32(*signal.data);           break;
-                case TYPE_NAME:     file.write_name(*signal.data);              break;
-                case TYPE_VEC3:     file.write_float32(((vec3)*signal.data).x);
+                case TYPE_INT32:    file.write_token("int");   file.write_int32(*signal.data);      break;
+                case TYPE_FLOAT32:  file.write_token("float"); file.write_float32(*signal.data);    break;
+                case TYPE_NAME:     file.write_token("name");  file.write_name(*signal.data);       break;
+                case TYPE_VEC3:     file.write_token("vec3");
+                                    file.write_float32(((vec3)*signal.data).x);
                                     file.write_float32(((vec3)*signal.data).y);
-                                    file.write_float32(((vec3)*signal.data).z); break;
+                                    file.write_float32(((vec3)*signal.data).z);                     break;
                 default: file.write_name("none");
             }
             
@@ -467,7 +468,8 @@ void WorldCell::Reset() {
         Transition::Yeet(trans);
     }
     
-    for (auto entity : entities) {
+    std::vector<Entity*> entities_copy = entities;
+    for (auto entity : entities_copy) {
         Entity::Obliterate(entity);
     }
     

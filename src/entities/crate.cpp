@@ -84,6 +84,8 @@ void Crate::SetParameters() {
 }
 
 void Crate::Load(){
+    Log("name {} is loaded", name);
+    
     rendercomponent.make();
     physicscomponent.make();
     
@@ -98,7 +100,7 @@ void Crate::Load(){
     
     rendercomponent->Init();
     physicscomponent->Init();
-    flags |= LOADED;
+    flags |= LOADED | SERIALIZE_TO_DISK;
 
     UpdateParameters();
 }

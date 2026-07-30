@@ -164,7 +164,7 @@ void Button::UpdateParameters() {
     }
 
     // then check if parent has moved
-    if (parent) {
+    if (parent && Entity::Find(parent)) {
         // if parent doesn't start at origin, this will glitch out.
         // TODO: fix
         pos += Entity::Find(parent)->GetLocation();

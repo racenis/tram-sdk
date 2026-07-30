@@ -332,6 +332,11 @@ FileWriter* FileWriter::GetWriter(const char* path) {
         break;
     }
     
+    // checking for file:// separately, as it's not in `writer_infos`
+    if (strcmp("file", writer_protocol) == 0) {
+        return new DiskWriter(writer_location, StripProtocol(path));
+    }
+    
     for (auto& p : writer_infos) {
         if (strcmp(p.protocol, writer_protocol)) continue;
 

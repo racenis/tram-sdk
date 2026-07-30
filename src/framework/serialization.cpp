@@ -56,7 +56,7 @@ struct Plugin {
     std::vector<ManifestItem> items;
 };
 
-std::vector<Plugin> plugins;
+std::vector<Plugin> plugins = {{.name = "base", .type = PLUGIN_BASE}};
 std::vector<DataType> data_types = {
     {"language",        [](const char* name) { Language::Load(name); },
                         [](const char* name) {}, [](const char* name) {}},
@@ -64,7 +64,7 @@ std::vector<DataType> data_types = {
                         [](const char* name) {}, [](const char* name) {}},
     {"navmesh",         [](const char* name) { Navmesh::Find(name)->LoadFromDisk(); },
                         [](const char* name) {}, [](const char* name) {}},
-    {"worldcell",       [](const char* name) { WorldCell::Find(name)->LoadFromDisk(); },
+    {"worldcell",       [](const char* name) { WorldCell::Make(name)->LoadFromDisk(); },
                         [](const char* name) { WorldCell::Find(name)->SaveToDisk(); },
                         [](const char* name) { auto cell = WorldCell::Find(name); cell->Reset(); cell->LoadFromDisk(); }},
     {"sound",           [](const char* name) { Audio::Sound::Find(name)->Load(); },
