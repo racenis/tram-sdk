@@ -153,7 +153,7 @@ void flush_console(Severity severity, System::system_t system) {
     
     int segment_start = 0;
     int segment_length = 0;
-    int last_space = 0;
+    int last_space = -1;
     for (int i = 0;; i++) {
         if (isspace(buffer[i])) last_space = i;
         if (++segment_length < 64 && buffer[i] != '\n' && buffer[i] != '\0') continue;
@@ -170,6 +170,11 @@ void flush_console(Severity severity, System::system_t system) {
             break;
         }
         
+        // hack, but prevents hanging
+        if (last_space < segment_start) {
+            break;
+        }
+
         segment_length = 0;
         segment_start = last_space + 1;
         i = last_space;
