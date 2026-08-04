@@ -10,6 +10,8 @@
 #include <queue>
 #include <unordered_map>
 #include <algorithm>
+#include <mutex>
+#include <shared_mutex>
 
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
@@ -104,10 +106,10 @@ struct message_disconnect {
 };
 
 static uint32_t outgoing_index = 0;
+const int32_t DATAGRAM_LIMIT = 1200;
 
 class Connection {
 public:
-    virtual ~Connection() = default;
     virtual void Yeet() = 0;
     
     virtual void SendMessage(channel_t channel, uint16_t type, void* data, uint32_t size) = 0;
@@ -115,15 +117,143 @@ public:
     
     virtual void RegisterReceived(const char* data, int32_t length) = 0;
     
+    virtual void SendImmediate(const SentDatagram& datagram) = 0;
+    
+    uint32_t DispatchMessages() {
+        std::vector<ack_header> acks;
+        for (channel_t c = 0; c < channel_count; c++) {
+            std::unique_lock<std::shared_mutex> lock(*channel_mutex[c]);
+            for (auto& ack : channels[c].ackable) {
+                if (acks.size() && acks.back().channel == c && ack - acks.back().offset < 32) {
+                    acks.back().mask |= 1 << (ack - acks.back().offset);
+                } else {
+                    ack_header ackh;
+                    ackh.channel = c;
+                    ackh.offset = ack;
+                    ackh.mask = 1;
+                    acks.push_back(ackh);
+                }
+            }
+            
+            channels[c].ackable.clear();
+        }
+        
+        std::vector<SentDatagram> dispatch_queue;
+        for (channel_t c = 0; c < channel_count; c++) {
+            std::unique_lock<std::shared_mutex> lock(*channel_mutex[c]);
+            if (!channels_out[c].outgoing_queue.size()) continue;
+            SentDatagram datagram;
+            datagram.index = channels_out[c].last_index++;
+            datagram.tick_last_sent = GetTick();
+            datagram.tick_since_first_sent = GetTick();
+            
+            const bool reliable = channel_infos[c].reliable;
+            
+            int32_t offset = 0;
+            datagram_header* dheader = (datagram_header*)&datagram.data[offset];
+            strcpy(dheader->marker, "TRAMSDK");
+            dheader->message_count = 0;
+            dheader->ack_count = 0;
+            dheader->sender = outgoing_index;
+            dheader->index = datagram.index;
+            
+            offset += sizeof(datagram_header);
+            
+            while (acks.size() && offset + sizeof(ack_header) < DATAGRAM_LIMIT) {
+                ack_header* header = (ack_header*)&datagram.data[offset];
+                *header = acks.back();
+                dheader->ack_count++;
+                
+                acks.pop_back();
+                
+                offset += sizeof(ack_header);
+            }
+            
+            std::reverse(channels_out[c].outgoing_queue.begin(), channels_out[c].outgoing_queue.end());
+            
+            while (channels_out[c].outgoing_queue.size() && offset + sizeof(message_header) + channels_out[c].outgoing_queue.back().length < DATAGRAM_LIMIT) {
+                message_header* header = (message_header*)&datagram.data[offset];
+                header->type = channels_out[c].outgoing_queue.back().type;
+                header->length = channels_out[c].outgoing_queue.back().length;
+                memcpy(&datagram.data[offset + sizeof(message_header)], channels_out[c].outgoing_queue.back().data, channels_out[c].outgoing_queue.back().length);
+                
+                dheader->message_count++;
+                
+                offset += sizeof(message_header) + channels_out[c].outgoing_queue.back().length;
+                
+                channels_out[c].outgoing_queue.pop_back();
+            }
+            
+            std::reverse(channels_out[c].outgoing_queue.begin(), channels_out[c].outgoing_queue.end());
+            
+            datagram.length = offset;
+            dispatch_queue.push_back(datagram);
+            if (reliable) channels_out[c].sent_datagrams[datagram.index] = datagram;
+        }
+        
+        while (acks.size()) {
+            SentDatagram datagram;
+            datagram.index = channels_out[0].last_index++;
+            datagram.tick_last_sent = GetTick();
+            datagram.tick_since_first_sent = GetTick();
+            
+            int32_t offset = 0;
+            datagram_header* dheader = (datagram_header*)&datagram.data[offset];
+            strcpy(dheader->marker, "TRAMSDK");
+            dheader->message_count = 0;
+            dheader->ack_count = 0;
+            dheader->sender = outgoing_index;
+            dheader->index = datagram.index;
+            
+            offset += sizeof(datagram_header);
+            
+            while (acks.size() && offset + sizeof(ack_header) < DATAGRAM_LIMIT) {
+                ack_header* header = (ack_header*)&datagram.data[offset];
+                *header = acks.back();
+                dheader->ack_count++;
+                
+                acks.pop_back();
+                
+                offset += sizeof(ack_header);
+            }
+            
+            datagram.length = offset;
+            dispatch_queue.push_back(datagram);
+        }
+        
+        for (channel_t c = 0; c < channel_count; c++) {
+            std::unique_lock<std::shared_mutex> lock(*channel_mutex[c]);
+            for (auto& [index, datagram] : channels_out[c].sent_datagrams) {
+                if (GetTick() - datagram.tick_last_sent < 30) continue;
+                datagram.tick_last_sent = GetTick();
+                dispatch_queue.push_back(datagram);
+            }
+        }
+        
+        for (const auto& datagram : dispatch_queue) {
+            SendImmediate(datagram);
+        }
+        
+        return dispatch_queue.size();
+    }
+    
     Connection(uint32_t address, uint16_t port) : address(address), port(port) {
         for (channel_t c = 0; c < channel_count; c++) {
             channels.push_back(ReceivedChannel{});
             channels_out.push_back(SentChannel{});
+            channel_mutex.push_back(new std::shared_mutex);
         }
+    }
+    
+    virtual ~Connection() {
+        for (auto mutex : channel_mutex) delete mutex;
     }
     
     std::vector<ReceivedChannel> channels;
     std::vector<SentChannel> channels_out;
+    std::vector<std::shared_mutex*> channel_mutex;
+    
+    std::shared_mutex mutex;
     
     uint32_t last_tick_received = GetTick();
     
@@ -161,18 +291,20 @@ public:
         delete this;
     }
     
+    
+    
     void SendMessage(channel_t channel, uint16_t type, void* data, uint32_t size) override {
         SentMessage message;
         message.length = size;
         message.type = type;
         memcpy(message.data, data, size);
         
+        std::unique_lock<std::shared_mutex> lock(*channel_mutex[channel]);
         channels_out[channel].outgoing_queue.push_back(message);
     }
     
     bool ReceiveMessage(channel_t channel, uint16_t& type, void** data, uint32_t& size) override {
-        // we could have two dealloc queues
-        // we delete messages off connection structs as they get received
+        std::unique_lock<std::shared_mutex> lock(*channel_mutex[channel]);
         
         // do nothing if no received datagrams
         if (!channels[channel].received_datagrams.size()) {
@@ -209,12 +341,13 @@ public:
     }
     
     virtual void RegisterReceived(const char* data, int32_t length) override {
-        // TODO: add mutex
         last_tick_received = GetTick();
         
         datagram_header* header = (datagram_header*)data;
         int32_t offset = sizeof(datagram_header);
         const bool reliable = channel_infos[header->channel].reliable;
+        
+        std::unique_lock<std::shared_mutex> lock(*channel_mutex[header->channel]);
         
         // check if datagram already received
         if (reliable && (channels[header->channel].received_until >= header->index
@@ -250,7 +383,7 @@ public:
             offset += sizeof(ack_header);
         }
         
-        for (int32_t i = 0; i < header->ack_count; i++) {
+        for (int32_t i = 0; i < header->message_count; i++) {
             if (offset + (int32_t)sizeof(message_header) > length) {
                 Log(Severity::WARNING, System::PLATFORM, "truncated message from {}", fmt_addr(address));
                 return;
@@ -279,11 +412,16 @@ public:
         }
     }
     
+    void SendImmediate(const SentDatagram& datagram) override {
+        send(socket, datagram.data, datagram.length, 0);
+    }
+    
     SOCKET socket;
 };
 
 static std::vector<Connection*> connections;
 static std::set<connection_t> new_connections;
+static std::shared_mutex connections_mutex;
 
 static uint32_t application_id = 489;
 static uint32_t application_version = 200;
@@ -296,8 +434,6 @@ static std::thread dispatch_thread;
 
 static ConnectionStatus connection_status = DISCONNECTED;
 static char status_message[489] = "";
-
-const int32_t DATAGRAM_LIMIT = 1200;
 
 struct message_accepted {
     uint16_t user_index;
@@ -314,130 +450,17 @@ static void dispatch_messages() {
         uint32_t dispatched = 0;
         
         for (connection_t connect = 0; connect < connects; connect++) {
-        
-            // lock all connects
+            connections_mutex.lock_shared();
+            
             if (connect >= connections.size()) {
+                connections_mutex.unlock_shared();
                 break;
             }
             
-            // lock connect
-            
             Connection* cn = connections[connect];
+            connections_mutex.unlock_shared();
             
-            std::vector<ack_header> acks;
-            for (channel_t c = 0; c < channel_count; c++) {
-                for (auto& ack : cn->channels[c].ackable) {
-                    if (acks.size() && acks.back().channel == c && ack - acks.back().offset < 32) {
-                        acks.back().mask |= 1 << (ack - acks.back().offset);
-                    } else {
-                        ack_header ackh;
-                        ackh.channel = c;
-                        ackh.offset = ack;
-                        ackh.mask = 1;
-                        acks.push_back(ackh);
-                    }
-                }
-                
-                cn->channels[c].ackable.clear();
-            }
-            
-            std::vector<SentDatagram> dispatch_queue;
-            for (channel_t c = 0; c < channel_count; c++) {
-                if (!cn->channels_out[c].outgoing_queue.size()) continue;
-                SentDatagram datagram;
-                datagram.index = cn->channels_out[c].last_index++;
-                datagram.tick_last_sent = GetTick();
-                datagram.tick_since_first_sent = GetTick();
-                
-                const bool reliable = channel_infos[c].reliable;
-                
-                int32_t offset = 0;
-                datagram_header* dheader = (datagram_header*)&datagram.data[offset];
-                strcpy(dheader->marker, "TRAMSDK");
-                dheader->message_count = 0;
-                dheader->ack_count = 0;
-                dheader->sender = outgoing_index;
-                dheader->index = datagram.index;
-                
-                offset += sizeof(datagram_header);
-                
-                while (acks.size() && offset + sizeof(ack_header) < DATAGRAM_LIMIT) {
-                    ack_header* header = (ack_header*)&datagram.data[offset];
-                    *header = acks.back();
-                    dheader->ack_count++;
-                    
-                    acks.pop_back();
-                    
-                    offset += sizeof(ack_header);
-                }
-                
-                std::reverse(cn->channels_out[c].outgoing_queue.begin(), cn->channels_out[c].outgoing_queue.end());
-                
-                while (cn->channels_out[c].outgoing_queue.size() && offset + sizeof(message_header) + cn->channels_out[c].outgoing_queue.back().length < DATAGRAM_LIMIT) {
-                    message_header* header = (message_header*)&datagram.data[offset];
-                    header->type = cn->channels_out[c].outgoing_queue.back().type;
-                    header->length = cn->channels_out[c].outgoing_queue.back().length;
-                    memcpy(&datagram.data[offset + sizeof(message_header)], cn->channels_out[c].outgoing_queue.back().data, cn->channels_out[c].outgoing_queue.back().length);
-                    
-                    dheader->message_count++;
-                    
-                    offset += sizeof(message_header) + cn->channels_out[c].outgoing_queue.back().length;
-                    
-                    cn->channels_out[c].outgoing_queue.pop_back();
-                }
-                
-                std::reverse(cn->channels_out[c].outgoing_queue.begin(), cn->channels_out[c].outgoing_queue.end());
-                
-                datagram.length = offset;
-                dispatch_queue.push_back(datagram);
-                if (reliable) cn->channels_out[c].sent_datagrams[datagram.index] = datagram;
-            }
-            
-            while (acks.size()) {
-                SentDatagram datagram;
-                datagram.index = cn->channels_out[0].last_index++;
-                datagram.tick_last_sent = GetTick();
-                datagram.tick_since_first_sent = GetTick();
-                
-                int32_t offset = 0;
-                datagram_header* dheader = (datagram_header*)&datagram.data[offset];
-                strcpy(dheader->marker, "TRAMSDK");
-                dheader->message_count = 0;
-                dheader->ack_count = 0;
-                dheader->sender = outgoing_index;
-                dheader->index = datagram.index;
-                
-                offset += sizeof(datagram_header);
-                
-                while (acks.size() && offset + sizeof(ack_header) < DATAGRAM_LIMIT) {
-                    ack_header* header = (ack_header*)&datagram.data[offset];
-                    *header = acks.back();
-                    dheader->ack_count++;
-                    
-                    acks.pop_back();
-                    
-                    offset += sizeof(ack_header);
-                }
-                
-                datagram.length = offset;
-                dispatch_queue.push_back(datagram);
-            }
-            
-            for (channel_t c = 0; c < channel_count; c++) {
-                for (auto& [index, datagram] : cn->channels_out[c].sent_datagrams) {
-                    if (GetTick() - datagram.tick_last_sent < 30) continue;
-                    datagram.tick_last_sent = GetTick();
-                    dispatch_queue.push_back(datagram);
-                }
-            }
-            
-            for (const auto& datagram : dispatch_queue) {
-                // this should be a method on connection base class
-                // TODO: do the needful
-                UDPConnection* conn = (UDPConnection*) cn;
-                send(conn->socket, datagram.data, datagram.length, 0);
-                dispatched++;
-            }
+            dispatched += cn->DispatchMessages();
         }
         
         if (!dispatched) std::this_thread::sleep_for(std::chrono::milliseconds(30));
@@ -463,13 +486,13 @@ void SetProtocolVersion(uint32_t app_id, uint32_t version) {
 void Connect(const char* address, uint16_t port) {
     if (!check_init()) return;
     
-    if (connection_status == DISCONNECTED || connection_status == HOSTING) {
-        Log(Severity::ERROR, System::PLATFORM, "Cannot connect before stopping hosting!");
+    if (connection_status == CONNECTING) {
+        Log(Severity::ERROR, System::PLATFORM, "Have to wait until connection succeeds or fails, sorry I don't make the rules.");
         return; 
     }
     
-    if (connection_status == CONNECTING) {
-        Log(Severity::ERROR, System::PLATFORM, "Have to wait until connection succeeds or fails, sorry I don't make the rules.");
+    if (connection_status != DISCONNECTED || connection_status != CONNECTED) {
+        Log(Severity::ERROR, System::PLATFORM, "Cannot connect before stopping hosting!");
         return; 
     }
     
@@ -478,10 +501,12 @@ void Connect(const char* address, uint16_t port) {
     client_thread.join();
     dispatch_thread.join();
     
+    connections_mutex.lock();
     for (auto connection : connections) {
         connection->Yeet();
     }
     connections.clear();
+    connections_mutex.unlock();
     
     sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -496,8 +521,10 @@ void Connect(const char* address, uint16_t port) {
     
     // initialize the connection
     Connection* connec = new UDPConnection(addr.sin_addr.S_un.S_addr, addr.sin_port, host_socket);
-    connections[0] = connec;
+    connections_mutex.lock();
+    connections.push_back(connec);
     new_connections.insert(0);
+    connections_mutex.unlock();
     
     // send out the join message
     struct {
@@ -611,10 +638,12 @@ void Disconnect() {
     client_thread.join();
     dispatch_thread.join();
     
+    connections_mutex.lock();
     for (auto connection : connections) {
         connection->Yeet();
     }
     connections.clear();
+    connections_mutex.unlock();
     
     closesocket(host_socket);
     WSACleanup();
@@ -628,7 +657,7 @@ void Disconnect() {
 void Host(uint16_t port) {
     if (!check_init()) return;
     
-    if (connection_status != DISCONNECTED || connection_status != HOSTING) {
+    if (connection_status != DISCONNECTED && connection_status != HOSTING) {
         Log(Severity::ERROR, System::PLATFORM, "Cannot host before disconnecting!");
         return; 
     }
@@ -741,7 +770,8 @@ void Host(uint16_t port) {
                 (void)connect(new_socket, (sockaddr*)&sender, sizeof(sender));
                 
                 // allocate new client index
-                // TODO: add mutex
+                connections_mutex.lock();
+                
                 int32_t index = -1;
                 for (int32_t i = 0; i < (int32_t)connections.size(); i++) {
                     if (connections[i]) continue;
@@ -752,10 +782,13 @@ void Host(uint16_t port) {
                     connections.push_back(nullptr);
                 }
                 
+                
                 // initialize the connection
                 Connection* connec = new UDPConnection(sender.sin_addr.S_un.S_addr, sender.sin_port, new_socket);
                 connections[index] = connec;
                 new_connections.insert(index);
+                
+                connections_mutex.unlock();
                 
                 Log(Severity::DEFAULT, System::PLATFORM, "New connection from {} on port {}", fmt_addr(sender.sin_addr.S_un.S_addr), sender.sin_port);
                 
@@ -785,7 +818,8 @@ void Host(uint16_t port) {
                 continue;
             }
             
-            if (header->sender < connections.size()
+            std::shared_lock<std::shared_mutex> lock(connections_mutex);
+            if (header->sender >= connections.size()
                 || connections[header->sender]->address != sender.sin_addr.S_un.S_addr
                 || connections[header->sender]->port != sender.sin_port
             ) {
@@ -809,6 +843,7 @@ const char* GetStatusMessage() {
 }
 
 channel_t AddChannel(bool reliable) {
+    std::shared_lock<std::shared_mutex> lock(connections_mutex);
     if (connections.size()) {
         Log(Severity::ERROR, System::PLATFORM, "cannot add channel if connections exist, ignoring");
         return -1;
@@ -818,12 +853,13 @@ channel_t AddChannel(bool reliable) {
 }
 
 void SendMessage(channel_t channel, connection_t connection, uint16_t type, void* data, uint32_t size) {
-    if (channel < channel_count) {
+    if (channel >= channel_count) {
         Log(Severity::ERROR, System::PLATFORM, "cannot send message to invalid channel {}", channel);
         return;
     }
     
-    if (connection < connections.size()) {
+    std::shared_lock<std::shared_mutex> lock(connections_mutex);
+    if (connection >= connections.size()) {
         Log(Severity::ERROR, System::PLATFORM, "cannot send message to invalid connection {}", connection);
         return;
     }
@@ -832,12 +868,13 @@ void SendMessage(channel_t channel, connection_t connection, uint16_t type, void
 }
 
 bool ReceiveMessage(channel_t channel, connection_t& connection, uint16_t& type, void** data, uint32_t& size) {
-    if (channel < channel_count) {
+    if (channel >= channel_count) {
         Log(Severity::ERROR, System::PLATFORM, "cannot receive message from invalid channel {}", channel);
         return false;
     }
     
-    if (connection < connections.size()) {
+    std::shared_lock<std::shared_mutex> lock(connections_mutex);
+    if (connection >= connections.size()) {
         Log(Severity::ERROR, System::PLATFORM, "cannot receive message from invalid connection {}", connection);
         return false;
     }
@@ -846,6 +883,7 @@ bool ReceiveMessage(channel_t channel, connection_t& connection, uint16_t& type,
 }
 
 bool GetConnection(connection_t& id) {
+    std::unique_lock<std::shared_mutex> lock(connections_mutex);
     if (!new_connections.size()) return false;
     id = *new_connections.begin();
     new_connections.erase(id);
