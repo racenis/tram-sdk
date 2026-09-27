@@ -13,12 +13,18 @@
 #include <mutex>
 #include <shared_mutex>
 
-#define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#ifdef _WIN32
+    #define WIN32_LEAN_AND_MEAN
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
 
-#undef ERROR
-#undef SendMessage
+    #undef ERROR
+    #undef SendMessage
+#endif
+
+// TODO: port this to unix sockets (ezpz) 
+
+#ifdef _WIN32
 
 namespace tram::Platform::Network {
 
@@ -895,3 +901,5 @@ void Update() {
 }
 
 }
+
+#endif
