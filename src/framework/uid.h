@@ -43,6 +43,11 @@ struct UID {
 
 typedef UID name_t;
 
+#ifndef __MINGW32__
+    int strncpy_s(char* dest, size_t destsz, const char* src, size_t count);
+    int strncat_s(char* dest, size_t destsz, const char* src, size_t count);
+#endif
+
 }
 
 #endif // TRAM_SDK_FRAMEWORK_UID_H

@@ -147,4 +147,35 @@ bool UID::is_empty(const char* str) {
     return true;
 }
 
+#ifndef __MINGW32__
+
+// it turns out that this is actually a function unique to mingw lol. this here
+// is a drop-in replacement and we'll keep it here until we refactor all of the
+// code that uses it.
+int strncpy_s(char* dest, size_t destsz, const char* src, size_t count) {
+    if (!dest || !destsz || !src) {
+        return 22;
+    }
+    
+    if (count >= destsz) count = destsz - 1;
+    
+    strncpy(dest, src, count);
+    dest[count] = '\0';
+    
+    return 0;
+}
+
+// ditto.
+int strncat_s(char* dest, size_t destsz, const char* src, size_t count) {
+    if (!dest || !destsz || !src) {
+        return 22;
+    }
+    
+    strncat(dest, src, count);
+    
+    return 0;
+}
+
+#endif
+
 }
