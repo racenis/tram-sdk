@@ -281,6 +281,8 @@ void Input::Init() {
 
 void Input::Update() {
     glfwPollEvents();
+    
+#ifndef __EMSCRIPTEN__
     if (!glfwJoystickPresent(GLFW_JOYSTICK_1)) return;
     
     static bool prev_initialized = false;
@@ -322,7 +324,8 @@ void Input::Update() {
                              next.axes[GLFW_GAMEPAD_AXIS_RIGHT_X],
                              next.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y],
                              next.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER],
-                             next.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);   
+                             next.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);
+#endif
 }
 
 void Input::Uninit() {
