@@ -1,5 +1,3 @@
-#version 300 es
-
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 

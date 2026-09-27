@@ -1,5 +1,3 @@
-#version 300 es
-
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
@@ -8,13 +6,13 @@ precision highp float;
 layout (location = 0) in vec3 Position;		// vertex position
 layout (location = 3) in vec2 VOffset;		// screen space transform
 layout (location = 1) in vec2 VertUV;		// texture coordinates
+layout (location = 2) in vec3 VertColor;	// vertex color
 layout (location = 4) in float Verticality; // how vertical should a sprite be
 layout (location = 5) in uint TexIndex;		// texture index
 
 layout (std140) uniform Matrices {
     mat4 projection;
     mat4 view;
-	vec3 view_pos;
 };
 
 layout (std140) uniform ModelMatrices {
@@ -29,16 +27,20 @@ layout (std140) uniform ModelMatrices {
 	float screen_height;
 	vec4 colors[15];
 	vec4 specular[15];
+	vec4 texture_transforms[15];
 };
 
 out vec2 vert_uv;
+out vec3 vert_color;
 flat out uint vert_tex_index;
 
 void main() {
-	vec4 screen_pos = projection * view * model * vec4(Position, 1.0);
+	vec4 world_pos = view * model * vec4(Position, 1.0);
+	vec4 offset_pos = world_pos + vec4(VOffset, 0.0, 0.0);
 	
-    gl_Position = screen_pos + vec4(VOffset, 0.0, 0.0);
+    gl_Position = projection * offset_pos;
 
     vert_uv = VertUV;
+	vert_color = VertColor;
 	vert_tex_index = TexIndex;
 }

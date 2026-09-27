@@ -1,5 +1,3 @@
-#version 300 es
-
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
@@ -17,7 +15,7 @@ layout (std140) uniform Matrices {
 out vec3 vert_color;
 
 void main() {
-    gl_Position = projection * view * vec4(Position, 1.0);
+	gl_Position = projection * view * vec4(Position, 1.0);
 	
 	vert_color = VertColor;
 }

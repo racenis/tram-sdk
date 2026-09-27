@@ -1,20 +1,20 @@
-#version 300 es
-
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
 precision highp float;
+precision mediump sampler2DArray;
 
 out vec4 fragment;
-
+  
 in vec2 vert_uv;
 in vec3 vert_color;
 flat in uint vert_tex_index;
 
-uniform sampler2D sampler[16];
+uniform sampler2D sampler[15];
+uniform sampler2DArray samplerArray;
 
 void main() {
-	switch (vert_tex_index) {
+    switch (vert_tex_index) {
 	case 0u:
 		fragment = texture(sampler[0], vert_uv);
 		break;
@@ -59,13 +59,9 @@ void main() {
 		break;
 	case 14u:
 		fragment = texture(sampler[14], vert_uv);
-		break;
-	case 15u:
-		fragment = texture(sampler[15], vert_uv);
-		break;			
+		break;		
 	}
 	
-	if (fragment.a < 0.5) discard;
-	
-    fragment *= vec4(vert_color, 1.0);
+	if (fragment.w < 0.9) discard;
+	fragment *= vec4(vert_color, 1.0);
 }

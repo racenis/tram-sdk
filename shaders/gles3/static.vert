@@ -1,5 +1,3 @@
-#version 300 es
-
 // TRAMWAY DRIFT AND DUNGEON EXPLORATION SIMULATOR 2022
 // All rights reserved.
 
@@ -14,7 +12,6 @@ layout (location = 4) in uint TexIndex;		// texture index
 layout (std140) uniform Matrices {
     mat4 projection;
     mat4 view;
-	vec3 view_pos;
 };
 
 layout (std140) uniform ModelMatrices {
@@ -29,11 +26,13 @@ layout (std140) uniform ModelMatrices {
 	float screen_height;
 	vec4 colors[15];
 	vec4 specular[15];
+	vec4 texture_transforms[15];
 };
 
 out vec2 vert_uv;
 out vec2 vert_light_uv;
 out vec3 vert_color;
+out float vert_opacity;
 flat out uint vert_tex_index;
 
 void main() {
@@ -46,7 +45,12 @@ void main() {
 	vert_color *= sun_weight;
 	vert_color += 1.0 - sun_weight;
 	
-    vert_uv = VertUV;
+	// add material color
+	vert_color *= vec3(colors[TexIndex]);
+	
+	vert_opacity = colors[TexIndex].w;
+	
+    vert_uv = VertUV + vec2(texture_transforms[TexIndex]);
 	vert_tex_index = TexIndex;
 	vert_light_uv = VertLightUV;
 }
