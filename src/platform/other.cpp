@@ -7,6 +7,10 @@
     #include <windows.h>
 #endif
 
+#ifdef __EMSCRIPTEN__
+    #include <emscripten.h>
+#endif
+
 namespace tram::Platform {
 
 /// Attempts to break into debugger.
@@ -19,6 +23,8 @@ void TryDebugging() {
     if (IsDebuggerPresent()) {
         DebugBreak();
     }
+#elif defined(__EMSCRIPTEN__)
+    emscripten_debugger();
 #else
     raise(SIGTRAP);
 #endif
@@ -28,6 +34,8 @@ void TryDebugging() {
 void ShowErrorDialog(const char* message, const char* title) {
 #ifdef _WIN32
     MessageBoxA(nullptr, message, title, MB_OK);
+#elif defined(__EMSCRIPTEN__)
+    EM_ASM(alert(UTF8ToString($0));, message);
 #endif
 }
 
