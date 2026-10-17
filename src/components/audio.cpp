@@ -71,8 +71,8 @@ void AudioComponent::Start() {
     
     source = MakeAudioSource();
 
-    SetAudioSourcePitch(source, 1.0f);
-    SetAudioSourceGain(source, 1.0f);
+    SetAudioSourcePitch(source, pitch);
+    SetAudioSourceGain(source, volume);
     
     SetAudioSourcePosition(source, location);
     SetAudioSourceVelocity(source, {0.0f, 0.0f, 0.0f});
@@ -111,7 +111,22 @@ void AudioComponent::SetLocation(vec3 location) {
     if (is_ready) {
         SetAudioSourcePosition(source, location);
     }
+}
 
+void AudioComponent::SetVolume(float volume) {
+    this->volume = volume;
+    
+    if (is_ready) {
+        SetAudioSourceGain(source, volume);
+    }
+}
+
+void AudioComponent::SetPitch(float pitch) {
+    this->pitch = pitch;
+    
+    if (is_ready) {
+        SetAudioSourcePitch(source, pitch);
+    }
 }
 
 /// Sets whether the component will repeat its sound.

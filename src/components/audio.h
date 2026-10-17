@@ -17,6 +17,8 @@ public:
     void SetLocation(vec3 location);
     void SetSound(Audio::Sound* sound);
     [[deprecated]] void SetSound(name_t name);
+    void SetVolume(float volume);
+    void SetPitch(float pitch);
     void SetRepeating(bool is_repeating);
     bool IsPlaying();
     void Play();
@@ -34,6 +36,8 @@ protected:
     vec3 location = {0.0f, 0.0f, 0.0f};
     bool repeat = false;
     bool play_on_start = false;
+    float volume = 1.0f;
+    float pitch = 1.0f;
     
     void Start();
     

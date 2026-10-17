@@ -106,6 +106,7 @@ void Sound::Load() {
     audio->SetSound(Audio::Sound::Find(sound));
     audio->SetRepeating(sound_flags & SOUND_LOOPING);
     audio->SetLocation(location);
+    audio->SetVolume(volume);
     
     audio->Init();
     
@@ -118,7 +119,7 @@ void Sound::Load() {
 
 void Sound::Unload() {
     flags &= ~LOADED;
-
+    
     audio.clear();
 }
 

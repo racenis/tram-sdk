@@ -28,6 +28,7 @@ public:
     void Unload();
     
     /// Returns sound length in seconds.
+    /// @note This will return an invalid value if the sound hasn't been loaded yet.
     inline float GetLength() const { return (float)sound_length/(float)sample_rate; }
     
     static Sound* Find(name_t name);
