@@ -52,6 +52,7 @@ public:
     ModelData* GetData() const { return model_data; }
     
     void LoadAsModificationModel(Model* source, std::initializer_list<std::pair<Material*, Material*>> mapping);
+    void LoadAsModificationModel(Model* source, const std::pair<Material*, Material*>* mapping, size_t count);
     
     static Model* Find(name_t name);
 protected:

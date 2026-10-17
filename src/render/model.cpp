@@ -755,7 +755,7 @@ void Model::LoadFromMemory() {
         this->model_data = source->model_data;
     }
     
-    status = LOADED;
+    status = READY;
 }
 
 void Model::LoadFromDisk() {
@@ -848,18 +848,20 @@ finish:
     status = LOADED;
 }
 
-void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pair<Material*, Material*>> mappings) {
+void Model::LoadAsModificationModel(Model* source, const std::pair<Material*, Material*>* mapping, size_t count) {
     assert(status == Resource::UNLOADED);
     
     this->source = source;
     
     this->source->AddReference();
     Async::LoadDependency(this->source);
-        
+    
+    this->model_data = source->GetData();
+    
     for (Material* mat : this->source->materials) {
-        for (const auto& mapping : mappings) {
-            if (mapping.first == mat) {
-                materials.push_back(mapping.second);
+        for (size_t i = 0; i < count; i++) {
+            if (mapping[i].first == mat) {
+                materials.push_back(mapping[i].second);
                 goto next;
             }
         }
@@ -875,6 +877,10 @@ void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pa
     status = LOADED;
     
     return;
+}
+
+void Model::LoadAsModificationModel(Model* source, std::initializer_list<std::pair<Material*, Material*>> mappings) {
+    LoadAsModificationModel(source, mappings.begin(), mappings.size());
 }
 
 void Model::Unload() {
