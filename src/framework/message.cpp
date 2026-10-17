@@ -196,6 +196,11 @@ void Message::Send(const Message& message, float delay) {
     auto message_copy = message_pool.make(message);
     auto abs_when = GetTickTime() + delay;
     
+    if (std::isnan(delay) || std::isinf(delay) || delay < 0.0f) {
+        Log(Severity::WARNING, System::CORE, "Invalid delay of {} for {} message to {}, dropping", delay, Message::GetName(message.type), message.receiver);
+        return;
+    }
+    
     if (!message.type || message.type >= last_type) {
         Log(Severity::WARNING, System::CORE, "Sent out an unregistered message type with {} index", message.type);
     }
