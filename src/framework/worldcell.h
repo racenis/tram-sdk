@@ -24,6 +24,7 @@ public:
     inline bool HasInteriorLighting() const { return flags & INTERIOR_LIGHTING; }
     inline bool IsDebugDraw() const { return flags & DEBUG_DRAW; }
     inline bool HasAutomaticLoading() const { return flags & AUTOMATIC_LOADING; }
+    inline bool IsLoadedFromDisk() const { return flags & LOADED_FROM_DISK; }
     
     inline void SetInterior(bool is) { SetFlag(INTERIOR, is); }
     inline void SetInteriorLights(bool is) { SetFlag(INTERIOR_LIGHTING, is); }
@@ -64,7 +65,7 @@ protected:
         LOADED = 1,
         INTERIOR = 2,
         INTERIOR_LIGHTING = 4,
-        DEBUG_DRAW = 8,
+        DEBUG_DRAW = 8,         // unused?
         AUTOMATIC_LOADING = 16,
         LOADED_FROM_DISK = 32
     };
